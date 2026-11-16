@@ -1,0 +1,232 @@
+diff --git a/config/baseline.json b/config/baseline.json
+index 74bff938..96073a34 100644
+--- a/config/baseline.json
++++ b/config/baseline.json
+@@ -324,6 +324,7 @@
+     "QB_FACE_SEEN": "0",
+     "QB_CALL_ROUTES": "0",
+     "QB_EDGE_THREAT": "0",
++    "QB_HEAD": "0",
+     "QB_EVADE_UP": "0",
+     "BLITZ_SECOND": "0",
+     "QB_LOOKOFF_RHYTHM": "0",
+diff --git a/config/reference-stack.json b/config/reference-stack.json
+index fcbd933e..829628c5 100644
+--- a/config/reference-stack.json
++++ b/config/reference-stack.json
+@@ -282,6 +282,7 @@
+     "QB_FACE_SEEN": "on",
+     "QB_CALL_ROUTES": "off",
+     "QB_EDGE_THREAT": "off",
++    "QB_HEAD": "off",
+     "QB_EVADE_UP": "off",
+     "BLITZ_SECOND": "off",
+     "QB_LOOKOFF_RHYTHM": "off",
+diff --git a/docs/FLAGS.md b/docs/FLAGS.md
+index 9f8f7952..1fc25a5c 100644
+--- a/docs/FLAGS.md
++++ b/docs/FLAGS.md
+@@ -2,7 +2,7 @@
+ 
+ Every engine switch read from the environment, recounted from `src` at `57f50fc3` on 2026-10-22. This includes #210's promotion and #205's two additional default-on switches. Flags that are not on develop (parked, removed from a PR, or only on a side branch) are kept in [PARKED.md](PARKED.md) so the ideas are not lost. Registration rules are in [PLAN.md](PLAN.md): at most 10 experimental flags, and each expires two reviews after it lands.
+ 
+-There are 446 flags read from the environment in `src` (recounted 2026-11-16, engine-71 with the next card's candidates merged off, plus Rules' GRASS_READ, VERTS_KEYS, CONCEPT_FIT, BACK_AS_THREE, PA_TABLES, QUICK_HITCH and ROUTE_LANDMARK, plus POCKET_DROP and the QB lane's QB_CALL_ROUTES, QB_EDGE_THREAT, QB_KEY_READ and QB_KEY_COMMIT; QB_FACE_SEEN on): 309 are on unless set to `0`, 116 are off unless set to `1`, and 21 are numeric scales or modes (identity value unless listed in the stack's numeric section). The rows below carry each flag's history.
++There are 447 flags read from the environment in `src` (recounted 2026-11-16, engine-71 with the next card's candidates merged off, plus Rules' GRASS_READ, VERTS_KEYS, CONCEPT_FIT, BACK_AS_THREE, PA_TABLES, QUICK_HITCH and ROUTE_LANDMARK, plus POCKET_DROP and the QB lane's QB_CALL_ROUTES, QB_EDGE_THREAT, QB_KEY_READ, QB_KEY_COMMIT and QB_HEAD; QB_FACE_SEEN on): 309 are on unless set to `0`, 117 are off unless set to `1`, and 21 are numeric scales or modes (identity value unless listed in the stack's numeric section). The rows below carry each flag's history.
+ 
+ **Promotion (2026-11-09):** the reference stack `run-ref-4` is now the engine's default. The 90 flags it lists `on` are read as on unless set to `0` (rows marked "promoted" below); the rest are unchanged. Decisions and evidence for each flag are in [REFERENCE_STACK.md](REFERENCE_STACK.md); `npm run ref -- --list` is the current inventory, and `npm run ref -- --off -- <command>` runs the engine as it was before. The test suites still run on the pre-promotion engine (pinned in `vitest.config.ts`) until their recorded cases are re-recorded. The counts in the paragraph above predate all of this.
+ 
+@@ -204,6 +204,7 @@ There are 446 flags read from the environment in `src` (recounted 2026-11-16, en
+ | `QB_EDGE_THREAT` | off | experimental (QB lane, 2026-11-16; Integration's ruling on Flex's long-hold measurement) | quarterback | `src/sim/behaviors/qb.ts` (`pocketMove`'s edge test, `edgeOn`) | The step-up answers an edge rusher who threatens him, into room. Off, pocketMove's edge test (his home 1.8 + 1.2 pp yd up) fired on any defender felt wide and level within 2.5 + 3 pp yd, blocked or not, closing or not: on long holds he walked 1.4 yd up into the interior (staged depth 7.85 -> 6.70 yd from 2.0 to 3.5 s; NFL 7.4 -> 7.7). On, a rusher counts only if, in his felt picture, he is not tied up by a blocker he sees and is closing (enter 1.5, exit 0.5 yd/s), and the forward home holds only while his picture has room ahead (enter 2.0, exit 1.4 yd); margins chosen. Gate: scripts/diag/escape/long-hold-climb.ts (long holds) and drop-staged.ts (sacks by edge rushers). |
+ | `QB_KEY_READ` | off | experimental (QB lane, 2026-11-16; a repair of QB_KEY_MAN, Integration's ruling; docs/reviews/2026-11-16-key-man.md) | quarterback | `src/sim/behaviors/qb.ts` (`keyManShell`, `readKeyShell`, `keyDisp`, `rekey`) | The key read as taught. The key man named pre-snap from the shell as he reads it, among coverage players in his picture (never a man on the line in a stance): a flat / curl-flat key is the corner under a two-high read with a hard corner (6 yd or shallower), else the overhang inside him; off, the second-widest man within 8 yd from the true alignment (from doubles the strong-side end, 42 of 48). The read is his movement after the snap in his picture past the commit margin (QB_KEY_COMMIT); a man who has not committed by the cue gets the concept's coached sitter default (the plan's `key.sits`, Rules' SITS table, #813; without it, a flat / curl-flat key's 'if he doesn't widen, throw the flat'); off, where he stands against the stretch's midpoint. Committed once made: it changes once at most, on a perceived move past the margin the other way before the throw. |
+ | `QB_KEY_COMMIT` | 1.0 | numeric (QB lane, 2026-11-16; with QB_KEY_READ) | quarterback | `src/sim/behaviors/qb.ts` (`KEY_COMMIT`) | QB_KEY_READ's commit margin: yd of the key man's displacement along the low-high stretch since the snap, in his picture, past which his movement is the read (the exit, half). Chosen; numeric so the staged gate reads it a level either side. |
++| `QB_HEAD` | off | experimental (QB lane, 2026-11-16; Integration's go on Defense's zone trace) | quarterback / head | `src/sim/behaviors/qb.ts` (the eyes block in `update`, `hotLook`, `inClearLook`); `src/sim/head.ts` (`turnHead`, shared with `stepHeads`) | His head turns toward where he wants to look at the shared head's rate (6 rad/s) within the shared neck range, by head.ts's one turn function, with HEAD on or off; his picture is taken along where his head points, at the gaze's range, and his clear look is about his head. Off, his head was set to his gaze point every tick and jumped between reads in a tick (zone defenders lean on it). The hot look's timed turn at 400 deg/s is a double count under it and comes out: his eyes are on the man once his head points at him (within 0.15 rad, chosen), then the glance. Timings calibrated on the instant head: see docs/reviews/2026-11-16-qb-head.md. |
+ | `QB_HONEST_FEEL` | on | promoted 2026-11-14 (engine-63; `=0` restores); was experimental (QB lane, information rule, 2026-11-13; read on engine-57 and engine-59, flat; in the honesty batch) | quarterback | `src/sim/behaviors/qb.ts` (`felt`, `freeBound`, `pressure`, `evade`) | set at first review. His pressure picture reads only what he has perceived: the behind-his-shoulder test uses his plain picture of the man, pressure's distance is to the felt position, and he evades the felt position. Off, all four read the rusher's true position. Decided by its own row (alarm rate, felt against true time to contact at the alarm, sacks), expecting him to feel pressure later; a loss is repaired by perception, not by the leak |
+ | `THROW_PLATFORM` | off | experimental (QB lane, throw mechanics, 2026-11-13; first build, not yet read) | quarterback | `src/sim/behaviors/qb.ts` (`platform`, `missSigma`, `release`) | set at first review. What moving costs a throw, continuously: stepping toward the target is free up to a stride; the rest of his velocity is carried by the ball and the share he does not correct (by throw-on-run) is a miss along his motion, growing with flight time; moving across or away from the target takes his base out (an arm throw). Replaces the 1.15-1.6x step at 2.2 yd/s. Decided by ball against aim by platform (`scripts/diag/eyes/deep-split.ts`) and the ordering set < stepping in < drifting away < across the body; a set throw is unchanged. Never fitted to completions |
+ | `QB_BELIEVED_DEF` | on | promoted 2026-11-14 (engine-63; `=0` restores); was experimental (QB lane, information rule, 2026-11-13; staged test `test/qb-believed-def.test.ts`; game rows flat) | quarterback | `src/sim/behaviors/qb.ts` (`believe`, `seenTied`, in `window`, `screenDead`, `updateRush`), `src/sim/believed.ts` | set at first review. In pricing a throw he no longer reads each defender's true physical profile and exact ball-skills rating, or the sim's engagement record: body and ball skills are the position's typical values corrected toward the man's own by how well he knows the opponent (awareness and experience), fixed for the play; tied up is an offensive body within arm's length of the defender in his pictures. Decided by its own row (his priced chance against outcomes by defender quality, completion, INT); a loss is repaired by preparation as a mechanism, not by the leak |
+diff --git a/docs/reviews/2026-11-16-qb-head.md b/docs/reviews/2026-11-16-qb-head.md
+new file mode 100644
+index 00000000..c2f7076f
+--- /dev/null
++++ b/docs/reviews/2026-11-16-qb-head.md
+@@ -0,0 +1,36 @@
++# QB_HEAD: the passer's head turns at the shared rate (attempt 1, off)
++
++Integration's go, 2026-11-16 (Defense's zone trace: qb.ts set `a.head` to his gaze point every tick, so his head
++jumped between reads in a tick and zone defenders who lean on his eyes stepped with it, 30% of their reversals). The
++shared head (src/sim/head.ts, HEAD, off) skipped the passer by design ("until the QB lane moves it to want").
++
++## What it does
++
++- His head turns toward the point he wants to look at by head.ts's one turn (`turnHead`, extracted from `stepHeads`,
++  which now calls it: HEAD on is unchanged): 6 rad/s within the shared neck range off his body facing, over the
++  shoulder for a target behind. The same function whether HEAD is on or off.
++- His picture is taken along where his head points, at the gaze's range (`mind.observe`, `receiverLook`); his clear
++  look (`inClearLook`) is about his head.
++- Defenders read `a.head` as before; it now moves at the rate.
++
++## Timings calibrated on the instant head (Integration's condition 2)
++
++| timing | what it is | under QB_HEAD |
++|---|---|---|
++| HEAD_RATE 400 deg/s in the hot look (`hotLook`'s `turn`) | a timed head turn before his eyes are on the hot target | **double count, removed**: his eyes are on the man once his head points within 0.15 rad of him (chosen), then the glance |
++| the glance (0.15 + 0.2 (1 - dm) + 0.1 (1 - aw)) | the time to take a man in once his eyes are there | unaffected (it starts on arrival now) |
++| read dwell (`readDwell`, `readStart`) and bit 1's beats (`beatDue`, eyes leave a stride before the step) | when he moves off a read, counted from the read change | needs re-reading: part of the dwell is now spent turning (read change to eyes on the read p90 0.30 -> 0.45 s); not charged twice, so unchanged here |
++| QB_LOOKOFF (0.25-0.35 s on the decoy) | a fixed hold of his eyes on the decoy side | needs re-reading: the head's travel to the decoy and back eats into it; what defenders see of it is now physical |
++| the key read's cueBy | the key read at the plan's cue, from his memory pictures | needs re-reading: how fresh the key man's picture is depends on where his head has been |
++| QB_EYES' eyesOnAt / gate | when his eyes are taken to be on a read | needs re-reading (measured from the gaze change, not the arrival); unchanged here |
++
++## Gate (staged)
++
++- Head rate (scripts/diag/eyes/head-rate.ts, 6 concepts x 4 coverages x 2 rosters x 2 seeds): off p50 4, p95 432,
++  p99 1662, max 3313 deg/s; on p50 6, p95 344, max 344 (none over the rate).
++- Read change to his eyes on the new read: p50 0.05 / 0.05 s, p90 0.30 -> 0.45 s.
++- Paired dropbacks (drop-staged.ts, the 16 staged concepts, 3072 plays, engine defaults): sacks 5.6 -> 5.9%,
++  interceptions 47 -> 39, completions 1946 -> 1936, yd 8.54 -> 8.48, time to throw mean 3.14 -> 3.15 s (median 3.05 /
++  3.05). The cost is where his eyes swing across the field: verts_hitch sacks 11 -> 18 (throw 3.59 -> 3.69 s),
++  four_verts completions 68 -> 61.
++- Defenders' eyes-read timing: Defense's ZONE_HOLD bit 32 (lean on the seen head line) to be read with it.
+diff --git a/scripts/diag/eyes/head-rate.ts b/scripts/diag/eyes/head-rate.ts
+new file mode 100644
+index 00000000..f3ddd211
+--- /dev/null
++++ b/scripts/diag/eyes/head-rate.ts
+@@ -0,0 +1,23 @@
++// [QB_HEAD=1] node --import tsx scripts/diag/eyes/head-rate.ts
++// QB_HEAD's gate (Integration, 2026-11-16): on staged dropbacks while he holds the ball in the pass behavior, his head's
++// angular rate each tick (deg/s), and the time from each read change (readIdx) to his eyes reaching the new read (head
++// within 0.15 rad of his forecast of the man). Passive.
++import { PlaySim } from '../../../src/sim/playsim.js';
++import { nativeTraceSetup } from '../command-trace.js';
++const rates: number[] = [], arrive: number[] = [];
++for (const concept of ['smash', 'dagger', 'mesh', 'stick', 'flood', 'four_verts']) for (const coverage of ['cover1', 'cover2', 'cover3', 'cover4']) for (const roster of [3, 7]) for (const seed of [1, 2]) {
++  const sim: any = new PlaySim(nativeTraceSetup({ coverage, concept, seed, roster, formation: 'gun_doubles_11', flip: false }));
++  let prev: number | null = null, idx = -1, since = 0, pending: any = null;
++  for (let i = 0; i < 400 && sim.phase === 'live' && sim.carrier === sim.qb; i++) {
++    sim.tick(); const b: any = sim.qb.behavior, h = sim.qb.head;
++    if (b?.kind !== 'qb-pass' || h === null || h === undefined) continue;
++    if (prev !== null) rates.push(Math.abs(Math.atan2(Math.sin(h - prev), Math.cos(h - prev))) / sim.dt * 180 / Math.PI);
++    prev = h;
++    if (b.phase === 'set' && b.readIdx !== idx) { idx = b.readIdx; since = sim.t; pending = b.reads[idx] ?? null; }
++    if (pending) { const p = b.receiverForecasts.get(pending)?.predict(sim.t, 0) ?? pending.pos, br = Math.atan2(p.y - sim.qb.pos.y, p.x - sim.qb.pos.x);
++      if (Math.abs(Math.atan2(Math.sin(br - h), Math.cos(br - h))) < 0.15) { arrive.push(sim.t - since); pending = null; } }
++  }
++}
++const q = (v: number[], p: number) => { const z = [...v].sort((a, b) => a - b); return z.length ? z[Math.floor(p * (z.length - 1))] : NaN; };
++console.log(`head rate deg/s: p50 ${q(rates, 0.5).toFixed(0)} p95 ${q(rates, 0.95).toFixed(0)} p99 ${q(rates, 0.99).toFixed(0)} max ${Math.max(...rates).toFixed(0)} (n ${rates.length}; over 344: ${rates.filter((r) => r > 344.5).length})`);
++console.log(`read change -> eyes on the new read (s): p50 ${q(arrive, 0.5).toFixed(2)} p90 ${q(arrive, 0.9).toFixed(2)} (n ${arrive.length})`);
+diff --git a/src/sim/behaviors/qb.ts b/src/sim/behaviors/qb.ts
+index a235b8af..a4b352e0 100644
+--- a/src/sim/behaviors/qb.ts
++++ b/src/sim/behaviors/qb.ts
+@@ -28,6 +28,7 @@ import type { Perceived } from '../perception.js';
+ import type { PlaySim } from '../playsim.js';
+ import { BallCarrier } from './carrier.js';
+ import { handoffReach } from '../ball-transfer.js';
++import { HEAD_RATE as SHARED_HEAD_RATE, turnHead } from '../head.js';
+ import { angleTo, goTo, stand } from './common.js';
+ import { RouteRunner } from './receiver.js';
+ import type { QBMind } from '../qbmind.js';
+@@ -697,6 +698,13 @@ const SECURE_T = 0.3;
+ const DISLODGE = 0.5;
+ /** HOT_LOOK: head-and-eye turn rate to a new target (an assumed 400 deg/s; sport head turns peak at 300-600). */
+ const HEAD_RATE = 400 * Math.PI / 180;
++/** QB_HEAD (experimental, off; QB_HEAD=1; Integration's go 2026-11-16, Defense's zone trace): his head turns to where
++ * he wants to look at the shared head's rate within the shared neck range (head.ts's turnHead, the one head model), and
++ * his picture is taken along where his head points, not at the point he wants. Off, his head is set to his gaze point
++ * every tick, so it jumped between reads in a tick and the zone defenders who lean on his eyes stepped with it. The
++ * hot look's timed turn (HEAD_RATE, 400 deg/s) is a double count under it and comes out: his eyes are there when his
++ * head is, then the glance. */
++const QB_HEAD = process.env.QB_HEAD === '1';
+ 
+ export class QBPass implements Behavior {
+   readonly kind = 'qb-pass';
+@@ -722,7 +730,7 @@ export class QBPass implements Behavior {
+   private lastHotBest: ThrowEval | null = null;
+   private noThrowSince = -1;
+   private noThrowLast = -99;
+-  private look: { target: Agent; from: Vec2; eyesAt: number; seenAt: number } | null = null;
++  private look: { target: Agent; from: Vec2; eyesAt: number; seenAt: number; glance?: number } | null = null;
+   hotPick: { t: number; slot: string; alarmAt: number | null; looked: number; onRead: boolean; facingOff: number; gazeOff: number; P: number; intRisk: number } | null = null;
+   private readStart = -1;
+   private setAt = -1;
+@@ -1237,10 +1245,16 @@ export class QBPass implements Behavior {
+     if (heldBy(a, sim) >= 0.6 && this.phase !== 'windup') return stand();
+ 
+     // Eyes: what he looks at is what he sees; everything else is memory and belief.
+-    const gaze = this.gazePoint(sim);
++    let gaze = this.gazePoint(sim);
++    if (QB_HEAD) {
++      // QB_HEAD: his head turns toward the gaze at its rate; what he sees is along where it points, at the gaze's range.
++      const want = Math.atan2(gaze.y - a.pos.y, gaze.x - a.pos.x), range = Math.hypot(gaze.x - a.pos.x, gaze.y - a.pos.y);
++      a.head = turnHead(a, a.head ?? a.body.facing, want, SHARED_HEAD_RATE * sim.dt);
++      gaze = { x: a.pos.x + range * Math.cos(a.head), y: a.pos.y + range * Math.sin(a.head) };
++    }
+     this.mind.observe(gaze);
+     // QB_BODY_SEEN: his head shows where he is looking.
+-    a.head = Math.atan2(gaze.y - a.pos.y, gaze.x - a.pos.x);
++    if (!QB_HEAD) a.head = Math.atan2(gaze.y - a.pos.y, gaze.x - a.pos.x);
+     const routeKeys = this.mind.routeKeyPictures();
+     for (const [r, forecast] of this.receiverForecasts) {
+       const picture = this.mind.receiverLook(r, gaze);
+@@ -1733,6 +1747,11 @@ export class QBPass implements Behavior {
+   private hotLook(a: Agent, sim: PlaySim): ThrowEval | 'look' | null {
+     const ok = (ev: ThrowEval | null) => !!ev && ev.P > 0.3 && ev.intRisk < 0.18;
+     if (this.look) {
++      // QB_HEAD: his eyes are on the man once his head points at him; then the glance.
++      if (QB_HEAD && this.look.seenAt === Infinity) {
++        const p = this.receiverForecasts.get(this.look.target)?.predict(sim.t, 0) ?? this.look.target.pos;
++        if (a.head !== null && Math.abs(wrapAngle(angleTo(a.pos, p) - a.head)) < 0.15) this.look.seenAt = sim.t + (this.look.glance ?? 0);
++      }
+       if (sim.t < this.look.seenAt) return 'look';
+       const r = this.look.target;
+       const ev = this.evaluate(a, sim, r, 1);
+@@ -1747,7 +1766,7 @@ export class QBPass implements Behavior {
+     const gaze = this.gazePoint(sim), to = this.receiverForecasts.get(best.target)?.predict(sim.t, 0) ?? best.target.pos;
+     const turn = Math.abs(wrapAngle(angleTo(a.pos, to) - angleTo(a.pos, gaze))) / HEAD_RATE;
+     const glance = 0.15 + 0.2 * (1 - a.r('decisionMaking')) + 0.1 * (1 - a.r('awareness'));
+-    this.look = { target: best.target, from: gaze, eyesAt: sim.t + turn, seenAt: sim.t + turn + glance };
++    this.look = QB_HEAD ? { target: best.target, from: gaze, eyesAt: sim.t, seenAt: Infinity, glance } : { target: best.target, from: gaze, eyesAt: sim.t + turn, seenAt: sim.t + turn + glance };
+     this.hotLooks++;
+     return 'look';
+   }
+@@ -1786,7 +1805,9 @@ export class QBPass implements Behavior {
+   /** Whether his picture of `r` sits inside his clear look now (qbmind's clear sector). */
+   private inClearLook(a: Agent, sim: PlaySim, r: Agent): boolean {
+     const gaze = this.gazePoint(sim), p = this.receiverForecasts.get(r)?.predict(sim.t, 0) ?? this.has(sim, r);
+-    return Math.abs(wrapAngle(angleTo(a.pos, p) - angleTo(a.pos, gaze))) < this.mind.clearHalf * (0.65 + 0.35 * a.mind.focus);
++    // QB_HEAD: his clear look is about where his head points.
++    const eyes = QB_HEAD && a.head !== null ? a.head : angleTo(a.pos, gaze);
++    return Math.abs(wrapAngle(angleTo(a.pos, p) - eyes)) < this.mind.clearHalf * (0.65 + 0.35 * a.mind.focus);
+   }
+ 
+   /** QB_RHYTHM: the outlet (last read) when it is a live, ready option that
+diff --git a/src/sim/head.ts b/src/sim/head.ts
+index 01d3db7e..b26582bf 100644
+--- a/src/sim/head.ts
++++ b/src/sim/head.ts
+@@ -83,14 +83,20 @@ export function stepHeads(sim: PlaySim): void {
+       const p = isAgent(w.target) ? sim.perception.perceive(w.target.idx, a.profile.reactionTime).pos : w.target;
+       toward = Math.atan2(p.y - a.pos.y, p.x - a.pos.x);
+     }
+-    const neck = neckRange(a);
+-    const lim = facing + Math.max(-neck, Math.min(neck, sideOf(angDiff(toward, facing), angDiff(head, facing))));
+-    head = head + Math.max(-step, Math.min(step, angDiff(lim, head)));
+-    head = facing + Math.max(-neck, Math.min(neck, angDiff(head, facing)));
+-    a.head = head;
++    a.head = turnHead(a, head, toward, step);
+   }
+ }
+ 
++/** The one head turn: from `head` toward the bearing `toward` (rad, field frame) by at most `step` rad, within the
++ * neck's range off his body facing, over the shoulder for a target behind him. stepHeads turns every head with it; the
++ * QB lane turns the passer's with it (QB_HEAD). */
++export function turnHead(a: Agent, head: number, toward: number, step: number): number {
++  const facing = a.body.facing, neck = neckRange(a);
++  const lim = facing + Math.max(-neck, Math.min(neck, sideOf(angDiff(toward, facing), angDiff(head, facing))));
++  head = head + Math.max(-step, Math.min(step, angDiff(lim, head)));
++  return facing + Math.max(-neck, Math.min(neck, angDiff(head, facing)));
++}
++
+ /** Whether `bearing` (rad, field frame) is inside the cone of a head pointing `head`. */
+ export function inHeadCone(head: number, bearing: number): boolean {
+   return Math.abs(angDiff(bearing, head)) <= HEAD_CONE;
