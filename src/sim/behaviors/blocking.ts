@@ -23,7 +23,7 @@ import type { RunConcept } from '../../playbook/types.js';
 import type { Agent, Behavior, Engagement, RunContactSurface } from '../agent.js';
 import type { PlaySim } from '../playsim.js';
 import { chooseRunBlockFit, observedBlockLeverage, secondLevelBlockApproach } from '../run-block-fit.js';
-import { paRunLook } from '../pa-look.js';
+import { paFakeSide, paHingeSpot, PA_HINGE, paRunLook } from '../pa-look.js';
 import { DOUBLE_OVERTAKE, axisOf, contactControl, helperSupport, passSetDepth, promoteContact, protectPoint, PUNCH, SET_SPOT, SET_SPOT_TACKLE, setSpotTarget, TACKLE_SET, tackleFloor, tackleSetLine, traits } from '../engagement.js';
 import { readZoneReach, type ZoneReachRead } from '../zone-reach.js';
 import { interceptPoint, timeToReach } from '../../physics/reach.js';
@@ -343,9 +343,32 @@ export class PassProtector implements Behavior {
       a.behavior = this.releaseTo();
       return a.behavior.update(a, sim);
     }
+    // PA_HINGE: on a zone fake the line shows the zone until the fake's end, then converts to its protection. A man
+    // who meets his rusher on the way engages as in any set.
+    if (PA_HINGE && (isOL(a) || !!sim.offAlign.spots[a.slot]?.inline)) {
+      const side = paFakeSide.get(sim) ?? 0;
+      const line = this.coord.protectors.filter((p) => isOL(p) || !!sim.offAlign.spots[p.slot]?.inline);
+      const endMan = !!side && line.length > 0 && line.reduce((m, p) => ((this.coord.homeY.get(p) ?? p.pos.y) - sim.ballY) * -side
+        > ((this.coord.homeY.get(m) ?? m.pos.y) - sim.ballY) * -side ? p : m) === a;
+      const spot = paHingeSpot(sim, home, sim.snapX[a.idx] ?? a.pos.x, endMan);
+      if (spot) {
+        if (rA) {
+          const contactPA = a.profile.radius + rA.profile.radius + 0.1 + a.player.measurables.armIn / 36 * 0.55;
+          if (Math.hypot(rA.pos.x - a.pos.x, rA.pos.y - a.pos.y) < contactPA + 0.15 && sim.engage(a, rA, 'pass')) return stand();
+        }
+        a.tags.add(endMan ? 'pa-hinge' : 'pa-reach');
+        return goTo(a, spot, { speed: 0.8, facing: spot.facing });
+      }
+    }
     // SET_SPOT: the QB he protects is the launch point he knows from the call, not the live QB behind him.
     const tackleSlot = a.slot === 'LT' || a.slot === 'RT';
-    const qb = SET_SPOT && (!tackleSlot || SET_SPOT_TACKLE) ? { ...sim.qb, pos: protectPoint(sim) } as typeof sim.qb : sim.qb;
+    // SET_SPOT's information rule is a lineman's: the QB is behind him, unseen, so his reference is the call's launch point.
+    // A back in protection sees the QB (beside him after the mesh, in front of him on a set): his reference is the QB as he
+    // sees him. With the launch point, a back released from a play-action fake under center set beside the final launch
+    // point (8.1 yd) while the QB was still dropping to it, and the QB stopped behind him (5.65 yd at 2.0 s against 7.0 off;
+    // pa-drop.test.ts, ace_11 pa_post_dig roster 1 seed 1).
+    const qb = SET_SPOT && isOL(a) && (!tackleSlot || SET_SPOT_TACKLE) ? { ...sim.qb, pos: protectPoint(sim) } as typeof sim.qb
+      : SET_SPOT && !isOL(a) ? { ...sim.qb, pos: sim.see(a, sim.qb).pos } as typeof sim.qb : sim.qb;
     if (!rA) {
       // Set: tackles kick, interior sets short; backs hold near the QB.
       const isT = a.slot === 'LT' || a.slot === 'RT';

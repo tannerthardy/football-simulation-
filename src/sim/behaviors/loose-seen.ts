@@ -31,6 +31,14 @@ import { Pursuit } from './defense.js';
 import { DownfieldBlocker } from './receiver.js';
 
 export const LOOSE_SEEN = process.env.LOOSE_SEEN !== '0';
+/** LOOSE_OWN (experimental, off; LOOSE_OWN=1 turns it on; docs/reviews/2026-11-16-loose-own.md): two reads of the
+ * truth left in LOOSE_SEEN, removed. (1) Recognition and re-sighting were gated on the true ball state, so a player
+ * whose delayed picture still showed the ball loose stopped recognizing it the tick someone else picked it up; with
+ * it, his sighting alone decides (the true state stays in the producer, `recordLoose`, which only stores the flight he
+ * samples). (2) A player who heard 'ball!' but had not seen it ran to where he saw the true fumbler; a shout tells him
+ * a ball is loose and where the shout came from, not who lost it, so he runs toward the teammate who called. The man
+ * who lost it still knows at once (he felt it leave). */
+export const LOOSE_OWN = process.env.LOOSE_OWN === '1';
 const CALL_RANGE = 20;
 const LEAD = 0.2;
 
@@ -46,6 +54,9 @@ interface LooseState {
   lostBy: Agent | null;
 }
 const states = new WeakMap<PlaySim, LooseState>();
+
+/** For tests: the loose-ball state (each player's sightings and recognitions, the man who lost it). */
+export function looseStateForTest(sim: PlaySim): Readonly<LooseState> | undefined { return states.get(sim); }
 
 function state(sim: PlaySim): LooseState {
   let s = states.get(sim);
@@ -71,13 +82,20 @@ function sightLoose(sim: PlaySim, a: Agent, s: LooseState): Sighting | null {
 
 /** Whether a teammate who recognized it (by `t - his delay`) is close enough for his call to be heard. */
 function heardCall(sim: PlaySim, a: Agent, s: LooseState): boolean {
+  return caller(sim, a, s) !== null;
+}
+
+/** The nearest teammate whose call he has heard (recognized by `t - his delay`, within CALL_RANGE), if any. */
+export function caller(sim: PlaySim, a: Agent, s: LooseState): Agent | null {
   const delay = a.mind.observationDelay(a.profile.reactionTime);
+  let best: Agent | null = null, bd = CALL_RANGE;
   for (const [idx, t] of s.recognized) {
     const o = sim.agents[idx];
     if (o === a || o.team !== a.team || t > sim.t - delay) continue;
-    if (Math.hypot(o.pos.x - a.pos.x, o.pos.y - a.pos.y) <= CALL_RANGE) return true;
+    const d = Math.hypot(o.pos.x - a.pos.x, o.pos.y - a.pos.y);
+    if (d <= bd) { bd = d; best = o; }
   }
-  return false;
+  return best;
 }
 
 function release(sim: PlaySim, a: Agent): void {
@@ -102,7 +120,7 @@ export class LooseCue implements Behavior {
   update(a: Agent, sim: PlaySim): MoveCommand {
     const s = state(sim);
     recordLoose(sim, s);
-    if (sim.ball.kind === 'loose') {
+    if (LOOSE_OWN || sim.ball.kind === 'loose') {
       const sight = sightLoose(sim, a, s);
       if (sight) s.seen.set(a.idx, sight);
       if (s.recognized.has(a.idx) || sight || heardCall(sim, a, s)) {
@@ -122,13 +140,15 @@ export class LooseScramble implements Behavior {
   update(a: Agent, sim: PlaySim): MoveCommand {
     const s = state(sim);
     recordLoose(sim, s);
-    if (sim.ball.kind === 'loose') {
+    if (LOOSE_OWN || sim.ball.kind === 'loose') {
       const sight = sightLoose(sim, a, s);
       if (sight) s.seen.set(a.idx, sight);
     }
     const last = s.seen.get(a.idx);
+    const shout = LOOSE_OWN && s.lostBy !== a ? caller(sim, a, s) : null;
     let spot: Vec2;
     if (last) spot = { x: last.pos.x + last.vel.x * LEAD, y: last.pos.y + last.vel.y * LEAD };
+    else if (LOOSE_OWN) { if (s.lostBy === a) spot = a.pos; else if (shout) spot = sim.see(a, shout).pos; else return goTo(a, a.pos, { speed: 0.3 }); }
     else if (s.lostBy) spot = sim.see(a, s.lostBy).pos;
     else return goTo(a, a.pos, { speed: 0.3 });
     const d = Math.hypot(spot.x - a.pos.x, spot.y - a.pos.y);

@@ -20,7 +20,7 @@ import { HANDS_CUE, noteHands } from '../hands-cue.js';
 import { CATCH_CHOICE, chooseCatchPoint, type CatchChoice } from '../catch-choice.js';
 import { BALL_EST_RCV as BALL_EST, SEEN_EMPTY, BALL_EST_DEEP_LOOK, BALL_EST_SERVO, BALL_EST_TRUNK, lookJoints, BALL_EST_MOVING_CHOICE, DEEP_LOOK_DEPTH, DEEP_LOOK_HOLD, LOOK_NECK, neckOf, PRE_LOOK_EARLY, PRE_LOOK_LATE, bodyTurnLead, sideOf } from '../ball-estimate.js';
 
-import { firstBreakDepth, getOffDrive, getOffLoss, inGetOff, LINE_START, routeEffort, routePath, steerRoute, type PathPoint, type RouteCursor, type FilletTurn, type FilletPlan } from '../route-motion.js';
+import { firstBreakDepth, getOffDrive, getOffLoss, inGetOff, LINE_START, routeEffort, routePath, steerRoute, type PathPoint, type RouteCursor, type FilletTurn, type FilletPlan, ROUTE_LANDMARK, breaksInside } from '../route-motion.js';
 import { installedRead, readRoute, type RouteChoice, type RouteKeyPicture } from '../route-read.js';
 import { BREAK_DECL } from '../../playbook/route-breaks.js';
 
@@ -229,9 +229,11 @@ export function routeCraft(a: Agent, sim: Pick<PlaySim, 'defense' | 'see' | 't'>
   const keep = H ? keep0 : undefined;
   // CRAFT_HOLD: the route's side from the snap (its declared break's leg) when it is clear against his line, else the
   // side he holds (a direction on the field: his route command turns under him), else the per-tick break side.
-  // CRAFT_EXIT: a leg that comes back toward the line (a stick, hook or curl settling) names no side round a man in his
-  // stem: its lateral part is a few tenths of a yard, and read as a side it sent the stick inside the nickel over him.
-  const sideLeg = routeDir && (!CRAFT_EXIT || routeDir.x * u.x + routeDir.y * u.y > 0) ? routeDir : null;
+  // CRAFT_EXIT: a leg that comes back toward the line (a stick, hook, curl or comeback settling: its downfield part at least
+  // 0.3 of it backward) names no side round a man in his stem: its lateral part is a few tenths of a yard, and read as a
+  // side it sent the stick inside the nickel over him. An out's leg (10 yd, then 9.5 yd 12 yd across: 0.04 backward) is
+  // a break toward the sideline, and names its side.
+  const sideLeg = routeDir && (!CRAFT_EXIT || routeDir.x * u.x + routeDir.y * u.y > -0.3) ? routeDir : null;
   // RELEASE_COMMIT: the side his release seeded for this man comes first, kept as the field side it was seeded as.
   const seed = keep?.seeded && keep.d === block.d ? keep.across.x * n.x + keep.across.y * n.y : null;
   const seedSign = seed === null ? 0 : Math.abs(seed) >= 0.5 ? Math.sign(seed) : 0;
@@ -541,7 +543,9 @@ export class RouteRunner implements Behavior {
 
   /** The same waypoint controller is used by the explicitly seeded QB forecast. */
   private steer(body: Body, st: RouteCursor, rr: number, cutSkill: number): MoveCommand | null {
-    return steerRoute(body, st, this.path, this.routeEnd, this.effort, rr, cutSkill);
+    // ROUTE_LANDMARK: an in-breaking route is run from where he is; an out-breaker, a settle and a vertical keep their drawn spot.
+    const at = BREAK_DECL[this.route.id]?.at;
+    return steerRoute(body, st, this.path, this.routeEnd, this.effort, rr, cutSkill, ROUTE_LANDMARK && breaksInside(this.path, typeof at === 'number' ? at : undefined, this.outside));
   }
 
   /** A route-key look down the stem and across nearby underneath leverage.

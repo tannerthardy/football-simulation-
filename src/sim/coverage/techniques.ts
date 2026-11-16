@@ -183,3 +183,27 @@ export class CrossWall extends Technique {
       { label: contact ? 'cross-wall-collide' : 'cross-wall', key: rd.vel });
   }
 }
+
+/** QCORNER bit 4 (experimental, off; QCORNER=4): the quarters MOD corner who has zoned off a short #1 (`zoneOffOne`)
+ * plays #1's path as taught, from his own picture of #1 (`reader.read`), instead of the deep quarter's drop to its
+ * landmark (which kept him bailing: 1.9 yd of sink from 1.0 to 2.0 s against the NFL's 0.4 when #1 stays on his side
+ * and 1.3 when #1 crosses, quarters_cb.py). #1 stays on his side (a hitch, stop or out): he settles at the depth he has
+ * over #1's window, outside-in, eyes on the QB, and breaks on the throw he sees (the base: playsThrow -> playBall).
+ * #1 crosses (2 yd or more inside of his alignment in the corner's picture; final once declared, as the zone-off is):
+ * he sinks and works inside to the window behind the crosser, 5 yd over him (the curl-to-post window; a stated choice). */
+export class QuarterShort extends Technique {
+  private crossed = false;
+  protected move(a: Agent, sim: PlaySim): MoveCommand {
+    const rd = this.reader.read(sim, this.target);
+    if (!rd) return { vel: { x: 0, y: 0 } };
+    if (!this.crossed && rd.outward <= -2) this.crossed = true;
+    const qb = sim.see(a, sim.qb).pos;
+    const facing = angleTo(a.pos, qb);
+    if (!this.crossed) {
+      const aim = { x: a.pos.x, y: clamp(rd.pos.y + rd.outSign * 1.0, 0.5, FIELD_WIDTH - 0.5) };
+      return withFacingTechnique(track(a, aim, { x: 0, y: rd.vel.y * 0.5 }, { facing, speed: 0.8, gain: 1.6 }), { label: 'q-short-settle', key: rd.vel });
+    }
+    const aim = { x: Math.max(a.pos.x, rd.pos.x + 5), y: clamp(rd.pos.y, 0.5, FIELD_WIDTH - 0.5) };
+    return withFacingTechnique(track(a, aim, { x: 0, y: rd.vel.y * 0.6 }, { facing, speed: 0.85, gain: 1.6 }), { label: 'q-short-sink', key: rd.vel });
+  }
+}

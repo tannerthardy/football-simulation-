@@ -32,8 +32,8 @@ import { movingCatchApproach } from '../catch-approach.js';
 import { RELEASE_BELIEF, releaseBelief } from '../release-belief.js';
 import { withMovementObjective } from '../movement-objective.js';
 import { OPEN_FIELD, playsBall } from '../open-field.js';
-import { DeepCoverage } from '../coverage-leverage.js';
-import { roundedTurnTime, withFacingTechnique } from '../coverage/orientation.js';
+import { DeepCoverage, StemAcceleration, stemStopped } from '../coverage-leverage.js';
+import { facingTechnique, roundedTurnTime, withFacingTechnique } from '../coverage/orientation.js';
 import { SNAP_REACT } from '../snap-count.js';
 import { BALL_EST, BALL_EST_MAN_LOOK, estimatesFor, lookAnyway, lookJoints, neckOf, PHASE_BEHIND, PHASE_SIDE, phaseJudgeSd } from '../ball-estimate.js';
 import { acquireFlight, anticipatedCatcher, catchOpportunity, flightLanded, hasObservedFlight, observedHolder, QB_RELEASE, qbRunning, qbRunningAtLine, rememberCatchOpportunity, rememberedFlight, unresolvedBallArea } from '../possession-read.js';
@@ -142,6 +142,19 @@ const ZONE_HOLD_IN = 0.5 * ZONE_HOLD_SCALE, ZONE_HOLD_OUT = 1.5 * ZONE_HOLD_SCAL
 const ZONE_HOLD_EYES_BEAT = (4 * ZONE_HOLD_SCALE * Math.PI) / 180;
 const ZONE_HOLD_EYES_OUT = (6 * ZONE_HOLD_SCALE * Math.PI) / 180;
 const ZONE_HOLD_PICK_BEAT = 1.5 * ZONE_HOLD_SCALE;
+/** ZONE_HOLD bit 32 (lean): the settled underneath defender's lean with the QB's eyes slides along the QB's seen head
+ * line (the point on it at his landmark's distance from the QB), not toward whichever receiver the eyes are on; his held
+ * lean point follows it on a ZONE_HOLD_LEAN_ROPE leash (moves only once the line has moved past it, then continuously),
+ * and keeps its last place while the QB's head is out of his view. Taught: slide with the quarterback's eyes. */
+export const ZONE_HOLD_LEAN = (ZONE_HOLD_BITS & 32) !== 0;
+const ZONE_HOLD_LEAN_ROPE = 1.0 * ZONE_HOLD_SCALE;
+/** ZONE_HOLD bit 64 (hand-off from motion): when his technique hands off on a perceived change (a seam carry ends: the
+ * route breaks down or reaches the hand-off depth; a lane read gives way to the settle), the new technique's target may
+ * move anywhere across his motion but not back against it short of his own stopping point (pos + v^2/(2 brake) along
+ * the direction he was moving); the limit shrinks with his speed and is gone when he has stopped along it. Taught:
+ * when the seam clears, settle and find the next threat; don't sprint back to a spot. */
+export const ZONE_HOLD_HANDOFF = (ZONE_HOLD_BITS & 64) !== 0;
+const CARRY_LABEL = /^(open-carry-seam|carry-wall|carry-run-past)$/;
 const eyesHeld = new WeakMap<Agent, Agent>();
 const eyesCache = new WeakMap<Agent, { t: number; r: Agent | null }>();
 /** SEEN_EYES: the receiver this defender sees the QB looking at, or null. */
@@ -330,6 +343,23 @@ const SET_DEPTH = 0.4;
  * nearest one laterally, read as his key. An interior man keys the blocker
  * within a yard and a half; an edge keys the end of the line inside him,
  * however wide he aligns (a wide 9 still reads his tackle). */
+const OL_SLOTS_SET = new Set(['LT', 'LG', 'C', 'RG', 'RT']);
+/** END_KEY (experimental, numeric bitmask, default 0; docs/reviews/2026-11-16-end-key.md). Bit 2 (key through the
+ * triangle): an edge rusher whose keyed surface man releases (no blocking stance in his picture) keys on through to the
+ * tackle inside, and the existing key reads play that man's step (a hinge or zone step away: squeeze / END_CHASE with
+ * the boot check; a pass set: the rush). Sourced (Gridiron Strategies, "Defensive End Reads in a Forty Front"): "once
+ * you read release, look for the next part of triangle"; the release itself is not a pass read. Bit 1 (the key's
+ * stance as a run/pass cue) was tried and removed: on play action it made the fake-side end fit inside harder. */
+const END_KEY_THROUGH = (Number(process.env.END_KEY ?? 0) & 2) !== 0;
+/** EDGE_SET (experimental, off; docs/reviews/2026-11-16-edge-set.md): an edge answering a reach sets the edge as taught
+ * (hands on the reach blocker's outside half, square, widen with him and no faster, squeeze the lane he is trying to
+ * open): his lateral target is the blocker's outside shoulder in his picture one beat ahead, fed forward at the
+ * blocker's lateral speed with no lead of his own; wider than that, he works back to the shoulder, and caught inside it he
+ * keeps fighting to it. The target is one continuous function of the blocker in his picture on either side of the
+ * shoulder: there is no side switch to hold, so no margin is needed (commit rule). Before it, KEY_PACE's answer (the blocker's speed plus a lead, from his own spot)
+ * kept him ahead of the blocker and gaining: 2.7 / 3.4 / 4.6 yd wide at 1.0 / 1.5 / 2.0 s against the NFL play-side
+ * end's 0.4-0.6 / 1.3-1.6 / 2.3-2.8 on real outside zone (nfl_pa_backside.py NFL_POP=oz). */
+export const EDGE_SET = process.env.EDGE_SET === '1';
 function manInFront(sim: PlaySim, a: Agent, reach = 1.5, held: Agent | null = null): (Perceived & { home: Vec2; agent: Agent }) | null {
   let best: Agent | null = held, bd = Infinity;
   if (!best) for (const b of linePicture(sim, a).surface) {
@@ -361,7 +391,27 @@ function twistRole(a: Agent, sim: PlaySim): { role: 'crash' | 'loop'; y: number 
   return { role: a === c ? 'crash' : 'loop', y: gapY(sim.offAlign, target.gap, target.gapSign) };
 }
 
+/** POWER_AIM (experimental, off; POWER_AIM=1; #35 item 2b): a power rush aims down the middle of the blocker setting to
+ * him, not at the quarterback. "Straight down the middle of the tackle", the outside foot in the ground, under his pads
+ * (viqtorysports, pass rush moves); the end keys the tackle's pass set and rushes with the QB on his inside shoulder
+ * (gridironstrategies, defensive end reads in a forty front). Off, from the snap the power plan ran straight at its
+ * pursuit point on the QB, so a strong-side end aligned outside an attached end ran his line through that end's release:
+ * staged double_outs, all 96 hits on an attached end were DE_S on the power plan (96 of 96 power reps, 0 of 96 speed;
+ * scripts/diag/pass-operators/attached-rusher-plan.mts). On his own picture: before any lineman has shown him a set he
+ * takes his lane's first step (the finesse plan's lane point); the man he aims at is the nearest offensive lineman he
+ * sees in front of him on his way to the QB, inside 4 yd and within a body of his line to the QB, who is setting (seen
+ * moving back off the line) or already within 1.5 yd. He keeps that man until he has beaten him (he is level with him on
+ * the way to the QB) or loses him from his way; a beaten or never-declared rush (past the line, nobody setting to him)
+ * goes at the QB as before. A man who is not a lineman (a releasing end, a back) is never his mark: if one crosses his
+ * line, the contact is the world's. */
+const POWER_AIM = process.env.POWER_AIM === '1';
+/** POWER_AIM: how far ahead of a set lineman's seen position he aims (s of the man's seen motion), and the windows. */
+const POWER_LEAD = 0.3, POWER_REACH = 4, POWER_NEAR = 1.5, POWER_SET = 0.3;
+
 export class PassRusher implements Behavior {
+  /** POWER_AIM: the lineman he is rushing down the middle of, and whether he has beaten his man (then the QB). */
+  private powerMan: Agent | null = null;
+  private powerFree = false;
   readonly kind = 'rush';
   private readonly getOff: number;
   /** STANCE_TELL: he picked up his key's pre-snap lean (his recognition). */
@@ -372,7 +422,7 @@ export class PassRusher implements Behavior {
   /** The end of the line an edge keyed: he keeps reading that man. A down
    * block steps away from him, and that step is the cue, not a reason to
    * lose his key. */
-  private keyed: Agent | null = null;
+  keyed: Agent | null = null;
   /** Pre-snap rush plan from his tools. */
   readonly plan: 'power' | 'finesse' | 'speed';
   /** DL_GAMES: a called angle/slant/pinch moved his gap; until this clock he
@@ -483,6 +533,18 @@ export class PassRusher implements Behavior {
     // set stands up and gives ground and leaves the rush as it is. His own picture of the blocker; what
     // the blocker means to do is not his to know, so a play-action line fools him.
     const onEdge = this.gap === 'C' || this.gap === 'D';
+    // END_KEY bit 2: the surface man he keyed released (no blocking stance in his picture): his eyes go on through the
+    // triangle to the next part of it, the tackle inside (Gridiron Strategies: "once you read release, look for the next
+    // part of triangle"; the release itself is not a pass read).
+    if (END_KEY_THROUGH && onEdge && this.keyed && !OL_SLOTS_SET.has(this.keyed.slot) && sim.see(a, this.keyed).stance == null) {
+      let best: Agent | null = null, bd = Infinity;
+      for (const o of sim.offense) {
+        if (!OL_SLOTS_SET.has(o.slot)) continue;
+        const dy = Math.abs(sim.see(a, o).pos.y - a.pos.y);
+        if (dy < bd) { bd = dy; best = o; }
+      }
+      if (best) { this.keyed = best; a.tags.add('key-through'); }
+    }
     const man = a.pos.x > sim.los - 0.5 ? manInFront(sim, a, onEdge ? Infinity : 1.5, onEdge ? this.keyed : null) : null;
     if (onEdge && man) this.keyed = man.agent;
     watch(sim, a, man?.agent);
@@ -572,10 +634,20 @@ export class PassRusher implements Behavior {
       // An edge lines up outside his key: he steps from where he stands, never
       // onto the key's spot (that is inside him).
       const fromY = reachOut ? (side * (a.pos.y - man!.pos.y) > 0 ? a.pos.y : man!.pos.y) : man!.pos.y;
-      const at = KEY_DEPTH ? { x: a.pos.x + up * h, y: fromY + side * step * h } : { x: man!.pos.x + man!.vel.x * h, y: fromY + side * step * h };
+      let at = KEY_DEPTH ? { x: a.pos.x + up * h, y: fromY + side * step * h } : { x: man!.pos.x + man!.vel.x * h, y: fromY + side * step * h };
+      let latVel = side * step;
+      // EDGE_SET: set the edge on the blocker's outside shoulder, widening with him and no faster.
+      if (EDGE_SET && reachOut) {
+        const shoulder = man!.pos.y + side * man!.agent.profile.radius + man!.vel.y * h;
+        // Outside the shoulder he works back to it at the blocker's speed; caught inside (the reach has gained the
+        // edge) he keeps fighting to the same shoulder rather than giving up the outside.
+        at = { x: at.x, y: shoulder };
+        latVel = man!.vel.y;
+        a.tags.add(side * (a.pos.y - shoulder) < 0 ? 'edge-set-in' : 'edge-set');
+      }
       a.tags.add('key-step');
       if (KEY_REACT) a.keyStep = { from: man!.agent, side };
-      return track(a, at, { x: KEY_DEPTH ? up : 0, y: side * step }, { speed: 1, gain: 3, facing: Math.PI });
+      return track(a, at, { x: KEY_DEPTH ? up : 0, y: latVel }, { speed: 1, gain: 3, facing: Math.PI });
     }
     // Rush lane by plan: power rushers go through the blocker's chest at the
     // QB; finesse rushers attack a shoulder through their gap; speed rushers
@@ -586,6 +658,17 @@ export class PassRusher implements Behavior {
     const edge = this.laneGap === 'C' || this.laneGap === 'D';
     const bend = 0.8 + 0.45 * traits(a).bend;
     if (this.plan === 'power') {
+      if (POWER_AIM && !this.powerFree) {
+        const mark = this.powerMark(a, sim, qbSeen);
+        if (mark) { a.tags.add('power-aim'); return runThrough(a, mark, { speed: 1 }); }
+        // Nobody has shown him a set yet: his lane's first step, as a finesse rush takes it.
+        if (a.pos.x > sim.los - 0.5) {
+          const lane = edge ? { x: sim.los - 1.6, y: gy + this.gapSign * 1.0 } : { x: sim.los - 0.6, y: gy };
+          a.tags.add('power-lane');
+          return runThrough(a, lane, { speed: 1, cutSkill: bend });
+        }
+        this.powerFree = true;
+      }
       const p = pursuitPoint(sim, a, qb, 1.5);
       return runThrough(a, p, { speed: 1 });
     }
@@ -613,6 +696,38 @@ export class PassRusher implements Behavior {
     }
     const p = pursuitPoint(sim, a, qb, 1.5);
     return runThrough(a, p, { speed: 1, cutSkill: bend });
+  }
+
+  /** POWER_AIM: the middle of the lineman setting to him, as he sees him (null: nobody, or he has beaten him). */
+  private powerMark(a: Agent, sim: PlaySim, qbSeen: Vec2): Vec2 | null {
+    const tq = { x: qbSeen.x - a.pos.x, y: qbSeen.y - a.pos.y }, lq = Math.hypot(tq.x, tq.y);
+    if (lq < 0.5) return null;
+    const u = { x: tq.x / lq, y: tq.y / lq }, back = -sim.attackDir(sim.offense[0].team);
+    const inWay = (o: Agent) => {
+      const s = sim.see(a, o), rx = s.pos.x - a.pos.x, ry = s.pos.y - a.pos.y;
+      const along = rx * u.x + ry * u.y, off = Math.abs(rx * u.y - ry * u.x);
+      return { s, along, off, dist: Math.hypot(rx, ry), body: a.profile.radius + o.profile.radius + 0.3 };
+    };
+    if (this.powerMan) {
+      const w = inWay(this.powerMan);
+      // Level with him on the way to the QB (beaten), or he has left the way: the rush goes on at the QB.
+      if (w.along <= 0.2) { this.powerMan = null; this.powerFree = true; return null; }
+      if (w.off > w.body + 0.5 || w.dist > POWER_REACH + 1) this.powerMan = null;
+      else return { x: w.s.pos.x + w.s.vel.x * POWER_LEAD, y: w.s.pos.y + w.s.vel.y * POWER_LEAD };
+    }
+    let best: { o: Agent; d: number } | null = null;
+    for (const o of sim.offense) {
+      if (!isOL(o) || o.isDown(sim.t)) continue;
+      const w = inWay(o);
+      if (w.along <= 0.2 || w.dist > POWER_REACH || w.off > w.body) continue;
+      const setting = w.s.vel.x * back > POWER_SET;
+      if (!setting && w.dist > POWER_NEAR) continue;
+      if (!best || w.dist < best.d) best = { o, d: w.dist };
+    }
+    if (!best) return null;
+    this.powerMan = best.o;
+    const s = sim.see(a, best.o).pos, v = sim.see(a, best.o).vel;
+    return { x: s.x + v.x * POWER_LEAD, y: s.y + v.y * POWER_LEAD };
   }
 }
 
@@ -925,6 +1040,28 @@ function carryFacing(a: Agent, r: Agent, qb: Vec2, receiver: Vec2, heading: numb
  * carry takes over as before. The quick game's flat-footed read is the existing release belief and ball cue, not a
  * timer. Quarters corners (taught differently: off #1, eyes inside, in a pedal) and man calls are out of scope. */
 export const CORNER_DROP = process.env.CORNER_DROP !== '0';
+
+/** OFF_PEDAL (experimental, numeric bitmask, default 0; docs/reviews/2026-11-16-off-pedal.md): a repair of the
+ * existing off-man pedal (ManCoverage; off-man corners in man calls, the quarters MOD corner, match carriers in zone
+ * calls). Traced (pedal-trace.mts, engine-71): the corner's sight of #1's stem lags the true stem by his perception
+ * delay (~0.3 s), honestly; but his request ran 0.32 yd/s below the seen stem and forward before it (the `a.pos.x - 0.2`
+ * floor pulled him upfield), and on his release read CUSHION_NEED's close became a forward lunge at a climbing receiver
+ * (off-man request -3.9 yd/s at 0.9 s, stem seen at 1.7 upfield). Bit 1: the pre-release floor is his own spot (he
+ * holds; his pedal matches the seen stem), and until the shared stem-stop read says his stem has stopped (coverage-
+ * leverage `stemStopped`: CARRY_READ's projection 0.5 s ahead from his own delayed samples, stop below 1, out above 3)
+ * the target is no nearer the line than he is: excess cushion is spent by pedalling slower than the stem, not
+ * by coming forward. When the stem stops he spends it as before (the break on the hitch). Press and the Cover-3 corner
+ * under CORNER_DROP are unchanged. No pace of his own: the read-step question (moving before the stem reaches his
+ * picture) is left open. */
+const OFF_PEDAL_BITS = Number(process.env.OFF_PEDAL ?? 0);
+export const OFF_PEDAL = (OFF_PEDAL_BITS & 1) !== 0;
+/** OFF_PEDAL bit 2 (settle on the stop): when the stem-stop read says his receiver has stopped, the off-man corner stops
+ * gaining depth gradually, never coming forward before he has seen the throw: his target stays no nearer the line than
+ * he is, so he decelerates out of his pedal on his own body's braking; his drive comes on the ball (playBall on his own
+ * recognition of the throw). Taught: settle on the stop, eyes to the quarterback, drive on the ball; it is what protects
+ * him from the double move. NFL (quarters_cb.py "#1 stops", stops before pass_forward): the corner gains +0.5 yd in the
+ * 0.5 s after #1 stops (+0.9 inside 5 yd); ours drove -0.6. */
+export const OFF_PEDAL_SETTLE = (OFF_PEDAL_BITS & 2) !== 0;
 function cornerDropSeat(a: Agent, zone: string | undefined): boolean {
   return !!zone && a.slot.startsWith('CB') && zone.startsWith('deep_third_');
 }
@@ -1166,6 +1303,9 @@ export class ManCoverage implements Behavior {
   /** CARRY_TURN: the receiver he has turned fully on (a seen event), kept until both cues clear. */
   private carryTurn: { full: Agent | null } = { full: null };
   private releaseObserved = false;
+  /** OFF_PEDAL: the stem-stop read (coverage-leverage `stemStopped`) on his own delayed sight of the stem. */
+  private readonly stemAccel = new StemAcceleration();
+  private stemStop = false;
   private routeRead = false;
   private stemHeading: number | null = null;
   private stableSince = 0;
@@ -1322,6 +1462,7 @@ export class ManCoverage implements Behavior {
     const seen = this.observation.read(acquired, sim.t, R.profile, a.profile.reactionTime,
       a.r('anticipation') * a.r('manCoverage') * a.mind.focus);
     if (Math.hypot(seen.vel.x, seen.vel.y) > 1.5) this.releaseObserved = true;
+    if (OFF_PEDAL) this.stemAccel.observe(acquired, R.profile, sim.t);
     const inside = Math.sign(sim.ballY - seen.pos.y) || 1;
     const o = this.opts;
     // PRESS_MIRROR: in press, while the receiver is still releasing at the
@@ -1397,7 +1538,15 @@ export class ManCoverage implements Behavior {
       const held = CUSHION_NEED && this.releaseObserved ? Math.min(cushion, need) : cushion;
       if (held < cushion) a.tags.add('cushion-need');
       tx = this.releaseObserved
-        ? seen.pos.x + held : Math.max(seen.pos.x + cushion, a.pos.x - 0.2);
+        ? seen.pos.x + held : Math.max(seen.pos.x + cushion, OFF_PEDAL && !this.press ? a.pos.x : a.pos.x - 0.2);
+      // OFF_PEDAL: while the stem has not stopped in his picture (the shared stem-stop read) he spends
+      // excess cushion by pedalling slower than the stem, never by coming forward at a climbing receiver: the target
+      // is no nearer the line than he is. Before, CUSHION_NEED's close turned into a forward lunge on his release read
+      // (off-man request -3.9 yd/s at 0.9 s with the stem seen at 1.7 upfield; pedal-trace.mts).
+      if (OFF_PEDAL && !this.press && this.releaseObserved) {
+        this.stemStop = stemStopped(vx, this.stemAccel.value, this.stemStop);
+        if (!this.stemStop || OFF_PEDAL_SETTLE) tx = Math.max(tx, a.pos.x);
+      }
     }
     // Over the top: a deep carrier keeps a cushion on the vertical; trail: a
     // low-hip under defender sits behind his hip with help over the top.
@@ -1574,6 +1723,41 @@ export class ZoneCoverage implements Behavior {
   /** ZONE_HOLD bit 1: receivers held in his threat set, and those held as verticals (deep zones). */
   private bandHeld = new Set<Agent>();
   private vertHeld = new Set<Agent>();
+  /** ZONE_HOLD bit 32: his held lean point on the QB's seen head line (null until he has seen the head). */
+  private leanAt: Vec2 | null = null;
+  /** ZONE_HOLD bit 64: the direction he was moving at the hand-off (null when none is binding), and last tick's technique. */
+  private handoffDir: Vec2 | null = null;
+  private lastLabel = '';
+  private fromMotion(a: Agent, t: Vec2, settleSite = false): Vec2 {
+    if (!ZONE_HOLD_HANDOFF) return t;
+    if (!this.handoffDir && (CARRY_LABEL.test(this.lastLabel) || (settleSite && this.lastLabel.startsWith('lane')))) {
+      const s = Math.hypot(a.vel.x, a.vel.y);
+      if (s > 0.3) this.handoffDir = { x: a.vel.x / s, y: a.vel.y / s };
+    }
+    const u = this.handoffDir;
+    if (!u) return t;
+    const along = a.vel.x * u.x + a.vel.y * u.y;
+    if (along <= 0) { this.handoffDir = null; return t; }
+    const stop = (along * along) / (2 * a.profile.brake * 0.8);
+    const ta = (t.x - a.pos.x) * u.x + (t.y - a.pos.y) * u.y;
+    return ta >= stop ? t : { x: t.x + u.x * (stop - ta), y: t.y + u.y * (stop - ta) };
+  }
+  /** ZONE_HOLD bit 32: the point on the QB's seen head line at his landmark's distance from the QB, held on a leash. */
+  private headLean(a: Agent, sim: PlaySim, lm: Vec2): Vec2 | null {
+    const q = sim.see(a, sim.qb);
+    const toQB = Math.atan2(q.pos.y - a.pos.y, q.pos.x - a.pos.x);
+    const look = q.head ?? q.facing;
+    if (look !== undefined && look !== null && Math.cos(a.body.facing - toQB) > Math.cos(100 * Math.PI / 180)) {
+      const r = Math.hypot(lm.x - q.pos.x, lm.y - q.pos.y);
+      const p = { x: q.pos.x + r * Math.cos(look), y: clamp(q.pos.y + r * Math.sin(look), 0.5, FIELD_WIDTH - 0.5) };
+      if (!this.leanAt) this.leanAt = p;
+      else {
+        const dx = p.x - this.leanAt.x, dy = p.y - this.leanAt.y, d = Math.hypot(dx, dy);
+        if (d > ZONE_HOLD_LEAN_ROPE) this.leanAt = { x: p.x - (dx / d) * ZONE_HOLD_LEAN_ROPE, y: p.y - (dy / d) * ZONE_HOLD_LEAN_ROPE };
+      }
+    }
+    return this.leanAt;
+  }
   private shortOfDepth(a: Agent): boolean {
     if (!SETTLE_DEPTH) return false;
     const short = this.landmark.x - a.pos.x;
@@ -1633,6 +1817,15 @@ export class ZoneCoverage implements Behavior {
   }
 
   update(a: Agent, sim: PlaySim): MoveCommand {
+    const cmd = this.updateCore(a, sim);
+    if (ZONE_HOLD_HANDOFF) {
+      this.lastLabel = facingTechnique(cmd)?.label ?? '';
+      if (CARRY_LABEL.test(this.lastLabel)) this.handoffDir = null;
+    }
+    return cmd;
+  }
+
+  private updateCore(a: Agent, sim: PlaySim): MoveCommand {
     const live = pursueIfLive(sim, a);
     if (live) return live;
     // Until he sees the throw, a zone defender keeps playing his zone.
@@ -2006,7 +2199,7 @@ export class ZoneCoverage implements Behavior {
         // CURL_SINK: he sinks to his curl window (its landmark depth) as he widens; off, the shallower of the window and
         // where he stands, which held a curl-flat defender at his alignment depth when the back showed before he dropped.
         const tgt = { x: CURL_SINK ? lm.x : Math.max(sim.los + 2, Math.min(lm.x, a.pos.x)), y: clamp(lm.y + (flat.fut.y - lm.y) * cheat, 0.5, FIELD_WIDTH - 0.5) };
-        return withFacingTechnique(goTo(a, settle(tgt), { facing: facingQB, speed: zs }), { label: 'curl-flat-widen', key: flat.vel });
+        return withFacingTechnique(goTo(a, this.fromMotion(a, settle(tgt)), { facing: facingQB, speed: zs }), { label: 'curl-flat-widen', key: flat.vel });
       }
     }
     let best: (typeof threats)[number] | null = null;
@@ -2064,8 +2257,11 @@ export class ZoneCoverage implements Behavior {
     this.selectTarget(a, best?.r ?? null);
     if (!best) {
       let tgt = lm;
-      if (qbEyes) tgt = lerp(lm, infoHonest(8) ? sim.see(a, qbEyes).pos : qbEyes.pos, 0.25 * a.r('anticipation'));
-      return withFacingTechnique(goTo(a, settle(tgt), { facing: facingQB, speed: zs }), { label: this.settledAt >= 0 ? 'zone-settle' : 'zone-landmark' });
+      if (ZONE_HOLD_LEAN) {
+        const lean = this.headLean(a, sim, lm);
+        if (lean) tgt = lerp(lm, lean, 0.25 * a.r('anticipation'));
+      } else if (qbEyes) tgt = lerp(lm, infoHonest(8) ? sim.see(a, qbEyes).pos : qbEyes.pos, 0.25 * a.r('anticipation'));
+      return withFacingTechnique(goTo(a, this.fromMotion(a, settle(tgt), true), { facing: facingQB, speed: zs }), { label: this.settledAt >= 0 ? 'zone-settle' : 'zone-landmark' });
     }
     const lane = lerp(qbAt, best.pos, 0.82);
     let tgt = { x: Math.min(lane.x, best.pos.x - 0.5), y: lane.y };
@@ -2094,6 +2290,7 @@ export class ZoneCoverage implements Behavior {
     if (holdFlat) tgt = { ...tgt, x: Math.max(tgt.x, Math.min(a.pos.x, lm.x)) };
     const settledLane = this.settledAt >= 0 && !carryingAcross;
     if (settledLane) tgt = settle(tgt);
+    tgt = this.fromMotion(a, tgt);
     const laneReq = track(a, { x: tgt.x, y: clamp(tgt.y, 0.5, FIELD_WIDTH - 0.5) }, { x: stemRead || holdFlat ? 0 : settledLane ? Math.min(0, best.vel.x * 0.5) : best.vel.x * 0.5, y: best.vel.y * 0.8 }, {
       facing: carryingAcross ? Math.atan2(best.vel.y, best.vel.x) : facingQB, speed: carryingAcross ? 1 : zs * 1.05, gain: 1.6 });
     // OPEN_CARRY: carry the crosser as square to the QB as the run allows.
