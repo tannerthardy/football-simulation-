@@ -1,0 +1,24 @@
+diff --git a/src/physics/world.ts b/src/physics/world.ts
+index bc9eeda5..00c6779f 100644
+--- a/src/physics/world.ts
++++ b/src/physics/world.ts
+@@ -3022,6 +3022,19 @@ export class World {
+         // stiffness k = strength / ARM_GIVE, as this row's own softness (frequency sqrt(k / its effective mass)). Two arms
+         // on one gap then share the load by how far each is deflected from its own length; nothing pushes unless
+         // something compresses it. (Attempt 1 took the torso's previous-step normal off the push limit instead.)
++        // DIAG (probe only, never committed): (2) the press bounded by the moment it puts on his trunk, F x reach x
++        // sin(angle off his chest) <= armForce x CHEST_HALF (the shoulders' hold already in the model); (3) the arm's
++        // yield, PAIR_HANDS' spring alone (stiffness strength / ARM_GIVE).
++        if (process.env.DIAG_PRESS_EXT === '1' && jt.push > 0) {
++          const ow = jt.a, tg = jt.b, ex = tg.pos.x - ow.pos.x, ey = tg.pos.y - ow.pos.y, L = Math.max(0.05, Math.hypot(ex, ey) - tg.profile.radius);
++          const sinT = Math.abs(Math.sin(Math.atan2(ey, ex) - ow.facing)), arm = this.sp[this.indexOf(ow)].armForce;
++          const fmax = sinT > 1e-3 ? arm * CHEST_HALF / (L * sinT) : Infinity;
++          row.pushLim = Math.min(row.pushLim, fmax * h * scale);
++        }
++        if (process.env.DIAG_ARM_YIELD === '1' && !PAIR_HANDS_W && jt.push > 0 && row.mn > 0) {
++          const k = Math.max(0, jt.push) * scale / ARM_GIVE;
++          row.soft = softness(Math.sqrt(k / row.mn) / (2 * Math.PI), HANDS_ZETA, h);
++        }
+         if (PAIR_HANDS_W && jt.push > 0 && row.mn > 0) {
+           const k = Math.max(0, jt.push) * scale / ARM_GIVE;
+           row.soft = softness(Math.sqrt(k / row.mn) / (2 * Math.PI), HANDS_ZETA, h);
