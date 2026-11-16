@@ -55,6 +55,10 @@ const ROUTE_TABLE: Record<string, RouteDef> = {
     ] } },
   // Quick game
   hitch: { id: 'hitch', family: 'quick', depth: 5, end: 'settle', points: [{ d: 6, l: 0, s: 0.2 }, { d: 5, l: 0.3, s: 0 }] },
+  // QUICK_HITCH (concepts.ts): the quick game's hitch, planted at 5 yd ("every receiver is running a 5-yard hitch", the
+  // quick game off a three-step, one step from the gun for "any route that breaks at 5 yards or under", Viqtory Sports);
+  // the five-step hitch above stays at 6 (Throw Deep, Smash: "settle hitch route at 6 yards"). Same shape, a yard shallower.
+  quick_hitch: { id: 'quick_hitch', family: 'quick', depth: 4, end: 'settle', points: [{ d: 5, l: 0, s: 0.2 }, { d: 4.5, l: 0.3, s: 0 }] },
   // Three-step slant: break at 45°, then flatten across the field if not thrown.
   slant: { id: 'slant', family: 'quick', depth: 6, end: 'continue', points: [{ d: 2, l: 0, s: 0.75 }, { d: 6.5, l: -4.5 }, { d: 8.5, l: -12 }] },
   quick_out: { id: 'quick_out', family: 'quick', depth: 5, end: 'continue', points: [{ d: 5, l: 0, s: 0.4 }, { d: 5, l: 9, s: 0.9 }] },
@@ -198,7 +202,7 @@ const SHAPED: Record<string, RouteDef> = ROUTE_SHAPE
 const BREAKS: Record<string, ReadonlyArray<{ cut?: boolean; s?: number } | null>> = {
   slant: [{ cut: true, s: 0.35 }],
   out: [{ cut: true, s: 0.4 }], deep_out: [{ cut: true, s: 0.4 }], dig: [{ cut: true, s: 0.4 }], short_in: [{ cut: true, s: 0.4 }],
-  hitch: [{ cut: true }], curl: [{ cut: true }], comeback: [{ cut: true }], stick: [{ cut: true }], hook: [{ cut: true }],
+  hitch: [{ cut: true }], quick_hitch: [{ cut: true }], curl: [{ cut: true }], comeback: [{ cut: true }], stick: [{ cut: true }], hook: [{ cut: true }],
   corner: [{ s: 1 }, { s: 1 }], post: [{ s: 1 }],
   shallow: [{ s: 1 }], shallow_high: [{ s: 1 }], cross: [{ s: 1 }, { s: 1 }],
 };
