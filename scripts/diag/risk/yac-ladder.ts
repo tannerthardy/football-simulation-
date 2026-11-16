@@ -18,11 +18,14 @@ P.event = function (type: string, a?: any, b?: any, note?: string) {
   if (this.offCall?.kind !== 'pass') return r;
   const S = (this.__yl ??= {});
   if (type === 'catch' && a && a.team === 'O' && S.catchT === undefined) {
-    S.catchT = this.t; S.carrier = a; S.catchX = a.pos.x; S.dir = this.attackDir(a.team);
-    S.near = this.defense.filter((d: any) => Math.hypot(d.pos.x - a.pos.x, d.pos.y - a.pos.y) <= 6)
+    S.catchT = this.t; S.carrier = a; S.catchX = a.pos.x; S.catchY = a.pos.y; S.dir = this.attackDir(a.team);
+    S.near = this.defense.filter((d: any) => Math.hypot(d.pos.x - a.pos.x, d.pos.y - a.pos.y) <= Number(process.env.LADDER_R ?? 6))
       .map((d: any) => { const dx = a.pos.x - d.pos.x, dy = a.pos.y - d.pos.y, l = Math.hypot(dx, dy) || 1;
         return { d, dist: l, closing: (d.vel.x * dx + d.vel.y * dy) / l, role: d.behavior?.kind ?? '?', at: { x: d.pos.x, y: d.pos.y } }; });
-  } else if (S.catchT !== undefined && S.contact === undefined && ['hit', 'tackle', 'missed_tackle', 'tackled'].includes(type)) S.contact = this.t - S.catchT;
+  } else if (S.catchT !== undefined && ['hit', 'tackle', 'missed_tackle', 'tackled'].includes(type)) {
+    if (S.contact === undefined) { S.contact = this.t - S.catchT; S.contactYd = Math.hypot(S.carrier.pos.x - S.catchX, S.carrier.pos.y - S.catchY); }
+    if (type === 'missed_tackle') S.missed = (S.missed ?? 0) + 1;
+  }
   return r;
 };
 P.tick = function () {
@@ -41,8 +44,10 @@ P.tick = function () {
       if (n.seen === undefined) { const h = observedHolder(d, this); if (h && h.target === c) n.seen = this.t; }
       if (n.start === undefined) {
         const dx = c.pos.x - d.pos.x, dy = c.pos.y - d.pos.y, l = Math.hypot(dx, dy) || 1;
-        if ((d.vel.x * dx + d.vel.y * dy) / l >= 1.5) n.start = this.t;
+        const sp = Math.hypot(d.vel.x, d.vel.y);
+        if (sp >= 3 && (d.vel.x * dx + d.vel.y * dy) / (l * sp) >= Math.cos(Math.PI / 4)) n.start = this.t;
       }
+      if (n.tags === undefined && this.t - S.catchT >= 0.5) n.tags = [...(d.tags ?? [])].filter((x: string) => !/^(looking)$/.test(x)).slice(-4).join(',') + '|' + (d.behavior?.kind ?? '?');
     }
   }
   return r;
@@ -50,10 +55,10 @@ P.tick = function () {
 P.buildResult = function () {
   const res = b0.call(this), S = this.__yl;
   if (S?.catchT !== undefined && this.stats?.completed && S.relT !== undefined) {
-    rows.push({ yac: (res.yards ?? 0) - (S.catchX - this.los) * S.dir, contact: S.contact });
+    rows.push({ yac: (res.yards ?? 0) - (S.catchX - this.los) * S.dir, contact: S.contact, contactYd: S.contactYd, missed: S.missed ?? 0 });
     for (const n of S.near) {
       const rb = releaseBelief(this, n.d), rel = (t: number | undefined) => (t === undefined ? undefined : t - S.relT);
-      defs.push({ yac: rows[rows.length - 1].yac, closing: n.closing, role: n.role, dist: n.dist, load: rel(rb.loadingAt), released: rel(rb.releasedAt), src: rb.source, ball: rel(rb.ballAt),
+      defs.push({ tags: n.tags, yac: rows[rows.length - 1].yac, closing: n.closing, role: n.role, dist: n.dist, load: rel(rb.loadingAt), released: rel(rb.releasedAt), src: rb.source, ball: rel(rb.ballAt),
         sample: rel(S.sample?.get(n.d.idx)), seen: rel(n.seen), start: rel(n.start), catch: S.catchT - S.relT });
     }
   }
@@ -78,3 +83,6 @@ for (const [name, f] of [['sampled the ball', (d: any) => d.sample !== undefined
 }
 const roles = new Map<string, any[]>(); for (const d of defs) { if (!roles.has(d.role)) roles.set(d.role, []); roles.get(d.role)!.push(d); }
 for (const [r, V] of [...roles].sort((a, b) => b[1].length - a[1].length).slice(0, 6)) console.log(`   role ${r}: n ${V.length} sampled ${V.filter((d: any) => d.sample !== undefined).length} | dist ${q(V.map((d: any) => d.dist))} closing ${q(V.map((d: any) => d.closing))}`);
+const tg = new Map<string, number>(); for (const d of defs) tg.set(d.tags ?? '-', (tg.get(d.tags ?? '-') ?? 0) + 1);
+console.log('   tags 0.5 s after the catch (top 8): ' + [...tg].sort((a, b) => b[1] - a[1]).slice(0, 8).map(([k, v]) => `${k} ${v}`).join(' ; '));
+console.log(`   first contact ${q(rows.map(r => r.contactYd))} yd from the catch spot | missed tackles ${rows.reduce((a, r) => a + r.missed, 0)} on ${rows.length} catches (${(rows.reduce((a, r) => a + r.missed, 0) / Math.max(1, rows.length)).toFixed(3)} a catch)`);
