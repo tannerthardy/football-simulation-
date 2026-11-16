@@ -139,7 +139,7 @@ const SETTLE_SHIELD = 1.5, SETTLE_WINDOW = 3;
  * behind his hips. The cue is his own route and break, which he knows. A declared clear-out is not looking for the ball,
  * but every declared clear-out (compile.ts CLEAR_OUTS) is a go (`seenOpen`), so none is affected; a concept that declares
  * a corner or post as a clear-out should be read from the installed plan here. */
-const BREAK_LOOK = process.env.BREAK_LOOK === '1';
+const BREAK_LOOK = process.env.BREAK_LOOK !== '0';
 /** CRAFT_HOLD (experimental, off; with ROUTE_CRAFT): the craft commits to the side it chose round a man in his lane and
  * keeps it until he is clear. Off, the side and the block are recomputed on each tick's picture, and the side comes from
  * a break side re-derived each tick from his velocity, so a wing pressed against an end flips his request +-7 yd/s across
