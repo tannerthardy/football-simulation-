@@ -710,3 +710,12 @@ yd 7.12 / 6.08 / 7.32 / 7.46; median throw 3.05 / 3.30 / 3.10 / 3.40 s (NFL gun 
 read 1 (the deep out) is not ready at the 2.5 s plant (9.2 yd, before its break; priced 0.67 against his 0.52 bar):
 the plan's PA rhythm and the routes are timed for the old 0.7 s fake. The pair needs the plan compiled on the honest
 fake (Rules: read 1 the window the fake makes, on the plant step) and the key cued on the plant; not carded until then.
+
+Correction (Rules, same day; Bleacher Report, "Football 101: the art of the play action": after the fake he should
+"pull the ball out from the ball-carrier and snap his head around to identify his first read"; with it not there he
+"operates as if it is a passing play"). The plant is when read 1 is *decided* (on a keyed concept, the deep man's
+read), not when it must be *thrown*: the post or dig is ready on the hitch after (pa_post_dig 2.8-2.95 s, pa_shot
+2.7-2.8, pa_flood 2.8-3.0, against a plant at 1.7 / 2.1 s). The first build's "not ready at the plant, on to read 2"
+is wrong and is to be replaced: decide on the plant (the key cued on the plant), throw read 1 on its ready, else the
+order as compiled. Plan data proposed to Rules: `decided: 'plant'` on read 1 of the PA concepts, the key's cueBy at the
+plant (plannedFakeEnd plus the drop). Waiting for Integration's go.
