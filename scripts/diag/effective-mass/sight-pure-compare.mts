@@ -12,3 +12,5 @@ for (const [i, p] of (JSON.parse(readFileSync(file, 'utf8')) as any[]).entries()
     console.log(JSON.stringify({ id: `${tag}-${i}`, outcome: r.outcome, yards: +r.yards.toFixed(3), pass: !!r.pass, hash: createHash('md5').update(JSON.stringify(sim.agents.map((a: any) => [+a.pos.x.toFixed(3), +a.pos.y.toFixed(3)]))).digest('hex').slice(0, 8) }));
   } catch (e: any) { console.log(JSON.stringify({ id: `${tag}-${i}`, error: String(e?.message ?? e).slice(0, 80) })); }
 }
+
+if ((globalThis as any).__sightOracle) console.error('ORACLE ' + JSON.stringify((globalThis as any).__sightOracle));

@@ -68,3 +68,35 @@ export function lineOfSight(bodies: readonly Agent[], observer: Agent, target: A
   }
   return true;
 }
+
+/** One tick's bodies for many line tests (SIGHT_PURE's per-tick history, which tests every pair every tick): each body's position, radius and the three heights he had at that
+ * tick, taken once, so a pair costs a loop over the others and no allocation. `clear(i, j)` answers what `lineOfSight` answers for the same bodies, positions and recorded poses
+ * (test/sight.test.ts holds the two together). */
+export class SightFrame {
+  readonly x: Float64Array; readonly y: Float64Array; readonly radius: Float64Array;
+  readonly eye: Float64Array; readonly shoulder: Float64Array; readonly top: Float64Array;
+  constructor(readonly n: number) {
+    this.x = new Float64Array(n); this.y = new Float64Array(n); this.radius = new Float64Array(n);
+    this.eye = new Float64Array(n); this.shoulder = new Float64Array(n); this.top = new Float64Array(n);
+  }
+  set(i: number, a: Agent, x: number, y: number, pose: PoseAt | null): void {
+    this.x[i] = x; this.y[i] = y; this.radius[i] = a.profile.radius;
+    this.eye[i] = bodyHeight(a, EYE, pose); this.shoulder[i] = bodyHeight(a, SHOULDER, pose); this.top[i] = bodyHeight(a, 1, pose);
+  }
+  clear(io: number, it: number): boolean {
+    const ox = this.x[io]!, oy = this.y[io]!, sx = this.x[it]! - ox, sy = this.y[it]! - oy, l2 = sx * sx + sy * sy;
+    if (l2 < 1e-9) return true;
+    const eye = this.eye[io]!, h = this.eye[it]!, L = Math.sqrt(l2);
+    for (let b = 0; b < this.n; b++) {
+      if (b === io || b === it) continue;
+      const bx = this.x[b]!, by = this.y[b]!, u = ((bx - ox) * sx + (by - oy) * sy) / l2;
+      if (u <= 0 || u >= 1) continue;
+      const px = ox + sx * u - bx, py = oy + sy * u - by, d = Math.hypot(px, py), r = this.radius[b]!;
+      if (L * Math.min(u, 1 - u) < r) continue;
+      const line = eye + (h - eye) * u;
+      if (d < r && line < this.shoulder[b]!) return false;
+      if (d < HEAD_RADIUS && line < this.top[b]!) return false;
+    }
+    return true;
+  }
+}

@@ -8,7 +8,7 @@ import { shouldersOf } from '../physics/kinematics.js';
  */
 import { RELEASE_BELIEF, releaseBelief } from './release-belief.js';
 import { recordContact } from './seen-contact.js';
-import { lineOfSight, SIGHT_PURE } from './sight.js';
+import { lineOfSight, SIGHT_PURE, SightFrame } from './sight.js';
 import { HEAD, inHeadCone, neckRange, stepHeads } from './head.js';
 import { FIELD_WIDTH, OPP_GOAL_X, OWN_GOAL_X } from '../core/field.js';
 import { Rng } from '../core/rng.js';
@@ -932,26 +932,28 @@ export class PlaySim {
     this.perception.record(this.agents, this.carrier?.idx ?? null);
     if (SIGHT_PURE) this.recordSightHistory();
   }
-  private sightHist = new Map<string, { target: number; ticks: number[]; older?: { pic: Perceived; stamp: number } }>();
+  private sightHist = new Map<number, { target: number; ticks: number[]; older?: { pic: Perceived; stamp: number } }>();
+  private sightFrame?: SightFrame;
   private recordSightHistory(): void {
-    const stamp = this.perception.stamp - 1, dt = this.dt, agents = this.agents;
-    const rec = (a: Agent) => this.perception.recorded(a.idx, 0)?.pos ?? null;
-    const pose = (b: Agent) => this.perception.recorded(b.idx, 0)?.pose ?? null;
-    for (const o of agents) {
-      const ro = this.perception.recorded(o.idx, 0);
+    const stamp = this.perception.stamp - 1, dt = this.dt, agents = this.agents, n = agents.length;
+    const frame = (this.sightFrame ??= new SightFrame(n));
+    const recs = agents.map((a) => this.perception.recorded(a.idx, 0));
+    const heads = HEAD ? agents.map((a) => this.perception.perceive(a.idx, 0).head) : null;
+    for (let i = 0; i < n; i++) { const r = recs[i]; if (r) frame.set(i, agents[i]!, r.pos.x, r.pos.y, r.pose); }
+    for (let io = 0; io < n; io++) {
+      const o = agents[io]!, ro = recs[io];
       if (!ro) continue;
-      const rh = HEAD ? this.perception.perceive(o.idx, 0).head : null;
-      for (const t of agents) {
-        if (o === t) continue;
-        const rt = this.perception.recorded(t.idx, 0);
-        if (!rt || !lineOfSight(agents, o, t, undefined, rec, pose)) continue;
+      const rh = heads ? heads[io] : null;
+      for (let it = 0; it < n; it++) {
+        const rt = recs[it];
+        if (io === it || !rt || !frame.clear(io, it)) continue;
         const brg = Math.atan2(rt.pos.y - ro.pos.y, rt.pos.x - ro.pos.x);
-        const views = ['o', Math.abs(angDiff(brg, ro.facing)) <= 1.8 ? 'v' : '', rh !== null && rh !== undefined ? (inHeadCone(rh, brg) ? 'h' : '') : 'h'];
-        for (const f of views) {
-          if (!f) continue;
-          const k = `${o.idx}>${t.idx}${f}`;
+        const o1 = true, v1 = Math.abs(angDiff(brg, ro.facing)) <= 1.8, h1 = rh !== null && rh !== undefined ? inHeadCone(rh, brg) : true;
+        for (let f = 0; f < 3; f++) {
+          if (!(f === 0 ? o1 : f === 1 ? v1 : h1)) continue;
+          const k = (o.idx * n + agents[it]!.idx) * 3 + f;
           let h = this.sightHist.get(k);
-          if (!h) this.sightHist.set(k, h = { target: t.idx, ticks: [] });
+          if (!h) this.sightHist.set(k, h = { target: agents[it]!.idx, ticks: [] });
           h.ticks.push(stamp);
         }
       }
@@ -970,7 +972,7 @@ export class PlaySim {
   }
   private sightedPure(observer: Agent, target: Agent, seen: Perceived, gazeView: boolean, headView: boolean): Perceived {
     const stamp = this.perception.stamp - 1, back0 = Math.round((seen.age ?? 0) / this.dt);
-    const h = this.sightHist.get(`${observer.idx}>${target.idx}${headView ? 'h' : gazeView ? 'o' : 'v'}`);
+    const h = this.sightHist.get((observer.idx * this.agents.length + target.idx) * 3 + (headView ? 2 : gazeView ? 0 : 1));
     if (h) for (let i = h.ticks.length - 1; i >= 0; i--) {
       const back = stamp - h.ticks[i]!;
       if (back < back0) continue;
