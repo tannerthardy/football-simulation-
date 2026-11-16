@@ -86,7 +86,7 @@ function lab(o: LabOptions, run: boolean) {
     a.body.facing = side > 0 ? facing : -facing;
     a.downUntil = -1;
   };
-  const observe = () => { for (let i = 0; i < 24; i++) sim.perception.record(sim.agents); };
+  const observe = () => { for (let i = 0; i < 24; i++) sim.recordPerception(); };
   return { sim, side, park, place, observe };
 }
 

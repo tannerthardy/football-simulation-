@@ -34,6 +34,7 @@ and how reliably he gets it, never what he does with it.
 
 | Cue | What he sees | Gives him | Exists today |
 |---|---|---|---|
+| **Passer's eyes, set and front foot** (Defense's QB_INTENT, approved 2026-11-16) | his eyes held on a receiver in or entering the defender's window (ZONE_HOLD's held `seenQbEyes`) with his set; then the front foot's step into the throw, once the QB lane exposes it as a body event | a receiver (not a sector) and an intention (not a throw): an underneath zone dropper breaks on it before the ball leaves | Defense's rungs, read from the same per-defender picture; no change to this note's store or flags |
 | **Passer's shoulders and arm** | the load, then the arm coming through, with the shoulders pointing | that it is thrown, and a coarse direction (a sector, not a point) | the release belief (arm and load cues); `shoulderTarget` for a zone defender |
 | **The ball itself, if he looks** | the ball in his own eyes | its flight, with the glance error (`BALL_EST`, his own bit) | the glance rule (bit 2048) and the estimator |
 | **His man's or zone threat's eyes, break and hands** | the receiver turning his head to the ball, settling, hands rising | that the ball is coming to him, and soon. The coached "play the hands" for a trailer who never sees the ball | `readsHandsAt` (hands-cue.ts); bit 256 for the man defender's look |
@@ -41,6 +42,9 @@ and how reliably he gets it, never what he does with it.
 
 ## What he does on each
 
+0. **On the passer's intention (QB_INTENT, Defense):** an underneath zone dropper already breaking on the held eyes
+   or the front foot keeps that break. The NFL's nearest zone defender is closing before the release (-0.8 to +0.9 yd/s
+   over the last half second, speed 2.8 to 3.3); ours is not (-0.6 to 0.0, slowing).
 1. **On the arm, without the ball:**
    - a zone defender breaks toward the sector the shoulders point at (today's shoulder-break);
    - a man defender stays on his man, and looks if he is in phase (bit 256).
@@ -55,6 +59,23 @@ and how reliably he gets it, never what he does with it.
    - A defender who is looking elsewhere gets the catch when his view next includes the carrier, or by sound with a
      stated delay.
    - Sound is a choice: crowd noise or contact, read at two values.
+
+## The arm is not the earliest cue
+
+QB_INTENT puts eyes, set and front foot above the arm, so nothing here may start a defender's play from the arm as if
+it were his first information:
+
+- **The shoulder break (1).** On the arm a zone defender breaks toward the shoulders' sector. If he is already breaking
+  on the passer's intention, the arm refines that break (the sector against the receiver he is already playing). It
+  does not restart it from his drop, and does not double his acceleration.
+- **The flight (2).** His ball play starts from the ball in his eyes, never from `loadingAt` or `releasedAt`. Neither
+  rung gives him a landing point.
+- **Stage two of the catch.** It reads when he started, which is the earliest rung he acted on (intention, arm, ball or
+  hands), not `loadingAt`.
+- **Today's code.** `shoulderTarget`'s break and the release belief (`loadingAt`, `releasedAt`, `ballAt`) are unchanged
+  by this note. Where QB_INTENT and the shoulder break both act on one defender, the joint read is Defense's and mine
+  together: the same throws with QB_INTENT on and off, and the defender's speed and heading through the arm. A second
+  start shows there as a step in his acceleration at `loadingAt`.
 
 ## Skill (never the result)
 
