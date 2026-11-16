@@ -3127,7 +3127,7 @@ function tryHold(sim: PlaySim, e: Engagement): boolean {
  * double him or finds other work, by what he sees. Off, beating the primary ended the rep for everyone on it: a helper
  * with his hands on the man lost him (of helped rushers who still reached the QB, the helper stayed within a yard the
  * whole 0.5 s in 36% against the NFL's 63%: hand-fight note section 8). */
-export const PASS_OFF = process.env.PASS_OFF !== '0';
+export const PASS_OFF = process.env.PASS_OFF === '1';
 function passOff(sim: PlaySim, e: Engagement, seen = false): boolean {
   if (!PASS_OFF || e.type !== 'pass' || !e.helpers.length) return false;
   const d = e.defender;
