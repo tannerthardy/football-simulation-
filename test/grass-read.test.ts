@@ -47,6 +47,12 @@ describe('GRASS_READ', () => {
     for (const r of p.double_outs.rhythm) expect(r.grass).toBeUndefined();
   }, 120_000);
 
+  it("half of a key is never grass: dagger's seam is thrown off the deep defender over it", async () => {
+    const { dagger } = await plans(true, ['dagger']);
+    expect(dagger.key).not.toBeNull();
+    for (const ref of [dagger.key!.low, dagger.key!.high]) expect(dagger.rhythm.find((r) => r.ref === ref)?.grass).toBeUndefined();
+  }, 120_000);
+
   it('off, no read carries a grass entry', async () => {
     const p = await plans(false, ['mesh', 'four_verts']);
     for (const plan of Object.values(p)) for (const r of plan.rhythm) expect(r.grass).toBeUndefined();

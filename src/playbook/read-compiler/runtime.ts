@@ -52,6 +52,19 @@ const SECOND_KEYS = new Set(['slant_flat', 'stick', 'fade_flat', 'double_slants'
  * first hitch) removed them. As table entries they hold; levels from 2x2, pure on develop, is keyed too. */
 export const PLAN_KEYS_3 = process.env.PLAN_KEYS_3 !== '0';
 const THIRD_KEYS = new Set(['dagger', 'levels']);
+/** VERTS_KEYS (experimental, off; with PLAN_KEYS): the vertical concepts read as installed.
+ * - verts_hitch: its own read ("the middle-of-field safety: he stays middle: #2 seam; he shades to #2: #3 hitch under
+ *   the seam, then the backside seam") is a key on the defender over the seam: high the #2 seam, low the #3 hitch, one
+ *   look on the set; the backside vertical next; the back last (Gonzalez: "If he hitches again he has to move his eyes
+ *   to the back"). The QB reads the key on his own picture, as every PLAN_KEYS key. Drawn for trips: from 2x2 there is
+ *   no #3 on the seam's side, and the row does not apply (a misfit: the concept from a formation it is not drawn for).
+ *   Off, it compiled as a vertical peek with the hitch, ready 1.8 s, read last at 2.5 s (QB lane: through three
+ *   unreadable verticals by 2.1 s, at the hitch out of rhythm, then a run).
+ */
+export const VERTS_KEYS = process.env.VERTS_KEYS === '1';
+const VERTS_KEY_TABLE: Record<string, { low: ReceiverRef; high: ReceiverRef; role: string; deep: boolean; danger: string; onSet?: boolean; after: ReceiverRef[] }> = {
+  verts_hitch: { low: 'S3', high: 'S2', role: 'deep_defender_over_vertical', deep: true, danger: 'the hook defender under the seam', onSet: true, after: ['W1', 'S1'] },
+};
 /** One beat of the drop: the hitch step (the compiler's BEAT). */
 const RHYTHM_BEAT = 0.4;
 /** CONCEPT_DROPS: the five-step class's hitch, the NFL's set-to-release at that depth (QB lane, drop-time.py). */
@@ -178,9 +191,10 @@ export interface InstalledPlan {
 /** GRASS_READ: the grass read for a route, or null when it is not one (see GRASS_READ). */
 function grassOf(r: { routeId: string; trajectory: Array<{ t: number; x: number; y: number }> } | undefined, first: boolean, keyed: boolean):
   { landing: { x: number; y: number }; t: number; decided: 'step' } | null {
-  if (!r) return null;
+  // Half of a key (smash's corner, dagger's and VERTS_KEYS' seam) is thrown off the key defender, never into grass.
+  if (!r || keyed) return null;
   const vertical = BREAK_DECL[r.routeId]?.at === 'vertical';
-  if (!vertical && !(r.routeId === 'corner' && first && !keyed)) return null;
+  if (!vertical && !(r.routeId === 'corner' && first)) return null;
   const depth = GRASS_DEPTH[r.routeId] ?? 20, P = r.trajectory;
   if (P.length < 2) return null;
   const i = P.findIndex((p) => p.x >= depth);
@@ -212,7 +226,7 @@ export function installedPlan(concept: PassConcept, formationId: string): Instal
   // A formation built for one play (a lab or stress scene) is not in the registry the on-air rep is run from: nothing
   // was installed for it, so he runs the play without a plan.
   if (!FORMATION_BY_ID[formationId]) return null;
-  const key = `${OUTLET_LAST ? 1 : 0}${PLAN_KEYS ? 1 : 0}${PLAN_ROLES ? 1 : 0}${PLAN_KEYS_2 ? 1 : 0}${PLAN_KEYS_3 ? 1 : 0}${DECLARED_BREAK ? 1 : 0}${GRASS_READ ? 1 : 0}|${formationId}|${concept.id}|${concept.drop}|${JSON.stringify(concept.strong)}|${JSON.stringify(concept.weak)}|${concept.back}|${concept.teBlock ? 1 : 0}`;
+  const key = `${OUTLET_LAST ? 1 : 0}${PLAN_KEYS ? 1 : 0}${PLAN_ROLES ? 1 : 0}${PLAN_KEYS_2 ? 1 : 0}${PLAN_KEYS_3 ? 1 : 0}${DECLARED_BREAK ? 1 : 0}${GRASS_READ ? 1 : 0}${VERTS_KEYS ? 1 : 0}|${formationId}|${concept.id}|${concept.drop}|${JSON.stringify(concept.strong)}|${JSON.stringify(concept.weak)}|${concept.back}|${concept.teBlock ? 1 : 0}`;
   if (cache.has(key)) return cache.get(key)!;
   teams ??= { off: generateTeam(new Rng(41), 'O', 'O', { strength: 0.6 }), def: generateTeam(new Rng(42), 'D', 'D', { strength: 0.6 }) };
   compiling++;
@@ -238,6 +252,12 @@ export function installedPlan(concept: PassConcept, formationId: string): Instal
         const low = find(k.low), high = find(k.high);
         if (low && high && low !== high) k = { ...k, low: low as ReceiverRef, high: high as ReceiverRef };
       }
+      // VERTS_KEYS: the vertical concepts' installed key, only where both routes are on one side (trips for verts_hitch).
+      const vk = VERTS_KEYS && PLAN_KEYS ? VERTS_KEY_TABLE[concept.id] : undefined;
+      if (vk) {
+        const vlo = routes.get(vk.low), vhi = routes.get(vk.high);
+        if (vlo && vhi && vlo.side === vhi.side && vlo.routeId === (concept.strong as any)[3] && vhi.routeId === (concept.strong as any)[2]) k = vk;
+      }
       const lo = k && routes.get(k.low), hi = k && routes.get(k.high);
       if (k && lo && hi) {
         const cueBy = +(k.onSet ? compiled.qbSetAt : k.deep ? Math.max(compiled.qbSetAt, lo.window.ready - 0.2) : Math.max(compiled.qbSetAt - 0.3, lo.window.ready - 0.2)).toFixed(2);
@@ -245,6 +265,11 @@ export function installedPlan(concept: PassConcept, formationId: string): Instal
           order: [k.high, k.low, ...plan.order.filter((r) => r !== k.high && r !== k.low)] };
       }
       if (PLAN_KEYS && plan.key && !plan.key.danger && DANGER[concept.id]) plan = { ...plan, key: { ...plan.key, danger: DANGER[concept.id] } };
+      // VERTS_KEYS: after verts_hitch's key, the backside vertical, then the strong go (the back is the outlet).
+      if (vk && plan.key && plan.key.low === vk.low && plan.key.high === vk.high) {
+        const after = vk.after.filter((r) => routes.has(r));
+        plan = { ...plan, order: [vk.high, vk.low, ...after, ...plan.order.filter((r) => r !== vk.high && r !== vk.low && !after.includes(r))] };
+      }
       // PLAN_KEYS: one named install where the sources disagree (a pure order: his eyes go in this order).
       const io = PLAN_KEYS ? (INSTALL_ORDER[concept.id] ?? (PLAN_ROLES ? ROLE_ORDER[concept.id] : undefined))?.filter((r) => routes.has(r)) : undefined;
       if (io?.length) plan = { ...plan, style: 'pure', key: null, triangle: null, alert: null,
@@ -273,7 +298,7 @@ export function installedPlan(concept: PassConcept, formationId: string): Instal
       // is on the set, not the hitch.
       const key = plan.key;
       const groups: ReceiverRef[][] = [];
-      if (CONCEPT_DROPS_RHYTHM && key && seq.includes(key.low) && seq.includes(key.high)) groups.push([key.low, key.high]);
+      if ((CONCEPT_DROPS_RHYTHM || (vk && key?.low === vk.low && key?.high === vk.high)) && key && seq.includes(key.low) && seq.includes(key.high)) groups.push([key.low, key.high]);
       const look = CONCEPT_DROPS_RHYTHM ? ONE_LOOK[concept.id] : undefined;
       if (look && look.every((r) => seq.includes(r))) groups.push(look);
       const groupOf = (r: ReceiverRef) => groups.find((g) => g.includes(r));
