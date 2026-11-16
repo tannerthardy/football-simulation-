@@ -635,7 +635,7 @@ Suite on the landing head: 4,622 passed; ten fixtures moved and one timed out un
 - `BLITZ_READ` pinned off in `qb-footwork-drop` (the gun play-action fake timing; QB lane re-records with its footwork re-cut).
 - `SIGHT_PURE` pinned off in `qb-tick-picture`: that test demonstrates the order-dependence `SIGHT_PURE` removes, so with it on its off arm has nothing to show; to be restated.
 - `acc-radius` pins the whole engine-72 boolean set: its counts of 4 to 6 plays move with each group; QB lane re-records when `ACC_RADIUS` is carded.
-- `dither-budget`: the pursuit row re-recorded 0.411 → 0.622 (84 events in 135 s). Turning off the protection trio, the carry set or `MIRROR_SCATTER` alone each brings it to 0.52 to 0.56; `MIRROR_SCATTER` only changes alignment scatter, so the row is moving with which plays the panel produces, not with a new re-aim source. A second panel seed is owed (Defense or Tools) before this row is trusted as a budget again.
+- `dither-budget`: the pursuit row re-recorded 0.411 → 0.622 (84 events in 135 s). Turning off the protection trio, the carry set or `MIRROR_SCATTER` alone each brings it to 0.52 to 0.56; `MIRROR_SCATTER` only changes alignment scatter, so the row is moving with which plays the panel produces, not with a new re-aim source. Defense ran the row on panel seeds 1 and 100 (same head): seed 100 reads 0.571 with everything on, under the old 0.579 budget; turning the protection trio or `MIRROR_SCATTER` off raises the rate on both seeds, and the carry set off is identical on seed 100 (71 events, 124 s). No group is a source; the rise on seed 1 is that panel's draw.
 
 Run set (`npm run ref:report`, 1,295 plays): capped mean 3.50, stuffs 15.4% (engine-70: 3.49, 14.4%).
 

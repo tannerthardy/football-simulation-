@@ -28,7 +28,7 @@ const MEASURED: { controller: Record<string, [number, number, number]>; stage: R
   controller: { // budget = rate x 1.10 + 2 sqrt(events) / moving s
     QB: [0.1051, 333, 35], 'QB facing': [0.2052, 297, 61], // facing: dither-core's facing reader (QB lane, 2026-11-16), recorded on engine-71
     block: [0.3195, 4361, 1393], rush: [0.2871, 2787, 800], coverage: [0.3825, 4149, 1587],
-    carrier: [0.3686, 296, 109], route: [0.1648, 1311, 216], pursuit: [0.6220, 135, 84] /* engine-72 re-record: a small sample (84 events) that moves 10-15 events with any one of three unrelated groups off, including MIRROR_SCATTER, which only changes alignment scatter; was [0.4110, 102, 42]. Second panel seed owed (Defense/Tools). */,
+    carrier: [0.3686, 296, 109], route: [0.1648, 1311, 216], pursuit: [0.6220, 135, 84] /* engine-72 re-record: a small sample (84 events) that moves 10-15 events with any one of three unrelated groups off, including MIRROR_SCATTER, which only changes alignment scatter; was [0.4110, 102, 42]. Panel seed 100 reads 0.571 with everything on, and no group is a source on either seed (docs/REFERENCE_STACK.md, engine-72). */,
   },
   stage: {
     'QB / spacing': [0.0511, 333, 17], 'block / spacing': [0.0683, 4361, 298], 'block / engagement': [0.1456, 4361, 635],
