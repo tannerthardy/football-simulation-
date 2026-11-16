@@ -358,6 +358,10 @@ const HOLD_SUBSTEPS = Number(process.env.HOLD_SUBSTEPS ?? 0);
  * rusher driving at him. No new constant (CHEST_HALF and armForce are the model's). Push only; steer and hold are as built.
  * docs/reviews/2026-11-16-contact-law.md. */
 const HAND_MOMENT = process.env.HAND_MOMENT === '1';
+/** HAND_MOMENT: the shoulders' hold as a percentage of the borrowed armForce * CHEST_HALF (100 = as borrowed). A stated choice, 150, until a source for the chest's
+ * sustained moment turns up: the lowest of the three levels read (100, 150, 200) at which a pusher square to his man (within about 10 degrees of his facing) is not bound
+ * (docs/reviews/2026-11-16-hand-moment.md, "Capacity levels"); not fitted to an outcome. */
+const HAND_MOMENT_CAP = (Number(process.env.HAND_MOMENT_CAP ?? 150) || 150) / 100;
 const HAND_MOTOR = process.env.HAND_MOTOR === '1';
 /** OPEN_HANDS (experimental, off; OPEN_HANDS=1 turns it on): two hand
  * states. Fingers on cloth (`HandJoint.grip`) keep the joint's push, hold and
@@ -2821,7 +2825,7 @@ export class World {
           const k = row.actor, o = k === i ? j : i, pk = this.bodies[k]!, po = this.bodies[o]!;
           const ex = po.pos.x - pk.pos.x, ey = po.pos.y - pk.pos.y;
           const reach = Math.max(.05, hypot2(ex, ey) - po.profile.radius), sinT = Math.abs(Math.sin(Math.atan2(ey, ex) - pk.facing));
-          if (sinT > 1e-3) row.pushLim = Math.min(row.pushLim, this.sp[k].armForce * this.fat[k] * CHEST_HALF / (reach * sinT) * h * scale);
+          if (sinT > 1e-3) row.pushLim = Math.min(row.pushLim, this.sp[k].armForce * this.fat[k] * CHEST_HALF * HAND_MOMENT_CAP / (reach * sinT) * h * scale);
         }
         const c = dist - jt.extension;
         if (c < 0) { row.mode = 1; row.c = c; }

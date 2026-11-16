@@ -55,3 +55,74 @@ The rusher gets to the QB faster (time to throw -0.05 s resolved, sacks +0.9 poi
 ## Reading
 
 The edge ride and the rusher's distance to the QB move to the NFL's values with no cost to the tackle's speed or balance, the run set and the run families do not move beyond noise, the dither budget holds, and the pass game loses a yard per attempt that it had in excess of the NFL's. The interior pair moves by about a tenth because the borrowed moment capacity (`armForce * CHEST_HALF`) is lower than the press capacity at small angles; that is the figure that needs a source (the chest's sustained moment against a hand load; Kroemer 1974 and the Waterloo push-pull thesis are the places to look, not read here). I would card it with `SET_SPOT`, `SET_SPOT_TACKLE` and `POCKET_LEVEL` once the pressure-by-class read is in, and I would not promote it without a source for the moment capacity or three levels of it read (1.0, 1.5 and 2.0 times the borrowed cap).
+
+## Capacity levels (Integration's ruling, 2026-11-16, on engine-70 c5c6f590)
+
+The cap `armForce * CHEST_HALF` is borrowed from the grasp's yaw bound, so the one thing in the form without a source is how much moment the chest holds against a hand load. `HAND_MOMENT_CAP` (percent of the borrowed value, default 150) reads it at 100, 125, 150 and 200. The rule for the stated choice: the lowest level at which a pusher square to his man (within about 10 degrees of his facing) is not bound. At 10 degrees and the interior pair's reach of 0.65 yd the 100% limit is 1.63 kN against the 2.03 kN push, so 125% is the least that clears it; 150% is the lowest of the three named levels that does.
+
+**Interior pair** (C 144 kg against DT 140 kg, `SET_SPOT=1`, `anchor-staged.mts`; flag off 1.15 yd/s toward the QB):
+
+| cap | pair walk-back | rusher power x0.85 | blocker mass x0.9 | blocker mass x1.1 |
+| --- | --- | --- | --- | --- |
+| off | 1.15 | 0.94 | 1.56 | 0.95 |
+| 100 | 1.26 | 0.99 | 1.48 | 1.03 |
+| 125 | 1.14 | 0.93 | 1.56 | 0.98 |
+| 150 | 1.13 | 0.92 | 1.56 | 0.95 |
+| 200 | 1.13 | 0.94 | 1.56 | 0.94 |
+
+At 100 the bound trims the pair and flattens its mass dependence (blocker x0.9 1.56 to 1.48); at 125 and above the pair is the flag-off pair, with the same dependence on mass and power.
+
+**Edge pair** (`edge-ride-staged.mts`, same bodies and seeds; rushers reaching the tackle's hip: 293 off, 269 / 292 / 292 / 287 at 100 / 125 / 150 / 200):
+
+| | off | 100 | 125 | 150 | 200 |
+| --- | --- | --- | --- | --- | --- |
+| centre distance p50, +0.5 / +1.0 s | 1.24 / 1.57 | 1.10 / 1.42 | 1.12 / 1.33 | 1.12 / 1.28 | 1.15 / 1.34 |
+| p75 at +1.0 s | 2.29 | 2.66 | 2.53 | 2.01 | 2.08 |
+| closing on the tackle, 0 to 0.5 s (yd/s) | -0.71 | -0.48 | -0.58 | -0.55 | -0.52 |
+| hip to hip by +0.5 s | 80% | 80% | 82% | 82% | 78% |
+| hands then never off | 46% | 59% | 52% | 48% | 50% |
+| to the QB, hip to +1.0 s (NFL 5.3 to 3.5) | 4.9 to 4.2 | 4.8 to 3.5 | 4.8 to 3.9 | 4.7 to 3.9 | 4.9 to 4.1 |
+| tackle speed; down within 1.0 s | 2.9; 0% | 2.9; 0% | 2.9; 0% | 2.9; 0% | 2.9; 0% |
+
+The ride tightens at every level; the rusher's distance to the QB at +1.0 s reaches the NFL's 3.5 only at 100 and shrinks from there (4.2 off, 3.9 at 125 and 150, 4.1 at 200). The share of rushers whose hands never clear, which rose to 59% at 100 (the wrong direction for the rusher, Flex's concern), is 52% at 125, 48% at 150 and 50% at 200, within a few points of the off value (46%). So the interior pair and the hands-clearing shape both want 125 or more, and the edge rush's gain is about half of what the borrowed cap gave.
+
+**Pass rush, by class** (`hand-pressure.mts`: 864 staged pass plays, 2 edge and 2 interior rushers each, `SET_SPOT`, `SET_SPOT_TACKLE`, `POCKET_LEVEL` on; pressure = within 1.5 yd of the QB before the throw):
+
+| | off | 100 | 150 |
+| --- | --- | --- | --- |
+| edge: pressured, first at p50 | 6%, 3.10 s | 8%, 3.00 s | 9%, 3.10 s |
+| interior: pressured, first at p50 | 1%, 2.85 s | 2%, 2.80 s | 1%, 2.75 s |
+| edge, engaged and never released | 88% | 87% | 88% |
+| interior, engaged and never released | 95% | 94% | 95% |
+| pocket: QB to nearest rusher p50 at 1.5 / 2.0 / 2.5 s (yd) | 5.20 / 4.51 / 3.67 | 5.19 / 4.41 / 3.48 | 5.19 / 4.45 / 3.55 |
+| a rusher within 1.5 yd by 2.5 s | 1% | 1% | 1% |
+
+Here "never released" is a blocker's hands on him at some tick and at every tick after until the throw or his pressure; the staged plays are the QB lane's, many without a throw inside 3.5 s, so the pressure rates are small. Neither level moves never-released, and the pocket's room at 2.5 s falls by 0.1 to 0.2 yd. This set does not separate the levels from each other or from off beyond that.
+
+**Pass-protection card** (16 games, seed 23, `SET_SPOT`, `SET_SPOT_TACKLE`, `POCKET_LEVEL` on in all arms, on Flex's branch; base against each level, 90% ranges):
+
+| | base | 100 | 150 |
+| --- | --- | --- | --- |
+| sack rate per dropback | 4.9% | 5.8% (+0.9, -0.8 to +2.7) | 6.4% (+1.5, +0.4 to +2.7) |
+| time to throw (s) | 2.77 | 2.73 (-0.05, resolved) | 2.74 (-0.03, ns) |
+| yards / attempt | 9.17 | 8.44 (-0.73, resolved) | 8.99 (-0.18, ns) |
+| completion | 67.6% | 66.1% | 65.8% |
+| run stuff rate | 11.8% | 11.6% | 14.1% (+2.3, ns) |
+| rush yd / carry, capped at 20 | 3.50 | 3.58 | 3.36 (ns) |
+
+One card is 16 games; the two levels' deltas are of the size the card cannot order (sacks +0.9 and +1.5 have overlapping ranges). The card does not say 150 is better or worse than 100, only that neither moves the pass game outside the NFL's bands for sacks (4.6 to 9.4%).
+
+**Run set at 150** (engine-70, paired, capped at 20, ref arm = engine default; `HAND_MOMENT=1`, `ref-compare.py`; four placebo arms, the default stack with one body nudged 0.05 yd, give the floor):
+
+| | all | OZ | IZ | gap | duo | toss | draw |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| main set (1,438), 100% | +0.05 (0.11) | -0.03 (0.22) | +0.06 (0.26) | +0.15 (0.16) | -0.07 (0.28) | +0.03 (0.71) | +0.05 (0.43) |
+| main set (1,438), 150% | -0.12 (0.10) | -0.34 (0.18) | +0.21 (0.24) | +0.08 (0.15) | -0.63 (0.22) | -0.47 (0.81) | +0.00 (0.37) |
+| fresh set (1,295), 150% | -0.02 (0.11) | -0.05 (0.22) | +0.05 (0.24) | -0.16 (0.16) | +0.07 (0.36) | -0.09 (0.82) | +0.46 (0.39) |
+| placebo floor, rms of four | 0.07 | 0.14 | 0.16 | 0.06 | 0.26 | 0.39 | 0.13 |
+
+On the main set 150% is -0.12 overall with OZ -0.34 and duo -0.63, both about 2.4 times the placebo rms; 100% on the same set moves nothing, and a bound that bound more at 100 than at 150 would move more at 100. On the fresh set (a different 1,295 plays) 150% is -0.02, OZ -0.05, duo +0.07. Not monotone in the cap and not reproduced on a second set: I read the main-set OZ and duo as divergence the 0.05 yd floor does not cover (one placebo arm alone gave duo -0.45), not as a mechanism. Missed + broken tackles per run 0.216 + 0.091 against 0.202 + 0.084 (main set), 0.216 + 0.107 against 0.212 + 0.110 (fresh). The dither panel with `HAND_MOMENT=1` at 150% passes (every controller and stage inside its budget).
+
+## What the stated choice is
+
+150%: the lowest of the three named levels at which the interior pair is the flag-off pair and a pusher square to his man is not bound. It is a level of a borrowed capacity, not a fit; the source for the chest's sustained moment against a hand load (Kroemer 1974, the Waterloo push-pull thesis) is still owed and nothing here measured it. What it costs is half of the edge gain the borrowed cap gave: the rusher is 3.9 yd from the QB one second after the hip (off 4.2, NFL 3.5), not 3.5. If a source gives a lower capacity the edge ride moves toward the NFL and the interior pair gives up the same fraction of its press; the flag is the one place that trade is made.
