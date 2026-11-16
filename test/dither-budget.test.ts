@@ -96,4 +96,52 @@ describe('dither budget: players do not re-aim and take it back more often than 
     // Every recorded controller is still measured on the panel (a renamed or vanished controller must be re-recorded).
     for (const key of Object.keys(MEASURED.controller)) expect(now.controller[key], `controller ${key} no longer measured`).toBeDefined();
   }, 300_000);
+
+  // The receiver's release (Flex, 2026-11-15): inside releases next to an end, where the route craft and spacing meet a
+  // man in his lane. Per route runner inside 5 yd of the line with the ball held: a request that turns > 20 deg from the
+  // tick before and comes back within 10 deg of that heading inside 0.3 s. 50 fixed plays: slant_flat, drive, mesh,
+  // y_cross, hitch_cross from gun_wing_12 (vs base 4-3) and gun_trey_11 (vs nickel), Over, cover 3 / cover 1, seeds 1-5.
+  // Measured 2026-11-15 on rules/release-side (engine-67 + #756), engine defaults: 39 events in 439.6 moving s (0.0887/s);
+  // CRAFT_HOLD with DECLARED_BREAK: 15 (0.034/s).
+  it('the receiver\'s release: reversed re-aims per second stay within budget', async () => {
+    vi.resetModules();
+    for (const k of stackOn) vi.stubEnv(k, '1');
+    const { Rng } = await import('../src/core/rng.js');
+    const { generateTeam, pickDefense, pickOffense } = await import('../src/league/team.js');
+    const { PASS_BY_ID } = await import('../src/playbook/concepts.js');
+    const { COVERAGE_BY_ID, FRONT_BY_ID } = await import('../src/playbook/defense.js');
+    const { FORMATION_BY_ID } = await import('../src/playbook/formations.js');
+    const { PlaySim } = await import('../src/sim/playsim.js');
+    const offense = generateTeam(new Rng(101), 'Dither O', 'DTO', { strength: .55 }), defense = generateTeam(new Rng(102), 'Dither D', 'DTD', { strength: .55 });
+    const ang = (x: number, y: number) => Math.abs(Math.atan2(Math.sin(x - y), Math.cos(x - y)));
+    let ticks = 0, reversed = 0;
+    for (const fid of ['gun_wing_12', 'gun_trey_11']) for (const pass of ['slant_flat', 'drive', 'mesh', 'y_cross', 'hitch_cross']) for (let seed = 1; seed <= 5; seed++) {
+      const formation = FORMATION_BY_ID[fid], pers = /12/.test(formation.personnel) ? 'base43' : 'nickel';
+      const sim: any = new PlaySim({ offense: pickOffense(offense, formation.personnel), defense: pickDefense(defense, pers),
+        offCall: { formation, flip: seed % 2 === 0, kind: 'pass', pass: PASS_BY_ID[pass], label: pass },
+        defCall: { personnel: pers, front: FRONT_BY_ID.over, coverage: seed % 2 ? COVERAGE_BY_ID.cover3 : COVERAGE_BY_ID.cover1, pressure: null, zoneStyle: 'spot', label: 'rel' },
+        los: 35, ballY: 26.65, firstDownX: 45, seed } as never);
+      const dir = sim.attackDir('O'), hist = new Map<unknown, { t: number; h: number }[]>(), tick = sim.tick.bind(sim);
+      sim.tick = () => {
+        tick();
+        if (sim.t >= 2.5 || sim.ball.kind !== 'held') return;
+        for (const o of sim.offense) {
+          if (o.behavior?.kind !== 'route' || (o.pos.x - sim.los) * dir > 5) continue;
+          const c = sim.cmds?.[o.idx];
+          if (!c || Math.hypot(c.vel.x, c.vel.y) < 1) continue;
+          ticks++;
+          const H = hist.get(o) ?? []; H.push({ t: sim.t, h: Math.atan2(c.vel.y, c.vel.x) }); hist.set(o, H);
+          const n = H.length;
+          for (let k = n - 2; n >= 3 && k >= 1 && H[n - 1].t - H[k].t <= 0.3; k--)
+            if (ang(H[k].h, H[k - 1].h) > 0.35 && ang(H[n - 1].h, H[k - 1].h) < 0.17 && ang(H[n - 2].h, H[k - 1].h) >= 0.17) { reversed++; break; }
+        }
+      };
+      sim.run();
+    }
+    const moving = ticks * 0.05, rate = reversed / moving, [before, recMoving, recEvents] = [0.0887, 439.6, 39];
+    const budget = before * 1.10 + 2 * Math.sqrt(recEvents) / recMoving;
+    if (process.env.DITHER_PRINT === '1') console.log(`DITHER release: [${rate.toFixed(4)}, ${moving.toFixed(0)}, ${reversed}], // budget ${budget.toFixed(4)}`);
+    expect(rate, `release: ${rate.toFixed(4)}/s over budget ${budget.toFixed(4)}`).toBeLessThanOrEqual(budget + 1e-9);
+  }, 300_000);
 });
+

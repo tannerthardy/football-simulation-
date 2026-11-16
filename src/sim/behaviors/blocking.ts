@@ -24,7 +24,7 @@ import type { Agent, Behavior, Engagement, RunContactSurface } from '../agent.js
 import type { PlaySim } from '../playsim.js';
 import { chooseRunBlockFit, observedBlockLeverage, secondLevelBlockApproach } from '../run-block-fit.js';
 import { paRunLook } from '../pa-look.js';
-import { DOUBLE_OVERTAKE, axisOf, contactControl, helperSupport, passSetDepth, promoteContact, PUNCH, TACKLE_SET, tackleFloor, tackleSetLine, traits } from '../engagement.js';
+import { DOUBLE_OVERTAKE, axisOf, contactControl, helperSupport, passSetDepth, promoteContact, protectPoint, PUNCH, SET_SPOT, SET_SPOT_TACKLE, setSpotTarget, TACKLE_SET, tackleFloor, tackleSetLine, traits } from '../engagement.js';
 import { readZoneReach, type ZoneReachRead } from '../zone-reach.js';
 import { interceptPoint, timeToReach } from '../../physics/reach.js';
 import type { Perceived } from '../perception.js';
@@ -343,7 +343,9 @@ export class PassProtector implements Behavior {
       a.behavior = this.releaseTo();
       return a.behavior.update(a, sim);
     }
-    const qb = sim.qb;
+    // SET_SPOT: the QB he protects is the launch point he knows from the call, not the live QB behind him.
+    const tackleSlot = a.slot === 'LT' || a.slot === 'RT';
+    const qb = SET_SPOT && (!tackleSlot || SET_SPOT_TACKLE) ? { ...sim.qb, pos: protectPoint(sim) } as typeof sim.qb : sim.qb;
     if (!rA) {
       // Set: tackles kick, interior sets short; backs hold near the QB.
       const isT = a.slot === 'LT' || a.slot === 'RT';
@@ -380,6 +382,15 @@ export class PassProtector implements Behavior {
     let along = contact * 0.85;
     if (toQBp.x < -0.2) along = Math.max(along, (sim.los - setDepth - rp.x) / toQBp.x);
     let set = { x: rp.x + toQBp.x * along, y: rp.y + toQBp.y * along + out * overset };
+    // SET_SPOT: an interior set goes to its spot (his set depth straight back off his alignment), with its width where
+    // the rusher's line to the launch point crosses that depth. He meets the rusher there.
+    const spotSet = SET_SPOT && !isT && isOL(a) && !this.calledRelease && !runLook(a, sim);
+    let spotFrac = 0;
+    if (spotSet) {
+      const sx = sim.los - setDepth; // setDepth already counts from his snap spot (passSetDepth, SET_SPOT)
+      const tg = setSpotTarget(sim, rp, sx);
+      set = { x: sx, y: tg.y }; spotFrac = tg.frac;
+    }
     // An edge rusher runs an arc, not the straight line to the QB: a tackle
     // who sets on that line sits on the chord, a couple of yards inside him,
     // all the way back. Kick to cut the arc off instead — meet him at the
@@ -439,7 +450,8 @@ export class PassProtector implements Behavior {
       const line = TACKLE_SET ? tackleSetLine(sim, a, r) : null;
       const wide = !!line && (a.pos.y - line.y) * line.out >= -0.1 && r.vel.y * line.out > 0;
       // VERTICAL_SET: lead only the rusher's inward motion; his outward run is not chased.
-      const leadY = VERTICAL_SET ? out * Math.min(0, r.vel.y * out) : wide ? 0 : r.vel.y;
+      // VERTICAL_SET: the rusher's inward motion as he sees it (his picture, delayed), whatever PASS_SET_SEEN says.
+      const leadY = VERTICAL_SET ? out * Math.min(0, sim.see(a, rA).vel.y * out) : wide ? 0 : r.vel.y;
       return track(a, set, { x: anchored || a.pos.x < r.pos.x - KICK_LEAD ? 0 : Math.min(0, r.vel.x), y: leadY }, { facing, cutSkill: quick, gain: 2.5 });
     }
     // The cutoff is an interception, not a point on which to match the
@@ -447,6 +459,8 @@ export class PassProtector implements Behavior {
     // already assumed by the forecast; physical movement and contact still
     // decide whether the tackle can arrive and obtain useful protection.
     if (cuttingOff) return goTo(a, set, { speed: 0.75, through: a.profile.vmax * 0.75, facing, cutSkill: quick });
+    // SET_SPOT: his spot does not move with the rusher's depth; across, it moves by its own share of his motion.
+    if (spotSet) return track(a, set, { x: 0, y: r.vel.y * spotFrac }, { facing, cutSkill: quick, gain: 2.5 });
     return track(a, set, { x: r.vel.x * 0.7, y: r.vel.y }, { facing, cutSkill: quick, gain: 2.5 });
   }
 }

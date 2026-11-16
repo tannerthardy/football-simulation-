@@ -461,3 +461,110 @@ Two separately switchable BALL_EST bits, read as separate rows. (b) is built and
 | (b) bit 4: a committed catch point moves with his estimate | CATCH_CHOICE commits him in the last 0.3 s to a point chosen from his estimate then, frozen in place. Under the oracle a frozen point was exact; under BALL_EST it freezes a 1-2 yd error. With bit 4, the choice stays his: which moment of the flight he meets it, chosen and committed by CATCH_CHOICE's existing rule. Its position is re-read from his current estimate at that moment, every tick. No new constant | engine (the commitment rule is CATCH_CHOICE's); coached ("adjust your line, let the hands take the last error") |
 | (a) bit 8: looming | Each sample, while his head is on the ball (within his eye range), also gives the ball's time to contact, tau = range / closing speed, as an observation of the velocity along his line of sight. Its weight scales continuously with how directly the ball closes on him (the closing share of the ball's speed, squared), so a ball moving across his line gives nothing. sigma_tau / tau = 7% | Lee 1976 (time to contact from optical expansion, in Tools' table). The 7% is choice: TTC discrimination thresholds in the literature run roughly 5-15%, and no source in our docs gives a football figure. Sensitivity read at 3.5% and 14% before it lands (`BALL_EST_TAU_SD`, in percent, default 7). Each looming row carries the same per-sample weight discount as his samples (dt / 0.25 s of an independent one), with its own error draw |
 | Who | Both bits apply to anyone holding an estimate who is looking at the ball: receivers and defenders | Integration |
+
+## Design 6: the deep receiver's look (2026-11-14)
+
+**What is wrong.** On deep routes our receiver turns to look only when his own estimate says the ball is due
+(`bodyTurnLead`, 0.4 to 0.8 s). That estimate runs 0.1 to 0.25 s late, and deep is the one family with no
+pre-release look. The result (deep-look.ts, BALL_EST=7, seed 11, 8 games, n 81 deep targets):
+- his body turns at a median 0.3 s before the arrival;
+- he first samples the ball 0.6 s out;
+- 36% never sample it at all;
+- deep completion is 26 / 11%.
+
+**What the NFL does** (nfl_deep_look.py, BDB 2025 drop-backs, GO / POST / CORNER / WHEEL, passLength 15+, n 170):
+- **When and where he opens.** His body (`o`) opens to within 90° of the passer at about the release: median 0.2 s
+  after it, 1.7 s before the arrival. He is at 12.4 yd past the line at the time (GO 12.3, POST 12.2,
+  CORNER 16.0).
+- **How much he is turned.** 75% are turned back by 0.5 s before the arrival.
+- **Completion:** 66% when turned 0.5 s out, against 45% when not.
+- **The look costs speed.** Turned receivers slow from 7.5 yd/s at the release to 6.4 at the arrival; receivers who
+  are not turned hold 7.9 to 8.1. That is the 7.6 to 6.7 late deep slowing recorded as open since design 2, and it
+  is a second witness that the cost is real football.
+
+**The rule** (bit 16, `BALL_EST_DEEP_LOOK`, off):
+- **The cue is his own.** On a deep route, once he reaches his landmark depth past the line, he gets his head round
+  to the passer, and his shoulders as far as his head cannot reach. This is the same physical look as design 4.
+  - He knows his own depth; he is not reacting to the release.
+  - He samples the ball when it leaves the hand in front of eyes that are already back.
+  - The quarterback's deep timing is the QB lane's.
+- **The hold.** He holds the look for his coached count, then gets his head back to his route.
+- **One look only.** He doesn't look again unless the ball is in the air. Once it is, TrackBall's design 4 rule (he
+  keeps looking if he was looking at the release) carries him into the catch.
+- **The cost is physics, with nothing banned.** A turned body runs slower through the existing facing speed cap,
+  and his body faces away from the deep defender in front of him. No new speed or catch term.
+
+| Constant | Value | Source |
+|---|---|---|
+| Landmark depth | 12 yd past the line | measured: the NFL turn depth on GO and POST, 12.3 / 12.2 yd median (p25/p75 9 / 18). One number for the deep family; CORNER's later turn (16 yd) is its break, already past 12 |
+| Hold (his count) | 1.5 s | choice, as a coached count: it covers the NFL's turn-to-release spread (−0.4 / +0.8 s) with the head back, and no source gives the count |
+| Open variant, not built | the look's timing by his leverage on the defender (stacked on top: late, inside shoulder; even or behind: earlier, back shoulder) | coached (Integration), noted open |
+
+**Witnesses, stated before the read:**
+- share turned back by 0.5 s out (NFL 75%);
+- never-sampled share (now 36%);
+- deep completion on open targets;
+- his speed from the release to the arrival against the NFL's 7.5 to 6.4 when turned;
+- separation at the arrival (turning should cost him some, and the defender should gain);
+- off is the unset path.
+
+Two attempts.
+
+### Design 6 attempt 1 read and attempt 2
+
+**Attempt 1 read** (BALL_EST 7 against 23, seed 11, 8 games, deep-family targets):
+
+| | BALL_EST=7 | 23 | NFL |
+|---|---|---|---|
+| deep complete | 45% | 53% | 61% |
+| never sampled | 35% | 24% | — |
+| first sample before the arrival | 0.4 s | 0.9 s | — |
+| speed at the arrival | 7.6 | 6.75 | 6.7 |
+| nearest defender at the arrival | 3.25 | 2.75 | — |
+| shoulders within 90° of the passer 0.5 s out | 8% | 15% | 75% |
+| not caught with the ball within 1.5 yd | 19 | 25 | — |
+
+His head makes the look while his shoulders stay square. LOOK_NECK = 90° lets the head reach the passer at any speed.
+
+**Attempt 2: the neck's useful range narrows with his running speed.** On BALL_EST's own head under bit 16 until HEAD (#720) carries it for everyone. One head per player: receivers and defenders alike.
+
+| Constant | Value | Source |
+|---|---|---|
+| Range standing | 90° a side | anatomy: cervical rotation about 70–80° a side, eyes 30–50° more, but ball tracking needs the ball near central vision |
+| Range at top speed | 45° a side (`BALL_EST_NECK_SPRINT`) | choice: at a sprint the trunk counter-rotates and arm swing keeps the shoulders square, so a look back takes the shoulders. Sensitivity read at 60 |
+| Shape | linear in his speed share | choice |
+
+**Witnesses:** the NFL shoulder row (75%); the within-1.5-yd bucket reversing; the short-family control; deep completion and arrival speed against attempt 1; the catch-fit at 32 games.
+
+**Bit 32 (incidental sight) and the scramble guard** ride with this build.
+- **Bit 32:**
+  - Every play-the-ball check needs his own sample of the flight within 0.5 s. That holds for teammates and defenders.
+  - Passive sight (a ball within his eyes' 30° of his head) catches his attention. His hands are ready a reaction time later.
+- **The scramble guard:** in a scramble drill the receiver's route prior is treated as broken (sigmas ×3).
+
+### Design 6 result: parked after two attempts
+
+Read at 16 games (seed 11, deep-family targets):
+
+| | BALL_EST=7 | 23 (neck 45) | 23 (neck 60) | NFL |
+|---|---|---|---|---|
+| deep targets / complete | 150 / 50% | 144 / 46% | 160 / 38% | 61% |
+| shoulders within 90° of the passer 0.5 s out | 7% | 20% | 11% | 75% |
+| complete when turned / not turned | 80 / 48% (n 10) | 62 / 42% (n 29) | 56 / 35% (n 18) | 66 / 45% |
+| not caught, ball within 1.5 yd | 31 | 35 | 47 | — |
+| speed at the arrival | 7.64 | 6.71 | 7.20 | 6.7 |
+| nearest defender at the arrival | 3.42 | 2.85 | 3.20 | — |
+
+Short-family control (open targets caught): quick 71 / 75 / 74, flat 75 / 77 / 80, back 71 / 72 / 73, intermediate 61 / 57 / 58.
+
+**What holds:**
+- He samples the ball earlier: never-sampled falls.
+- The look's speed cost appears in physics with no speed term: arrival speed lands on the NFL's 6.7.
+- The defender gains at the arrival.
+
+**What does not pass:**
+- The shoulder row (20% against 75%).
+- The within-1.5-yd bucket, which does not reverse.
+- Deep completion (attempt 1's 8-game +8 was noise).
+
+**Why the wider neck did worse.** A wider neck needs less shoulder, and at 60° his shoulders turn less often (11% against 20%). In every arm, a receiver whose shoulders are open 0.5 s out completes 15–30 points more often than one who is square. So what the body turn bought was being opened to the ball, not the sight of it: a head-only look finds the ball but leaves a square body to play it late. That points past the look to the tracking that follows. Once he has the ball, TrackBall keeps him on his running line until the last `bodyTurnLead` (0.4–0.8 s) and never turns his shoulders to keep the ball in view. That is design 7's question, checked before it is built.

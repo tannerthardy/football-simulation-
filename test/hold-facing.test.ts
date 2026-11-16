@@ -12,6 +12,11 @@
  * 4 stay under 60 (1908 DT_S 123 -> 17, 1921 DT_S 206 -> 36, 1937 DT_W 145 -> 59, 1963
  * DT_W 175 -> 14). 1921 is pinned for its margin on both bounds. The free-holder case
  * (OPEN_HANDS) stays on 1916 / DT_S.
+ * Re-pinned on engine-68 (ENGAGE_TRUNK and CHEST_SHOULDERS on) to seed 1957, DT_S. With the engaged trunk, 1921's DT_S
+ * no longer makes the same hold. The same scan (1900-1989, DT_S and DT_W) found 9 side holds spinning him over 120 deg
+ * in the first 0.5 s with HOLD_FACING off; on, 1907 DT_S 199 -> 49, 1931 DT_W 151 -> 6, 1933 DT_W 190 -> 0, 1957 DT_S
+ * 200 -> 21, 1960 DT_W 148 -> 1, 1985 DT_W 151 -> 18, and three that stay over 90 (1908, 1932, 1940). 1957 is pinned
+ * for its margin on both bounds.
  * Runs on the engine defaults (the reference stack), not the legacy pin. */
 import { readFileSync } from 'node:fs';
 import { afterEach, describe, expect, it, vi } from 'vitest';
@@ -19,7 +24,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 const stack: Record<string, string> = JSON.parse(readFileSync(new URL('../config/reference-stack.json', import.meta.url), 'utf8')).flags;
 afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 
-async function turn(flag: string, openHands = '0', seed = 1921, slot = 'DT_S') {
+async function turn(flag: string, openHands = '0', seed = 1957, slot = 'DT_S') {
   vi.resetModules();
   for (const [k, v] of Object.entries(stack)) if (v === 'on') vi.stubEnv(k, '1');
   vi.stubEnv('HOLD_FACING', flag);

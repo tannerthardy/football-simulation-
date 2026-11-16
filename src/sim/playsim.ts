@@ -1,3 +1,4 @@
+import { shouldersOf } from '../physics/kinematics.js';
 /**
  * The play simulator: 22 agents on a continuous field, ticked at 20 Hz.
  *
@@ -64,6 +65,10 @@ import type { BallState, CarrierSegment, Frame, PenaltyCall, FoulEvidence, FoulR
 
 /** ALIGN_HABIT (experimental, off): see alignDefense. */
 const ALIGN_HABIT = process.env.ALIGN_HABIT !== '0';
+/** EXPORT_SHOULDERS (diagnostic, off; EXPORT_SHOULDERS=1): replay frames record where each man's chest points
+ * (shouldersOf: hips plus the TRUNK_TWIST trunk) instead of his hips, so a facing export compares the same body part as
+ * the NFL's shoulder-pad 'o'. No behaviour reads the frames. */
+const EXPORT_SHOULDERS = process.env.EXPORT_SHOULDERS === '1';
 /** PlaySetup.stagedThrow (test staging only). */
 export interface StagedThrow { at: number; slot: string; aim?: { x: number; y: number; z: number }; T?: number }
 
@@ -1553,7 +1558,20 @@ export class PlaySim {
       const seen = this.see(a,b), called = a.team === b.team ? b.behavior.calledMotion?.() : null;
       return predictCalledMotion(seen, called, b.profile);
     },{now:t,constrained,calledAhead:(a,b,h)=>a.team===b.team
-      ?calledVelocityAhead(this.see(a,b),b.behavior.calledMotion?.(),b.profile,h):null});
+      ?calledVelocityAhead(this.see(a,b),b.behavior.calledMotion?.(),b.profile,h):null,
+      space:(a,h)=>{
+        if(a!==this.carrier)return null;
+        // The free space ahead of the carrier in HIS picture: the nearest pictured opponent to a 4 yd ray down heading h, less what his vision misses of it (a smooth seeded error that falls as he reads space better).
+        let m=9;
+        for(const d of this.agents){
+          if(d.team===a.team)continue;
+          const p=this.see(a,d).pos;
+          for(let k=.5;k<=4.01;k+=.5)m=Math.min(m,Math.hypot(p.x-(a.pos.x+Math.cos(h)*k),p.y-(a.pos.y+Math.sin(h)*k)));
+        }
+        const sd=.6*(1-a.r('vision')),bin=Math.floor(t/.25),w=t/.25-bin;
+        const hash=(n:number)=>{let x=(Math.imul(a.idx+1,73856093)^Math.imul(n,83492791)^Math.imul(Math.round(h*8)+97,19349663))>>>0;x^=x>>>15;x=Math.imul(x,2246822519)>>>0;x^=x>>>13;return((x&0xffff)+.5)/65536-.5;};
+        return m+sd*2*((1-w)*hash(bin)+w*hash(bin+1));
+      }});
     commandTrace?.stage('spacing', this.intents);
     ledger?.stageAll('spacing', this.intents);
     // Contact/spacing controllers cannot wake leg drive before the snap cue.
@@ -1920,7 +1938,7 @@ export class PlaySim {
 
   private recordFrame(recordedIntents?: ReadonlyArray<Intent>): void {
     const agents: number[] = [];
-    for (const a of this.agents) agents.push(round2(a.pos.x), round2(a.pos.y), round2(a.body.facing));
+    for (const a of this.agents) agents.push(round2(a.pos.x), round2(a.pos.y), round2(EXPORT_SHOULDERS ? shouldersOf(a.body) : a.body.facing));
     const b = this.ballPos();
     const c = this.carrier;
     // The first live tick also records t=0. Replace the staged snap frame

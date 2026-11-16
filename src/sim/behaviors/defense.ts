@@ -11,7 +11,7 @@ import { isOL } from './blocking.js';
 import { KEY_REACT, KEY_STEP_SEEN, STEP_SEEN, keyScale } from '../key-read.js';
 import { END_LINE_X, FIELD_WIDTH, OPP_GOAL_X } from '../../core/field.js';
 import { angleDiff, clamp, lerp, norm, sub, type Vec2 } from '../../core/vec.js';
-import { directionalSpeedFactor, type MoveCommand } from '../../physics/kinematics.js';
+import { DIR_CAP, directionalSpeedFactor, TRUNK_PRICE, TRUNK_RANGE, TRUNK_TWIST, type MoveCommand } from '../../physics/kinematics.js';
 import { timeToReach } from '../../physics/reach.js';
 import { coverageDepth, gapY, isDeepZone, zoneLandmark } from '../../playbook/alignment.js';
 import type { DefSlot, Gap, ZoneId, ZoneStyle } from '../../playbook/types.js';
@@ -35,9 +35,10 @@ import { OPEN_FIELD, playsBall } from '../open-field.js';
 import { DeepCoverage } from '../coverage-leverage.js';
 import { roundedTurnTime, withFacingTechnique } from '../coverage/orientation.js';
 import { SNAP_REACT } from '../snap-count.js';
-import { BALL_EST } from '../ball-estimate.js';
+import { BALL_EST, BALL_EST_MAN_LOOK, estimatesFor, lookAnyway, lookJoints, neckOf, PHASE_BEHIND, PHASE_SIDE, phaseJudgeSd } from '../ball-estimate.js';
 import { acquireFlight, anticipatedCatcher, catchOpportunity, flightLanded, hasObservedFlight, observedHolder, QB_RELEASE, qbRunning, qbRunningAtLine, rememberCatchOpportunity, rememberedFlight, unresolvedBallArea } from '../possession-read.js';
 import { seenEngaged } from '../seen-contact.js';
+import { BALL_CUE_OWN } from '../release-evidence.js';
 
 /** On (PASS_FIRST=0 for comparison): a man-coverage defender who is not the
  * side's force player stays on his receiver when the receiver comes to block
@@ -786,15 +787,106 @@ const CUSHION_BREAK = process.env.CUSHION_BREAK !== '0';
  * speed rises 3.3 -> 4.9 yd/s, turned at most 11% (BDB 2025, nflcarry.py).
  * With today's facing curve (backpedal cap above side-on) this stays square up
  * to the pedal cap and then jumps; it is continuous with PEDAL_CAP. */
-function openTo(a: Agent, qb: Vec2, receiver: Vec2, heading: number, need: number): number {
+function openTo(a: Agent, qb: Vec2, receiver: Vec2, heading: number, need: number): number;
+function openTo(a: Agent, qb: Vec2, receiver: Vec2, heading: number, need: number, maxOff: number, side?: number, minOff?: number): number | undefined;
+function openTo(a: Agent, qb: Vec2, receiver: Vec2, heading: number, need: number, maxOff?: number, sideIn?: number, minOff = 0): number | undefined {
   const toQB = Math.atan2(qb.y - a.pos.y, qb.x - a.pos.x), toR = Math.atan2(receiver.y - a.pos.y, receiver.x - a.pos.x);
-  const side = Math.cos(toQB + Math.PI / 2 - toR) >= Math.cos(toQB - Math.PI / 2 - toR) ? 1 : -1;
-  const p = a.profile;
-  for (let deg = 0; deg <= 180; deg += 5) {
+  const side = sideIn ?? (Math.cos(toQB + Math.PI / 2 - toR) >= Math.cos(toQB - Math.PI / 2 - toR) ? 1 : -1);
+  const p = a.profile, limit = maxOff === undefined ? 180 : Math.min(180, maxOff * 180 / Math.PI);
+  // CARRY_POSTURE: the search starts at the posture he reads (minOff); the speed match only opens him further.
+  const from = Math.min(limit, minOff * 180 / Math.PI);
+  for (let deg = from; deg <= limit + 1e-9; deg = deg === from && from % 5 ? Math.ceil(from / 5) * 5 : deg + 5) {
     const facing = toQB + side * deg * Math.PI / 180;
     if (p.vmax * directionalSpeedFactor(p, angleDiff(facing, heading)) >= need) return facing;
   }
-  return toQB + side * Math.PI;
+  return maxOff === undefined ? toQB + side * Math.PI : undefined;
+}
+/** CARRY_POSTURE (experimental, off; CARRY_POSTURE=1 turns it on): a deep zone defender carrying a climber has one
+ * posture family before and after his cushion breaks: half-open toward the receiver, hips no further off the QB than
+ * his head can still reach him (neck, then the trunk's twist: `carryReach`), his look on the QB through those joints
+ * (lookJoints). He opens to the smallest such angle whose facing cap gives the speed he needs (openTo), and turns his
+ * back only when no angle within reach gives it. Once his cushion is broken he is already open, so no hip turn is left
+ * to pay for: his break threshold is the two bodies' overlap alone (cushionThreshold's flip term drops), and he stays
+ * on top by spending the cushion down to that overlap rather than running at the climber's pace. Before, the broken
+ * cushion asked no facing at full speed (`turnRun`): the body faced its run, back to the QB. NFL zone deep men over a
+ * climber with no help (BDB 2025 weeks 1-2, nflcarry.py) spend the cushion 5.1 -> 1.6 yd from 1.5 to 3.0 s running
+ * 3.3 -> 4.7 yd/s under a 6.0-6.5 yd/s climber, torso 33 -> 62 deg off the QB, turned at most 11%. Under HEAD the head
+ * and its cone follow the look; without HEAD the trunk carries it. */
+export const CARRY_POSTURE = process.env.CARRY_POSTURE === '1';
+/** CARRY_POSTURE: how far off the QB his hips may face with his look still on the QB (rad). */
+function carryReach(a: Agent): number {
+  return neckOf(a) + (TRUNK_TWIST ? TRUNK_RANGE : 0);
+}
+/** CARRY_POSTURE: the side each carrier opened to (kept for this receiver until he is square again). */
+const carryState = new WeakMap<Agent, { r: Agent; side: number; turned: boolean }>();
+/** CARRY_POSTURE attempt 3: the taught half turn of a bail seat (Cover-3 corner, quarters corner in bail), deg. */
+const CARRY_BAIL = (45 * Math.PI) / 180;
+/** CARRY_POSTURE attempt 3: is this a seat whose call is a bail (a corner in a deep third or an outside quarter)? */
+function bailSeat(a: Agent, zone: string | undefined): boolean {
+  return !!zone && a.slot.startsWith('CB') && (zone.startsWith('deep_third_') || (zone.startsWith('quarter_') && zone.endsWith('_out')));
+}
+/** CARRY_POSTURE attempt 3: how far off the QB his torso opens toward what he reads, with his head on the QB: half the
+ * angle between the QB and the threat as he sees them (he splits them), and at least the bail's half turn in a bail
+ * seat. Small while the threat is in front of him; it grows as the threat comes level and passes. */
+function readOpen(a: Agent, qb: Vec2, threat: Vec2, bail: boolean): number {
+  const toQB = Math.atan2(qb.y - a.pos.y, qb.x - a.pos.x), toT = Math.atan2(threat.y - a.pos.y, threat.x - a.pos.x);
+  return Math.max(bail ? CARRY_BAIL : 0, Math.abs(angleDiff(toQB, toT)) / 2);
+}
+/** CARRY_POSTURE: the hips' facing for this carry, or undefined for the full turn (face the run). */
+function carryFacing(a: Agent, r: Agent, qb: Vec2, receiver: Vec2, heading: number, need: number, bail = false): number {
+  const toQB = Math.atan2(qb.y - a.pos.y, qb.x - a.pos.x), toR = Math.atan2(receiver.y - a.pos.y, receiver.x - a.pos.x);
+  let m = carryState.get(a);
+  if (!m || m.r !== r) {
+    m = { r, side: Math.cos(toQB + Math.PI / 2 - toR) >= Math.cos(toQB - Math.PI / 2 - toR) ? 1 : -1, turned: false };
+    carryState.set(a, m);
+  }
+  // Attempt 3b: the pace need is a bound on the request, never what turns him. It is capped at what the half-open
+  // posture can give at the head's reach (the facing cap there, and DIR_CAP's price of the trunk's twist at its range):
+  // short of the break he concedes the step half-open. The turn is CUSHION_BREAK's seen-cushion decision (callers).
+  const reach = carryReach(a), p = a.profile;
+  const capAtReach = p.vmax * directionalSpeedFactor(p, angleDiff(toQB + m.side * reach, heading))
+    * (DIR_CAP && TRUNK_TWIST ? 1 - TRUNK_PRICE * TRUNK_RANGE : 1);
+  const facing = openTo(a, qb, receiver, heading, Math.min(need, capAtReach), reach, m.side, Math.min(reach, readOpen(a, qb, receiver, bail)))
+    ?? toQB + m.side * reach;
+  // Square again: the next opening chooses its side afresh.
+  if (Math.abs(angleDiff(facing, toQB)) < 1e-6) carryState.delete(a);
+  return facing;
+}
+/** CORNER_DROP (experimental, off; CORNER_DROP=1 turns it on; needs CARRY_POSTURE=1 and DIR_CAP=1;
+ * docs/reviews/2026-11-15-corner-drop-design.md): a deep-third corner in a zone call drops on the snap. Taught: the
+ * Cover-3 corner clears a quick run/pass key and sinks with a bail to the outside third (Bleacher Report, NFL 101:
+ * Cover 3; Steelers Depot, Football 101: Bail Technique). Before, before his receiver's release was in his picture he
+ * played the match carry's man pedal, holding the off-man cushion and giving ground only as the stem came: first
+ * request above 1 yd/s at 0.70 s, 1.45 yd/s at 1.0 s (engine-68), where the deep safeties request a sprint at 0.15 s.
+ * With it, from his snap reaction he drops toward his landmark's depth at the deep zone drop's pace (zs), in the bail's
+ * half turn to the outside (CARRY_POSTURE's 45 deg) with his head on the QB, until he sees the release; then the match
+ * carry takes over as before. The quick game's flat-footed read is the existing release belief and ball cue, not a
+ * timer. Quarters corners (taught differently: off #1, eyes inside, in a pedal) and man calls are out of scope. */
+export const CORNER_DROP = process.env.CORNER_DROP === '1';
+function cornerDropSeat(a: Agent, zone: string | undefined): boolean {
+  return !!zone && a.slot.startsWith('CB') && zone.startsWith('deep_third_');
+}
+function cornerDrop(a: Agent, sim: PlaySim, zone: string): MoveCommand {
+  const lm = zoneLandmark(zone as ZoneId, sim.offAlign);
+  const qb = sim.see(a, sim.qb).pos, toQB = Math.atan2(qb.y - a.pos.y, qb.x - a.pos.x);
+  // The bail opens to the outside: the half turn whose facing points away from the ball's side of the field.
+  const out = Math.sign(a.pos.y - sim.ballY) || 1;
+  const f1 = toQB + CARRY_BAIL, f2 = toQB - CARRY_BAIL;
+  const facing = Math.sin(f1) * out >= Math.sin(f2) * out ? f1 : f2;
+  const zs = 0.65 + 0.2 * a.r('zoneCoverage');
+  const cmd = goTo(a, { x: Math.max(lm.x, a.pos.x), y: lm.y }, { speed: zs, facing });
+  return withFacingTechnique(lookJoints(a, cmd, facing, angleDiff(facing, toQB), true), { label: 'corner-drop' });
+}
+/** CARRY_POSTURE attempt 3: a deep zone defender with no vertical to carry reads the deepest threat in his band (as he
+ * sees it) and opens toward it by readOpen, head on the QB (lookJoints); with no threat he stays as his technique asks. */
+function deepReadPosture(a: Agent, sim: PlaySim, threats: { pos: Vec2 }[], zone: string, cmd: MoveCommand): MoveCommand {
+  if (!CARRY_POSTURE || cmd.facing === undefined) return cmd;
+  const deepest = [...threats].sort((p, q) => sim.attackDir(sim.offense[0].team) * (q.pos.x - p.pos.x))[0];
+  if (!deepest) return cmd;
+  const qb = sim.see(a, sim.qb).pos, toQB = Math.atan2(qb.y - a.pos.y, qb.x - a.pos.x);
+  const toT = Math.atan2(deepest.pos.y - a.pos.y, deepest.pos.x - a.pos.x), side = angleDiff(toQB, toT) >= 0 ? 1 : -1;
+  const facing = toQB + side * Math.min(carryReach(a), readOpen(a, qb, deepest.pos, bailSeat(a, zone)));
+  return lookJoints(a, { ...cmd, facing }, facing, angleDiff(facing, toQB), true);
 }
 /** CUSHION_BREAK: has the receiver broken the cushion of a defender over him?
  * He opens to run when the cushion left is less than what the receiver closes
@@ -807,9 +899,10 @@ function openTo(a: Agent, qb: Vec2, receiver: Vec2, heading: number, need: numbe
  * defenders over a climbing receiver who have not turned by the release keep a
  * median 1.4 yd with no deep help (below 1 yd 17-20%) and -0.9 to +0.8 yd with
  * help (BDB 2025 weeks 1-2, nflcue.py). */
-function cushionThreshold(a: Agent, receiverVx: number, help: boolean, receiverRadius: number): number {
+function cushionThreshold(a: Agent, receiverVx: number, help: boolean, receiverRadius: number, open = false): number {
   const closing = Math.max(0, receiverVx - Math.max(0, a.vel.x));
-  const flip = roundedTurnTime(a, angleDiff(a.body.facing, 0)) + 0.15 * (1 - a.r('anticipation') * a.mind.focus);
+  // CARRY_POSTURE: once he runs half-open there is no hip turn left to pay for.
+  const flip = open ? 0 : roundedTurnTime(a, angleDiff(a.body.facing, 0)) + 0.15 * (1 - a.r('anticipation') * a.mind.focus);
   const overlap = (a.profile.radius + receiverRadius) * (help ? -1 : 1);
   return overlap + closing * flip;
 }
@@ -827,15 +920,23 @@ function cushionBroken(a: Agent, cushion: number, receiverVx: number, help: bool
  * toward his facing cap downfield at his current speed (1 - v / cap) * vmax /
  * tau, so a slow-footed defender has to start earlier. */
 function carrySpeedNeed(a: Agent, cushion: number, receiverVx: number, help: boolean, receiverRadius: number,
-  seenAccel?: number): number {
+  seenAccel?: number, open = false, qbDist?: number): number {
   const vx = Math.max(0, receiverVx), p = a.profile;
+  // CARRY_POSTURE attempt 3: he may spend the cushion down to the floor (both bodies' overlap with no help, minus it
+  // with help) over the time a ball thrown now takes to reach his depth (his distance from the passer over the deep-ball
+  // speed, SHOULDER_BALL_SPEED: a crude constant his own estimate of the throw should replace). The receiver's pace is the
+  // one he sees (callers pass the seen vx). One formula before and after the break, so the need has no step.
+  if (CARRY_POSTURE && qbDist !== undefined) {
+    const floor = (a.profile.radius + receiverRadius) * (help ? -1 : 1), H = Math.max(0.3, qbDist / SHOULDER_BALL_SPEED);
+    return clamp(vx - (cushion - floor) / H, 0, p.vmax);
+  }
   if (CARRY_READ && seenAccel !== undefined) {
-    const spare = cushion - cushionThreshold(a, receiverVx, help, receiverRadius);
+    const spare = cushion - cushionThreshold(a, receiverVx, help, receiverRadius, open);
     return spare <= 0 ? vx : burstNeed(a, spare, vx, seenAccel);
   }
   const cap = p.vmax * directionalSpeedFactor(p, angleDiff(a.body.facing, 0));
   const accel = Math.max(0.1, (1 - Math.max(0, a.vel.x) / cap) * p.vmax / p.tau);
-  const spare = cushion - cushionThreshold(a, receiverVx, help, receiverRadius);
+  const spare = cushion - cushionThreshold(a, receiverVx, help, receiverRadius, open);
   return spare <= 0 ? vx : Math.max(0, vx - Math.sqrt(2 * accel * spare));
 }
 /** CARRY_READ (on since engine-57; `CARRY_READ=0` restores the old carry): a deep carry
@@ -1256,6 +1357,11 @@ export class ManCoverage implements Behavior {
     // to the QB as his request allows (pure man and deep carries unchanged).
     const underCarry = OPEN_CARRY && openReq && !sim.defCall.coverage.man && !o.protectDepth;
     if (underCarry) a.tags.add('open-carry');
+    // CORNER_DROP: a deep-third corner in a zone call drops on the snap; the match carry takes over on the seen release.
+    if (CORNER_DROP && !openReq && !this.releaseObserved && o.protectDepth && !sim.defCall.coverage.man) {
+      const zone = (a.behavior as { zone?: string } | undefined)?.zone;
+      if (cornerDropSeat(a, zone)) return cornerDrop(a, sim, zone!);
+    }
     let command = openReq
       ? underCarry
         ? withFacingTechnique({ ...openReq, facing: openCarryFacing(a, sim, R, openReq, vx > 3) }, { label: 'open-carry', key: seen.vel })
@@ -1283,7 +1389,23 @@ export class ManCoverage implements Behavior {
     // pedal cannot keep it but it is not broken, he carries side-on (QB still
     // in view) at the speed the depth check asks for.
     const selected = this.depth.choose(a, seen, acquired, R.profile, base, command, sim.t, sim.world.handContact);
-    if (breakOn && !this.hipsOpen && !broken()) {
+    if (breakOn && CARRY_POSTURE) {
+      // CARRY_POSTURE 3b: short of CUSHION_BREAK's turn (hipsOpen, his seen cushion and closing), one half-open posture
+      // within his head's reach of the QB, look on the QB, at a pace bounded by what that posture gives.
+      if (!this.hipsOpen) {
+        const req = selected.facing === undefined ? selected : command;
+        const qbSeen = sim.see(a, sim.qb).pos;
+        const need = carrySpeedNeed(a, a.pos.x - seen.pos.x, vx, help, R.profile.radius, this.depth.seenAcceleration, false,
+          Math.hypot(qbSeen.x - a.pos.x, qbSeen.y - a.pos.y));
+        const facing = carryFacing(a, R, qbSeen, seen.pos, Math.atan2(req.vel.y, req.vel.x), need,
+          bailSeat(a, (a.behavior as { zone?: string } | undefined)?.zone));
+        const toQB = Math.atan2(qbSeen.y - a.pos.y, qbSeen.x - a.pos.x);
+        if (Math.abs(angleDiff(facing, toQB)) < 1e-6 && req === command) return command;
+        a.tags.add('open-carry');
+        return withFacingTechnique(lookJoints(a, { ...req, facing }, facing, angleDiff(facing, toQB), true),
+          { label: 'man-open-carry', key: seen.vel });
+      }
+    } else if (breakOn && !this.hipsOpen && !broken()) {
       const req = selected.facing === undefined ? selected : command;
       const qbSeen = sim.see(a, sim.qb).pos;
       const facing = openTo(a, qbSeen, seen.pos, Math.atan2(req.vel.y, req.vel.x),
@@ -1585,9 +1707,9 @@ export class ZoneCoverage implements Behavior {
         if (SAFETY_DEPTH && this.initialDepth >= 9) {
           const r = Math.max(0, ...threats.map(th => th.pos.x - sim.los));
           const x = Math.min(END_LINE_X - 1.2, Math.max(lm.x, sim.los + r + safetyOver(a, r)));
-          return withFacingTechnique(pedalRequest(a, goTo(a, { x, y: tgt.y }, { facing: facingQB, speed: zs })), { label: 'deep-read' });
+          return withFacingTechnique(deepReadPosture(a, sim, threats, this.zone, pedalRequest(a, goTo(a, { x, y: tgt.y }, { facing: facingQB, speed: zs }))), { label: 'deep-read' });
         }
-        return withFacingTechnique(goTo(a, { x: Math.max(tgt.x, lm.x - 1), y: tgt.y }, { facing: facingQB, speed: zs }),
+        return withFacingTechnique(deepReadPosture(a, sim, threats, this.zone, goTo(a, { x: Math.max(tgt.x, lm.x - 1), y: tgt.y }, { facing: facingQB, speed: zs })),
           { label: 'deep-read' });
       }
       vert.sort((p, q) => q.fut.x - p.fut.x);
@@ -1656,7 +1778,22 @@ export class ZoneCoverage implements Behavior {
       // CUSHION_BREAK: square in his pedal until the cushion is broken; side-on
       // when the pedal cannot keep it.
       const selected = depth.choose(a, deepest, deepest.cue, deepest.r.profile, cushion, command, sim.t, sim.world.handContact);
-      if (CUSHION_BREAK && this.turnedWith !== deepest.r && !deepBroken()) {
+      if (CUSHION_BREAK && CARRY_POSTURE) {
+        // CARRY_POSTURE 3b: short of CUSHION_BREAK's turn (turnedWith: his seen cushion broken), one half-open posture
+        // within his head's reach of the QB, look on the QB, at a pace bounded by what that posture gives.
+        if (this.turnedWith !== deepest.r) {
+          const req = selected.facing === undefined ? selected : command;
+          const qbSeen = sim.see(a, sim.qb).pos, heading = Math.atan2(req.vel.y, req.vel.x);
+          const need = carrySpeedNeed(a, a.pos.x - deepest.pos.x, deepest.vel.x, false, deepest.r.profile.radius, depth.seenAcceleration, false,
+            Math.hypot(qbSeen.x - a.pos.x, qbSeen.y - a.pos.y));
+          const facing = carryFacing(a, deepest.r, qbSeen, deepest.pos, heading, need, bailSeat(a, this.zone));
+          const toQB = Math.atan2(qbSeen.y - a.pos.y, qbSeen.x - a.pos.x);
+          if (Math.abs(angleDiff(facing, toQB)) < 1e-6 && req === command) return command;
+          a.tags.add('open-carry');
+          return withFacingTechnique(lookJoints(a, { ...req, facing }, facing, angleDiff(facing, toQB), true),
+            { label: 'deep-open-carry', key: deepest.vel });
+        }
+      } else if (CUSHION_BREAK && this.turnedWith !== deepest.r && !deepBroken()) {
         const req = selected.facing === undefined ? selected : command;
         const qbSeen = sim.see(a, sim.qb).pos;
         const facing = openTo(a, qbSeen, deepest.pos, Math.atan2(req.vel.y, req.vel.x),
@@ -2166,7 +2303,7 @@ export function playBall(a: Agent, sim: PlaySim, man: Agent | null,
   }
   const path = acquireFlight(a, sim);
   // BALL_EST: until he has an estimate of where it is going he keeps playing what he was playing.
-  if (BALL_EST && !path.length) {
+  if (estimatesFor(a) && !path.length) {
     if (continueCoverage) return continueCoverage();
     if (man) {
       const s = sim.see(a, man), inside = Math.sign(sim.ballY - s.pos.y) || 1;
@@ -2191,6 +2328,41 @@ export function playsThrow(a: Agent, sim: PlaySim, man: Agent | null): boolean {
 function playsFlight(a: Agent, sim: PlaySim, man: Agent | null): boolean {
   return playsThrow(a, sim, man) && (!RELEASE_BELIEF || releaseBelief(sim, a).ballAt !== undefined);
 }
+/** Bit 256: his look decision for this flight (one judgment of his phase, one draw of his discipline), kept for film
+ * and the witness: behind / side as he judged them, in phase or not, and whether he looks. */
+const manLookChoice = new WeakMap<Agent, { key: number | undefined; behind: number; side: number; inPhase: boolean; looks: boolean; at: number }>();
+export function manLookOf(a: Agent): { behind: number; side: number; inPhase: boolean; looks: boolean; at: number } | undefined {
+  return manLookChoice.get(a);
+}
+function manLooks(a: Agent, sim: PlaySim, man: Agent, key: number | undefined): boolean {
+  // One choice per belief (his release belief's time, as the shoulder pick keys), not per true flight.
+  const prev = manLookChoice.get(a);
+  if (prev && prev.key === key) return prev.looks;
+  // His picture of the man: how far behind him along the man's running line, and how far off it. With no heading in
+  // his picture (the man standing, no facing seen) he cannot judge "behind" this tick and does not decide yet.
+  const s = sim.see(a, man), sp = Math.hypot(s.vel.x, s.vel.y);
+  if (sp <= 1 && s.facing === undefined) return false;
+  const h = sp > 1 ? Math.atan2(s.vel.y, s.vel.x) : s.facing!;
+  const dx = a.pos.x - s.pos.x, dy = a.pos.y - s.pos.y, ux = Math.cos(h), uy = Math.sin(h);
+  const dice = sim.dice('man-look', a);
+  const behind = -(dx * ux + dy * uy) + dice.normal(0, phaseJudgeSd(a)), side = Math.abs(-dx * uy + dy * ux);
+  const inPhase = behind <= PHASE_BEHIND && side <= PHASE_SIDE;
+  const looks = inPhase || dice.chance(lookAnyway(a));
+  manLookChoice.set(a, { key, behind, side, inPhase, looks, at: sim.t });
+  if (looks) a.tags.add(inPhase ? 'man-look' : 'man-look-trailing');
+  return looks;
+}
+/** Bit 256: the look. He attends to the ball (his head turns where he believes it comes from: the passer as he saw
+ * him, until he has an estimate) and his body gives the look the joints it needs: neck, the shoulders through the trunk,
+ * the hips for what is left, priced by the facing cap. His picture of the man runs on the same eyes meanwhile. */
+function manLook(a: Agent, sim: PlaySim, cmd: MoveCommand): MoveCommand {
+  if (!sim.ballEstimates) return cmd;
+  sim.ballEstimates.estimate(a, sim);
+  const qb = sim.see(a, sim.qb).pos, sp = Math.hypot(cmd.vel.x, cmd.vel.y);
+  const heading = sp > 0.4 ? Math.atan2(cmd.vel.y, cmd.vel.x) : (cmd.facing ?? a.facing);
+  return lookJoints(a, cmd, heading, angleDiff(heading, Math.atan2(qb.y - a.pos.y, qb.x - a.pos.x)), true);
+}
+
 /** RELEASE_BELIEF's playBall: with the ball seen, the flight he acquired; on a belief from the arm alone (the motion
  * tells him when, not where) he bites: a zone defender plants (stops his drop, the rest of his zone play goes on), a
  * man defender stays on his man, until he sees the ball or the pull-down. */
@@ -2206,7 +2378,12 @@ function playBelievedBall(a: Agent, sim: PlaySim, man: Agent | null, continueCov
   };
   if (!sawThrow(a, sim, man)) return fallback();
   const rb = releaseBelief(sim, a);
-  if (rb.ballAt === undefined) {
+  // BALL_EST (with bit 128): a ball seen once is not yet a flight he can play: with fewer than two samples his own
+  // estimate is empty, and he plays as on the arm alone until it is not (not an empty path to playObservedFlight).
+  const noFlight = rb.ballAt !== undefined && estimatesFor(a) && !hasObservedFlight(a) && !sim.ballEstimates?.estimate(a, sim).length;
+  if (rb.ballAt === undefined || noFlight) {
+    // Bit 256: a man defender who has not found the ball judges his phase and, in phase (or undisciplined), looks.
+    if (man && BALL_EST_MAN_LOOK && estimatesFor(a) && !hasObservedFlight(a) && manLooks(a, sim, man, rb.releasedAt)) return manLook(a, sim, fallback());
     a.tags.add('arm-bite');
     if (!continueCoverage) return fallback();
     // A zone defender breaks on the passer's shoulders at the delivery (the arm coming through; on the load alone he
@@ -2276,7 +2453,11 @@ function playObservedFlight(a: Agent, sim: PlaySim, path: PlaySim['ballPath'], a
   // him; that is not a reason to stop. Hold the approach he last chose.
   if (c) { lastFlightApproach.set(a, { cmd: c, t: sim.t }); return c; }
   const last = lastFlightApproach.get(a);
-  return last && sim.t - last.t <= 0.3 ? { ...last.cmd } : stand();
+  if (last && sim.t - last.t <= 0.3) return { ...last.cmd };
+  // No catchable sample left on his flight and no recent approach: he keeps his ball responsibility and goes to where
+  // he believes it came down (pursueIfLive's ball rally), not a stop. A newer holder picture takes over there.
+  const area = BALL_CUE_OWN ? unresolvedBallArea(a) : null;
+  return area ? goTo(a, area) : stand();
 }
 
 const lastFlightApproach = new WeakMap<Agent, { cmd: MoveCommand; t: number }>();
@@ -2417,12 +2598,15 @@ function arrivalPoint(sim: PlaySim, path: PlaySim['ballPath']): Vec2 | null {
   return last;
 }
 
+/** LOOSE_SEEN (see behaviors/loose-seen.ts): read here to keep the module free of an import cycle. */
+const LOOSE_SEEN_PURSUIT = process.env.LOOSE_SEEN !== '0';
 /** Generic pursuit of the ball carrier. */
 export class Pursuit implements Behavior {
   readonly kind = 'pursuit';
   update(a: Agent, sim: PlaySim): MoveCommand {
     if (a.engagement) return stand();
-    if (sim.ball.kind === 'loose') return runThrough(a, { x: sim.ball.flight.pos.x, y: sim.ball.flight.pos.y });
+    // LOOSE_SEEN: a loose ball reaches him through his own recognition (LooseCue), not through the ball's true state.
+    if (sim.ball.kind === 'loose' && !LOOSE_SEEN_PURSUIT) return runThrough(a, { x: sim.ball.flight.pos.x, y: sim.ball.flight.pos.y });
     const holder = observedHolder(a, sim);
     if (holder) return chase(sim, a, holder.target);
     if (HONEST_READS ? playsThrow(a, sim, null) : sim.ball.kind === 'air') return playBall(a, sim, null);
