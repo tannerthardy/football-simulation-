@@ -19,7 +19,7 @@ for (const concept of ONLY.length ? ONLY.filter((c) => PASS_BY_ID[c]) : CONCEPTS
     const snap = new Map<number, any>(sim.defense.map((d: any) => [d.idx, { slot: d.slot, pos: d.player.position, wide: +Math.abs(d.pos.y - sim.ballY).toFixed(1) }]));
     sim.throwBall = (p: any, target: any, v0: any, intended: any, arrivalT: number, away = false, ...rest: any[]) => {
       if (p === sim.qb && !thr) thr = { t: +sim.t.toFixed(2), away, route: target?.behavior?.route?.id ?? null, depth: target ? +((target.pos.x - sim.los) * dir).toFixed(1) : null, aim: intended ? +((intended.x - sim.los) * dir).toFixed(1) : null,
-        qb: +((p.pos.x - sim.los) * dir).toFixed(1), qbY: +((p.pos.y - sim.ballY) * ss).toFixed(2), readIdx: p.behavior?.readIdx ?? null, P: p.behavior?.throwRec?.P ?? null,
+        qb: +((p.pos.x - sim.los) * dir).toFixed(1), rec: (() => { const r = p.behavior?.throwRec; return r ? { iR: +r.intRisk.toFixed(3), P: +r.P.toFixed(3), T: r.T !== undefined ? +r.T.toFixed(2) : null, decQb: r.at ? +((r.at.x - sim.los) * dir).toFixed(1) : null, aimD: r.aim ? +Math.hypot(r.aim.x - p.pos.x, r.aim.y - p.pos.y).toFixed(1) : null, decAimD: r.at && r.aim ? +Math.hypot(r.aim.x - r.at.x, r.aim.y - r.at.y).toFixed(1) : null } : null; })(), qbY: +((p.pos.y - sim.ballY) * ss).toFixed(2), readIdx: p.behavior?.readIdx ?? null, P: p.behavior?.throwRec?.P ?? null,
         sep: target ? +Math.min(...sim.defense.map((d: any) => Math.hypot(d.pos.x - target.pos.x, d.pos.y - target.pos.y))).toFixed(1) : null };
       return tb(p, target, v0, intended, arrivalT, away, ...rest);
     };

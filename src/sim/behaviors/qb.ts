@@ -2054,7 +2054,12 @@ export class QBPass implements Behavior {
   }
   /** A point's bearing off his facing, wrapped to [0, pi]. */
   private offFacing(a: Agent, at: Vec2): number {
-    const raw = Math.atan2(at.y - a.pos.y, at.x - a.pos.x) - a.body.facing;
+    // QB_FOOTWORK bit 2: his blind side is behind where his eyes are (his head), not his chest: with bit 2 his shoulders
+    // hold side-on in the crossover and on a step while his head moves, and the backside rusher sat 111-125 deg off his
+    // chest, felt as behind him, while his head was 36-40 deg from him (scripts/diag/eyes/feel-facing.ts, mesh cover 2
+    // roster 11). Off, his chest (it follows his look).
+    const look = FW_HIPS && a.head !== null && Number.isFinite(a.head) ? a.head : a.body.facing;
+    const raw = Math.atan2(at.y - a.pos.y, at.x - a.pos.x) - look;
     return Math.abs(Math.atan2(Math.sin(raw), Math.cos(raw)));
   }
   /** Behind his shoulder: the single 1.8 rad edge (the channel choice; the two channels agree at it). */
@@ -2525,7 +2530,7 @@ export class QBPass implements Behavior {
     this.look = null;
     // Diagnostic record (no effect): the throw as he accepted it, against his bar this tick and his normal bar.
     const bar = this.barNow?.t === sim.t ? this.barNow : null;
-    this.throwRec = { t: sim.t, slot: ev.target.slot, P: ev.P, intRisk: ev.intRisk, value: ev.value, depth: ev.depth, parts: ev.parts ?? null,
+    this.throwRec = { t: sim.t, slot: ev.target.slot, P: ev.P, intRisk: ev.intRisk, value: ev.value, depth: ev.depth, parts: ev.parts ?? null, at: { x: a.pos.x, y: a.pos.y }, aim: { x: ev.point.x, y: ev.point.y }, T: ev.T,
       u: bar?.u ?? null, urgency: bar?.urgency ?? null, clock: bar?.clock ?? null, thr: bar?.thr ?? null, maxInt: bar?.maxInt ?? null,
       clearsNormal: bar ? ev.P >= bar.thr0 && ev.intRisk <= bar.max0 : null, hot: this.alarmAt !== null && this.alarmAt <= sim.t && this.hotPick?.t === sim.t };
     this.pending = ev;
