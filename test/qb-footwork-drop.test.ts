@@ -2,7 +2,8 @@
  * 1. The crossover: by the middle of his drop his chest is open off downfield (bit 2 off: square to it).
  * 2. Shoulders on a step: in the pocket the facing he requests does not turn on a look alone; it turns at the plant, on a
  *    landed step, or for the throw (bit 2 off: it turns whenever his eyes or read move).
- * 3. The play-action fake is held to the measured mesh: from the gun he is still on the fake past 1.4 s (off: 0.7 s).
+ * 3. Bit 16 (split from bit 2): the play-action fake is held to the measured mesh: from the gun he is still on the fake
+ *    past 1.4 s (off, and with bit 2 alone: 0.7 s).
  * docs/reviews/2026-11-15-drop-design-stage1.md. */
 import { readFileSync } from 'node:fs';
 import { afterEach, describe, expect, it, vi } from 'vitest';
@@ -79,8 +80,8 @@ describe('QB_FOOTWORK bit 2: the drop body', () => {
     expect(sum(off, 'lookTurns')).toBeGreaterThan(0);
     expect(sum(on, 'lookTurns')).toBe(0);
   }, 600_000);
-  it('the play-action fake is held to the measured mesh (gun: past 1.4 s; off: 0.7 s)', async () => {
-    const off = await fakeEnd('1'), on = await fakeEnd('3');
+  it('bit 16: the play-action fake is held to the measured mesh (gun: past 1.4 s; bits 1+2 alone: 0.7 s)', async () => {
+    const off = await fakeEnd('3'), on = await fakeEnd('19');
     expect(off.length).toBeGreaterThanOrEqual(2); expect(on.length).toBeGreaterThanOrEqual(2);
     for (const t of off) expect(t).toBeLessThan(0.8);
     for (const t of on) expect(t).toBeGreaterThan(1.4);

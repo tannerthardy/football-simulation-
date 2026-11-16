@@ -472,6 +472,11 @@ const FW_STEPS = (QB_FOOTWORK & 1) !== 0;
  * Part 3: the crossover drop, hips side-on to travel toward read 1's side over the first third of the depth, and the
  * drop paced to its measured time. Read with bit 1. Not built yet in bit 2: the step into the throw. */
 const FW_HIPS = (QB_FOOTWORK & 2) !== 0;
+/** QB_FOOTWORK bit 16 (split from bit 2, Integration 2026-11-16): the play-action fake held to the measured mesh. Not
+ * to land alone: with it a gun PA plants at 2.3 s (the NFL's 2.2) but his read after the plant is a dropback's (throw
+ * 3.2 s against the NFL's 2.3), and PA sacks go 14.8 -> 27.1% staged; it lands with PA reads decided on the plant out
+ * of the fake. */
+const FW_PA_FAKE = (QB_FOOTWORK & 16) !== 0;
 /** QB_FOOTWORK bit 8: the grass read (docs/reviews/2026-11-15-drop-design-stage1.md, "Design: the grass read"; Rules +
  * Coaching's vertical-ready note on #780). A first read thrown before its break into space (a vertical, a corner, a
  * post, a deep out) is read on the grass it is going to, during the drop: his eyes go to the landing area from the
@@ -877,10 +882,10 @@ export class QBPass implements Behavior {
     this.dropY = a.pos.y;
     this.clock = 2.5 + 1.0 * a.r('composure') + 0.6 * a.r('pocketPresence') + sim.dice('qb', a).normal(0, 0.25);
     this.armSpeed = qbArmSpeed(a.player.ratings.throwPower);
-    // QB_FOOTWORK bit 2: the fake is held to the measured mesh plus half its ride (BDB 2025 play action,
+    // QB_FOOTWORK bit 16: the fake is held to the measured mesh plus half its ride (BDB 2025 play action,
     // scripts/diag/eyes/nfl_pa_ride.py: gun mesh at 1.2 s after the snap, ridden 0.5 s; under center at 1.4 s, ridden
     // 0.2 s), not an absolute 0.7 s that in the gun left a 0.2 s turn after he had the ball (nobody bites on that).
-    if (concept.family === 'playaction') this.fakeUntil = FW_HIPS ? (gun ? 1.2 + 0.25 : 1.4 + 0.1) : 0.7;
+    if (concept.family === 'playaction') this.fakeUntil = FW_PA_FAKE ? (gun ? 1.2 + 0.25 : 1.4 + 0.1) : 0.7;
     this.mind = sim.qbMind;
     for (const [r, prior] of receiverPriors) this.receiverForecasts.set(r, new ReceiverForecast(a, prior, sim.dt));
     this.mind.receiverAt = (r) => this.receiverForecasts.get(r)?.predict(sim.t, 0) ?? null;

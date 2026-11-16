@@ -631,3 +631,30 @@ included, whether or not he can get there before the ball: that is timing, which
 Two attempts at the readable test (the first: men under the throw do not count), so no third tweak: re-diagnose. The
 candidate is that readable is the release won (out of the collision, the vertical cue's leverage) and the window
 priced at the landing area decides the rest, with no geometric veto. For Integration and Rules.
+
+### Bit 2's sacks on card D, explained; bit 16 split out (2026-11-16)
+
+Paired staged, 3648 plays (every staged concept from gun doubles plus pa_flood, pa_post_dig, pa_shot; 8 coverages x 4
+rosters x 6 seeds), `CONCEPT_DROPS=1`, `QB_FOOTWORK=1` against `=3` (bit 2 as it then was): sacks 232 -> 328. Play
+action 576 plays, 14.8 -> 27.1%, set 1.55 -> 2.28 s; dropbacks 3072, 4.8 -> 5.6%, set 1.91 -> 2.05 s.
+
+Play action: the fake held to the measured mesh has him plant at 2.28 s (the NFL's gun PA plant 2.2 s, pass 2.3 s), and
+then read as on a dropback (median throw 3.17 s); 92 new sacks (21 gone), by the edge players (DE_S 59, DE_W 30) at a
+median 3.8 s, on 85 of which bit 1 had thrown at 3.05 s. The honest fake exposes a PA read not keyed to the plant.
+Ruling: the fake is now bit 16, which lands only with PA reads decided on the plant out of the fake (read 1 the window
+the fake makes, on that step, no dwell; with Rules). Bit 2 is the drop's body alone.
+
+Dropbacks, the six concepts that moved most (new / gone sacks, bit 1 -> bits 1+2):
+- corner_flat 6 -> 12 (11 new, 5 gone): 10 of the 11 are roster 11's DE_S across coverages; set 2.07 -> 2.29 s, bit 1
+  had thrown at 2.5-3.9 s (back flat, slant). One rush matchup, reached by a later set.
+- curl_flat 0 -> 7: all roster 11's DE_W, sacked at 3.8-4.05 s where bit 1 threw the curl at 2.65-3.2 s; set +0.11 s.
+- mesh 0 -> 6: all roster 11's DE_W at 3.5 s; bit 1 threw the under crosser at 2.85 s. Traced (cover 2 seed 3): with
+  bit 2 set 0.10 s later, the rusher is inside his urgency at 2.40 s and his read jumps from the corner to the back's
+  swing (the hot path), which is not open; bit 1 moved to the crosser at 2.45 s and threw.
+- drive 8 -> 12 (10 new, 6 gone): 9 of 10 roster 11's DE_S; set 2.08 -> 2.29 s; bit 1 threw the shallow at 2.5-3.4 s.
+- trips_outs 18 -> 10 (3 new, 11 gone) and trips_sail 15 -> 10 (2 new, 7 gone): the gone sacks are rosters 11 / 19 /
+  3 edge and interior rushes that the 0.11 s later set and the paced drop's position move him away from.
+So the dropback cost is one fast edge rusher (roster 11) reaching a set that is 0.1-0.2 s later, repeated across
+coverages, against other matchups the later set helps: the drop's timing, not a fault in one concept. Not excluded:
+whether the crossover's facing, side-on toward read 1's side, also delays his feel of the backside rusher (his blind
+side); the mesh case reads like timing (the rusher inside his urgency), but it is untested.
