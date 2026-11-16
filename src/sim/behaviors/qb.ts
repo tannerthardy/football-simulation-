@@ -480,12 +480,15 @@ const FW_HIPS = (QB_FOOTWORK & 2) !== 0;
  * window prices the throw to the aim point: anticipation), and if it has not gone by the set he is on to his next read at
  * once ("on his fifth step, the ball should be gone or he should be on to his mesh read", Win With The Pass). The plan's
  * own fields (grass reads, landing areas) are taken when it hands them over; until then the grass routes and the landing
- * area are his own (installed route families; his forecast of the man GRASS_AHEAD s on). Read with bits 1+2. */
+ * area are his own (installed route families; his forecast of the man at the ball's arrival: his wind-up plus its flight). Read with bits 1+2. */
 const FW_GRASS = (QB_FOOTWORK & 8) !== 0;
-/** QB_FOOTWORK bit 8: routes thrown before their break into space (installed route ids), and how far ahead on his
- * forecast the landing area is (s). Chosen until the plan hands them over. */
+/** QB_FOOTWORK bit 8: routes thrown before their break into space (installed route ids). Chosen; GRASS_READ's plan
+ * fields replace it. */
 const GRASS_ROUTES = new Set(['go', 'fade', 'corner', 'post', 'deep_out']); // chosen: routes into space decided by the plant; the seam is a hook/safety read off the hitch (vertReadable)
-const GRASS_AHEAD = 1.2;
+/** GRASS_READ (Rules, #802): the plan marks grass reads (`rhythm[i].grass`: landing in the plan's frame, the route time
+ * there, decided on the entry's step n). With it, the plan is the source of which reads are grass reads and where they
+ * land; without it, the fallbacks above (read 1 only, decided on the plant). */
+const GRASS_FIELDS = process.env.GRASS_READ === '1';
 /** QB_FOOTWORK: the hitch is a stride of his own drop (a gather, back foot then front foot, that re-sets his base and
  * turns him to the read, at depth): its time is his drop's time over its steps, so his eyes leave for the next read
  * one stride before its beat and the ball can leave on its landing. The steps each drop is taught in (1 the quick
@@ -931,6 +934,12 @@ export class QBPass implements Behavior {
     if (FW_STEPS) for (const rh of p.rhythm as { ref: ReceiverRef; step: string; n?: number }[]) {
       const r = ag(rh.ref);
       if (r && !this.readStep.has(r)) this.readStep.set(r, rh.n ?? (rh.step === 'set' ? 0 : rh.step === 'hitch' ? 1 : 2));
+      // QB_FOOTWORK bit 8 with GRASS_READ: the plan's landing area, from the plan's frame to the field (his own call).
+      const g = (rh as { grass?: { landing: { x: number; y: number }; t: number } }).grass;
+      if (FW_GRASS && GRASS_FIELDS && r && g && !this.grassPlan.has(r)) {
+        const dir = sim.attackDir(sim.qb.team), ss = sim.offAlign?.strongSign ?? 1;
+        this.grassPlan.set(r, { x: sim.los + dir * g.landing.x, y: sim.ballY + ss * g.landing.y });
+      }
     }
     if (DECLARED_BREAK) for (const rd of p.reads ?? []) { const r = ag(rd.ref); if (r) this.planReads.set(r, { breakAt: rd.breakAt, throwFamily: rd.throwFamily, anchorLead: rd.anchorLead }); }
     this.plan = { style: p.style, key: p.key && low && high ? { low, high, cueBy: p.key.cueBy, deep: p.key.role.startsWith('deep'), role: p.key.role, man: QB_KEY_MAN ? this.keyMan(sim, p.key.role, low, high) : null } : null,
@@ -1370,9 +1379,10 @@ export class QBPass implements Behavior {
       if (k >= 0) { this.readIdx = k; this.readStart = t; if (HOT_LOOK) this.triDone = true; }
     }
     let read = this.reads[this.readIdx];
-    // QB_FOOTWORK bit 8: a grass read is decided by the plant, with no dwell: not thrown by then, he is on to his next read.
-    if (FW_GRASS && this.readIdx === 0 && this.isGrass(read) && this.setAt >= 0 && t - this.setAt > sim.dt + 1e-9 && this.reads.length > 1) {
-      this.readIdx = 1; this.readStart = t; read = this.reads[1];
+    // QB_FOOTWORK bit 8: a grass read is decided by its step (the plant for read 1), with no dwell: not thrown by then,
+    // he is on to his next read.
+    if (FW_GRASS && this.isGrass(read) && this.setAt >= 0 && t - this.grassDue(read) > sim.dt + 1e-9 && this.readIdx < this.reads.length - 1) {
+      this.readIdx++; this.readStart = t; read = this.reads[this.readIdx];
     }
     if (FW_STEPS) this.footwork(a, sim, read);
     // QB_EYES: his eyes are on the man he is gating a throw to; otherwise on his read (from when they got there).
@@ -1687,6 +1697,7 @@ export class QBPass implements Behavior {
     }
     // QB_FOOTWORK bit 8: in the drop, his eyes on his grass read's landing area ("look at the area he is going").
     if (FW_GRASS && this.phase === 'drop' && this.readIdx === 0 && this.isGrass(this.reads[0])) return this.grassLanding(sim, this.reads[0]);
+    if (FW_GRASS && this.phase === 'set' && this.isGrass(this.reads[this.readIdx])) return this.grassLanding(sim, this.reads[this.readIdx]);
     const tri = this.plan?.triangle;
     if (tri && !this.triDone && this.phase === 'set') {
       const P = tri.map(heldPoint);
@@ -1763,13 +1774,27 @@ export class QBPass implements Behavior {
    * Whether anyone over the top can reach the throw is the window's (the aim point), not this cue's. */
   private vertRead = new Set<Agent>();
   /** QB_FOOTWORK bit 8: whether a read is his grass read (read 1, a route into space) and where its landing area is. */
+  private grassPlan = new Map<Agent, Vec2>();
   private isGrass(r: Agent | undefined): boolean {
-    if (!FW_GRASS || !r || this.reads[0] !== r) return false;
+    if (!FW_GRASS || !r) return false;
+    if (GRASS_FIELDS) return this.grassPlan.has(r);
+    if (this.reads[0] !== r) return false;
     const id = this.receiverForecasts.get(r)?.prior.routeId ?? null;
     return !!id && GRASS_ROUTES.has(id);
   }
+  /** When a grass read is decided: his step n for it (n strides after his set; the plant for n = 0). */
+  private grassDue(r: Agent): number { return this.setAt + (this.stepOf.get(r)?.n ?? 0) * this.stride(); }
   private grassLanding(sim: PlaySim, r: Agent): Vec2 {
-    return this.receiverForecasts.get(r)?.predict(sim.t, GRASS_AHEAD) ?? this.has(sim, r);
+    const planned = this.grassPlan.get(r);
+    if (planned) return planned;
+    // Without the plan's landing: where his forecast has the man when a ball started now arrives (his wind-up plus the
+    // flight to that point at his natural speed), solved by two passes from the wind-up alone.
+    const f = this.receiverForecasts.get(r);
+    if (!f) return this.has(sim, r);
+    const qb = sim.qb, w = this.windup(qb);
+    let at = f.predict(sim.t, w) ?? this.has(sim, r);
+    for (let i = 0; i < 2; i++) at = f.predict(sim.t, w + naturalFlightFor(this.armSpeed, Math.hypot(at.x - qb.pos.x, at.y - qb.pos.y))) ?? at;
+    return at;
   }
   /** Readable: out of the collision, and nobody he sees between the man and the landing area (beaten or under him). */
   private grassRead = new Set<Agent>();

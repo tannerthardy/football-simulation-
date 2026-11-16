@@ -470,3 +470,42 @@ at 12.5 yd and about 3 s.
 Test: test/qb-grass-read.test.ts (mesh against cover 2 and tampa 2: no dwell on the grass read after the plant; more
 corners than off, each within 0.6 s of the plant). Probes: scripts/diag/eyes/grass-trace.ts, grass-plant.ts.
 
+### With the plan's fields (Rules' GRASS_READ, #802), 2026-11-16
+
+Rules set the list from the sources and put it on the plan: `rhythm[i].grass = { landing, t, decided: 'step' }`. The
+landing is the point on the installed route at the NFL's median air yards (go/seam/fade 22, corner 19), in the plan's
+frame (converted with his own strong sign). Any read in the rhythm can be a grass read, decided on its own step `n` (the
+plant for n = 0, a hitch for n = 1). The declared verticals are in, the seam included; that answers the seam problem
+above: keyed to its hitch, it is decided there, not at the plant. The corner is in only as read 1 and not half of a key
+(mesh yes; smash, corner_flat and sail_corner no, thrown off their defender). The post and the deep out are out, as
+they are thrown on the break.
+
+The quarterback side (GRASS_READ=1): `isGrass` is the plan's mark; the landing is the plan's; he moves on a tick past
+the step that decides it; his eyes are on its landing area while it is his read (drop and set). Without the fields the
+fallback stands, and its landing is no longer a chosen 1.2 s: his forecast at the time a ball started now arrives
+there (his wind-up plus its flight at his natural speed, two passes).
+
+Staged, `QB_FOOTWORK=11`, 192 plays a concept; the plan arm run on this branch with #802 merged in a scratch tree:
+
+| concept | =3 | =11 fallback | =11 + GRASS_READ |
+|---|---|---|---|
+| four_verts sacks / cmp / yd | 20 / 65 / 9.98 | 19 / 68 / 10.26 | 11 / 79 / 11.21 |
+| four_verts verticals: t, depth | 3.01 s, 12.8 yd | 2.96 s, 12.4 yd | 2.69 s, 10.1 yd (NFL 2.6, 9.2) |
+| verts_hitch sacks / cmp / yd | 14 / 90 / 9.84 | 12 / 93 / 10.10 | 16 / 84 / 9.16 |
+| verts_hitch verticals: t, depth | 3.03 s, 13.0 yd | 2.96 s, 12.5 yd | 2.63 s, 9.8 yd |
+| dagger sacks / cmp / yd | 22 / 97 / 5.56 | 22 / 97 / 5.56 | 11 / 117 / 6.65 |
+| mesh sacks / cmp / yd, corners | 6 / 156 / 9.57, 5 | 0 / 136 / 9.21, 20 | 0 / 135 / 8.91, 20 |
+| smash sacks / ints / cmp | 17 / 8 / 107 | 14 / 4 / 107 | 17 / 8 / 107 (corner keyed: as off) |
+
+The vertical witness moves only with the plan's fields: decided on its step at the plan's landing, the vertical leaves
+at 2.6-2.7 s and 10 yd, against the NFL's 2.6 s and 9.2 yd. verts_hitch is the adverse cell (cmp 90 -> 84, sacks 14 ->
+16), not yet diagnosed.
+
+**Mesh completions (156 -> 136), explained.** Paired plays: the corner itself is 20 of 20 for 48.7 yd a throw (a
+coverage fault in the cover 2 hole, for Defense). The loss is 25 plays where both arms throw the under crosser and
+only off catches it: with no dwell on the corner he is on the crosser 0.36 s earlier (2.41 vs 2.77 s) and throws it
+still in the mesh traffic (nearest defender at the release 3.5 vs 4.6 yd), priced the same (P 0.77 vs 0.74). His
+window does not see a crosser still inside the traffic; this is the same question as ROUTE_LANDMARK's pressed out
+(the window overrating a man with a defender on him), taken up there. A few of the 25 are roll noise: the look-off's
+dice draw is skipped with bit 8, and 6 plays went the other way.
+
