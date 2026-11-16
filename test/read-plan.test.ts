@@ -14,8 +14,9 @@ function referenceEngine(plan: string, forecast: string) {
 }
 
 type Mode = 'natural' | 'sink' | 'jump';
-async function run(opts: { concept: string; coverage: string; seed: number; formation?: string; key?: Mode; plan?: string; forecast?: string }) {
+async function run(opts: { concept: string; coverage: string; seed: number; formation?: string; key?: Mode; plan?: string; forecast?: string; env?: Record<string, string> }) {
   referenceEngine(opts.plan ?? '1', opts.forecast ?? '1');
+  for (const [k, v] of Object.entries(opts.env ?? {})) vi.stubEnv(k, v);
   const { PlaySim } = await import('../src/sim/playsim.js');
   const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');
   const { goTo } = await import('../src/sim/behaviors/common.js');
@@ -30,7 +31,7 @@ async function run(opts: { concept: string; coverage: string; seed: number; form
     cb.behavior = { kind: orig.kind, update: (a: any, s: any) => s.t < 0.6 ? orig.update(a, s)
       : goTo(a, opts.key === 'sink' ? { x: s.los + 15 * dir, y: s1.pos.y } : { x: s.los + 3 * dir, y: s2.pos.y + 3 * ss }, { speed: 0.95 }) };
   }
-  let qb: any = null, target: any = null, movedOn = -1, rushIn: number | null = null;
+  let qb: any = null, target: any = null, movedOn = -1, rushIn: number | null = null, startAt: number | null = null;
   const tick = sim.tick.bind(sim);
   sim.tick = () => {
     const air = sim.ball.kind === 'air';
@@ -47,10 +48,11 @@ async function run(opts: { concept: string; coverage: string; seed: number; form
       }));
     }
     if (!air && sim.ball.kind === 'air' && !target) target = sim.ball.target;
+    if (qb && startAt === null && qb.phase === 'windup') startAt = sim.t;
   };
   const res = sim.run();
   const pumps = res.events.filter((e: any) => e.type === 'pump').length;
-  return { seed: opts.seed, pumps, plan: qb?.plan?.style ?? null, keyRead: qb?.keyRead ?? null, rushIn, throwAt: sim.throwAt as number, target: target ? ref(target) as string : null, movedOn };
+  return { seed: opts.seed, pumps, startAt, setAt: qb?.setAt ?? null, plan: qb?.plan?.style ?? null, keyRead: qb?.keyRead ?? null, rushIn, throwAt: sim.throwAt as number, target: target ? ref(target) as string : null, movedOn };
 }
 
 describe('READ_PLAN', () => {
@@ -87,7 +89,14 @@ describe('READ_PLAN', () => {
         // plant's re-check (1.80 s), he pumps and throws the flat one motion later (2.75 s); a known sensitivity under
         // diagnosis (docs/reviews/2026-11-12-window-defenders.md), not a rhythm break: his read never leaves the flat.
         if (r.seed === 2 && r.pumps) expect(r.throwAt, JSON.stringify(r)).toBeLessThan(2.9);
-        else expect(r.throwAt, JSON.stringify(r)).toBeLessThan(2.4);
+        // On rhythm: the flat from his set, his eyes never off it, the throw started within a hitch of his set. (Until
+        // engine-70 this was a clock, release < 2.4 s. With CRAFT_HOLD the flat bends round the man in his lane and is
+        // 1.8 yd shallower and 0.8 yd/s slower at 1.7 s, so his throw starts when that route is ready, 2.00-2.30 s
+        // against 1.75, and releases at 2.40-2.70 s: the clock measured the receiver's route, not the rhythm.)
+        else {
+          expect(r.movedOn, JSON.stringify(r)).toBeLessThan(0);
+          expect((r.startAt ?? 99) - (r.setAt ?? 0), JSON.stringify(r)).toBeLessThanOrEqual(0.4);
+        }
       } else {
         expect(r.target, JSON.stringify(r)).not.toBeNull();
         expect(r.target, JSON.stringify(r)).not.toBe('S1');
@@ -106,8 +115,10 @@ describe('READ_PLAN', () => {
     // Panel form (16 seeds): the mechanism, not three named plays. An aggressive passer may still take #1 on rhythm
     // when its window sits at his bar (INT_BELIEF moved seed 3 across it: priced 7.1% -> 5.9% against a 6.0% gate),
     // so the covered #1 is held to a share, and the move-on and the rhythm throw to #2 to theirs.
+    // PLAN_KEYS off here: with it quick outs carry a key on the flat defender (rules/plan-keys-2); this case is the
+    // pure order's move-on.
     const rows = [];
-    for (let seed = 1; seed <= 16; seed++) rows.push(await run({ concept: 'quick_outs', coverage: 'cover1', seed }));
+    for (let seed = 1; seed <= 16; seed++) rows.push(await run({ concept: 'quick_outs', coverage: 'cover1', seed, env: { PLAN_KEYS: '0' } }));
     for (const r of rows) expect(r.plan).toBe('pure');
     const movedOn = rows.filter((r) => r.movedOn > 0);
     expect(movedOn.length).toBeGreaterThanOrEqual(12);

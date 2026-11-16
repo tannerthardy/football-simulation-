@@ -35,6 +35,9 @@ export interface Body {
   squeezeHeading?: number;
   /** Yaw rate, rad/s (physics world; contact torque can spin a body). */
   spin?: number;
+  /** TRUNK_TWIST: shoulders minus hips, radians, within ±TRUNK_RANGE. `facing` stays the hips (the gait heading the
+   * speed cap, the turn motor and the base read); the shoulders are `facing + trunk`. Absent or 0 = shoulders on the hips. */
+  trunk?: number;
   /** Body-owned balance state (physics/support.ts), created by the world. */
   support?: Support;
 }
@@ -44,6 +47,11 @@ export interface MoveCommand {
   vel: Vec2;
   /** Desired facing; defaults to direction of travel. */
   facing?: number;
+  /** TRUNK_TWIST: where he wants his shoulders to point (absolute heading, radians) while his hips stay on the gait.
+   * The trunk follows it within TRUNK_RANGE of the hips at TRUNK_RATE; undefined lets the trunk return to the hips. A
+   * look at the ball or the QB from a body running another way asks for this; a technique that turns the hips
+   * (coverage open / square / turn-and-run, a blocker's hips) keeps asking for `facing`. */
+  look?: number;
   /** 0–1 fraction of max effort (top speed scaling). */
   effort?: number;
   /** Multiplier on cutting ability from technique (route running, elusiveness). */
@@ -66,6 +74,33 @@ export const FATIGUE_SHAPE = 2.5;
 const FATIGUE_STEPS = 4096;
 const FATIGUE = Float64Array.from({ length: FATIGUE_STEPS + 1 }, (_, k) => 1 - FATIGUE_MAX_LOSS * Math.pow(k / FATIGUE_STEPS, FATIGUE_SHAPE));
 
+/** TRUNK_TWIST (experimental, off; TRUNK_TWIST=1; open-run cap, docs/reviews/2026-11-14-open-run-cap.md): the shoulders
+ * twist off the hips within TRUNK_RANGE. T = 55° is a stated choice, not a fit to film: the NFL envelope (BDB 2025
+ * weeks 1-3, flipped player-plays removed) puts the twist at 52-58° for WR at 98-128° of shoulder angle off the path,
+ * and trunk rotation is about 35-45° a side standing, the rest being the pelvis turning a little off the path, which
+ * the hips' lead already allows. Sensitivity 45 / 65 via TRUNK_RANGE_DEG. The rate, 360°/s, is a stated choice of the
+ * order trunk rotation takes in a quick look over the shoulder (several hundred °/s); only transients depend on it. */
+export const TRUNK_TWIST = process.env.TRUNK_TWIST !== '0';
+export const TRUNK_RANGE = (Number(process.env.TRUNK_RANGE_DEG ?? 55) * Math.PI) / 180;
+export const TRUNK_RATE = (Number(process.env.TRUNK_RATE_DEG ?? 360) * Math.PI) / 180;
+
+/** The hips: the gait heading (the speed cap, the turn motor, the base and the anchor read this). */
+export function hipsOf(body: Body): number { return body.facing; }
+/** The shoulders: where his chest points (hand fit, a catch's alignment to the ball, his front in a hit). With no
+ * twist (TRUNK_TWIST off, or nothing asked) these are the hips, bit for bit. */
+export function shouldersOf(body: Body): number { return body.trunk ? body.facing + body.trunk : body.facing; }
+
+/** One controller tick of the trunk: toward the look he asked for within the range, at the rate; back to the hips
+ * when he asks for none. The hips do not move. Called by the World each tick and by stepBody. */
+export function updateTrunk(body: Body, look: number | undefined, dt: number): void {
+  const current = body.trunk ?? 0;
+  if (look === undefined && current === 0) return;
+  const want = look === undefined ? 0 : clamp(angleDiff(body.facing, look), -TRUNK_RANGE, TRUNK_RANGE);
+  const step = TRUNK_RATE * dt;
+  const next = current + clamp(want - current, -step, step);
+  body.trunk = Math.abs(next) < 1e-9 ? 0 : next;
+}
+
 /** Fatigue multiplier on speed/acceleration. */
 export function fatigueFactor(energy: number): number {
   const deficit = 1 - (energy < 0 ? 0 : energy > 1 ? 1 : energy);
@@ -76,11 +111,60 @@ export function fatigueFactor(energy: number): number {
   return FATIGUE[k] + (FATIGUE[k + 1] - FATIGUE[k]) * (x - k);
 }
 
+/** The lateral (cutting) acceleration the legs can give at `speed` before the drive takes its share (the friction ellipse's
+ * lateral half, shared by `locomotionAccel`, `followAccel` and the route follower's corner plan): harder to cut at high speed,
+ * and a tired body gives a little less. */
+export function lateralEnvelope(body: Body, speed: number, cutSkill = 1, capacity = 1): number {
+  const p = body.profile;
+  return p.lateral * cutSkill * (1 - 0.2 * clamp(speed / p.vmax, 0, 1)) * (0.85 + 0.15 * fatigueFactor(body.energy)) * capacity;
+}
+
+/** DIR_CAP (experimental, off; DIR_CAP=1; docs/reviews/2026-11-15-dir-cap.md): the speed cap by the angle of the hips off the line of travel is MONOTONE, and the
+ * trunk's twist is priced once, in the same cap.
+ *
+ * Why: BDB 2025 weeks 1-9, 322 zone-coverage DBs, ball held, top-decile speed over each man's own p98 by the angle of his shoulders off his travel (15 deg
+ * bins, nfl_dir_capacity.py): 1.00 to 30 deg, 0.91 at 52, 0.81 at 82, 0.75 at 97, 0.65 at 127, 0.625 at 135 deg and beyond, relative to forward. The legacy curve
+ * has side-on (90 deg) as the slowest point, 0.60, below the square backpedal at 0.68; the NFL curve has the backpedal slowest and side-on in between.
+ * This curve is a straight line from full speed at DIR_FULL (20 deg) to the backpedal's share at DIR_BACK (130 deg), flat beyond. `shuffle` is no longer
+ * read by this cap (it is still the pace of a square lateral shuffle where a controller reads it directly).
+ *
+ * The trunk: a body whose hips run down the line of travel while his shoulders look 22 / 45 / 55 deg off pays about 4 / 8 / 10 percent in the NFL
+ * (twist_price.py: -0.26, -0.54 and -1.11 yd/s at 15-30, 30-60 and 60+ deg against a 6.5 yd/s cruise; and the shoulder curve above up to 55 deg). TRUNK_PRICE is
+ * 0.0018 per degree of trunk twist, linear, no term for the line or the wobble (the cut found none). Where it comes from, plainly: it is a STATED CHOICE
+ * (Coverage's: 10 percent at the 55 deg limit), checked against an observational NFL curve, NOT a fitted constant. The curve carries the confound that a
+ * receiver looking back may be throttling by choice, so it is an upper bound on the capacity cost. The likely mechanism is the arm drive (running
+ * propulsion uses counter-rotation of the shoulders against the hips, which a trunk held twisted off the line of the pelvis cannot do with the stride), but I
+ * have not verified a gait source that puts a number on it, so the number is not derived from one. Hips are
+ * charged by the curve above and the trunk by this term; the NFL shoulder curve cannot split them (`o` is the shoulders), so the pair is checked
+ * against it only where the trunk is the whole of the angle (hips on the path), and in the sim's own shoulder bins. */
+export const DIR_CAP = process.env.DIR_CAP !== '0';
+const DIR_FULL = (20 * Math.PI) / 180, DIR_BACK = (130 * Math.PI) / 180;
+/** Fraction of the cap lost per radian of trunk twist (0.0018 per degree). */
+export const TRUNK_PRICE = 0.0018 * (180 / Math.PI);
+/** The trunk's share of the speed cap (1 with no twist, or DIR_CAP off). */
+export function trunkPrice(body: Body): number { return DIR_CAP && body.trunk ? 1 - TRUNK_PRICE * Math.abs(body.trunk) : 1; }
+
 /**
  * Speed cap multiplier from the angle between facing and travel direction:
  * 1 running forward, `shuffle` sideways, `backpedal` straight back.
  */
 export function directionalSpeedFactor(profile: PhysicalProfile, relAngle: number): number {
+  return DIR_CAP ? speedCapFactor(profile, relAngle) : legDriveFactor(profile, relAngle);
+}
+/** DIR_CAP's top-speed curve: monotone (see DIR_CAP). */
+function speedCapFactor(profile: PhysicalProfile, relAngle: number): number {
+  const a = Math.abs(relAngle);
+  {
+    // Monotone: full speed within DIR_FULL of the line of travel, then a straight fall to the backpedal's share at DIR_BACK, flat beyond.
+    if (a <= DIR_FULL) return 1;
+    if (a >= DIR_BACK) return profile.backpedal;
+    return 1 - (1 - profile.backpedal) * (a - DIR_FULL) / (DIR_BACK - DIR_FULL);
+  }
+}
+/** The legs' directional DRIVE (force) share, unchanged by DIR_CAP: full ahead, `shuffle` sideways, `backpedal` straight back. world.ts's push and leg-drive
+ * laws read this, since DIR_CAP's curve is a measure of top-speed capacity and not of the force the legs give a hand fight or a push (which moved the
+ * pass rush's engagement dither over its budget when the curve was applied there too). */
+export function legDriveFactor(profile: PhysicalProfile, relAngle: number): number {
   const a = Math.abs(relAngle);
   const half = Math.PI / 2;
   if (a <= half) {
@@ -94,7 +178,7 @@ export function directionalSpeedFactor(profile: PhysicalProfile, relAngle: numbe
 /** Effective top speed of a body moving in direction `heading`. */
 export function effectiveVmax(body: Body, heading: number, effort = 1): number {
   const rel = angleDiff(body.facing, heading);
-  return body.profile.vmax * fatigueFactor(body.energy) * enduranceFactor(body) * (1 - 0.08 * (body.squeeze ?? 0)) * directionalSpeedFactor(body.profile, rel) * effort;
+  return body.profile.vmax * fatigueFactor(body.energy) * enduranceFactor(body) * (1 - 0.08 * (body.squeeze ?? 0)) * directionalSpeedFactor(body.profile, rel) * trunkPrice(body) * effort;
 }
 
 /** Long sprints fade: after ~3.5 s near top speed, up to 10% slower. */
@@ -188,7 +272,7 @@ export function locomotionAccel(body: Body, cmd: MoveCommand, dt: number, capaci
   const start = p.vmax * fat * enduranceFactor(body);
   if (dmag > 1e-6) {
     const heading = angleOf(dv0);
-    full = start * directionalSpeedFactor(p, angleDiff(body.facing, heading));
+    full = start * directionalSpeedFactor(p, angleDiff(body.facing, heading)) * trunkPrice(body);
     const cap = full * effort;
     if (dmag > cap) desired = { x: (dv0.x / dmag) * cap, y: (dv0.y / dmag) * cap };
     wanted = Math.min(dmag, cap);
@@ -240,7 +324,7 @@ export function locomotionAccel(body: Body, cmd: MoveCommand, dt: number, capaci
     // is harder at high speed. Head straight for the wanted velocity, as
     // hard as the envelope allows in that direction.
     const At = (at >= 0 ? Math.max(driveAccel(p, speed, p.vmax * fat) * fat * drive, 0.01) : p.brake * (0.85 + 0.15 * fat)) * capacity;
-    const An = p.lateral * cutSkill * (1 - 0.2 * clamp(speed / p.vmax, 0, 1)) * (0.85 + 0.15 * fat) * capacity;
+    const An = lateralEnvelope(body, speed, cutSkill, capacity);
     const k = (at / Math.max(At, 1e-9)) ** 2 + (an / Math.max(An, 1e-9)) ** 2;
     if (k > 1) {
       const s = 1 / Math.sqrt(k);
@@ -285,7 +369,7 @@ export function followAccel(body: Body, a: Vec2, cutSkill = 1, capacity = 1): Ve
   const tx = body.vel.x / speed, ty = body.vel.y / speed;
   const at = a.x * tx + a.y * ty, an = -a.x * ty + a.y * tx;
   const At = (at >= 0 ? Math.max(driveAccel(p, speed, p.vmax * fat) * fat, 0.01) : p.brake * (0.85 + 0.15 * fat)) * capacity;
-  const An = p.lateral * cutSkill * (1 - 0.2 * clamp(speed / p.vmax, 0, 1)) * (0.85 + 0.15 * fat) * capacity;
+  const An = lateralEnvelope(body, speed, cutSkill, capacity);
   const k = (at / Math.max(At, 1e-9)) ** 2 + (an / Math.max(An, 1e-9)) ** 2;
   if (k <= 1) return { x: a.x, y: a.y };
   const s = 1 / Math.sqrt(k);
@@ -316,6 +400,7 @@ export function spendEnergy(body: Body, accel: Vec2, isometric: number, dt: numb
 
 export function stepBody(body: Body, cmd: MoveCommand, dt: number): void {
   updateSqueeze(body, cmd, dt);
+  if (TRUNK_TWIST) updateTrunk(body, cmd.look, dt);
   // --- facing ---
   const turnRate = turnRateOf(body);
   const df = angleDiff(body.facing, commandFacing(body, cmd));

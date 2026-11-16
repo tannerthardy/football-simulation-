@@ -32,7 +32,12 @@ describe('PEDAL_CAP: the backpedal is the slowest way back for DBs and linebacke
         const f = on.k.directionalSpeedFactor(prof, d * Math.PI / 180);
         expect(f).toBeLessThanOrEqual(prev + 1e-12);
         prev = f;
-        if (d <= 90) expect(f).toBeCloseTo(off.k.directionalSpeedFactor(off.roster[i].prof, d * Math.PI / 180), 12);
+        const before = off.k.directionalSpeedFactor(off.roster[i].prof, d * Math.PI / 180);
+        // Re-recorded 2026-11-16 (DIR_CAP on by default): the monotone cap runs from full at 20 deg off the line of travel to the backpedal share at 130, so the share a
+        // pedal cap lowers also lowers the cap between them (it was flat at `shuffle` to 90 deg, which only `backpedal` changes now). Forward (within 20 deg) is unchanged,
+        // and nothing may be raised. Under the legacy curve the old statement holds: unchanged to 90 deg.
+        if (on.k.DIR_CAP) { if (d <= 20) expect(f).toBeCloseTo(before, 12); else expect(f).toBeLessThanOrEqual(before + 1e-12); }
+        else if (d <= 90) expect(f).toBeCloseTo(before, 12);
       }
     });
     expect(checked).toBeGreaterThan(20);

@@ -2,6 +2,7 @@
  * Assignment of behaviors at the snap, and behavior transitions on play
  * events (handoff, throw, catch, interception, fumble, recovery).
  */
+import { ownRoutes } from './ball-estimate.js';
 import { arriveVelocity, gaitLag } from '../physics/kinematics.js';
 import { previewFreeMovement } from '../physics/movement-preview.js';
 import { READ_SCHEMES, RUN_READ, runRead } from './run-read.js';
@@ -23,6 +24,7 @@ import { QBHandoff, QBPass } from './behaviors/qb.js';
 import { GUN_SNAP, QB_EXTEND, snapSecured } from './ball-transfer.js';
 import { ConvoyCue, DownfieldBlocker, RCV_SEEN, RouteRunner, TrackBall } from './behaviors/receiver.js';
 import { ScreenBlocker } from './behaviors/screen.js';
+import { LOOSE_SEEN, looseSeenStart, possessionSeenStart } from './behaviors/loose-seen.js';
 import type { PlaySim } from './playsim.js';
 import { buildRunFits } from './run-fits.js';
 import { handoffReach } from './ball-transfer.js';
@@ -172,6 +174,7 @@ export function assignBehaviors(sim: PlaySim): void {
       const route = getRoute(id);
       const outside = Math.sign(a.pos.y - sim.ballY) || off.strongSign;
       receiverPriors.set(a, installReceiverRoute(a.pos, sim.los, outside, route, null, a.profile, a.r('routeRunning')));
+      ownRoutes.set(a, receiverPriors.get(a)!);
       return () => new RouteRunner(a, sim, route, outside, 0);
     };
     // PRO_CALL: the box count against the protectors this concept keeps in
@@ -200,6 +203,8 @@ export function assignBehaviors(sim: PlaySim): void {
         receiverPriors.set(a, installReceiverRoute(a.pos, sim.los, outside, route,
           conditional || blockLook || (concept.fake && (ref === 'B' || ref === 'B2')) ? null : delay,
           a.profile, a.r('routeRunning')));
+        // BALL_EST: his own route is his own knowledge (the prior for a ball thrown to him).
+        ownRoutes.set(a, receiverPriors.get(a)!);
         return () => installBlockLook(a, sim, () => new RouteRunner(a, sim, route, outside,
           blockLook ? sim.t + delay : delay), true);
       };
@@ -659,6 +664,8 @@ export function onBallCaught(sim: PlaySim, r: Agent): void {
 export function onInterception(sim: PlaySim, d: Agent): void {
   clearPressContacts(sim);
   d.behavior = new BallCarrier({}, d);
+  // LOOSE_SEEN: each player switches when he sees the interceptor with the ball or hears it called.
+  if (LOOSE_SEEN) { possessionSeenStart(sim, d); return; }
   for (const o of sim.defense) if (o !== d) o.behavior = new DownfieldBlocker();
   for (const o of sim.offense) o.behavior = new Pursuit();
   for (const e of [...sim.engagements]) sim.disengage(e);
@@ -666,6 +673,8 @@ export function onInterception(sim: PlaySim, d: Agent): void {
 
 export function onLooseBall(sim: PlaySim): void {
   clearPressContacts(sim);
+  // LOOSE_SEEN: nobody is told; each recognizes the loose ball himself and releases his own block.
+  if (LOOSE_SEEN) { looseSeenStart(sim); return; }
   for (const a of sim.agents) a.behavior = new FumbleScramble(new Pursuit());
   for (const e of [...sim.engagements]) sim.disengage(e);
 }
@@ -673,6 +682,7 @@ export function onLooseBall(sim: PlaySim): void {
 export function onRecovery(sim: PlaySim, a: Agent): void {
   clearPressContacts(sim);
   a.behavior = new BallCarrier({}, a);
+  if (LOOSE_SEEN) { possessionSeenStart(sim, a); return; }
   for (const o of sim.teammates(a)) if (o !== a) o.behavior = new DownfieldBlocker();
   for (const o of sim.opponents(a)) o.behavior = new Pursuit();
 }

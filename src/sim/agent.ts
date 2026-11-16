@@ -3,7 +3,7 @@
  * + per-play state.
  */
 import type { Vec2 } from '../core/vec.js';
-import { enduranceFactor, fatigueFactor, type Body, type MoveCommand } from '../physics/kinematics.js';
+import { enduranceFactor, fatigueFactor, shouldersOf, type Body, type MoveCommand } from '../physics/kinematics.js';
 import { fallTime, supportParams } from '../physics/support.js';
 import type { HandJoint } from '../physics/world.js';
 import type { PhysicalProfile } from '../players/physical.js';
@@ -35,6 +35,9 @@ export interface Behavior {
   /** Motion his teammates know from the call itself (a rehearsed track on the
    * snap count), not his private live decision; null when there is none. */
   calledMotion?(): Vec2 | null;
+  /** RELEASE_SIDE: the direction his installed route goes from its declared break (a fact of the call, not his live
+   * choice), until he reaches it; null when there is none. Spacing passes a teammate on this side. */
+  routeSide?(): Vec2 | null;
   /** Current held contact technique's movement intention, separate from the
    * free track advertised to teammates. No achieved motion is implied. */
   contactMotion?(a: Agent, work?: 'reach' | 'runoff' | 'prepare'): Vec2 | null;
@@ -207,6 +210,14 @@ export class Agent {
   }
   get facing(): number {
     return this.body.facing;
+  }
+  /** The gait heading (the speed cap, the turn motor, the base). Same as `facing`; named for the meaning. */
+  get hips(): number {
+    return this.body.facing;
+  }
+  /** Where his chest points: hips plus the trunk twist (TRUNK_TWIST); equal to `hips` with no twist. */
+  get shoulders(): number {
+    return shouldersOf(this.body);
   }
   /** Visible off-feet/recovery cue for the snapshot, not a recovery forecast.
    * Scenario parking does not imply a physical pose. Falls and ground time

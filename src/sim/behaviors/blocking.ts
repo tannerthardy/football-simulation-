@@ -25,7 +25,7 @@ import type { Agent, Behavior, Engagement, RunContactSurface } from '../agent.js
 import type { PlaySim } from '../playsim.js';
 import { chooseRunBlockFit, observedBlockLeverage, secondLevelBlockApproach } from '../run-block-fit.js';
 import { paRunLook } from '../pa-look.js';
-import { DOUBLE_OVERTAKE, axisOf, contactControl, helperSupport, passSetDepth, promoteContact, PUNCH, TACKLE_SET, tackleFloor, tackleSetLine, traits } from '../engagement.js';
+import { DOUBLE_OVERTAKE, axisOf, contactControl, helperSupport, passSetDepth, promoteContact, protectPoint, PUNCH, SET_SPOT, SET_SPOT_TACKLE, setSpotTarget, TACKLE_SET, tackleFloor, tackleSetLine, traits } from '../engagement.js';
 import { readZoneReach, type ZoneReachRead } from '../zone-reach.js';
 import { interceptPoint, timeToReach } from '../../physics/reach.js';
 import type { Perceived } from '../perception.js';
@@ -405,7 +405,9 @@ export class PassProtector implements Behavior {
     }
     // BACK_CHECK: a back not counted into the protection scans his keys from his spot, facing the line.
     if (checking && !this.coord.protectors.includes(a)) return stand(sim.attackDir(a.team) > 0 ? 0 : Math.PI);
-    const qb = sim.qb;
+    // SET_SPOT: the QB he protects is the launch point he knows from the call, not the live QB behind him.
+    const tackleSlot = a.slot === 'LT' || a.slot === 'RT';
+    const qb = SET_SPOT && (!tackleSlot || SET_SPOT_TACKLE) ? { ...sim.qb, pos: protectPoint(sim) } as typeof sim.qb : sim.qb;
     if (!rA) {
       // Set: tackles kick, interior sets short; backs hold near the QB.
       const isT = a.slot === 'LT' || a.slot === 'RT';
@@ -442,6 +444,15 @@ export class PassProtector implements Behavior {
     let along = contact * 0.85;
     if (toQBp.x < -0.2) along = Math.max(along, (sim.los - setDepth - rp.x) / toQBp.x);
     let set = { x: rp.x + toQBp.x * along, y: rp.y + toQBp.y * along + out * overset };
+    // SET_SPOT: an interior set goes to its spot (his set depth straight back off his alignment), with its width where
+    // the rusher's line to the launch point crosses that depth. He meets the rusher there.
+    const spotSet = SET_SPOT && !isT && isOL(a) && !this.calledRelease && !runLook(a, sim);
+    let spotFrac = 0;
+    if (spotSet) {
+      const sx = sim.los - setDepth; // setDepth already counts from his snap spot (passSetDepth, SET_SPOT)
+      const tg = setSpotTarget(sim, rp, sx);
+      set = { x: sx, y: tg.y }; spotFrac = tg.frac;
+    }
     // An edge rusher runs an arc, not the straight line to the QB: a tackle
     // who sets on that line sits on the chord, a couple of yards inside him,
     // all the way back. Kick to cut the arc off instead — meet him at the
@@ -476,7 +487,7 @@ export class PassProtector implements Behavior {
       const x = Math.max(qb.pos.x + 0.5, floor ?? -Infinity, Math.min(a.pos.x, r.pos.x - KICK_LEAD, sim.los - lineDepth(0.6, stanceDepth(sim, a)) - setDepth));
       set = { x, y: ahead.y - out * contact * 0.6 + out * overset };
       // TACKLE_SET: the inside half of the rusher, but never outside his set line.
-      if (TACKLE_SET) { const line = tackleSetLine(sim, a, r); set.y = line.y - line.out * Math.max(0, (line.y - set.y) * line.out); }
+      if (TACKLE_SET || VERTICAL_SET) { const line = tackleSetLine(sim, a, r); set.y = line.y - line.out * Math.max(0, (line.y - set.y) * line.out); }
     }
     if (runLook(a, sim)) set = { x: Math.max(set.x, sim.los - 0.3), y: set.y };
     const dd = Math.hypot(r.pos.x - a.pos.x, r.pos.y - a.pos.y);
@@ -500,13 +511,18 @@ export class PassProtector implements Behavior {
       // TACKLE_SET: at his set line he does not match the rusher's widening.
       const line = TACKLE_SET ? tackleSetLine(sim, a, r) : null;
       const wide = !!line && (a.pos.y - line.y) * line.out >= -0.1 && r.vel.y * line.out > 0;
-      return track(a, set, { x: anchored || a.pos.x < r.pos.x - KICK_LEAD ? 0 : Math.min(0, r.vel.x), y: wide ? 0 : r.vel.y }, { facing, cutSkill: quick, gain: 2.5 });
+      // VERTICAL_SET: lead only the rusher's inward motion; his outward run is not chased.
+      // VERTICAL_SET: the rusher's inward motion as he sees it (his picture, delayed), whatever PASS_SET_SEEN says.
+      const leadY = VERTICAL_SET ? out * Math.min(0, sim.see(a, rA).vel.y * out) : wide ? 0 : r.vel.y;
+      return track(a, set, { x: anchored || a.pos.x < r.pos.x - KICK_LEAD ? 0 : Math.min(0, r.vel.x), y: leadY }, { facing, cutSkill: quick, gain: 2.5 });
     }
     // The cutoff is an interception, not a point on which to match the
     // rusher's present velocity. Approach through it at the kick-slide speed
     // already assumed by the forecast; physical movement and contact still
     // decide whether the tackle can arrive and obtain useful protection.
     if (cuttingOff) return goTo(a, set, { speed: 0.75, through: a.profile.vmax * 0.75, facing, cutSkill: quick });
+    // SET_SPOT: his spot does not move with the rusher's depth; across, it moves by its own share of his motion.
+    if (spotSet) return track(a, set, { x: 0, y: r.vel.y * spotFrac }, { facing, cutSkill: quick, gain: 2.5 });
     return track(a, set, { x: r.vel.x * 0.7, y: r.vel.y }, { facing, cutSkill: quick, gain: 2.5 });
   }
 }
@@ -520,6 +536,15 @@ export class PassProtector implements Behavior {
  * 0.8 yd shallower; the cutoff met him at the line (PRO-1). Ported from
  * claude/run-game-v3 (docs/PARKED.md). */
 const PASS_KICK = process.env.PASS_KICK !== '0';
+/** VERTICAL_SET (experimental, off; VERTICAL_SET=1): the tackle's kick against an edge rusher gives ground vertically
+ * and keeps an inside-out relationship instead of matching the rusher's width. He kicks no wider than TACKLE_SET's set
+ * line from his alignment (0.4 of the rusher's snap width outside him, 0.3-1.0 yd: a wider rusher gets a wider, deeper
+ * set, a tight one a flatter set), and his lateral lead is only the rusher's inward motion (the inside counter he
+ * mirrors), never his outward run. Off, the kick copies the rusher's lateral velocity: at first contact the NFL
+ * tackle retreats 2.5-3.0 yd/s with outward speed about 0 (wide / very wide alignments, IQR -0.75..+0.75), ours 2.25-2.75
+ * with +0.25..+0.75 (p75 +1.25..+1.5), and meets the very wide rusher at 1.3 s against 1.5 s, landing wide 27-32% vs
+ * 64% (docs/reviews/2026-11-12-tackle-set.md). Depth (TACKLE_SET's floor) is not part of it. */
+const VERTICAL_SET = process.env.VERTICAL_SET !== '0';
 /** PRO_READ (default on; PRO_READ=0 restores the old read): protection reads
  * who rushes from what the line sees. Off, the coordinator read each
  * defender's private behavior (rush/blitz), so the line never set on a
@@ -3513,6 +3538,9 @@ function backerShows(observer: Agent, sim: PlaySim, backer: Perceived): boolean 
 }
 
 /** Angle between a blocker's chest and the man, in units of a right angle. */
+/** SHOULDERS BY MEANING, reads the hips for now (TRUNK_TWIST Stage 1, docs/reviews/2026-11-14-facing-consumer-map.md):
+ * this is where a man's chest points, so it will read `shouldersOf(body)` in the stage that gives linemen a trunk. Until
+ * then a lineman has none (trunk 0), so hips and shoulders are the same number here. Do not mistake it for done. */
 function chestOff(facing: number, from: Vec2, to: Vec2): number {
   const toMan = Math.atan2(to.y - from.y, to.x - from.x);
   return Math.abs(Math.atan2(Math.sin(toMan - facing), Math.cos(toMan - facing))) / (Math.PI / 2);

@@ -17,27 +17,40 @@ const stackOn = Object.entries(JSON.parse(readFileSync(new URL('../config/refere
   .filter(([, v]) => v === 'on').map(([k]) => k);
 afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 
-/** Staged throws (PlaySetup.stagedThrow): the start, receiver, aim point and flight time develop's QB produced on each
- * play (recorded 2026-11-14 at 45e17fcc, PURSUIT_COMMIT off; at 99: no throw), so a change in the QB does not move this defensive
- * panel. */
+/** Staged throws (PlaySetup.stagedThrow): the start, receiver, aim point and flight time the QB produced on each play,
+ * so a change in the QB does not move this defensive panel (at 99: no throw). Re-recorded 2026-11-14 on the engine-65
+ * candidate (078259db, PURSUIT_COMMIT off): with TRUNK_TWIST the receiver no longer turns his hips to the ball, so the
+ * catches under the throws recorded at 45e17fcc changed and the off arm's one catch-tick stop (1 of 21 near the catch)
+ * was gone (0 of 20). Each throw is the one the candidate's own QB makes on that play; on these, natural and staged,
+ * slant_flat 3 has the off arm's stop (1 of 23 near the catch). */
 const STAGED: Record<string, StagedThrow> = {
   'stick 1': { at: 1.6, slot: 'Y', aim: { x: 42.75510797494996, y: 19.56064538246492, z: 1.0617966851885154 }, T: 1.0038315902082997 },
-  'stick 2': { at: 1.35, slot: 'RB', aim: { x: 31.566080146794768, y: 15.033085414000364, z: 1.095868306707627 }, T: 0.7375395488129338 },
-  'stick 3': { at: 1.55, slot: 'Y', aim: { x: 42.39777877124171, y: 21.864315326031523, z: 1.3867151684517571 }, T: 0.7546031063889594 },
-  'stick 4': { at: 1.35, slot: 'RB', aim: { x: 31.294126280679468, y: 14.263973820793652, z: 1.4188859185720468 }, T: 0.6871359663365784 },
-  'slant_flat 1': { at: 1.1, slot: 'Z', aim: { x: 41.87525352910347, y: 13.187197312041814, z: 1.0349938060562471 }, T: 0.9333439890033726 },
-  'slant_flat 2': { at: 1.1, slot: 'Y', aim: { x: 36.08687886071956, y: 37.22118183844065, z: 1.0968151616651893 }, T: 0.5696560916000534 },
-  'slant_flat 3': { at: 1.1, slot: 'Z', aim: { x: 40.83064438996887, y: 13.066943231920494, z: 1.401552263886263 }, T: 0.6908680027925088 },
-  'slant_flat 4': { at: 1.35, slot: 'Y', aim: { x: 36.86115866977673, y: 38.672702323154965, z: 1.4328650604242776 }, T: 0.6054246106133248 },
+  'stick 2': { at: 1.55, slot: 'Y', aim: { x: 42.49685920375324, y: 34.996214115854954, z: 1.0518294590764268 }, T: 1.0257939920774732 },
+  'stick 3': { at: 1.55, slot: 'Y', aim: { x: 42.39534338548073, y: 21.85848482966286, z: 1.386049343309459 }, T: 0.7546031063889594 },
+  'stick 4': { at: 2.2, slot: 'X', aim: { x: 43.38762440342937, y: 21.7200787522111, z: 1.4627209619332504 }, T: 1.0459135857816348 },
+  'slant_flat 1': { at: 1.45, slot: 'Z', aim: { x: 42.883028319742365, y: 16.707114563020333, z: 1.0517015031526282 }, T: 1.1028011204157764 },
+  'slant_flat 2': { at: 1.35, slot: 'Y', aim: { x: 37.24904534955806, y: 40.193866705871585, z: 1.0628041437908053 }, T: 0.8393484080434719 },
+  'slant_flat 3': { at: 1.35, slot: 'Z', aim: { x: 42.43081147278477, y: 15.800155973421282, z: 1.3976200014616258 }, T: 0.9157546952175947 },
+  'slant_flat 4': { at: 1.35, slot: 'Y', aim: { x: 36.86503893273646, y: 38.684306845472584, z: 1.4338924620612206 }, T: 0.6077638867004113 },
   'curl_flat 1': { at: 1.7, slot: 'Y', aim: { x: 39.52890174545266, y: 7.648628322167302, z: 0.986535531061994 }, T: 1.2515707703976044 },
-  'curl_flat 2': { at: 2, slot: 'Y', aim: { x: 39.554781992583365, y: 46.377836809413424, z: 0.9744159632558849 }, T: 1.153914281959143 },
-  'curl_flat 3': { at: 2.05, slot: 'Y', aim: { x: 40.135029453344714, y: 7.756267865079531, z: 1.424660443283833 }, T: 1.1720412069515953 },
-  'curl_flat 4': { at: 2.95, slot: 'RB', aim: { x: 36.17892265022016, y: 22.57096213437279, z: 1.404454026342276 }, T: 0.6629691249798597 },
-  'smash 1': { at: 1.7, slot: 'Z', aim: { x: 40.5839897767163, y: 13.179147270062776, z: 1.031538954835249 }, T: 0.9538884309894303 },
-  'smash 2': { at: 2.95, slot: 'RB', aim: { x: 39.669248892479175, y: 4.5887248109032575, z: 0.9037783194737418 }, T: 1.5175505304840282 },
-  'smash 3': { at: 2.05, slot: 'Z', aim: { x: 40.468541498598256, y: 14.56410788108467, z: 1.3997505859604271 }, T: 0.9401310837056995 },
-  'smash 4': { at: 99, slot: 'X' },
+  'curl_flat 2': { at: 3.2, slot: 'H', aim: { x: 34.08914346442984, y: 2.7442216626806357, z: 0.9342567505230237 }, T: 1.7058412494929553 },
+  'curl_flat 3': { at: 2.55, slot: 'Y', aim: { x: 42.823244532222965, y: 4.817934611601114, z: 1.4435721221544409 }, T: 1.5857250784330437 },
+  'curl_flat 4': { at: 3.35, slot: 'H', aim: { x: 31.200178898910032, y: 1.3878638268298746, z: 1.5073341527039337 }, T: 1.6185628993112684 },
+  'smash 1': { at: 1.8, slot: 'Z', aim: { x: 40.48615966593969, y: 13.187896383729573, z: 1.0329555385949074 }, T: 0.955074410531322 },
+  'smash 2': { at: 99, slot: 'X' },
+  'smash 3': { at: 2.05, slot: 'Z', aim: { x: 40.504534255649816, y: 14.65027724392218, z: 1.409590867927052 }, T: 0.9401310837056995 },
+  'smash 4': { at: 2.3, slot: 'RB', aim: { x: 34.65166493483928, y: 8.341046466472683, z: 1.5354225662507992 }, T: 0.8849477816930452 },
+  // Premise plays (see PREMISE below): natural plays whose off arm has a catch-tick stop, staged the same way.
+  'slant_flat 5': { at: 1.35, slot: 'Z', aim: { x: 42.712774723645296, y: 16.092459987041924, z: 1.2570290013056966 }, T: 0.8652268329094622 },
+  'slant_flat 11': { at: 1.35, slot: 'Z', aim: { x: 41.11439456150391, y: 14.140593254025129, z: 1.096593306435676 }, T: 0.7136210866143071 },
+  'curl_flat 11': { at: 2.5, slot: 'Y', aim: { x: 41.32099469724703, y: 4.159674473686895, z: 0.9943495088177103 }, T: 1.6418439913806147 },
 };
+/** The panel: four passes against seeds 1-4, and premise plays. Re-recorded 2026-11-14 on the ball-cue fix (the ball is
+ * its own percept in release-evidence.ts, at his own delay): the one off-arm catch-tick stop on seeds 1-4 (slant_flat 3)
+ * was gone (0 of 23 near the catch). Rather than move the claim, the panel adds the natural plays (same passes, seeds
+ * 1-16, the QB's own throws) whose off arm has a stop: slant_flat 5, slant_flat 11, curl_flat 11. */
+const PANEL: [string, number][] = [...['stick', 'slant_flat', 'curl_flat', 'smash'].flatMap(p => [1, 2, 3, 4].map(s => [p, s] as [string, number])),
+  ['slant_flat', 5], ['slant_flat', 11], ['curl_flat', 11]];
 
 async function run(flag: string) {
   const flagName = flag;
@@ -55,7 +68,7 @@ async function run(flag: string) {
   // more), so a change in which pursuits a stack produces must not read as a change in steadiness.
   const bandOf = (a: any, t: any) => { const d = t ? Math.hypot(t.pos.x - a.pos.x, t.pos.y - a.pos.y) : 99; return d < 3 ? '0-3' : d < 8 ? '3-8' : d < 15 ? '8-15' : '15+'; };
   let zeroAtCatch = 0, nearAtCatch = 0, jumps = 0, ticks = 0; const turns: number[] = []; const band: Record<string, number[]> = {}; const bandJ: Record<string, [number, number]> = {};
-  for (const pass of ['stick', 'slant_flat', 'curl_flat', 'smash']) for (let seed = 1; seed <= 4; seed++) {
+  for (const [pass, seed] of PANEL) {
     const sim = new PlaySim({ offense: pickOffense(offense, '11'), defense: pickDefense(defense, 'nickel'),
       offCall: { formation: FORMATION_BY_ID.gun_doubles_11, flip: seed % 2 === 0, kind: 'pass', pass: PASS_BY_ID[pass], label: pass },
       defCall: { personnel: 'nickel', front: FRONT_BY_ID.over, coverage: seed % 2 ? COVERAGE_BY_ID.cover3 : COVERAGE_BY_ID.cover1, pressure: null, zoneStyle: 'spot', label: 't' },

@@ -18,6 +18,10 @@ async function throws(flag: string) {
   vi.resetModules();
   const flags: Record<string, string> = JSON.parse(readFileSync(new URL('../config/reference-stack.json', import.meta.url), 'utf8')).flags;
   for (const [k, v] of Object.entries(flags)) if (v === 'on') vi.stubEnv(k, '1');
+  vi.stubEnv('DECLARED_BREAK', '0'); // engine-68: recorded on the legacy readiness path; re-record on declared breaks with the quick drop
+  vi.stubEnv('VERTS_QUICK', '0'); // engine-67: these four_verts scenes were recorded on the five-step set; the quick drop is a different play
+  vi.stubEnv('DIR_CAP', '0'); // engine-69: fixture recorded before the monotone direction cap; re-record with DIR_CAP on
+  vi.stubEnv('ROUTE_FINISH', '0'); // engine-70: the check-down count was recorded with outward routes running on; re-record with ROUTE_FINISH on
   vi.stubEnv('ACC_RADIUS', flag);
   const { PlaySim } = await import('../src/sim/playsim.js');
   const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');
@@ -49,6 +53,10 @@ describe('ACC_RADIUS', () => {
     // p50, 2.87 p75), none after 3.5 s; off, his check-downs on this panel came at 2.4-5.0 s, median about 3.7.
     const ts = onV.map((r) => r.t!).sort((a, b) => a - b);
     expect(ts[Math.floor(ts.length / 2)]).toBeLessThan(3.0);
-    for (const t of ts) expect(t).toBeLessThanOrEqual(3.5 + 1e-9);
+    // Restated at engine-64: with OUTLET_LAST the back is his last read, so on two plays where the first vertical is
+    // not there he now comes back to a vertical late (4.15 and 4.45 s) instead of dumping it to the back at 2.9 s.
+    // Those are 7 verticals of 10 (5 on engine-63). The on-time claim is held for the ones the flag opens: at least
+    // five leave by 3.5 s. Was "none after 3.5 s".
+    expect(ts.filter((t) => t <= 3.5 + 1e-9).length).toBeGreaterThanOrEqual(5);
   }, 180000);
 });

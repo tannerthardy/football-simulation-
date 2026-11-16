@@ -33,7 +33,7 @@
 import { G } from '../core/units.js';
 import { hypot2, angleDiff, clamp, type Vec2 } from '../core/vec.js';
 import { bodyRadius } from './bodyshape.js';
-import { commandFacing, directionalSpeedFactor, fatigueFactor, followAccel, locomotionAccel, spendEnergy, turnRateOf, updateSqueeze, type Body, type MoveCommand } from './kinematics.js';
+import { commandFacing, legDriveFactor, trunkPrice, fatigueFactor, followAccel, locomotionAccel, spendEnergy, shouldersOf, TRUNK_TWIST, turnRateOf, updateSqueeze, updateTrunk, type Body, type MoveCommand } from './kinematics.js';
 import { advanceRecovery, availability, legDrive, baseRadiusAt, comHeightAt, fallTime, newSupport, omega0, padHeightAt, recoverySpeed, supportParams, type Support, type SupportParams } from './support.js';
 import { ARM_SPEED, turnBodyResponse, workFraction } from './actuation.js';
 import { newVirtualFoot, recoveryRamp, supportInverseMass, supportVelocity, supportWorkChange } from './virtual-foot.js';
@@ -215,6 +215,10 @@ export interface ContactSnapshot {
   positionJ: Vec2;
   facingI: number;
   facingJ: number;
+  /** TRUNK_TWIST: where each man's chest pointed (shoulders = hips + trunk); equal to facing with no twist. Readers that mean
+   * the front of the body (a hit from behind, a receiver's back to a defender) read these; the gait and wraps read facing. */
+  chestI?: number;
+  chestJ?: number;
   velocityI: Vec2;
   velocityJ: Vec2;
   /** The reduced contact-height load actually used by this World row. */
@@ -514,6 +518,18 @@ const GRASP_PATCH = process.env.GRASP_PATCH !== '0';
  * less chest half-depth (0.15); anthropometric estimate, as the capsule of
  * scripts/diag/effective-mass/shape.py. */
 const CHEST_HALF = 0.27 - 0.15;
+/** CHEST_SHOULDERS (experimental, off; CHEST_SHOULDERS=1, needs TRUNK_TWIST=1; lives with ENGAGE_TRUNK): a torso's chest
+ * segment (the hands' chest points, HANDS_LEVER's and PAIR_HANDS' lever arms, TORSO_CAPSULE's shoulder line) lies across
+ * where his chest points, his shoulders (hips plus the trunk twist), not across his hips. With no twist the two are the
+ * same number, so an untwisted body is unchanged. Off, the segment lies across the hips (the gait heading) whatever the
+ * trunk does: a blocker whose shoulders are on the man and hips on his set met the man with his hip line (Tools' and
+ * Integration's review, 2026-11-14: on claude/trunk-stage1 shouldersOf reached only the report fields). */
+export const CHEST_SHOULDERS = process.env.CHEST_SHOULDERS !== '0';
+if (CHEST_SHOULDERS && !TRUNK_TWIST) throw new Error('CHEST_SHOULDERS=1 requires TRUNK_TWIST=1');
+/** The heading the chest segment lies across (CHEST_SHOULDERS: the shoulders; off: the facing). */
+const chestHeading = (b: Body): number => CHEST_SHOULDERS ? shouldersOf(b) : b.facing;
+/** The chest segment's half-vector (CHEST_HALF long, across the chest heading); exported for its law test. */
+export function chestHalf(b: Body): Vec2 { const f = chestHeading(b); return { x: -Math.sin(f) * CHEST_HALF, y: Math.cos(f) * CHEST_HALF }; }
 /** Experimental (TORSO_CAPSULE=1, off): a torso is wider than it is deep. For
  * the pairs the owner names (World.capsulePair; PlaySim: the ball carrier and
  * a defender), the torso contact is between two capsules across each man's
@@ -534,7 +550,8 @@ const TORSO_DEPTH = 0.15 / 0.27;
 function capsuleGeom(a: Body, b: Body): { nx: number; ny: number; s: number; R: number; rax: number; ray: number; rbx: number; rby: number } {
   const da = a.profile.radius * TORSO_DEPTH, db = b.profile.radius * TORSO_DEPTH;
   const la = a.profile.radius - da, lb = b.profile.radius - db;
-  const ux = -Math.sin(a.facing), uy = Math.cos(a.facing), vx = -Math.sin(b.facing), vy = Math.cos(b.facing);
+  const fa = chestHeading(a), fb = chestHeading(b);
+  const ux = -Math.sin(fa), uy = Math.cos(fa), vx = -Math.sin(fb), vy = Math.cos(fb);
   const rx = b.pos.x - a.pos.x, ry = b.pos.y - a.pos.y;
   // Closest points of a.pos + sa·u (|sa| <= la) and b.pos + tb·v (|tb| <= lb).
   const uv = ux * vx + uy * vy, ur = ux * rx + uy * ry, vr = vx * rx + vy * ry, den = 1 - uv * uv;
@@ -722,8 +739,8 @@ function unsupportedLean(b: Body, plan: Plan, leanX: number, leanY: number,
 /** HANDS_CHEST: the vector from a's shoulder line to b's at their closest
  * points (segments of half-length CHEST_HALF across each man's facing). */
 function chestPoints(a: Body, b: Body): Vec2 {
-  const ux = -Math.sin(a.facing) * CHEST_HALF, uy = Math.cos(a.facing) * CHEST_HALF;
-  const vx = -Math.sin(b.facing) * CHEST_HALF, vy = Math.cos(b.facing) * CHEST_HALF;
+  const { x: ux, y: uy } = chestHalf(a);
+  const { x: vx, y: vy } = chestHalf(b);
   // Segments p(s) = a + s u, q(t) = b + t v, s, t in [-1, 1].
   const rx = a.pos.x - b.pos.x, ry = a.pos.y - b.pos.y;
   const uu = ux * ux + uy * uy, vv = vx * vx + vy * vy, uv = ux * vx + uy * vy;
@@ -976,6 +993,8 @@ export class World {
       maxHeldRecoveryExcursion: 0, lowerHoldReleases: 0,
       impactSplits: 0, impactSplitLimitHits: 0, maxSupportIntegrationError: 0, supportIntegrationFailures: 0 };
     this.report = report; this.tickDt = dt;
+    // TRUNK_TWIST: the shoulders follow the look each body asked for, within the range, before the gait is planned.
+    if (TRUNK_TWIST) for (let i = 0; i < n; i++) updateTrunk(bs[i], intents[i]?.look, dt);
     this.joints = this.joints.filter((j) => !(j.kind === 'grasp' && j.broken) && this.indexOf(j.a) >= 0 && this.indexOf(j.b) >= 0 && j.a !== j.b
       && (j.kind!=='hands'||(this.indexOf(j.actor??j.a)>=0&&this.indexOf(j.holder??j.a)>=0)));
     this.syncHeldSupport();
@@ -1661,7 +1680,7 @@ export class World {
           observed = { time: this.time, intervalEnd: this.time + h,
             normal: { x: dx / length, y: dy / length },
             positionI: { ...p.a.pos }, positionJ: { ...p.b.pos },
-            facingI: p.a.facing, facingJ: p.b.facing,
+            facingI: p.a.facing, facingJ: p.b.facing, chestI: shouldersOf(p.a), chestJ: shouldersOf(p.b),
             velocityI: { ...p.a.vel }, velocityJ: { ...p.b.vel },
             supportI: p.a.support!.state, supportJ: p.b.support!.state,
             height: clamp(p.height ?? Math.min(this.padHeight[ia], this.padHeight[ib]), 0,
@@ -2111,7 +2130,7 @@ export class World {
           if (ex > 0) {
             const vp = b.vel.x * ux + b.vel.y * uy;
             // Legs drive hardest straight ahead; sideways or backward far less.
-            const dir = directionalSpeedFactor(p, this.facingDelta(b.facing, Math.atan2(uy, ux)));
+            const dir = legDriveFactor(p, this.facingDelta(b.facing, Math.atan2(uy, ux))) * trunkPrice(b);
             const capacity = sp.pushForce * dir * clamp(1 - vp / p.vmax, 0, ECCENTRIC_GAIN) * fat * a * push;
             const mag = Math.min(capacity, L * (1 + clamp(intent.growth ?? PUSH_GROWTH, 0, PUSH_GROWTH)), m * ex / h, intent.leanCap ?? Infinity);
             tx = ux * mag; ty = uy * mag;
@@ -2173,7 +2192,7 @@ export class World {
         // below. Without the law, a strength gap is a constant net force and
         // a carry keeps building.
         const tf = hypot2(tfx, tfy);
-        const along = tf > 1e-9 ? directionalSpeedFactor(p, this.facingDelta(b.facing, Math.atan2(tfy, tfx))) : 1;
+        const along = tf > 1e-9 ? legDriveFactor(p, this.facingDelta(b.facing, Math.atan2(tfy, tfx))) * trunkPrice(b) : 1;
         const fv = tf > 1e-9 ? clamp(1 - (b.vel.x * tfx + b.vel.y * tfy) / (tf * p.vmax), 0, ECCENTRIC_GAIN) : 1;
         const strength = pushForce * fv * along * a;
         const capacity = Math.min(Math.max(hypot2(lx, ly), strength), traction * a);
@@ -2601,7 +2620,7 @@ export class World {
           guard, bias: guard ? (s + GUARD_DEPTH) / h : Math.max(soft.biasRate * s, -MAX_PUSHOUT), ln: 0, lt: 0, closing: vn < 0 ? -vn : 0,
           observed: { time: this.time, intervalEnd: this.time + h, normal: { x: nx, y: ny },
             positionI: { ...a.pos }, positionJ: { ...b.pos },
-            facingI: a.facing, facingJ: b.facing,
+            facingI: a.facing, facingJ: b.facing, chestI: shouldersOf(a), chestJ: shouldersOf(b),
             velocityI: { ...a.vel }, velocityJ: { ...b.vel },
             supportI: a.support!.state, supportJ: b.support!.state,
             height: clamp(Math.min(this.padHeight[i], this.padHeight[j]), 0,
@@ -2620,7 +2639,7 @@ export class World {
     const row: Contact = { i, j, nx: g.nx, ny: g.ny, R: g.R, ri: 0, rj: 0, ni: 0, nj: 0, mn: 0, mt: 0, capsule: true,
       guard: false, bias: Math.max(soft.biasRate * g.s, -MAX_PUSHOUT), ln: 0, lt: 0, closing: vn < 0 ? -vn : 0,
       observed: { time: this.time, intervalEnd: this.time + h, normal: { x: g.nx, y: g.ny },
-        positionI: { ...a.pos }, positionJ: { ...b.pos }, facingI: a.facing, facingJ: b.facing,
+        positionI: { ...a.pos }, positionJ: { ...b.pos }, facingI: a.facing, facingJ: b.facing, chestI: shouldersOf(a), chestJ: shouldersOf(b),
         velocityI: { ...a.vel }, velocityJ: { ...b.vel }, supportI: a.support!.state, supportJ: b.support!.state,
         height: clamp(Math.min(this.padHeight[i], this.padHeight[j]), 0, Math.min(a.profile.heightYd, b.profile.heightYd)) } };
     this.capsuleArms(row, g);
