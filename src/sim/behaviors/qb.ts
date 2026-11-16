@@ -428,16 +428,18 @@ const PLAN_CLOCK = process.env.PLAN_CLOCK !== '0';
  * his `believed` map and the judgment draws his pricing reads are created at his first update, in a fixed order.
  * `evaluate`, `window` and pressure read those; between his updates they read the last ones. */
 const QB_TICK_PICTURE = process.env.QB_TICK_PICTURE !== '0';
-/** QB_FELT_EDGE (experimental, off; QB_FELT_EDGE=1; with QB_TICK_PICTURE): whether a rusher is behind his shoulder has
- * an enter and an exit: he goes behind past FELT_IN of his facing and comes back in front inside FELT_OUT. Off, one
- * edge at 1.8 rad decides it each time it is asked, and it is a step function of his own facing: on engine-70 (seeds
- * 11 / 23, 392 pass plays, scripts/diag/eyes/threshold-flips.ts) it flipped 2,217 times, 20% undone within 0.3 s, on
- * 41% of plays. The two channels' pictures of the man agree at the flip (jump p50 0.02 yd, as an ordinary tick); the
- * step is in time: behind him, freeBound adds the blind-side lag to the man's believed arrival, and the felt picture
- * comes from the delayed non-visual channel instead of the tracking loop. The state advances once a tick, with his
- * pictures (takePictures); feltLive and freeBound read it. Chosen margin. */
+/** QB_FELT_EDGE (experimental, off; QB_FELT_EDGE=1): the blind-side lag is continuous in the rusher's bearing off his
+ * facing. Off, freeBound adds FREE_BLIND_LAG x (1 - pocket presence) to a rusher's believed arrival the moment his
+ * bearing passes 1.8 rad, a step function of his own facing: on engine-70 (seeds 11 / 23, 392 pass plays,
+ * scripts/diag/eyes/threshold-flips.ts) the edge flipped 2,217 times, 20% undone within 0.3 s. The two channels'
+ * pictures of the man agree at the edge (jump p50 0.02 yd, as an ordinary tick), so the channel choice in feltLive
+ * stays a single edge; the step that mattered is the lag. On: the lag rises smoothly from 0 at FELT_IN_VIEW to its
+ * full value at FELT_BLIND (a smoothstep), so pressure() and urgency are continuous across the edge of his view. No
+ * state: it is a function of what he sees now. The band is chosen (the edge of his field less 0.15 rad). Most of the
+ * edge's flips are his facing swinging 0.4-0.8 rad and back within 0.3 s, a controller question this does not
+ * address. */
 const QB_FELT_EDGE = process.env.QB_FELT_EDGE === '1';
-const FELT_IN = 1.8, FELT_OUT = 1.65;
+const FELT_IN_VIEW = 1.65, FELT_BLIND = 1.8;
 /** QB_TICK_PICTURE: the judgment keys his pricing reads (created at his first update, so their order is his, not the asker's). */
 const PRICE_JUDGMENTS = ['def-phase', 'def-dislodge', 'int-belief', 'acc-urgency', 'drop-belief'];
 /** QB_FOOTWORK (experimental, numeric bits, off): the progression carried by his feet, stage one (coupling perfect;
@@ -1894,26 +1896,24 @@ export class QBPass implements Behavior {
     }
     for (const d of sim.defense) {
       const plain = sim.see(a, d);
-      // QB_FELT_EDGE: behind his shoulder or not, with an enter and an exit, advanced here once a tick.
-      if (QB_FELT_EDGE) {
-        const at = QB_HONEST_FEEL ? plain.pos : d.pos, ang = this.offFacing(a, at), was = this.behind.get(d);
-        this.behind.set(d, was === undefined ? ang > FELT_IN : was ? ang > FELT_OUT : ang > FELT_IN);
-      }
       this.pics.set(d, { plain, felt: this.feltLive(a, sim, d, plain) });
     }
     for (const r of sim.offense) if (r !== a && !this.outSeen.has(r) && this.checkRelease(r)) this.seenOutLive(r);
   }
-  /** QB_FELT_EDGE: each defender behind his shoulder or not, as of his last update. */
-  private behind = new Map<Agent, boolean>();
   /** A point's bearing off his facing, wrapped to [0, pi]. */
   private offFacing(a: Agent, at: Vec2): number {
     const raw = Math.atan2(at.y - a.pos.y, at.x - a.pos.x) - a.body.facing;
     return Math.abs(Math.atan2(Math.sin(raw), Math.cos(raw)));
   }
-  /** Behind his shoulder: QB_FELT_EDGE's held state when it has one, else the single 1.8 rad edge. */
-  private isBehind(a: Agent, d: Agent, at: Vec2): boolean {
-    if (QB_FELT_EDGE) { const b = this.behind.get(d); if (b !== undefined) return b; }
-    return this.offFacing(a, at) > 1.8;
+  /** Behind his shoulder: the single 1.8 rad edge (the channel choice; the two channels agree at it). */
+  private isBehind(a: Agent, _d: Agent, at: Vec2): boolean { return this.offFacing(a, at) > 1.8; }
+  /** How far behind his view a point is, for the blind-side lag: 0 or 1 at the 1.8 rad edge, or with QB_FELT_EDGE a
+   * smoothstep from FELT_IN_VIEW to FELT_BLIND. */
+  private blindShare(a: Agent, at: Vec2): number {
+    const ang = this.offFacing(a, at);
+    if (!QB_FELT_EDGE) return ang > 1.8 ? 1 : 0;
+    const x = clamp((ang - FELT_IN_VIEW) / (FELT_BLIND - FELT_IN_VIEW), 0, 1);
+    return x * x * (3 - 2 * x);
   }
   private feltLive(a: Agent, sim: PlaySim, d: Agent, plain?: Perceived): Perceived {
     // Bearing off his facing, wrapped to [0, pi]: behind his shoulder is
@@ -2015,8 +2015,7 @@ export class QBPass implements Behavior {
       t = (-v + Math.sqrt(v * v + 2 * FREE_BURST * D)) / FREE_BURST;
     }
     const at0 = QB_HONEST_FEEL ? this.plainOf(a, sim, d).pos : d.pos;
-    const blind = this.isBehind(a, d, at0);
-    return t + (blind ? FREE_BLIND_LAG * (1 - a.r('pocketPresence')) : 0);
+    return t + this.blindShare(a, at0) * FREE_BLIND_LAG * (1 - a.r('pocketPresence'));
   }
 
   private pressure(a: Agent, sim: PlaySim): { time: number; agent: Agent | null; dist: number } {

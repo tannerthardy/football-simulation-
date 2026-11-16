@@ -18,8 +18,8 @@ PlaySim.prototype.run = function (this: PlaySim) {
   const sim: any = this; if (!sim.isPass) return orig.apply(this);
   const tick = sim.tick.bind(sim);
   let qb: any = null;
-  const lastT = new Map<any, number>(), prevFelt = new Map<any, any>();
-  const jumps = { flip: [] as number[], steady: [] as number[], flipDist: [] as number[] };
+  const lastT = new Map<any, number>(), prevFelt = new Map<any, any>(), prevBound = new Map<any, number>();
+  const jumps = { flip: [] as number[], steady: [] as number[], flipDist: [] as number[], boundFlip: [] as number[], boundSteady: [] as number[] };
   const hist = { felt: new Map<any, [number, boolean][]>(), sector: new Map<any, [number, boolean][]>() };
   sim.tick = () => {
     tick();
@@ -46,6 +46,16 @@ PlaySim.prototype.run = function (this: PlaySim) {
           if (flip) jumps.flipDist.push(Math.hypot(p.pos.x - a.pos.x, p.pos.y - a.pos.y));
         }
         if (f) prevFelt.set(d, { pos: { ...f.pos }, vel: { ...f.vel } });
+        // His believed free arrival for this man (freeBound, which carries the blind-side lag), tick to tick: its jump at
+        // a flip against an ordinary tick. Pure: it reads his stored pictures.
+        if (f && typeof b.freeBound === 'function') {
+          const fb = b.freeBound(a, sim, d, f), pb = prevBound.get(d);
+          if (Number.isFinite(fb) && pb !== undefined && Number.isFinite(pb)) {
+            const flip = h.length > 0 && h[h.length - 1][1] !== blind;
+            (flip ? jumps.boundFlip : jumps.boundSteady).push(Math.abs(fb - pb));
+          }
+          prevBound.set(d, fb);
+        }
         h.push([sim.t, blind, a.body.facing] as any); hist.felt.set(d, h);
       }
       const m = b.mind?.memory?.get(d);
@@ -56,7 +66,7 @@ PlaySim.prototype.run = function (this: PlaySim) {
   };
   const res = orig.apply(this);
   if (qb) {
-    const out: any = { concept: sim.offCall?.pass?.id ?? '?', jumps: { flip: jumps.flip.map((x) => +x.toFixed(2)), flipDist: jumps.flipDist.map((x) => +x.toFixed(1)), steadyN: jumps.steady.length, steadyP50: jumps.steady.length ? +jumps.steady.sort((x, y) => x - y)[jumps.steady.length >> 1].toFixed(3) : null, steadyP90: jumps.steady.length ? +jumps.steady[Math.floor(jumps.steady.length * 0.9)].toFixed(3) : null } };
+    const out: any = { concept: sim.offCall?.pass?.id ?? '?', jumps: { flip: jumps.flip.map((x) => +x.toFixed(2)), flipDist: jumps.flipDist.map((x) => +x.toFixed(1)), boundFlip: jumps.boundFlip.map((x) => +x.toFixed(3)), boundSteady: jumps.boundSteady.filter((_, i) => i % 20 === 0).map((x) => +x.toFixed(3)), steadyN: jumps.steady.length, steadyP50: jumps.steady.length ? +jumps.steady.sort((x, y) => x - y)[jumps.steady.length >> 1].toFixed(3) : null, steadyP90: jumps.steady.length ? +jumps.steady[Math.floor(jumps.steady.length * 0.9)].toFixed(3) : null } };
     for (const site of ['felt', 'sector'] as const) {
       let ticks = 0, flips = 0, back = 0, secs = 0; const turns: number[] = [];
       for (const h of hist[site].values()) {
