@@ -143,3 +143,59 @@ Scorecard (16 games per arm, 2 leagues, seeds 23 and 31, paired off against on):
 | completion | 67.4 to 67.8% | 67.9 to 66.1% | |
 
 The pass game after the catch is unmoved (YAC +0.13 pooled, opposite signs on the two seeds); the first-contact distance falls a tenth of a yard on the pooled runs (one seed carries it).
+
+## Read on Integration's card candidate (claude/laughing-cray-4vqegz at 6fb74695, engine-70 route flips on; 2026-11-16)
+
+Asked for: the dither panel with `SPACING_HOLD=1 CRAFT_HOLD=1 RELEASE_SIDE=1` against off, the limit hold on film for a dozen added stuffs, and the two side-choice constants written down as choices.
+
+### Dither panel (135 plays) and `test/dither-budget.test.ts`
+
+| arm | carrier / spacing (reversed / moving s) | carrier controller | route controller |
+| --- | --- | --- | --- |
+| all three off | 0.1853 (55 / 297) | 0.4448 | 0.1304 |
+| `SPACING_HOLD=1` | 0.0964 (30 / 311) | 0.3599 | 0.1310 |
+| all three on | 0.1025 (32 / 312) | 0.3779 | 0.0785 |
+| `CRAFT_HOLD=1 RELEASE_SIDE=1`, no hold | 0.2088 (63 / 302) | 0.4938 | 0.0780 |
+
+The budget for carrier / spacing is 0.1744 (engine-49 record 0.1217 x 1.10 plus the slack). With the flags off the candidate fails `test/dither-budget.test.ts` on that stage alone (0.185); with all three on both tests in the file pass. The hold is what brings the stage back under: CRAFT_HOLD and RELEASE_SIDE halve the route controller's rate (0.130 to 0.079) but, without the hold, they add to the carrier stage (0.209). Other stages move by less than the noise of the panel.
+
+### The limit hold on film
+
+`scripts/diag/effective-mass/limit-hold-film.mts` with the measurement hooks in `docs/reviews/patches/2026-11-16-limit-hold-hooks.patch` (not committed to `src`; it logs, draws no random numbers and keeps no state). On the 1,321-play run set, hold off and all three on: stuffs 185 to 196 (14.0 to 14.8%), 64 plays stuffed only with the hold and 53 only without it (a net +11 on a count of about 117 changes, one sigma); mean yards capped at 20: 3.38 to 3.34 (paired -0.05, SE 0.08).
+
+A "hold-only" tick is one where he is braking for a teammate only because the hold keeps the limit: the plain test would have dropped it (the teammate is beyond the awareness gap, or his swept path clears the touch distance). They are common, not specific to the added stuffs: 882 of the 1,321 plays have them. For the 64 added stuffs, 60 have binding ones.
+
+Twelve added stuffs (every fifth of the 60, `out/cand/film_on.txt`), 132 binding hold-only ticks:
+
+* the teammate was stalled (under 1.5 yd/s) in 37 (28%), moving in 95 (72%). Two plays are mostly stalled (s9-95, s23-34: braking behind a blocker who has stopped, which is real); seven are mostly moving peers (s7-26, s7-67, s15-28, s19-39, s25-58, s27-41, s27-102); three are mixed.
+* the swept line missed the teammate by only 0.0 to 0.3 yd beyond the touch distance (median 0.13, medians per play 0.0 to 0.32), that is, inside the hold's exit margin (one body width, 0.7 yd), and the plain rule would have dropped the limit. On the 60 added stuffs (first six ticks per play, 324 ticks), 83% are "path clears" ticks and 21% have a stalled peer.
+* s7-26 is the plain case: an outside carrier behind the line with a lead blocker 1.2 to 1.5 yd ahead moving at 4.7 to 5.0 yd/s (his own speed), swept line clear by 0.3 to 0.4 yd, the hold removes 3.5 yd/s of closing for 0.6 s and his speed falls from 5.4 to 4.5.
+
+So the film says the hold keeps a brake after the lane is open in most of the added stuffs. Does that cost the stuffs? It does not: the exit margin on the limit (`2 * radius`, the bend hold's) at 1.0, 0.5 and 0.25 of a body width, all three flags on:
+
+| margin | stuffs | mean yards (capped 20), paired vs off | carrier / spacing |
+| --- | --- | --- | --- |
+| off | 14.0% | 3.38 | 0.1853 |
+| 1.0 body width | 14.8% | 3.34 (-0.05, SE 0.08) | 0.1025 |
+| 0.5 | 14.7% | 3.38 (-0.00, SE 0.07) | 0.1027 |
+| 0.25 | 14.5% | 3.41 (+0.03, SE 0.08) | 0.0955 |
+
+The margin moves the stuff rate by 0.3 points and the mean by 0.08 yd, inside the noise (SE 0.08), and the dither stays under budget at all three. The margin is not what produces the stuffs, so I have not changed it; one body width stays as the stated choice (the same one the bend hold uses: enter at the touch distance, exit one body width beyond it). If someone wants the limit's exit tighter on principle (the film shows the brake outliving the lane), 0.5 is free on this evidence.
+
+### The two choices, written down
+
+* **Free-space error, 0.6 x (1 - vision) yd (`PlaySim`, the carrier's `space` read):** the nearest pictured opponent to a 4 yd ray along the bent heading, with a smooth seeded error whose size is 0.6 yd at vision 0 and none at vision 1 (about one torso diameter for the least perceptive carrier). There is no source for the size; it is a stated choice, large enough that a low-vision carrier mistakes which side has room and small enough that a good one is not misled by more than a stride.
+* **Side margin, 0.1 yd (`pickBendSide`):** he takes the side with more free space only if it has at least 0.1 yd more; closer than that he takes the smaller bend, then the side away from the teammate he bends around. 0.1 yd is below what he can tell apart given the error above, so below it the picture is not a reason.
+
+Read at three levels each (run set, all three flags on):
+
+| | stuffs | mean yards (capped 20), paired vs off |
+| --- | --- | --- |
+| error 0.3 | 15.1% | 3.32 (-0.07, SE 0.08) |
+| error 0.6 (choice) | 14.8% | 3.34 (-0.05, SE 0.08) |
+| error 0.9 | 15.0% | 3.33 (-0.06, SE 0.08) |
+| side margin 0.05 | 15.1% | 3.31 (-0.07, SE 0.08) |
+| side margin 0.1 (choice) | 14.8% | 3.34 (-0.05, SE 0.08) |
+| side margin 0.2 | 15.1% | 3.31 (-0.07, SE 0.08) |
+
+Nothing in either choice moves the result by more than the noise. On this candidate the hold is a dither repair with a net effect on the run set of -0.05 yd (SE 0.08) and +0.8 points of stuffs (one sigma); the +0.13 yd on engine-68 (3.30 to 3.43) was against a different route stack, and I do not carry it over.
