@@ -900,7 +900,7 @@ export const LEVEL2_TIME = process.env.LEVEL2_TIME !== '0';
  * about equally far a play-side double climbed to the backside backer and left the play-side one free (receiver-run
  * eligibility G1-P018, outside zone vs zero_6: LB_M at 5.05 yd and LB_W at 5.06 from the centre; the C+RG double on
  * DT_S took LB_W, LB_M unblocked). */
-export const LEVEL2_TRACK = process.env.LEVEL2_TRACK === '1';
+export const LEVEL2_TRACK = process.env.LEVEL2_TRACK !== '0';
 function snapHash(...parts: (string | number)[]): number {
   let h = 2166136261;
   for (const c of parts.join('|')) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); }
