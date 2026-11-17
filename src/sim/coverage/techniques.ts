@@ -18,11 +18,11 @@ import type { ReleaseReader } from './reads.js';
 import { withFacingTechnique } from './orientation.js';
 import { RELEASE_BELIEF } from '../release-belief.js';
 
-/** TECH_CONT (off): a zone technique (Trap, Wall, Rob, CrossWall) that reads the throw on the arm alone keeps its own
+/** TECH_CONT (on since engine-75, 2026-11-17; `=0` restores the coast): a zone technique (Trap, Wall, Rob, CrossWall) that reads the throw on the arm alone keeps its own
  * technique as the continuation of the throw read, as a zone dropper does: he plants on the load and breaks on the
  * passer's shoulders at the delivery, instead of coasting on his current velocity until he has seen the ball's flight
  * (the missing continuation: about 0.4 s still moving away from the catch point). */
-const TECH_CONT = process.env.TECH_CONT === '1';
+const TECH_CONT = process.env.TECH_CONT !== '0';
 
 const APEX_CUSHION = 9;
 
