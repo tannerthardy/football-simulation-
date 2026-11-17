@@ -2581,6 +2581,19 @@ const SHOULDER_READ = process.env.SHOULDER_READ !== '0';
  * not another immediate gap plugger; deep zone players read the quarterback and break on his shoulders). */
 const DEEP_BREAK = process.env.DEEP_BREAK === '1';
 const deepPlaysBall = new WeakMap<Agent, { key: number; ball: boolean }>();
+/** DEEP_GATE (experimental, off; Rules' table gap 1): Cover 3 and Cover 2 deep players (deep thirds, the deep middle,
+ * deep halves, Tampa's middle) hold until they see the ball out: an arm-only belief (the load, a delivery, a pump) keeps
+ * his coverage running, no plant and no shoulder break; quarter seats (quarters, palms, Cover 6's quarter side) keep
+ * their route triggers and DEEP_BREAK. Taught: the deep third and half "read the QB, break on the ball", never the arm
+ * (HNFL-027/292; Bowen; Rules' coverage-position table, 69277a00). Off, playBelievedBall had no deep check: every
+ * ZoneCoverage deep player planted on the load and broke on the shoulders, pumps included (release-belief.ts:9-10). */
+const DEEP_GATE = process.env.DEEP_GATE === '1';
+const HELD_DEEP = new Set(['deep_third_s', 'deep_third_w', 'deep_mid', 'deep_half_s', 'deep_half_w', 'tampa_mid']);
+function heldDeepSeat(a: Agent): boolean {
+  const b = a.behavior as { zone?: string; recordedZone?: () => string | undefined } | undefined;
+  const z = b instanceof ZoneCoverage ? b.zone : b?.recordedZone?.();
+  return !!z && HELD_DEEP.has(z);
+}
 function deepMan(a: Agent, sim: PlaySim): boolean {
   const b = a.behavior as { kind?: string; deep?: boolean } | undefined;
   const coverage = a.behavior instanceof ZoneCoverage || b?.constructor?.name === 'CoverageDefender';
@@ -2832,6 +2845,9 @@ function playBelievedBall(a: Agent, sim: PlaySim, man: Agent | null, continueCov
     if (man && BALL_EST_MAN_LOOK && estimatesFor(a) && !hasObservedFlight(a) && manLooks(a, sim, man, rb.releasedAt)) return manLook(a, sim, fallback());
     a.tags.add('arm-bite');
     if (!continueCoverage) return fallback();
+    // DEEP_GATE: a deep-third, deep-middle or deep-half player holds his coverage on the arm alone (a pump moves him
+    // nothing); he breaks once he has seen the ball out. Quarter seats keep their route triggers and DEEP_BREAK.
+    if (DEEP_GATE && !man && heldDeepSeat(a)) { a.tags.add('deep-hold'); return continueCoverage(); }
     // A zone defender breaks on the passer's shoulders at the delivery (the arm coming through; on the load alone he
     // plants): toward the receiver they point at, read through the tracking channel of the passer he is watching,
     // chosen once for this belief, with his reaction time after the choice. With none lined up, he plants (stops his
