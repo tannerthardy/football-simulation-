@@ -14,6 +14,7 @@
     "LB_LINE_FLOW": "0",
     "LOOSE_SEEN": "0",
     "LOOSE_OWN": "0",
+    "CARRIER_RECOG": "0",
     "ATTACK_LANDMARK": "0",
     "STANCE_TELL": "0",
     "ZONE_RUN": "0",

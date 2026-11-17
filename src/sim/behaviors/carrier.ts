@@ -37,6 +37,10 @@ type Profile = Agent['profile'];
 function judged(a: Agent, o: Agent): Profile {
   return { ...a.profile, radius: o.profile.radius };
 }
+/** CARRIER_RECOG (off; attempt 1, miss; docs/reviews/2026-11-17-carrier-honest.md): where a defender IS stays on the
+ * fast tracking picture (0.7 of his reaction time); how the man is MOVING is read from his recognition picture, one
+ * full reaction time plus a vision term ((1 - vision) more). The counter holds to his next decision beat (nextEval). */
+const CARRIER_RECOG = process.env.CARRIER_RECOG === '1';
 
 export interface CarrierOptions {
   /** Designed aiming point (run concept) and how long to honor it. */
@@ -851,7 +855,8 @@ function arrivalEvidence(a: Agent, sim: PlaySim, dir: number, range: number, vis
       blockerBonus = (seen.vel.x * rx + seen.vel.y * ry) / (Math.hypot(rx, ry) || 1) > 1 ? 0.25 : 0.7;
       extra += blockerBonus;
     }
-    threats.push({ d, pos: seen.pos, vel: seen.vel, seen, parking, recovery, blockerBonus, extra });
+    const vel = CARRIER_RECOG ? sim.see(a, d, 1 + (1 - vision)).vel : seen.vel;
+    threats.push({ d, pos: seen.pos, vel, seen, parking, recovery, blockerBonus, extra });
   }
   return { blockers, threats };
 }
