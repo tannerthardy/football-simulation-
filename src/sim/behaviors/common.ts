@@ -6,7 +6,7 @@ import { availability, supportParams } from '../../physics/support.js';
 import { interceptPoint, timeToReach, timeToReachRequested, type SprintRequest } from '../../physics/reach.js';
 import type { Agent } from '../agent.js';
 import { chooseApproach } from '../approach-control.js';
-import { onTopCushion, onTopPoint } from '../open-field.js';
+import { onTopCushion, onTopPoint, OPEN_TOP, openTopVelocity } from '../open-field.js';
 import { withMovementObjective } from '../movement-objective.js';
 import type { PlaySim } from '../playsim.js';
 
@@ -332,6 +332,13 @@ export function chase(sim: PlaySim, a: Agent, target: Agent, horizon = 3, opts: 
   // and the gather's arrival stays on top of him (onTopCushion), so it mirrors him.
   const top = opts.onTop ? onTopPoint(sim, a, target, seen, offset) : null;
   const topShift = opts.onTop ? onTopCushion(sim, a, target, seen, dist, contact) : 0;
+  // OPEN_TOP (open-field.ts): a defender on top of a free runner closes, comes to balance, gives ground while squeezing
+  // and strikes; it replaces the sprint-and-gather for him only (top is null for a side or trailing pursuer).
+  if (OPEN_TOP && top && !sim.bond?.tacklers.includes(a)) {
+    const o = openTopVelocity(sim, a, target, seen, offset, top);
+    a.tags.add(`open-top-${o.phase}`);
+    return ownApproach({ vel: o.vel, facing: Math.atan2(seen.pos.y - a.pos.y, seen.pos.x - a.pos.x) });
+  }
   const { near, gather } = gatheringApproach(a, seen, contact, offset, topShift);
   const trace = sim.commandTraceFor?.(a);
   if (gather >= 1 && !sim.bond?.tacklers.includes(a)) {
