@@ -47,6 +47,7 @@
     "APEX_LEVERAGE": { "default": 7, "legacy": 0 },
     "END_KEY": { "default": 2, "legacy": 0 },
     "ZONE_HOLD": { "default": 114, "legacy": 0 },
+    "BEND_FORECAST": { "default": 0, "legacy": 0 },
     "HAND_MOMENT_CAP": { "default": 150, "legacy": 0 },
     "OFF_PEDAL": { "default": 3, "legacy": 0 },
     "QB_FOOTWORK": { "default": 3, "legacy": 0 },
