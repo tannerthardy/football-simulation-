@@ -466,6 +466,14 @@ const HANG_GRIP = process.env.HANG_GRIP === '1';
  * at full overload. Not fitted. */
 const HANG_SLIDE = 1.5;
 const hangShare = (state: string | undefined): number => state === 'up' ? 0 : HANG_AIRBORNE && state === 'falling' ? 1 : HANG_SHARE;
+/** HANG_LOAD (experimental, off; HANG_LOAD=1 turns it on; docs/reviews/2026-11-17-hang-load.md): the hanging weight is one weight, carried once. The share of a
+ * holder's weight his hold carries (hangShare, whatever its value) comes off his own turf normal force (his friction capacity, fr * G * m, is cut by it) and goes
+ * onto the carrier: it adds to the normal load on his feet (liftImp, so his traction grows with it) and, hung at the torso's edge on the holder's side, it is an
+ * off-centre load: its moment about his base, W r / (m H) as an equivalent horizontal acceleration at his centre of mass, displaces his capture point like any other
+ * unfollowed load (tipX / tipY). Every unbroken grasp counts, upper-body holds included, once per holder and carrier. A falling man tied to a runner is dragged,
+ * not toppling free, so FALL_TIP's forward drive (a free body's tip) does not apply to him. His horizontal inertia stays in the joint's two-body solve; the carrier's
+ * own acceleration law does not take it a second time. FALL_FRICTION, DOWN_FRICTION and FALL_TIP are unchanged (unsourced). */
+const HANG_LOAD = process.env.HANG_LOAD === '1';
 /** Experimental (HELD_SWING=1, off): a leg hold resists the leg's swing by
  * its grip whether or not the holder is on his feet, and the strides it binds
  * leave the runner's base behind his body (see the stride holds and
@@ -859,6 +867,8 @@ export class World {
   private readonly padHeight: Float64Array;
   /** PAD_LEVERAGE: upward contact impulse this substep, and its felt force (+ lifts). */
   private readonly liftImp: Float64Array;
+  /** HANG_LOAD: the share of body i's weight his hold carries this substep (0 when he is up or holds no one). */
+  private readonly hangCarried: Float64Array;
   private readonly liftFelt: Float64Array;
   private readonly v0x: Float64Array;
   private readonly v0y: Float64Array;
@@ -919,7 +929,7 @@ export class World {
     this.travelVx = f(); this.travelVy = f();
     this.travelAdjustX = f(); this.travelAdjustY = f();
     this.tipX = f(); this.tipY = f(); this.braceX = f(); this.braceY = f();
-    this.comHeight = f(); this.padHeight = f(); this.liftImp = f(); this.liftFelt = f();
+    this.comHeight = f(); this.padHeight = f(); this.liftImp = f(); this.liftFelt = f(); this.hangCarried = f();
     this.v0x = f(); this.v0y = f(); this.facing0 = f(); this.amx = f(); this.amy = f(); this.alpha = f(); this.cut = f(); this.armYaw = f(); this.armYawTime = f().fill(NaN);
     this.leanX = f(); this.leanY = f();
     this.armScale = f(); this.armCap = f(); this.active = f();
@@ -1639,6 +1649,7 @@ export class World {
       const d = hypot2(point.x - jt.a.pos.x, point.y - jt.a.pos.y);
       if (this.gripCapacity(jt) <= 0 || d > reach || (jt.hold ?? d) > reach) jt.broken = true;
     }
+    if (HANG_LOAD) this.hangLoad(ids, h);
     this.syncHeldSupport();
     this.allocateArms();
     // Hanging weight: a holder off his feet who still holds the runner's legs
@@ -2262,7 +2273,8 @@ export class World {
       this.alpha[i] = 0; this.cut[i] = 1;
       this.passive(b, sup, sp, report, i);
       const fr = sup.state === 'falling' ? FALL_FRICTION : DOWN_FRICTION;
-      if (sup.state === 'falling') { fx += sup.fall.x * FALL_TIP * m; fy += sup.fall.y * FALL_TIP * m; }
+      const carried = HANG_LOAD ? this.hangCarried[i] : 0;
+      if (sup.state === 'falling' && carried <= 0) { fx += sup.fall.x * FALL_TIP * m; fy += sup.fall.y * FALL_TIP * m; }
       // Translation and yaw share one passive ground-friction allowance.
       // The mean lever of a uniformly loaded circular footprint is 2r/3;
       // this geometry proxy is not a measured prone-athlete contact patch.
@@ -2271,7 +2283,7 @@ export class World {
       const wantedX = -m * vx / h, wantedY = -m * vy / h;
       const wantedTorque = -this.inertia[i] * spin / h;
       const demand = Math.hypot(wantedX, wantedY, wantedTorque / lever);
-      const capacity = fr * G * m;
+      const capacity = fr * G * m * (1 - carried);
       const fraction = demand > 0 ? Math.min(1, capacity / demand) : 0;
       fx += wantedX * fraction; fy += wantedY * fraction;
       b.spin = spin * (1 - fraction);
@@ -2335,6 +2347,28 @@ export class World {
     sup.lean = { x: 0, y: 0 };
     sup.strike = undefined;
     report.falls.push(i);
+  }
+
+  /** HANG_LOAD: move each hanging holder's carried weight from his turf load to the carrier's feet and balance. */
+  private hangLoad(ids: number[], h: number): void {
+    for (const i of ids) this.hangCarried[i] = 0;
+    const seen = new Set<number>();
+    for (const jt of this.joints) {
+      if (jt.kind !== 'grasp' || jt.broken) continue;
+      const ia = this.indexOf(jt.a), ib = this.indexOf(jt.b);
+      const share = hangShare(jt.a.support!.state);
+      if (share <= 0 || seen.has(ia * 4096 + ib)) continue;
+      seen.add(ia * 4096 + ib);
+      this.hangCarried[ia] = Math.min(1, this.hangCarried[ia] + share);
+      const W = share * this.mass[ia] * G;
+      this.liftImp[ib] -= W * h;
+      const dx = jt.a.pos.x - jt.b.pos.x, dy = jt.a.pos.y - jt.b.pos.y, d = hypot2(dx, dy);
+      const c = this.comHeight[ib];
+      if (d > 1e-6 && c > 1e-6) {
+        const aeq = W * jt.b.profile.radius / (this.mass[ib] * c);
+        this.tipX[ib] += aeq * dx / d * h; this.tipY[ib] += aeq * dy / d * h;
+      }
+    }
   }
 
   /** HELD_SWING: arms around his legs resist the leg swinging through them,
