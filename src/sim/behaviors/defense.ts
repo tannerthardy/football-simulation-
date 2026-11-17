@@ -67,6 +67,15 @@ export function believesRun(_sim: PlaySim, a: Agent): boolean {
  * foot hits, then plant"), as tracked underneath defenders do (BDB 2025: hook
  * 4.4 -> 6.6 yd by 2.5 s on dropbacks; docs/reviews/2026-11-09-coverage-spacing.md). */
 const ZONE_SETTLE = process.env.ZONE_SETTLE !== '0';
+/** SETTLE_DEPTH (experimental, off; SETTLE_DEPTH=1 turns it on; docs/reviews/2026-11-15-underneath-handoff-design.md,
+ * part ii): ZONE_SETTLE plants an underneath dropper at the depth he has when he sees the QB set, which is right for a
+ * man who reached his drop and wrong for one a route pulled down (a hook who walled or carried the shallow settled at
+ * 5-6 yd against a 10 yd landmark, under the dig). Under the flag, a dropper who is short of his landmark's depth by
+ * more than SINK_ENTER keeps gaining depth toward it while he reads the QB, until he is within SINK_EXIT; one at depth
+ * settles as before. His own position against his landmark is his to know. Margins: stated choices, enter and exit on
+ * opposite sides. */
+export const SETTLE_DEPTH = process.env.SETTLE_DEPTH === '1';
+const SINK_ENTER = 2, SINK_EXIT = 1;
 /** SEEN_EYES (default on; SEEN_EYES=0 restores the QB's internal read target): a zone defender
  * reads the QB's look from what he sees of him, not from the QB's internal
  * read target (sim.qbEyes, the exact receiver, instantly, for every defender
@@ -1498,6 +1507,14 @@ export class ZoneCoverage implements Behavior {
   private flatExpansionRecorded = false;
   /** ZONE_SETTLE: when this underneath dropper saw the QB set (-1 not yet). */
   private settledAt = -1;
+  /** SETTLE_DEPTH: short of his landmark's depth past the enter margin, still sinking (exit inside SINK_EXIT). */
+  private sinkingToDepth = false;
+  private shortOfDepth(a: Agent): boolean {
+    if (!SETTLE_DEPTH) return false;
+    const short = this.landmark.x - a.pos.x;
+    if (this.sinkingToDepth ? short < SINK_EXIT : short > SINK_ENTER) this.sinkingToDepth = !this.sinkingToDepth;
+    return this.sinkingToDepth;
+  }
   /** ZONE_SETTLE: the deepest the QB has been in this defender's picture. */
   private qbDeepest = Infinity;
   /** A box backer has left his read step for his drop. */
@@ -1677,7 +1694,8 @@ export class ZoneCoverage implements Behavior {
       const dropped = (sim.offAlign.spots.QB?.pos.x ?? q.pos.x) - this.qbDeepest >= 1;
       if (dropped && knowsPass(sim, a) && Math.hypot(q.vel.x, q.vel.y) < 1.2) this.settledAt = sim.t;
     }
-    const settled = (t: Vec2): Vec2 => this.settledAt >= 0 ? { x: Math.min(t.x, Math.max(a.pos.x, sim.los + 3)), y: t.y } : t;
+    const sinking = this.settledAt >= 0 && this.shortOfDepth(a);
+    const settled = (t: Vec2): Vec2 => this.settledAt >= 0 && !sinking ? { x: Math.min(t.x, Math.max(a.pos.x, sim.los + 3)), y: t.y } : t;
     const settle = (t: Vec2): Vec2 => settled(t);
 
     if (this.deep) {
@@ -2047,7 +2065,7 @@ export class ZoneCoverage implements Behavior {
     // Hold the spot's depth until the ball is thrown; stay within the zone.
     // Planted short of the spot on the QB's set, he holds where he planted.
     tgt = { x: Math.max(tgt.x, lm.x - 2), y: tgt.y };
-    if (this.settledAt >= 0) tgt = { x: Math.min(tgt.x, Math.max(a.pos.x, sim.los + 3)), y: tgt.y };
+    if (this.settledAt >= 0 && !this.shortOfDepth(a)) tgt = { x: Math.min(tgt.x, Math.max(a.pos.x, sim.los + 3)), y: tgt.y };
     const off = sub(tgt, lm);
     const l = Math.hypot(off.x, off.y);
     if (l > this.radius) tgt = { x: lm.x + (off.x / l) * this.radius, y: lm.y + (off.y / l) * this.radius };
