@@ -360,6 +360,7 @@
     "BACK_AS_THREE": "on",
     "PA_TABLES": "on",
     "QUICK_HITCH": "on",
+    "HALF_OWN": "off",
     "RELEASE_SIDE": "on",
     "SCREEN_DECLARE": "on",
     "ROUTE_SHAPE": "off",

@@ -299,6 +299,7 @@
   "test/grip-hold.test.ts",
   "test/grip-reach.test.ts",
   "test/ground-force-allocation.test.ts",
+  "test/half-own.test.ts",
   "test/hand-moment.test.ts",
   "test/hand-site.test.ts",
   "test/hands-cue.test.ts",
