@@ -43,12 +43,14 @@ def finish(key, rows):
         d = math.hypot(float(r['x']) - sx, float(r['y']) - sy)
         if d >= 1 and float(r['s']) < 1.2: setF, setD = f, (sx - float(r['x'])) * dirn; break
     rb = next((r for r in ball if int(r['frameId']) == relF), None); ab = next((r for r in ball if arrF and int(r['frameId']) == arrF), None)
+    # The ball's tracked speed just out of the hand (the frame after pass_forward, peak of the next two).
+    rs_ = [float(r['s']) for r in ball if relF + 1 <= int(r['frameId']) <= relF + 2]
     flight = (arrF - relF) / 10 if arrF else None
     dist = math.hypot(float(ab['x']) - float(rb['x']), float(ab['y']) - float(rb['y'])) if (rb and ab) else None
     gun = p['offenseFormation'] in ('SHOTGUN', 'EMPTY', 'PISTOL')
     print(json.dumps({'gun': gun, 'pa': p['playAction'] == 'TRUE', 'setT': (setF - snapF) / 10 if setF else None, 'setDepth': round(setD, 2) if setD is not None else None,
         'rel': (relF - snapF) / 10, 'flight': flight, 'air': float(p['passLength']) if p['passLength'] not in ('', 'NA') else None,
-        'dist': round(dist, 1) if dist else None, 'speed': round(dist / flight, 1) if (dist and flight) else None, 'cmp': p['passResult'] == 'C'}))
+        'dist': round(dist, 1) if dist else None, 'relSpeed': round(max(rs_), 1) if rs_ else None, 'speed': round(dist / flight, 1) if (dist and flight) else None, 'cmp': p['passResult'] == 'C'}))
 for w in weeks:
     f = open(D + f'tracking_week_{w}.csv'); rd = csv.DictReader(f)
     for r in rd:
