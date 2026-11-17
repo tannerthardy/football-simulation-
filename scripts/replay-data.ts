@@ -2,6 +2,7 @@
 import type { PlayLog } from '../src/game/game.js';
 import { PASS_BY_ID, RUN_CONCEPTS } from '../src/playbook/concepts.js';
 import type { ReplayLevel } from '../src/sim/types.js';
+import { packArt, type ArtSheet } from './play-art.js';
 
 export function replayOptions(args: string[]) {
   let seed = 7;
@@ -59,7 +60,7 @@ export function replayConcept(p: PlayLog) {
   return { id, name: run?.name ?? (id === 'qbDraw' ? 'QB Draw' : id), family };
 }
 
-export function packReplayPlay(p: PlayLog, game: number) {
+export function packReplayPlay(p: PlayLog, game: number, art?: ArtSheet) {
   const base = {
     id: `G${game + 1}-P${String(p.index + 1).padStart(3, '0')}`, game, index: p.index, kind: p.kind,
     q: p.quarter, clk: p.clock, off: p.offense, down: p.down, dist: p.distance, yl: p.yardline,
@@ -108,6 +109,7 @@ export function packReplayPlay(p: PlayLog, game: number) {
     roster: rp.players.map((a) => [a.team, a.slot, a.name, a.jersey]),
     weights: rp.players.map(a => a.weightLb ?? null),
     profiles: rp.profiles,
+    art: art ? packArt(art, rp.players) : undefined,
     telemetry: rp.telemetry,
     eventDetails: rp.events.map(e => ({ ...e, t: r2(e.t), pos: e.pos ? { ...e.pos } : undefined })),
     stats,
