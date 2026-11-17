@@ -325,7 +325,7 @@ export const PUSH_GROWTH = 0.25;
 const FEEL = 0.04;
 const LEAN_RISE = 0.04;
 const LEAN_DECAY = 0.15;
-/** LEAN_PITCH (experimental, off): a committed lean is his COM held ahead of
+/** LEAN_PITCH (on by default; LEAN_PITCH=0 turns it off): a committed lean is his COM held ahead of
  * his feet (offset = lean / (m·w0²)). The ankles move the pressure centre
  * across his base at once, so a lean up to the base radius is immediate; past
  * it the COM itself must pitch over planted feet, which it can do no faster
@@ -333,7 +333,7 @@ const LEAN_DECAY = 0.15;
  * in full once he has leaned to it; a load that vanishes releases only the
  * lean he really had. */
 const LEAN_PITCH = process.env.LEAN_PITCH !== '0';
-/** GRASP_ARM_MOMENT (experimental, off): a holder's hands are at the end of his
+/** GRASP_ARM_MOMENT (on by default; GRASP_ARM_MOMENT=0 turns it off): a holder's hands are at the end of his
  * arms, not welded to his torso. The yaw moment a grasp row passes into the
  * holder's torso is bounded by what his shoulders can hold: his arm force
  * (strength-derived, supportParams.armForce, with fatigue) across the chest
@@ -363,7 +363,7 @@ const HAND_MOMENT = process.env.HAND_MOMENT === '1';
  * (docs/reviews/2026-11-16-hand-moment.md, "Capacity levels"); not fitted to an outcome. */
 const HAND_MOMENT_CAP = (Number(process.env.HAND_MOMENT_CAP ?? 150) || 150) / 100;
 const HAND_MOTOR = process.env.HAND_MOTOR === '1';
-/** OPEN_HANDS (experimental, off; OPEN_HANDS=1 turns it on): two hand
+/** OPEN_HANDS (on by default; OPEN_HANDS=0 turns it off): two hand
  * states. Fingers on cloth (`HandJoint.grip`) keep the joint's push, hold and
  * steer limits: a grip inside the frame is ordinary, legal blocking. Open
  * hands push and slide; they do not pull or drag: no tension, and the
@@ -425,7 +425,7 @@ const KNEE = 0.5;
 /** Peak hip-extension torque per kg of body mass, kg·yd²/s² per kg
  * (about 3.5 N·m/kg in sprinting and strength athletes; 1 N·m = 1.196). */
 const HIP_TORQUE_PER_KG = 3.5 * 1.196;
-/** Experimental (HIP_STRENGTH=1, off): hip torque scales with the player's
+/** On by default (HIP_STRENGTH=0 turns it off): hip torque scales with the player's
  * functional strength like his leg drive does (power = mass·(0.55 + 0.75·
  * strength), physical.ts), normalised to a mid-strength player (0.925), so
  * a strong runner's hips swing a held leg and brace a pull harder than a
@@ -466,7 +466,7 @@ const HANG_GRIP = process.env.HANG_GRIP === '1';
  * at full overload. Not fitted. */
 const HANG_SLIDE = 1.5;
 const hangShare = (state: string | undefined): number => state === 'up' ? 0 : HANG_AIRBORNE && state === 'falling' ? 1 : HANG_SHARE;
-/** HANG_LOAD (experimental, off; HANG_LOAD=1 turns it on; docs/reviews/2026-11-17-hang-load.md): the hanging weight is one weight, carried once. The share of a
+/** HANG_LOAD (on by default; HANG_LOAD=0 turns it off; docs/reviews/2026-11-17-hang-load.md): the hanging weight is one weight, carried once. The share of a
  * holder's weight his hold carries (hangShare, whatever its value) comes off his own turf normal force (his friction capacity, fr * G * m, is cut by it) and goes
  * onto the carrier: it adds to the normal load on his feet (liftImp, so his traction grows with it) and, hung at the torso's edge on the holder's side, it is an
  * off-centre load: its moment about his base, W r / (m H) as an equivalent horizontal acceleration at his centre of mass, displaces his capture point like any other
@@ -474,12 +474,12 @@ const hangShare = (state: string | undefined): number => state === 'up' ? 0 : HA
  * not toppling free, so FALL_TIP's forward drive (a free body's tip) does not apply to him. His horizontal inertia stays in the joint's two-body solve; the carrier's
  * own acceleration law does not take it a second time. FALL_FRICTION, DOWN_FRICTION and FALL_TIP are unchanged (unsourced). */
 const HANG_LOAD = process.env.HANG_LOAD !== '0';
-/** Experimental (HELD_SWING=1, off): a leg hold resists the leg's swing by
+/** On by default (HELD_SWING=0 turns it off): a leg hold resists the leg's swing by
  * its grip whether or not the holder is on his feet, and the strides it binds
  * leave the runner's base behind his body (see the stride holds and
  * updateSupport). */
 const HELD_SWING = process.env.HELD_SWING !== '0';
-/** Experimental (SWING_STRIP=1, off; needs HELD_SWING): a swing is all or
+/** On by default (SWING_STRIP=0 turns it off; needs HELD_SWING): a swing is all or
  * nothing. The runner's hip either brings the held leg through the hands
  * (their moment about his hip below his hip torque: the leg swings and the
  * hands are pulled down it by the existing slip) or it does not (the stride
@@ -488,7 +488,7 @@ const HELD_SWING = process.env.HELD_SWING !== '0';
  * 8.95 m/s), so the one hip torque serves. Off, a weaker hold binds the
  * share total/hip of every stride. */
 const SWING_STRIP = process.env.SWING_STRIP !== '0';
-/** Experimental (SWING_FLEXION=1, off; with HELD_SWING): the swing has its own
+/** On by default (SWING_FLEXION=0 turns it off; with HELD_SWING): the swing has its own
  * hip action. Bracing the trunk against a hold's pull uses hip extension
  * (hipUsed, HIP_BRACE); bringing a held leg through uses hip flexion, a
  * separate torque of about the same size (Schache et al. 2011: 4.3 flexion,
@@ -496,14 +496,14 @@ const SWING_STRIP = process.env.SWING_STRIP !== '0';
  * the brace leaves, and a hold pulling at capacity binds the stride in the
  * first substep (84-89% of game holds at 0.05 s). */
 const SWING_FLEXION = process.env.SWING_FLEXION !== '0';
-/** Experimental (LEGS_HELD=1, off; with HELD_SWING): a bound swing binds the
+/** On by default (LEGS_HELD=0 turns it off; with HELD_SWING): a bound swing binds the
  * legs actually held. Each holder holds 1 + lock legs (an open hand one leg,
  * a closed wrap both), capped at two. One leg held: that leg's strides are
  * lost (half his drive along his path) but the free leg keeps stepping, so
  * his base is not left behind. Both legs: the stride is bound in full and
  * the base falls behind him, as without the flag. */
 const LEGS_HELD = process.env.LEGS_HELD !== '0';
-/** Experimental (HIP_BRACE=1, off): one hip budget for holds. A grasp on the
+/** On by default (HIP_BRACE=0 turns it off): one hip budget for holds. A grasp on the
  * upper body (no leg share) is braced by the runner's hips like a thigh hold:
  * the moment of its transmitted force about his centre of mass (zero at that
  * height, growing with the grip's height above it, e.g. a shoulder or jersey
@@ -523,7 +523,7 @@ const HIP_BRACE = process.env.HIP_BRACE !== '0';
  * half-length CHEST_HALF across his facing; the row acts between the closest
  * points of the two segments, as for two capsules. Off, centre to centre. */
 const HANDS_CHEST = process.env.HANDS_CHEST !== '0';
-/** Experimental (GRASP_PATCH=1, off): in centre mode a tackler's grasp follows
+/** On by default (GRASP_PATCH=0 turns it off): in centre mode a tackler's grasp follows
  * the World's common-patch grasp law: its rows act at the grip point with lever
  * arms in the force-midpoint frame, and his arm pull (the reel) is applied at
  * that point inside the same frame, sharing the grip's budget. A held pair then
@@ -537,7 +537,7 @@ const GRASP_PATCH = process.env.GRASP_PATCH !== '0';
  * less chest half-depth (0.15); anthropometric estimate, as the capsule of
  * scripts/diag/effective-mass/shape.py. */
 const CHEST_HALF = 0.27 - 0.15;
-/** CHEST_SHOULDERS (experimental, off; CHEST_SHOULDERS=1, needs TRUNK_TWIST=1; lives with ENGAGE_TRUNK): a torso's chest
+/** CHEST_SHOULDERS (on by default; CHEST_SHOULDERS=0 turns it off, needs TRUNK_TWIST=1; lives with ENGAGE_TRUNK): a torso's chest
  * segment (the hands' chest points, HANDS_LEVER's and PAIR_HANDS' lever arms, TORSO_CAPSULE's shoulder line) lies across
  * where his chest points, his shoulders (hips plus the trunk twist), not across his hips. With no twist the two are the
  * same number, so an untwisted body is unchanged. Off, the segment lies across the hips (the gait heading) whatever the

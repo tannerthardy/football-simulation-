@@ -1,5 +1,5 @@
 /**
- * L2_BREAKDOWN (default off): players break down before a second-level
+ * L2_BREAKDOWN (on by default; L2_BREAKDOWN=0 turns it off): players break down before a second-level
  * collision instead of running tall into it.
  *
  * A blocker approaching his second-level man (climb, lead, stalk) who will

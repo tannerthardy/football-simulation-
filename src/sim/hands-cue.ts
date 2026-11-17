@@ -1,4 +1,4 @@
-/** HANDS_CUE (experimental, off; HANDS_CUE=1 turns it on): a receiver's hands coming up for the ball, as evidence a
+/** HANDS_CUE (on by default; HANDS_CUE=0 turns it off): a receiver's hands coming up for the ball, as evidence a
  * defender trailing him can see.
  *
  * The trailer's throw cue (`readsHandsAt` in defense.ts) read only his man's body facing turned past ~102 deg off his

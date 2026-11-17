@@ -6,14 +6,14 @@
  */
 import type { RouteDef } from './types.js';
 
-/** BACK_PATHS (experimental, off; BACK_PATHS=1): the back's flat, angle and out on their tracked paths (see back_flat,
+/** BACK_PATHS (on by default; BACK_PATHS=0 turns it off): the back's flat, angle and out on their tracked paths (see back_flat,
  * angle, back_out; BDB 2025 weeks 1-3, backs on non-PA drop-backs, scripts/diag/concepts/nfl_back_path.py). */
 const BACK_PATHS = process.env.BACK_PATHS !== '0';
 /** SCREEN_QB (experimental, off; behaviors/qb.ts): the tunnel's route from tracking. */
 const SCREEN_QB = process.env.SCREEN_QB === '1';
 /** ROUTE_EFFORT (experimental, off; src/sim/route-motion.ts): every route's stem at full pace, with the break table below. */
 const ROUTE_EFFORT = process.env.ROUTE_EFFORT === '1';
-/** ROUTE_FILLET (experimental, off; src/sim/route-motion.ts): the break table's cut / roll column applies with it. */
+/** ROUTE_FILLET (on by default; ROUTE_FILLET=0 turns it off; src/sim/route-motion.ts): the break table's cut / roll column applies with it. */
 const ROUTE_FILLET = process.env.ROUTE_FILLET !== '0';
 /** CROSS_OVER (experimental, off): the deep cross (the over, Y-cross) released inside on a diagonal, "inside of the
  * Sam LB, and over the Mike LB", to its "landmark ... 18-22 yards" (Throw Deep, Y Cross; Shanahan's 1994 dover breaks in
@@ -27,7 +27,7 @@ const ROUTE_FILLET = process.env.ROUTE_FILLET !== '0';
 const CROSS_OVER = process.env.CROSS_OVER === '1';
 /** ROUTE_SHAPE (experimental, off): the in and out breaks as rolls, as taught (see SHAPES below). */
 const ROUTE_SHAPE = process.env.ROUTE_SHAPE === '1';
-/** CROSS_FLAT (experimental, off): the shallow crossers reach their depth in the first leg and run flat across, as
+/** CROSS_FLAT (on by default; CROSS_FLAT=0 turns it off): the shallow crossers reach their depth in the first leg and run flat across, as
  * taught ("run under the linebackers, flat across"; docs/reviews/2026-11-14-crosser-depth.md). Off, the shallow
  * climbs on a diagonal from a 2.5 yd stem to 5 yd across 22 yd: still rising at 3.0 s (4.7 yd median against zone, ball
  * held) and slow across (3.2 yd from his spot at 2.0 s). NFL WR / TE crossers under 4 yd at 2.0 s (55% of crossers vs

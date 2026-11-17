@@ -39,7 +39,7 @@ export const VISIBLE = 0.05;
 const ABSENCE = 0.08;
 
 const LINE = new Set(['LT', 'LG', 'C', 'RG', 'RT']);
-/** OFFBALL_TIMING (experimental, off): see planSnap; chance an off-ball defender times the count (avg about 0.55). */
+/** OFFBALL_TIMING (on by default; OFFBALL_TIMING=0 turns it off): see planSnap; chance an off-ball defender times the count (avg about 0.55). */
 export const OFFBALL_TIMING = process.env.OFFBALL_TIMING !== '0';
 const OFFBALL_BASE = 0.3, OFFBALL_ANTICIPATION = 0.5;
 /** OL_ON_COUNT (off): the tracked snap is the ball moving, which is the
@@ -52,7 +52,7 @@ const OFFBALL_BASE = 0.3, OFFBALL_ANTICIPATION = 0.5;
 export const OL_ON_COUNT = process.env.OL_ON_COUNT === '1';
 
 /** Simple visual response to an expected single cue: seen motion to own movement. */
-/** WR_SNAP (off; WR_SNAP=1 turns it on): a wide receiver more than
+/** WR_SNAP (on by default; WR_SNAP=0 turns it off): a wide receiver more than
  * WR_SNAP_SPLIT yd from the ball laterally keys the ball's movement for his
  * start (snapResponse, as a defender off the ball does) instead of going on
  * the cadence with the line. Tracked receivers on dropbacks first reach
@@ -128,7 +128,7 @@ export function planSnap(agents: readonly Agent[], s: SnapSituation, rng: Rng): 
     }
     const react = a.mind.snapDelay + snapResponse(a);
     const onLine = s.offBall(a) < 2;
-    // OFFBALL_TIMING (experimental, off): an off-ball defender can time the
+    // OFFBALL_TIMING (on by default; OFFBALL_TIMING=0 turns it off): an off-ball defender can time the
     // cadence too. He does not go before the ball (nothing to win and a step
     // given if the count is hard), but a backer who has timed it starts with
     // the snap instead of after seeing the ball move. NFL box backers are

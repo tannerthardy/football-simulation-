@@ -31,7 +31,7 @@ export function paRunLook(a: Agent, sim: PlaySim, man: Agent | null): boolean {
   return !end;
 }
 
-/** PA_HINGE (experimental, off; PA_HINGE=1; Integration, 2026-11-16, Rules' sourced install): on a zone run fake the
+/** PA_HINGE (on by default; PA_HINGE=0 turns it off; Integration, 2026-11-16, Rules' sourced install): on a zone run fake the
  * line shows the zone it fakes. "All the offensive linemen step and reach play-side ... and have the backside offensive
  * tackle or tight-end (whoever is the end man on the backside of your offensive line) hinge" (Youth Football Online,
  * pass protection fundamentals; the instruction is a checked page, the hinge's footwork is not: pages give the hinge only as

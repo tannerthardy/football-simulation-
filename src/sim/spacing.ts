@@ -20,11 +20,11 @@ import { movementObjective } from './movement-objective.js';
 import { containCoverage } from './coverage-space.js';
 import { localTrafficRoute } from './traffic-route.js';
 
-/** RB_STEER (default off): a ball carrier (or a lead back) whose held
+/** RB_STEER (on by default; RB_STEER=0 turns it off): a ball carrier (or a lead back) whose held
  * request runs into a teammate first tries bending the same request around him at speed; only
  * when no bend clears does he slow down or gather. */
 export const RB_STEER = process.env.RB_STEER !== '0';
-/** SPACING_HOLD (experimental, off; SPACING_HOLD=1): a carrier who bends around a teammate keeps that bend. The bend was re-chosen from scratch every
+/** SPACING_HOLD (on by default; SPACING_HOLD=0 turns it off): a carrier who bends around a teammate keeps that bend. The bend was re-chosen from scratch every
  * tick: once it cleared, the held request was clear on the next forecast and was handed back (he ran at the teammate again), and the first feasible of
  * +-0.2..+-0.8 rad changed size and side tick to tick (docs/reviews/2026-11-15-carrier-spacing-dither.md). With the flag he keeps his side and size while the
  * held request still conflicts with a peer he bent around, grows it smoothly if the conflict worsens, and returns to the held request only when it clears by
@@ -57,7 +57,7 @@ const bendHolds = new WeakMap<Agent, BendHold>();
 // SPACING_HOLD, headway side: a carrier that is braking for a teammate keeps that limit until the closing line clears him by a body width (enter at the touch
 // distance, exit a body width beyond it), instead of dropping and re-taking it as the line's offset crosses the touch distance tick to tick.
 const limitHolds = new WeakMap<Agent, ReadonlySet<number>>();
-/** LINE_STEP (default off): headway against a teammate on an announced step
+/** LINE_STEP (on by default; LINE_STEP=0 turns it off): headway against a teammate on an announced step
  * (linemen stepping together on a zone track) is budgeted against where his
  * step takes him over the closing horizon, not his current speed: the inside
  * man of a pair steps with his partner instead of waiting on his first step. */
@@ -374,7 +374,7 @@ function stepAroundTraffic(a:Agent, raw:Intent, chosen:Intent, peers:readonly Pe
   return chosen;
 }
 
-/** RELEASE_SIDE (experimental, off; with DECLARED_BREAK): a free man restricted by one teammate passes him on the side his
+/** RELEASE_SIDE (on by default; RELEASE_SIDE=0 turns it off; with DECLARED_BREAK): a free man restricted by one teammate passes him on the side his
  * route goes from its declared break (RouteRunner.routeSide), as taught; a teammate sitting on his route line (a wing
  * behind the end on a slant or a drag) he passes under, round the back hip, the side away from the line of scrimmage.
  * The side is held while that teammate restricts him. Off, the side is whatever the geometry of the closing cut leaves. */

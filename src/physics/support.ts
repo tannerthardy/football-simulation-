@@ -104,7 +104,7 @@ export interface SupportParams {
  * grasps and tackles keep the arm-force capacity. Off: a press is capped at
  * the arm force, so a rusher's leg drive folds a blocker's arms. */
 const ARM_PRESS = process.env.ARM_PRESS !== '0';
-/** Experimental (LEG_ALLOMETRY=1, off): leg drive scales with body mass^0.69 at
+/** On by default (LEG_ALLOMETRY=0 turns it off): leg drive scales with body mass^0.69 at
  * a fixed rating rather than linearly, normalised so a 110 kg player keeps
  * today's force. Vertical push-off force across NFL combine athletes, fitted
  * within position groups, scales as mass^0.69 (0.67-0.71;

@@ -10,7 +10,7 @@
  * remain here are the sensing itself: `sense` records the flight it samples, `ballAt(t)` is the ball's own history, and the flight identity tells a tip from a new throw.
  * Until #760 merges, `releaseT` is still read on develop; the exemption depends on it going.
  *
- * BALL_EST (experimental, off; BALL_EST=1 turns it on): each player's own estimate of a ball in flight, built only
+ * BALL_EST (numeric bitmask, default 6145; BALL_EST=0 turns it off): each player's own estimate of a ball in flight, built only
  * from the ball positions he has seen (docs/reviews/2026-11-14-ball-in-air-spec.md, stage 1).
  *
  * Replaces the two flight oracles: the defender's copy of the true path at recognition (`acquireFlight`) and the
@@ -231,7 +231,7 @@ interface Track {
 
 const skill = (a: Agent): number => clamp(a.r(a.team === 'O' ? 'ballTracking' : 'ballSkills'), 0, 1);
 
-/** SEEN_EMPTY (experimental, off; SEEN_EMPTY=1; with BALL_EST): a receiver who sees the passer without the ball (his own
+/** SEEN_EMPTY (on by default; SEEN_EMPTY=0 turns it off; with BALL_EST): a receiver who sees the passer without the ball (his own
  * delayed picture, the passer in his eyes) has the throw cue, as if he had seen the arm come through: his look stays on
  * the ball's search after the release instead of waiting for his body-turn window. It says the ball is up, not where it
  * is going or whose it is, and is never used as the release time (his estimate's seed keeps the arm or his first sample).

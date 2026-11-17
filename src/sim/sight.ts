@@ -21,14 +21,14 @@ export const HEAD_RADIUS = 0.125;
 /** Height of a body lying on the ground (yd). */
 const DOWN_HEIGHT = 0.35;
 
-/** SIGHT_PURE (experimental, off; SIGHT_PURE=1): a past tick's line of sight is a function of that tick. `lineOfSight` places the bodies
+/** SIGHT_PURE (on by default; SIGHT_PURE=0 turns it off): a past tick's line of sight is a function of that tick. `lineOfSight` places the bodies
  * where the perception record had them but took every body's height and posture as it is NOW, so the same past tick gave a
  * different answer asked at different times, and `sighted()` keeps the first answer: what a player saw at a past tick then
  * depended on when anyone first asked, not on what was there (an observer changed plays; docs/reviews/2026-11-16-sight-pure.md).
  * On, the record carries each body's posture and whether he was up at every tick and a past sight line reads them. */
 export const SIGHT_PURE = process.env.SIGHT_PURE !== '0';
 
-/** SIGHT_STALE (experimental, off; numeric bits, acts inside SIGHT_PURE's sight history): what a player believes of a man he cannot see.
+/** SIGHT_STALE (numeric bits, default 7, every bit on; SIGHT_STALE=0 turns it off; acts inside SIGHT_PURE's sight history): what a player believes of a man he cannot see.
  * Today the picture of a man he lost ages without bound on the velocity it showed (a carrier's read of a defender behind him ran to 16 s,
  * p90 56-63 yd off the man), and a man he has never seen is located by the perception record's oldest sample, the true position through
  * whatever hides him (an information leak). Bit 1: a lost man is carried on his last velocity for the record's length and then held. Bit 2:

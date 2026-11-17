@@ -17,7 +17,7 @@ const WING = 1.9;
 // and 0.5 yd behind him. Empty and pistol use their own placements.
 const GUN_RB_SPLIT = 2.3;
 const GUN_RB_DEPTH = 5.5;
-/** BACKFIELD_DEPTH (default off): the QB and tailback at their tracked snap
+/** BACKFIELD_DEPTH (on by default; BACKFIELD_DEPTH=0 turns it off): the QB and tailback at their tracked snap
  * depths (2022 all-22 run snaps): gun QB 4.5 and offset back 5.0 (installed
  * 5.0/5.5), pistol QB 4.6 (4.0), under-center tailback 7.3 (6.8). A back's
  * depth is his runway to take the ball at speed. */

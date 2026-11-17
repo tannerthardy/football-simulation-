@@ -48,13 +48,13 @@ import { BALL_CUE_OWN } from '../release-evidence.js';
  * (3.7 -> 5.7 yd deep) and blocked 15% at 2.0 s; ours came to the run at the
  * stalk read, sat at 4 yd and were blocked 62% (dbtempo.py). */
 const passFirstOn = () => process.env.PASS_FIRST !== '0';
-/** DB_SLOWPLAY (experimental, off): see ManCoverage.slowPlay. Fraction of the receiver's tempo he gives
+/** DB_SLOWPLAY (on by default; DB_SLOWPLAY=0 turns it off): see ManCoverage.slowPlay. Fraction of the receiver's tempo he gives
  * (NFL off corners on runs, 0.9 of 3 yd/s), cushion he keeps (yd), receiver speed that is a release (of his vmax). */
 const RUN_BLITZ = process.env.RUN_BLITZ !== '0';
-/** END_CHASE (experimental, off): see the edge squeeze; how far into the backfield the chase aims (yd). */
+/** END_CHASE (on by default; END_CHASE=0 turns it off): see the edge squeeze; how far into the backfield the chase aims (yd). */
 const END_CHASE = process.env.END_CHASE !== '0', CHASE_DEPTH = 1.0;
 const DB_SLOWPLAY = process.env.DB_SLOWPLAY !== '0', SLOW_GIVE = 0.3, SLOW_MIN = 1.5, SLOW_SPRINT = 0.75, SLOW_WIDTH = 8;
-/** LB_READ_STEP (experimental, off): see ZoneCoverage's box-backer read step; how far downhill it goes (yd). */
+/** LB_READ_STEP (on by default; LB_READ_STEP=0 turns it off): see ZoneCoverage's box-backer read step; how far downhill it goes (yd). */
 const LB_READ_STEP = process.env.LB_READ_STEP !== '0', READ_STEP = 0.3;
 
 /** Has this defender read run? (His own read from what he's seen — see recognition.ts.)
@@ -67,7 +67,7 @@ export function believesRun(_sim: PlaySim, a: Agent): boolean {
  * foot hits, then plant"), as tracked underneath defenders do (BDB 2025: hook
  * 4.4 -> 6.6 yd by 2.5 s on dropbacks; docs/reviews/2026-11-09-coverage-spacing.md). */
 const ZONE_SETTLE = process.env.ZONE_SETTLE !== '0';
-/** SETTLE_DEPTH (experimental, off; SETTLE_DEPTH=1 turns it on; docs/reviews/2026-11-15-underneath-handoff-design.md,
+/** SETTLE_DEPTH (on by default; SETTLE_DEPTH=0 turns it off; docs/reviews/2026-11-15-underneath-handoff-design.md,
  * part ii): ZONE_SETTLE plants an underneath dropper at the depth he has when he sees the QB set, which is right for a
  * man who reached his drop and wrong for one a route pulled down (a hook who walled or carried the shallow settled at
  * 5-6 yd against a 10 yd landmark, under the dig). Under the flag, a dropper who is short of his landmark's depth by
@@ -84,7 +84,7 @@ const SINK_ENTER = 2, SINK_EXIT = 1;
  * is the one, in his own delayed picture, nearest the QB's perceived facing,
  * within 20 deg (12 deg when he is 20+ yd from the QB). Otherwise no read. */
 const SEEN_EYES = process.env.SEEN_EYES !== '0';
-/** HONEST_READS (experimental, off; HONEST_READS=1 turns it on): removes
+/** HONEST_READS (on by default; HONEST_READS=0 turns it off): removes
  * true-state reads found by the 2026-11-13 defense audit. A blitzer peels to
  * the ball only once he has seen the throw, on his acquired flight; the ball
  * finder's turn is measured from the thrower he sees; a pursuer plays the
@@ -104,7 +104,7 @@ export const HONEST_READS = process.env.HONEST_READS !== '0';
 export const HONEST_FLIGHT = process.env.HONEST_FLIGHT === '1';
 /** HONEST_FLIGHT's drive on a catch: from this long before his estimate's arrival to this long after (a catch's securing beat). */
 const DRIVE_LEAD = 0.05, DRIVE_SECURE = 0.4;
-/** INFO_HONEST (off; INFO_HONEST=63 turns every item on; single items by their
+/** INFO_HONEST (default 63, every item on; INFO_HONEST=0 turns it off; single items by their
  * bit below, for the per-item read): coverage decisions
  * read the defender's own picture, not true state. Items (coverage audit
  * 2026-11-13): 3 deep help decisions freeze when he has seen the throw
@@ -201,7 +201,7 @@ export function knowsPass(_sim: PlaySim, a: Agent): boolean {
  * defender who has read run plays his fit — he doesn't abandon his gap to
  * chase, including against a designed QB run.
  */
-/** ARRIVE_LEAD (experimental, off; ARRIVE_LEAD=1 turns it on): on a short
+/** ARRIVE_LEAD (on by default; ARRIVE_LEAD=0 turns it off): on a short
  * throw he cannot beat to the catch, an underneath zone defender drives to the
  * catcher's upfield shoulder. NFL nearest defenders on catches 0-10 yd past the
  * line run on a line that crosses the catcher's lateral line 1.4-1.7 yd
@@ -313,15 +313,15 @@ export function pursueIfLive(sim: PlaySim, a: Agent): MoveCommand | null {
  * rusher keys the quarterback), and the step speed at which he sees it: see
  * key-read.ts. */
 const stepSeen = KEY_REACT ? KEY_STEP_SEEN : STEP_SEEN;
-/** KEY_PACE (experimental, off): how much faster than the key's own step he answers it (yd/s). */
+/** KEY_PACE (on by default; KEY_PACE=0 turns it off): how much faster than the key's own step he answers it (yd/s). */
 const KEY_PACE = process.env.KEY_PACE !== '0', KEY_STEP_LEAD = 0.5;
-/** KEY_DEPTH (experimental, off): see the key step; his upfield step is his own read step. */
+/** KEY_DEPTH (on by default; KEY_DEPTH=0 turns it off): see the key step; his upfield step is his own read step. */
 const KEY_DEPTH = process.env.KEY_DEPTH !== '0';
-/** LB_GUARD_STEP (experimental, off): see ZoneCoverage's unsure box backer. */
+/** LB_GUARD_STEP (on by default; LB_GUARD_STEP=0 turns it off): see ZoneCoverage's unsure box backer. */
 const LB_GUARD_STEP = process.env.LB_GUARD_STEP !== '0';
-/** EDGE_REACH (experimental, off): see the edge's key read against a reach in PassRusher, and the edge fit in run-fits.ts. */
+/** EDGE_REACH (on by default; EDGE_REACH=0 turns it off): see the edge's key read against a reach in PassRusher, and the edge fit in run-fits.ts. */
 export const EDGE_REACH = process.env.EDGE_REACH !== '0', EDGE_UPFIELD = 1.2;
-/** STANCE_TELL (experimental, off): see assign.ts. How long after his get-off a
+/** STANCE_TELL (on by default; STANCE_TELL=0 turns it off): see assign.ts. How long after his get-off a
  * read lean leads his step before the key's own movement must confirm it (s). */
 const STANCE_TELL = process.env.STANCE_TELL !== '0';
 /** DEF_STANCE: pad level a hand-down lineman keeps coming off the ball, and for how long (s). */
@@ -344,14 +344,14 @@ const SET_DEPTH = 0.4;
  * within a yard and a half; an edge keys the end of the line inside him,
  * however wide he aligns (a wide 9 still reads his tackle). */
 const OL_SLOTS_SET = new Set(['LT', 'LG', 'C', 'RG', 'RT']);
-/** END_KEY (experimental, numeric bitmask, default 0; docs/reviews/2026-11-16-end-key.md). Bit 2 (key through the
+/** END_KEY (numeric bitmask, default 2; END_KEY=0 turns it off; docs/reviews/2026-11-16-end-key.md). Bit 2 (key through the
  * triangle): an edge rusher whose keyed surface man releases (no blocking stance in his picture) keys on through to the
  * tackle inside, and the existing key reads play that man's step (a hinge or zone step away: squeeze / END_CHASE with
  * the boot check; a pass set: the rush). Sourced (Gridiron Strategies, "Defensive End Reads in a Forty Front"): "once
  * you read release, look for the next part of triangle"; the release itself is not a pass read. Bit 1 (the key's
  * stance as a run/pass cue) was tried and removed: on play action it made the fake-side end fit inside harder. */
 const END_KEY_THROUGH = (Number(process.env.END_KEY ?? 2) & 2) !== 0;
-/** EDGE_SET (experimental, off; docs/reviews/2026-11-16-edge-set.md): an edge answering a reach sets the edge as taught
+/** EDGE_SET (on by default; EDGE_SET=0 turns it off; docs/reviews/2026-11-16-edge-set.md): an edge answering a reach sets the edge as taught
  * (hands on the reach blocker's outside half, square, widen with him and no faster, squeeze the lane he is trying to
  * open): his lateral target is the blocker's outside shoulder in his picture one beat ahead, fed forward at the
  * blocker's lateral speed with no lead of his own; wider than that, he works back to the shoulder, and caught inside it he
@@ -391,7 +391,7 @@ function twistRole(a: Agent, sim: PlaySim): { role: 'crash' | 'loop'; y: number 
   return { role: a === c ? 'crash' : 'loop', y: gapY(sim.offAlign, target.gap, target.gapSign) };
 }
 
-/** POWER_AIM (experimental, off; POWER_AIM=1; #35 item 2b): a power rush aims down the middle of the blocker setting to
+/** POWER_AIM (on by default; POWER_AIM=0 turns it off; #35 item 2b): a power rush aims down the middle of the blocker setting to
  * him, not at the quarterback. "Straight down the middle of the tackle", the outside foot in the ground, under his pads
  * (viqtorysports, pass rush moves); the end keys the tackle's pass set and rushes with the QB on his inside shoulder
  * (gridironstrategies, defensive end reads in a forty front). Off, from the snap the power plan ran straight at its
@@ -560,7 +560,7 @@ export class PassRusher implements Behavior {
     // comes to kick him out, rather than riding the down block inside.
     if (onEdge && runStep && Math.sign(man!.vel.y) === Math.sign(sim.ballY - man!.pos.y)) {
       const side = Math.sign(man!.vel.y), h = a.mind.decisionInterval;
-      // END_CHASE (experimental, off): the whole line stepping away with his
+      // END_CHASE (on by default; END_CHASE=0 turns it off): the whole line stepping away with his
       // man and no puller crossing is a zone step, not a down block: no
       // kick-out is coming to the spot he would set. He squeezes inside and
       // upfield behind his man's hip, chasing the play from the backside
@@ -596,7 +596,7 @@ export class PassRusher implements Behavior {
       return track(a, { x: man.home.x + man.vel.x * a.mind.decisionInterval, y: a.pos.y + side * step * a.mind.decisionInterval },
         { x: 0, y: side * step }, { speed: 1, gain: 3, facing: Math.PI });
     }
-    // EDGE_REACH (experimental, off): an edge keeps his outside against a
+    // EDGE_REACH (on by default; EDGE_REACH=0 turns it off): an edge keeps his outside against a
     // reach. His key stepping out toward him, away from the ball (a stretch or
     // reach step), is running for his outside shoulder: he answers it as an
     // interior man answers his key, with a flat step of his own at full effort
@@ -612,7 +612,7 @@ export class PassRusher implements Behavior {
     if ((!onEdge || reachOut) && runStep) {
       // The answer to a lateral first step is a flat step of his own at full
       // effort, square to the man, not a match of the speed seen so far.
-      // KEY_PACE (experimental, off): he answers the step he sees at its pace
+      // KEY_PACE (on by default; KEY_PACE=0 turns it off): he answers the step he sees at its pace
       // plus a step of his own: a reach running for his shoulder gets a
       // sprint, an inside-zone drive step a matching step that keeps his gap.
       // NFL inside-zone DL go about 0.8 as far sideways as their blockers; a
@@ -622,7 +622,7 @@ export class PassRusher implements Behavior {
       const side = Math.sign(man!.vel.y), full = a.profile.vmax * a.profile.shuffle;
       const step = KEY_PACE ? Math.min(full, Math.abs(man!.vel.y) + KEY_STEP_LEAD) : full;
       const h = a.mind.decisionInterval;
-      // KEY_DEPTH (experimental, off): upfield it is a read step too, his own
+      // KEY_DEPTH (on by default; KEY_DEPTH=0 turns it off): upfield it is a read step too, his own
       // step (the same lead as KEY_PACE's), meeting the man where he comes,
       // not a run at the man's spot: closing on it at tracking gain asked for
       // a sprint (5-7 yd/s) into the block. NFL interior DL not yet near an OL
@@ -751,7 +751,7 @@ export class Blitzer implements Behavior {
     if (a.engagement) return stand();
     const live = pursueIfLive(sim, a);
     if (live) return live;
-    // RUN_BLITZ (experimental, off): a called blitz still goes on a run. Short
+    // RUN_BLITZ (on by default; RUN_BLITZ=0 turns it off): a called blitz still goes on a run. Short
     // of the line he keeps attacking through his gap to the same point behind
     // it; through it, he plays the run from the backfield. A blocker who meets
     // him engages him as ever. NFL box backers who stand within 2.5 yd get
@@ -799,7 +799,7 @@ export function runFit(a: Agent, sim: PlaySim, gap: Gap, gapSign: number, read?:
   return READ_LEAN && /^LB/.test(a.slot) ? passPull(a, sim, fit) : fit;
 }
 
-/** READ_LEAN (experimental, off): the unsure box backer's downhill pace at a
+/** READ_LEAN (on by default; READ_LEAN=0 turns it off): the unsure box backer's downhill pace at a
  * full run picture (yd/s; NFL box backers 0.45-1.0 yd/s downhill at 0.4-0.5 s
  * on runs). A pass lean only takes his feet off the line (his creep, scaled by
  * the lean); he has no drop of his own until he reads pass, when his zone
@@ -822,7 +822,7 @@ function passPull(a: Agent, sim: PlaySim, cmd: MoveCommand): MoveCommand {
   return { ...cmd, vel: { x: cmd.vel.x * (1 + lean), y: cmd.vel.y } };
 }
 
-/** BACKER_TAKEON (experimental, off): an unblocked backer who sees a blocker
+/** BACKER_TAKEON (on by default; BACKER_TAKEON=0 turns it off): an unblocked backer who sees a blocker
  * climbing at him breaks down before contact ("shock and shed"): he brakes his
  * speed into the blocker to a fitting pace, squares to him and sinks his pads,
  * so the collision carries the closing speed of a settled backer, not of one
@@ -906,7 +906,7 @@ export interface ManOptions {
   initialPosition?: Vec2;
 }
 
-/** PRESS_MIRROR (off; PRESS_MIRROR=1 turns it on): a pressing corner mirrors
+/** PRESS_MIRROR (on by default; PRESS_MIRROR=0 turns it off): a pressing corner mirrors
  * the receiver head-up while he is still releasing at the line, so the
  * receiver must release around him (receiver.ts). Off, the corner stepped to
  * his leverage spot at the snap and opened the lane: tracked pressed outside
@@ -923,7 +923,7 @@ const PRESS_MIRROR = process.env.PRESS_MIRROR !== '0';
  * pressed pairs at 2.0 s: 1.20 yd apart, about 1 yd to the side; ours 0.82,
  * within 1.2 yd 88% against 51% (BDB 2025 weeks 1-3, same operator). */
 const MAN_PHASE = process.env.MAN_PHASE === '1';
-/** CUSHION_BREAK (experimental, off; CUSHION_BREAK=1 turns it on): inside
+/** CUSHION_BREAK (on by default; CUSHION_BREAK=0 turns it off): inside
  * zone calls, a deep defender carrying a vertical stays square (side-on when
  * his pedal cannot keep the cushion, QB in view) until the receiver actually
  * breaks his cushion (`cushionBroken`), then opens and runs. Before, the depth
@@ -959,7 +959,7 @@ function openTo(a: Agent, qb: Vec2, receiver: Vec2, heading: number, need: numbe
   }
   return maxOff === undefined ? toQB + side * Math.PI : undefined;
 }
-/** CARRY_POSTURE (experimental, off; CARRY_POSTURE=1 turns it on): a deep zone defender carrying a climber has one
+/** CARRY_POSTURE (on by default; CARRY_POSTURE=0 turns it off): a deep zone defender carrying a climber has one
  * posture family before and after his cushion breaks: half-open toward the receiver, hips no further off the QB than
  * his head can still reach him (neck, then the trunk's twist: `carryReach`), his look on the QB through those joints
  * (lookJoints). He opens to the smallest such angle whose facing cap gives the speed he needs (openTo), and turns his
@@ -971,7 +971,7 @@ function openTo(a: Agent, qb: Vec2, receiver: Vec2, heading: number, need: numbe
  * 3.3 -> 4.7 yd/s under a 6.0-6.5 yd/s climber, torso 33 -> 62 deg off the QB, turned at most 11%. Under HEAD the head
  * and its cone follow the look; without HEAD the trunk carries it. */
 export const CARRY_POSTURE = process.env.CARRY_POSTURE !== '0';
-/** CARRY_TURN (experimental, off; CARRY_TURN=1 turns it on; needs CARRY_POSTURE; docs/reviews/2026-11-16-carry-posture-3c.md):
+/** CARRY_TURN (on by default; CARRY_TURN=0 turns it off; needs CARRY_POSTURE; docs/reviews/2026-11-16-carry-posture-3c.md):
  * CUSHION_BREAK's turn opens him; it does not turn him. With the cushion broken he runs with the climber hips on his
  * line of travel and his look back on the QB within his head's reach (neck plus trunk), the posture DIR_CAP and the
  * trunk price charge for. He turns fully (look off the QB, to his receiver and the ball) on a seen event: the receiver
@@ -1030,7 +1030,7 @@ function carryFacing(a: Agent, r: Agent, qb: Vec2, receiver: Vec2, heading: numb
   if (Math.abs(angleDiff(facing, toQB)) < 1e-6) carryState.delete(a);
   return facing;
 }
-/** CORNER_DROP (experimental, off; CORNER_DROP=1 turns it on; needs CARRY_POSTURE=1 and DIR_CAP=1;
+/** CORNER_DROP (on by default; CORNER_DROP=0 turns it off; needs CARRY_POSTURE=1 and DIR_CAP=1;
  * docs/reviews/2026-11-15-corner-drop-design.md): a deep-third corner in a zone call drops on the snap. Taught: the
  * Cover-3 corner clears a quick run/pass key and sinks with a bail to the outside third (Bleacher Report, NFL 101:
  * Cover 3; Steelers Depot, Football 101: Bail Technique). Before, before his receiver's release was in his picture he
@@ -1042,7 +1042,7 @@ function carryFacing(a: Agent, r: Agent, qb: Vec2, receiver: Vec2, heading: numb
  * timer. Quarters corners (taught differently: off #1, eyes inside, in a pedal) and man calls are out of scope. */
 export const CORNER_DROP = process.env.CORNER_DROP !== '0';
 
-/** OFF_PEDAL (experimental, numeric bitmask, default 0; docs/reviews/2026-11-16-off-pedal.md): a repair of the
+/** OFF_PEDAL (numeric bitmask, default 3; OFF_PEDAL=0 turns it off; docs/reviews/2026-11-16-off-pedal.md): a repair of the
  * existing off-man pedal (ManCoverage; off-man corners in man calls, the quarters MOD corner, match carriers in zone
  * calls). Traced (pedal-trace.mts, engine-71): the corner's sight of #1's stem lags the true stem by his perception
  * delay (~0.3 s), honestly; but his request ran 0.32 yd/s below the seen stem and forward before it (the `a.pos.x - 0.2`
@@ -1190,7 +1190,7 @@ function burstNeed(a: Agent, spare: number, vx: number, accel: number): number {
   for (let i = 0; i < 12; i++) { const mid = (lo + hi) / 2; if (keeps(mid)) hi = mid; else lo = mid; }
   return hi;
 }
-/** OPEN_CARRY (experimental, off; OPEN_CARRY=1 turns it on): an underneath
+/** OPEN_CARRY (on by default; OPEN_CARRY=0 turns it off): an underneath
  * zone or match defender carrying a route keeps his hips as square to the QB
  * as his run allows, instead of turning his back to run with it. His facing
  * is the CUSHION_BREAK rule (`openTo`): the smallest opening off the line to
@@ -1242,7 +1242,7 @@ export function openCarryFacing(a: Agent, sim: PlaySim, receiver: Agent, req: Mo
  * -0.1, 29%; C3/C4 2.3-2.4, +0.2-0.3, 27-42%), the largest group pedalling on
  * the back (man:RB) inside a zone call. */
 const CUSHION_NEED = process.env.CUSHION_NEED !== '0';
-/** LOOK_ONCE (off; LOOK_ONCE=1 turns it on; C15, estimated): whether a defender
+/** LOOK_ONCE (on by default; LOOK_ONCE=0 turns it off; C15, estimated): whether a defender
  * near the ball's path gets his head around to find it is one event per flight,
  * not a fresh dice roll every tick. Off, the 0.15-0.65 chance was re-rolled at
  * 20 Hz, so nearly every such defender was "looking" within about 0.5 s
@@ -1253,14 +1253,14 @@ const CUSHION_NEED = process.env.CUSHION_NEED !== '0';
  * to the passer (body facing vs the ball's origin), shortened by ball skills;
  * otherwise he plays this flight without the look. */
 const LOOK_ONCE = process.env.LOOK_ONCE !== '0';
-/** DRIVE_CATCH (off; DRIVE_CATCH=1 turns it on; C14, with CATCH_SECURE): while
+/** DRIVE_CATCH (on by default; DRIVE_CATCH=0 turns it off; C14, with CATCH_SECURE): while
  * a ball is in a receiver's hands but not yet a catch (the securing window), a
  * defender within 4 yd of him drives through his hands and body (as he sees
  * them) at full effort, instead of steering to the ball's last point. Off, the
  * near defender's requested velocity turned off the man during the window
  * (toward him 4.7 -> 0.5 yd/s in 0.3 s; NFL defenders keep 4.5-5.0). */
 const DRIVE_CATCH = process.env.DRIVE_CATCH !== '0';
-/** CATCH_CARRY (experimental, off; CATCH_CARRY=1 turns it on): a defender who
+/** CATCH_CARRY (on by default; CATCH_CARRY=0 turns it off): a defender who
  * was driving through a receiver's hands while he secured the ball (DRIVE_CATCH)
  * keeps driving on that receiver, as he last saw him, until his own picture
  * resolves the outcome: a holder (pursuit, as now), a newer picture of the
@@ -1410,7 +1410,7 @@ export class ManCoverage implements Behavior {
     return this.trackReceiver(a, sim);
   }
 
-  /** DB_SLOWPLAY (experimental, off): a man defender who has read run stays on
+  /** DB_SLOWPLAY (on by default; DB_SLOWPLAY=0 turns it off): a man defender who has read run stays on
    * his receiver (pass first) but slow-plays him: he gives ground at a
    * fraction of the receiver's tempo and lets an approach close his cushion,
    * keeping his leverage, instead of retreating at the receiver's speed. A
@@ -1650,7 +1650,7 @@ export class ManCoverage implements Behavior {
  * Overloaded match defenders can hesitate at an exchange, then recover on a
  * subsequent read. Their called technique stays intact.
  */
-/** CURL_FLAT_BACK (experimental, off; CURL_FLAT_BACK=1 turns it on): the
+/** CURL_FLAT_BACK (on by default; CURL_FLAT_BACK=0 turns it off): the
  * curl-flat rule's second half. With No. 2 not (or no longer) carried
  * vertically, the curl-flat defender who sees the back or No. 3 showing to the
  * flat on his side (shallow, running outside 2 yd outside the ball, or already
@@ -1664,13 +1664,13 @@ export class ManCoverage implements Behavior {
  * catcher (RB wide nobody-in-front 50% vs NFL 12%: outside_wide.py,
  * wide-owner.ts). */
 const CURL_FLAT_BACK = process.env.CURL_FLAT_BACK !== '0';
-/** CURL_SINK (experimental, off; CURL_SINK=1 turns it on; docs/reviews/2026-11-15-curl-sink.md): CURL_FLAT_BACK's
+/** CURL_SINK (on by default; CURL_SINK=0 turns it off; docs/reviews/2026-11-15-curl-sink.md): CURL_FLAT_BACK's
  * stated design, sink to the curl window while widening toward the back. Its target depth was the shallower of the
  * window and where he stood, so a back who showed to the flat before the curl-flat defender had dropped held him at his
  * alignment depth (4.4 yd against an 8.5 yd window on staged flood) for the rest of the play. On, he drops to the
  * window's depth while he widens, eyes on the QB, and breaks on the throw: high to low. */
 export const CURL_SINK = process.env.CURL_SINK !== '0';
-/** SAFETY_DEPTH (experimental, off; SAFETY_DEPTH=1 turns it on): a deep or
+/** SAFETY_DEPTH (on by default; SAFETY_DEPTH=0 turns it off): a deep or
  * quarter-field zone defender's landmark is never shallower than his
  * alignment. Without it a quarter of our safeties (quarters inside safeties at
  * 12 yd aligned about 12; deep middles compressed near the goal line) were
@@ -1854,7 +1854,7 @@ export class ZoneCoverage implements Behavior {
       const read = a.recog?.read;
       if (read === 'unsure' || (read === 'pass' && a.recog!.pPass() < DROP_START[sim.defCall.dropStart ?? 'early'])) {
         if (read === 'unsure') watch(sim, a, sim.qb);
-        // LB_GUARD_STEP (experimental, off): "guards to backs". Still unsure of
+        // LB_GUARD_STEP (on by default; LB_GUARD_STEP=0 turns it off): "guards to backs". Still unsure of
         // run or pass, a box backer whose guards both step the same way (no
         // pass set; guardStep, read at first movement) steps with them, at their pace plus a step of
         // his own, eyes still on the quarterback. A pass read stops him there;
@@ -1862,7 +1862,7 @@ export class ZoneCoverage implements Behavior {
         // +0.54 yd/s toward the play by 0.2 s; ours stood until the run read
         // committed (median 0.60 s).
         const g = LB_GUARD_STEP ? guardStep(sim, a) : { side: 0, pace: 0 }, side = g.side;
-        // READ_LEAN (experimental, off): still unsure, he acts on the picture
+        // READ_LEAN (on by default; READ_LEAN=0 turns it off): still unsure, he acts on the picture
         // he has, not only once it commits him. His downhill step follows his
         // own filtered evidence (the same evidence his commit uses, no prior):
         // pressing as the line fires out, settling as it sets to pass.
@@ -1895,7 +1895,7 @@ export class ZoneCoverage implements Behavior {
           return withFacingTechnique(track(a, { x: a.pos.x - cdir * cp * h, y: a.pos.y }, { x: -cdir * cp, y: 0 },
             { facing: angleTo(a.pos, sim.see(a, sim.qb).pos), gain: 1.6, speed: 1 }), { label: 'read-step' });
         }
-        // LB_READ_STEP (experimental, off): his read step is a step. Off the
+        // LB_READ_STEP (on by default; LB_READ_STEP=0 turns it off): his read step is a step. Off the
         // snap he presses a short step downhill from his alignment, square,
         // eyes on the quarterback, and reads from there: a run read keeps him
         // coming, a pass read starts his drop from it. NFL box backers gain
@@ -2440,7 +2440,7 @@ function zoneBand(zone: ZoneId, sim: PlaySim): [number, number] {
 }
 
 /** Ball in the air: break on it after reacting; intercept the path or contest the catch. */
-/** SHOULDER_READ (experimental, off; SHOULDER_READ=1 turns it on): the
+/** SHOULDER_READ (on by default; SHOULDER_READ=0 turns it off): the
  * underneath plant. An underneath zone defender who keys the quarterback as
  * keysQB does (facing him, eyes held on him through his observation delay)
  * stops his drop once he has seen the throwing motion: he brakes it at his own
@@ -2458,7 +2458,7 @@ function zoneBand(zone: ZoneId, sim: PlaySim): [number, number] {
  * planted defender gives up depth to a route behind him. Replaces the earlier
  * eyes-directed lean (as often wrong as right on catches 0-10 yd). */
 const SHOULDER_READ = process.env.SHOULDER_READ !== '0';
-/** QB_BODY_SEEN (experimental, off; QB_BODY_SEEN=1): the passer's throwing motion and head are read from what a
+/** QB_BODY_SEEN (on by default; QB_BODY_SEEN=0 turns it off): the passer's throwing motion and head are read from what a
  * defender sees of his body (`Agent.arm`, `Agent.head`, recorded with every perception sample), with that defender's
  * own delay and view, instead of from the published `sim.windupAt` / `sim.windupEndAt` (the time the motion started,
  * known to every defender) and `sim.qbEyes`. SHOULDER_READ's plant and restart, sawThrow's arm key and SEEN_EYES's

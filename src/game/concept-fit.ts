@@ -1,5 +1,5 @@
 /**
- * CONCEPT_FIT (experimental, off; Integration's ruling 2026-11-16): a concept is installed from the formations it is
+ * CONCEPT_FIT (on by default; CONCEPT_FIT=0 turns it off; Integration's ruling 2026-11-16): a concept is installed from the formations it is
  * drawn for. The caller offers a pass concept only when the receivers its read names (`PassConcept.needs`) are on the
  * field at the snap, after the called motion, as the offense numbers them (`realignOffense`, the same numbering the play
  * runs on). Off, `choosePass` weighted every concept from every formation: in 8 league games (seeds 101-108, develop
@@ -18,7 +18,7 @@ import { planMotion, realignOffense } from '../sim/motion.js';
 export const CONCEPT_FIT = process.env.CONCEPT_FIT !== '0';
 
 /**
- * BACK_AS_THREE (experimental, off; with CONCEPT_FIT; Integration's ruling 2026-11-16): stick, flood and pa_flood from a
+ * BACK_AS_THREE (on by default; BACK_AS_THREE=0 turns it off; with CONCEPT_FIT; Integration's ruling 2026-11-16): stick, flood and pa_flood from a
  * field with no #3 send the back to the flat as #3, as they are taught from 2x2, instead of leaving the menu. Sources:
  * Y-stick "Out of 2x2": "The running back runs one of two routes: a flare ... or a shoot route"; "The running back's shoot
  * or flare route is the outside route" (Emory Wilhite, Learning to teach Y-Stick); flood's "flat route who is normally a

@@ -74,7 +74,7 @@ export const FATIGUE_SHAPE = 2.5;
 const FATIGUE_STEPS = 4096;
 const FATIGUE = Float64Array.from({ length: FATIGUE_STEPS + 1 }, (_, k) => 1 - FATIGUE_MAX_LOSS * Math.pow(k / FATIGUE_STEPS, FATIGUE_SHAPE));
 
-/** TRUNK_TWIST (experimental, off; TRUNK_TWIST=1; open-run cap, docs/reviews/2026-11-14-open-run-cap.md): the shoulders
+/** TRUNK_TWIST (on by default; TRUNK_TWIST=0 turns it off; open-run cap, docs/reviews/2026-11-14-open-run-cap.md): the shoulders
  * twist off the hips within TRUNK_RANGE. T = 55° is a stated choice, not a fit to film: the NFL envelope (BDB 2025
  * weeks 1-3, flipped player-plays removed) puts the twist at 52-58° for WR at 98-128° of shoulder angle off the path,
  * and trunk rotation is about 35-45° a side standing, the rest being the pelvis turning a little off the path, which
@@ -119,7 +119,7 @@ export function lateralEnvelope(body: Body, speed: number, cutSkill = 1, capacit
   return p.lateral * cutSkill * (1 - 0.2 * clamp(speed / p.vmax, 0, 1)) * (0.85 + 0.15 * fatigueFactor(body.energy)) * capacity;
 }
 
-/** DIR_CAP (experimental, off; DIR_CAP=1; docs/reviews/2026-11-15-dir-cap.md): the speed cap by the angle of the hips off the line of travel is MONOTONE, and the
+/** DIR_CAP (on by default; DIR_CAP=0 turns it off; docs/reviews/2026-11-15-dir-cap.md): the speed cap by the angle of the hips off the line of travel is MONOTONE, and the
  * trunk's twist is priced once, in the same cap.
  *
  * Why: BDB 2025 weeks 1-9, 322 zone-coverage DBs, ball held, top-decile speed over each man's own p98 by the angle of his shoulders off his travel (15 deg

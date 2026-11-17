@@ -46,7 +46,7 @@ import { isOL } from './behaviors/blocking.js';
 
 /** SCREEN_QB (experimental, off; behaviors/qb.ts): the bubble's numbers kill. */
 const SCREEN_QB = process.env.SCREEN_QB === '1';
-/** QB_SEEN_MAN (experimental, off; QB_SEEN_MAN=1; information rule): three places where his picture of the defense
+/** QB_SEEN_MAN (on by default; QB_SEEN_MAN=0 turns it off; information rule): three places where his picture of the defense
  * read the field as it truly is.
  * - A man defender he is not looking at is remembered on his receiver. Off, "his receiver" is the receiver's TRUE
  *   position now; on, it is where the quarterback's own forecast has that receiver (the installed route run from his
@@ -58,7 +58,7 @@ const SCREEN_QB = process.env.SCREEN_QB === '1';
  * front, personnel and alignment tags, all of which are what the alignment in front of him shows; only the coverage
  * and pressure are swapped, and a disguised shell still fools him. Not changed. */
 const QB_SEEN_MAN = process.env.QB_SEEN_MAN !== '0';
-/** CLOUD_KILL (experimental, off; screens, 2026-11-14): "never throw a now screen against press or cloud". The now
+/** CLOUD_KILL (on by default; CLOUD_KILL=0 turns it off; screens, 2026-11-14): "never throw a now screen against press or cloud". The now
  * screen's installed kill (and the screen RPO's read) also takes a defender he sees squatting over the screen receiver,
  * whoever he is (a corner, a safety rolled down, an apex walked out; QB lane review, 2026-11-14):
  * 2.2-5 yd off the line, from 0.5 yd inside him to 3 yd outside (outside leverage), with the same alignment noise as the

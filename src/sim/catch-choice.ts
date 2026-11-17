@@ -1,4 +1,4 @@
-/** CATCH_CHOICE (experimental, off; CATCH_CHOICE=1 turns it on): where on the ball's path a receiver plays it.
+/** CATCH_CHOICE (on by default; CATCH_CHOICE=0 turns it off): where on the ball's path a receiver plays it.
  *
  * The default TrackBall takes the earliest reachable point (the first sample under 0.92 of his catch height) and paces
  * to arrive there on time: on forced go balls he could reach the QB's aim in stride 96% of the time yet braked from

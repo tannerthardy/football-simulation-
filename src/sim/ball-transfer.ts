@@ -5,7 +5,7 @@ export function handoffReach(from: Agent, to: Agent): number {
   return from.profile.reach + to.profile.radius;
 }
 
-/** GUN_SNAP (experimental, off): a shotgun or pistol snap flies from the ball to
+/** GUN_SNAP (on by default; GUN_SNAP=0 turns it off): a shotgun or pistol snap flies from the ball to
  * the QB and he has it secured only after SNAP_SECURE more. Measured on raw
  * 2022 tracking (BDB 2025, week 1; the football's own track): the ball reaches a
  * gun QB 0.4 s later than an under-center QB over a 4.6 yd snap (an effective

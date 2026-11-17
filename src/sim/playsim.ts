@@ -63,7 +63,7 @@ import { ResponsibilityLedger } from './responsibility-ledger.js';
 import { afterStep, releaseBond, tryTackles, updateBond, type TackleBond } from './tackle.js';
 import type { BallState, CarrierSegment, Frame, PenaltyCall, FoulEvidence, FoulRecord, PlayEvent, PlayEventType, PlayOutcome, PlayResult, PlayStats, ReplayLevel } from './types.js';
 
-/** ALIGN_HABIT (experimental, off): see alignDefense. */
+/** ALIGN_HABIT (on by default; ALIGN_HABIT=0 turns it off): see alignDefense. */
 const ALIGN_HABIT = process.env.ALIGN_HABIT !== '0';
 /** EXPORT_SHOULDERS (diagnostic, off; EXPORT_SHOULDERS=1): replay frames record where each man's chest points
  * (shouldersOf: hips plus the TRUNK_TWIST trunk) instead of his hips, so a facing export compares the same body part as
@@ -146,18 +146,18 @@ const BALL_LENGTH = 0.31;
  * (docs/reviews/field-of-view-proposal.md). Model assumptions: head turn rate,
  * neck range and cone half-angle below. */
 const GAZE = process.env.GAZE === '1';
-/** SIGHT_CARRIER (experimental, off; SIGHT_CARRIER=1; SEE_SIGHT step 1, docs/reviews/2026-11-13-perception-proposal.md
+/** SIGHT_CARRIER (on by default; SIGHT_CARRIER=0 turns it off; SEE_SIGHT step 1, docs/reviews/2026-11-13-perception-proposal.md
  * section 12): the ball carrier's picture of an opponent he cannot see (behind his shoulders, or behind a body by
  * `lineOfSight`'s heights) is the last one he had, ageing (`sighted`), not a fresh delayed picture through his back.
  * Before it, half his traffic reads were of men behind him (scripts/diag/eyes/see-sight.ts). */
 const SIGHT_CARRIER = process.env.SIGHT_CARRIER !== '0';
-/** SIGHT_COVER (experimental, off; SIGHT_COVER=1; SEE_SIGHT step 3): a man or zone defender's picture of an opponent
+/** SIGHT_COVER (on by default; SIGHT_COVER=0 turns it off; SEE_SIGHT step 3): a man or zone defender's picture of an opponent
  * behind a body (`lineOfSight`'s heights) is the newest moment he had him in sight, as SIGHT_CARRIER's. Occlusion only:
  * a man defender's head is on his man and a zone defender's on the QB by coaching, so with GAZE off no facing bound
  * applies; when GAZE lands for coverage, its head (shared with BALL_EST's ball head, Coverage 2026-11-14) gives the view
  * half. Before it, coverMan read 22% of its pictures through a body, coverage/reads 15%, trackReceiver 10%. */
 const SIGHT_COVER = process.env.SIGHT_COVER !== '0';
-/** SIGHT_RECOG (experimental, off; SIGHT_RECOG=1; SEE_SIGHT step 4): a defender's run / pass recognition reads its keys
+/** SIGHT_RECOG (on by default; SIGHT_RECOG=0 turns it off; SEE_SIGHT step 4): a defender's run / pass recognition reads its keys
  * (the five linemen, the QB's depth and the back at the mesh, the receiver he keys) by SIGHT_CARRIER's rule, occlusion
  * only: he faces the offense while he reads, and a back or QB behind the line is seen over it or through a gap by
  * `lineOfSight`'s heights, or not at all. Before it, recognition's `cues` read 11.5% of its pictures through a body and
@@ -214,7 +214,7 @@ export class PlaySim {
   readonly defCall: DefensivePlayCall;
   readonly offAlign: OffenseAlignment;
   readonly defAlign: DefenseAlignment;
-  /** Pre-snap offensive motion being played (MOTION=1), if any. */
+  /** Pre-snap offensive motion being played (unless MOTION=0), if any. */
   readonly motion: MotionRuntime | null;
   isPass: boolean;
   /** The quarterback's read of the defense (coverage belief, vision). */
@@ -380,7 +380,7 @@ export class PlaySim {
     const defSlots = defense.map(([slot]) => slot);
     // The front's end men align by build (FRONT_ALIGN); the installed spots ignore it.
     const mass = Object.fromEntries(defense.map(([slot, player]) => [slot, derivePhysical(player).massKg]));
-    // ALIGN_HABIT (experimental, off): each off-ball defender's personal depth
+    // ALIGN_HABIT (on by default; ALIGN_HABIT=0 turns it off): each off-ball defender's personal depth
     // habit (his own seed) and this snap's placement scatter (the play's).
     const scatter = ALIGN_HABIT ? Object.fromEntries(defense.map(([slot, player]) => {
       const snap = this.rng.fork(`align-scatter:${slot}`);
@@ -414,7 +414,7 @@ export class PlaySim {
       mk('D', slot, player, spot.pos, Math.PI);
     }
     fitPressStances(this.defAlign, this.defense.map(a => ({ slot: a.slot as DefSlot, pos: a.pos, radius: a.profile.radius })), this.los);
-    // RECEIVER_DEPTH (experimental, off): a receiver on the line who sees a
+    // RECEIVER_DEPTH (on by default; RECEIVER_DEPTH=0 turns it off): a receiver on the line who sees a
     // press look in front of him sets deeper to have room to release.
     if (RECEIVER_DEPTH) {
       const dir = this.attackDir('O');
@@ -508,7 +508,7 @@ export class PlaySim {
       const p = this.snapCount!.plans.get(a)!;
       a.snapReadyAt = p.stop !== undefined ? p.restart! : Math.max(0, p.go);
     }
-    // BACKER_CREEP (experimental, off): box backers who time the cadence walk
+    // BACKER_CREEP (on by default; BACKER_CREEP=0 turns it off): box backers who time the cadence walk
     // into the snap (backer-creep.ts). Not under a stem, which moves everyone.
     const creeps = BACKER_CREEP && !stem ? planBackerCreeps(this.defense, this.los, this.ballY,
       (a) => this.defAlign.spots[a.slot as DefSlot]?.role.kind === 'blitz', this.rng.fork('backer-creep')) : new Map<Agent, CreepPlan>();

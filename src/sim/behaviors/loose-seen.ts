@@ -1,4 +1,4 @@
-/** LOOSE_SEEN (experimental, off; LOOSE_SEEN=1 turns it on): a fumble, a recovery and an interception are recognized
+/** LOOSE_SEEN (on by default; LOOSE_SEEN=0 turns it off): a fumble, a recovery and an interception are recognized
  * player by player from what each one perceives, not announced to all 22 on the tick they happen.
  *
  * Before: `onLooseBall` gave every player a scramble for the ball on the fumble's tick and dissolved every block;
@@ -31,7 +31,7 @@ import { Pursuit } from './defense.js';
 import { DownfieldBlocker } from './receiver.js';
 
 export const LOOSE_SEEN = process.env.LOOSE_SEEN !== '0';
-/** LOOSE_OWN (experimental, off; LOOSE_OWN=1 turns it on; docs/reviews/2026-11-16-loose-own.md): two reads of the
+/** LOOSE_OWN (on by default; LOOSE_OWN=0 turns it off; docs/reviews/2026-11-16-loose-own.md): two reads of the
  * truth left in LOOSE_SEEN, removed. (1) Recognition and re-sighting were gated on the true ball state, so a player
  * whose delayed picture still showed the ball loose stopped recognizing it the tick someone else picked it up; with
  * it, his sighting alone decides (the true state stays in the producer, `recordLoose`, which only stores the flight he

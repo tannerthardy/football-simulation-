@@ -99,7 +99,7 @@ const BASE_PASS_CONCEPTS: PassConcept[] = [
 ];
 
 /**
- * CONCEPT_MENU (experimental, off; CONCEPT_MENU=1): the drop-back combinations the NFL runs most that our
+ * CONCEPT_MENU (on by default; CONCEPT_MENU=0 turns it off): the drop-back combinations the NFL runs most that our
  * concepts never produced (docs/reviews/2026-11-11-playbook-coverage.md, BDB 2025 routeRan on drop-back
  * passes: 54% of formation sides and 22% of drop-backs were ours). Each strong side's first two routes are a
  * missing two-receiver pair and its #3 a missing trips side; weak sides are common NFL pairs; the back runs
@@ -202,7 +202,7 @@ export const MENU_CONCEPTS: PassConcept[] = [
   },
 ];
 
-/** CONCEPT_DROPS (experimental, off; read plans, 2026-11-14; the QB lane owns the drops' depths and times in
+/** CONCEPT_DROPS (on by default; CONCEPT_DROPS=0 turns it off; read plans, 2026-11-14; the QB lane owns the drops' depths and times in
  * `dropSpec`): each pool concept's coached drop class, so its first read's route is ready on its step. Our gun drops
  * were 68% at 2-3.5 yd behind the snap against the NFL's 43%, and 10% at 3.5-5 yd against 28% (the NFL setting there at
  * 2.2 s and throwing at 3.0, a hitch after the drop; QB lane, drop-time.py). With the plan's rhythm (OUTLET_LAST's
@@ -227,7 +227,7 @@ const COACHED_DROP: Record<string, PassConcept['drop']> = {
   smash: 'five', drive: 'five', corner_flat: 'five', levels: 'five', comebacks: 'five',
 };
 if (CONCEPT_DROPS) for (const c of [...BASE_PASS_CONCEPTS, ...MENU_CONCEPTS]) if (COACHED_DROP[c.id]) c.drop = COACHED_DROP[c.id];
-/** QUICK_HITCH (experimental, off; Integration's go 2026-11-16): the quick game runs the quick hitch at 5 yd
+/** QUICK_HITCH (on by default; QUICK_HITCH=0 turns it off; Integration's go 2026-11-16): the quick game runs the quick hitch at 5 yd
  * (routes.ts `quick_hitch`), the five-step game the hitch at 6. Which concepts carry which is their install: the quick
  * family (a three-step, one step from the gun) takes the quick hitch; a dropback concept, a five-step concept even when
  * the gun shortens its drop ("If the QB is in shotgun and the offense runs a 5-step concept, he will take a 3-step

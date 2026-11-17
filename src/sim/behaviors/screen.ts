@@ -30,7 +30,7 @@ import { LATE, carrierLane, fitOn, meetOnTrack, matchThreats, threatOf, type Can
 const RETARGET = 0.3;
 /** Inside this he is on his man: he keeps him and mirrors (yd). */
 const ON_MAN = 4;
-/** STALK_CLOSE (experimental, off; STALK_CLOSE=1): the stalk as coached. Before the ball is out a receiver's stalk
+/** STALK_CLOSE (on by default; STALK_CLOSE=0 turns it off): the stalk as coached. Before the ball is out a receiver's stalk
  * does not wait at his alignment for the man to come: he closes the cushion under control to a breakdown point on
  * the man's line to the catch (STALK_BREAK off him, from what he sees of the man), and from there mirrors and puts his
  * hands on the man's catch-side half once he is within reach. NFL perimeter stalks (BDB 2025 WR/TE screens, blocker on

@@ -6,7 +6,7 @@
 import type { ReceiverRef } from '../types.js';
 import type { Candidate, Motif, ReadStep, RouteDescriptor } from './types.js';
 import { afterBreak } from './motifs.js';
-/** PLAN_ROLES (experimental, off; compile.ts CLEAR_OUTS): declared clear-outs are not read as the high of a high-low. */
+/** PLAN_ROLES (on by default; PLAN_ROLES=0 turns it off; compile.ts CLEAR_OUTS): declared clear-outs are not read as the high of a high-low. */
 export const PLAN_ROLES = process.env.PLAN_ROLES !== '0';
 
 /** A coach's preference for each plan style, added to the shared plan-quality score (log-odds-like priors; the
@@ -33,7 +33,7 @@ const refKey = (r: RouteDescriptor) => r.ref;
  *   one that settles (295, 224, 143, 142: the settling route is the reset, not the start).
  */
 export const BEAT = 0.4;
-/** BACK_FRONT (experimental, off; BACK_FRONT=1 turns it on): the back is read with the start (front) side at his
+/** BACK_FRONT (on by default; BACK_FRONT=0 turns it off): the back is read with the start (front) side at his
  * window, the reset after the front side's reads, instead of on the side he releases to. Off, a back releasing to
  * the other side is read after the whole start side (often fourth or fifth), out and open but unread on about a
  * quarter of drop-backs (docs/reviews/2026-11-11-read-compiler-phase1.md). */

@@ -121,7 +121,7 @@ const ALL_FRONTS: Front[] = [
       LB_W: { tech: '2', side: 'W', depth: LB },
     },
   },
-  // NICKEL_FRONTS (experimental, off): sub-package fronts. Shares come from
+  // NICKEL_FRONTS (on by default; NICKEL_FRONTS=0 turns it off): sub-package fronts. Shares come from
   // 2022 snap frames classified by interior shape (scripts/diag/align/nfronts.py).
   {
     // Penny (5-1): the Tite interior (4i, 0, 4i) with both edges on the line,
@@ -210,7 +210,7 @@ const ALL_FRONTS: Front[] = [
     },
   },
 ];
-/** NICKEL_FRONTS (experimental, off): the sub-package three- and five-man fronts join the catalog only under the flag. */
+/** NICKEL_FRONTS (on by default; NICKEL_FRONTS=0 turns it off): the sub-package three- and five-man fronts join the catalog only under the flag. */
 const NICKEL_FRONTS = process.env.NICKEL_FRONTS !== '0';
 export const FRONTS: Front[] = ALL_FRONTS.filter((f) => NICKEL_FRONTS || !['penny', 'penny_bear', 'mint', 'okie', 'stack33'].includes(f.id));
 
@@ -284,7 +284,7 @@ export const PRESSURES: Pressure[] = [
     id: 'deuce', name: 'Deuce (Mike A, 2-deep 4-under)', blitzers: { LB_M: { gap: 'A', side: 'S' } },
     coverages: ['cover4', 'cover6', 'cover2'], coverage: 'deuce', rushers: 5, flag: 'DEUCE',
   },
-  // MUG_PRESSURES (experimental, off): the mug package. A call that mugs
+  // MUG_PRESSURES (on by default; MUG_PRESSURES=0 turns it off): the mug package. A call that mugs
   // backers in the A gaps also says who of them comes, picked at the shares
   // 2022 tracking shows on nickel dropbacks with a double mug at the snap
   // (scripts/diag/align/mugrush.py, n 173): no mugger rushes 42%, one 32%,

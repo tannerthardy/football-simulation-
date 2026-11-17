@@ -37,7 +37,7 @@ import { screenSpot } from './screen-spot.js';
 
 const READ_BASE: Record<string, number> = { DE: 0.12, DT: 0.12, NT: 0.12, LB: 0.25, CB: 0.5, NB: 0.4, DB: 0.45, FS: 0.45, SS: 0.38 };
 
-/** STANCE_TELL (experimental, off): an offensive lineman can tip his first
+/** STANCE_TELL (on by default; STANCE_TELL=0 turns it off): an offensive lineman can tip his first
  * step pre-snap through his stance (weight on the play-side hand or foot, a
  * cheated stagger). Disciplined linemen hide it more often. A habit lean, a
  * lean that has nothing to do with the play, shows on any snap, pass or run,
@@ -67,7 +67,7 @@ function stanceLeak(a: Agent): number {
  * The get-off cost and the vision cost are assumptions, not fitted values. */
 const DEF_STANCE = process.env.DEF_STANCE === '1';
 
-/** BACK_RELEASE (experimental, off): the back's route on a dropback is part
+/** BACK_RELEASE (on by default; BACK_RELEASE=0 turns it off): the back's route on a dropback is part
  * of the concept and the protection count, not a fixed check-release over
  * the middle.
  *  - The count is what the offense sees before the snap: defenders in the
@@ -335,7 +335,7 @@ interface Mesh {
 
 /** Stretch mesh on the back's track (STRETCH_MESH=0: inside mesh, the stretch back stops). */
 const STRETCH_MESH = process.env.STRETCH_MESH !== '0';
-/** IZ_GUN_A (default off): inside zone from the gun with the back offset to
+/** IZ_GUN_A (on by default; IZ_GUN_A=0 turns it off): inside zone from the gun with the back offset to
  * the backside aims at the play-side A gap (the centre's play-side hip), not
  * the B gap. He crosses the quarterback's face and the B gap was over 4 yd of
  * lateral travel: tracked backs from that alignment slow their drift (2.5 ->
@@ -343,7 +343,7 @@ const STRETCH_MESH = process.env.STRETCH_MESH !== '0';
  * held 3.3 yd/s across the formation and 6% did. Under centre the B-gap
  * landmark stays (tracked backs cross +1.0 yd play side of the line). */
 export const IZ_GUN_A = process.env.IZ_GUN_A !== '0';
-/** MESH_GUN_SIDE (default off): an offset back crossing the gun QB's face takes
+/** MESH_GUN_SIDE (on by default; MESH_GUN_SIDE=0 turns it off): an offset back crossing the gun QB's face takes
  * the ball still on the QB's backside half, not squarely in front of him.
  * Tracked 2022 gun runs with the back offset backside: at the handoff he is
  * 0.70 yd (inside zone) / 0.25 yd (outside zone) backside of the QB and about
@@ -352,7 +352,7 @@ export const IZ_GUN_A = process.env.IZ_GUN_A !== '0';
  * and 2.0 downhill, and kept drifting play side after the handoff. The mesh
  * point stays at the two bodies' clearance in front of the QB. */
 export const MESH_GUN_SIDE = process.env.MESH_GUN_SIDE !== '0';
-/** GUN_MESH (experimental, off): a gun back aligned away from the play crosses
+/** GUN_MESH (on by default; GUN_MESH=0 turns it off): a gun back aligned away from the play crosses
  * in front of the QB and takes the ball there, on his own track: the exchange
  * point is half a yard in front of the QB (toward the line) and just short of
  * his face (tracked 2022 gun handoffs, back relative to the QB: stretch -0.16
@@ -361,13 +361,13 @@ export const MESH_GUN_SIDE = process.env.MESH_GUN_SIDE !== '0';
  * within reach (ours took it a yard short of the QB's face, level with him, at
  * full reach, braking: IZ 2.2 yd/s at the exchange vs NFL 3.8). */
 export const GUN_MESH = process.env.GUN_MESH !== '0';
-/** GUN_MESH_GO (experimental, off; with GUN_MESH): the gun back leaves on the
+/** GUN_MESH_GO (on by default; GUN_MESH_GO=0 turns it off; with GUN_MESH): the gun back leaves on the
  * snap and builds speed to the exchange (slow to fast) rather than standing
  * until a full-speed run would just make it. Tracked 2022 gun backs are moving
  * 1.8 yd/s laterally at 0.5 s and 3.5-4.7 at the handoff; ours stood, then ran
  * (1.06 at 0.5 s). His pace is the steadiest on-time tempo (MESH_TEMPO). */
 export const GUN_MESH_GO = process.env.GUN_MESH_GO !== '0';
-/** DRAW_NFL (default off): the gun draw exchange from 2022 tracking. The QB
+/** DRAW_NFL (on by default; DRAW_NFL=0 turns it off): the gun draw exchange from 2022 tracking. The QB
  * gives ground only half a yard (tracked 5.09 yd deep at the handoff, ours
  * 5.90), the back takes it beside him (1.07 yd off his line, 0.6 yd in front)
  * already moving upfield at 1.9 yd/s (ours standing at the landmark), at 1.50
@@ -377,7 +377,7 @@ export const GUN_MESH_GO = process.env.GUN_MESH_GO !== '0';
  * +0.2 yd (tracked +1.25). */
 export const DRAW_NFL = process.env.DRAW_NFL !== '0';
 
-/** COUNTER_C (off): counter's mesh aim is the C gap (the play-side tackle's
+/** COUNTER_C (on by default; COUNTER_C=0 turns it off): counter's mesh aim is the C gap (the play-side tackle's
  * outside hip) instead of B. */
 export const COUNTER_C = process.env.COUNTER_C !== '0';
 function meshFor(sim: PlaySim, concept: RunConcept): Mesh {
@@ -501,7 +501,7 @@ export class PlayActionFake implements Behavior {
   }
 }
 
-/** MESH_TEMPO (default off): a riding back times his run to the mesh instead
+/** MESH_TEMPO (on by default; MESH_TEMPO=0 turns it off): a riding back times his run to the mesh instead
  * of braking into it. On each beat he previews his own body and takes the
  * steadiest tempo that still reaches the mesh by the installed exchange time,
  * carries it through (no stop at the landmark while the QB is still opening),

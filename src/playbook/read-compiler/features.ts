@@ -23,7 +23,7 @@ import { ROUTES } from '../routes.js';
 const CROSS_OVER = process.env.CROSS_OVER === '1';
 /** ROUTE_FILLET (src/sim/route-motion.ts): read here only for the crosser's and a rolled screen's declare. */
 const ROUTE_FILLET_ON = process.env.ROUTE_FILLET !== '0';
-/** SCREEN_DECLARE (experimental, off): a screen's receiver has shown his answer when he turns back to the catch point
+/** SCREEN_DECLARE (on by default; SCREEN_DECLARE=0 turns it off): a screen's receiver has shown his answer when he turns back to the catch point
  * (the break), not when he has moved 5 yd past the line, which a screen behind the line may never do in the horizon. Off,
  * the tunnel's S1 window came from the fallback (no `moved`, so break + 0.1 = 1.3 s), and running him 0.1 yd/s faster
  * upfield at the end (ROUTE_EFFORT) crossed +0.5 at 3.9 s and declared him at 4.1 s. With the flag a route in a screen
@@ -32,13 +32,13 @@ const ROUTE_FILLET_ON = process.env.ROUTE_FILLET !== '0';
 const SCREEN_DECLARE = process.env.SCREEN_DECLARE !== '0';
 
 const DT = 0.1, HORIZON = 4.0;
-/** DECLARED_BREAK (experimental, off; src/playbook/route-breaks.ts): a receiver is ready when he reaches his route's
+/** DECLARED_BREAK (on by default; DECLARED_BREAK=0 turns it off; src/playbook/route-breaks.ts): a receiver is ready when he reaches his route's
  * declared break on this sample of the installed route (the first sample within 1 yd of the vertex, else his closest
  * approach within 2.5 yd), less the plan's anchor lead; a route with no vertex keeps its declare rule. The 30 deg
  * heading test is kept as a check: `breakWarn` when the two ready times differ by more than 0.4 s. A route settles
  * when it is installed to (`settle`, `sitVsZone`), not when it happens to be slow at the end of the horizon. */
 export const DECLARED_BREAK = process.env.DECLARED_BREAK !== '0';
-/** COMPILE_PICTURE (experimental, off): the route sample's pictures show the parked defence (see `sampleRoutes`). */
+/** COMPILE_PICTURE (on by default; COMPILE_PICTURE=0 turns it off): the route sample's pictures show the parked defence (see `sampleRoutes`). */
 const COMPILE_PICTURE = process.env.COMPILE_PICTURE !== '0';
 const OL = new Set(['LT', 'LG', 'C', 'RG', 'RT']);
 
@@ -76,7 +76,7 @@ export function sampleRoutes(concept: PassConcept, formationId: string, flip: bo
   sim.throwBall = () => undefined;
   const park = () => sim.defense.forEach((d, i) => { d.body.pos = parkAt(i); d.body.vel = { x: 0, y: 0 }; });
   park();
-  // COMPILE_PICTURE (experimental, off): the defence was recorded where it lined up before it was parked, and every
+  // COMPILE_PICTURE (on by default; COMPILE_PICTURE=0 turns it off): the defence was recorded where it lined up before it was parked, and every
   // picture is delayed, so the receivers release round defenders who are not there, on one side only (PRESS_MIRROR /
   // RELEASE_SEEN's tight-at-snap men: pa_flood's S2 releases round his parked DE_S unflipped and not flipped), and the
   // sample is not mirror-symmetric (read-compiler's mirror case on the engine defaults). With the flag the record's

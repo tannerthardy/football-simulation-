@@ -2,7 +2,7 @@ import { END_LINE_X, FIELD_WIDTH } from '../core/field.js';
 import type { MoveCommand } from '../physics/kinematics.js';
 import type { Agent } from './agent.js';
 
-/** PURSUIT_FIELD (experimental, off): a coverage player pursuing a ball
+/** PURSUIT_FIELD (on by default; PURSUIT_FIELD=0 turns it off): a coverage player pursuing a ball
  * carrier he has seen is no longer a coverage player. Containment exists so a
  * drop or carry stays in the field; it zeroes his velocity toward the sideline
  * whenever he could not stop before it on half his lateral traction, which at

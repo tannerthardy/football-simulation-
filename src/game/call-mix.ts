@@ -1,5 +1,5 @@
 /**
- * CALL_MIX (experimental, off; CALL_MIX=1): the coordinator's route-class
+ * CALL_MIX (on by default; CALL_MIX=0 turns it off): the coordinator's route-class
  * preference by down and distance.
  *
  * The installed caller weighted the 17 pool concepts about evenly, so 7 of the

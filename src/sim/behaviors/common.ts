@@ -92,12 +92,12 @@ export function angleTo(from: Vec2, to: Vec2): number {
  *    perceived intercept. Lower pursuit ratings widen that error; they do
  *    not require every poorer pursuer to take a flat, trailing angle.
  */
-/** TRACK_PURSUIT (experimental, off; TRACK_PURSUIT=1, or PERCEIVE_TRACK=1 for every group): perception channels
+/** TRACK_PURSUIT (on by default; TRACK_PURSUIT=0 turns it off, or PERCEIVE_TRACK=1 for every group): perception channels
  * step 1a, pursuit's aim (docs/reviews/2026-11-13-perception-proposal.md). The pursued carrier is read through the
  * tracking channel (`PlaySim.track`) instead of a scaled `see()` plus a two-sample acceleration burst. The tackle
  * window (the close gather in `chase`) is its own step (1a'). */
 const TRACK_PURSUIT = process.env.TRACK_PURSUIT !== '0' || process.env.PERCEIVE_TRACK === '1';
-/** BEND_FORECAST (experimental, numeric bits, default 0; docs/reviews/2026-11-17-bend-forecast.md). A pursuer
+/** BEND_FORECAST (numeric bits, default 1; BEND_FORECAST=0 turns it off; docs/reviews/2026-11-17-bend-forecast.md). A pursuer
  * forecasts a ball carrier in space bending, not running his instantaneous line: the constant-velocity forecast was
  * 1.6 yd p50 (2.1 p75) short at +1.0 s, systematically ~1 yd upfield, most just out of the catch (staged zone,
  * scripts/diag/yac). From what he can see, in order of evidence:
@@ -200,7 +200,7 @@ export function pursuitPoint(sim: PlaySim, a: Agent, target: Agent, horizon = 3,
 
 const angleBias = new WeakMap<Agent, number>();
 
-/** PURSUIT_COMMIT (experimental, off): a pursuer commits to the meeting he
+/** PURSUIT_COMMIT (on by default; PURSUIT_COMMIT=0 turns it off): a pursuer commits to the meeting he
  * chose. Measured (pursuit-weave.mts): re-picking the first reachable forecast
  * sample every tick flips between a reachable meeting and the least-late
  * fallback, and jumps the meeting time, on 9-13% of ticks; those ticks gave
@@ -217,7 +217,7 @@ const angleBias = new WeakMap<Agent, number>();
 export const PURSUIT_COMMIT = process.env.PURSUIT_COMMIT !== '0';
 const MEET_ENTER = 0.1, MEET_EXIT = 0.15, MEET_MARGIN = 0.3, MEET_NEAR = 0.15;
 const heldMeeting = new WeakMap<Agent, { target: Agent; at: number; ok: boolean }>();
-/** PURSUIT_SPOT (experimental, off; PURSUIT_SPOT=1 turns it on; for TRACK_PURSUIT): PURSUIT_COMMIT's pursuer commits
+/** PURSUIT_SPOT (on by default; PURSUIT_SPOT=0 turns it off; for TRACK_PURSUIT): PURSUIT_COMMIT's pursuer commits
  * to the meeting spot he chose, not its moment. Under TRACK_PURSUIT the carrier is a tracked picture whose velocity the
  * tracker corrects every tick; a meeting moment held fixed turns each correction into a shift of his aim point along
  * the carrier's path (engine-61 candidate, pursuit-commit's 3-8 yd band: held-moment ticks turn 14.0 deg/s against the
@@ -361,7 +361,7 @@ export function blendApproach(far: MoveCommand, near: MoveCommand | null, gather
     facing: travel + angleDiff(travel, near.facing!) * gather };
 }
 
-/** TRACK_TACKLE (experimental, off; TRACK_TACKLE=1, or PERCEIVE_TRACK=1 for every group): perception channels step
+/** TRACK_TACKLE (on by default; TRACK_TACKLE=0 turns it off, or PERCEIVE_TRACK=1 for every group): perception channels step
  * 1a', the tackle window (docs/reviews/2026-11-13-perception-proposal.md). The pursued carrier's picture in the last
  * yards (chase's close gather, tryTackles' window preview, the whiff margin's aim) is read through the tracking channel
  * (`PlaySim.track`) instead of a scaled `see()` (0.12-0.24 s by awareness, plus the focus and stress terms added after

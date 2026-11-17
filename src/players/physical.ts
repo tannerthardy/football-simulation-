@@ -92,7 +92,7 @@ export function solveSprint(tenSplit: number, forty: number): SprintParams {
   }
 }
 
-/** PEDAL_CAP (experimental, off; PEDAL_CAP=1 turns it on): for defensive
+/** PEDAL_CAP (on by default; PEDAL_CAP=0 turns it off): for defensive
  * backs and linebackers the backpedal is the slowest way to cover ground
  * backward: the facing cap falls from his side-on value to his backpedal
  * value past 90 deg instead of rising (the curve stays monotonic from
