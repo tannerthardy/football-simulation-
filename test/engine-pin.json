@@ -342,6 +342,7 @@
   "test/man-throw-recognition.test.ts",
   "test/man-trail-carry.test.ts",
   "test/match-block-release.test.ts",
+  "test/match-declare.test.ts",
   "test/mechanics-export.test.ts",
   "test/mesh-departure.test.ts",
   "test/mind.test.ts",

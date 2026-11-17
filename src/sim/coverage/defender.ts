@@ -147,6 +147,8 @@ export class CoverageDefender implements Behavior {
    */
   private passUnder(sim: PlaySim, d: Directive): Directive {
     if (sim.defCall.coverage.man || this.rule === 'q_corner_meg' || this.rule === 'mush' || this.rule === 'rat') return d;
+    // MATCH_DECLARE: the seam/curl-flat player taking #2 back across (#3 away) has no one to pass him to.
+    if (this.state.mode === 'across') return d;
     if (d.t === 'crossWall') return d;
     const area = zoneLandmark(this.zone, sim.offAlign);
     const target = d.t === 'man' || d.t === 'wall' ? d.r : null;

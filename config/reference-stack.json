@@ -361,6 +361,7 @@
     "PA_TABLES": "on",
     "QUICK_HITCH": "on",
     "HALF_OWN": "off",
+    "MATCH_DECLARE": "off",
     "RELEASE_SIDE": "on",
     "SCREEN_DECLARE": "on",
     "ROUTE_SHAPE": "off",
