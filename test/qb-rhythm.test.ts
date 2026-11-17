@@ -26,5 +26,5 @@ describe('QB_RHYTHM', () => {
     const off = await throwsToLast('0'), on = await throwsToLast('1');
     // Legacy test engine, 48 plays: p75 3.35 -> 2.85 s.
     expect(on).toBeLessThanOrEqual(off);
-  });
+  }, 120_000); // 96 plays: about 55-65 s on the real engine, over the 60 s default under load
 });
