@@ -169,7 +169,15 @@ const CARRY_LABEL = /^(open-carry-seam|carry-wall|carry-run-past)$/;
  * yd/s toward the eventual catch point at -0.6 / -0.3 / 0 s; ours -0.6 / -0.5 / -0.2. Stated choices: QB_LEAN_SPEED 0.4,
  * QB_LEAN_EXIT 0.2 s, the dwell range. Old branch (defense/C14-qb-intent, two misses): drove at full speed on the held
  * look (no lean), also required a seen set, exited the instant the look moved. */
-const QB_INTENT = process.env.QB_INTENT === '1';
+const QB_INTENT = process.env.QB_INTENT === '1' || process.env.QB_INTENT === '3';
+/** QB_INTENT=3 (body tells): the passer's set shoulders (his seen trunk facing while set or loading) and the stride he
+ * steps into the load with are evidence as well as his head. Head and shoulders on the same receiver: he leans sooner
+ * (half the dwell) and with more conviction (pace); shoulders set one way and only the head the other: the shoulders win
+ * for an aware dropper (awareness >= 0.5; a head-only look-off fools the young, not the veteran); shoulders alone are
+ * enough; the shoulders turning off his man is the reset he can see (the same exit margin). The stride is not in his
+ * picture as a foot: the passer's seen motion into the load, along his trunk, is the agreeing tell. */
+const QB_BODY_TELL = process.env.QB_INTENT === '3';
+const QB_SHOULDER_CONE = 20 * Math.PI / 180;
 const QB_LEAN_SPEED = 0.4, QB_LEAN_EXIT = 0.2;
 const eyesHeld = new WeakMap<Agent, Agent>();
 const eyesCache = new WeakMap<Agent, { t: number; r: Agent | null }>();
@@ -2328,8 +2336,33 @@ export class ZoneCoverage implements Behavior {
       { label: carryingAcross ? 'lane-carry' : stemRead ? 'hook-stem-read' : holdFlat ? 'lane-hold' : 'lane', key: best.vel });
   }
 
+  /** QB_BODY_TELL: the receiver threatening his zone that the passer's set shoulders point at in his picture (null when
+   * the passer is not set or loading, or none lines up), and whether the passer's seen motion steps the same way. */
+  private seenQbBody(a: Agent, sim: PlaySim, threats: Array<{ r: Agent; pos: Vec2; vel: Vec2; fut: Vec2 }>): { shoulders: Agent | null; stride: boolean } {
+    const q = sim.see(a, sim.qb);
+    const toQB = Math.atan2(q.pos.y - a.pos.y, q.pos.x - a.pos.x);
+    if (q.facing === undefined || (q.arm !== 'set' && q.arm !== 'load') || Math.cos(a.body.facing - toQB) < Math.cos(100 * Math.PI / 180)) return { shoulders: null, stride: false };
+    const lm = this.landmark;
+    let best: Agent | null = null, bestOff = QB_SHOULDER_CONE;
+    for (const th of threats) {
+      if (Math.hypot(th.fut.x - lm.x, th.fut.y - lm.y) >= this.radius + 2) continue;
+      const off = Math.abs(angleDiff(Math.atan2(th.pos.y - q.pos.y, th.pos.x - q.pos.x), q.facing));
+      if (off < bestOff) { bestOff = off; best = th.r; }
+    }
+    const sp = Math.hypot(q.vel.x, q.vel.y);
+    const stride = !!best && q.arm === 'load' && sp > 0.5 && Math.cos(Math.atan2(q.vel.y, q.vel.x) - q.facing) > Math.cos(QB_SHOULDER_CONE);
+    return { shoulders: best, stride };
+  }
+
   /** QB_INTENT's lean and break (null: none this tick), from his own picture only. */
   private qbLean(a: Agent, sim: PlaySim, threats: Array<{ r: Agent; pos: Vec2; vel: Vec2; fut: Vec2 }>, qbEyes: Agent | null, qbAt: Vec2): MoveCommand | null {
+    // QB_BODY_TELL: what he reads the passer pointing at, head and body together, through his own picture of him.
+    let conviction = 0;
+    if (QB_BODY_TELL) {
+      const body = this.seenQbBody(a, sim, threats);
+      if (body.shoulders && body.shoulders === qbEyes) conviction = body.stride ? 2 : 1;
+      else if (body.shoulders && (!qbEyes || a.r('awareness') >= 0.5)) { qbEyes = body.shoulders; conviction = body.stride ? 1 : 0; }
+    }
     if (qbEyes !== this.intentEyes) { this.intentEyes = qbEyes; this.intentEyesSince = sim.t; }
     if (this.turnedWith && this.turnedWith !== (this.leanOn ?? qbEyes)) { this.leanOn = null; return null; }
     if (this.leanOn) {
@@ -2341,7 +2374,7 @@ export class ZoneCoverage implements Behavior {
     const lm = this.landmark;
     if (!this.leanOn && qbEyes) {
       const th = threats.find((t) => t.r === qbEyes && Math.hypot(t.fut.x - lm.x, t.fut.y - lm.y) < this.radius + 2);
-      const dwell = 0.05 + 0.3 * (1 - clamp(a.r('awareness'), 0, 1));
+      const dwell = (0.05 + 0.3 * (1 - clamp(a.r('awareness'), 0, 1))) * (conviction > 0 ? 0.5 : 1);
       if (th && sim.t - this.intentEyesSince >= dwell) { this.leanOn = qbEyes; this.leanOffSince = -1; }
     }
     if (!this.leanOn) return null;
@@ -2371,7 +2404,7 @@ export class ZoneCoverage implements Behavior {
     py = clamp(py, lm.y - this.radius, lm.y + this.radius);
     const p = { x: depth, y: clamp(py, 0.5, FIELD_WIDTH - 0.5) };
     // Pace: continuous in the depth he still owes his drop (drop pace when far short, lean pace once there).
-    const pace = clamp(QB_LEAN_SPEED + 0.25 * (lm.x - a.pos.x), QB_LEAN_SPEED, 0.9);
+    const pace = clamp(QB_LEAN_SPEED + 0.1 * conviction + 0.25 * (lm.x - a.pos.x), QB_LEAN_SPEED, 0.9);
     return withFacingTechnique(goTo(a, p, { speed: pace, facing: angleTo(a.pos, qbAt) }), { label: 'qb-intent-lean', key: th.vel });
   }
 
