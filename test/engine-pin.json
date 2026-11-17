@@ -530,6 +530,7 @@
   "test/spacing-residual-motion.test.ts",
   "test/spacing-yield.test.ts",
   "test/split-back-shares.test.ts",
+  "test/squat-topdown.test.ts",
   "test/staged-throw.test.ts",
   "test/stalk-close.test.ts",
   "test/stalk-ledger.test.ts",

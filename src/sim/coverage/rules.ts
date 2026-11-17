@@ -533,7 +533,46 @@ function palmsSafety(c: RuleCtx): Directive {
  * `sink` (Cover 2 match / trap): with no flat threat he sinks under #1's
  * vertical to ~13 yards, squeezing the hole shot between him and the half safety.
  */
+/** SQUAT_TOPDOWN (experimental, off; SQUAT_TOPDOWN=1 turns it on): the Cover 2 squat/cloud corner plays the flat
+ * top-down, as taught (coverage-position spec item 7; HNFL-099/097/334: "the ball brings you flat", "sink and
+ * squeeze the hole shot"), from his own read, re-read every tick instead of locking the flat:
+ * - a flat threat (#2, #3 or the back to the flat, or a short out) with a high threat over him (#1 climbing outside,
+ *   or a #2 who has climbed past 7 yd breaking out: fade, corner, sail): sink under the high threat, trailing him from
+ *   inside, until he passes 15 yd (the half safety's), then come back down to the flat;
+ * - a flat threat with nothing over him: the flat zone;
+ * - a flat runner who turns up past 7 yd (the wheel): stay on him over the top;
+ * - no flat threat: man under #1 (`sink`) as before.
+ * The throw still brings him down through the ball phase. */
+export const SQUAT_TOPDOWN = process.env.SQUAT_TOPDOWN === '1';
+
+function squatTopDown(c: RuleCtx, sink: boolean): Directive {
+  const st = c.state;
+  const one = ref(c, 1), two = ref(c, 2), three = ref(c, 3), back = backTo(c);
+  const runners = [two, three, back].filter((rd): rd is ReceiverRead => !!rd);
+  if (st.match) {
+    const w = runners.find((rd) => rd.r === st.match);
+    if (w && w.release === 'vertical' && w.depth > 7) return man(w, { lev: 'outside', overTop: true });
+    st.match = undefined;
+  }
+  const flat = runners.find((rd) => rd.release === 'flat' || (rd.release === 'out' && rd.depth < 6 && !rd.climbed));
+  const wheel = runners.find((rd) => rd.first === 'flat' && rd.release === 'vertical' && rd.depth > 7);
+  if (wheel) { st.match = wheel.r; return man(wheel, { lev: 'outside', overTop: true }); }
+  if (flat) {
+    const high = [one, two].find((rd) => !!rd && rd.r !== flat.r && rd.depth < 15 && rd.climbed
+      && (rd.release === 'out' || (rd.release === 'vertical' && rd === one)));
+    st.mode = 'flat';
+    if (high) return man(high, { lev: 'inside', trail: true });
+    return zoneOf(c);
+  }
+  st.mode = undefined;
+  const inside = [two, three].filter((rd): rd is ReceiverRead => !!rd);
+  const declared = inside.every((rd) => rd.release !== 'none' && rd.release !== 'flat' && rd.release !== 'out');
+  if (sink && one && declared && one.release !== 'none' && one.release !== 'block') return man(one, { lev: 'outside', trail: true });
+  return zoneOf(c);
+}
+
 function cloudCorner(c: RuleCtx, sink: boolean): Directive {
+  if (SQUAT_TOPDOWN) return squatTopDown(c, sink);
   const one = ref(c, 1);
   const flat = [ref(c, 2), ref(c, 3), backTo(c)].find((rd) => rd && (rd.release === 'flat' || (rd.release === 'out' && rd.depth < 6)));
   if (flat || c.state.mode === 'flat') {
