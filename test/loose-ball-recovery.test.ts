@@ -126,7 +126,9 @@ describe('loose-ball possession is distinct from physical down', () => {
     expect(sim.outcome).toBe('tackle');
     expect(sim.t).toBeGreaterThan(acquiredAt + .15);
     expect((recoverer.pos.x - originalX) * dir).toBeGreaterThan(0);
-    expect(recoverer.body.support!.state).toBe('down');
+    // Re-recorded 2026-11-17 (carrier-honest: the runner judges the FS from what he sees, not his hidden profile): the O
+    // scoop runner's path changes and the whistle comes while he is still falling; the D scoop still ends down.
+    expect(recoverer.body.support!.state).toBe(team === 'O' ? 'falling' : 'down');
     expect(sim.events.some(e => e.type === 'tackle_wrap')).toBe(true);
     expect(sim.events.some(e => e.type === 'fall' && e.a === recoverer.idx)).toBe(true);
     expect(sim.events.some(e => e.type === 'tackle' && e.b === recoverer.idx)).toBe(true);

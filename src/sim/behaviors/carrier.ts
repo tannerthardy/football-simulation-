@@ -14,6 +14,7 @@
  */
 import { FIELD_WIDTH, OPP_GOAL_X, OWN_GOAL_X } from '../../core/field.js';
 import { angleDiff, angleOf, clamp, type Vec2 } from '../../core/vec.js';
+import { inPadsSprint } from '../../players/physical.js';
 import { DT } from '../../core/units.js';
 import type { MoveCommand } from '../../physics/kinematics.js';
 import { sprintTime, timeToReach } from '../../physics/reach.js';
@@ -28,14 +29,41 @@ import type { Perceived } from '../perception.js';
 import { READ_SCHEMES, RUN_READ, runRead } from '../run-read.js';
 import { observeRunRead, runReadObservers } from '../run-read-observer.js';
 
-/** The carrier reads other players only through his own picture (docs/reviews/2026-11-17-carrier-honest.md). A
- * defender's speed, acceleration, reach and recovery are judged from what he can see of the man -- his body size, with
- * the runner's own body as the yardstick -- not read from the hidden profile; nobody's fatigue (speedScale) is read; a
- * man is down when his picture shows him down; a scenario's scheduled parking (downUntil) is not read. */
+/** The carrier reads other players only through his own picture (docs/reviews/2026-11-17-carrier-honest.md): nobody's
+ * fatigue (speedScale) is read; a man is down when his picture shows him down; a scenario's scheduled parking
+ * (downUntil) is not read; and a defender's speed, burst, reach and get-up are what the runner can judge from the man
+ * (`judged`), not the hidden profile. */
 type Profile = Agent['profile'];
-/** What the carrier can judge of another man's capacities: his visible body size; the rest from his own body. */
-function judged(a: Agent, o: Agent): Profile {
-  return { ...a.profile, radius: o.profile.radius };
+/** Size judgement, a stated choice (not fitted): what football knowledge says a body of this size runs. The 40 falls
+ * with weight along the NFL combine's position averages (about 4.48 s at 193 lb for corners to 5.28 s at 314 lb for
+ * tackles: 40 = 3.35 + 0.0058 lb); the 10-yd split is 0.342 of the 40 at every size in those averages; both are carried
+ * into pads by the engine's own in-pads mapping (`inPadsSprint`). Reach from height (an average arm is 0.446 of
+ * height); get-up from weight at average agility (the engine's support mapping with agility 0.5). He sees the man's
+ * size (mass, height), never his ratings, measurables or position. */
+const sizeJudged = new WeakMap<Agent, { vmax: number; tau: number; reach: number; getUp: number }>();
+function bySize(o: Agent): { vmax: number; tau: number; reach: number; getUp: number } {
+  let j = sizeJudged.get(o);
+  if (!j) {
+    const lb = o.profile.massKg / 0.45359237, heightIn = o.profile.heightYd * 36;
+    const forty = 3.35 + 0.0058 * lb;
+    j = { ...inPadsSprint(0.342 * forty, forty, lb), reach: 0.25 + (0.446 * heightIn / 36) * 0.85,
+      getUp: clamp(0.75 + 0.35 * 0.5 + 0.0015 * (lb - 200), 0.6, 1.4) };
+    sizeJudged.set(o, j);
+  }
+  return j;
+}
+/** The fastest he has seen each man actually move on this play, upright, in his own picture. */
+const seenTop = new WeakMap<Agent, Map<Agent, number>>();
+/** What the carrier can judge of another man: speed and burst from his size, raised to the speed he has seen him reach
+ * once he has watched him run; reach and get-up from his size; his visible body radius. Cut and brake capacities are
+ * the runner's own yardstick. */
+function judged(a: Agent, o: Agent, seen: Perceived): Profile {
+  let m = seenTop.get(a);
+  if (!m) seenTop.set(a, m = new Map());
+  const v = seen.pose === 'down' ? 0 : Math.hypot(seen.vel.x, seen.vel.y), top = Math.max(m.get(o) ?? 0, v);
+  m.set(o, top);
+  const z = bySize(o);
+  return { ...a.profile, radius: o.profile.radius, vmax: Math.max(z.vmax, top), tau: z.tau, reach: z.reach, getUp: z.getUp };
 }
 
 export interface CarrierOptions {
@@ -256,8 +284,8 @@ export function runReadAim(a: Agent, sim: PlaySim, opts: CarrierOptions): Vec2 |
   const holdsToward = (d: Agent, s: Perceived, p: Vec2): boolean => !HELD_SIDE
     || (heldBy.get(d) ?? []).some((b) => (b.x - s.pos.x) * (p.x - s.pos.x) + (b.y - s.pos.y) * (p.y - s.pos.y) > 0);
   const threatTime = (d: Agent, s: Perceived, p: Vec2): number =>
-    timeToReach({ ...s, profile: judged(a, d) }, p, d.profile.radius + a.profile.radius + judged(a, d).reach * .75)
-      + observedRecoveryAllowance(s, judged(a, d).getUp, sim.dt) + (holdsToward(d, s, p) ? held.get(d) ?? 0 : 0);
+    timeToReach({ ...s, profile: judged(a, d, s) }, p, d.profile.radius + a.profile.radius + judged(a, d, s).reach * .75)
+      + observedRecoveryAllowance(s, judged(a, d, s).getUp, sim.dt) + (holdsToward(d, s, p) ? held.get(d) ?? 0 : 0);
   let best: Vec2 | null = null, cost = Infinity, bestY: number | undefined;
   const measurements: Array<{ entry: Vec2; risk: number; score: number }> = [];
   const cruise = Math.max(4, a.profile.vmax * .8), cruiseFor = () => cruise;
@@ -448,7 +476,7 @@ export class BallCarrier implements Behavior {
     if (this.opts.qb && sim.isPass && (a.pos.x - sim.los) * dir > 1) {
       const threat = Math.min(...sim.opponents(a).map((d) => {
         const s = sim.see(a, d);
-        return s.pose === 'down' ? 9 : timeToReach({ pos: s.pos, vel: s.vel, profile: judged(a, d), speedScale: 1 }, a.pos, 1.0);
+        return s.pose === 'down' ? 9 : timeToReach({ pos: s.pos, vel: s.vel, profile: judged(a, d, s), speedScale: 1 }, a.pos, 1.0);
       }));
       if (threat < 0.35 && !sim.bond) {
         sim.event('slide', a);
@@ -619,7 +647,7 @@ export class BallCarrier implements Behavior {
       const vx = q.x - th.pos.x, vy = q.y - th.pos.y, L = Math.hypot(vx, vy);
       if (L < 0.5) return 0;
       const ux = vx / L, uy = vy / L;
-      const man = { pos: th.pos, vel: th.vel, profile: judged(a, th.d), speedScale: 1 };
+      const man = { pos: th.pos, vel: th.vel, profile: judged(a, th.d, th.seen), speedScale: 1 };
       for (const b of blockers) {
         if (b.pose === 'down') continue;
         // What he sees: a blocker touching this man is on him; one touching
@@ -711,7 +739,7 @@ export class BallCarrier implements Behavior {
         let limiter: string | undefined;
         for (const th of threats) {
           // Respect the tackler's arms: his reach plus a lunge.
-          const tt = timeToReach({ pos: th.pos, vel: th.vel, profile: judged(a, th.d), speedScale: 1 }, q, a.profile.radius + th.d.profile.radius + judged(a, th.d).reach * 0.75)
+          const tt = timeToReach({ pos: th.pos, vel: th.vel, profile: judged(a, th.d, th.seen), speedScale: 1 }, q, a.profile.radius + th.d.profile.radius + judged(a, th.d, th.seen).reach * 0.75)
             + (leverage ? th.extra - th.blockerBonus + credit(th, q) : th.extra);
           const m = tt - arrival;
           if (m < minMargin) {
@@ -841,7 +869,7 @@ function arrivalEvidence(a: Agent, sim: PlaySim, dir: number, range: number, vis
     // a scenario's scheduled absence (downUntil), hidden support state or an
     // exact recovery deadline.
     const parking = null;
-    const recovery = observedRecoveryAllowance(seen, judged(a, d).getUp, sim.dt);
+    const recovery = observedRecoveryAllowance(seen, judged(a, d, seen).getUp, sim.dt);
     let extra = parking ?? recovery;
     // A defender he sees a blocker on is held up; one he sees coming at
     // him through it is getting off the block.
