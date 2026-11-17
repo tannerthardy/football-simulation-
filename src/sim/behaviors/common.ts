@@ -96,6 +96,47 @@ export function angleTo(from: Vec2, to: Vec2): number {
  * tracking channel (`PlaySim.track`) instead of a scaled `see()` plus a two-sample acceleration burst. The tackle
  * window (the close gather in `chase`) is its own step (1a'). */
 const TRACK_PURSUIT = process.env.TRACK_PURSUIT !== '0' || process.env.PERCEIVE_TRACK === '1';
+/** BEND_FORECAST (experimental, numeric bits, default 0; docs/reviews/2026-11-17-bend-forecast.md). A pursuer
+ * forecasts a ball carrier in space bending, not running his instantaneous line: the constant-velocity forecast was
+ * 1.6 yd p50 (2.1 p75) short at +1.0 s, systematically ~1 yd upfield, most just out of the catch (staged zone,
+ * scripts/diag/yac). From what he can see, in order of evidence:
+ *  bit 2 (body): the carrier's seen facing (hips and shoulders) leads his velocity when he is turning; the forecast
+ *        heading turns from his velocity toward his facing at BEND_BODY_RATE.
+ *  bit 1 (prior): where the body shows nothing (facing within BEND_MARGIN of his velocity, or bit 2 off), the prior
+ *        every defender holds: a runner in space turns upfield, at BEND_PRIOR_RATE until he is running upfield.
+ * The forecast target heading is his belief: it changes only when the seen facing or velocity has moved BEND_MARGIN
+ * from the picture it was formed on. Stated choices: BEND_PRIOR_RATE 19 deg/s (our carriers' measured median turn
+ * toward upfield), BEND_BODY_RATE 40 deg/s (their p75, a carrier visibly turning), BEND_MARGIN 20 deg. */
+const BEND_BITS = Number(process.env.BEND_FORECAST ?? 0);
+const BEND_FORECAST = BEND_BITS !== 0;
+const BEND_PRIOR = (BEND_BITS & 1) !== 0, BEND_BODY = (BEND_BITS & 2) !== 0;
+const BEND_PRIOR_RATE = (19 * Math.PI) / 180, BEND_BODY_RATE = (40 * Math.PI) / 180, BEND_MARGIN = (20 * Math.PI) / 180, BEND_STEP = 0.05;
+const curveOf = new WeakMap<Agent, Vec2[]>();
+const bendBelief = new WeakMap<Agent, { target: Agent; vel: number; facing: number; heading: number; rate: number }>();
+function bendTarget(sim: PlaySim, a: Agent, target: Agent, seen: import('../perception.js').Perceived, velHeading: number): { heading: number; rate: number } | null {
+  const held = bendBelief.get(a);
+  if (held && held.target === target && Math.abs(angleDiff(held.vel, velHeading)) < BEND_MARGIN && Math.abs(angleDiff(held.facing, seen.facing)) < BEND_MARGIN)
+    return { heading: held.heading, rate: held.rate };
+  const up = sim.attackDir(target.team) > 0 ? 0 : Math.PI;
+  let heading = velHeading, rate = 0;
+  if (BEND_BODY && Math.abs(angleDiff(velHeading, seen.facing)) >= BEND_MARGIN) { heading = seen.facing; rate = BEND_BODY_RATE; }
+  else if (BEND_PRIOR) { heading = up; rate = BEND_PRIOR_RATE; }
+  bendBelief.set(a, { target, vel: velHeading, facing: seen.facing, heading, rate });
+  return rate > 0 ? { heading, rate } : null;
+}
+/** The forecast polyline: heading turns from h0 toward hT at `rate`, distance along it from `dist(t)`. */
+function bentPath(p0: Vec2, h0: number, hT: number, rate: number, dist: (t: number) => number, horizon: number): Vec2[] {
+  const out: Vec2[] = [{ x: p0.x, y: p0.y }];
+  let h = h0, x = p0.x, y = p0.y, last = 0;
+  for (let t = BEND_STEP; t <= horizon + 1e-9; t += BEND_STEP) {
+    const dh = angleDiff(h, hT); h += Math.sign(dh) * Math.min(Math.abs(dh), rate * BEND_STEP);
+    const d = dist(t), step = d - last; last = d;
+    x += Math.cos(h) * step; y = clamp(y + Math.sin(h) * step, 0, FIELD_WIDTH);
+    out.push({ x, y });
+  }
+  return out;
+}
+
 export function pursuitPoint(sim: PlaySim, a: Agent, target: Agent, horizon = 3,
   request?: SprintRequest): Vec2 {
   const delay = (0.12 + 0.12 * (1 - a.r('awareness'))) / Math.max(0.1, a.profile.reactionTime);
@@ -116,10 +157,15 @@ export function pursuitPoint(sim: PlaySim, a: Agent, target: Agent, horizon = 3,
   // speed throughout the horizon. Reassess as new motion becomes visible.
   const tau = 0.3 + 0.3 * a.r('anticipation');
   const V = clamp(sp + acceleration * tau, 0, target.profile.vmax);
-  const path = (t: number): Vec2 => {
+  const straight = (t: number): Vec2 => {
     const d = V * t - (V - sp) * tau * (1 - Math.exp(-t / tau));
     return { x: seen.pos.x + heading.x * d, y: clamp(seen.pos.y + heading.y * d, 0, FIELD_WIDTH) };
   };
+  const bend = BEND_FORECAST && sp > 1 && sim.ball.kind === 'held' && sim.ball.carrier === target && sim.catchAt >= 0
+    ? bendTarget(sim, a, target, seen, Math.atan2(seen.vel.y, seen.vel.x)) : null;
+  const curve = bend ? bentPath(seen.pos, Math.atan2(seen.vel.y, seen.vel.x), bend.heading, bend.rate, (t) => V * t - (V - sp) * tau * (1 - Math.exp(-t / tau)), horizon) : null;
+  if (curve) curveOf.set(a, curve); else curveOf.delete(a);
+  const path = curve ? (t: number): Vec2 => curve[Math.min(curve.length - 1, Math.max(0, Math.round(t / BEND_STEP)))] : straight;
   const reach = a.profile.radius + target.profile.radius + a.profile.reach * 0.75;
   const trace = sim.commandTraceFor?.(a);
   const mover = { pos: a.pos, vel: a.vel, profile: a.profile, speedScale: a.speedScale };
@@ -188,8 +234,15 @@ function commitSpot(sim: PlaySim, a: Agent, target: Agent, ip: ReturnType<typeof
   const held = heldSpot.get(a);
   if (!held || held.target !== target || V < 0.5) return choose(ip.t, freshOk);
   const dx = held.spot.x - seen.pos.x, dy = held.spot.y - seen.pos.y;
-  const along = dx * heading.x + dy * heading.y, miss = Math.abs(dx * heading.y - dy * heading.x);
-  const t = along / V;
+  let along = dx * heading.x + dy * heading.y, miss = Math.abs(dx * heading.y - dy * heading.x);
+  let t = along / V;
+  if (BEND_FORECAST && curveOf.has(a)) {
+    // BEND_FORECAST: the held spot is judged against the bending forecast, its nearest sample.
+    const c = curveOf.get(a)!; let k = 0, best = Infinity;
+    for (let i = 0; i < c.length; i++) { const m = Math.hypot(c[i].x - held.spot.x, c[i].y - held.spot.y); if (m < best) { best = m; k = i; } }
+    t = k * BEND_STEP; miss = best; along = t * V;
+  }
+  void along;
   if (t < MEET_NEAR || t > horizon || miss > reach) return choose(ip.t, freshOk);
   const slack = t - (request ? timeToReachRequested(mover, held.spot, reach, request) : timeToReach(mover, held.spot, reach));
   if (held.ok ? slack < -MEET_EXIT : slack < MEET_ENTER && freshOk && (ip.estimate.slack ?? -Infinity) >= MEET_ENTER) return choose(ip.t, freshOk);
