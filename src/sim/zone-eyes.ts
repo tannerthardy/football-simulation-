@@ -15,7 +15,7 @@
  *  - deep thirds, halves, quarter-outside: #1's release ("read #1 to #2"), then the QB through #2;
  *  - quarter-inside, deep middle, Tampa middle: #2 ("read #2"; the post reads both #2s), then the QB.
  * The declare phase is EYES_KEY_SPAN after the snap (a stated choice: the 3-step / 5-yard declare most sources give,
- * read at 0.6 and 1.2 s via ZONE_EYES_KEY). Before the snap his head is on the passer. No outcome is decided here. */
+ * ZONE_EYES_KEY in tenths, default 9). Before the snap his head is on the passer. No outcome is decided here. */
 import type { ZoneId } from '../playbook/types.js';
 import type { Agent } from './agent.js';
 import type { PlaySim } from './playsim.js';
@@ -23,7 +23,8 @@ import { lastReleaseBelief } from './release-belief.js';
 import { shoulderPickOf } from './behaviors/defense.js';
 
 export const ZONE_EYES = process.env.ZONE_EYES !== '0';
-export const EYES_KEY_SPAN = Number(process.env.ZONE_EYES_KEY ?? 0.9);
+/** In tenths of a second (an integer read, for the provenance reader): 9 = 0.9 s. */
+export const EYES_KEY_SPAN = Number(process.env.ZONE_EYES_KEY ?? 9) / 10;
 
 /** The zone each defender was given at the snap (his own assignment, not the offense's). */
 const zones = new WeakMap<Agent, ZoneId>();

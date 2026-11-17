@@ -623,7 +623,7 @@ view and release-evidence's head cone); what is outside it he does not see, and 
 | deep third, deep half, quarter outside | #1 | the passer |
 | quarter inside, deep middle, Tampa middle | #2 | the passer |
 
-The declare phase is `ZONE_EYES_KEY` = 0.9 s after the snap, a stated choice (the 3-step / 5-yd declare most sources
+The declare phase is `ZONE_EYES_KEY` = 9 (tenths: 0.9 s) after the snap, a stated choice (the 3-step / 5-yd declare most sources
 give). On a believed throw his eyes go to the receiver his shoulder read picked ("eyes from the elbow to the receiver,
 not the ball"); the carrier he chases takes the head first. Sources: docs/reviews/2026-11-17-zone-coached-rules.md.
 Under BALL_EST with defenders estimating (not the default) the ball estimate keeps its own head: sharing one head with
