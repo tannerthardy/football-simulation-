@@ -42,8 +42,8 @@ for (const concept of Object.keys(PASS_BY_ID).filter((id) => !/screen/.test(id))
 console.log(`FLIGHT_MAN defenders: ${rows.length}`);
 for (const cov of ['cover2', 'cover3', 'cover4', 'cover6']) for (const deep of [false, true]) {
   const V = rows.filter((r) => r.coverage === cov && r.deep === deep); if (!V.length) continue;
-  console.log(`${cov} ${deep ? 'deep ' : 'under'} ` + ['in', 'out', 'split'].map((b) => { const B = V.filter((r) => r.branch === b);
+  console.log(`${cov} ${deep ? 'deep ' : 'under'} ` + ['in', 'view', 'out', 'split'].map((b) => { const B = V.filter((r) => r.branch === b);
     return `${b} ${B.length} (pbu ${B.filter(r => r.pbu).length} int ${B.filter(r => r.int).length} early contact ${B.filter(r => r.early).length})`; }).join(' | '));
 }
-for (const b of ['in', 'out', 'split']) { const B = rows.filter((r) => r.branch === b);
+for (const b of ['in', 'view', 'out', 'split']) { const B = rows.filter((r) => r.branch === b);
   console.log(`ALL ${b}: ${B.length} | pbu ${B.filter(r => r.pbu).length} int ${B.filter(r => r.int).length} | early contact ${B.filter(r => r.early).length} (${(100 * B.filter(r => r.early).length / Math.max(1, B.length)).toFixed(1)}%)`); }

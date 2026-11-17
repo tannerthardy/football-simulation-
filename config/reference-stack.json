@@ -137,6 +137,7 @@
     "NECK_FULL": "off",
     "ZONE_EYES": "off",
     "FLIGHT_MAN": "off",
+    "CATCH_WINDOW_SEEN": "on",
     "CATCH_CLOSE": "off",
     "DIR_CAP": "on",
     "CARRY_POSTURE": "on",

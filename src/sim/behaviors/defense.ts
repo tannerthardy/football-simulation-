@@ -269,7 +269,7 @@ function flightManTarget(a: Agent, sim: PlaySim, path: PlaySim['ballPath']): { p
  * by rating (phaseJudgeSd) drawn once per pick. In phase = on his hip or over the top and close enough to stay with
  * him: he turns his head back and finds the ball. Out of phase = trailing, beaten or closing from depth: he keeps his
  * eyes on the man and plays the hands and the catch. Margins either way (FLIGHT_PHASE_HYST) so the call does not flip. */
-const FLIGHT_PHASE_REACH = 3, FLIGHT_PHASE_HYST = 0.3;
+const FLIGHT_PHASE_REACH = 3, FLIGHT_PHASE_HYST = 0.3, FLIGHT_VIEW_AGE = 0.15;
 const flightPhaseState = new WeakMap<Agent, { R: Agent; err: number; inPhase: boolean }>();
 function flightInPhase(a: Agent, sim: PlaySim, R: Agent): boolean {
   let st = flightPhaseState.get(a);
@@ -283,7 +283,7 @@ function flightInPhase(a: Agent, sim: PlaySim, R: Agent): boolean {
   return st.inPhase;
 }
 /** Diagnostic: his FLIGHT_MAN branch this play ('in' looks for the ball, 'out' plays the man, 'split' between two). */
-export const flightManBranch = new WeakMap<Agent, { branch: 'in' | 'out' | 'split'; R: Agent | null; t: number }>();
+export const flightManBranch = new WeakMap<Agent, { branch: 'in' | 'out' | 'split' | 'view'; R: Agent | null; t: number }>();
 export function flightManPickOf(a: Agent): Agent | null { return flightPick.get(a)?.R ?? null; }
 
 function underneathZone(a: Agent): boolean {
@@ -2858,6 +2858,16 @@ function playBelievedBall(a: Agent, sim: PlaySim, man: Agent | null, continueCov
         const g = E.gazeAt(a, sim), sp = Math.hypot(cmd.vel.x, cmd.vel.y), heading = sp > 0.4 ? Math.atan2(cmd.vel.y, cmd.vel.x) : (cmd.facing ?? a.facing);
         return lookJoints(a, cmd, heading, angleDiff(heading, Math.atan2(g.y - a.pos.y, g.x - a.pos.x)), true);
       }
+      // Attempt 2: the ball already in his view without turning (a sample of his own within FLIGHT_VIEW_AGE, e.g. a zone
+      // player facing the passer under the throw): he plays it whatever his phase; phase is about having to turn and
+      // lose the man.
+      const last = E.lastSeen(a);
+      if (last && sim.t - last.t <= FLIGHT_VIEW_AGE) {
+        flightManBranch.set(a, { branch: 'view', R: fm.R, t: sim.t });
+        a.tags.add('flight-in-view');
+        const flight = acquireFlight(a, sim);
+        return flight.length && (!BALL_EST_FLIGHT_SETTLE || settledFlight(a, sim, flight)) ? playObservedFlight(a, sim, flight, true) : arriveUnderControl(a, fm.p);
+      }
       flightManBranch.set(a, { branch: fm.R ? 'out' : 'split', R: fm.R, t: sim.t });
       a.tags.add('flight-out-phase');
       // Out of phase: the man's eyes and hands; through the hands when he sees them come up within reach.
@@ -3091,6 +3101,16 @@ function arriveUnderControl(a: Agent, tgt: Vec2): MoveCommand {
   return withMovementObjective({ vel: { x: (dx / d) * sp, y: (dy / d) * sp } }, { kind: 'fixed', point: tgt });
 }
 
+/** CATCH_WINDOW_SEEN (on by default; CATCH_WINDOW_SEEN=0 restores; an information repair, 2026-11-17): the catch window
+ * a defender reads from a receiver uses what he can see of him, not the receiver's ratings. Height is seen; catch
+ * height (his height with a typical jump) and reach (arm length about 0.4 of height) are judged from it; speed and
+ * acceleration are judged by his own body as the yardstick (a stated choice: he cannot see the other man's ratings). */
+const CATCH_WINDOW_SEEN = process.env.CATCH_WINDOW_SEEN !== '0';
+function seenBody(a: Agent, r: Agent): Agent['profile'] {
+  const h = r.profile.heightYd;
+  return { ...a.profile, heightYd: h, maxCatchHeight: h * 1.33 + 0.75, reach: 0.25 + 0.4 * h * 0.85, radius: r.profile.radius };
+}
+
 /** First plausible receiver catch from the defender's delayed picture and
  * the visible flight. Does not inspect the intended target or called route.
  * This is a possibility estimate; a receiver can still drop or miss it. */
@@ -3101,10 +3121,13 @@ function observedCatchWindow(a: Agent, sim: PlaySim, path: PlaySim['ballPath']):
     const remaining = s.t - sim.t;
     if (remaining < 0 || s.z < 0.25) continue;
     for (const { r, seen } of receivers) {
-      if (s.z > r.profile.maxCatchHeight * 0.92) continue;
+      // CATCH_WINDOW_SEEN: what he can judge of the receiver is his place, his run and his size; his catch height and
+      // reach from his height, his speed by the defender's own body as the yardstick. Off: the receiver's own ratings.
+      const judged = CATCH_WINDOW_SEEN ? seenBody(a, r) : r.profile;
+      if (s.z > judged.maxCatchHeight * 0.92) continue;
       const p = { x: s.x, y: s.y };
-      const reach = r.profile.reach + TRACKING_REACH_BONUS;
-      if (Math.hypot(p.x - seen.pos.x, p.y - seen.pos.y) > r.profile.vmax * remaining + reach) continue;
+      const reach = judged.reach + TRACKING_REACH_BONUS;
+      if (Math.hypot(p.x - seen.pos.x, p.y - seen.pos.y) > judged.vmax * remaining + reach) continue;
       // Catching does not require stopping at the ball point. A receiver's
       // observed path can carry his hands through it even when a point-arrival
       // estimate charges for braking/redirecting. Use the same maximum hand
@@ -3112,7 +3135,7 @@ function observedCatchWindow(a: Agent, sim: PlaySim, path: PlaySim['ballPath']):
       // route or eventual possession. He may still miss or drop the pass.
       const passing = Math.hypot(p.x - seen.pos.x - seen.vel.x * remaining,
         p.y - seen.pos.y - seen.vel.y * remaining) <= reach;
-      const tt = timeToReach({ pos: seen.pos, vel: seen.vel, profile: r.profile }, p, reach);
+      const tt = timeToReach({ pos: seen.pos, vel: seen.vel, profile: judged }, p, reach);
       if (passing || tt <= remaining) return { p, t: s.t, receiver: r, seen };
     }
   }
