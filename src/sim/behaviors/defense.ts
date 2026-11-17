@@ -155,6 +155,22 @@ const ZONE_HOLD_LEAN_ROPE = 1.0 * ZONE_HOLD_SCALE;
  * when the seam clears, settle and find the next threat; don't sprint back to a spot. */
 export const ZONE_HOLD_HANDOFF = (ZONE_HOLD_BITS & 64) !== 0;
 const CARRY_LABEL = /^(open-carry-seam|carry-wall|carry-run-past)$/;
+/** QB_INTENT (experimental, off; QB_INTENT=1; docs/reviews/2026-11-17-qb-intent.md): eyes on the quarterback, and his
+ * eyes, shoulders and front foot take an underneath zone dropper toward the ball before the arm does. A lean, then a
+ * break. Evidence is only his own picture of the QB's head (seenQbEyes: the receiver the seen head points at, held with
+ * ZONE_HOLD's angular margins; QB_HEAD turns the head at a rate, so a look has an onset). Once that look has been held on
+ * one receiver in or entering his window for his read dwell (awareness: 0.05 s at 1.0 to 0.35 s at 0.0, over his
+ * perception delay), he LEANS: a controlled drift toward that receiver's throwing lane at QB_LEAN_SPEED of his top
+ * speed, inside his zone, shoulders on the QB. The arm he sees loading or coming through (the release belief) turns the
+ * lean into the BREAK: full effort to the lane. He comes off the lean only when the look has been off that receiver for
+ * QB_LEAN_EXIT (a look-off that holds moves him, and he pays for it). A dropper carrying a different receiver keeps him
+ * (no lean). The plant on the arm (stopDrop) removes only motion away from the line, so a lean or break that agrees
+ * with the arm survives it. Measured first (und-pre.mts, one operator): the NFL underneath man moves +0.1 / +0.4 / +1.1
+ * yd/s toward the eventual catch point at -0.6 / -0.3 / 0 s; ours -0.6 / -0.5 / -0.2. Stated choices: QB_LEAN_SPEED 0.4,
+ * QB_LEAN_EXIT 0.2 s, the dwell range. Old branch (defense/C14-qb-intent, two misses): drove at full speed on the held
+ * look (no lean), also required a seen set, exited the instant the look moved. */
+const QB_INTENT = process.env.QB_INTENT === '1';
+const QB_LEAN_SPEED = 0.4, QB_LEAN_EXIT = 0.2;
 const eyesHeld = new WeakMap<Agent, Agent>();
 const eyesCache = new WeakMap<Agent, { t: number; r: Agent | null }>();
 /** SEEN_EYES: the receiver this defender sees the QB looking at, or null. */
@@ -1769,6 +1785,11 @@ export class ZoneCoverage implements Behavior {
   private qbDeepest = Infinity;
   /** A box backer has left his read step for his drop. */
   private dropping = false;
+  /** QB_INTENT: the receiver whose look he is reading and since when; the lean he holds; when the look left it. */
+  private intentEyes: Agent | null = null;
+  private intentEyesSince = -1;
+  private leanOn: Agent | null = null;
+  private leanOffSince = -1;
 
   constructor(
     a: Agent,
@@ -1963,6 +1984,10 @@ export class ZoneCoverage implements Behavior {
     const settled = (t: Vec2): Vec2 => this.settledAt >= 0 && !sinking ? { x: Math.min(t.x, Math.max(a.pos.x, sim.los + 3)), y: t.y } : t;
     const settle = (t: Vec2): Vec2 => settled(t);
 
+    if (QB_INTENT && !this.deep && knowsPass(sim, a)) {
+      const lean = this.qbLean(a, sim, threats, qbEyes, qbAt);
+      if (lean) return lean;
+    }
     if (this.deep) {
       // Deep zones: never let a vertical get on top. Split two verticals.
       let vert = ZONE_HOLD_BAND
@@ -2301,6 +2326,42 @@ export class ZoneCoverage implements Behavior {
     }
     return withFacingTechnique(laneReq,
       { label: carryingAcross ? 'lane-carry' : stemRead ? 'hook-stem-read' : holdFlat ? 'lane-hold' : 'lane', key: best.vel });
+  }
+
+  /** QB_INTENT's lean and break (null: none this tick), from his own picture only. */
+  private qbLean(a: Agent, sim: PlaySim, threats: Array<{ r: Agent; pos: Vec2; vel: Vec2; fut: Vec2 }>, qbEyes: Agent | null, qbAt: Vec2): MoveCommand | null {
+    if (qbEyes !== this.intentEyes) { this.intentEyes = qbEyes; this.intentEyesSince = sim.t; }
+    if (this.turnedWith && this.turnedWith !== (this.leanOn ?? qbEyes)) { this.leanOn = null; return null; }
+    if (this.leanOn) {
+      if (qbEyes !== this.leanOn) {
+        if (this.leanOffSince < 0) this.leanOffSince = sim.t;
+        if (sim.t - this.leanOffSince >= QB_LEAN_EXIT) { this.leanOn = null; this.leanOffSince = -1; }
+      } else this.leanOffSince = -1;
+    }
+    const lm = this.landmark;
+    if (!this.leanOn && qbEyes) {
+      const th = threats.find((t) => t.r === qbEyes && Math.hypot(t.fut.x - lm.x, t.fut.y - lm.y) < this.radius + 2);
+      const dwell = 0.05 + 0.3 * (1 - clamp(a.r('awareness'), 0, 1));
+      if (th && sim.t - this.intentEyesSince >= dwell) { this.leanOn = qbEyes; this.leanOffSince = -1; }
+    }
+    if (!this.leanOn) return null;
+    const th = threats.find((t) => t.r === this.leanOn);
+    if (!th) return null;
+    // The throwing lane just in front of the receiver, between him and the passer.
+    const toQb = sub(qbAt, th.pos), l = Math.hypot(toQb.x, toQb.y) || 1;
+    const lane = { x: th.pos.x + (toQb.x / l) * 1.0, y: clamp(th.pos.y + (toQb.y / l) * 1.0, 0.5, FIELD_WIDTH - 0.5) };
+    const rb = RELEASE_BELIEF ? releaseBelief(sim, a) : null;
+    if (rb && (rb.loadingAt !== undefined || rb.releasedAt !== undefined)) {
+      a.tags.add('qb-intent-break');
+      return withFacingTechnique(track(a, lane, { x: th.vel.x * 0.5, y: th.vel.y * 0.8 }, { speed: 1, gain: 1.8 }), { label: 'qb-intent-break', key: th.vel });
+    }
+    // The lean: a step's worth toward the lane, kept inside his zone, at a controlled pace, shoulders on the QB.
+    a.tags.add('qb-intent-lean');
+    const dx = lane.x - a.pos.x, dy = lane.y - a.pos.y, d = Math.hypot(dx, dy) || 1, step = Math.min(d, 1.5);
+    let p = { x: a.pos.x + (dx / d) * step, y: a.pos.y + (dy / d) * step };
+    const ox = p.x - lm.x, oy = p.y - lm.y, od = Math.hypot(ox, oy);
+    if (od > this.radius) p = { x: lm.x + (ox / od) * this.radius, y: lm.y + (oy / od) * this.radius };
+    return withFacingTechnique(track(a, p, { x: 0, y: 0 }, { speed: QB_LEAN_SPEED, facing: angleTo(a.pos, qbAt) }), { label: 'qb-intent-lean', key: th.vel });
   }
 
   /**
