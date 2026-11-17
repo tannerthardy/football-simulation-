@@ -869,6 +869,8 @@ export class World {
   private readonly liftImp: Float64Array;
   /** HANG_LOAD: the share of body i's weight his hold carries this substep (0 when he is up or holds no one). */
   private readonly hangCarried: Float64Array;
+  /** HANG_LOAD: the mass hanging on body i's holds (kg), as carried by his legs. */
+  private readonly hangMass: Float64Array;
   private readonly liftFelt: Float64Array;
   private readonly v0x: Float64Array;
   private readonly v0y: Float64Array;
@@ -929,7 +931,7 @@ export class World {
     this.travelVx = f(); this.travelVy = f();
     this.travelAdjustX = f(); this.travelAdjustY = f();
     this.tipX = f(); this.tipY = f(); this.braceX = f(); this.braceY = f();
-    this.comHeight = f(); this.padHeight = f(); this.liftImp = f(); this.liftFelt = f(); this.hangCarried = f();
+    this.comHeight = f(); this.padHeight = f(); this.liftImp = f(); this.liftFelt = f(); this.hangCarried = f(); this.hangMass = f();
     this.v0x = f(); this.v0y = f(); this.facing0 = f(); this.amx = f(); this.amy = f(); this.alpha = f(); this.cut = f(); this.armYaw = f(); this.armYawTime = f().fill(NaN);
     this.leanX = f(); this.leanY = f();
     this.armScale = f(); this.armCap = f(); this.active = f();
@@ -1540,7 +1542,7 @@ export class World {
       plan.launch = Math.min(1, l);
       return plan;
     }
-    const a = availability(sup, this.sp[i], this.fat[i]);
+    const a = availability(sup, this.sp[i], this.fat[i]) * this.carry(i);
     updateSqueeze(b, intent, dt);
     const tr = turnRateOf(b);
     const requestedFacing = commandFacing(b, intent);
@@ -2118,7 +2120,7 @@ export class World {
         this.alpha[i] = 0; this.cut[i] = 1;
       } else {
         const fat = this.fat[i];
-        let a = availability(sup, sp, fat);
+        let a = availability(sup, sp, fat) * this.carry(i);
         this.alpha[i] = a;
         this.cut[i] = plan.cut;
         // Pad level moves at a finite rate. Contact geometry affects support,
@@ -2178,7 +2180,7 @@ export class World {
             report.leanRelease[i].x += dx; report.leanRelease[i].y += dy;
             leanX -= hx * conv; leanY -= hy * conv;
             // Transferred geometry changes what the same feet can absorb.
-            a = availability(sup, sp, fat); this.alpha[i] = a;
+            a = availability(sup, sp, fat) * this.carry(i); this.alpha[i] = a;
             conv = unsupportedLean(b, plan, leanX, leanY, a, m); iterations++;
           }
           // Expose any unresolved local solve instead of silently claiming
@@ -2349,9 +2351,16 @@ export class World {
     report.falls.push(i);
   }
 
+  /** HANG_LOAD: the share of a carrier's leg force left for his own motion while his legs also hold up what hangs on him: m / (m + carried mass).
+   * Force-limited terms scale by it (the sprint curve's drive, the brake and the cut: calibrated accelerations, force over mass; the recovery step); friction-limited
+   * ones (traction, the ground-impulse limit) rise with the added normal load instead. */
+  private carry(i: number): number {
+    return HANG_LOAD && this.hangMass[i] > 0 ? this.mass[i] / (this.mass[i] + this.hangMass[i]) : 1;
+  }
+
   /** HANG_LOAD: move each hanging holder's carried weight from his turf load to the carrier's feet and balance. */
   private hangLoad(ids: number[], h: number): void {
-    for (const i of ids) this.hangCarried[i] = 0;
+    for (const i of ids) { this.hangCarried[i] = 0; this.hangMass[i] = 0; }
     const seen = new Set<number>();
     for (const jt of this.joints) {
       if (jt.kind !== 'grasp' || jt.broken) continue;
@@ -2361,6 +2370,7 @@ export class World {
       seen.add(ia * 4096 + ib);
       this.hangCarried[ia] = Math.min(1, this.hangCarried[ia] + share);
       const W = share * this.mass[ia] * G;
+      this.hangMass[ib] += share * this.mass[ia];
       this.liftImp[ib] -= W * h;
       const dx = jt.a.pos.x - jt.b.pos.x, dy = jt.a.pos.y - jt.b.pos.y, d = hypot2(dx, dy);
       const c = this.comHeight[ib];
@@ -2523,7 +2533,7 @@ export class World {
     let xx = sup.xi.x + 0.5 * dx, xy = sup.xi.y + 0.5 * dy;
     let e = hypot2(xx, xy);
     const rb = baseRadiusAt(sp, sup.posture);
-    const rec = recoverySpeed(sp, 0, fat);
+    const rec = recoverySpeed(sp, 0, fat) * this.carry(i);
     // Recovery step speed ramps over the response latency while gravity acts
     // on a deviation beyond the base.
     const outsideBefore = sup.out;
