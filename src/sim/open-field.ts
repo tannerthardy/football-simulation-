@@ -26,6 +26,8 @@
  * first down or the score. */
 import { OPP_GOAL_X, OWN_GOAL_X, FIELD_WIDTH } from '../core/field.js';
 import { clamp, type Vec2 } from '../core/vec.js';
+import { fatigueFactor, movingArrivalVelocity } from '../physics/kinematics.js';
+import { availability, supportParams } from '../physics/support.js';
 import type { Agent } from './agent.js';
 import type { Perceived } from './perception.js';
 import type { PlaySim } from './playsim.js';
@@ -95,54 +97,45 @@ export function onTopPoint(sim: PlaySim, a: Agent, target: Agent, seen: Perceive
  * for over a second on half of such plays (one positions operator, scripts/diag/yac/mirror.py).
  *
  * As taught (football handbook, defense-and-perception.md §10: close while matching lateral motion, gather before the
- * cut becomes unreachable, an alley player approaches inside-out; WR_DB_Mechanics_Textbook §16 perimeter tackling):
- *  close   - far from him, run at the on-top point at full speed (onTopPoint);
- *  balance - once he is inside the distance in which he could kill the closing speed he sees (his own braking from
- *            that closing speed, plus one reaction time of travel, plus contact), come to balance on top of him;
- *  give    - give ground at the runner's downfield pace while squeezing: the lateral gap to the leverage spot closes at
- *            TOP_SQUEEZE per second and the depth gap to contact at TOP_SINK per second (rates, not fixed offsets);
- *  strike  - when the runner is inside his lunge range, or has committed past his leverage (crossed to the side he is
- *            protecting by TOP_COMMIT), he takes him through the near hip, committed.
- * The balance distance is entered at the braking distance and left only beyond it plus TOP_EXIT (the exit on the far
- * side of the entry); the strike holds once taken. Near the goal line or the line to gain onTopPoint already returns
- * null and he meets the runner. Stated choices: TOP_SQUEEZE 2.0/s (the lateral gap closes in about half a second),
- * TOP_SINK 1.0/s (depth more slowly, so he is square on the runner's line before he arrives), TOP_EXIT 1.0 yd,
- * TOP_COMMIT 0.5 yd. */
+ * cut becomes unreachable, an alley player approaches inside-out; WR_DB_Mechanics_Textbook §16 perimeter tackling).
+ * Attempt 2: one arrival on a spot on top of the runner, under control the whole way.
+ *  - The spot rides with the runner: CUSHION ahead of him (toward his goal) at the leverage offset.
+ *  - He approaches it with the moving-arrival request the gather uses (movingArrivalVelocity: his closing speed bounded
+ *    by what his own achievable braking -- followAccel, his cut skill and support -- can still shed by the spot), so
+ *    the request falls continuously with distance, and on arrival he runs WITH the runner on an angle, not backwards.
+ *  - Once there (within TOP_SETTLE, left beyond twice that), the spot squeezes: its cushion shrinks at TOP_SINK yd/s
+ *    and its lateral offset at TOP_SQUEEZE per second, so he closes onto the near hip while staying on top.
+ *  - Strike: inside lunge range, or once settled the runner commits past his leverage (TOP_COMMIT): through the near
+ *    hip, committed.
+ * Stated choices: TOP_SINK 1.0 yd/s, TOP_SQUEEZE 2.0/s, TOP_SETTLE 1.0 yd, TOP_COMMIT 0.5 yd; the initial cushion
+ * is OPEN_FIELD's (CUSHION_SHARE of the distance, CUSHION_MIN..CUSHION_MAX). */
 export const OPEN_TOP = process.env.OPEN_TOP === '1';
-const TOP_SQUEEZE = 2.0, TOP_SINK = 1.0, TOP_EXIT = 1.0, TOP_COMMIT = 0.5;
-const topPhase = new WeakMap<Agent, { target: Agent; phase: 'close' | 'give' | 'strike' }>();
-/** The open-field request for a defender on top of a free runner, or null to leave chase's approach alone. */
+const TOP_SQUEEZE = 2.0, TOP_SINK = 1.0, TOP_SETTLE = 1.0, TOP_COMMIT = 0.5;
+const topState = new WeakMap<Agent, { target: Agent; strike: boolean; settled: boolean; cushion: number; lat: number; t: number }>();
+/** The open-field request for a defender on top of a free runner. */
 export function openTopVelocity(sim: PlaySim, a: Agent, target: Agent, seen: Perceived, offset: number, top: Vec2): { vel: Vec2; phase: string } {
+  void top;
   const dir = sim.attackDir(target.team);
-  const rx = seen.pos.x - a.pos.x, ry = seen.pos.y - a.pos.y, dist = Math.hypot(rx, ry) || 1e-9;
-  const ux = rx / dist, uy = ry / dist;
-  const closing = Math.max(0, (a.vel.x - seen.vel.x) * ux + (a.vel.y - seen.vel.y) * uy);
-  const body = a.profile.radius + target.profile.radius, arms = body + a.profile.reach, lunge = arms + 0.45;
-  const brake = Math.max(1, a.profile.brake);
-  const balance = arms + closing * closing / (2 * brake) + closing * a.profile.reactionTime;
+  const dist = Math.hypot(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y);
+  const arms = a.profile.radius + target.profile.radius + a.profile.reach, lunge = arms + 0.45;
   const vmax = a.profile.vmax * a.speedScale;
-  let st = topPhase.get(a);
-  if (!st || st.target !== target) { st = { target, phase: 'close' }; topPhase.set(a, st); }
-  // Committed past his leverage: the runner is on the side he protects (offset points there) by TOP_COMMIT.
-  const side = Math.sign(offset);
-  // Only once he has taken that leverage (giving ground) can the runner commit past it.
-  const past = st.phase === 'give' && side !== 0 && side * (seen.pos.y - a.pos.y) > TOP_COMMIT;
-  if (st.phase !== 'strike' && (dist <= lunge || past)) st.phase = 'strike';
-  else if (st.phase === 'close' && dist <= balance) st.phase = 'give';
-  else if (st.phase === 'give' && dist > balance + TOP_EXIT) st.phase = 'close';
-  let vx: number, vy: number;
-  if (st.phase === 'strike') {
-    const hx = seen.pos.x + seen.vel.x * 0.15 - a.pos.x, hy = seen.pos.y + seen.vel.y * 0.15 - a.pos.y, h = Math.hypot(hx, hy) || 1e-9;
-    vx = hx / h * vmax; vy = hy / h * vmax;
-  } else if (st.phase === 'close') {
-    const tx = top.x - a.pos.x, ty = top.y - a.pos.y, t = Math.hypot(tx, ty) || 1e-9;
-    vx = tx / t * vmax; vy = ty / t * vmax;
-  } else {
-    const depth = (a.pos.x - seen.pos.x) * dir;
-    vx = seen.vel.x - dir * TOP_SINK * (depth - arms);
-    vy = seen.vel.y + TOP_SQUEEZE * (seen.pos.y + offset - a.pos.y);
-    const s = Math.hypot(vx, vy);
-    if (s > vmax) { vx *= vmax / s; vy *= vmax / s; }
+  let st = topState.get(a);
+  if (!st || st.target !== target) {
+    st = { target, strike: false, settled: false, cushion: clamp(CUSHION_SHARE * dist, CUSHION_MIN, CUSHION_MAX), lat: offset, t: sim.t };
+    topState.set(a, st);
   }
-  return { vel: { x: vx, y: vy }, phase: st.phase };
+  const dt = Math.max(0, sim.t - st.t); st.t = sim.t;
+  const spot = { x: seen.pos.x + dir * st.cushion, y: clamp(seen.pos.y + st.lat, 0.3, FIELD_WIDTH - 0.3) };
+  const toSpot = Math.hypot(spot.x - a.pos.x, spot.y - a.pos.y);
+  st.settled = st.settled ? toSpot <= 2 * TOP_SETTLE : toSpot <= TOP_SETTLE;
+  if (st.settled) { st.cushion = Math.max(0, st.cushion - TOP_SINK * dt); st.lat *= Math.exp(-TOP_SQUEEZE * dt); }
+  const side = Math.sign(offset);
+  if (!st.strike && (dist <= lunge || (st.settled && side !== 0 && side * (seen.pos.y - a.pos.y) > TOP_COMMIT))) st.strike = true;
+  if (st.strike) {
+    const hx = seen.pos.x + seen.vel.x * 0.15 - a.pos.x, hy = seen.pos.y + seen.vel.y * 0.15 - a.pos.y, h = Math.hypot(hx, hy) || 1e-9;
+    return { vel: { x: hx / h * vmax, y: hy / h * vmax }, phase: 'strike' };
+  }
+  const cutSkill = 0.85 + 0.35 * a.r('tackling');
+  const capacity = a.body.support ? availability(a.body.support, supportParams(a.profile), fatigueFactor(a.body.energy)) : 1;
+  return { vel: movingArrivalVelocity(a.body, spot, seen.vel, vmax, 0.3, 0, cutSkill, capacity), phase: st.settled ? 'give' : 'close' };
 }
