@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "engine-74",
+  "id": "engine-76",
   "runSet": {
     "commit": "1b5415de99b5b7194eff045f3c37a07a4c54c1a9",
     "seeds": [
@@ -51,7 +51,8 @@
     "HAND_MOMENT_CAP": { "default": 150, "legacy": 0 },
     "OFF_PEDAL": { "default": 3, "legacy": 0 },
     "QB_FOOTWORK": { "default": 3, "legacy": 0 },
-    "QCORNER": { "default": 0, "legacy": 0 }
+    "QCORNER": { "default": 0, "legacy": 0 },
+    "ARM_BREAK": { "default": 1, "legacy": 0 }
   },
   "flags": {
     "ALIGN_HABIT": "on",
@@ -306,6 +307,7 @@
     "QB_EVADE_UP": "on",
     "BLITZ_SECOND": "on",
     "QB_LOOKOFF_RHYTHM": "off",
+    "TECH_CONT": "on",
     "QB_HONEST_FEEL": "on",
     "THROW_PLATFORM": "off",
     "QB_BELIEVED_DEF": "on",

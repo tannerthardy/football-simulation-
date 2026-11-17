@@ -14,10 +14,12 @@ import { generateTeam } from '../src/league/team.js';
 import { COVERAGES, FRONTS } from '../src/playbook/defense.js';
 import { FORMATIONS } from '../src/playbook/formations.js';
 import { packReplayPlay, replayOptions } from './replay-data.js';
+import { installPlayArtTap, matchSheets, takeSheets } from './play-art.js';
 import { sourceVersion } from './source-version.js';
 import { compactReplayPlays } from './replay-telemetry-packing.js';
 
 const options = replayOptions(process.argv.slice(2));
+installPlayArtTap();
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const outPath = resolve(root, options.out);
 const rng = new Rng(options.seed);
@@ -27,12 +29,14 @@ const plays: ReturnType<typeof packReplayPlay>[] = [];
 const games = [];
 for (let i = 0; i < options.games; i++) {
   const seed = options.seed + i;
+  takeSheets();
   const g = simulateGame(home, away, { seed, record: true, recordLevel: options.telemetry, runOnly: options.runOnly });
+  const art = matchSheets(g.log, takeSheets());
   const quarters = [...g.quarterScores];
   const last = quarters[quarters.length - 1];
   if (!last || last.home !== g.score.home || last.away !== g.score.away) quarters.push({ ...g.score });
   games.push({ seed, final: g.score, quarters });
-  const clips = g.log.map((p) => packReplayPlay(p, i));
+  const clips = g.log.map((p) => packReplayPlay(p, i, art.get(p)));
   plays.push(...clips);
   console.log(`Game ${i + 1} · seed ${seed}: ${home.name} ${g.score.home} — ${away.name} ${g.score.away} · ${clips.filter((p) => 'frames' in p).length} filmed plays`);
 }

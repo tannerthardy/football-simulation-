@@ -2,7 +2,7 @@
 
 One combination of experimental flags that Run Game, Defense, Flex and Coverage all measure against. Before this, each agent tested on its own mix (the FLAT_PRESS / ZONE_RUN back-and-forth on 2026-11-09 came from two different flag sets), and no list of anyone's stack existed in the repository.
 
-- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-74`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
+- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-76`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
 - **The code:** `run/G3-oz-backfield` a749beb7 + `defense/G2-stance-tell` a0cb0789 (#411) + `defense/G2-lb-start` (#416, with #409) + `claude/quirky-franklin-9lbwbp` (#417, with #415) + develop 6676dfc2.
 - **Since 2026-11-09 the stack is the engine's default.** The flags listed `on` are read as on unless set to `0`; a bare command in a clean shell and `npm run ref -- <command>` run the same engine. `npm run ref -- --off -- <command>` runs the legacy engine (every listed flag off). `test/reference-stack.test.ts` fails if the file and the code defaults ever disagree. See "Promotion" below.
 
@@ -607,6 +607,40 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 | Fixed 1,321 runs on run-ref-15, paired yards a run | | `FIT_TE_GAP` +0.05 ± 0.05; `FIT_BLITZ_SLIDE` +0.01 ± 0.04 |
 
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
+
+## engine-76: one reaction on the arm read (2026-11-17)
+
+Numeric default: `ARM_BREAK` 1 (Defense, A2, a repair). A zone defender's arm cue reaches him through his sighting of the passer, already his perception delay late (`observationDelay(reactionTime)`); `playBelievedBall` then picked the shoulder target and waited a second full reaction from the pick before breaking. Bit 1 runs that reaction from the delivery's sample time: one delay, not two. Bit 2 (a hip load toward the shoulders on the load) stays off: it raised short completions (75.5 -> 77.5%) and cut breakups (97 -> 90), biting on looks that are not the throw.
+
+Chain (`a2-chain.mts`, nearest underneath man on short staged zone completions, n ~540; times from the release):
+
+| | engine-75 | bit 1 | NFL |
+|---|---|---|---|
+| QB windup starts | -0.40 s | -0.40 s | |
+| first arm-only action (plant) | -0.05 s | -0.05 s | |
+| shoulder break | +0.25 s | +0.10 s | |
+| plays the seen flight | +0.35 s | +0.35 s | |
+| toward the catch point at -0.3 / 0 / +0.2 / +0.4 / +0.6 s | -0.2 / 0.0 / +0.2 / +1.1 / +2.1 | -0.2 / 0.0 / +0.6 / +1.4 / +2.2 | +0.5 / +1.2 / +1.9 / +2.4 / +3.0 |
+
+Staged set (engine-75 -> bit 1): zone YAC 5.68 -> 5.27, p50 2.8 -> 2.7, 20+ 5.3 -> 4.7%; man YAC 3.06 -> 3.17; short throws (seeds 1-3): completion 75.5 -> 75.6%, PBU 97 -> 100, YAC 5.11 -> 4.70, yards per attempt 9.16 -> 8.87; run set 3.87 yards per carry unchanged; head-on two-way-go control, carrier gains 5+, 4.5 -> 2.5%. Short-throw interceptions 18 -> 13 on seeds 1-3 and 7 -> 10 on seeds 4-6 (pooled 25 -> 23): the changed outcomes are the same plays moving between interception, breakup and catch (the contest at the catch point), not a different ball-play branch. Dither passes.
+
+What is left: the pre-release gap. At the release the NFL underneath man is already moving +1.2 yd/s toward the catch point and ours 0.0; that is the pre-throw drift (the QB_INTENT lean, and the drop still running when the ball comes out), not the arm read.
+
+## engine-75: zone techniques keep playing on the arm read (2026-11-17)
+
+On: `TECH_CONT` (Defense, a repair). A zone match technique (Trap, Wall, Rob, CrossWall; `src/sim/coverage/techniques.ts`) that read the throw on the passer's arm alone called `playBall` with no continuation, so until he had seen the ball's flight he coasted on his current velocity. Now his own technique is the throw read's continuation, as for a zone dropper: he plants on the load and breaks on the passer's shoulders at the delivery. Landed without a card: a missing continuation is a bug, the zone droppers in the same window are the control, and it touches only the techniques.
+
+Probe (`tech-coast.mts`): the nearest underneath man at the release on short staged Cover 4/6 completions, in a technique job on 76 of 221 (Cover 4) and 55-58 of 212 (Cover 6); window from his first arm-only read to the flight seen, p50 0.40 s:
+
+| | Cover 4 technique | Cover 6 technique | zone droppers (control) |
+|---|---|---|---|
+| toward the catch point at the end of the window | −0.4 → +0.5 yd/s | −0.7 → +0.3 | +0.4 to +1.0 |
+| speed at the end of the window | 2.6 → 1.7 | 2.6 → 1.6 | 2.2-2.3 |
+| closing at the catch | 2.6 → 3.4 | 2.1 → 3.0 | 3.6-3.8 |
+
+Staged set (develop 2f5315d9 → on): zone YAC 5.82 → 5.68, p50 3.2 → 2.8, 20+ 5.4 → 5.3%; man YAC 3.06 unchanged (man coverage does not use the techniques); short throws: completion 75.5% both, PBU 96 → 97, YAC 5.33 → 5.11, yards per attempt 9.33 → 9.16; run set 3.87 yards per carry unchanged. Head-on two-way-go control: the carrier gains 5+ in the next second in 3.9% of approaches on develop and 4.5% with it on (330-362 episodes; missed tackles 0.0 → 0.3%), a small rise of the same size as engine-74's. Dither passes.
+
+What is left (A2): the break is aimed but slow. He plants (speed 1.7) and breaks only after his perception of the load, then a second reaction wait after the shoulder pick; and the load only plants him, with no hip load toward the throw.
 
 ## engine-74: the hanging tackler's weight and the pursuer's forecast of the carrier (2026-11-17)
 
