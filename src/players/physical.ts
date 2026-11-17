@@ -139,20 +139,24 @@ export const GAME_BURST = 2.2;
 /** In-game braking/cutting relative to peak plant forces. */
 export const GAME_CUT = 0.55;
 
-export function derivePhysical(p: Player): PhysicalProfile {
-  const m = p.measurables;
-  const r = p.ratings;
-  const sprint = solveSprint(m.tenSplit, m.forty);
+/** A combine sprint (10-yd split, 40) carried into pads at a body weight: top speed and burst time constant. */
+export function inPadsSprint(tenSplit: number, forty: number, weightLb: number): SprintParams {
+  const sprint = solveSprint(tenSplit, forty);
   // The 40 is run in shorts on a track. In pads, doing football things,
   // players reach less of that top speed, and big men far less: tracking data
   // puts in-game maxima near 20 mph for receivers and ~15–16 for linemen.
   // Initial burst (top speed / tau) is kept.
-  const gameSpeed = clamp(0.95 - 0.0008 * Math.max(0, m.weightLb - 195), 0.84, 0.95);
-  const vmax = sprint.vmax * gameSpeed;
+  const gameSpeed = clamp(0.95 - 0.0008 * Math.max(0, weightLb - 195), 0.84, 0.95);
   // In-game bursts build more gradually than a combine start: tracking data
   // shows per-play peak accelerations of ~4–5 yd/s², far below what a
   // track-start model gives.
-  const tau = sprint.tau * gameSpeed * GAME_BURST;
+  return { vmax: sprint.vmax * gameSpeed, tau: sprint.tau * gameSpeed * GAME_BURST };
+}
+
+export function derivePhysical(p: Player): PhysicalProfile {
+  const m = p.measurables;
+  const r = p.ratings;
+  const { vmax, tau } = inPadsSprint(m.tenSplit, m.forty, m.weightLb);
 
   const agilitySkill = r01((r.balance + r.elusiveness * 0.5 + r.routeRunning * 0.5) / 2);
   // Short shuttle ~3.95 elite → ~4.8 slow; 3-cone ~6.55 elite → ~8.0 slow.

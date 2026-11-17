@@ -30,7 +30,9 @@ beforeAll(() => {
   // squeeze read (#365) with and without it.
   // Seed 1 with situational safety/corner depth (SITU_DEPTH): seed 6's first 6 completions no longer hold a
   // native pursuit case; seed 1 passes all 6 contracts.
-  chosen = captureNativePursuit(1);
+  // Seed 4 with the carrier judging defenders from what he sees (2026-11-17 carrier-honest): seed 1 still holds a
+  // case (CB_S on RB) but its search now takes past the hook's minute; seed 4 (CB_S on H) is found in about 18 s.
+  chosen = captureNativePursuit(4);
 }, 60_000);
 beforeAll(() => {
   // These clocks nominate pursuit decisions, not an expected football ending.

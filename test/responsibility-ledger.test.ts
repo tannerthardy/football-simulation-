@@ -288,10 +288,12 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     // back 2.3 yd weak), he arrives 0.6-0.8 yd further downhill at 1.6-1.8 s, where DT_S has driven C a yard into the
     // backfield: DT_S alone at 1.9 (a body collision after his missed tackle at 1.75), where on develop he missed at 1.9.
     // Merged with develop's wing at its tracked width (#395), DT_S alone at 1.85. With #406 (a box backer drops only
-    // when sure enough of pass; underneath zone holds over a back behind the line), DE_S alone at 2.55.
+    // when sure enough of pass; underneath zone holds over a back behind the line), DE_S alone at 2.55. With the carrier
+    // judging defenders from what he sees of them (2026-11-17 carrier-honest: size-judged speed and recovery, no hidden
+    // profile), DT_S alone at 1.85.
     const p = play('M7-P051'), first = p.census[0].firstCarrierContact!;
-    expect(first.t).toBe(2.55);
-    expect(first.defenders.map(p.slot)).toEqual(['DE_S']);
+    expect(first.t).toBe(1.85);
+    expect(first.defenders.map(p.slot)).toEqual(['DT_S']);
   });
 
   it('first carrier contact: every defender at the earliest timestamp, and only those', () => {
