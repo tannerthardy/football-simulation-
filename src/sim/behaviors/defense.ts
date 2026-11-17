@@ -2701,10 +2701,25 @@ function playBelievedBall(a: Agent, sim: PlaySim, man: Agent | null, continueCov
     // plants): toward the receiver they point at, read through the tracking channel of the passer he is watching,
     // chosen once for this belief, with his reaction time after the choice. With none lined up, he plants (stops his
     // drop) until he sees the ball or the pull-down.
-    if (rb.releasedAt === undefined) return stopDrop(sim, continueCoverage());
+    if (rb.releasedAt === undefined) {
+      // ARM_BREAK bit 2: the load is a plant from which he loads his hips toward where the passer's shoulders point
+      // (a gentle step and his facing toward that receiver's spot), not a bare stop; the drop is still braked.
+      if (ARM_BREAK & 2 && rb.loadingAt !== undefined) {
+        const lp = shoulderTarget(a, sim, -1 - rb.loadingAt);
+        if (lp.R) {
+          const r = sim.see(a, lp.R);
+          a.tags.add('arm-load');
+          return stopDrop(sim, goTo(a, r.pos, { speed: ARM_LOAD_PACE, facing: angleTo(a.pos, r.pos) }));
+        }
+      }
+      return stopDrop(sim, continueCoverage());
+    }
     const pick = shoulderTarget(a, sim, rb.releasedAt);
     const react = a.profile.reactionTime * (1 - 0.4 * a.r('anticipation'));
-    if (pick.R && sim.t - pick.at >= react - 1e-9) {
+    // ARM_BREAK bit 1: the arm cue reached him through his sighting of the passer, already his perception delay late;
+    // his reaction runs from what the sample shows (the delivery's sample time), not again from when he picked.
+    const since = ARM_BREAK & 1 ? sim.t - rb.releasedAt : sim.t - pick.at;
+    if (pick.R && since >= react - 1e-9) {
       a.tags.add('shoulder-break');
       // He breaks to where that receiver will be when the ball gets there: the receiver as he now sees him, carried
       // along his seen velocity for the rest of the throw's flight, judged from the passer's distance (a coached
@@ -2729,6 +2744,14 @@ const SHOULDER_CONE = 25 * Math.PI / 180;
 const SHOULDER_BALL_SPEED = 17, SHOULDER_FLIGHT_MAX = 1.5;
 /** SHOULDER_LEAD (on; `=0` restores the break to the receiver's seen spot): the shoulder break leads the receiver (#758). */
 const SHOULDER_LEAD = process.env.SHOULDER_LEAD !== '0';
+/** ARM_BREAK (experimental, off; numeric bits; A2): the zone defender's arm read. Bit 1: the shoulder break's reaction
+ * runs from the delivery's sample time (the cue already came through his perception delay), not a second full reaction
+ * after the pick. Bit 2: on the load he plants and loads toward where the passer's shoulders point (step at
+ * ARM_LOAD_PACE of his top speed, facing that receiver), the drop still braked. Measured first (a2-chain): load seen
+ * +0.35 s after the windup starts, the break +0.25 s after the release, the flight seen +0.35 s; toward the catch point
+ * -0.2 / 0.0 / +0.2 / +1.1 yd/s at -0.3 / 0 / +0.2 / +0.4 s against the NFL's +0.5 / +1.2 / +1.9 / +2.4. */
+const ARM_BREAK = Number(process.env.ARM_BREAK ?? 0) | 0;
+const ARM_LOAD_PACE = 0.3;
 /** His read of the passer's shoulders: a bearing error drawn once per belief, its spread by anticipation (deg). The
  * rating acts on the read, not on the break's result; a misread sends him to the wrong man, which the passer's eyes and
  * shoulders can exploit. */
