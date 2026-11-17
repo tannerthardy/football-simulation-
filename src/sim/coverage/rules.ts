@@ -438,7 +438,38 @@ function wallTwo(c: RuleCtx, handoff: number, readStem = false, apex = false): D
  * apex pushes to #1's route. When #2 runs shallow inside with #3 away, the
  * midpoint is occupied by #3 and cannot take a delivery: the apex carries #2
  * back across himself. */
+/** Q_APEX (experimental, off; Q_APEX=1 turns it on): the quarters apex (`q_apex`: MOD, MEG, Palms, the 6/8 quarters
+ * side) adds his taught rules for #3 and the flat (coverage-position spec item 2; HNFL-200/365/078/198/051), from his
+ * own read, before the existing ones:
+ * - #2 under with #3 away: take him back across (the existing "two" carry), which CUT_WALL's pass-off now leaves alone
+ *   (defender.ts: there is nobody to pass him to);
+ * - #2 still climbing past 10 yd (walled to the hand-off) while #3 or the back to his side goes to the flat: take the first
+ *   flat, top-down, inside-out;
+ * - Palms (the corner traps #2's flat): close the curl window over #1 instead of chasing the flat, walling #1 inside. */
+export const Q_APEX = process.env.Q_APEX === '1';
+
+function quarterFlatTaught(c: RuleCtx): Directive | null {
+  const two = ref(c, 2), one = ref(c, 1);
+  const corner = c.sim.defAlign.coverage.roles[c.side === 'S' ? 'CB_S' : 'CB_W'];
+  const cornerTakesFlat = corner?.kind === 'zone' && corner.rule === 'palms_corner';
+  if (c.state.mode === 'flat3') {
+    const f = c.state.match ? [ref(c, 3), backTo(c)].find((rd) => rd?.r === c.state.match) : null;
+    if (f) return man(f, { lev: 'inside', overTop: true });
+    c.state.mode = undefined; c.state.match = undefined;
+  }
+  if (two && two.release === 'vertical' && two.depth >= 10 && two.vel.x > 3) {
+    const f = [ref(c, 3), backTo(c)].find((rd) => !!rd && rd.r !== two.r && rd.outSign === c.sign && rd.release === 'flat');
+    if (f) { c.state.mode = 'flat3'; c.state.match = f.r; return man(f, { lev: 'inside', overTop: true }); }
+  }
+  if (cornerTakesFlat && two && (two.release === 'flat' || two.release === 'out') && !two.climbed) {
+    if (one && (one.release === 'in' || one.release === 'under') && one.depth < 14) return man(one, { lev: 'inside' });
+    return zoneOf(c, c.side === 'S' ? 'curl_s' : 'curl_w');
+  }
+  return null;
+}
+
 function quarterFlat(c: RuleCtx): Directive {
+  if (Q_APEX) { const d = quarterFlatTaught(c); if (d) return d; }
   const two = ref(c, 2);
   const one = ref(c, 1);
   const corner = c.sim.defAlign.coverage.roles[c.side === 'S' ? 'CB_S' : 'CB_W'];

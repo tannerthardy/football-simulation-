@@ -411,6 +411,7 @@
   "test/pursuit-field.test.ts",
   "test/pursuit-force-shoulder.test.ts",
   "test/pursuit-spot.test.ts",
+  "test/q-apex.test.ts",
   "test/qb-believed-def.test.ts",
   "test/qb-body-seen.test.ts",
   "test/qb-call-routes.test.ts",
