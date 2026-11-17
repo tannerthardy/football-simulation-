@@ -1,4 +1,4 @@
-# HOLD_HEAVY: the holder's finish (2026-11-17, attempt 1, miss)
+# HOLD_HEAVY: the holder's finish (2026-11-17, two attempts, miss)
 
 Integration item, base develop d7d6e3a9. Flag off; branch `defense/C20-hold-heavy`, no PR.
 
@@ -64,5 +64,44 @@ his feet:
 Getting heavy trades the roll for dead weight. The dead weight slows the runner but does not fell him within the
 second, and on runs it is torn off more often.
 
-## Proposed attempt 2
-Get heavy only when the roll is not available: not close, not secure, or slipping. Otherwise keep the roll.
+## Attempt 2 (Integration's go: the taught order)
+Finish on his feet if he can. At the read he keeps the upright roll when it is available: close (within the bodies
+plus 0.15 yd), secure (grip x quality 0.5 or more), on his feet and not slipping. He gets heavy only when it is not
+available.
+
+The finish chosen per bond (hold trace, 116 bonds):
+| finish | share of bonds | down within 1 s |
+|---|---|---|
+| heavy | 85% | 63% |
+| roll kept | 13% | 67% |
+| neither | 2% | 50% |
+
+On develop, where nothing gets heavy: the roll was available at some point in 52% of bonds (66% down) and never in
+48% (51% down).
+
+| | develop | attempt 2 | + BEND_FORECAST bit 1 |
+|---|---|---|---|
+| hold trace: holder upright share | 60% | 35% | |
+| hold trace: carrier down within 1 s | 59% | 63% | |
+| hold trace: carrier speed 0.5 / 1.0 s | 5.3 / 5.4 | 5.5 / 5.2 | |
+| hold trace: broken per bond | 0.14 | 0.09 | |
+| contact cells: down within 1 s, behind centre / hip / reach (NFL 76 / 69 / 66%) | 51 / 48 / 50% | 45 / 51 / 33% | 44 / 51 / 52% |
+| staged man YAC | 3.02 | 2.99 | 2.88 |
+| staged zone YAC | 6.16 | 6.08 | 5.77 |
+| staged zone 20+ | 5.7% | 5.5% | 5.2% |
+| run set: yards per carry | 3.88 | 3.87 | 3.87 |
+| run set: missed per carry | 0.148 | 0.148 | 0.148 |
+| run set: broken per carry | 0.099 | 0.117 | 0.117 |
+| head-on control: carrier gains 5+ in 1 s | 2.8% | 2.9% | 1.9% |
+| dither | pass | pass | |
+
+**Verdict: a miss.**
+- The roll is rarely available at the moment the read falls due, so attempt 2 behaves like attempt 1.
+- Dead weight slows the carrier but does not take him down sooner. The contact cells do not move toward the NFL's
+  66-76%.
+- On runs the dropped hold is torn off more often.
+
+The open physics question goes to Tools: a 90 kg grounded holder slows a running carrier by only about 2 yd/s^2.
+Is the joint load capped by grip capacity, or by the carrier's drive?
+
+This was the last attempt on the mechanism. The flag stays off, on the branch only.
