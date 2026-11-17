@@ -151,9 +151,37 @@ export function trunkPrice(body: Body): number { return DIR_CAP && body.trunk ? 
 export function directionalSpeedFactor(profile: PhysicalProfile, relAngle: number): number {
   return DIR_CAP ? speedCapFactor(profile, relAngle) : legDriveFactor(profile, relAngle);
 }
+/** DIR_CURVE (experimental, off; DIR_CURVE=1; needs DIR_CAP): the direction cap as the MEASURED curve in place of DIR_CAP's straight line to the backpedal.
+ *
+ * Source: 2022 NFL tracking (BDB 2025 weeks 1-9, 8,634 dropbacks, scripts/diag/yac/facing_speed.py, docs/reviews/2026-11-17-facing-speed.md): the p90 of each
+ * player's speed over his own top speed by the angle |o - dir| between his orientation and his direction of travel, relative to the 0-30 degree bin:
+ * 1.00 / .97 / .88 / .75 / .67 / .66 at 15 / 45 / 75 / 105 / 135 / 165 degrees. CAVEAT: the curve pools OFFENSE and DEFENSE and all open movement (routes,
+ * pass drops, scrambles), not only a defender's backpedal, and `o` is the shoulders where this cap reads the hips (facing); it is the median man's shape,
+ * not a per-position one. It is a table, not a fit: nothing in it is tuned to a result.
+ *
+ * Individual scaling (unchanged in kind): the line's end was the man's own `backpedal` share, so he still falls short of full speed by his own backpedal. The
+ * table is the shape for the MEDIAN man (profile.backpedal 0.53 over the generated league, all positions, 66 players; DB/LB 0.50), whose end is the table's .66.
+ * A man's fall below 1.0 is the table's fall times (1 - his backpedal) / (1 - the median's): the median man reads the table exactly, a better backpedaler falls
+ * less at every angle, a worse one more. */
+export const DIR_CURVE = DIR_CAP && process.env.DIR_CURVE === '1';
+const DIR_CURVE_MEDIAN = Number(process.env.DIR_CURVE_MEDIAN_PCT ?? 53) / 100;
+const CURVE_DEG = [0, 15, 45, 75, 105, 135, 165, 180];
+const CURVE_SHARE = [1, 1, 0.97, 0.88, 0.75, 0.67, 0.66, 0.66];
+function curveShare(a: number): number {
+  const d = (Math.abs(a) * 180) / Math.PI;
+  let i = 1;
+  while (i < CURVE_DEG.length - 1 && d > CURVE_DEG[i]) i++;
+  const t = clamp((d - CURVE_DEG[i - 1]) / (CURVE_DEG[i] - CURVE_DEG[i - 1]), 0, 1);
+  return CURVE_SHARE[i - 1] + (CURVE_SHARE[i] - CURVE_SHARE[i - 1]) * t;
+}
 /** DIR_CAP's top-speed curve: monotone (see DIR_CAP). */
 function speedCapFactor(profile: PhysicalProfile, relAngle: number): number {
   const a = Math.abs(relAngle);
+  if (DIR_CURVE) {
+    // The measured median shape, scaled by how far this man's own backpedal falls short of the median man's (1 = no fall at all).
+    const drop = 1 - curveShare(a);
+    return 1 - drop * (1 - profile.backpedal) / (1 - DIR_CURVE_MEDIAN);
+  }
   {
     // Monotone: full speed within DIR_FULL of the line of travel, then a straight fall to the backpedal's share at DIR_BACK, flat beyond.
     if (a <= DIR_FULL) return 1;
@@ -236,6 +264,10 @@ export function commandFacing(body: Body, cmd: MoveCommand): number {
 const PLANT_SPEED = 2.5;
 /** How far ahead of his actual path his hips can lead while carrying speed. */
 const FACING_LEAD = Math.PI / 3;
+
+/** TURN_CARRY (experimental, off; TURN_CARRY=1): a request more than 90 degrees off his velocity is a turn on the lateral limit that carries his speed, not
+ * a brake toward zero (see locomotionAccel). The friction ellipse and its limits are unchanged. */
+export const TURN_CARRY = process.env.TURN_CARRY === '1';
 
 /** Maximum yaw rate at the current speed. */
 export function turnRateOf(body: Body): number {
@@ -344,6 +376,21 @@ export function locomotionAccel(body: Body, cmd: MoveCommand, dt: number, capaci
       const room = An * Math.sqrt(Math.max(0, 1 - (at / Math.max(At, 1e-9)) ** 2));
       const want = (dvx * nx + dvy * ny) / dt;
       an = clamp(want, -room, room);
+    }
+    if (TURN_CARRY && dmag > 1e-6) {
+      const rx = dv0.x / dmag, ry = dv0.y / dmag;
+      const cosPhi = rx * tx + ry * ty;
+      if (cosPhi < 0) {
+        // A request more than 90 degrees off his velocity: he turns on the lateral limit and carries his speed round, rather than braking toward zero and
+        // starting again. The weight is |sin 2phi| (0 at 90, 1 at 135, 0 at 180): continuous with today's law at 90 and with a true stop or reversal at 180,
+        // and the blend of two accelerations inside the ellipse stays inside it. The turn's tangential part holds his speed (or brakes to a lower wanted one).
+        const sinPhi = rx * nx + ry * ny;
+        const w = 2 * Math.abs(sinPhi * cosPhi);
+        const atT = Math.max((Math.min(speed, cap) - speed) / dt, -At);
+        const anT = (sinPhi >= 0 ? 1 : -1) * An * Math.sqrt(Math.max(0, 1 - (atT / Math.max(At, 1e-9)) ** 2));
+        at = (1 - w) * at + w * atT;
+        an = (1 - w) * an + w * anT;
+      }
     }
     ax = at * tx + an * nx;
     ay = at * ty + an * ny;

@@ -98,6 +98,8 @@
     "DL_GAMES": "0",
     "FLOW_RELEASE": "1",
     "GAIT_STEP": "0",
+    "DIR_CURVE": "0",
+    "TURN_CARRY": "0",
     "HANG_LOAD": "0",
     "HAND_FIGHT": "0",
     "HAND_MOTOR": "0",

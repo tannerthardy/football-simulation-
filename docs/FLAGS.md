@@ -2,7 +2,7 @@
 
 Every engine switch read from the environment, recounted from `src` at `57f50fc3` on 2026-10-22. This includes #210's promotion and #205's two additional default-on switches. Flags that are not on develop (parked, removed from a PR, or only on a side branch) are kept in [PARKED.md](PARKED.md) so the ideas are not lost. Registration rules are in [PLAN.md](PLAN.md): at most 10 experimental flags, and each expires two reviews after it lands.
 
-There are 457 flags read from the environment in `src` (recounted 2026-11-17, engine-74): 348 are on unless set to `0`, 84 are off unless set to `1`, and 25 are numeric scales or modes (identity value unless listed in the stack's numeric section). The rows below carry each flag's history.
+There are 459 flags read from the environment in `src` (recounted 2026-11-17, engine-74): 348 are on unless set to `0`, 86 are off unless set to `1`, and 25 are numeric scales or modes (identity value unless listed in the stack's numeric section). The rows below carry each flag's history.
 
 **Promotion (2026-11-09):** the reference stack `run-ref-4` is now the engine's default. The 90 flags it lists `on` are read as on unless set to `0` (rows marked "promoted" below); the rest are unchanged. Decisions and evidence for each flag are in [REFERENCE_STACK.md](REFERENCE_STACK.md); `npm run ref -- --list` is the current inventory, and `npm run ref -- --off -- <command>` runs the engine as it was before. The test suites still run on the pre-promotion engine (pinned in `vitest.config.ts`) until their recorded cases are re-recorded. The counts in the paragraph above predate all of this.
 
@@ -174,6 +174,8 @@ There are 457 flags read from the environment in `src` (recounted 2026-11-17, en
 | `DL_FIGHT` | off | experimental | trenches | `src/sim/engagement.ts:712` | set at first review |
 | `DL_HANDS` | off | experimental | trenches | `src/sim/engagement.ts:694` | set at first review |
 | `GAIT_STEP` | off | experimental | physics | `src/physics/kinematics.ts:94` | set at first review |
+| `DIR_CURVE` | off | experimental | physics | `src/physics/kinematics.ts` | Tools lane 2026-11-17: the direction cap as the measured NFL curve (needs DIR_CAP; `=1`); docs/reviews/2026-11-17-turn-arc.md |
+| `TURN_CARRY` | off | experimental | physics | `src/physics/kinematics.ts` | Tools lane 2026-11-17: a request more than 90 deg off velocity turns on the lateral limit carrying speed (`=1`); docs/reviews/2026-11-17-turn-arc.md |
 | `HAND_FIGHT` | off | experimental | trenches | `src/sim/engagement.ts:1093` | set at first review |
 | `HAND_MOTOR` | off | experimental | physics | `src/physics/world.ts:302` | set at first review |
 | `RUN_HAND_MOVE` | on | promoted 2026-11-09 (run-ref-4; `=0` restores); was experimental (run shed, 2026-11-06) | trenches | `src/sim/engagement.ts:738` | set at first review. A defender who decides to work off a run block attacks the blocker's hands first; landed, the hands are off for 0.3 s and the blocker follows him by sight (docs/reviews/run-shed-release.md). |

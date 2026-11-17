@@ -383,6 +383,8 @@
     "CURL_FLAT_BACK": "on",
     "CURL_SINK": "on",
     "SETTLE_DEPTH": "on",
+    "DIR_CURVE": "off",
+    "TURN_CARRY": "off",
     "HANG_LOAD": "on",
     "SAFETY_DEPTH": "on",
     "SINK_LEAD": "off",
