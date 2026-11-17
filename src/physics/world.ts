@@ -473,7 +473,7 @@ const hangShare = (state: string | undefined): number => state === 'up' ? 0 : HA
  * unfollowed load (tipX / tipY). Every unbroken grasp counts, upper-body holds included, once per holder and carrier. A falling man tied to a runner is dragged,
  * not toppling free, so FALL_TIP's forward drive (a free body's tip) does not apply to him. His horizontal inertia stays in the joint's two-body solve; the carrier's
  * own acceleration law does not take it a second time. FALL_FRICTION, DOWN_FRICTION and FALL_TIP are unchanged (unsourced). */
-const HANG_LOAD = process.env.HANG_LOAD === '1';
+const HANG_LOAD = process.env.HANG_LOAD !== '0';
 /** Experimental (HELD_SWING=1, off): a leg hold resists the leg's swing by
  * its grip whether or not the holder is on his feet, and the strides it binds
  * leave the runner's base behind his body (see the stride holds and

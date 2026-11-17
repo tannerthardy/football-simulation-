@@ -1,5 +1,6 @@
 /** Steering helpers shared by behaviors. */
 import { FIELD_WIDTH } from '../../core/field.js';
+import { hasObservedFlight } from '../possession-read.js';
 import { angleDiff, angleOf, clamp, norm, type Vec2 } from '../../core/vec.js';
 import { arriveVelocity, fatigueFactor, followAccel, movingArrivalVelocity, type MoveCommand } from '../../physics/kinematics.js';
 import { availability, supportParams } from '../../physics/support.js';
@@ -107,7 +108,7 @@ const TRACK_PURSUIT = process.env.TRACK_PURSUIT !== '0' || process.env.PERCEIVE_
  * The forecast target heading is his belief: it changes only when the seen facing or velocity has moved BEND_MARGIN
  * from the picture it was formed on. Stated choices: BEND_PRIOR_RATE 19 deg/s (our carriers' measured median turn
  * toward upfield), BEND_BODY_RATE 40 deg/s (their p75, a carrier visibly turning), BEND_MARGIN 20 deg. */
-const BEND_BITS = Number(process.env.BEND_FORECAST ?? 0);
+const BEND_BITS = Number(process.env.BEND_FORECAST ?? 1);
 const BEND_FORECAST = BEND_BITS !== 0;
 const BEND_PRIOR = (BEND_BITS & 1) !== 0, BEND_BODY = (BEND_BITS & 2) !== 0;
 const BEND_PRIOR_RATE = (19 * Math.PI) / 180, BEND_BODY_RATE = (40 * Math.PI) / 180, BEND_MARGIN = (20 * Math.PI) / 180, BEND_STEP = 0.05;
@@ -161,7 +162,7 @@ export function pursuitPoint(sim: PlaySim, a: Agent, target: Agent, horizon = 3,
     const d = V * t - (V - sp) * tau * (1 - Math.exp(-t / tau));
     return { x: seen.pos.x + heading.x * d, y: clamp(seen.pos.y + heading.y * d, 0, FIELD_WIDTH) };
   };
-  const bend = BEND_FORECAST && sp > 1 && sim.ball.kind === 'held' && sim.ball.carrier === target && sim.catchAt >= 0
+  const bend = BEND_FORECAST && sp > 1 && seen.carrying === true && hasObservedFlight(a)
     ? bendTarget(sim, a, target, seen, Math.atan2(seen.vel.y, seen.vel.x)) : null;
   const curve = bend ? bentPath(seen.pos, Math.atan2(seen.vel.y, seen.vel.x), bend.heading, bend.rate, (t) => V * t - (V - sp) * tau * (1 - Math.exp(-t / tau)), horizon) : null;
   if (curve) curveOf.set(a, curve); else curveOf.delete(a);

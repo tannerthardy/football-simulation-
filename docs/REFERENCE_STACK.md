@@ -2,7 +2,7 @@
 
 One combination of experimental flags that Run Game, Defense, Flex and Coverage all measure against. Before this, each agent tested on its own mix (the FLAT_PRESS / ZONE_RUN back-and-forth on 2026-11-09 came from two different flag sets), and no list of anyone's stack existed in the repository.
 
-- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-73`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
+- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-74`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
 - **The code:** `run/G3-oz-backfield` a749beb7 + `defense/G2-stance-tell` a0cb0789 (#411) + `defense/G2-lb-start` (#416, with #409) + `claude/quirky-franklin-9lbwbp` (#417, with #415) + develop 6676dfc2.
 - **Since 2026-11-09 the stack is the engine's default.** The flags listed `on` are read as on unless set to `0`; a bare command in a clean shell and `npm run ref -- <command>` run the same engine. `npm run ref -- --off -- <command>` runs the legacy engine (every listed flag off). `test/reference-stack.test.ts` fails if the file and the code defaults ever disagree. See "Promotion" below.
 
@@ -607,6 +607,18 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 | Fixed 1,321 runs on run-ref-15, paired yards a run | | `FIT_TE_GAP` +0.05 ± 0.05; `FIT_BLITZ_SLIDE` +0.01 ± 0.04 |
 
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
+
+## engine-74: the hanging tackler's weight and the pursuer's forecast of the carrier (2026-11-17)
+
+On: `HANG_LOAD` (Tools: the share of a holder's weight the hold carries comes off his own turf friction and goes onto the carrier's legs and lift, upper-body holds included; a holder falling while tied to a runner no longer has his friction cancelled by the free-body tip drive; legs carrying the hang have less drive, brake, cut and recovery step). Numeric default: `BEND_FORECAST` 1 (Defense: the pursuer forecasts a carrier in space as bending upfield at 19 deg/s, the carriers' measured median, a stated choice; held until his seen velocity moves 20 degrees). Bit 2 of `BEND_FORECAST` (the body-facing cue) stays off. Also in develop since engine-73, not flagged: the carrier reads other players through his own picture and judges a pursuer's speed from his size and the speed he has seen (#822).
+
+Why these two, after a day of misses on zone YAC (lay-out, held pursuit spot, two open-field approaches, turn split, ellipse saturation, carrier recognition, get-heavy: all off on their lane branches, written up): an oracle ladder sized perfect pursuit angles at 5.99 → 4.26 staged zone YAC and a perfect hold at 4.81, and no single honest mechanism moved it alone. These are the two pieces that are more correct on their own terms and held up in every combination.
+
+Staged set (Defense, 1,230-completion design, develop d7d6e3a9 → both): zone YAC 6.16 → 5.81, zone 20+ 5.7 → 5.3%, man YAC 3.02 → 2.97; carrier down within 1 s of a contact at speed, behind centre / hip / reach, 51/48/50 → 56/55/56 (NFL 76/69/66); run set 3.88 → 3.87 yards per carry, missed and broken per carry unchanged; head-on two-way-go control 2.8% both; dither passes.
+
+Card (16 games, 2 leagues, both together against develop; `out/e106-card-*.md`), YAC per reception by seed 23 / 37 / 11 / 5 / 61 / 88: −0.13 / −0.34 / +0.47 / −0.87 / −0.81 / −0.08 (mean −0.29); yards per attempt −0.22 / +0.06 / +0.48 / −0.47 / −0.42 / −0.34; rush yards per carry −0.43 / +0.08 / −0.34 / −0.01 / −0.06 / −0.21. Each flag alone read +0.3 to +1.6 YAC on seeds 23 / 37 / 11 while the pair read about zero on the same seeds: the row's seed noise is as large as the effect, which is why the pair was run on six.
+
+Known and not repaired: a full-weight hang never takes a running carrier off his feet (the tip moment is about his base radius, ~0.17 yd, and his recovery step answers it); `FALL_FRICTION`, `DOWN_FRICTION`, `FALL_TIP` and the base radius have no source. `HOLD_HEAVY` (the holder drops his weight) stays off: with the hang conserved it still gives up the upright finish and is torn off more often.
 
 ## engine-73: the QB's key read and drop, route rules, play-action hinge, edge set and zone holds (2026-11-16)
 

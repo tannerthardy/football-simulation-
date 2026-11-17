@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "engine-73",
+  "id": "engine-74",
   "runSet": {
     "commit": "1b5415de99b5b7194eff045f3c37a07a4c54c1a9",
     "seeds": [
@@ -47,7 +47,7 @@
     "APEX_LEVERAGE": { "default": 7, "legacy": 0 },
     "END_KEY": { "default": 2, "legacy": 0 },
     "ZONE_HOLD": { "default": 114, "legacy": 0 },
-    "BEND_FORECAST": { "default": 0, "legacy": 0 },
+    "BEND_FORECAST": { "default": 1, "legacy": 0 },
     "HAND_MOMENT_CAP": { "default": 150, "legacy": 0 },
     "OFF_PEDAL": { "default": 3, "legacy": 0 },
     "QB_FOOTWORK": { "default": 3, "legacy": 0 },
@@ -383,7 +383,7 @@
     "CURL_FLAT_BACK": "on",
     "CURL_SINK": "on",
     "SETTLE_DEPTH": "on",
-    "HANG_LOAD": "off",
+    "HANG_LOAD": "on",
     "SAFETY_DEPTH": "on",
     "SINK_LEAD": "off",
     "SLOT_LEV": "on",
