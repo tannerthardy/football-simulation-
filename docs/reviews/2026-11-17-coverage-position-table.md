@@ -674,3 +674,18 @@ L1 = deep man comes downhill and gets passed. L2 = nobody deeper after a pass-by
 - HNFL wording other than HNFL-202, and every external coaching source listed in ZCR.
 - How often each branch runs in practice (no sims were run).
 - Whether the corner's run role should be `alley` or force/cutback is VS, and I did not check it against a source.
+
+## Build status (2026-11-17, Rules + Coaching)
+
+- Built behind off flags, stacked: HALF_OWN (gap 3), MATCH_DECLARE (gap 6), C2_APEX (item 1), SQUAT_TOPDOWN (item 7),
+  Q_APEX (item 2). Each flag's row in docs/FLAGS.md holds its staged before/after table.
+- C3_HOOK (the Cover 3 hook matching #3's over, and #3 to the flat under a vertical #2): rule written, not landed; no
+  installed concept presents the shape (trips #3 runs only flat, seam or hitch). Concepts that would: a trips Y-cross
+  or drive with #3 on the over; a flood or sail with #3 to the flat under a vertical #2. A playbook that never asks the
+  hook this question is itself a gap in what our offense attacks Cover 3 with.
+- Diagnosed, not rules: drive's weak shallow against quarters and Cover 3 match is caught 1.5-3 yd past the line and
+  goes 9-67 after the catch (pursuit); flood's weak dig and #2 out against Cover 3 match are tight (1-3 yd at the
+  throw) and lost at the catch point; stick's #3 flat against quarters averages 5 yd but for one 65-yd run after the
+  catch. The Book/Stubbie MUSH nickel zones #3's flat where HNFL-050 traps it (item 14).
+- Tampa 2 Mike: carries any vertical within 9 yd of the ball, so he takes #2's corner stem on smash as a seam and
+  releases only when his read turns it out, about 0.9 s after the break (item 9, the Tampa Mike row).
