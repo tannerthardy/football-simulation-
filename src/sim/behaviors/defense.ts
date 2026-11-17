@@ -2353,7 +2353,12 @@ export class ZoneCoverage implements Behavior {
     const rb = RELEASE_BELIEF ? releaseBelief(sim, a) : null;
     if (rb && (rb.loadingAt !== undefined || rb.releasedAt !== undefined)) {
       a.tags.add('qb-intent-break');
-      return withFacingTechnique(track(a, lane, { x: th.vel.x * 0.5, y: th.vel.y * 0.8 }, { speed: 1, gain: 1.8 }), { label: 'qb-intent-break', key: th.vel });
+      // Attempt 2: under control. He goes to the lane point carried along the receiver's seen motion for the time it
+      // takes him to get there, and arrives there stopping (in front of the man, not running through his path); the
+      // ball he then sees takes him to its catch point by his own estimate (the flight approach).
+      const lead = clamp(Math.hypot(lane.x - a.pos.x, lane.y - a.pos.y) / Math.max(1, 0.8 * a.profile.vmax), 0, 1);
+      const spot = { x: lane.x + th.vel.x * lead, y: clamp(lane.y + th.vel.y * lead, 0.5, FIELD_WIDTH - 0.5) };
+      return withFacingTechnique(goTo(a, spot, { speed: 1 }), { label: 'qb-intent-break', key: th.vel });
     }
     // The lean: a step's worth toward the lane, kept inside his zone, at a controlled pace, shoulders on the QB.
     a.tags.add('qb-intent-lean');
