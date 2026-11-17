@@ -780,8 +780,11 @@ export function updateBond(sim: PlaySim, bond: TackleBond, intents: Intent[]): v
         let read = hv.get(d);
         if (!read) hv.set(d, read = { at: t, v0: mine, on: false });
         const beat = d.profile.reactionTime * (1.5 - d.r('tackling'));
+        // Attempt 2: the taught order. Finish on his feet if he can: a close, secure, upright hold has the roll below,
+        // and he keeps it. Hang on if he cannot: not close, not secure, or slipping.
+        const rollable = d.body.support?.state === 'up' && near <= torso + .15 && clamp(next, 0, 1) * quality >= .5 && !joint.slipping;
         if (!read.on && t - read.at >= (joint.slipping ? 0.5 * beat : beat)) {
-          if (joint.slipping || (mine > 2 && mine >= 0.85 * read.v0)) read.on = true;
+          if (!rollable && (joint.slipping || (mine > 2 && mine >= 0.85 * read.v0))) read.on = true;
           else { read.at = t; read.v0 = mine; }
         }
         heavy = read.on;
