@@ -7,7 +7,7 @@ import { availability, supportParams } from '../../physics/support.js';
 import { interceptPoint, timeToReach, timeToReachRequested, type SprintRequest } from '../../physics/reach.js';
 import type { Agent } from '../agent.js';
 import { chooseApproach } from '../approach-control.js';
-import { onTopCushion, onTopPoint } from '../open-field.js';
+import { LAST_LINE, lastLinePoint, onTopCushion, onTopPoint } from '../open-field.js';
 import { withMovementObjective } from '../movement-objective.js';
 import type { PlaySim } from '../playsim.js';
 
@@ -384,6 +384,12 @@ export function chase(sim: PlaySim, a: Agent, target: Agent, horizon = 3, opts: 
       y: clamp(seen.pos.y + offset, .3, FIELD_WIDTH - .3) }, velocity: seen.vel });
   // OPEN_FIELD: on a runner in space he aims on top of him (inside-out, a cushion upfield), not at the intercept,
   // and the gather's arrival stays on top of him (onTopCushion), so it mirrors him.
+  // LAST_LINE (open-field.ts): the deepest man on his side, with a teammate nearer and attacking, stays on top.
+  const last = LAST_LINE && opts.onTop ? lastLinePoint(sim, a, target, seen, offset) : null;
+  if (last) {
+    a.tags.add('last-line');
+    return ownApproach({ ...runThrough(a, last, { speed: 1 }), effort: 1 });
+  }
   const top = opts.onTop ? onTopPoint(sim, a, target, seen, offset) : null;
   const topShift = opts.onTop ? onTopCushion(sim, a, target, seen, dist, contact) : 0;
   const { near, gather } = gatheringApproach(a, seen, contact, offset, topShift);

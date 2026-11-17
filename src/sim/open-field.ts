@@ -87,3 +87,57 @@ export function onTopPoint(sim: PlaySim, a: Agent, target: Agent, seen: Perceive
   const cushion = clamp(CUSHION_SHARE * dist, CUSHION_MIN, CUSHION_MAX);
   return { x: seen.pos.x + seen.vel.x * tau + dir * cushion, y: clamp(seen.pos.y + seen.vel.y * tau + offset, 0.3, FIELD_WIDTH - 0.3) };
 }
+
+/** LAST_LINE (experimental, off; LAST_LINE=1; docs/reviews/2026-11-17-last-line.md): pursuit is layered. The nearest
+ * man goes and makes the tackle; the deepest man on his side of the ball never lets the ball get behind him. He keeps
+ * his depth over the top with inside-out leverage, closes under control as the men in front force the runner, and
+ * takes him only when the runner breaks through to him or is turned back into him. A team rule from what each man
+ * sees, not a hidden assignment (handbook defense-and-perception: "an alley or deep cap is not simply another
+ * immediate gap plugger"; Campbell's team-pursuit article [pursuit]: inside-out help, avoid a teammate's pursuit path).
+ *
+ * He is the last line when, in his own picture: he is deeper than the runner; no upright teammate on his side of the
+ * runner (or within LL_SIDE of the runner's line) is deeper than him; and a teammate nearer the runner is attacking
+ * him (upright, not beaten: not behind the runner; no offensive body on him; closing at more than LL_CLOSE). Each
+ * comparison has an entry and an exit margin (the commitment rule: two men a few inches apart in depth do not swap
+ * the role tick to tick). When the men in front are beaten, down or blocked, when he is within LL_GO of the runner, or
+ * near the line to gain or the goal line (no ground to give), he is the nearest man and goes: chase's ordinary
+ * approach. As the last line his target is on top of the runner at a cushion of LL_SHARE of the distance (within
+ * LL_MIN..LL_MAX), on chase's own inside-out offset, and the close gather does not pull him in. Stated choices, not
+ * fitted: LL_SHARE 0.7, LL_MIN 2, LL_MAX 8 yd; margins 0.5 / 1.0 yd; LL_GO 3 yd; LL_CLOSE 1 yd/s; LL_SIDE 2 yd. */
+export const LAST_LINE = process.env.LAST_LINE === '1';
+const LL_SHARE = 0.7, LL_MIN = 2, LL_MAX = 8, LL_GO = 3, LL_CLOSE = 1, LL_SIDE = 2;
+const lastLine = new WeakMap<Agent, boolean>();
+/** The last-line target for `a` on the runner he sees, or null when he is not the last line (he attacks). */
+export function lastLinePoint(sim: PlaySim, a: Agent, target: Agent, seen: Perceived, offset: number): Vec2 | null {
+  const dir = sim.attackDir(target.team);
+  const was = lastLine.get(a) ?? false;
+  const goal = dir > 0 ? OPP_GOAL_X : OWN_GOAL_X;
+  const depth = (a.pos.x - seen.pos.x) * dir;
+  const dist = Math.hypot(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y);
+  const shortYardage = (sim.firstDownX - seen.pos.x) * dir <= SHORT || (goal - seen.pos.x) * dir <= SHORT;
+  let ok = !shortYardage && depth > (was ? 0.5 : 1.5) && dist > (was ? LL_GO : LL_GO + 1);
+  if (ok) {
+    const side = Math.sign(a.pos.y - seen.pos.y);
+    let attacker = false;
+    for (const t of sim.defense) {
+      if (t === a || !ok) continue;
+      const s = sim.see(a, t);
+      if (s.pose === 'down') continue;
+      const tDepth = (s.pos.x - seen.pos.x) * dir, lat = s.pos.y - seen.pos.y;
+      const mySide = Math.abs(lat) <= LL_SIDE || Math.sign(lat) === side;
+      if (mySide && tDepth > depth + (was ? 1.0 : 0.5)) { ok = false; continue; }
+      const td = Math.hypot(seen.pos.x - s.pos.x, seen.pos.y - s.pos.y);
+      if (td >= dist - (was ? 0.5 : 1.5) || tDepth < (was ? -1 : -0.5)) continue;
+      const closing = ((seen.pos.x - s.pos.x) * s.vel.x + (seen.pos.y - s.pos.y) * s.vel.y) / Math.max(1e-6, td);
+      if (closing <= (was ? LL_CLOSE - 0.5 : LL_CLOSE)) continue;
+      const blocked = sim.offense.some((o) => o !== target && Math.hypot(sim.see(a, o).pos.x - s.pos.x, sim.see(a, o).pos.y - s.pos.y) < 1);
+      if (!blocked) attacker = true;
+    }
+    ok = ok && attacker;
+  }
+  lastLine.set(a, ok);
+  if (!ok) return null;
+  const tau = clamp(dist / Math.max(1, a.profile.vmax), 0, LEAD_MAX);
+  const cushion = clamp(LL_SHARE * dist, LL_MIN, LL_MAX);
+  return { x: seen.pos.x + seen.vel.x * tau + dir * cushion, y: clamp(seen.pos.y + seen.vel.y * tau + offset, 0.3, FIELD_WIDTH - 0.3) };
+}
