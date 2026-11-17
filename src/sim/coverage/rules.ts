@@ -178,6 +178,7 @@ const fastFlat = (rd: ReceiverRead | null): boolean => !!rd && rd.release === 'f
  * #1 settling short with #2 vertical sends the overhang to hunt #1 while the
  * corner bails under #2. */
 function seamCurlFlat(c: RuleCtx, carry: number, deliver = false): Directive {
+  if (MATCH_DECLARE) return seamCurlFlatDeclared(c, carry, deliver);
   // With no #2 to this side the released back is #2 (Cover 9's weak seam/flat on the RB).
   const two0 = ref(c, 2);
   const two = two0 ?? backTo(c);
@@ -210,6 +211,61 @@ function seamCurlFlat(c: RuleCtx, carry: number, deliver = false): Directive {
   }
   if (two.release !== 'vertical' && two.release !== 'block') c.state.mode = 'zoned';
   return zoneOf(c);
+}
+
+/** MATCH_DECLARE (experimental, off; MATCH_DECLARE=1 turns it on): the match seam/curl-flat player (Rip/Liz
+ * `c3_curl_flat`, `c3_seam` in Seam, Cover 9 and fire zone) reads #2 through the taught declare phase, about three steps
+ * or 5 yd (Saban Rip/Liz; USA Football 7272; coverage-position spec gap 6), before he commits, and re-reads when the
+ * route changes instead of latching "zoned" on the first break:
+ * - undeclared (#2 not yet 5 yd deep, inside the first `MATCH_DECLARE_T` s, and not in the flat): read his release;
+ * - vertical: carry to `carry`, then deliver (unchanged); once delivered, the hand-off is final;
+ * - out or flat: match #2 out (and up), top-down, outside leverage (HNFL-056 "match #2 out and up"); an out-and-up
+ *   re-reads to the vertical carry;
+ * - in or under: with #3 away (no #3 here, the back released to the other side) take #2 back across (HNFL-292), a man
+ *   carry CUT_WALL's pass-off leaves alone; otherwise deliver him to the hook ("under") and play the curl;
+ * - stop: sit in the curl-flat zone over him.
+ * Push and Smash are unchanged. Every input is his own read of the receivers (ReleaseReader). */
+export const MATCH_DECLARE = process.env.MATCH_DECLARE === '1';
+/** MATCH_DECLARE: the declare phase's time (s after the snap; about three steps) and depth (yd). */
+const MATCH_DECLARE_T = 0.9;
+const MATCH_DECLARE_YD = 5;
+
+function seamCurlFlatDeclared(c: RuleCtx, carry: number, deliver: boolean): Directive {
+  const st = c.state;
+  const two0 = ref(c, 2);
+  const two = two0 ?? backTo(c);
+  const one = ref(c, 1);
+  const three = two0 ? threeTo(c) : null;
+  if (st.mode === 'push' && three) return man(three, { lev: 'inside', overTop: true });
+  if (st.mode === 'smash' && one) return man(one, { lev: 'inside' });
+  if (!two || st.mode === 'delivered') return zoneOf(c);
+  if (fastFlat(three) && two.depth < carry && two.release !== 'flat' && two.release !== 'out') {
+    st.mode = 'push';
+    return man(three!, { lev: 'inside', overTop: true });
+  }
+  if (oneShallow(one) && one!.release === 'stop' && two.release === 'vertical') {
+    st.mode = 'smash';
+    return man(one!, { lev: 'inside' });
+  }
+  st.mode = undefined;
+  const declared = two.release === 'flat' || two.deepest >= MATCH_DECLARE_YD || c.sim.t >= MATCH_DECLARE_T;
+  if (two.release === 'none' || !declared) return readRelease(two);
+  switch (two.release) {
+    case 'vertical':
+      if (two.depth > carry) {
+        if (deliver && !hasVisibleCap(c.a, c.sim, two)) return man(two, { lev: 'inside' });
+        st.mode = 'delivered';
+        return zoneOf(c);
+      }
+      return man(two, { lev: 'inside' });
+    case 'out': case 'flat':
+      return man(two, { lev: 'outside', overTop: true });
+    case 'in': case 'under':
+      if (threeAway(c)) { st.mode = 'across'; return man(two, { lev: 'inside' }); }
+      return zoneOf(c);
+    default:
+      return zoneOf(c);
+  }
 }
 
 /**
