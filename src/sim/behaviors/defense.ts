@@ -2530,6 +2530,31 @@ function zoneBand(zone: ZoneId, sim: PlaySim): [number, number] {
  * planted defender gives up depth to a route behind him. Replaces the earlier
  * eyes-directed lean (as often wrong as right on catches 0-10 yd). */
 const SHOULDER_READ = process.env.SHOULDER_READ !== '0';
+/** DEEP_BREAK (experimental, off; DEEP_BREAK=1; docs/reviews/2026-11-17-deep-break.md): the deep defender plays top-down.
+ * A coverage defender 10+ yd past the line (his own position) goes on the quarterback, not on the ball in the air: on
+ * the arm he sees loading or coming through (RELEASE_BELIEF's belief, his own sight and delay) he breaks ACROSS to a spot
+ * over the top of the receiver the passer's shoulders point at (SHOULDER_READ's pick), keeping his depth, at full
+ * effort; a pump he sees moves him, a pull-down he sees stops the break (the belief is withdrawn). Once he has seen the
+ * flight, the spot is over the top of where his own estimate brings it down, by a cushion he can still stop and close
+ * from: his stopping distance at his own speed (v^2 / 2 x his braking). He plays the ball itself only when he can get
+ * to its landing point with it (his time to reach it within the flight's remaining time; entry 0.05 s inside, exit
+ * 0.15 s outside, held per flight). At the catch the on-top pursuit (OPEN_FIELD) takes him from there: the man over
+ * the top comes down under control while the men underneath attack. Handbook: defense-and-perception (a deep cap is
+ * not another immediate gap plugger; deep zone players read the quarterback and break on his shoulders). */
+const DEEP_BREAK = process.env.DEEP_BREAK === '1';
+const deepPlaysBall = new WeakMap<Agent, { key: number; ball: boolean }>();
+function deepMan(a: Agent, sim: PlaySim): boolean {
+  const b = a.behavior as { kind?: string; deep?: boolean } | undefined;
+  const coverage = a.behavior instanceof ZoneCoverage || b?.constructor?.name === 'CoverageDefender';
+  return coverage && (a.pos.x - sim.los) * sim.attackDir(sim.offense[0].team) >= 10;
+}
+/** DEEP_BREAK: the spot over the top of `p` (field position): his depth kept or gained, by his stopping cushion. */
+function overTop(a: Agent, sim: PlaySim, p: Vec2): Vec2 {
+  const dir = sim.attackDir(sim.offense[0].team), v = Math.max(3, a.speed);
+  const cushion = v * v / (2 * Math.max(1, a.profile.brake));
+  const x = dir > 0 ? Math.max(a.pos.x, p.x + cushion) : Math.min(a.pos.x, p.x - cushion);
+  return { x, y: clamp(p.y, 0.5, FIELD_WIDTH - 0.5) };
+}
 /** QB_BODY_SEEN (experimental, off; QB_BODY_SEEN=1): the passer's throwing motion and head are read from what a
  * defender sees of his body (`Agent.arm`, `Agent.head`, recorded with every perception sample), with that defender's
  * own delay and view, instead of from the published `sim.windupAt` / `sim.windupEndAt` (the time the motion started,
@@ -2773,6 +2798,23 @@ function playBelievedBall(a: Agent, sim: PlaySim, man: Agent | null, continueCov
     // plants): toward the receiver they point at, read through the tracking channel of the passer he is watching,
     // chosen once for this belief, with his reaction time after the choice. With none lined up, he plants (stops his
     // drop) until he sees the ball or the pull-down.
+    if (DEEP_BREAK && !man && deepMan(a, sim)) {
+      // DEEP_BREAK: on the arm (loading or through), across and over the top of the receiver his shoulders point at.
+      // Ball seen but no arm time (no flight estimate yet): he holds what he was doing until one exists.
+      const key = rb.releasedAt ?? rb.loadingAt;
+      if (key === undefined) return continueCoverage();
+      const pk = shoulderTarget(a, sim, key);
+      const react = a.profile.reactionTime * (1 - 0.4 * a.r('anticipation'));
+      if (pk.R && sim.t - pk.at >= react - 1e-9) {
+        a.tags.add('deep-break');
+        const r = sim.see(a, pk.R), left = Math.max(0, Math.min(SHOULDER_FLIGHT_MAX,
+          Math.hypot(r.pos.x - pk.from.x, r.pos.y - pk.from.y) / SHOULDER_BALL_SPEED - (sim.t - key)));
+        const spot = overTop(a, sim, { x: r.pos.x + r.vel.x * left, y: r.pos.y + r.vel.y * left });
+        if (!Number.isFinite(spot.x) || !Number.isFinite(spot.y)) throw new Error(`DEEP_BREAK: non-finite over-top spot for ${a.slot}`);
+        return runThrough(a, spot, { speed: 1 });
+      }
+      return continueCoverage();
+    }
     if (rb.releasedAt === undefined) return stopDrop(sim, continueCoverage());
     const pick = shoulderTarget(a, sim, rb.releasedAt);
     const react = a.profile.reactionTime * (1 - 0.4 * a.r('anticipation'));
@@ -2789,7 +2831,22 @@ function playBelievedBall(a: Agent, sim: PlaySim, man: Agent | null, continueCov
   }
   a.tags.add('onBall');
   const path = hasObservedFlight(a) ? rememberedFlight(a, sim.t) : null;
-  return playObservedFlight(a, sim, path ?? (sim.ball.kind === 'air' ? acquireFlight(a, sim) : []), !path);
+  const flight = path ?? (sim.ball.kind === 'air' ? acquireFlight(a, sim) : []);
+  if (DEEP_BREAK && !man && flight.length && deepMan(a, sim)) {
+    // DEEP_BREAK: over the top of where he believes it comes down, unless he can get there with it.
+    const end = flight[flight.length - 1], key = flight[0].t;
+    const tt = timeToReach({ pos: a.pos, vel: a.vel, profile: a.profile, speedScale: a.speedScale }, { x: end.x, y: end.y }, a.profile.reach);
+    const left = end.t - sim.t, prev = deepPlaysBall.get(a);
+    const ball = prev && prev.key === key && prev.ball ? tt <= left + 0.15 : tt <= left - 0.05;
+    deepPlaysBall.set(a, { key, ball });
+    if (!ball) {
+      a.tags.add('deep-top');
+      const spot = overTop(a, sim, { x: end.x, y: end.y });
+      if (!Number.isFinite(spot.x) || !Number.isFinite(spot.y)) throw new Error(`DEEP_BREAK: non-finite over-top spot for ${a.slot}`);
+      return runThrough(a, spot, { speed: 1 });
+    }
+  }
+  return playObservedFlight(a, sim, flight, !path);
 }
 
 /** RELEASE_BELIEF: the receiver the passer's shoulders point at in this defender's picture when his belief came from
