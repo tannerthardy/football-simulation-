@@ -16,6 +16,13 @@ import { angleTo, track } from '../behaviors/common.js';
 import { believesRun, infoHonest, ManCoverage, OPEN_CARRY, openCarryFacing, playBall, pursueIfLive, runFit, sawThrow, playsThrow, unsureFactor } from '../behaviors/defense.js';
 import type { ReleaseReader } from './reads.js';
 import { withFacingTechnique } from './orientation.js';
+import { RELEASE_BELIEF } from '../release-belief.js';
+
+/** TECH_CONT (off): a zone technique (Trap, Wall, Rob, CrossWall) that reads the throw on the arm alone keeps its own
+ * technique as the continuation of the throw read, as a zone dropper does: he plants on the load and breaks on the
+ * passer's shoulders at the delivery, instead of coasting on his current velocity until he has seen the ball's flight
+ * (the missing continuation: about 0.4 s still moving away from the catch point). */
+const TECH_CONT = process.env.TECH_CONT === '1';
 
 const APEX_CUSHION = 9;
 
@@ -33,7 +40,7 @@ abstract class Technique implements Behavior {
   update(a: Agent, sim: PlaySim): MoveCommand {
     const live = pursueIfLive(sim, a);
     if (live) return live;
-    if (playsThrow(a, sim, null)) return playBall(a, sim, null);
+    if (playsThrow(a, sim, null)) return playBall(a, sim, null, TECH_CONT && RELEASE_BELIEF ? () => this.move(a, sim) : undefined);
     if (believesRun(sim, a)) return runFit(a, sim, this.gap, this.gapSign);
     return this.move(a, sim);
   }
