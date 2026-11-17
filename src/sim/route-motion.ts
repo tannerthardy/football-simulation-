@@ -5,7 +5,7 @@ import { arriveVelocity, lateralEnvelope, stepBody, type Body, type MoveCommand 
 import type { PhysicalProfile } from '../players/physical.js';
 import type { RouteDef, RouteEnd, RoutePoint } from '../playbook/types.js';
 
-/** LINE_START (off; LINE_START=1; see behaviors/receiver.ts): the get-off, shared by the receiver, the quarterback's
+/** LINE_START (on by default; LINE_START=0 turns it off; see behaviors/receiver.ts): the get-off, shared by the receiver, the quarterback's
  * forecast of him and his expected break time, so all three move together; and his approach into a break on his
  * cutting ability. */
 export const LINE_START = process.env.LINE_START !== '0';
@@ -13,7 +13,7 @@ export const LINE_START = process.env.LINE_START !== '0';
 /** `ext`: a point the path's continuation added past the installed route (to the sideline margin, then up). */
 export interface PathPoint { readonly p: Readonly<Vec2>; readonly s: number; readonly ext?: boolean; readonly cut?: boolean; readonly finish?: boolean }
 
-/** ROUTE_FINISH (experimental, off): how an unthrown outward route finishes at the sideline. Off, every `continue` route
+/** ROUTE_FINISH (on by default; ROUTE_FINISH=0 turns it off): how an unthrown outward route finishes at the sideline. Off, every `continue` route
  * that runs out of field turns up 40 yd at full speed at 5 yd from the sideline (the flat family 5 yd at .6); at full
  * pace the out, quick out and the back's flat are on that climb by the time a late throw comes, and the quarterback's
  * forecast leads them upfield into the deep defender (route-card staged pairing: 19 of the 47 interceptions ROUTE_EFFORT
@@ -26,7 +26,7 @@ export interface PathPoint { readonly p: Readonly<Vec2>; readonly s: number; rea
  * down). Crossers, ins and the flat family keep their extensions (their finish is a separate item, and ROUTE_END's flat
  * rule covers the flat family); what any route does when the quarterback breaks the pocket is the scramble rule's. */
 export const ROUTE_FINISH = process.env.ROUTE_FINISH !== '0';
-/** ROUTE_LANDMARK (experimental, off): a receiver off the drawn line runs the rest of a breaking route from where he is.
+/** ROUTE_LANDMARK (on by default; ROUTE_LANDMARK=0 turns it off): a receiver off the drawn line runs the rest of a breaking route from where he is.
  * On a route with a declared vertex (a cut or a break; not a vertical), the landmark is the break's depth: knocked or bent
  * off his stem, he runs on parallel to it and breaks at the vertex's depth from where he is, the legs after it parallel
  * to the drawn ones, instead of steering back across to the drawn line ("get back vertical into your route and run it
@@ -115,7 +115,7 @@ export function routeEffort(family: RouteDef['family'], rr: number): number {
   return clamp(base[family] + 0.04 * (rr - 0.5), 0.7, 0.98);
 }
 
-/** ROUTE_FILLET (experimental, off; ROUTE_FILLET=1 turns it on): a corner is led, not point-turned. The follower used to steer
+/** ROUTE_FILLET (on by default; ROUTE_FILLET=0 turns it off): a corner is led, not point-turned. The follower used to steer
  * at each vertex with a speed cap that assumes a 1.3 yd corner, so a rolled bend was taken slowly and the body then swung
  * about 2 yd outside the next leg; an NFL receiver starts the turn before the vertex and passes inside it
  * (docs/reviews/2026-11-14-route-speed.md: cut 0.5-0.8 yd, radius 6-10 yd on a rolled bend, about 3 yd on a 90 degree plant).
@@ -125,9 +125,9 @@ export function routeEffort(family: RouteDef['family'], rr: number): number {
  * not leave room for that radius the speed through it is sqrt(aLat * R) on the radius that does fit. Once begun, the turn
  * is carried to its exit point (a goal that persists), then the next leg is followed. Cut skill acts through aLat only. */
 export const ROUTE_FILLET = process.env.ROUTE_FILLET !== '0';
-/** PLANT_REACH (experimental, off): a planted break is reached before the route follower moves past it (see `steerRoute`). */
+/** PLANT_REACH (on by default; PLANT_REACH=0 turns it off): a planted break is reached before the route follower moves past it (see `steerRoute`). */
 const PLANT_REACH = process.env.PLANT_REACH !== '0';
-/** CRAFT_HOLD (off; see behaviors/receiver.ts): rejoining the route ahead after a bend round a man. */
+/** CRAFT_HOLD (on by default; CRAFT_HOLD=0 turns it off; see behaviors/receiver.ts): rejoining the route ahead after a bend round a man. */
 const CRAFT_HOLD = process.env.CRAFT_HOLD !== '0';
 /** The share of the shorter adjacent leg a corner may use to lead its turn (two neighbouring corners then never overlap). */
 const FILLET_LEAD = 0.6;

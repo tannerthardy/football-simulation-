@@ -60,7 +60,7 @@ function olDepth(ctx: AlignContext): Record<LineSlot, number> {
 }
 /** OL_STAGGER: an inline end's tracked depth (formations install 0.6). */
 const INLINE_DEPTH = 1.19;
-/** RECEIVER_DEPTH (experimental, off): receivers on the line stand where
+/** RECEIVER_DEPTH (on by default; RECEIVER_DEPTH=0 turns it off): receivers on the line stand where
  * tracked receivers do, measured from the ball (BDB 2025 weeks 1-3, non-PA
  * dropbacks, body centre behind the tracked football at the snap, with no
  * defender within 2 yd in front of him): an outside receiver 0.74 yd
@@ -75,7 +75,7 @@ const TE_LINE_DEPTH = 0.83;
  * n 1,224 pressed), tight ends 1.09 vs 0.83 (+0.26, n 1,469); the
  * pressed-weighted mean is 0.23. */
 export const PRESS_BACKOFF = 0.23;
-/** MIRROR_SCATTER (off; MIRROR_SCATTER=1 turns it on; Run Game, docs/reviews/2026-11-16-mirror-scatter.md): a defender's
+/** MIRROR_SCATTER (on by default; MIRROR_SCATTER=0 turns it off; Run Game, docs/reviews/2026-11-16-mirror-scatter.md): a defender's
  * lateral placement error (his alignment error, PlaySim) and his ALIGN_HABIT lateral scatter are a cheat wide or tight
  * of his landmark, on his own side: the draw is multiplied by his side's sign (his spot's side of the ball, or the
  * offence's strong sign for a man aligned on the ball). Magnitudes and draws are unchanged; only the direction is now
@@ -184,14 +184,14 @@ const FRONT_MENU = process.env.FRONT_MENU !== '0';
  * installed spot, 3 yd outside and 7.5 deep, left him out of the box against
  * an attached end on every snap (tracked: within 2 yd of the end on 70%). */
 const BOX_ALIGN = process.env.BOX_ALIGN !== '0';
-/** BLITZ_CREEP (experimental, off): see alignDefense; tracked depth of a rushing backer at the snap (yd). */
+/** BLITZ_CREEP (on by default; BLITZ_CREEP=0 turns it off): see alignDefense; tracked depth of a rushing backer at the snap (yd). */
 const BLITZ_CREEP = process.env.BLITZ_CREEP !== '0', CREEP_DEPTH = 2.4;
 /** SAM_ON_TE (experimental, off): see alignDefense; a Sam on the line stands as the Under's 9 does (yd). */
 const SAM_ON_TE = process.env.SAM_ON_TE === '1', SAM_ON_DEPTH = 1.0;
-/** TIGHT_OFF (experimental, off): see alignDefense; a tight #2 is within this of his tackle (yd); off depth (yd). */
-/** NICKEL_FRONTS (experimental, off): see the end-man rule in alignDefense. */
+/** TIGHT_OFF (on by default; TIGHT_OFF=0 turns it off): see alignDefense; a tight #2 is within this of his tackle (yd); off depth (yd). */
+/** NICKEL_FRONTS (on by default; NICKEL_FRONTS=0 turns it off): see the end-man rule in alignDefense. */
 const NICKEL_FRONTS_ALIGN = process.env.NICKEL_FRONTS !== '0';
-/** SLOT_LEV (experimental, off): see alignDefense. */
+/** SLOT_LEV (on by default; SLOT_LEV=0 turns it off): see alignDefense. */
 const SLOT_LEV = process.env.SLOT_LEV !== '0';
 const TIGHT_OFF = process.env.TIGHT_OFF !== '0', TIGHT_SPLIT = 3.5, TIGHT_OFF_DEPTH = 4.5;
 /** SHELL_SHOW (on; the call's disguise rates are in
@@ -328,26 +328,26 @@ export interface AlignContext {
   run?: { scheme: string; direction: 'strong' | 'weak' };
 }
 
-/** STRETCH_OFFSET (default off): on a stretch call (outside/wide zone) from
+/** STRETCH_OFFSET (on by default; STRETCH_OFFSET=0 turns it off): on a stretch call (outside/wide zone) from
  * the gun, the offset back aligns away from the play side, so the mesh path
  * across the QB's face carries him toward it. Tracked 2022 gun outside zone:
  * 219 snaps away, 22 on the play side; a back on the play side takes the ball
  * running away from the play and has to reverse. */
 export const STRETCH_OFFSET = process.env.STRETCH_OFFSET !== '0';
-/** IZ_OFFSET (default off): STRETCH_OFFSET for gun inside and split zone: the
+/** IZ_OFFSET (on by default; IZ_OFFSET=0 turns it off): STRETCH_OFFSET for gun inside and split zone: the
  * offset back aligns away from the play side and meshes across the QB's face
  * into it. Tracked 2022 gun inside zone: back backside 91% of snaps, play
  * side 5% (gun outside zone 61% / 5%). Ours lined up on the play side on 48%
  * of gun IZ calls, and on 56 of 75 of those the back's mesh path (built for a
  * backside offset) carried him against the call after the handoff. */
 export const IZ_OFFSET = process.env.IZ_OFFSET !== '0';
-/** COUNTER_OFFSET (default off): IZ_OFFSET for gun counter. Tracked 2022 gun
+/** COUNTER_OFFSET (on by default; COUNTER_OFFSET=0 turns it off): IZ_OFFSET for gun counter. Tracked 2022 gun
  * counter: the offset back aligns backside on 119 of 153 snaps and takes the
  * ball 0.9 yd backside already running to the hole (+3.05 yd/s); ours aligned
  * play side on 64 of 76, met the ball running away from the hole (-2.85 yd/s)
  * and crossed the LOS on the pull side 70% of the time (NFL 92%). */
 export const COUNTER_OFFSET = process.env.COUNTER_OFFSET !== '0';
-/** TE_OFF (default off): on a zone run call an attached end sometimes sets
+/** TE_OFF (on by default; TE_OFF=0 turns it off): on a zone run call an attached end sometimes sets
  * off the ball beside the tackle (a wing), with the wide receiver on his side
  * moving up onto the line so seven stay on it. Tracked 2022 zone runs: 0.43
  * tight ends a snap stand 0.75 yd or more behind the line beside the tackle
@@ -655,7 +655,7 @@ function techniqueOffset(tech: Technique, hasTE: boolean, line: LineSplits = BAS
   }
 }
 
-/** FIT_TE_GAP (experimental, off): a 6 or 7 technique on an attached end
+/** FIT_TE_GAP (on by default; FIT_TE_GAP=0 turns it off): a 6 or 7 technique on an attached end
  * owns C, the gap inside him (Browns OL manual p. 11: 6 head-up, 7 inside
  * shade), not D beside the 9; the 4-3 Over's Sam outside him (a "90", 2017
  * Colts p. 77) takes D; and the end still rushes outside the TE, his pass
@@ -1361,7 +1361,7 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
     }
   }
 
-  // SLOT_LEV (experimental, off): a slot defender's zone spot comes from the
+  // SLOT_LEV (on by default; SLOT_LEV=0 turns it off): a slot defender's zone spot comes from the
   // seat he is finally given. Placed before roles were assigned, he took the
   // no-role default (hook: 4.5 yd, 0.5 inside) even as a curl-flat or flat
   // player; NFL zone DBs over a slot stand +0.2 outside in Cover 3, -0.1 in
@@ -1376,7 +1376,7 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
     const out = Math.sign(near.pos.y - off.ballY) || 1, z = zoneSpot(r.zone, true);
     sp.pos = { x: los + coverageDepth(los, z.depth), y: clamp(near.pos.y + out * z.shade, 1, FIELD_WIDTH - 1) };
   }
-  // TIGHT_OFF (experimental, off): a defensive back over a tight #2 (an
+  // TIGHT_OFF (on by default; TIGHT_OFF=0 turns it off): a defensive back over a tight #2 (an
   // inline end or a man within 3.5 yd of his tackle) plays off him, not in
   // press: with the line and the formation's traffic inside, the reduced
   // split leaves no room to jam and plays through him as the run's force.
@@ -1431,7 +1431,7 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
     if (p.x - los < 7.5 && Math.abs(p.y - off.ballY) < 6) box++;
   }
   const rushers = present.filter((p) => spots[p]!.role.kind === 'rush' || spots[p]!.role.kind === 'blitz');
-  // BLITZ_CREEP (experimental, off): a backer with a blitz assignment stands
+  // BLITZ_CREEP (on by default; BLITZ_CREEP=0 turns it off): a backer with a blitz assignment stands
   // where tracked rushers stand, walked up to time the snap, instead of at
   // the front's backer depth, walked toward the gap he will shoot: an A or B
   // gap blitzer over the gap, a C or D gap blitzer outside the tackle. It
@@ -1445,7 +1445,7 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
     const sp = spots[slot];
     if (sp && slot.startsWith('LB') && sp.pos.x - los > CREEP_DEPTH) sp.pos = { x: los + CREEP_DEPTH, y: gapY(off, sp.gap, sp.gapSign) };
   }
-  // ALIGN_HABIT (experimental, off): an off-ball defender stands where his
+  // ALIGN_HABIT (on by default; ALIGN_HABIT=0 turns it off): an off-ball defender stands where his
   // own habit and this snap put him, not on the exact landmark: a personal
   // depth habit plus per-snap placement scatter (PlaySim draws both). NFL
   // off-ball backers: depth sd 0.91, between players 0.41, within a player 0.78

@@ -75,7 +75,7 @@ export interface TrenchTraits {
   read: number;
 }
 
-/** PASS_ANCHOR (off; PASS_ANCHOR=1 turns it on): the pass set asks for an
+/** PASS_ANCHOR (on by default; PASS_ANCHOR=0 turns it off): the pass set asks for an
  * anchor, not a drive. His lean into the rusher grows to the load he feels and
  * no further (lean growth 0, not the lean law's 1.25x). An OL fell before the
  * throw on 75% of dropbacks (NFL about 1%), 19% with LEAN_PITCH: leans into a
@@ -122,12 +122,12 @@ const squeezes = new WeakMap<Engagement, { side: number; until: number }>();
  * being reached; one already beside or past the man on him keeps attacking
  * ("if you beat the reach, penetrate and make the play"). */
 const DL_FLATTEN_WON = process.env.DL_FLATTEN_WON !== '0';
-/** SHED_ROUTE (experimental, off): see the work-off; a first-level man works around the
+/** SHED_ROUTE (on by default; SHED_ROUTE=0 turns it off): see the work-off; a first-level man works around the
  * blocker's actual ball-side shoulder, not the frame of the blocker's original drive. */
 const SHED_ROUTE = process.env.SHED_ROUTE !== '0';
-/** FLAT_PRESS (experimental, off): see the flatten's depth request; his step into the man (yd/s). */
+/** FLAT_PRESS (on by default; FLAT_PRESS=0 turns it off): see the flatten's depth request; his step into the man (yd/s). */
 const FLAT_PRESS = process.env.FLAT_PRESS !== '0', FLAT_PRESS_STEP = 0.5;
-/** TOUCH_READ (experimental, off): see the flatten read; a hand-fighting lineman
+/** TOUCH_READ (on by default; TOUCH_READ=0 turns it off): see the flatten read; a hand-fighting lineman
  * reads the man's motion by touch, not by a delayed picture. */
 const TOUCH_READ = process.env.TOUCH_READ !== '0';
 function drivenBack(d: Agent): boolean {
@@ -221,7 +221,7 @@ export function passSetDepth(sim: PlaySim, b: Agent): number {
   if (SET_SPOT_TACKLE && tackle) return Math.min(pocket, snapDepth + TACKLE_STEPS);
   return pocket;
 }
-/** POCKET_LEVEL (experimental, off; POCKET_LEVEL=1, needs SET_SPOT): the interior set's second phase. The NFL's
+/** POCKET_LEVEL (on by default; POCKET_LEVEL=0 turns it off, needs SET_SPOT): the interior set's second phase. The NFL's
  * uncovered guard or center goes back 0.2 / 0.9 / 1.9 / 2.9 yd at 0.5 / 1.0 / 1.5 / 2.0 s with nobody on him, as far as
  * an engaged one (0.2 / 0.8 / 1.7 / 2.7; ol-set-depth.py --uncovered): the retreat is his set, keeping level with the
  * pocket, not the push. The pocket is the cup the line forms around the launch point he knows from the call, never
@@ -237,7 +237,7 @@ export function passSetDepth(sim: PlaySim, b: Agent): number {
  *   his man in front (stepPassRep's lateral reference is unchanged).
  * Null when it gives no depth (his neighbors still at the line). */
 export const POCKET_LEVEL = process.env.SET_SPOT !== '0' && process.env.POCKET_LEVEL !== '0';
-/** POCKET_DROP (experimental, off; POCKET_DROP=1, needs SET_SPOT, on since engine-72; POCKET_LEVEL's next bit; Integration, 2026-11-16): from
+/** POCKET_DROP (on by default; POCKET_DROP=0 turns it off, needs SET_SPOT, on since engine-72; POCKET_LEVEL's next bit; Integration, 2026-11-16): from
  * the gun the interior set is the cup in front of the drop, on the drop's clock. NFL dropbacks from the gun hold the
  * middle three OL a near-constant 3.8-4.1 yd in front of the QB through the whole drop (QB minus interior depth p50
  * 3.8 / 3.8 / 3.9 / 4.0 / 4.1 / 4.0 / 3.8 yd at 0.5 / 0.8 / 1.0 / 1.3 / 1.5 / 2.0 / 2.5 s; scripts/diag/pass-operators/
@@ -275,7 +275,7 @@ const TACKLE_STEPS = 3 * 0.45;
 /** SET_SPOT: the interior short set, two set steps (yd; about 16 in each). */
 const SHORT_SET = 2 * 0.45;
 
-/** SET_SPOT (experimental, off; SET_SPOT=1): the pass set's reference is the pocket, not the man (Integration,
+/** SET_SPOT (on by default; SET_SPOT=0 turns it off): the pass set's reference is the pocket, not the man (Integration,
  * 2026-11-15; hand-fight note sections 21-23).
  * - **Information removed** (interior OL). The set no longer reads the QB's live position, which is behind the
  *   blocker and unseen. passSetDepth and the point he protects come from the call (calledLaunchX: the drop every
@@ -293,7 +293,7 @@ const SHORT_SET = 2 * 0.45;
  * - **Tackles.** They keep their own kick and, unless SET_SPOT_TACKLE, the live-QB read: a known leak, owed
  *   (KNOWN_PROBLEMS PRO-INFO #12). */
 export const SET_SPOT = process.env.SET_SPOT !== '0';
-/** SET_SPOT_TACKLE (experimental, off; needs SET_SPOT): the tackles' live-QB reads removed (attempt 3, a different
+/** SET_SPOT_TACKLE (on by default; SET_SPOT_TACKLE=0 turns it off; needs SET_SPOT): the tackles' live-QB reads removed (attempt 3, a different
  * mechanism; Integration, 2026-11-15). He takes the three-step vertical set off his snap spot, and further depth is
  * paced by the rusher: PASS_KICK keeps him deeper than the man up his arc. The call is the floor only: the launch
  * point he protects and the pocket's front. Two call-only spots failed before (the final launch point from the snap,
@@ -530,7 +530,7 @@ function setContactHands(joint: HandJoint, b: Agent, d: Agent, type: 'pass' | 'r
   joint.steer = c >= 0 ? armForce(b) * (0.15 + 0.55 * c) : armForce(d) * (0.15 + 0.4 * -c);
 }
 
-/** PUNCH (experimental, off; PUNCH=1 turns it on): a blocker's hands go to
+/** PUNCH (on by default; PUNCH=0 turns it off): a blocker's hands go to
  * the man. The hand law above works at elbows-bent extension (bodies + 0.3 arm
  * x (0.5 + 0.5 control), a quarter of his arm), so a man standing off at
  * arm's length -- inside his reach but beyond his bent elbows -- is touched
@@ -549,7 +549,7 @@ const LOCKOUT = 0.9;
 /** How far the punch drives the hands into the man (yd): a press, not a touch. */
 const PRESS_INTO = 0.1;
 const punchState = new WeakMap<HandJoint, { ext: number; over: number; striking?: boolean }>();
-/** PUNCH_STRIKE (experimental, off; with PUNCH): the punch's press into the man (PRESS_INTO) is a strike, not a
+/** PUNCH_STRIKE (on by default; PUNCH_STRIKE=0 turns it off; with PUNCH): the punch's press into the man (PRESS_INTO) is a strike, not a
  * standing request. On a new fit his hands drive into the man as before, until he feels the man on them (the joint's
  * press at UNLOADED of his own press, last step's): the strike has landed. From then he holds the fit: his hands stay
  * at the man (the touch), giving and following at arm speed, so they press only as the man closes on them faster than
@@ -1182,7 +1182,7 @@ function resolveMove(sim: PlaySim, e: Engagement, axis: Vec2): void {
 
 // ------------------------------------------------------------ update
 
-/** ZONE_RUN (experimental, off): an interior defender keyed on his man's
+/** ZONE_RUN (on by default; ZONE_RUN=0 turns it off): an interior defender keyed on his man's
  * reach/bucket step races him for the play-side shoulder with open hips. */
 const ZONE_RUN = process.env.ZONE_RUN !== '0', ZONE_RUN_PACE = 0.75, ZONE_RUN_STEP = 0.5, ZONE_RUN_OPEN = Math.PI / 4;
 /** ZONE_RUN: a blocker seen running sideways at least this fast (yd/s) is
@@ -1283,7 +1283,7 @@ export const TACKLE_BRAKE = process.env.TACKLE_BRAKE === '1';
 export const TACKLE_RESET = process.env.TACKLE_RESET === '1';
 const SINK_POSTURE = 0.95;
 
-/** ANCHOR_BASE (experimental, off): how much of himself a pass protector commits into the man is bounded by what
+/** ANCHOR_BASE (on by default; ANCHOR_BASE=0 turns it off): how much of himself a pass protector commits into the man is bounded by what
  * his base could recover from if the load vanished. The World releases a lean that loses its load into his capture
  * point (lean / (m w0^2), less what his gait absorbs) and he falls past criticalDeviation (base radius + stepping speed
  * / w0); in games, unloads topple him 1-4% of the time with a lean under 0.6 of m w0^2 x critical deviation, 21-30% at
@@ -1317,14 +1317,14 @@ function anchorBase(b: Agent, tb: TrenchTraits, heavy: boolean, intent: Intent):
  * 1600-1900) and his lean grew to it plus the legs' 25% growth, then dumped forward when the arm ended
  * (fall-trace.mts FALL_ROLE=DL, longarm-release.mts). */
 export const RUSH_ARM_BALANCE = process.env.RUSH_ARM_BALANCE === '1';
-/** RUSH_LEAN_BOUND (experimental, off; RUSH_LEAN_BOUND=1): every pass rusher engaged with a blocker commits as a
+/** RUSH_LEAN_BOUND (on by default; RUSH_LEAN_BOUND=0 turns it off): every pass rusher engaged with a blocker commits as a
  * protector does (ANCHOR_BASE's law, armBalance): no lean past the load he feels (growth 0) and no more than his base
  * could recover from if the press went (k m w0^2 critDev, k = 1.05 - 0.55 x technique: balance and power rush). The
  * long-arm case (RUSH_ARM_BALANCE) generalised: the interior rusher leaning about 1400 N into an 1800 N press went
  * forward onto the man when it was taken away (12 of 21 interior falls; dl-falls.mts). A bull still keeps the
  * commitment his bound allows and can still be dropped. */
 export const RUSH_LEAN_BOUND = process.env.RUSH_LEAN_BOUND !== '0';
-/** RUSH_BULL (experimental, off; RUSH_BULL=1; PRO-INFO #9 and #10, the first move): the bull rush is the rusher's
+/** RUSH_BULL (on by default; RUSH_BULL=0 turns it off; PRO-INFO #9 and #10, the first move): the bull rush is the rusher's
  * drive, not a roll. He asks to go through the man's chest to the QB (power: push 1 at 0.55 of his top speed, his pad
  * level), and the World resolves his legs, mass, lean and base against the blocker's anchor; nothing else. The roll
  * (logistic of rated skill against the blocker's rated counter), the scripted strikes (a won bull's 0.9 x the
@@ -1406,7 +1406,7 @@ export function pressOnBlocker(b: Agent, joint: HandJoint | undefined): number {
   return Math.max(0, -fx);
 }
 
-/** PAST_ALONG_PATH (experimental, off; PAST_ALONG_PATH=1 turns it on): a
+/** PAST_ALONG_PATH (on by default; PAST_ALONG_PATH=0 turns it off): a
  * blocker is beaten when the man is past him along the man's own path of
  * travel (hips past hips: the blocker more than PAST_MARGIN behind him along
  * his velocity), the football meaning and the officials'. Off, the pass rep's
@@ -1501,7 +1501,7 @@ export function rushIntentOf(e: Engagement): { intent: RushIntent; switches: num
 export const PAST_MARGIN = 0.3;
 /** The ride's push away from the QB, on top of keeping up with the man (yd/s). */
 const RIDE_PUSH = 1.0;
-/** PASS_RIDE (experimental, off; PASS_RIDE=1 turns it on): the ride as coached, one rule for every pass blocker. A man
+/** PASS_RIDE (on by default; PASS_RIDE=0 turns it off): the ride as coached, one rule for every pass blocker. A man
  * who has won his hip (past along his path, PAST_ALONG_PATH's test) is not let go: the blocker runs with him on his
  * QB side -- the spot beside the man's hip, a body's width toward the QB across his path -- matching his velocity and
  * closing on that spot, hips opened to run where he is going, and pushes through his hands (the joint's push, away from himself: the man's path flattened
@@ -1553,14 +1553,14 @@ export function pastAlongPath(b: { pos: Vec2 }, d: { pos: Vec2; vel: Vec2 }, phi
  * -2.6 to -3.1 yd/s across, achieved about 0, and won in front of the tackle
  * (55-57% vs NFL 27%; docs/reviews/2026-11-12-edge-rush.md). */
 export const EDGE_ARC = process.env.EDGE_ARC === '1';
-/** REP_SEEN (experimental, off; REP_SEEN=1; PRO-INFO #3, #4, #7, #8): in the pass rep each man acts on what he can
+/** REP_SEEN (on by default; REP_SEEN=0 turns it off; PRO-INFO #3, #4, #7, #8): in the pass rep each man acts on what he can
  * sense. The rusher aims and faces at the QB as he sees him, and reads his leverage and the blocker's overset from
  * his picture of the blocker. The blocker sets against the launch point he knows from the call (calledLaunchX), not
  * the QB's live spot behind him; his ride runs with the man as he has him (touch or sight), and his hands-off delay
  * is keyed on his own hands being off the man, not on the rusher's move record. The rep's outcome geometry (past,
  * turned the corner) stays the World's. */
 export const REP_SEEN = process.env.REP_SEEN !== '0';
-/** ENGAGE_FELT (default off; ENGAGE_FELT=1): an engaged man's requests and decisions read the man he is engaged with as
+/** ENGAGE_FELT (on by default; ENGAGE_FELT=0 turns it off): an engaged man's requests and decisions read the man he is engaged with as
  * he has him: by touch at the hands' delay (0.06 s, the delay punch() feels the man at) while either man's hands carry
  * load, by sight (0.12-0.24 s, by his read) when they do not; never the man's true position or velocity (Integration,
  * 2026-11-14: the engaged pass set, the ride and the run drive faced atan2(d.pos - b.pos)). Covered: both men's facing,
@@ -1569,7 +1569,7 @@ export const REP_SEEN = process.env.REP_SEEN !== '0';
  * Physics (joint and strike geometry, the World's contact and reach) and the rep's outcome geometry (past and out of
  * reach, behind his shoulders, the body no longer in the way) stay on the true bodies. */
 export const ENGAGE_FELT = process.env.ENGAGE_FELT !== '0';
-/** ENGAGE_TRUNK (experimental, off; ENGAGE_TRUNK=1, needs TRUNK_TWIST=1 and ENGAGE_FELT=1; the yaw note's step 1,
+/** ENGAGE_TRUNK (on by default; ENGAGE_TRUNK=0 turns it off, needs TRUNK_TWIST=1 and ENGAGE_FELT=1; the yaw note's step 1,
  * docs/reviews/2026-11-14-pair-contact-design.md): an engaged man's hips and shoulders are two requests. The hips are his
  * set and ride, square to what he protects (a pass setter: the direction from the called launch point through him; a
  * run blocker: his track, REACH_RACE's open hips as before; a gap-holding run defender: square to the line of
@@ -1679,14 +1679,14 @@ const SHED_PHYSICAL = process.env.SHED_PHYSICAL !== '0';
  * re-latch him at once (the shed window); bodies still collide.
  * SHED_PURSUE=0 restores the close-range gate for comparison. */
 const SHED_PURSUE = process.env.SHED_PURSUE !== '0';
-/** Experimental (RUN_HAND_MOVE=1, off): a defender who decides to work off
+/** On by default (RUN_HAND_MOVE=0 turns it off): a defender who decides to work off
  * a run block attacks the blocker's hands first (see the shed decision). */
 const RUN_HAND_MOVE = process.env.RUN_HAND_MOVE !== '0';
-/** Experimental (SHED_PAST=1, off): a defender working off a run block is
+/** On by default (SHED_PAST=0 turns it off): a defender working off a run block is
  * off it once the blocker is no longer between him and the runner he sees
  * (see the leverage check in stepRunRep). */
 const SHED_PAST = process.env.SHED_PAST !== '0';
-/** Experimental (SHED_PAST_GATE=1, with SHED_PAST; off): getting past frees
+/** On by default (SHED_PAST_GATE=0 turns it off; with SHED_PAST): getting past frees
  * him only while the runner he sees is still more than 2 yd off. Slipping the
  * blocker with the runner already on him leaves him in the block, reaching
  * with his free arm (docs/reviews/run-shed-release.md, "Release timing"). */
@@ -1700,7 +1700,7 @@ const runSheds = new WeakMap<Engagement, { until: number; side: number; runner?:
 
 /** Run-blocker anchoring against a felt drive (RUN_ANCHOR=0 disables, for A/B). */
 const ANCHOR = process.env.RUN_ANCHOR !== '0';
-/** ANCHOR_GRADE (default off): an engaged run blocker braces in proportion
+/** ANCHOR_GRADE (on by default; ANCHOR_GRADE=0 turns it off): an engaged run blocker braces in proportion
  * to how hard he is being driven back (felt load toward his backfield,
  * 0.15-0.35 of body weight, and backward speed, 0.05-0.25 yd/s), blending his
  * request toward the brace, instead of switching his whole request to the
@@ -1711,7 +1711,7 @@ const ANCHOR_GRADE = process.env.ANCHOR_GRADE !== '0';
 /** ANCHOR_GRADE: the time (s) over which a blocker's feel of being driven
  * settles (a reaction time), and that feel per blocker. */
 const ANCHOR_FEEL = .15;
-/** FEET_SETTLE (default off): an engaged run blocker's foot request follows
+/** FEET_SETTLE (on by default; FEET_SETTLE=0 turns it off): an engaged run blocker's foot request follows
  * his controller's wish with a motor lag (FEET_SETTLE_TAU) instead of
  * changing every tick. The wish moves tick to tick with the man's perceived
  * lateral motion in the hand fight, the switch between touch and sight delay
@@ -1781,7 +1781,7 @@ export function updateEngagements(sim: PlaySim, intents: Intent[] = sim.intents)
   }
 }
 
-/** CLIMB_PREP (default off): on a zone double whose backer either member sees
+/** CLIMB_PREP (on by default; CLIMB_PREP=0 turns it off): on a zone double whose backer either member sees
  * showing (arriving within reach shortly, or flowing to the play side), his
  * feet go with the man's lateral flow and half a yard a second more and start
  * gaining ground upfield while his hands stay on: eyes on the backer, feet
@@ -1790,14 +1790,14 @@ export function updateEngagements(sim: PlaySim, intents: Intent[] = sim.intents)
  * and started their climb from there. Contact and World decide what the feet
  * achieve; the release read is unchanged. */
 export const CLIMB_PREP = process.env.CLIMB_PREP !== '0';
-/** CLIMB_SQUARE (default off; acts with CLIMB_PREP): the same climber squares
+/** CLIMB_SQUARE (on by default; CLIMB_SQUARE=0 turns it off; acts with CLIMB_PREP): the same climber squares
  * his shoulders upfield while his hands stay on. At release climbers faced
  * ~45 deg in toward the down man with the climb path ~35 deg the other way
  * (80-90 deg off), and spent 0.3 s turning before they could accelerate. */
 export const CLIMB_SQUARE = process.env.CLIMB_SQUARE !== '0';
 interface ClimbPrepPlan { kind: string; climbTo?: Agent | null;
   combination?: { released: boolean; backer: Agent | null; defender: Agent; members: Agent[] } }
-/** CLIMB_BASE (default off): a zone double member whose backer shows (in
+/** CLIMB_BASE (on by default; CLIMB_BASE=0 turns it off): a zone double member whose backer shows (in
  * his own picture: arriving within reach in half a second, or flowing play
  * side) keeps his hands on the man but eases his drive (push at most 0.35),
  * so his weight stays over his own feet. Driving full force into the man up
@@ -1805,7 +1805,7 @@ interface ClimbPrepPlan { kind: string; climbTo?: Agent | null;
  * gone the lean collapsed his posture (0.77 to 0.12) and he spent 0.8 s
  * recovering at ~1 yd/s beside the man (s11-45 RG). */
 export const CLIMB_BASE = process.env.CLIMB_BASE !== '0';
-/** DOUBLE_OVERTAKE (default off): zone doubles hand the man to the member
+/** DOUBLE_OVERTAKE (on by default; DOUBLE_OVERTAKE=0 turns it off): zone doubles hand the man to the member
  * who can hold him and release the other, as tracked: on stretch runs the
  * backside member overtakes a man flowing play side (races for his play-side
  * half as the engaged blocker, approaches where he is going) and does not
@@ -2819,7 +2819,7 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   // A lineman who has already beaten the reach (beside or past the man on
   // him toward the backfield) keeps attacking: penetrate and make the play.
   const beaten = !!blockerSeen && (d.pos.x - blockerSeen.pos.x) * sim.attackDir(b.team) < d.profile.radius;
-  // TOUCH_READ (experimental, off): with his hands on the man he feels how
+  // TOUCH_READ (on by default; TOUCH_READ=0 turns it off): with his hands on the man he feels how
   // the man moves, as he already has his position by touch (the stack read);
   // a reach that turns into a vertical drive is a drive to press, not a
   // picture of a step across that is a reaction time old.
@@ -2862,7 +2862,7 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   // holds his depth and works down the line.
   const reachedFlat = ZONE_RUN && !!read.stack?.reached;
   const recover = reachedFlat || d.runFit?.technique !== 'attack' || zoneStep || squeeze !== 0;
-  // FLAT_PRESS (experimental, off): flattening on a reach is lateral work down
+  // FLAT_PRESS (on by default; FLAT_PRESS=0 turns it off): flattening on a reach is lateral work down
   // the line, square and still pressing into the man, not a stop: with a zone
   // step read, his depth request is the more upfield of holding his contact
   // depth and his own step into the man (the read-step pace, 0.5 yd/s).
@@ -2910,7 +2910,7 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
     lateralFlow = st.firstStep * td.lateral;
     d.tags.add('work-across');
   }
-  // ZONE_RUN (experimental, off): the race for the play-side shoulder. Keyed
+  // ZONE_RUN (on by default; ZONE_RUN=0 turns it off): the race for the play-side shoulder. Keyed
   // on the man in front alone, not on the rest of the line: when his own
   // first step goes to one side (a reach or bucket step) and he keeps going
   // that way, an interior man opens his hips and races him for that
@@ -2975,7 +2975,7 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   const exitAim = shedding && shed!.runner && supportRunner ? read.aim : undefined;
   const exit = exitAim ? norm(sub(exitAim, d.pos)) : null;
   const acrossFace = supportRunner && shed?.contactSide !== undefined;
-  // SHED_ROUTE (experimental, off): a first-level man working off goes around
+  // SHED_ROUTE (on by default; SHED_ROUTE=0 turns it off): a first-level man working off goes around
   // the shoulder of the man actually on him (by touch with loaded hands, else
   // his picture), to the side the ball is on now, not across the blocker's
   // original drive line, which once the blocker has moved can point into his chest.
@@ -3181,7 +3181,7 @@ function tryHold(sim: PlaySim, e: Engagement): boolean {
 }
 
 /** Defender wins: the hands come apart. Run sheds throw the blocker aside. */
-/** PASS_OFF (experimental, off; PASS_OFF=1): the pass-off. A pass rusher who beats his blocker while a helper's hands are
+/** PASS_OFF (on by default; PASS_OFF=0 turns it off): the pass-off. A pass rusher who beats his blocker while a helper's hands are
  * on him (the helper's joint carried load last step: he feels the man on his hands) is the helper's man from there: the
  * helper keeps him as his own block, as coached on a pass-off, instead of losing him with the beaten man's rep. The
  * engagement goes on with the helper as its blocker and his own hands joint (a fresh fight: neither man in control, no

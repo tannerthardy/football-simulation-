@@ -1,5 +1,5 @@
 /**
- * DECLARED_BREAK (experimental, off; docs/reviews/2026-11-14-declared-break.md): each route's break, as installed.
+ * DECLARED_BREAK (on by default; DECLARED_BREAK=0 turns it off; docs/reviews/2026-11-14-declared-break.md): each route's break, as installed.
  *
  * The route's fact is where his break is: an index into its points (the vertex he plants or rolls at), or, for a route
  * with no vertex, the declare rule it has always had (a crosser or a back's release once he has moved 5 yd, a vertical

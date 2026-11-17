@@ -51,7 +51,7 @@ export interface SceneOptions {
   call?: Partial<DefensivePlayCall>;
   /** Sample defender/receiver positions at these times (s). */
   sampleAt?: number[];
-  /** Pre-snap motion (played only with MOTION=1). */
+  /** Pre-snap motion (played unless MOTION=0). */
   motion?: MotionCall;
 }
 

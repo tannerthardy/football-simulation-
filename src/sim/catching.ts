@@ -42,7 +42,7 @@ const touchedUntil = (sim: PlaySim, beat: number) => sim.t + (TIP_AWAY ? 10 : be
  * league-sampled panel came off the receiver (3.8% of short throws; NFL 0.4%). */
 const DEFLECT_BALL = process.env.DEFLECT_BALL !== '0';
 
-/** CATCH_HANDS (off; CATCH_HANDS=1 turns it on; estimated, C14): the catch is a
+/** CATCH_HANDS (on by default; CATCH_HANDS=0 turns it off; estimated, C14): the catch is a
  * contest of both players' hands, resolved in the order the ball reaches them.
  * A defender whose hands' envelope the ball reaches first, and who sees it,
  * plays the ball himself (defenderPlay), even with the receiver in the same
@@ -61,7 +61,7 @@ const DEFLECT_BALL = process.env.DEFLECT_BALL !== '0';
  * weeks 1-3 vs develop 3506343d). Constants are estimates fitted to those
  * behaviours, not to yards. */
 const CATCH_HANDS = process.env.CATCH_HANDS !== '0';
-/** CATCH_SPEED (experimental, off; CATCH_SPEED=1 turns it on): tracking a ball he is not facing while he runs.
+/** CATCH_SPEED (on by default; CATCH_SPEED=0 turns it off): tracking a ball he is not facing while he runs.
  * Replaces the over-the-shoulder step (from behind and above 6.5 yd/s only) with a term that grows with his speed
  * above 3 yd/s, with how far the ball comes from behind his line of run (0.46 of it straight across, none once he is facing it, past 120 deg),
  * and with how long it has been in the air (a ball dropping in from distance is harder to keep in view while
@@ -87,7 +87,7 @@ export function runTrackTerm(rs: number, cosFromBehind: number, airTime: number,
 /** CATCH_HANDS: scale of a hand through the receiver's arms (estimated; to be
  * fitted on the panel against NFL completion by the defender's closeness). */
 const HANDS_SCALE = 1.2;
-/** CATCH_SECURE (off; CATCH_SECURE=1 turns it on; estimated, C14): a catch is
+/** CATCH_SECURE (on by default; CATCH_SECURE=0 turns it off; estimated, C14): a catch is
  * not an instant. A won catch roll puts the ball in the receiver's hands for a
  * securing window before it is a catch: about 0.2-0.45 s, longer for a harder
  * catch (stretch, height, a ball from behind) and shorter for sure hands. A
@@ -101,7 +101,7 @@ const HANDS_SCALE = 1.2;
  * 0.75-1.5 yd away at arrival complete 28%, ours 46-59% (catchpoint.py, same
  * operator). */
 const CATCH_SECURE = process.env.CATCH_SECURE !== '0';
-/** CATCH_POINT (off; CATCH_POINT=1 turns it on; C14 open end): a receiver
+/** CATCH_POINT (on by default; CATCH_POINT=0 turns it off; C14 open end): a receiver
  * tracking the ball catches it where it comes to his hands, not where it first
  * crosses the edge of his reach. Off, the catch resolved on the first tick the
  * ball entered his envelope, while it was still approaching (median 1.38 yd

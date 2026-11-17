@@ -1,5 +1,5 @@
 /**
- * READ_PLAN (experimental, off): the installed read plan a quarterback runs, compiled once per concept and
+ * READ_PLAN (on by default; READ_PLAN=0 turns it off): the installed read plan a quarterback runs, compiled once per concept and
  * formation from the routes our engine actually runs (compile.ts) and cached for the process. The plan is the
  * coach's install, not a picture of this play's defense: it is compiled with fixed generic teams and parked
  * defenders, so it never sees the defensive call. QBPass executes it from what he sees (src/sim/behaviors/qb.ts).
@@ -15,7 +15,7 @@ import { PLAN_ROLES } from './candidates.js';
 import type { PlanStyle } from './types.js';
 
 export const READ_PLAN = process.env.READ_PLAN !== '0';
-/** OUTLET_LAST (experimental, off; read-plan table, docs/reviews/2026-11-14-read-plan-table.md): the back's release
+/** OUTLET_LAST (on by default; OUTLET_LAST=0 turns it off; read-plan table, docs/reviews/2026-11-14-read-plan-table.md): the back's release
  * is the outlet, read last, after the field reads, not placed in the order by when he comes open (BACK_FRONT put him
  * first or second in 11 of the 32 pool concepts and third in 10, and `initPlan`'s "outlet last" then did nothing).
  * Every source that names the back puts him last (Hewitt, USA Football: "No. 1, then No. 2, then running back";
@@ -24,7 +24,7 @@ export const READ_PLAN = process.env.READ_PLAN !== '0';
  * Ross; one mesh install with the flare first, Throw Deep); no pool concept installs those (our slant_flat back
  * blocks, stick's back checks, mesh is installed as Leach's under PLAN_KEYS), so none is exempt. */
 export const OUTLET_LAST = process.env.OUTLET_LAST !== '0';
-/** PLAN_KEYS (experimental, off; same table): the coached key where the compiler's geometry names another defender,
+/** PLAN_KEYS (on by default; PLAN_KEYS=0 turns it off; same table): the coached key where the compiler's geometry names another defender,
  * and one named install where the sources disagree. Each entry carries its source.
  * - drive: the hook linebacker, dig (high) over shallow (low) (Smart Football, "Shallow cross, drag and drive"); the
  *   compiler keyed the deep defender over the go.
@@ -39,20 +39,20 @@ export const OUTLET_LAST = process.env.OUTLET_LAST !== '0';
  * - pa_flood: the sail, then the cross, then the flat (weak source, a dropback play-action read); alternative: the
  *   boot's flat first, low to high (DeBerry, Glazier), for a bootleg, which ours is not. */
 export const PLAN_KEYS = process.env.PLAN_KEYS !== '0';
-/** PLAN_KEYS_2 (experimental, off): with PLAN_KEYS, six concepts the compiler ran as pure orders key as taught:
+/** PLAN_KEYS_2 (on by default; PLAN_KEYS_2=0 turns it off): with PLAN_KEYS, six concepts the compiler ran as pure orders key as taught:
  * slant_flat, stick, fade_flat, double_slants by their own sources; quick_outs and hitch_out by the family rule for a
  * two-receiver quick combination (the front-side flat defender, on the third step). Trips stick and seam-slant stay
  * pure progressions: no source for trips stick's alert (a keyed plan demotes it to third), and seam-slant's hook key
  * would be double slants' borrowed for a different structure. */
 export const PLAN_KEYS_2 = process.env.PLAN_KEYS_2 !== '0';
 const SECOND_KEYS = new Set(['slant_flat', 'stick', 'fade_flat', 'double_slants', 'quick_outs', 'hitch_out']);
-/** PLAN_KEYS_3 (experimental, off): with PLAN_KEYS, the coached key holds whatever the geometry says for dagger and
+/** PLAN_KEYS_3 (on by default; PLAN_KEYS_3=0 turns it off): with PLAN_KEYS, the coached key holds whatever the geometry says for dagger and
  * levels. Their keys were the compiler's, derived from geometry (dagger's the deep safety, seam over dig, the coached
  * key itself; levels keyed on the hook in trips only), so a route-timing change (ROUTE_SHAPE: the dig ready on the
  * first hitch) removed them. As table entries they hold; levels from 2x2, pure on develop, is keyed too. */
 export const PLAN_KEYS_3 = process.env.PLAN_KEYS_3 !== '0';
 const THIRD_KEYS = new Set(['dagger', 'levels']);
-/** VERTS_KEYS (experimental, off; with PLAN_KEYS): the vertical concepts read as installed.
+/** VERTS_KEYS (on by default; VERTS_KEYS=0 turns it off; with PLAN_KEYS): the vertical concepts read as installed.
  * - verts_hitch: its own read ("the middle-of-field safety: he stays middle: #2 seam; he shades to #2: #3 hitch under
  *   the seam, then the backside seam") is a key on the defender over the seam: high the #2 seam, low the #3 hitch, one
  *   look on the set; the backside vertical next; the back last (Gonzalez: "If he hitches again he has to move his eyes

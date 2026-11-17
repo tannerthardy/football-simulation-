@@ -1,5 +1,5 @@
 /**
- * BACKER_CREEP (experimental, off): box backers creeping into the snap.
+ * BACKER_CREEP (on by default; BACKER_CREEP=0 turns it off): box backers creeping into the snap.
  *
  * NFL box linebackers (2022 tracking, 1.6-7 yd deep within 6 yd of the
  * centre of the line): in the last 0.1 s before the snap 37-38% are moving

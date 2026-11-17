@@ -86,14 +86,14 @@ export interface CarrierOptions {
   catchAt?: number;
 }
 
-/** RB_COMMIT (default off): at the line the back's entry choice counts what
+/** RB_COMMIT (on by default; RB_COMMIT=0 turns it off): at the line the back's entry choice counts what
  * his momentum costs him (the turn from his current velocity to each route,
  * scaled by his speed: a cut at speed spends traction and time) and holds
  * the lane he chose unless another is clearly better. He flipped from the
  * outside lane to the inside one 1.5 yd from the line while running 3.6 yd/s
  * laterally and ran into the end he was bending around. */
 export const RB_COMMIT = process.env.RB_COMMIT !== '0';
-/** OZ_HIP_READ (default off): on outside and wide zone the back reads the
+/** OZ_HIP_READ (on by default; OZ_HIP_READ=0 turns it off): on outside and wide zone the back reads the
  * play-side end man (the first defender on the line outside his play-side
  * tackle, as he sees them) against the blocker nearest him. With his blocker
  * inside him (outside leverage: the edge is his) the back aims inside him;
@@ -102,7 +102,7 @@ export const RB_COMMIT = process.env.RB_COMMIT !== '0';
  * same operator: with the end's blocker inside him the back crossed inside
  * him 78-81% (ours 40-48%), reached 60% (ours 43%), square 73-86%. */
 export const OZ_HIP_READ = process.env.OZ_HIP_READ !== '0';
-/** RB_HELD (default off): the back's read at the line gives a defender he
+/** RB_HELD (on by default; RB_HELD=0 turns it off): the back's read at the line gives a defender he
  * sees a blocker on the same held-up time as his open-field read does (0.7 s,
  * 0.25 s if the man is visibly coming at him through the block). The line
  * read treated every engaged lineman as free to run to any entry at full
@@ -110,14 +110,14 @@ export const OZ_HIP_READ = process.env.OZ_HIP_READ !== '0';
  * one nearest the call (s11-79: into the end; an early cut inside him gained
  * 4.7 yd on the same snap). */
 export const RB_HELD = process.env.RB_HELD !== '0';
-/** HELD_SIDE (default off; with RB_HELD): the held-up time counts only for
+/** HELD_SIDE (on by default; HELD_SIDE=0 turns it off; with RB_HELD): the held-up time counts only for
  * an entry his blocker stands between him and: a blocker on the man's inside
  * does not slow him to an entry outside him. The line read gave an end with
  * outside leverage on his blocker the full hold to the edge, so the edge read
  * open and the back bounced into him (tracked outside zone: backs crossed
  * inside such an end 78-81%, ours 41-56%). */
 export const HELD_SIDE = process.env.HELD_SIDE !== '0';
-/** RB_FLOW (default off): the back reads a moving line where it will be.
+/** RB_FLOW (on by default; RB_FLOW=0 turns it off): the back reads a moving line where it will be.
  * Bodies blocking a route were taken where they stand now, so on a flowing
  * zone line the straight lane behind blockers already stepping play side
  * looked shut and the read flattened him along the line (dog-leg on 39% of
@@ -126,7 +126,7 @@ export const HELD_SIDE = process.env.HELD_SIDE !== '0';
  * zone). Each body he sees is carried along its seen velocity to when he
  * would pass it (at most 1 s ahead). */
 export const RB_FLOW = process.env.RB_FLOW !== '0';
-/** RB_TEMPO (default off): through traffic the back runs at the speed from
+/** RB_TEMPO (on by default; RB_TEMPO=0 turns it off): through traffic the back runs at the speed from
  * which he can still cut away from the nearest free defender in front of him,
  * not flat out. A side step of his body plus the man's reach (w) takes
  * sqrt(2w/a) at his lateral acceleration a (his cut skill on his lateral
@@ -141,7 +141,7 @@ export const RB_FLOW = process.env.RB_FLOW !== '0';
  * and the open-field DB attempts we lose are against 7.5-7.7 yd/s backs (6.1
  * on the tackles that hold). */
 export const RB_TEMPO = process.env.RB_TEMPO !== '0';
-/** RB_GATHER (default off, with RB_TEMPO): a free man he can no longer
+/** RB_GATHER (on by default; RB_GATHER=0 turns it off, with RB_TEMPO): a free man he can no longer
  * sidestep at half speed still slows him to that half speed: he gathers his
  * feet to keep a cut (or to take the hit balanced) rather than run flat out
  * into a squared tackler. A man he sees blocked still does not slow him.

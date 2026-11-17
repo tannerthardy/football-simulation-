@@ -22,7 +22,7 @@ import { isQuickOut, type ReceiverRead, type ReleaseReader } from './reads.js';
 import { hasVisibleCap } from './judgment.js';
 
 export const APEX_LEVERAGE = Number(process.env.APEX_LEVERAGE ?? 7);
-/** CUT_WALL (experimental, off; CUT_WALL=1): a hook defender walls a shallow crosser from his own area and passes him
+/** CUT_WALL (on by default; CUT_WALL=0 turns it off): a hook defender walls a shallow crosser from his own area and passes him
  * to the next dropper ("collision and pass"), square to the QB at his window depth, instead of jumping him and carrying
  * him man head-up 8 yd past his area. The low-hole rat (whose job is the crosser) keeps the jump. */
 export const CUT_WALL = process.env.CUT_WALL !== '0';

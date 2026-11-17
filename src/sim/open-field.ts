@@ -1,4 +1,4 @@
-/** OPEN_FIELD (experimental, off; OPEN_FIELD=1 turns it on): a defender closing on a free runner in space stays on top
+/** OPEN_FIELD (on by default; OPEN_FIELD=0 turns it off): a defender closing on a free runner in space stays on top
  * of him with inside-out leverage instead of sprinting to the intercept point.
  *
  * Why (scripts/diag/risk/contact_cost.py parts 3-4, one operator over BDB 2025 and the sim, free plays after short

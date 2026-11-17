@@ -76,13 +76,13 @@ export interface ReceiverEstimate {
   readonly answerSource?: 'own-key-picture' | 'receiver-motion' | 'installed-default';
 }
 
-/** FORECAST_BREAK (experimental, off; FORECAST_BREAK=1 turns it on): the break the quarterback expects is on
+/** FORECAST_BREAK (on by default; FORECAST_BREAK=0 turns it off): the break the quarterback expects is on
  * the installed route, not on the continuation the path adds past it. Off, a flat, arrow, swing or back's flat
  * (their installed cut s 0.9) takes its break from the continuation's turn at the sideline margin (s 0.75 or
  * 0.6), so the QB expects it about 6 s after the snap and treats the receiver as not ready (a flat open at
  * 0.77 completion was never thrown: docs/reviews/2026-11-11-forecast-break.md). */
 const FORECAST_BREAK = process.env.FORECAST_BREAK !== '0';
-/** FORECAST_HOLD (experimental, off; FORECAST_HOLD=1 turns it on): a receiver a little off his drawn line is still
+/** FORECAST_HOLD (on by default; FORECAST_HOLD=0 turns it off): a receiver a little off his drawn line is still
  * running his route. Off, a picture is placed on the installed route only within his body radius (about 0.3 yd) of
  * it; anything farther makes the whole forecast a straight line of his current velocity, which ignores the coming
  * break. On the forced-concept panel, 26% of pictures of receivers moving along their routes were thrown out that
@@ -105,7 +105,7 @@ const LANDMARK_TOL = 3;
 /** Where the receiver cuts on an installed path: the waypoint the route slows
  * him most for (first on ties), not counting a final settle spot. Null for a
  * path with no slowed waypoint (a go or seam). */
-/** DECLARED_BREAK (experimental, off; src/playbook/route-breaks.ts): the break the quarterback expects on an installed
+/** DECLARED_BREAK (on by default; DECLARED_BREAK=0 turns it off; src/playbook/route-breaks.ts): the break the quarterback expects on an installed
  * route is its declared vertex, the same one the read plan times; off, the waypoint that slows him most. */
 const DECLARED_BREAK = process.env.DECLARED_BREAK !== '0';
 /** DECLARED_BREAK: whether a body at `pos` has met a seen-open route's declare rule (the read compiler's own rule,

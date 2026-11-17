@@ -37,11 +37,11 @@ import { derivePhysical } from '../players/physical.js';
 const FRONT_ALIGN = process.env.FRONT_ALIGN !== '0';
 /** SAM_ON_TE (experimental, off): see the defensive call; share of Over/Even calls with the Sam on the TE. */
 const SAM_ON_TE = process.env.SAM_ON_TE === '1', SAM_ON_RATE = 0.5;
-/** MUG_CALLS (experimental, off): mug rates [>=1, 2] by package and situation
+/** MUG_CALLS (on by default; MUG_CALLS=0 turns it off): mug rates [>=1, 2] by package and situation
  * (1 = 1st, 2 = 2nd, 3 = 3rd/4th and short (< 4), 4 = 3rd/4th and long). NFL 2022
  * snap frames: a non-lineman 0-1.6 yd off the ball inside the guards. */
 const MUG_CALLS = process.env.MUG_CALLS !== '0';
-/** NICKEL_FRONTS (experimental, off): shares of nickel's five-man front and of the three-man front, by moment. */
+/** NICKEL_FRONTS (on by default; NICKEL_FRONTS=0 turns it off): shares of nickel's five-man front and of the three-man front, by moment. */
 const NICKEL_FRONTS = process.env.NICKEL_FRONTS !== '0';
 const SUB_SHARE: Record<'nickel' | 'dime', Record<Moment, Record<string, number>>> = {
   nickel: {
@@ -51,13 +51,13 @@ const SUB_SHARE: Record<'nickel' | 'dime', Record<Moment, Record<string, number>
   },
   dime: { early: { okie: .11 }, third: { okie: .18 }, short: { okie: .12 } },
 };
-/** MUG_PRESSURES (experimental, off): mug packages by mug count; the remainder bails (no pressure). */
+/** MUG_PRESSURES (on by default; MUG_PRESSURES=0 turns it off): mug packages by mug count; the remainder bails (no pressure). */
 const MUG_PRESSURES = process.env.MUG_PRESSURES !== '0';
 const MUG_PACKAGES: Record<'double' | 'single', Array<[string, number]>> = {
   double: [['mug_one', .24], ['mug_sim', .08], ['mug_fire', .06], ['mug_both', .19]],
   single: [['mug_one', .44], ['mug_sim', .06]],
 };
-/** SHORT_BASE (experimental, off): share of short-yardage snaps vs heavy personnel played from the heavy package. */
+/** SHORT_BASE (on by default; SHORT_BASE=0 turns it off): share of short-yardage snaps vs heavy personnel played from the heavy package. */
 const SHORT_BASE = process.env.SHORT_BASE !== '0', SHORT_HEAVY_RATE = .15;
 /** NICKEL_FRONTS: share of nickel calls played from 3-3-5 personnel (the 3-3 Stack). */
 const STACK_RATE = .03;
@@ -147,7 +147,7 @@ const SHOW_CHECK = { under: { oneHigh: .37, twoHigh: 1.6 }, empty: { oneHigh: 1.
  *   ratio to the whole (Cover 1 0.82, Cover 0 0.75, 2-man 0.5, Cover 3
  *   1.12, quarters 1.07, Cover 6 1.1). */
 const COVER_CALL = process.env.COVER_CALL !== '0';
-/** RUN_FORM_PAIR (default off): the run concept is called for the formation
+/** RUN_FORM_PAIR (on by default; RUN_FORM_PAIR=0 turns it off): the run concept is called for the formation
  * the quarterback is in. Tracked 2022 runs (BDB, scripts' concept labels),
  * by quarterback alignment at the snap (under centre <= 2 yd, pistol with the
  * back directly behind, gun with the back beside him), as a ratio of the
@@ -252,7 +252,7 @@ function installWeight(id: string, personnel: DefPersonnelId, passingDown: boole
   return 1;
 }
 
-/** SCREEN_CALL (experimental, off; SCREEN_CALL=1; menu sizing, 2026-11-14): the quick perimeter screens and the
+/** SCREEN_CALL (on by default; SCREEN_CALL=0 turns it off; menu sizing, 2026-11-14): the quick perimeter screens and the
  * screen RPO in the caller's pool, as calls of their own at the NFL's rate for the down and distance. Pool admission
  * only: the screens, their blocking, the QB's kills and the RPO's pre-snap read are the screen lab's, unchanged.
  * Rates are BDB 2025 weeks 1-9 (plays.csv, player_play.csv): [quick screen to a WR, per pass call, not an RPO;
@@ -282,7 +282,7 @@ function quickScreensFor(f: Formation): PassConcept[] {
   return out.filter(Boolean);
 }
 
-/** PA_CALL (experimental, off; PA_CALL=1): play action as a tag on the call (see playActionTag). */
+/** PA_CALL (on by default; PA_CALL=0 turns it off): play action as a tag on the call (see playActionTag). */
 const PA_CALL = process.env.PA_CALL !== '0';
 /** The NFL's play-action rate on drop-backs by down/distance and the QB's alignment [gun, under center or pistol]
  * (BDB 2025 plays.csv, drop-backs, not empty, not spikes; 9,7xx plays). Under center about 80% everywhere; from the
@@ -480,7 +480,7 @@ export class OffensiveCoordinator {
   }
 
   /**
-   * Pre-snap motion (MOTION=1): modern offenses move someone on roughly half
+   * Pre-snap motion (on by default; MOTION=0 turns it off): modern offenses move someone on roughly half
    * their snaps, to change the structure the defense must check (across),
    * to threaten the edge (jet), to get to empty, or to read man/zone (return).
    * Draws from its own forked stream so the rest of the call is unchanged.
@@ -741,7 +741,7 @@ export class DefensiveCoordinator {
     let heavy = false;
     if (goalLine && (offPersonnel === '22' || offPersonnel === '13' || offPersonnel === '21')) personnel = 'goalline';
     else if (SHORT_PACKAGE && shortPackage(offPersonnel, s.distance) && 100 - s.yardline <= 5) personnel = 'goalline';
-    // SHORT_BASE (experimental, off): short yardage against heavy personnel
+    // SHORT_BASE (on by default; SHORT_BASE=0 turns it off): short yardage against heavy personnel
     // goes to the heavy package (its bear) on 15% of snaps, the league's
     // 4+-interior "heavy" share there; otherwise base personnel and its
     // short-yardage menu, whose 3-4 bear supplies the rest of the bear (NFL vs
@@ -759,7 +759,7 @@ export class DefensiveCoordinator {
     if (NICKEL_FRONTS && personnel === 'nickel' && own.fork('stack335').next() < STACK_RATE) personnel = 'stack335';
     const fronts = FRONTS.filter((f) => f.personnel.includes(personnel) && (FRONT_MENU || !MENU_FRONTS.has(f.id)) && !NICKEL_FRONT_IDS.has(f.id));
     const moment: Moment = s.distance <= 2 ? 'short' : s.down >= 3 ? 'third' : 'early';
-    // NICKEL_FRONTS (experimental, off): sub packages also play the Penny,
+    // NICKEL_FRONTS (on by default; NICKEL_FRONTS=0 turns it off): sub packages also play the Penny,
     // Penny Bear, Mint, Okie and (in 3-3-5 personnel) the 3-3 Stack, at shares
     // from 2022 snap frames classified by interior shape
     // (scripts/diag/align/nfronts.py), less what mugs and walk-ups add.
@@ -930,7 +930,7 @@ export class DefensiveCoordinator {
     const strength: DefensivePlayCall['strength'] = !FRONT_STRENGTH ? undefined
       : own.fork('strength').chance(alignStyle(this.team).passingStrength ?? .6) ? 'passing' : 'opposite';
     const mugDraw = own.fork('mug').next();
-    // MUG_CALLS (experimental, off): nickel and dime mug on every down at the
+    // MUG_CALLS (on by default; MUG_CALLS=0 turns it off): nickel and dime mug on every down at the
     // league's rates by package and situation (rates[0] one or more backers in
     // an A gap at the snap, rates[1] two; 2022 tracking, rgtools/mugwalk.py).
     // Whether a mugged backer rushes or bails stays with the pressure call.
@@ -939,7 +939,7 @@ export class DefensiveCoordinator {
       ? mugDraw < mugRates[1] ? 2 : mugDraw < mugRates[0] ? 1 : undefined
       : FRONT_MENU && (personnel === 'nickel' || personnel === 'dime') && s.down >= 3 && s.distance >= 4
         ? mugDraw < .05 ? 2 : mugDraw < .17 ? 1 : undefined : undefined;
-    // MUG_PRESSURES (experimental, off): a call that mugs also says who of
+    // MUG_PRESSURES (on by default; MUG_PRESSURES=0 turns it off): a call that mugs also says who of
     // the muggers comes (the mug package), at the shares 2022 tracking shows
     // on nickel dropbacks with a mug at the snap (scripts/diag/align/mugrush.py):
     // double mug no mugger rushes 42%, one 32%, both 25% (a lineman dropping

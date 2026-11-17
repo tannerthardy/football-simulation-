@@ -75,7 +75,7 @@ const REACH_CONTACT = process.env.REACH_CONTACT === '1';
 /** Experimental early hand acquisition with coherent approach footwork through
  * a committed strike. Ordinary grip and strike; default-off. */
 const TACKLE_TOUCH = process.env.TACKLE_TOUCH === '1';
-/** GRASP_JEOPARDY (experimental, off): the in-the-grasp whistle is the
+/** GRASP_JEOPARDY (on by default; GRASP_JEOPARDY=0 turns it off): the in-the-grasp whistle is the
  * rule's exception, not the ordinary sack. The rule declares a passer down
  * when he is in the grasp and control of a tackler behind the line and his
  * safety is in jeopardy. On, a pocket QB is whistled in the grasp only while a
@@ -280,7 +280,7 @@ function occluded(sim: PlaySim, d: Agent, c: Agent): boolean {
  * carrier ending outside the tackler's hand reach. Ratings enter only as
  * these capacities and the picture delay. A pocket QB keeps his escape law. */
 const TKL_WHIFF = process.env.TKL_WHIFF === '1';
-/** POCKET_REACH (experimental, off; intended on; PRO-INFO #6/#11): a reach for a QB in the pocket misses when his body
+/** POCKET_REACH (on by default; POCKET_REACH=0 turns it off; PRO-INFO #6/#11): a reach for a QB in the pocket misses when his body
  * is not where the tackler's hands can get to in the reach window (`whiffs`: the tackler's momentum, redirected toward
  * his delayed picture by his cut capacity; the QB, if he sees the man, cutting away by his own), not by a roll with a
  * rated escape (elusiveness, pocket presence) and the rusher's true bearing off his facing (`seesIt`). Diagnosis
@@ -292,7 +292,7 @@ const POCKET_REACH = process.env.POCKET_REACH !== '0';
  * whose best point always sits at its last sample (a slow chase on a runner as fast as he is, or faster than the
  * runner's seen velocity says) promised a shot 0.3 s away forever, and he never took the one he had. */
 const WAIT_REACHED = process.env.WAIT_REACHED !== '0';
-/** HONEST_TACKLE (experimental, off; HONEST_TACKLE=1 turns it on): the tackler's
+/** HONEST_TACKLE (on by default; HONEST_TACKLE=0 turns it off): the tackler's
  * decisions come from his picture of the carrier, not the true state. He reaches
  * only for a body his picture does not show without the ball (the carrier he has
  * not yet seen take a handoff is not his target until he sees it), and his
@@ -537,7 +537,7 @@ function armDistance(joint: GraspJoint | undefined, centers: number, torso: numb
   return Math.min(centers, (joint?.hold ?? centers) + (1 - CONTACT_SCALE) * torso);
 }
 
-/** GRIP_REACH (experimental, off): where a tackler's hands land on the runner
+/** GRIP_REACH (on by default; GRIP_REACH=0 turns it off): where a tackler's hands land on the runner
  * (legs share: 0 shoulder line, 0.5 waist, 1 legs) is drawn from what he can
  * reach in his situation, not one formula clamped at the shoulders. Free and
  * square: chest to waist, lower (thighs) the better his form and approach;
@@ -557,7 +557,7 @@ export function gripReach(rng: { normal(m: number, s: number): number }, engaged
   return clamp(mean, lo, hi);
 }
 
-/** HOLD_FINISH (experimental, off): the holder plants against the runner's
+/** HOLD_FINISH (on by default; HOLD_FINISH=0 turns it off): the holder plants against the runner's
  * travel in proportion to his grip, and an upper grip sits at the height his
  * hands hold (shoulder line to waist). */
 const HOLD_FINISH = process.env.HOLD_FINISH !== '0';
@@ -584,10 +584,10 @@ const HOLD_FINISH = process.env.HOLD_FINISH !== '0';
  * game wraps: median 55% over the first 0.3 s; side-wrap-bench.mts: asking to
  * stop ends a side wrap in 2.5 yd and 0.5 s, running with him 3.7 yd). */
 const HOLD_SINK = process.env.HOLD_SINK === '1';
-/** HOLD_FACING (experimental, off): a holder beside or behind the runner faces
+/** HOLD_FACING (on by default; HOLD_FACING=0 turns it off): a holder beside or behind the runner faces
  * the way he is being carried, not square to the runner every tick. */
 const HOLD_FACING = process.env.HOLD_FACING !== '0';
-/** ROLL_AXIS (experimental, off; ROLL_AXIS=1 turns it on): a secure wrap's roll takes its axis from the runner's
+/** ROLL_AXIS (on by default; ROLL_AXIS=0 turns it off): a secure wrap's roll takes its axis from the runner's
  * travel blended into the attack direction by ROLL_AXIS_SPEED, continuously, instead of switching to the attack
  * direction below 0.3 yd/s. The commitment rule: a post-decision stage must not flip the request as a step function
  * of motion it causes. */
@@ -722,7 +722,7 @@ export function updateBond(sim: PlaySim, bond: TackleBond, intents: Intent[]): v
       // holder around his arms, rather than establish useful rear leverage.
       const plant = Math.max(0, c.vel.x * tx + c.vel.y * ty) * quality * clamp(next, 0, 1);
       let vel = { x: c.vel.x + tx * (close - plant), y: c.vel.y + ty * (close - plant) };
-      // HOLD_FINISH (experimental, off): with a hold, he commits his weight
+      // HOLD_FINISH (on by default; HOLD_FINISH=0 turns it off): with a hold, he commits his weight
       // against the runner's travel, not only along his arms: he sits and
       // drags as hard as his grip lets him. Beside the runner the line of his
       // arms is across the runner's path, so the plant above asks for almost
@@ -769,7 +769,7 @@ export function updateBond(sim: PlaySim, bond: TackleBond, intents: Intent[]): v
       const dragged = (d.vel.x - vel.x) * tx + (d.vel.y - vel.y) * ty > 1;
       const drop = d.body.support?.state === 'up' && joint.legs >= 0.35 && secure >= 0.6
         && t - bond.start >= 0.4 && dragged;
-      // HOLD_FACING (experimental, off): holding a runner going past him, he
+      // HOLD_FACING (on by default; HOLD_FACING=0 turns it off): holding a runner going past him, he
       // does not re-aim his chest at the runner every tick (a pirouette the
       // grasp's own moment never asks for). He asks to keep the facing he
       // has; the runner turns him through the hold and the contacts, as far

@@ -213,7 +213,7 @@ export interface OffensivePlayCall {
   /** Installed non-contact stalk presentation before the player's normal
    * route/blocking job. Seconds from the snap, not a defender belief timer. */
   receiverBlockLook?: Partial<Record<SkillSlot, { until: number }>>;
-  /** Pre-snap motion (played only with MOTION=1). */
+  /** Pre-snap motion (played unless MOTION=0). */
   motion?: MotionCall;
   /** Display label. */
   label: string;
@@ -421,7 +421,7 @@ export interface Pressure {
   droppers?: Partial<Record<DefSlot, UnderSeat>>;
   /** The rush count the call promises (a simulated pressure brings four, a fire zone five). */
   rushers?: number;
-  /** RUSH_PROMISE (experimental, off): the most rushers the call sends behind
+  /** RUSH_PROMISE (on by default; RUSH_PROMISE=0 turns it off): the most rushers the call sends behind
    * a coverage family (`cover3: 5`), so a front that already rushes an extra
    * man does not turn the call into an unplanned six-man pressure with two
    * underneath. */

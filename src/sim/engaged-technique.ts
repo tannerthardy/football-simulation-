@@ -1,5 +1,5 @@
 /**
- * ENGAGED_TECHNIQUE (default off): an engaged run blocker's feet follow the
+ * ENGAGED_TECHNIQUE (on by default; ENGAGED_TECHNIQUE=0 turns it off): an engaged run blocker's feet follow the
  * technique his own job calls for, chosen by his controller from what he
  * sees, instead of one installed rep law for every job.
  *
@@ -23,18 +23,18 @@
 import type { Vec2 } from '../core/vec.js';
 
 export const ENGAGED_TECHNIQUE = process.env.ENGAGED_TECHNIQUE !== '0';
-/** REACH_CARRY (experimental, off): a racing reach who has the man's play-side
+/** REACH_CARRY (on by default; REACH_CARRY=0 turns it off): a racing reach who has the man's play-side
  * shoulder keeps running at his own race pace and carries the man on his
  * hands, rather than shadowing the man's own lateral speed. Not past the
  * shoulder: a blocker already well across still comes back to it. */
 export const REACH_CARRY = process.env.REACH_CARRY !== '0';
-/** ENGAGED_DEFENDER (default off): an engaged defender off the first-level
+/** ENGAGED_DEFENDER (on by default; ENGAGED_DEFENDER=0 turns it off): an engaged defender off the first-level
  * stack read (box backers, unassigned men) moves on his own controller's
  * request; the contact (hands, bodies, World) decides how far he gets. The
  * rep law no longer authors his feet. Defender behaviour is Defense's: this
  * is the neutral hook. */
 export const ENGAGED_DEFENDER = process.env.ENGAGED_DEFENDER !== '0';
-/** REACH_TECHNIQUE (default off): a zone reach blocker races for his man's
+/** REACH_TECHNIQUE (on by default; REACH_TECHNIQUE=0 turns it off): a zone reach blocker races for his man's
  * play-side shoulder from contact at his own lateral speed, never mirroring
  * away from the play; on the shoulder he holds it and goes at least with the
  * man's flow. With the hands his (control) he steers across the man's face
@@ -43,7 +43,7 @@ export const ENGAGED_DEFENDER = process.env.ENGAGED_DEFENDER !== '0';
  * mirrored his man: a lineman who held still was never reached (outside zone:
  * blocker lateral 0.02 yd from 0.4 to 1.2 s, across his face 9-23%). */
 export const REACH_TECHNIQUE = process.env.REACH_TECHNIQUE !== '0';
-/** REACH_RACE (off): the reach is a race for the man's play-side shoulder, not
+/** REACH_RACE (on by default; REACH_RACE=0 turns it off): the reach is a race for the man's play-side shoulder, not
  * a mirror of him. Behind the shoulder the blocker opens his hips toward the
  * play (up to 45 degrees off the man) and runs; his lateral request is his
  * open-hip running speed, not his square shuffle. On the shoulder he squares,
@@ -51,7 +51,7 @@ export const REACH_TECHNIQUE = process.env.REACH_TECHNIQUE !== '0';
  * speed, traction, the man on his hands, directional leg drive) decides what
  * he achieves and what the open hips cost him. */
 export const REACH_RACE = process.env.REACH_RACE !== '0';
-/** DOUBLE_TRACK (off): on a stretch call both members of a double keep
+/** DOUBLE_TRACK (on by default; DOUBLE_TRACK=0 turns it off): on a stretch call both members of a double keep
  * stepping the zone track with their hands on the man (the play's track
  * tempo, toward the play), instead of mirroring him and holding a spot beside
  * each other. The partner on the man's backside half covers the inside, so

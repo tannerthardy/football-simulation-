@@ -1,4 +1,4 @@
-/** RELEASE_BELIEF (experimental, off; RELEASE_BELIEF=1 turns it on): each defender's belief that the ball is gone, from
+/** RELEASE_BELIEF (on by default; RELEASE_BELIEF=0 turns it off): each defender's belief that the ball is gone, from
  * the release cues he saw (Rules + Coaching's `releaseEvidence`, presented possession step 1b, #713), instead of the
  * true air state.
  *

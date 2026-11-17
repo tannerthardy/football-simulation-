@@ -148,7 +148,7 @@ const DOWN_BACKFIELD_DELAY = 1.6;
  * handoff (+1.1 yd/s); a pass read held until the give kept ours dropping.
  * DRAW_READ=0 restores the posterior-only change of mind. */
 const DRAW_READ = process.env.DRAW_READ !== '0';
-/** RUN_CONFIRM (experimental, off; needs DRAW_READ's coherent change of mind):
+/** RUN_CONFIRM (on by default; RUN_CONFIRM=0 turns it off; needs DRAW_READ's coherent change of mind):
  * an unsure defender commits run on what he sees, with the situation's pass
  * expectation raising how clear the run picture must be rather than holding
  * the commit until the ball shows. NFL box backers on runs trigger downhill

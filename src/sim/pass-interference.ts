@@ -640,7 +640,7 @@ function passPossessionChanges(sim: PlaySim): number {
   return sim.segments.reduce((n, s, i, ss) => n + Number(s.team !== (i ? ss[i - 1].team : 'O')), 0);
 }
 function finiteFact(n: number): number | null { return Number.isFinite(n) ? n : null; }
-/** OFFICIATE (off; OFFICIATE=1 turns it on; estimated, C14 officiating): an
+/** OFFICIATE (on by default; OFFICIATE=0 turns it off; estimated, C14 officiating): an
  * illegal-contact call needs contact that changed the receiver's motion, seen
  * by an official. Off, every clear initiated contact past five yards against a
  * receiver moving away was flagged: 3.3 calls per 100 pass plays on the panel

@@ -68,7 +68,7 @@ function gameGap(sim: PlaySim, d: Agent, gap: Gap, side: number): { gap: Gap; si
   return { gap: RANK_GAP[Math.abs(v)], side: Math.sign(v) };
 }
 
-/** FIT_BLITZ_SLIDE (experimental, off): see buildRunFits. */
+/** FIT_BLITZ_SLIDE (on by default; FIT_BLITZ_SLIDE=0 turns it off): see buildRunFits. */
 const FIT_BLITZ_SLIDE = process.env.FIT_BLITZ_SLIDE !== '0';
 /** HONEST_READS (behaviors/defense.ts): a teammate counts on the line when seen in contact, not by his engagement state. */
 const HONEST_READS = process.env.HONEST_READS !== '0';
@@ -101,7 +101,7 @@ export function buildRunFits(sim: PlaySim): Map<Agent, RunFitJob> {
     if (line || spot.role.kind === 'blitz' || dropper) claimed.add(`${sd}:${g}`);
     if (dropper && kind === 'edge') jobs.get(d)!.inside = { gap, side, kind: 'edge' };
   }
-  // FIT_BLITZ_SLIDE (experimental, off): a called blitzer takes his gap; the
+  // FIT_BLITZ_SLIDE (on by default; FIT_BLITZ_SLIDE=0 turns it off): a called blitzer takes his gap; the
   // lineman whose gap he takes moves at most one gap, to the nearest open
   // neighbour (a nose under a Mike blitzing strong A plays weak A; an end
   // outside a safety blitzing C plays D). With neither neighbour open (double
@@ -242,7 +242,7 @@ const SCRAPE = process.env.SCRAPE !== '0', THREAT_READ = process.env.THREAT_READ
 
 /** Free fits plan lateral work with their own body (LB_PLAN=0 off). */
 const LB_PLAN = process.env.LB_PLAN !== '0';
-/** EDGE_REACH (experimental, off): see the edge fit below and PassRusher's reach read. */
+/** EDGE_REACH (on by default; EDGE_REACH=0 turns it off): see the edge fit below and PassRusher's reach read. */
 const EDGE_REACH = process.env.EDGE_REACH !== '0';
 const LB_LINE_FLOW = process.env.LB_LINE_FLOW !== '0', LINE_FLOW_LEAD = 1.5, GUARD_KEY_DELAY = 0.5, GUARD_STEP = 0.5;
 /** Experimental activation of the same planner for an observed pull-adjusted
@@ -327,7 +327,7 @@ const GAP_MATCH = process.env.GAP_MATCH !== '0';
 const STACK_LANDMARK = LB_LANDMARK ? 2.25 : 1.5;
 /** Where a threatened stack backer fills to: a yard off the ball, meeting the runner in the hole. */
 const FILL_DEPTH = 1;
-/** END_CHASE (experimental, off): see the edge fit; how far into the backfield a backside edge chases (yd). */
+/** END_CHASE (on by default; END_CHASE=0 turns it off): see the edge fit; how far into the backfield a backside edge chases (yd). */
 const END_CHASE = process.env.END_CHASE !== '0', END_CHASE_DEPTH = 1.0;
 
 /** Linemen this player sees pulling: off the surface, behind the line, moving
@@ -528,7 +528,7 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
       gy = kick.pos.y + job.side * (job.edge === 'spill' ? -.45 : .65);
       a.tags.add(job.edge === 'spill' ? 'fit-spill' : 'fit-box');
     } else gy = job.kind === 'force' ? job.side > 0 ? Math.max(surface+.5,seen.pos.y+.7) : Math.min(surface-.5,seen.pos.y-.7) : gy;
-    // EDGE_REACH (experimental, off): a box edge keeps his outside leverage
+    // EDGE_REACH (on by default; EDGE_REACH=0 turns it off): a box edge keeps his outside leverage
     // on the man in front of him while the line he sees flows to his side.
     // His landmark never falls inside that man's outside shoulder nor inside
     // his own alignment, so a reach stretching outward carries the edge out
@@ -578,7 +578,7 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
     const supportDepth=job.kind==='force' && (premesh||seen.pos.x<sim.los-1.6) ? clamp(homeDepth*.55,1.5,6) : .3;
     const fitX = Math.max(sim.los+supportDepth,Math.min(sim.los+2.5,seen.pos.x+1.5));
     let x = kick ? Math.max(sim.los-.6,kick.pos.x+.5) : trail ? Math.min(fitX, Math.max(seen.pos.x, sim.los-3)) : replace ?? fitX;
-    // END_CHASE (experimental, off; with the edge squeeze in defense.ts): a
+    // END_CHASE (on by default; END_CHASE=0 turns it off; with the edge squeeze in defense.ts): a
     // backside edge whose line flows away with no puller (no kick-out coming)
     // squeezes upfield behind it into the backfield, the boot/reverse/cutback
     // player chasing from the back, rather than at his side of the line.
@@ -658,7 +658,7 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
   // The landmark before the runner projection: a pull cue is judged against
   // it, so the back's projected track never hides the puller from the read.
   const gapY = gy;
-  // LB_LINE_FLOW (experimental, off): the line tells him first. A backer who
+  // LB_LINE_FLOW (on by default; LB_LINE_FLOW=0 turns it off): the line tells him first. A backer who
   // has read run and sees the line step one way together (the zone step; the
   // same read lineRead gives the DL) flows over the top that way before the
   // back's track shows it, a gap's width ahead of his landmark, with his hips

@@ -11,7 +11,7 @@ import type { CompiledPlay } from './types.js';
 
 export const COMPILER_VERSION = 'phase1-1';
 
-/** PLAN_ROLES (experimental, off): a coached clear-out is the concept's role, not a geometric finding. In a flood or a
+/** PLAN_ROLES (on by default; PLAN_ROLES=0 turns it off): a coached clear-out is the concept's role, not a geometric finding. In a flood or a
  * trips out / sail, the outside vertical clears for the out under it, and the out is the route the quarterback looks for
  * first ("the intermediate sideline route is the route many quarterbacks are taught to look for first ... the deep
  * layer is usually the outside receiver's vertical", Youth Football Online, Flood Passing Concepts; three levels to one
@@ -26,7 +26,7 @@ export const CLEAR_OUTS: Record<string, [string, string][]> = {
   trips_outs: [['go', 'out']],
   trips_sail: [['go', 'out']],
 };
-/** PA_TABLES (experimental, off; a repair): a play-action-tagged call (`smash+pa`, PA_CALL's tag on a dropback concept)
+/** PA_TABLES (on by default; PA_TABLES=0 turns it off; a repair): a play-action-tagged call (`smash+pa`, PA_CALL's tag on a dropback concept)
  * is installed from its concept's tables: its coached key, order, looks and clear-outs. Off, the tables were looked up by
  * the tagged id, missed, and the tagged call compiled from geometry alone (smash+pa had no corner key). */
 export const PA_TABLES = process.env.PA_TABLES !== '0';

@@ -1,5 +1,5 @@
 /**
- * Offensive pre-snap motion (MOTION=1; off by default). One off-ball skill
+ * Offensive pre-snap motion (on by default; MOTION=0 turns it off). One off-ball skill
  * player moves before the snap along a planned path:
  *
  *  - `across`: jogs to the far side and sets as its innermost detached
@@ -417,7 +417,7 @@ export interface MotionHost {
   slot(slot: string): Agent | undefined;
 }
 
-/** Experimental (MOTION_CHECK=1, off): the defense answers motion as tracked
+/** On by default (MOTION_CHECK=0 turns it off): the defense answers motion as tracked
  * defenses do (2022 BDB 2025 weeks 1-9, 3,856 single-motion plays, line set
  * to snap; scripts/diag/align/nfl_motion.py and motionlook.py).
  * - Man coverage locks or trades. A lock keeps the line-set man defender on

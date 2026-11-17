@@ -40,7 +40,7 @@ import { screenSpot, type ScreenSpot } from '../screen-spot.js';
 import { compilingPlan, installedPlan } from '../../playbook/read-compiler/runtime.js';
 import { DECLARED_BREAK } from '../../playbook/read-compiler/features.js';
 
-/** TRACK_FEEL (experimental, off; TRACK_FEEL=1, or PERCEIVE_TRACK=1 for every group): perception channels step 1b,
+/** TRACK_FEEL (on by default; TRACK_FEEL=0 turns it off, or PERCEIVE_TRACK=1 for every group): perception channels step 1b,
  * the QB's feel for the rush (docs/reviews/2026-11-13-perception-proposal.md; built with the QB lane, who own the
  * shoulder test and every consumer). A rusher in front of his shoulders is read through the tracking channel
  * (`PlaySim.track`: a 0.12 s correcting loop, no focus or stress terms stacked on a scaled delay, no acceleration term)
@@ -86,7 +86,7 @@ interface ThrowEval {
 
 
 
-/** PA_DROP (experimental, off; PA_DROP=1 turns it on): the play-action drop by the QB's alignment (see dropSpec). */
+/** PA_DROP (on by default; PA_DROP=0 turns it off): the play-action drop by the QB's alignment (see dropSpec). */
 const PA_DROP = process.env.PA_DROP !== '0';
 /** SCREEN_QB (experimental, off; SCREEN_QB=1): screens thrown as NFL quarterbacks throw them: a slow screen on its
  * timing once the receiver is ready, and firm (docs/reviews/2026-11-13-screens.md). */
@@ -102,7 +102,7 @@ export function naturalFlightFor(armSpeed: number, d: number): number {
 /** A quarterback's weight going toward the target in his stride (NFL tracking: about 0.4 yd/s at the release). */
 const STRIDE_SPEED = 0.45;
 
-/** THROW_REACT (experimental, off; THROW_REACT=1 turns it on): in his
+/** THROW_REACT (on by default; THROW_REACT=0 turns it off): in his
  * window estimate a defender facing him reacts to the ball when it is out
  * (zone: or a reaction after the motion starts, if later), as defenders do
  * (sawThrow); before, every facing defender broke at the motion's start, which
@@ -126,7 +126,7 @@ const QB_RHYTHM = process.env.QB_RHYTHM !== '0';
  * pressure (a man within 2 yd) our QB felt 1.6 s and stood (0.23 yd moved;
  * NFL 0.72 at 2.1 yd/s). */
 const QB_FEEL = process.env.QB_FEEL === '1';
-/** Experimental (THROW_BODY=1, off): a hold on the passer acts on the throw
+/** On by default (THROW_BODY=0 turns it off): a hold on the passer acts on the throw
  * through what it holds. Its interference is how firmly he is held (heldBy)
  * times how high the hold is on him (1 - the grasp's leg share: the shoulder
  * line 1, the waist 0.5, the legs 0). A hold taken during the load pins the
@@ -201,18 +201,18 @@ const QB_COMMIT = process.env.QB_COMMIT === '1';
  * before the release (+1.5/+2.5 yd/s zone/man) where ours did not (+0.3/+0.6): his eyes were on the eventual target
  * 21% of the time at -0.5 s, 85% at -0.3 s (the windup). docs/reviews/2026-11-13-qb-gather.md. */
 const QB_EYES = process.env.QB_EYES === '1';
-/** BLITZ_READ (experimental, off; BLITZ_READ=1): the post-snap blitz read. A free rusher by his protection (one no
+/** BLITZ_READ (on by default; BLITZ_READ=0 turns it off): the post-snap blitz read. A free rusher by his protection (one no
  * protector is assigned to), coming at him unblocked in his picture in the first second and held for his processing
  * time, sends his eyes and the ball to the hot (the quickest-breaking route on that side, else the back). NFL QBs throw
  * quick on 18% of blitzes (9% otherwise), 69% to wideouts; ours 7% (6%); on our blitzes with a free rusher (34%) he
  * threw quick on 5% and was sacked on 13%. docs/reviews/2026-11-13-qb-gather.md. */
 const BLITZ_READ = process.env.BLITZ_READ !== '0';
-/** BLITZ_DEPTH (experimental, off; BLITZ_DEPTH=1, read with BLITZ_READ): attempt 2 of the rush belief. Its prior is
+/** BLITZ_DEPTH (on by default; BLITZ_DEPTH=0 turns it off, read with BLITZ_READ): attempt 2 of the rush belief. Its prior is
  * keyed by alignment and role, from the NFL's realized rush rates of non-linemen (BDB 2025 wk1-3, dropbacks without
  * play action, OLBs excluded: `nfl_rush_by_align.py`), and a step at him raises it fully only at or past the line;
  * above it a quarter (a box backer stepping up on a fake or a man coming up on a route is where those stop). */
 const BLITZ_DEPTH = process.env.BLITZ_DEPTH !== '0';
-/** BLITZ_SKILL (experimental, off; BLITZ_SKILL=1, read with BLITZ_READ): the blitz read's skill levels (the user's
+/** BLITZ_SKILL (on by default; BLITZ_SKILL=0 turns it off, read with BLITZ_READ): the blitz read's skill levels (the user's
  * direction, 2026-11-13). (a) His clock is per threat, from the protection call he knows (the blockers' assignments at
  * the snap, declared backers included): a man he believes is coming whom the call has nobody for is a free rusher,
  * and his urgency is the earliest believed free arrival (belief x how soon he gets there in his felt picture), not a
@@ -229,7 +229,7 @@ function rushPrior(depth: number, wide: number, lb: boolean): number {
   if (depth <= 2.5 && wide <= 9.5) return lb ? 0.32 : 0.18;
   return lb ? 0.03 : 0.01;
 }
-/** Experimental (BLOCK_SEEN=1, off): QB_FEEL's perception half on its own.
+/** On by default (BLOCK_SEEN=0 turns it off): QB_FEEL's perception half on its own.
  * The QB reads a rusher as held only from what he sees: an offensive body in
  * contact with the rusher and on his path to the QB (seenHold), never from the
  * sim's engagement record or the rep's private win score, so a blocker who has
@@ -315,7 +315,7 @@ const EXTEND = process.env.EXTEND === '1';
  * attempt 1 (a reset on a time cause) and attempt 2 (a side hitch) are docs/reviews/patches/2026-11-13-qb-pocket-attempt{1,2}.patch;
  * neither touched the climb that actually moves him. */
 const QB_POCKET = process.env.QB_POCKET === '1';
-/** QB_HONEST_FEEL (experimental, off; QB_HONEST_FEEL=1; intended on once read): his pressure picture reads only what he
+/** QB_HONEST_FEEL (on by default; QB_HONEST_FEEL=0 turns it off): his pressure picture reads only what he
  * has perceived. Off, four things use a rusher's TRUE position: which side of his shoulder the man is on (felt(), and
  * FREE_BOUND's lag), which decides whether he is seen at 1x or late; the distance pressure() reports beside its felt
  * time; and where evade() steps away from. On: the shoulder test uses his plain picture of the man (see() at 1x), the
@@ -335,7 +335,7 @@ const QB_HONEST_FEEL = process.env.QB_HONEST_FEEL !== '0';
  * unchanged. The shape is mechanics; the coefficients are chosen, to be checked for ORDER only (set < stepping in <
  * drifting away < across the body) and against ball-vs-aim by platform (scripts/diag/eyes/deep-split.ts), never fitted
  * to completions or to the NFL's ball-to-receiver distance (which contains the receiver's adjustment). */
-/** QB_BELIEVED_DEF (experimental, off; QB_BELIEVED_DEF=1; information rule): in pricing a throw he no longer knows each
+/** QB_BELIEVED_DEF (on by default; QB_BELIEVED_DEF=0 turns it off; information rule): in pricing a throw he no longer knows each
  * defender exactly. Off, the window reads every defender's true physical profile (reach, reaction time, top speed, leap)
  * and exact ball-skills rating, and the sim's engagement record for whether a defender is tied up. On:
  * - body and ball skills are a belief: the position's typical values corrected toward the man's own by how well he
@@ -349,7 +349,7 @@ const QB_HONEST_FEEL = process.env.QB_HONEST_FEEL !== '0';
  * A loss from this is repaired by preparation as a mechanism (film study raising how well he knows them), not by the
  * leak. SCOUT constants are chosen. */
 const QB_BELIEVED_DEF = process.env.QB_BELIEVED_DEF !== '0';
-/** QB_SEEN_OUT (experimental, off; QB_SEEN_OUT=1; information rule): whether a check-release man is out on his route is
+/** QB_SEEN_OUT (on by default; QB_SEEN_OUT=0 turns it off; information rule): whether a check-release man is out on his route is
  * no longer read from the man's behaviour object. He is out once the quarterback's own picture has placed him on his
  * installed release route (the forecast's progress, from a look or his peripheral view), and he then stays out. It
  * gates the rhythm outlet, whether that man is ready, and his place in the hot order. A man whose route starts on an
@@ -359,7 +359,7 @@ const QB_SEEN_OUT = process.env.QB_SEEN_OUT !== '0';
 /** QB_CALL_ROUTES (information rule, 2026-11-16): who is on a route and which route is his call (the play's install,
  * known from the huddle; a check-release man once his picture has him out), never the receiver's live behavior object. */
 const QB_CALL_ROUTES = process.env.QB_CALL_ROUTES !== '0';
-/** QB_SEEN_REC (experimental, off; QB_SEEN_REC=1; information rule): the remaining reads of his own receivers' true
+/** QB_SEEN_REC (on by default; QB_SEEN_REC=0 turns it off; information rule): the remaining reads of his own receivers' true
  * state use where he has them: his forecast of the man, else his delayed picture. That is the side a receiver is on
  * (look-off decoy, hot side), the verticals' stems for the peek, whether a man is in his clear look, the fallback
  * target point in pricing, and in the man-coverage reorder both the receiver and the defender on him (his picture of
@@ -383,7 +383,7 @@ const THROW_PLATFORM = process.env.THROW_PLATFORM === '1';
  * until he tucks. Off: the alarm's no-throw branch scrambles, rolls a throw-away or steps back, and the clock's
  * branch scrambles. Constants are chosen (first build). docs/reviews/2026-11-13-qb-pocket.md. */
 const QB_BREAK = process.env.QB_BREAK === '1';
-/** QB_RELOOK (experimental, off; QB_RELOOK=1; information rule): running out of reads gives him nothing for free. Off,
+/** QB_RELOOK (on by default; QB_RELOOK=0 turns it off; information rule): running out of reads gives him nothing for free. Off,
  * the moment his progression ends he takes the best man on the whole field, on his pictures, at his bar less 0.1: a
  * look round the field at once that no quarterback has, standing where the real decision belongs. On, he goes back to
  * his first read and works through them again, one look at a time at his dwell, with his eyes going to each man and at
@@ -391,7 +391,7 @@ const QB_BREAK = process.env.QB_BREAK === '1';
  * With QB_BREAK, moving is the other answer at that moment: he leaves with the ball up when a spot outside is there,
  * and reads on from it. */
 const QB_RELOOK = process.env.QB_RELOOK !== '0';
-/** QB_KEY_MAN (experimental, off; QB_KEY_MAN=1; with READ_PLAN's defender keys): his key read is taken on the defender
+/** QB_KEY_MAN (on by default; QB_KEY_MAN=0 turns it off; with READ_PLAN's defender keys): his key read is taken on the defender
  * the concept names, not on whoever is nearest the line between the two routes (on corner_flat that was the middle
  * linebacker once the corner sank under the corner route). Before the snap he picks the man by the role's alignment
  * rule, from where the defense lines up: the corner is the widest defender on the key's side inside 10 yd; the apex
@@ -406,7 +406,7 @@ const QB_KEY_MAN = process.env.QB_KEY_MAN !== '0';
  * reading noise on a place along the stretch scales to a speed. Both chosen. */
 const KEY_MOVE = 1.0;
 const KEY_MOVE_NOISE = 5;
-/** QB_KEY_READ (experimental, off; QB_KEY_READ=1; with QB_KEY_MAN; docs/reviews/2026-11-16-key-man.md, Integration's
+/** QB_KEY_READ (on by default; QB_KEY_READ=0 turns it off; with QB_KEY_MAN; docs/reviews/2026-11-16-key-man.md, Integration's
  * ruling): the key read as taught. (a) The key man is named pre-snap from the shell as he reads it, among coverage
  * players in his picture (2 yd or more off the ball, or detached wide; never a man on the line in a stance): a flat /
  * curl-flat key is the corner under a two-high read with a hard corner (6 yd or shallower), else the overhang inside
@@ -433,13 +433,13 @@ const KEY_ON_ROUTE = 0.25;
  * man): they doubled corner throws and put the added ones where a safety was a hard run from the ball (50% of routes
  * targeted against the NFL's 8%; docs/reviews/2026-11-13-qb-pocket.md). */
 const QB_KEY_THROW = process.env.QB_KEY_THROW === '1';
-/** PLAN_CLOCK (experimental, off; PLAN_CLOCK=1): DECLARED_BREAK's installed break time read on the play clock. The
+/** PLAN_CLOCK (on by default; PLAN_CLOCK=0 turns it off): DECLARED_BREAK's installed break time read on the play clock. The
  * read compiler times each break as the sampled play's sim.t (from the start of the play); planBreakAt added the
  * snap-secured time (0.3 s, GUN_SNAP ~0.5 s) to it again. On engine-68 (scripts/diag/escape/rhythm-check.ts, 157 read
  * routes): true break minus compiled p50 -0.05 s; his belief minus the true break p50 +0.49 s off, +0.10 s on. Where
  * his forecast cannot place the break, the plan's time is the one his readiness waits for. */
 const PLAN_CLOCK = process.env.PLAN_CLOCK !== '0';
-/** QB_TICK_PICTURE (experimental, off; QB_TICK_PICTURE=1): his pictures of the defense are taken once a tick, as time
+/** QB_TICK_PICTURE (on by default; QB_TICK_PICTURE=0 turns it off): his pictures of the defense are taken once a tick, as time
  * passes, not when a decision asks for them. Off, `felt` and his plain picture call the perception layer on demand,
  * and that layer's state advances with the asking: under SIGHT_CARRIER the per-tick visibility memo (`sighted`'s
  * `sightAt`) freezes a past tick's line of sight at the moment it is first asked (with the bodies' heights then), and
@@ -461,14 +461,14 @@ const QB_TICK_PICTURE = process.env.QB_TICK_PICTURE !== '0';
  * edge's flips are his facing swinging 0.4-0.8 rad and back within 0.3 s, a controller question this does not
  * address. */
 const QB_FELT_EDGE = process.env.QB_FELT_EDGE === '1';
-/** QB_FACE_SEEN (experimental, off; QB_FACE_SEEN=1; information rule): his pocket facing turns to his picture of the
+/** QB_FACE_SEEN (on by default; QB_FACE_SEEN=0 turns it off; information rule): his pocket facing turns to his picture of the
  * read (his forecast of the man, `has`), not the receiver's true position. Off, bodyFacing aimed at `read.pos` and the
  * shoulder read's `.pos`: the truth, however small the difference (found measuring his facing swing, 2026-11-16). */
 const QB_FACE_SEEN = process.env.QB_FACE_SEEN !== '0';
 const FELT_IN_VIEW = 1.65, FELT_BLIND = 1.8;
 /** QB_TICK_PICTURE: the judgment keys his pricing reads (created at his first update, so their order is his, not the asker's). */
 const PRICE_JUDGMENTS = ['def-phase', 'def-dislodge', 'int-belief', 'acc-urgency', 'drop-belief'];
-/** QB_FOOTWORK (experimental, numeric bits, off): the progression carried by his feet, stage one (coupling perfect;
+/** QB_FOOTWORK (numeric bits, default 3; QB_FOOTWORK=0 turns it off): the progression carried by his feet, stage one (coupling perfect;
  * docs/reviews/2026-11-15-drop-design-stage1.md). Read on CONCEPT_DROPS=1, PLAN_CLOCK=1 and QB_TICK_PICTURE=1.
  * Bit 1: reads on steps and the release on a step. The plan gives each read its step index (`plan.rhythm[].n`, Rules
  * + Coaching's hand-over: 0 the set, 1 the first hitch, 2 the second; reads on one look share it); he lands step n n
@@ -496,7 +496,7 @@ const FW_HIPS = (QB_FOOTWORK & 2) !== 0;
  * 3.2 s against the NFL's 2.3), and PA sacks go 14.8 -> 27.1% staged; it lands with PA reads decided on the plant out
  * of the fake. */
 // (FW_PA_FAKE is read in called-drop.ts's plannedFakeEnd, which the back, the QB and the line share.)
-/** QB_EDGE_THREAT (experimental, off; QB_EDGE_THREAT=1; Integration's ruling 2026-11-16, Flex's long-hold measurement):
+/** QB_EDGE_THREAT (on by default; QB_EDGE_THREAT=0 turns it off; Integration's ruling 2026-11-16, Flex's long-hold measurement):
  * the step-up answers an edge rusher who threatens him, into room. pocketMove's edge test (his home 1.8 + 1.2 pp yd up)
  * fired on any defender he felt wide and level within 2.5 + 3 pp yd, blocked or not, closing or not: on long holds the
  * edge rushers ridden past by the tackles kept it true for most of a second a play, and he walked 1.4 yd up into the
@@ -543,12 +543,12 @@ const GRASS_FIELDS = process.env.GRASS_READ === '1';
  * game's catch-and-throw, the gun three and five, the five and seven from under center; play action counts the
  * fake's step as one more of five). Coached counts, not fitted. */
 const DROP_STEPS: Record<string, number> = { quick: 1, gun3: 3, gun5: 5, five: 5, five_deep: 5, seven: 7, pa: 5, boot: 5 };
-/** QB_EVADE_UP (experimental, off; QB_EVADE_UP=1): the trapped case (under the 0.45 s alarm with no throw) steps off a
+/** QB_EVADE_UP (on by default; QB_EVADE_UP=0 turns it off): the trapped case (under the 0.45 s alarm with no throw) steps off a
  * man in front of him to the side and up, not straight away from him. Off, evade steps directly away from the man, so
  * against an interior rusher it is a step backward at up to 0.7 of his top speed (commanded -3.7 to -4.6 yd/s upfield
  * on the stand probe's events): the drift that put him deeper as the man arrived. Against an edge it is unchanged. */
 const QB_EVADE_UP = process.env.QB_EVADE_UP !== '0';
-/** BLITZ_SECOND (experimental, off; BLITZ_SECOND=1; with BLITZ_READ): the coached second look. A blitzer keeps coming
+/** BLITZ_SECOND (on by default; BLITZ_SECOND=0 turns it off; with BLITZ_READ): the coached second look. A blitzer keeps coming
  * at the quarterback; a linebacker in man on the back goes where the back goes. On engine-68, 44 of 125 false hots on
  * non-blitz plays (10.3% of them) were linebackers in man on the back (scripts/diag/eyes/free-rusher.ts), and 24 more
  * were called on now screens, where a hot has no meaning. On: while the back has released in his picture (moving away
@@ -638,7 +638,7 @@ const SHOULDER_SETTLE = 0.3;
  * 90-180 0.7 s), not to yards or completions. */
 const TURN_BASE = 0.12;
 const TURN_RATE = 190 * Math.PI / 180;
-/** READ_PLAN (experimental, off; READ_PLAN=1 turns it on): he runs the read plan compiled from the routes
+/** READ_PLAN (on by default; READ_PLAN=0 turns it off): he runs the read plan compiled from the routes
  * (src/playbook/read-compiler, docs/reviews/2026-11-11-read-compiler-phase0.md) instead of the concept's
  * hand-written progression. The plan is his intent; he executes it from what he sees:
  * - pure: the start side through, then the other side, then the outlet;
@@ -651,7 +651,7 @@ const TURN_RATE = 190 * Math.PI / 180;
  * - vertical peek: the verticals as one picture, one look, then the back.
  * Pressure and his clock still end any plan (QB_RHYTHM's outlet). Off: `concept.progression`. */
 const READ_PLAN = process.env.READ_PLAN !== '0';
-/** HOT_LOOK (experimental, off; HOT_LOOK=1 turns it on): the hot throw costs the look. Under an alarm he picks
+/** HOT_LOOK (on by default; HOT_LOOK=0 turns it off): the hot throw costs the look. Under an alarm he picks
  * where to throw from his pictures of the receivers (as old as his last look at each), not from the field as it is.
  * A target inside his clear look is thrown after the windup, as before; anyone else first needs his eyes there:
  * the head turn (HEAD_RATE) and a glance to take him in (decision-making and awareness), while he evades. Then the
@@ -660,14 +660,14 @@ const READ_PLAN = process.env.READ_PLAN !== '0';
  * to the back, a vertical peek or triangle is closed and an unread key is no longer watched, so his eyes are where
  * his read is. Off: the instant best of every receiver on the alarm tick, wherever he is looking. */
 const HOT_LOOK = process.env.HOT_LOOK !== '0';
-/** DEF_BELIEF (experimental, off; DEF_BELIEF=1 turns it on): his belief about how defenders close on a throw, in the
+/** DEF_BELIEF (on by default; DEF_BELIEF=0 turns it off): his belief about how defenders close on a throw, in the
  * window. Off, every defender keeps his course until his start (docs/reviews/2026-11-12-window-defenders.md: on
  * engine-40 that under-rates the closing of a man in coverage on the target by 0.3-0.7 yd). On: a defender within
  * 4 yd of the target (by his pictures) moves partly with the target over that time, as coverage on a man does; his
  * belief of how much is right on average and spread both ways by inexperience (decision-making and experience).
  * Calibrated on engine-40's defense (ARRIVE_LEAD, CUSHION_BREAK on): re-read when the defense changes. */
 const DEF_BELIEF = process.env.DEF_BELIEF !== '0';
-/** ACC_BELIEF (experimental, off; ACC_BELIEF=1 turns it on): his belief of his own accuracy prices the throw he will
+/** ACC_BELIEF (on by default; ACC_BELIEF=0 turns it off): his belief of his own accuracy prices the throw he will
  * release. Off, the window's miss (missSigma) uses his decision's urgency, which is scaled down by pocket presence
  * and taken from the rush as it is now; the release uses the rush as it is at the release, unscaled, and a throw the
  * rush reaches is a flick. Under pressure (u 0.5-1 at the decision) that put his believed off-target at 0.22 against
@@ -676,7 +676,7 @@ const DEF_BELIEF = process.env.DEF_BELIEF !== '0';
  * presence stays on his bar), and expects a flick when the rush arrives before the release; how well he anticipates it
  * is set by his knowledge (decision-making and experience), with error both ways. */
 const ACC_BELIEF = process.env.ACC_BELIEF !== '0';
-/** DROP_BELIEF (experimental, off; DROP_BELIEF=1 turns it on): his belief of how often a ball that reaches his
+/** DROP_BELIEF (on by default; DROP_BELIEF=0 turns it off): his belief of how often a ball that reaches his
  * receiver untouched is dropped, by the receiver's hands. Off: 0.12 - 0.1·hands. On natural league throws on engine-47
  * (CATCH_CARRY, HANDS_CUE, CATCH_SPEED, CATCH_CHOICE on; 3,872 reached and not defended, 290 drops) the observed rate
  * was 0.165 - 0.13·hands (fitted on one half of the games, within 0.004 on the other), about 0.025 above his belief at
@@ -685,7 +685,7 @@ const ACC_BELIEF = process.env.ACC_BELIEF !== '0';
 const DROP_BELIEF = process.env.DROP_BELIEF !== '0';
 const DROP_BASE = 0.165;
 const DROP_HANDS = 0.13;
-/** INT_BELIEF (experimental, off; INT_BELIEF=1 turns it on): his interception belief, shaped like how picks happen.
+/** INT_BELIEF (on by default; INT_BELIEF=0 turns it off): his interception belief, shaped like how picks happen.
  * Off, each defender's path undercut (a touch on the ball in flight) adds to the risk as if every touch were a pick,
  * and a contested catch point is priced lightly. On natural league throws (engine-47 candidate: CATCH_CARRY,
  * HANDS_CUE, CATCH_SPEED, CATCH_CHOICE on), his catch-point terms ranked picks (0.9% to 4.0% across their bands) and
@@ -706,7 +706,7 @@ const SECURE_T = 0.3;
 const DISLODGE = 0.5;
 /** HOT_LOOK: head-and-eye turn rate to a new target (an assumed 400 deg/s; sport head turns peak at 300-600). */
 const HEAD_RATE = 400 * Math.PI / 180;
-/** QB_HEAD (experimental, off; QB_HEAD=1; Integration's go 2026-11-16, Defense's zone trace): his head turns to where
+/** QB_HEAD (on by default; QB_HEAD=0 turns it off; Integration's go 2026-11-16, Defense's zone trace): his head turns to where
  * he wants to look at the shared head's rate within the shared neck range (head.ts's turnHead, the one head model), and
  * his picture is taken along where his head points, not at the point he wants. Off, his head is set to his gaze point
  * every tick, so it jumped between reads in a tick and the zone defenders who lean on his eyes stepped with it. The
@@ -3430,7 +3430,7 @@ export function throwInterference(a: Agent, sim: PlaySim): number {
   return Math.min(1, held) * (1 - Math.min(1, Math.max(0, legs)));
 }
 
-/** THROW_HOLD (experimental, off; intended on): a hold on the passer acts on the throw as a force, not a rolled pin.
+/** THROW_HOLD (on by default; THROW_HOLD=0 turns it off): a hold on the passer acts on the throw as a force, not a rolled pin.
  * The hold is what the tackler's grasp joints apply to his upper body this step (the World's measured joint force,
  * times the hold's upper-body share: a wrap at the shoulders counts fully, one at the legs not at all); the throw is
  * what his arm and trunk can drive forward (his arm force, the bench-press capacity the trenches use). Their ratio,

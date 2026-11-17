@@ -45,7 +45,7 @@ interface PressContact {
  * into a tackle setting deep (3.5 to 1.9 yd/s at 0.9 s, KNOWN_PROBLEMS
  * PRO-1). Receivers at the line keep their release and press contact. */
 const ROUTE_CLEAR = process.env.ROUTE_CLEAR !== '0';
-/** RCV_SEEN (experimental, off; intended on once measured; the user's information rule): receivers' and downfield
+/** RCV_SEEN (on by default; RCV_SEEN=0 turns it off; the user's information rule): receivers' and downfield
  * blockers' reads of opponents come from what they see (`seen-contact.ts`): a defender is down when his picture shows
  * him down, and taken when it shows him in contact with one of the observer's teammates, not from his true support
  * state or engagement record; the convoy's target choice, its fit and its timing use the seen defender, and a teammate
@@ -91,7 +91,7 @@ function clearLane(a: Agent, sim: PlaySim, cmd: MoveCommand): MoveCommand {
   return { ...cmd, vel: { x: go.x * speed, y: go.y * speed } };
 }
 
-/** ROUTE_CRAFT (off; ROUTE_CRAFT=1 turns it on; estimated, C14): a receiver on
+/** ROUTE_CRAFT (on by default; ROUTE_CRAFT=0 turns it off; estimated, C14): a receiver on
  * his route who sees a defender in his lane ahead works to a shoulder instead
  * of running through him. The coached rule is the intent (stem to a shoulder,
  * attack leverage, avoid a body in the lane); his route running decides how
@@ -107,7 +107,7 @@ function clearLane(a: Agent, sim: PlaySim, cmd: MoveCommand): MoveCommand {
  * 11%) (lane.py, engine-31 vs BDB 2025 weeks 1-3). */
 const ROUTE_CRAFT = process.env.ROUTE_CRAFT !== '0';
 
-/** ROUTE_END (experimental, off; docs/reviews/2026-11-14-route-end.md): the route's end as coached.
+/** ROUTE_END (on by default; ROUTE_END=0 turns it off; docs/reviews/2026-11-14-route-end.md): the route's end as coached.
  * - The settle stays alive (hitch, curl, comeback, any `settle` or `sitVsZone` end). After the break he keeps working
  *   from his own picture of the defenders (seen within the last 0.5 s), every tick. Against man (a defender within 2.5 yd
  *   of him) he settles and shields: he slides off the man's side, at his settle depth, then holds with the man on his
@@ -130,7 +130,7 @@ const ROUTE_END = process.env.ROUTE_END !== '0';
 const SETTLE_SHIELD = 1.5, SETTLE_WINDOW = 3;
 
 
-/** BREAK_LOOK (experimental, off; BREAK_LOOK=1; with BALL_EST): a deep-family route the plan throws on its break (its
+/** BREAK_LOOK (on by default; BREAK_LOOK=0 turns it off; with BALL_EST): a deep-family route the plan throws on its break (its
  * declared throw family, route-breaks.ts `onBreak`: the corner, the post, the seam read) gets the break-timed pre-look as
  * well as design 6's depth look, whichever comes first. Design 6's premise (a deep route does not expect the ball at its
  * stem's break) is true of a go, a fade and a seam (`seenOpen`) and false of a corner or post, which are coached to get the
@@ -140,7 +140,7 @@ const SETTLE_SHIELD = 1.5, SETTLE_WINDOW = 3;
  * but every declared clear-out (compile.ts CLEAR_OUTS) is a go (`seenOpen`), so none is affected; a concept that declares
  * a corner or post as a clear-out should be read from the installed plan here. */
 const BREAK_LOOK = process.env.BREAK_LOOK !== '0';
-/** CRAFT_HOLD (experimental, off; with ROUTE_CRAFT): the craft commits to the side it chose round a man in his lane and
+/** CRAFT_HOLD (on by default; CRAFT_HOLD=0 turns it off; with ROUTE_CRAFT): the craft commits to the side it chose round a man in his lane and
  * keeps it until he is clear. Off, the side and the block are recomputed on each tick's picture, and the side comes from
  * a break side re-derived each tick from his velocity, so a wing pressed against an end flips his request +-7 yd/s across
  * nearly every tick (gun_wing_12 cover6, 1.0-1.7 s; Flex): re-aiming and taking it back. With the flag: the side is his
@@ -149,7 +149,7 @@ const BREAK_LOOK = process.env.BREAK_LOOK !== '0';
  * of them for 0.2 s (the bend he committed to runs out that 0.2 s); the bend never takes him back down his route (at least
  * 0.3 of his pace along it) or across to the other side of the man. */
 const CRAFT_HOLD = process.env.CRAFT_HOLD !== '0';
-/** CRAFT_EXIT (experimental, off; with CRAFT_HOLD): the held side is a commitment about one man and ends with him. It ends
+/** CRAFT_EXIT (on by default; CRAFT_EXIT=0 turns it off; with CRAFT_HOLD): the held side is a commitment about one man and ends with him. It ends
  * when he is past that man in his picture (level or behind, or stepped across his line onto the held side and out of his
  * lane, unless that side is his route's declared one), with no run-out, and at his route's declared break, which the craft
  * never alters; and a declared leg that comes back toward the line (a settle) names no side to hold. Coverage's paired throws (scripts/diag/catch/paired-throws.ts, 289 pairs): with the hold alone a
@@ -157,7 +157,7 @@ const CRAFT_HOLD = process.env.CRAFT_HOLD !== '0';
  * straight up its stem through its own break. */
 const CRAFT_EXIT = process.env.CRAFT_EXIT !== '0';
 const craftHeld = new WeakMap<Agent, { d: Agent; across: Vec2; clear: number; at: number; out?: Vec2; declared?: boolean; seeded?: boolean }>();
-/** RELEASE_COMMIT (experimental, off; RELEASE_COMMIT=1; with ROUTE_CRAFT; #35): the release's side seeds the craft's held
+/** RELEASE_COMMIT (on by default; RELEASE_COMMIT=0 turns it off; with ROUTE_CRAFT; #35): the release's side seeds the craft's held
  * side for the same man. When he releases round a man (the press release, RELEASE_SEEN's man tight over him at the snap,
  * or a jam he worked off), that side (a field side) is written as the craft's held side for that man, ahead of the
  * route's declared leg, so when the release lets go and the craft finds the same man in his lane it goes round him on
@@ -268,23 +268,23 @@ export function routeCraft(a: Agent, sim: Pick<PlaySim, 'defense' | 'see' | 't'>
   return { ...cmd, vel: { x: ox * speed * ease, y: oy * speed * ease } };
 }
 
-/** PRESS_MIRROR (off; see behaviors/defense.ts): a receiver with a pressing
+/** PRESS_MIRROR (on by default; PRESS_MIRROR=0 turns it off; see behaviors/defense.ts): a receiver with a pressing
  * corner square in front of him releases around him, not up through him. */
 const PRESS_MIRROR = process.env.PRESS_MIRROR !== '0';
-/** PRESS_RELEASE (off; with PRESS_MIRROR): a pressed receiver works around
+/** PRESS_RELEASE (on by default; PRESS_RELEASE=0 turns it off; with PRESS_MIRROR): a pressed receiver works around
  * the corner from the snap, clear of his body and reach, on his route's side
  * (outside on a vertical) and away from the corner's shade. Tracked pressed
  * gos release outside 84% of the time, 3.5 yd wide by 5 yd; posts, slants and
  * ins release inside (BDB 2025). */
 const PRESS_RELEASE = process.env.PRESS_RELEASE !== '0';
-/** RELEASE_SEEN (off; RELEASE_SEEN=1 turns it on): a receiver releases around any defender he saw tight over him at
+/** RELEASE_SEEN (on by default; RELEASE_SEEN=0 turns it off): a receiver releases around any defender he saw tight over him at
  * the snap (within RELEASE_TIGHT_DEPTH ahead and RELEASE_TIGHT_WIDTH either side, as he saw them), not only the one
  * the defence's call made his press-man corner, an assignment he cannot know. The release side and how cleanly he
  * clears are the existing PRESS_RELEASE technique, on the defender's position as he sees it. */
 export const RELEASE_SEEN = process.env.RELEASE_SEEN !== '0';
 /** RELEASE_SEEN: "tight over him" at the snap; the NFL press population's 2.5 yd, and over him rather than beside. */
 const RELEASE_TIGHT_DEPTH = 2.5, RELEASE_TIGHT_WIDTH = 1.5;
-/** RELEASE_THROUGH (off; RELEASE_THROUGH=1 turns it on; estimated, C14): the
+/** RELEASE_THROUGH (on by default; RELEASE_THROUGH=0 turns it off; estimated, C14): the
  * release is a way to his stem, not a place to stay. Once he has made a press
  * release, stem points just ahead of him (under 1.5 yd) or already level with
  * him that lie back across his release side are behind the release: he runs on
@@ -299,7 +299,7 @@ const RELEASE_TIGHT_DEPTH = 2.5, RELEASE_TIGHT_WIDTH = 1.5;
  * four_verts/cover1 fixture. The release itself (its step, width and clearance
  * at the line) is unchanged. */
 const RELEASE_THROUGH = process.env.RELEASE_THROUGH !== '0';
-/** LINE_START (off; LINE_START=1 turns it on; estimated, C14 release): a receiver's first steps are a get-off, not a
+/** LINE_START (on by default; LINE_START=0 turns it off; estimated, C14 release): a receiver's first steps are a get-off, not a
  * sprint start. Out of a two-point stance, eyes on the defender over him and his release plan in mind, he does not
  * push off with his full start force: until he has declared his stem (out of his stance, his first step, and with time
  * to have seen the defender's leverage: his own observation delay) he drives at a share of it, sharper for a better

@@ -5,7 +5,7 @@ import { GUN_SNAP, snapSecured } from './ball-transfer.js';
 /** PA_DROP (on; PA_DROP=0 restores one drop for both alignments). Also read in qb.ts and assign.ts. */
 const PA_DROP = process.env.PA_DROP !== '0';
 
-/** CONCEPT_DROPS (experimental, off; CONCEPT_DROPS=1; Rules+Coaching mark the concepts in concepts.ts, the QB lane
+/** CONCEPT_DROPS (on by default; CONCEPT_DROPS=0 turns it off; Rules+Coaching mark the concepts in concepts.ts, the QB lane
  * owns this depth and time): the five-step class is the NFL's deeper drop, not the same set as 'gun5'. Measured on
  * tracking by scripts/diag/escape/drop-time.py (BDB 2025, finished non-designed drops): from the gun 28% of drops set
  * 3.5-5 yd behind the snap spot, ending at 2.2 s (p25-75 2.0-2.4), the ball out at 3.0; under center 46% set 6.5-8.5
