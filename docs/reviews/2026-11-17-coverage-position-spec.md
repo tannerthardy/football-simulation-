@@ -1,10 +1,8 @@
 # Coverage by position: coached rules vs the engine (2026-11-17)
-
 Spec and audit for Defense (no code changes), develop c85e6b9d. Each cell (source, TC/VS, engine file:function, M/D/A)
 is in [the table file](2026-11-17-coverage-position-table.md), by family: Cover 3 (Sky, Rip/Liz, Seam, Buzz, Cloud,
 Mable, 9), Cover 0/1 and fire zones, Cover 2/Tampa/Deuce/2-Man, Quarters (MOD/MEG/Palms/Box/Book/Poach), 6/8.
 Share of our 1,039 logged calls: Cover 3 36%, Cover 1 23%, Quarters/6/8 21%, Cover 2 15%, Cover 0 6%. Code-read only, no runs.
-
 ## Ranked differs/absents (share of calls touched x Defense's links L1/L2/L3)
 1. **Deep players bite on the arm and on pumps** (L1, L2; ~94%: every deep zone, the C1 free safety, zoned-off corners,
    Rob). `defense.ts:playBelievedBall` plants on the load and shoulder-breaks at 0.9 speed on any arm "through"; a
