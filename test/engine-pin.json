@@ -179,6 +179,7 @@
   "test/blocker-work-picture.test.ts",
   "test/bounded-attachment.test.ts",
   "test/box-align.test.ts",
+  "test/c2-apex.test.ts",
   "test/called-motion.test.ts",
   "test/carrier-boundary.test.ts",
   "test/carrier-crease.test.ts",

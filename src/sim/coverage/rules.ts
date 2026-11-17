@@ -667,7 +667,48 @@ function stubbieSafety(c: RuleCtx): Directive {
 /** Halves apex, vertical curl (HNFL-097): wall #2's vertical to 12 and match
  * #2 up and in; anything else zones the curl (a flat by #2 belongs to the
  * squat corner) and cuts what comes under. */
+/** C2_APEX (experimental, off; C2_APEX=1 turns it on): the Cover 2 vertical-curl apex (`c2_hook`: Cover 2 Match,
+ * Wild, Inverted, Tampa hooks, the 6/8 half-side hook) plays his taught rule on #2 (coverage-position spec item 1;
+ * HNFL-334/-097 vertical curl, HNFL-015 smash), from his own read of #2 and #1, re-read every tick:
+ * - undeclared (#2 not yet 5 yd, inside 0.9 s, not in the flat): read #2's release (MATCH_DECLARE's declare phase);
+ * - vertical: wall him; hand him to the half safety once a safety is seen over the top past 10 yd (or at 15 yd);
+ * - in (under 14 yd): match him inside (unchanged);
+ * - corner, sail or deep out (an out by a #2 who has climbed past 7 yd): match it from underneath, trailing under him
+ *   (the squat corner sinks on #1 or takes the flat);
+ * - flat or short out: zone the curl window on his side, not the hook, and wall #1 (the new #2) breaking inside;
+ * - stop or anything else: hook zone and the crosser wall (unchanged). */
+export const C2_APEX = process.env.C2_APEX === '1';
+
+function verticalCurlTaught(c: RuleCtx): Directive {
+  const st = c.state;
+  const two = ref(c, 2);
+  const one = ref(c, 1);
+  const hook = () => cut(c) ?? zoneOf(c);
+  if (!two || st.mode === 'handed') return hook();
+  const declared = two.release === 'flat' || two.deepest >= MATCH_DECLARE_YD || c.sim.t >= MATCH_DECLARE_T;
+  if (two.release === 'none' || !declared) return readRelease(two);
+  const curl = (): Directive => {
+    if (one && (one.release === 'in' || one.release === 'under') && one.depth < 14) return man(one, { lev: 'inside' });
+    return zoneOf(c, c.side === 'S' ? 'curl_s' : 'curl_w');
+  };
+  switch (two.release) {
+    case 'vertical':
+      if (two.depth >= 15 || (two.depth >= 10 && hasVisibleCap(c.a, c.sim, two))) { st.mode = 'handed'; return hook(); }
+      return { t: 'wall', r: two.r };
+    case 'in':
+      return two.depth < 14 ? man(two, { lev: 'inside' }) : hook();
+    case 'out':
+      if (two.climbed) return man(two, { lev: 'inside', trail: true });
+      return curl();
+    case 'flat':
+      return curl();
+    default:
+      return hook();
+  }
+}
+
 function verticalCurl(c: RuleCtx): Directive {
+  if (C2_APEX) return verticalCurlTaught(c);
   const two = ref(c, 2);
   if (c.state.mode === 'in' && two) return man(two, { lev: 'inside' });
   if (two && c.state.mode !== 'zoned' && two.release === 'in' && two.depth < 14) {

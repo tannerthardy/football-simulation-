@@ -13,7 +13,7 @@ const { PlaySim } = await import(`${W}/src/sim/playsim.ts`);
 const { nativeTraceSetup } = await import(`${W}/scripts/diag/command-trace.ts`);
 const { PASS_BY_ID } = await import(`${W}/src/playbook/concepts.ts`);
 const COVS = (process.env.COVS ?? 'cover3_match,cover3_seam,cover3_buzz,cover9').split(',');
-const RULES = new Set(['c3_curl_flat', 'c3_seam']);
+const RULES = new Set((process.env.RULES ?? 'c3_curl_flat,c3_seam').split(','));
 const rows: any[] = [];
 for (const concept of (process.env.CONCEPTS?.split(',') ?? Object.keys(PASS_BY_ID).filter((id) => !/screen/.test(id))))
   for (const coverage of COVS) for (const formation of ['gun_doubles_11', 'gun_trips_11'])
