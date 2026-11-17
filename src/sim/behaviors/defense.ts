@@ -169,14 +169,15 @@ const CARRY_LABEL = /^(open-carry-seam|carry-wall|carry-run-past)$/;
  * yd/s toward the eventual catch point at -0.6 / -0.3 / 0 s; ours -0.6 / -0.5 / -0.2. Stated choices: QB_LEAN_SPEED 0.4,
  * QB_LEAN_EXIT 0.2 s, the dwell range. Old branch (defense/C14-qb-intent, two misses): drove at full speed on the held
  * look (no lean), also required a seen set, exited the instant the look moved. */
-const QB_INTENT = process.env.QB_INTENT === '1' || process.env.QB_INTENT === '3';
-/** QB_INTENT=3 (body tells): the passer's set shoulders (his seen trunk facing while set or loading) and the stride he
+const QB_INTENT_BITS = Number(process.env.QB_INTENT ?? 0) | 0;
+const QB_INTENT = (QB_INTENT_BITS & 1) !== 0;
+/** QB_INTENT bit 2 (=3 with the lean; body tells): the passer's set shoulders (his seen trunk facing while set or loading) and the stride he
  * steps into the load with are evidence as well as his head. Head and shoulders on the same receiver: he leans sooner
  * (half the dwell) and with more conviction (pace); shoulders set one way and only the head the other: the shoulders win
  * for an aware dropper (awareness >= 0.5; a head-only look-off fools the young, not the veteran); shoulders alone are
  * enough; the shoulders turning off his man is the reset he can see (the same exit margin). The stride is not in his
  * picture as a foot: the passer's seen motion into the load, along his trunk, is the agreeing tell. */
-const QB_BODY_TELL = process.env.QB_INTENT === '3';
+const QB_BODY_TELL = QB_INTENT && (QB_INTENT_BITS & 2) !== 0;
 const QB_SHOULDER_CONE = 20 * Math.PI / 180;
 const QB_LEAN_SPEED = 0.4, QB_LEAN_EXIT = 0.2;
 const eyesHeld = new WeakMap<Agent, Agent>();
