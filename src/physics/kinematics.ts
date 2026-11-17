@@ -190,6 +190,13 @@ export function enduranceFactor(body: Body): number {
  * levels off at a wanted speed below his top speed. */
 const GAIT_STEP = Number(process.env.GAIT_STEP ?? 0);
 
+/** ELLIPSE_SAT (experimental, off; ELLIPSE_SAT=1 turns it on; docs/reviews/2026-11-17-ellipse-sat.md): the friction ellipse arbitrates between what the legs are asked
+ * for along his velocity and across it. A demand is a velocity error divided by a step, so it is many times its limit whenever the error is more than a step's worth, and
+ * scaling both components by the same factor then gives the larger demand almost everything: a lateral demand five times over its limit leaves braking at a fraction of
+ * its own. With ELLIPSE_SAT each component is first saturated at its own limit (drive or brake along, lateral across), and the ellipse then arbitrates between the two
+ * limits: full lateral and full brake each get 1/sqrt(2) of their limit. The envelope is unchanged. */
+const ELLIPSE_SAT = process.env.ELLIPSE_SAT === '1';
+
 /** The lag a controller should expect when it asks for `wanted` speed: the
  * legs start at full force whatever he wants and level off at his wanted
  * speed, so the approach time constant is tau scaled by wanted / top speed
@@ -325,6 +332,7 @@ export function locomotionAccel(body: Body, cmd: MoveCommand, dt: number, capaci
     // hard as the envelope allows in that direction.
     const At = (at >= 0 ? Math.max(driveAccel(p, speed, p.vmax * fat) * fat * drive, 0.01) : p.brake * (0.85 + 0.15 * fat)) * capacity;
     const An = lateralEnvelope(body, speed, cutSkill, capacity);
+    if (ELLIPSE_SAT) { at = clamp(at, -At, At); an = clamp(an, -An, An); }
     const k = (at / Math.max(At, 1e-9)) ** 2 + (an / Math.max(An, 1e-9)) ** 2;
     if (k > 1) {
       const s = 1 / Math.sqrt(k);
