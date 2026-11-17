@@ -33,6 +33,12 @@ export interface ReleaseBelief {
 
 const store = new WeakMap<PlaySim, Map<number, ReleaseBelief & { t: number }>>();
 
+/** Read-only: his release belief as last updated (no update now). For a reader that runs before this tick's cues are in
+ * (ZONE_EYES's head step): it must not fix this tick's belief early for everyone else. */
+export function lastReleaseBelief(sim: PlaySim, a: Agent): ReleaseBelief | undefined {
+  return store.get(sim)?.get(a.idx);
+}
+
 /** His release belief this tick (updated from this tick's cues on first use). */
 export function releaseBelief(sim: PlaySim, a: Agent): ReleaseBelief {
   let m = store.get(sim);

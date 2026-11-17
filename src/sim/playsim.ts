@@ -9,7 +9,8 @@ import { shouldersOf } from '../physics/kinematics.js';
 import { RELEASE_BELIEF, releaseBelief } from './release-belief.js';
 import { recordContact } from './seen-contact.js';
 import { lineOfSight, SIGHT_PURE, SightFrame, STALE_ALIGN, STALE_HOLD, STALE_MARK, STALE_SPREAD } from './sight.js';
-import { HEAD, inHeadCone, neckRange, stepHeads } from './head.js';
+import { HEAD, inHeadCone, neckRange, stepHeads, want } from './head.js';
+import { zoneEyesFor } from './zone-eyes.js';
 import { FIELD_WIDTH, OPP_GOAL_X, OWN_GOAL_X } from '../core/field.js';
 import { Rng } from '../core/rng.js';
 import { DT } from '../core/units.js';
@@ -63,7 +64,7 @@ import { ResponsibilityLedger } from './responsibility-ledger.js';
 import { afterStep, releaseBond, tryTackles, updateBond, type TackleBond } from './tackle.js';
 import type { BallState, CarrierSegment, Frame, PenaltyCall, FoulEvidence, FoulRecord, PlayEvent, PlayEventType, PlayOutcome, PlayResult, PlayStats, ReplayLevel } from './types.js';
 
-/** ALIGN_HABIT (experimental, off): see alignDefense. */
+/** ALIGN_HABIT (on by default; ALIGN_HABIT=0 turns it off): see alignDefense. */
 const ALIGN_HABIT = process.env.ALIGN_HABIT !== '0';
 /** EXPORT_SHOULDERS (diagnostic, off; EXPORT_SHOULDERS=1): replay frames record where each man's chest points
  * (shouldersOf: hips plus the TRUNK_TWIST trunk) instead of his hips, so a facing export compares the same body part as
@@ -146,18 +147,18 @@ const BALL_LENGTH = 0.31;
  * (docs/reviews/field-of-view-proposal.md). Model assumptions: head turn rate,
  * neck range and cone half-angle below. */
 const GAZE = process.env.GAZE === '1';
-/** SIGHT_CARRIER (experimental, off; SIGHT_CARRIER=1; SEE_SIGHT step 1, docs/reviews/2026-11-13-perception-proposal.md
+/** SIGHT_CARRIER (on by default; SIGHT_CARRIER=0 turns it off; SEE_SIGHT step 1, docs/reviews/2026-11-13-perception-proposal.md
  * section 12): the ball carrier's picture of an opponent he cannot see (behind his shoulders, or behind a body by
  * `lineOfSight`'s heights) is the last one he had, ageing (`sighted`), not a fresh delayed picture through his back.
  * Before it, half his traffic reads were of men behind him (scripts/diag/eyes/see-sight.ts). */
 const SIGHT_CARRIER = process.env.SIGHT_CARRIER !== '0';
-/** SIGHT_COVER (experimental, off; SIGHT_COVER=1; SEE_SIGHT step 3): a man or zone defender's picture of an opponent
+/** SIGHT_COVER (on by default; SIGHT_COVER=0 turns it off; SEE_SIGHT step 3): a man or zone defender's picture of an opponent
  * behind a body (`lineOfSight`'s heights) is the newest moment he had him in sight, as SIGHT_CARRIER's. Occlusion only:
  * a man defender's head is on his man and a zone defender's on the QB by coaching, so with GAZE off no facing bound
  * applies; when GAZE lands for coverage, its head (shared with BALL_EST's ball head, Coverage 2026-11-14) gives the view
  * half. Before it, coverMan read 22% of its pictures through a body, coverage/reads 15%, trackReceiver 10%. */
 const SIGHT_COVER = process.env.SIGHT_COVER !== '0';
-/** SIGHT_RECOG (experimental, off; SIGHT_RECOG=1; SEE_SIGHT step 4): a defender's run / pass recognition reads its keys
+/** SIGHT_RECOG (on by default; SIGHT_RECOG=0 turns it off; SEE_SIGHT step 4): a defender's run / pass recognition reads its keys
  * (the five linemen, the QB's depth and the back at the mesh, the receiver he keys) by SIGHT_CARRIER's rule, occlusion
  * only: he faces the offense while he reads, and a back or QB behind the line is seen over it or through a gap by
  * `lineOfSight`'s heights, or not at all. Before it, recognition's `cues` read 11.5% of its pictures through a body and
@@ -380,7 +381,7 @@ export class PlaySim {
     const defSlots = defense.map(([slot]) => slot);
     // The front's end men align by build (FRONT_ALIGN); the installed spots ignore it.
     const mass = Object.fromEntries(defense.map(([slot, player]) => [slot, derivePhysical(player).massKg]));
-    // ALIGN_HABIT (experimental, off): each off-ball defender's personal depth
+    // ALIGN_HABIT (on by default; ALIGN_HABIT=0 turns it off): each off-ball defender's personal depth
     // habit (his own seed) and this snap's placement scatter (the play's).
     const scatter = ALIGN_HABIT ? Object.fromEntries(defense.map(([slot, player]) => {
       const snap = this.rng.fork(`align-scatter:${slot}`);
@@ -708,6 +709,9 @@ export class PlaySim {
 
   /** GAZE: `a` is watching `target` this tick (stage 1: a chaser watches his man). */
   lookAt(a: Agent, target: Agent): void {
+    // ZONE_EYES: what his controller watches other than the passer (the carrier he chases) is a want on his head; the
+    // passer is the sequence's own job (zone controllers watch him every tick, which would override the key phase).
+    if (zoneEyesFor(a) && target !== this.qb) want(this, a, target, 'carrier');
     if (!GAZE) return;
     const g = this.gaze.get(a);
     // A lapsed watch starts over: head from body facing, no memories from before.
@@ -881,7 +885,9 @@ export class PlaySim {
     else if ((SIGHT_COVER && observer.team === 'D' && (observer.behavior?.kind === 'man' || observer.behavior?.kind === 'zone'))
       // SIGHT_RECOG: his run / pass read's keys (the line, the QB, the back, the receiver he keys), occlusion only.
       || (SIGHT_RECOG && sight === 'recog'))
-      seen = this.sighted(observer, target, seen, true, HEAD && observer.behavior?.kind !== undefined && (observer.behavior.kind === 'man' || observer.behavior.kind === 'zone'));
+      seen = this.sighted(observer, target, seen, true, (HEAD && observer.behavior?.kind !== undefined && (observer.behavior.kind === 'man' || observer.behavior.kind === 'zone'))
+        // ZONE_EYES: a zone defender sees through his head's cone (the taught sequence turns it), not every receiver at once.
+        || zoneEyesFor(observer));
     this.trace.observe(observer, target, seen, this.t);
     this.commandTrace?.observe(observer, target, seen, this.t);
     return seen;
