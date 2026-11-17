@@ -2360,13 +2360,19 @@ export class ZoneCoverage implements Behavior {
       const spot = { x: lane.x + th.vel.x * lead, y: clamp(lane.y + th.vel.y * lead, 0.5, FIELD_WIDTH - 0.5) };
       return withFacingTechnique(goTo(a, spot, { speed: 1 }), { label: 'qb-intent-break', key: th.vel });
     }
-    // The lean: a step's worth toward the lane, kept inside his zone, at a controlled pace, shoulders on the QB.
+    // The lean (attempt 3, re-diagnosed): across toward the looked-at receiver's line, on top of the route. NFL
+    // underneath men drift across toward the throw (+1.0 yd/s) while holding or gaining depth (+0.5 yd/s downfield);
+    // the old lean stepped him forward under the route and spent his in-front position. So the step is lateral only,
+    // at his own depth or his landmark's, whichever is deeper (he finishes his drop, never comes forward), kept within
+    // his zone's width; the arm and the seen ball bring him downhill from there.
     a.tags.add('qb-intent-lean');
-    const dx = lane.x - a.pos.x, dy = lane.y - a.pos.y, d = Math.hypot(dx, dy) || 1, step = Math.min(d, 1.5);
-    let p = { x: a.pos.x + (dx / d) * step, y: a.pos.y + (dy / d) * step };
-    const ox = p.x - lm.x, oy = p.y - lm.y, od = Math.hypot(ox, oy);
-    if (od > this.radius) p = { x: lm.x + (ox / od) * this.radius, y: lm.y + (oy / od) * this.radius };
-    return withFacingTechnique(track(a, p, { x: 0, y: 0 }, { speed: QB_LEAN_SPEED, facing: angleTo(a.pos, qbAt) }), { label: 'qb-intent-lean', key: th.vel });
+    const dy = th.pos.y - a.pos.y, depth = Math.max(a.pos.x, lm.x);
+    let py = a.pos.y + Math.sign(dy) * Math.min(Math.abs(dy), 1.5);
+    py = clamp(py, lm.y - this.radius, lm.y + this.radius);
+    const p = { x: depth, y: clamp(py, 0.5, FIELD_WIDTH - 0.5) };
+    // Pace: continuous in the depth he still owes his drop (drop pace when far short, lean pace once there).
+    const pace = clamp(QB_LEAN_SPEED + 0.25 * (lm.x - a.pos.x), QB_LEAN_SPEED, 0.9);
+    return withFacingTechnique(goTo(a, p, { speed: pace, facing: angleTo(a.pos, qbAt) }), { label: 'qb-intent-lean', key: th.vel });
   }
 
   /**
