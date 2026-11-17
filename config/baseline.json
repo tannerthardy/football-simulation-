@@ -71,6 +71,7 @@
     "SETTLE_DEPTH": "0",
     "ZONE_HOLD": "0",
     "BEND_FORECAST": "0",
+    "ARM_BREAK": "0",
     "SAFETY_DEPTH": "0",
     "ARRIVE_LEAD": "0",
     "PEDAL_CAP": "0",
