@@ -2,7 +2,7 @@
 
 One combination of experimental flags that Run Game, Defense, Flex and Coverage all measure against. Before this, each agent tested on its own mix (the FLAT_PRESS / ZONE_RUN back-and-forth on 2026-11-09 came from two different flag sets), and no list of anyone's stack existed in the repository.
 
-- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-76`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
+- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-77`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
 - **The code:** `run/G3-oz-backfield` a749beb7 + `defense/G2-stance-tell` a0cb0789 (#411) + `defense/G2-lb-start` (#416, with #409) + `claude/quirky-franklin-9lbwbp` (#417, with #415) + develop 6676dfc2.
 - **Since 2026-11-09 the stack is the engine's default.** The flags listed `on` are read as on unless set to `0`; a bare command in a clean shell and `npm run ref -- <command>` run the same engine. `npm run ref -- --off -- <command>` runs the legacy engine (every listed flag off). `test/reference-stack.test.ts` fails if the file and the code defaults ever disagree. See "Promotion" below.
 
@@ -607,6 +607,33 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 | Fixed 1,321 runs on run-ref-15, paired yards a run | | `FIT_TE_GAP` +0.05 ± 0.05; `FIT_BLITZ_SLIDE` +0.01 ± 0.04 |
 
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
+
+## engine-77: zone defenders see through one head that follows the taught eye sequence (2026-11-17)
+
+On: `ZONE_EYES` (Coverage, an information repair; C14 zone coached rules item 13). Off, with GAZE and HEAD off,
+SIGHT_COVER gave zone defenders occlusion-only sight with no view bound: facing the passer, a zone defender had every
+receiver at once and a bailing corner the whole field behind him. On, his head (head.ts's turn rate and neck range, on
+his shoulders) follows the sequence coaches teach, and he sees through its cone (about 90° a side, SIGHT_COVER's head
+view and release-evidence's head cone); what is outside it he does not see, and his picture of it ages.
+
+| seat | key in the declare phase | then |
+|---|---|---|
+| flat, curl-flat | his side's #2 | the passer |
+| hook, middle hook, hole, robber, curl | #3, else #2 | the passer |
+| deep third, deep half, quarter outside | #1 | the passer |
+| quarter inside, deep middle, Tampa middle | #2 | the passer |
+
+The declare phase is `ZONE_EYES_KEY` = 9 (tenths: 0.9 s) after the snap, a stated choice (the 3-step / 5-yd declare most sources
+give). On a believed throw his eyes go to the receiver his shoulder read picked ("eyes from the elbow to the receiver,
+not the ball"); the carrier he chases takes the head first. Sources: docs/reviews/2026-11-17-zone-coached-rules.md.
+Under BALL_EST with defenders estimating (not the default) the ball estimate keeps its own head: sharing one head with
+the sequence raised staged zone YAC on that arm without an explanation, so unifying the heads is an open item.
+
+Staged zone/man set (`zone-man-after.mts`, 2 seeds, gun doubles and trips, every non-screen concept; engine-76 →
+engine-77), YAC per catch: cover 1 (man) 3.14 → 3.13; cover 2 7.14 → 7.24; cover 3 5.26 → 4.69; cover 4 4.83 → 4.56;
+cover 6 3.96 → 3.83. Dither passes; the carrier / spacing row is re-recorded at 0.1230 (the same with ZONE_EYES=0 on this
+head). Information scan and guard, sight-cover, head and `test/zone-eyes.test.ts` (heads on the key at 0.6 s, on the
+passer by 1.25 s) pass. Man defenders keep SIGHT_COVER's occlusion-only sight; the same repair for them is next.
 
 ## engine-76: one reaction on the arm read (2026-11-17)
 

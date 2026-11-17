@@ -566,6 +566,7 @@
   "test/yaw-motor.test.ts",
   "test/yaw-response.test.ts",
   "test/zone-combo-surface.test.ts",
+  "test/zone-eyes.test.ts",
   "test/zone-flat-hold.test.ts",
   "test/zone-reach.test.ts",
   "test/zone-track-beaten.test.ts",
