@@ -297,6 +297,8 @@
     "QB_EVADE_UP": "on",
     "BLITZ_SECOND": "on",
     "QB_LOOKOFF_RHYTHM": "off",
+    "QB_INTENT": "off",
+    "DEEP_BREAK": "off",
     "QB_HONEST_FEEL": "on",
     "THROW_PLATFORM": "off",
     "QB_BELIEVED_DEF": "on",
