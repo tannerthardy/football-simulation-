@@ -76,6 +76,13 @@ const ZONE_SETTLE = process.env.ZONE_SETTLE !== '0';
  * opposite sides. */
 export const SETTLE_DEPTH = process.env.SETTLE_DEPTH !== '0';
 const SINK_ENTER = 2, SINK_EXIT = 1;
+/** DROP_SET (experimental, off; numeric bits): the underneath dropper's drop ends on the QB's plant step as he sees it.
+ * Bit 1: ZONE_SETTLE's cue becomes the QB's seen drop speed falling below half its seen peak (peak over 2 yd/s) after he
+ * has given a yard (his back foot hitting), instead of the QB already stopped (speed under 1.2) seen a perception delay
+ * later; the gather (ZONE_SETTLE's depth cap) and SETTLE_DEPTH's sink for a man short of his landmark are unchanged.
+ * Measured first (drop-probe, engine-76): at the QB's set the NFL underneath man is at 5.6 yd sinking +1.0 yd/s, ours at
+ * 7.1 yd sinking +2.45; our settle fired 0.25 s after the true set. */
+const DROP_SET = Number(process.env.DROP_SET ?? 0) | 0;
 /** SEEN_EYES (default on; SEEN_EYES=0 restores the QB's internal read target): a zone defender
  * reads the QB's look from what he sees of him, not from the QB's internal
  * read target (sim.qbEyes, the exact receiver, instantly, for every defender
@@ -1767,6 +1774,8 @@ export class ZoneCoverage implements Behavior {
   }
   /** ZONE_SETTLE: the deepest the QB has been in this defender's picture. */
   private qbDeepest = Infinity;
+  /** DROP_SET: the fastest he has seen the QB drop (yd/s away from the line). */
+  private qbDropPeak = 0;
   /** A box backer has left his read step for his drop. */
   private dropping = false;
 
@@ -1957,7 +1966,15 @@ export class ZoneCoverage implements Behavior {
       const q = sim.see(a, qb);
       this.qbDeepest = Math.min(this.qbDeepest, q.pos.x);
       const dropped = (sim.offAlign.spots.QB?.pos.x ?? q.pos.x) - this.qbDeepest >= 1;
-      if (dropped && knowsPass(sim, a) && Math.hypot(q.vel.x, q.vel.y) < 1.2) this.settledAt = sim.t;
+      // DROP_SET bit 1: the plant step. The QB's drop speed (away from the line, in his picture) collapsing to half its
+      // seen peak after he has given ground is his back foot hitting; the dropper gathers there, so he is set as the QB
+      // sets, not a perception delay after he sees him stopped.
+      if (DROP_SET & 1) {
+        const away = -q.vel.x * sim.attackDir(sim.offense[0].team);
+        this.qbDropPeak = Math.max(this.qbDropPeak, away);
+        if (dropped && knowsPass(sim, a) && this.qbDropPeak > 2 && away < 0.5 * this.qbDropPeak) { this.settledAt = sim.t; a.tags.add('drop-set'); }
+      }
+      if (this.settledAt < 0 && dropped && knowsPass(sim, a) && Math.hypot(q.vel.x, q.vel.y) < 1.2) this.settledAt = sim.t;
     }
     const sinking = this.settledAt >= 0 && this.shortOfDepth(a);
     const settled = (t: Vec2): Vec2 => this.settledAt >= 0 && !sinking ? { x: Math.min(t.x, Math.max(a.pos.x, sim.los + 3)), y: t.y } : t;
