@@ -128,6 +128,20 @@ select, input[type="search"] { width: 100%; min-width: 0; border: 1px solid var(
 .inspector-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px 16px; margin: 0; }
 .inspector-grid dt { color: var(--muted); font-size: 11px; }
 .inspector-grid dd { margin: 0; font-family: var(--mono); font-size: 12px; overflow-wrap: anywhere; }
+.art-panel { padding: 12px 14px; border-top: 1px solid var(--line); display: grid; gap: 8px; }
+.art-panel summary { cursor: pointer; font-family: var(--display); font-size: 21px; font-weight: 800; }
+.art-sum { display: grid; gap: 3px; font-size: 13px; }
+.art-sum b { font-weight: 600; }
+.art-legend { display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: 12px; color: var(--muted); margin: 0; padding: 0; list-style: none; }
+.art-legend li { display: inline-flex; align-items: center; gap: 6px; }
+.art-legend svg { width: 34px; height: 14px; flex: none; }
+.art-cols { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px 18px; }
+@media (max-width: 680px) { .art-cols { grid-template-columns: minmax(0, 1fr); } }
+.art-cols h3 { margin: 4px 0; font-size: 13px; font-family: var(--display); letter-spacing: .04em; text-transform: uppercase; }
+.art-row { display: grid; grid-template-columns: 58px minmax(0, 1fr); gap: 0 8px; font-size: 12px; padding: 2px 4px; border-radius: 4px; cursor: pointer; }
+.art-row:hover, .art-row.on { background: var(--panel-2); }
+.art-row b { font-family: var(--mono); font-weight: 600; }
+.art-row i { color: var(--muted); font-style: normal; }
 .layer-controls { display: flex; flex-wrap: wrap; gap: 6px 14px; }
 .layer-controls label { display: flex; align-items: center; gap: 5px; font-size: 12px; }
 .layer-controls label:has(input:disabled) { color: var(--muted); }
@@ -211,6 +225,7 @@ select, input[type="search"] { width: 100%; min-width: 0; border: 1px solid var(
           <button id="speedbtn" title="Playback speed">1×</button>
           <button id="labels" aria-pressed="false" title="Show slots instead of jersey numbers (L)">Slots</button>
           <button id="trails" aria-pressed="true" title="Route trails (T)">Trails</button>
+          <button id="artbtn" aria-pressed="true" title="Show the call (play art) before the snap (A)">Play art</button>
           <button id="wide" aria-pressed="false" title="Wide view (W)">Wide</button>
           <button id="auto" aria-pressed="true" title="Play the next matching clip after a short pause">Auto-next</button>
           <button id="loop-playlist" aria-pressed="false" title="Return to the first matching clip after the last">Loop selection</button>
@@ -218,6 +233,7 @@ select, input[type="search"] { width: 100%; min-width: 0; border: 1px solid var(
         <div class="event-jumps" id="event-jumps" aria-label="Jump to a play event"></div>
         <div class="row"><label for="inspect-player">Inspect player</label><select id="inspect-player" aria-label="Inspect player"><option value="-1">Ball carrier</option></select><small id="player-motion"></small></div>
         <div class="layer-controls" aria-label="Replay layers">
+          <label><input id="layer-art" type="checkbox">Keep play art during the play</label>
           <label><input id="layer-assignments" type="checkbox">Assignments</label>
           <label><input id="layer-movement" type="checkbox">Movement intent</label>
           <label><input id="layer-contact" type="checkbox">Block &amp; tackle contact</label>
@@ -229,6 +245,7 @@ select, input[type="search"] { width: 100%; min-width: 0; border: 1px solid var(
           <div id="export-status" class="status-note" role="status" aria-live="polite">Exports the selected time range at 1×, with your visible layers and the play reference.</div>
         </div>
       </div>
+      <details class="art-panel" id="art-panel" open aria-label="Play art: the call as called"><summary>Play art · the call</summary><div id="art-body"><small class="status-note">No call data recorded for this play.</small></div></details>
       <section class="inspector" aria-label="Selected player detail"><h2 id="inspector-title">Player detail</h2><small class="status-note">Click a player on the field or select one above. Body-facing ticks are not eye tracking.</small><dl id="inspector-state" class="inspector-grid"></dl><div id="inspector-links" class="detail-list"></div><div id="inspector-decisions" class="detail-list"></div><details><summary>Recorded player ratings</summary><dl id="inspector-ratings" class="inspector-grid"></dl></details></section>
       <details class="inspector"><summary>Recorded event notes</summary><div id="event-details" class="detail-list"></div></details>
       <div class="result">
@@ -312,6 +329,7 @@ window.TELEMETRY_READY = Promise.resolve(true);
   let speed = 1;
   let showSlots = true;
   let showTrails = true;
+  let artOn = true, artKeep = false, artHold = 0;
   let wide = false;
   let auto = true;
   let loopPlaylist = false;
@@ -506,6 +524,8 @@ window.TELEMETRY_READY = Promise.resolve(true);
     t = p.frames.t[0];
     playing = !!start;
     holdUntil = 0;
+    artHold = start && artOn && p.art ? performance.now() + 3500 : 0;
+    renderArt(p);
     const dur = p.frames.t[p.frames.t.length - 1];
     renderHeader(p.game);
     $('clip-title').textContent = `${p.id} · ${p.concept.name}`;
@@ -618,7 +638,7 @@ window.TELEMETRY_READY = Promise.resolve(true);
     const p = plays[cur];
     if (t >= p.frames.t[p.frames.t.length - 1]) t = p.frames.t[0];
     playing = !playing;
-    holdUntil = 0;
+    holdUntil = 0; artHold = 0;
     syncControls();
   };
   $('prev').onclick = () => step(-1);
@@ -631,6 +651,9 @@ window.TELEMETRY_READY = Promise.resolve(true);
   const toggle = (id, get, set) => { $(id).onclick = () => { set(!get()); $(id).setAttribute('aria-pressed', String(get())); }; };
   toggle('labels', () => showSlots, (v) => (showSlots = v));
   toggle('trails', () => showTrails, (v) => (showTrails = v));
+  toggle('artbtn', () => artOn, (v) => { artOn = v; artHold = 0; });
+  $('layer-art').onchange = () => { artKeep = $('layer-art').checked; };
+  $('art-body').onclick = (e) => { const row = e.target.closest('.art-row'); if (!row) return; const sel = $('inspect-player'); const on = sel.value === row.dataset.i; sel.value = on ? '-1' : row.dataset.i; inspectorStamp = ''; document.querySelectorAll('.art-row').forEach((r) => r.classList.toggle('on', !on && r === row)); };
   toggle('wide', () => wide, (v) => { wide = v; resize(); });
   toggle('auto', () => auto, (v) => { auto = v; holdUntil = 0; });
   toggle('loop-playlist', () => loopPlaylist, (v) => (loopPlaylist = v));
@@ -675,6 +698,7 @@ window.TELEMETRY_READY = Promise.resolve(true);
     else if (e.key.toLowerCase() === 'l') $('labels').click();
     else if (e.key.toLowerCase() === 't') $('trails').click();
     else if (e.key.toLowerCase() === 'w') $('wide').click();
+    else if (e.key.toLowerCase() === 'a') $('artbtn').click();
     else if (e.key.toLowerCase() === 'r') $('restart').click();
   });
 
@@ -898,6 +922,108 @@ window.TELEMETRY_READY = Promise.resolve(true);
     }
   }
 
+
+  // ------------------------------------------------------------- play art
+  // The call as called, drawn before the snap (and kept on request): sourced from the recorded call data (p.art), not from
+  // anything a player in the simulation can read. Items decided after the snap are drawn dashed and tagged as rules.
+  const ART_C = { route: '#ffffff', deep: '#4f8dff', under: '#b57bff', flat: '#2fd0b0', man: '#ff5a4d', rush: '#ff9f43', block: '#ff7ab8', pro: '#63d2ff', carry: '#ffd23f' };
+  const zoneKind = (z) => /^(deep|quarter|tampa)/.test(z) ? 'deep' : /^(flat|curl_flat)/.test(z) ? 'flat' : 'under';
+  const artShown = (p) => !!(p && p.art && !exportTask && (artKeep || (artOn && t < 0.05)));
+  const DROP_YD = { quick: 1.5, gun3: 2.5, gun5: 4, five: 4, seven: 6, pa: 5, boot: 4 };
+  function drawArt(p, positions, X, Y, sc, sel) {
+    const art = p.art; if (!art) return;
+    const idx = (team, slot) => p.roster.findIndex((r) => r[0] === team && r[1] === slot);
+    const pos = (i) => positions[i];
+    const dim = (i) => sel >= 0 && sel !== i;
+    ctx.save(); ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    const poly = (pts, color, w, dash) => { ctx.strokeStyle = color; ctx.lineWidth = w; ctx.setLineDash(dash || []); ctx.beginPath(); pts.forEach((q, k) => k ? ctx.lineTo(X(q[0]), Y(q[1])) : ctx.moveTo(X(q[0]), Y(q[1]))); ctx.stroke(); ctx.setLineDash([]); };
+    const head = (a, b, color, size) => { const ang = Math.atan2(-(b[1] - a[1]), b[0] - a[0]); ctx.fillStyle = color; ctx.beginPath(); const x = X(b[0]), y = Y(b[1]); ctx.moveTo(x, y); ctx.lineTo(x - size * Math.cos(ang - .5), y - size * Math.sin(ang - .5)); ctx.lineTo(x - size * Math.cos(ang + .5), y - size * Math.sin(ang + .5)); ctx.closePath(); ctx.fill(); };
+    const tag = (text, q, color, dy) => { ctx.font = '600 10px monospace'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; const w = ctx.measureText(text).width + 6; const x = X(q[0]), y = Y(q[1]) + (dy || 0); ctx.fillStyle = 'rgba(0,0,0,0.62)'; ctx.fillRect(x - w / 2, y - 7, w, 14); ctx.fillStyle = color; ctx.fillText(text, x, y); };
+    const arrow = (a, b, color, w, dash) => { poly([a, b], color, w, dash); head(a, b, color, 4 + w * 1.5); };
+    const readNo = {}; (art.offense.progression || []).forEach((r, k) => { const m = /\((\w+)\)/.exec(r); if (m) readNo[m[1]] = k + 1; });
+    // Defense under, offense over.
+    art.jobs.forEach((j, i) => {
+      if (!j) return; const r = p.roster[i]; if (r[0] !== 'D') return;
+      ctx.globalAlpha = dim(i) ? 0.18 : 1; const me = pos(i); if (!me) return;
+      if (j.t === 'zone') {
+        const k = zoneKind(j.zone), col = ART_C[k], [x0, x1, y0, y1] = j.area;
+        ctx.fillStyle = col + '38'; ctx.fillRect(X(x0), Y(y1), (x1 - x0) * sc, (y1 - y0) * sc);
+        ctx.strokeStyle = col; ctx.lineWidth = 1.5; ctx.setLineDash(j.rule ? [5, 3] : []); ctx.strokeRect(X(x0), Y(y1), (x1 - x0) * sc, (y1 - y0) * sc); ctx.setLineDash([]);
+        poly([[me[0], me[1]], j.center], col, 1.2, [2, 4]);
+        tag(`${r[1]}${j.rule ? ' ◆' : ''}`, [(x0 + x1) / 2, (y0 + y1) / 2], col);
+      } else if (j.t === 'man') {
+        const ti = idx('O', j.target), tp = ti >= 0 ? pos(ti) : null;
+        if (tp) { arrow(me, tp, ART_C.man, 2.2); tag(j.press ? 'press' : 'man', [(me[0] + tp[0]) / 2, (me[1] + tp[1]) / 2], ART_C.man); }
+      } else if (j.t === 'rush' || j.t === 'blitz') {
+        arrow(me, j.to, ART_C.rush, j.t === 'blitz' ? 3.4 : 2); if (j.t === 'blitz') tag('blitz', [(me[0] + j.to[0]) / 2, (me[1] + j.to[1]) / 2], ART_C.rush);
+      } else if (j.t === 'fit') {
+        arrow(me, j.to, ART_C.rush, 2, [5, 3]); tag(j.gap, [(me[0] + j.to[0]) / 2, (me[1] + j.to[1]) / 2], ART_C.rush);
+      } else if (j.t === 'spy') { ctx.strokeStyle = ART_C.man; ctx.setLineDash([3, 3]); ctx.beginPath(); ctx.arc(X(me[0]), Y(me[1]), Math.max(10, sc * 1.2), 0, 7); ctx.stroke(); ctx.setLineDash([]); tag('spy', me, ART_C.man, -16); }
+    });
+    art.jobs.forEach((j, i) => {
+      if (!j) return; const r = p.roster[i]; if (r[0] !== 'O') return;
+      ctx.globalAlpha = dim(i) ? 0.18 : 1; const me = pos(i); if (!me) return;
+      if (j.t === 'route') {
+        poly(j.path, ART_C.route, 2.6); head(j.path[j.path.length - 2] || me, j.path[j.path.length - 1], ART_C.route, 9);
+        if (j.brk != null && j.path[j.brk]) { ctx.fillStyle = ART_C.route; ctx.beginPath(); ctx.arc(X(j.path[j.brk][0]), Y(j.path[j.brk][1]), 3.5, 0, 7); ctx.fill(); }
+        const end = j.path[j.path.length - 1];
+        tag(j.route.replace(/_/g, ' '), end, '#e9f1ea', -13);
+        const n = readNo[r[1]]; if (n) { ctx.fillStyle = '#c78a12'; ctx.beginPath(); ctx.arc(X(end[0]), Y(end[1]) + 11, 8, 0, 7); ctx.fill(); ctx.fillStyle = '#fff'; ctx.font = '700 11px monospace'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(String(n), X(end[0]), Y(end[1]) + 11); }
+      } else if (j.t === 'protect') {
+        ctx.strokeStyle = ART_C.pro; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.arc(X(me[0]), Y(me[1]), Math.max(10, sc * 1.1), -1.0, 1.0); ctx.stroke();
+        if (j.release) { poly(j.release.path, ART_C.route, 2, [6, 4]); head(j.release.path[j.release.path.length - 2] || me, j.release.path[j.release.path.length - 1], ART_C.route, 8); tag(`check → ${j.release.route.replace(/_/g, ' ')}`, j.release.path[j.release.path.length - 1], '#e9f1ea', -13); }
+      } else if (j.t === 'runblock') {
+        const ti = j.target ? p.roster.findIndex((q) => q[0] + q[1] === j.target) : -1;
+        if (j.pull && j.pull.length) { poly([[me[0], me[1]], ...j.pull], ART_C.block, 2.2, [6, 3]); head(j.pull.length > 1 ? j.pull[j.pull.length - 2] : me, j.pull[j.pull.length - 1], ART_C.block, 8); }
+        else if (ti >= 0 && pos(ti)) arrow(me, pos(ti), ART_C.block, 2);
+        else if (j.drive) arrow(me, [me[0] + j.drive[0] * 3, me[1] + j.drive[1] * 3], ART_C.block, 2, [4, 3]);
+      } else if (j.t === 'carry') {
+        arrow(me, j.aim, ART_C.carry, 3.4); tag('aim', j.aim, ART_C.carry, -12);
+      } else if (j.t === 'fake') { tag('fake', me, ART_C.carry, 18); }
+      else if (j.t === 'block') { ctx.strokeStyle = ART_C.block; ctx.setLineDash([3, 3]); ctx.beginPath(); ctx.arc(X(me[0]), Y(me[1]), Math.max(10, sc * 1.1), 0, 7); ctx.stroke(); ctx.setLineDash([]); }
+      else if (j.t === 'qb') {
+        const d = DROP_YD[j.drop];
+        if (d) { arrow(me, [me[0] - d, me[1]], ART_C.carry, 2, [4, 3]); tag(j.drop === 'pa' ? 'PA drop' : j.drop === 'boot' ? 'boot' : j.drop.replace('gun', 'gun '), [me[0] - d, me[1]], ART_C.carry, 14); }
+      }
+    });
+    ctx.globalAlpha = 1; ctx.restore();
+  }
+  const swatch = (inner) => `<svg viewBox="0 0 34 14" aria-hidden="true">${inner}</svg>`;
+  function artLegend() {
+    const L = (svg, text) => `<li>${swatch(svg)}${text}</li>`;
+    return '<ul class="art-legend" aria-label="Legend">'
+      + L(`<line x1="2" y1="7" x2="26" y2="7" stroke="#8a948c" stroke-width="2.6"/><path d="M26 2 L33 7 L26 12z" fill="#8a948c"/><circle cx="14" cy="7" r="3" fill="#8a948c"/>`, 'called route; dot = the break')
+      + L(`<line x1="2" y1="7" x2="26" y2="7" stroke="#8a948c" stroke-width="2" stroke-dasharray="6 4"/><path d="M26 2 L33 7 L26 12z" fill="#8a948c"/>`, 'dashed: release if nobody comes (decided live)')
+      + L(`<circle cx="17" cy="7" r="7" fill="#c78a12"/><text x="17" y="10.5" font-size="10" text-anchor="middle" fill="#fff">1</text>`, 'QB read order')
+      + L(`<path d="M12 1 A8 8 0 0 1 12 13" stroke="#63d2ff" stroke-width="2.5" fill="none"/>`, 'pass protection (the man is picked live)')
+      + L(`<line x1="2" y1="7" x2="26" y2="7" stroke="#ff7ab8" stroke-width="2.2"/><path d="M26 3 L33 7 L26 11z" fill="#ff7ab8"/>`, 'run block; dashed = a track or pull')
+      + L(`<line x1="2" y1="7" x2="26" y2="7" stroke="#ffd23f" stroke-width="3.4"/><path d="M26 2 L33 7 L26 12z" fill="#ffd23f"/>`, 'back’s run aim · yellow dashed = QB drop')
+      + L(`<rect x="3" y="2" width="28" height="10" fill="#4f8dff44" stroke="#4f8dff"/>`, 'deep zone (nominal area)')
+      + L(`<rect x="3" y="2" width="28" height="10" fill="#b57bff44" stroke="#b57bff"/>`, 'hook / curl / middle zone')
+      + L(`<rect x="3" y="2" width="28" height="10" fill="#2fd0b044" stroke="#2fd0b0"/>`, 'flat / curl-flat zone')
+      + L(`<rect x="3" y="2" width="28" height="10" fill="#4f8dff44" stroke="#4f8dff" stroke-dasharray="4 2"/>`, '◆ dashed zone: pattern-match rule (job set by what the receivers do)')
+      + L(`<line x1="2" y1="7" x2="26" y2="7" stroke="#ff5a4d" stroke-width="2.2"/><path d="M26 3 L33 7 L26 11z" fill="#ff5a4d"/>`, 'man coverage: defender to his man')
+      + L(`<line x1="2" y1="7" x2="26" y2="7" stroke="#ff9f43" stroke-width="2.2"/><path d="M26 3 L33 7 L26 11z" fill="#ff9f43"/>`, 'rush path (thick = blitz) to the gap; dashed = run fit')
+      + '</ul><small class="status-note">Zones are drawn as the textbook area around the landmark the engine gives the defender; the engine plays a landmark, not a box. Click a player row to isolate his job.</small>';
+  }
+  function renderArt(p) {
+    const body = $('art-body'); if (!body) return;
+    const a = p?.art;
+    if (!a) { body.innerHTML = '<small class="status-note">No call data recorded for this play (it was recorded before play art existed, or is not a scrimmage play).</small>'; return; }
+    const o = a.offense, d = a.defense;
+    const sum = [`<div><b>Offense</b> · ${esc(o.name)} · ${esc(o.formation)} · ${esc(o.personnel)} personnel${o.motion ? ' · ' + esc(o.motion) : ''}</div>`];
+    if (o.kind === 'pass') sum.push(`<div><b>QB</b> · ${esc(o.drop ?? '')} drop${o.fake ? ' off a play-action fake' : ''} · read order ${esc((o.progression ?? []).join(' → '))}</div>`);
+    if (o.read) sum.push(`<div><b>Key</b> · ${esc(o.read)}</div>`);
+    if (o.screen) sum.push(`<div><b>Screen</b> · ${esc(o.screen)}</div>`);
+    sum.push(`<div><b>Defense</b> · ${esc(d.coverage)} (${esc(d.family ?? '')}, ${esc(d.shell)}) · ${esc(d.front)} front · ${esc(d.personnel)}${d.pressure ? ' · pressure: ' + esc(d.pressure) : ''} · ${d.zoneStyle === 'spot' ? 'spot-drop zones' : 'pattern-match zones'}</div>`);
+    if (d.note) sum.push(`<div><small>${esc(d.note)}</small></div>`);
+    const rowsFor = (team) => p.roster.map((r, i) => [r, i]).filter(([r]) => r[0] === team).map(([r, i]) => {
+      const j = a.jobs[i]; const live = j && (j.live || j.rule || j.t === 'zone' && j.rule);
+      return `<div class="art-row" data-i="${i}"><b>#${r[3]} ${esc(r[1])}</b><span>${j ? esc(j.text) : '<i>no assigned job drawn</i>'}${live ? ' <i>(decided by a rule after the snap)</i>' : ''}</span></div>`;
+    }).join('');
+    body.innerHTML = `<div class="art-sum">${sum.join('')}</div>${artLegend()}<div class="art-cols"><div><h3>Offense</h3>${rowsFor('O')}</div><div><h3>Defense</h3>${rowsFor('D')}</div></div>`;
+  }
+
   // ---------------------------------------------------------------- render
   let W = 1200;
   let H = 720;
@@ -917,6 +1043,7 @@ window.TELEMETRY_READY = Promise.resolve(true);
 
   function viewYards() {
     if (wide) return 120;
+    if (artShown(cur >= 0 ? plays[cur] : null)) return 90;
     return W < 560 ? 30 : 52;
   }
 
@@ -934,8 +1061,9 @@ window.TELEMETRY_READY = Promise.resolve(true);
       cam.x += (bx + 6 - cam.x) * k;
       cam.y += (by - cam.y) * k;
     }
-    const cx = wide ? 60 : Math.min(120 - vy / 2 + 2, Math.max(vy / 2 - 2, cam.x));
-    const cy = wide || visH >= 56 ? 26.67 : Math.min(53.33 - visH / 2 + 1.5, Math.max(visH / 2 - 1.5, cam.y));
+    const artView = artShown(p);
+    const cx = wide ? 60 : artView ? Math.min(120 - vy / 2 + 2, Math.max(vy / 2 - 2, p.los + 12)) : Math.min(120 - vy / 2 + 2, Math.max(vy / 2 - 2, cam.x));
+    const cy = wide || artView || visH >= 56 ? 26.67 : Math.min(53.33 - visH / 2 + 1.5, Math.max(visH / 2 - 1.5, cam.y));
     const X = (x) => (x - cx) * sc + W / 2;
     const Y = (y) => H / 2 - (y - cy) * sc; // +y up
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -1023,6 +1151,7 @@ window.TELEMETRY_READY = Promise.resolve(true);
     // Players.
     const rad = Math.max(5, sc * 0.55);
     const carrier = f < 0.5 ? F.c[a] : F.c[b];
+    if (artView) drawArt(p, positions, X, Y, sc, inspected);
     drawLayers(p,telemetry,positions,X,Y,sc,inspected);
     fieldProjection = {players:positions.map((p)=>[X(p[0]),Y(p[1])]),radius:rad};
     for (let i = 0; i < n; i++) {
@@ -1100,7 +1229,7 @@ window.TELEMETRY_READY = Promise.resolve(true);
         $('export-status').textContent = `Recording ${Math.min(100,Math.round(elapsed/duration*100))}% · keep this tab visible (${duration.toFixed(1)}s clip). Esc cancels.`;
         if (elapsed>=duration+.2 && !exportTask.stopped) { exportTask.stopped=true; if (exportTask.recorder.state!=='inactive') exportTask.recorder.stop(); }
       } else if (playing) {
-        t += dt * speed;
+        if (!(artHold && now < artHold && t < 0.05)) { artHold = 0; t += dt * speed; }
         if (t >= dur) {
           t = dur;
           if (auto && !holdUntil) holdUntil = now + 750;
