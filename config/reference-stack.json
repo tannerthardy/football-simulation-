@@ -71,6 +71,7 @@
     "BRACE_EVIDENCE": "off",
     "CALL_MIX": "on",
     "CARRIER_BRACE": "off",
+    "HOLD_HEAVY": "off",
     "CARRY_READ": "on",
     "CATCH_EYES": "on",
     "CLIMB_BASE": "on",
