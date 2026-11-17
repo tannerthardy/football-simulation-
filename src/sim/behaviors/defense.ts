@@ -2476,6 +2476,10 @@ function deepMan(a: Agent, sim: PlaySim): boolean {
   const coverage = a.behavior instanceof ZoneCoverage || b?.constructor?.name === 'CoverageDefender';
   return coverage && (a.pos.x - sim.los) * sim.attackDir(sim.offense[0].team) >= 10;
 }
+/** Attempt 2: a quarters / cover-6 match defender (CoverageDefender) breaks the same way when the ball is not going
+ * to the man he has matched: the receiver the passer's shoulders point at is someone else (a throw at his own man he
+ * plays as before). */
+function matchDefender(a: Agent): boolean { return a.behavior?.constructor?.name === 'CoverageDefender'; }
 /** DEEP_BREAK: the spot over the top of `p` (field position): his depth kept or gained, by his stopping cushion. */
 function overTop(a: Agent, sim: PlaySim, p: Vec2): Vec2 {
   const dir = sim.attackDir(sim.offense[0].team), v = Math.max(3, a.speed);
@@ -2721,24 +2725,25 @@ function playBelievedBall(a: Agent, sim: PlaySim, man: Agent | null, continueCov
     // Bit 256: a man defender who has not found the ball judges his phase and, in phase (or undisciplined), looks.
     if (man && BALL_EST_MAN_LOOK && estimatesFor(a) && !hasObservedFlight(a) && manLooks(a, sim, man, rb.releasedAt)) return manLook(a, sim, fallback());
     a.tags.add('arm-bite');
-    if (!continueCoverage) return fallback();
-    // A zone defender breaks on the passer's shoulders at the delivery (the arm coming through; on the load alone he
-    // plants): toward the receiver they point at, read through the tracking channel of the passer he is watching,
-    // chosen once for this belief, with his reaction time after the choice. With none lined up, he plants (stops his
-    // drop) until he sees the ball or the pull-down.
-    if (DEEP_BREAK && !man && deepMan(a, sim)) {
+    if (DEEP_BREAK && deepMan(a, sim) && (!man || matchDefender(a))) {
       // DEEP_BREAK: on the arm (loading or through), across and over the top of the receiver his shoulders point at.
-      const key = rb.releasedAt ?? rb.loadingAt!;
+      const key = rb.releasedAt ?? rb.loadingAt ?? rb.ballAt;
+      if (key === undefined) return fallback();
       const pk = shoulderTarget(a, sim, key);
       const react = a.profile.reactionTime * (1 - 0.4 * a.r('anticipation'));
-      if (pk.R && sim.t - pk.at >= react - 1e-9) {
+      if (pk.R && pk.R !== man && sim.t - pk.at >= react - 1e-9) {
         a.tags.add('deep-break');
         const r = sim.see(a, pk.R), left = Math.max(0, Math.min(SHOULDER_FLIGHT_MAX,
           Math.hypot(r.pos.x - pk.from.x, r.pos.y - pk.from.y) / SHOULDER_BALL_SPEED - (sim.t - key)));
         return runThrough(a, overTop(a, sim, { x: r.pos.x + r.vel.x * left, y: r.pos.y + r.vel.y * left }), { speed: 1 });
       }
-      return continueCoverage();
+      return fallback();
     }
+    if (!continueCoverage) return fallback();
+    // A zone defender breaks on the passer's shoulders at the delivery (the arm coming through; on the load alone he
+    // plants): toward the receiver they point at, read through the tracking channel of the passer he is watching,
+    // chosen once for this belief, with his reaction time after the choice. With none lined up, he plants (stops his
+    // drop) until he sees the ball or the pull-down.
     if (rb.releasedAt === undefined) return stopDrop(sim, continueCoverage());
     const pick = shoulderTarget(a, sim, rb.releasedAt);
     const react = a.profile.reactionTime * (1 - 0.4 * a.r('anticipation'));
