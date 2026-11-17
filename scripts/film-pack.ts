@@ -12,6 +12,7 @@ import { generateTeam } from '../src/league/team.js';
 import { COVERAGES, FRONTS } from '../src/playbook/defense.js';
 import { FORMATIONS } from '../src/playbook/formations.js';
 import { packReplayPlay } from './replay-data.js';
+import { installPlayArtTap, matchSheets, takeSheets } from './play-art.js';
 import { sourceVersion } from './source-version.js';
 import { engineSettings } from './scorecard/provenance.js';
 import { weirdObserver } from './scorecard/weird/observe.js';
@@ -106,18 +107,21 @@ export function buildFilmPack(options: ReturnType<typeof filmPackOptions>, progr
     // runOnly joins the hash only when set, so every default pack keeps its identity.
     inputSha256: sha256(JSON.stringify({ seed: options.seed, games: options.games, ...(options.runOnly ? { runOnly: true } : {}), home, away })),
   };
+  installPlayArtTap();
   const population: SelectionPlay[] = [], events: WeirdEvent[] = [];
   const games: FilmReplayContext['games'] = [];
   for (let i = 0; i < options.games; i++) {
     const seed = options.seed + i;
     const obs = weirdObserver({ idPrefix: '', game: i + 1, cap: Infinity });
+    takeSheets();
     const game = simulateGame(home, away, { seed, record: true, recordLevel: 'light', hooks: obs.hooks, ...(options.runOnly ? { runOnly: true } : {}) });
     events.push(...obs.finish(game).events);
     const quarters = [...game.quarterScores];
     const last = quarters.at(-1);
     if (!last || last.home !== game.score.home || last.away !== game.score.away) quarters.push({ ...game.score });
     games.push({ seed, final: game.score, quarters });
-    const clips = game.log.map(p => packReplayPlay(p, i));
+    const art = matchSheets(game.log, takeSheets());
+    const clips = game.log.map(p => packReplayPlay(p, i, art.get(p)));
     writeFileSync(join(raw, `game-${i + 1}.json`), JSON.stringify(clips));
     for (const p of clips) population.push({ id: p.id, game: i + 1, kind: p.kind, down: p.down,
       distance: p.dist, yardline: p.yl, call: p.call, defense: p.def, yards: p.yds,
