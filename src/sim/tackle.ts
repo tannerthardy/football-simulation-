@@ -53,6 +53,8 @@ export interface TackleBond {
   execution?: Map<Agent, number>;
   /** HOLD_SINK: since when each tackler's hold has held without slipping, s. */
   sink?: Map<Agent, number>;
+  /** HOLD_HEAVY: each holder's read of whether his hold is stopping the man, and his commitment to get heavy. */
+  heavy?: Map<Agent, { at: number; v0: number; on: boolean }>;
   /** Tacklers holding with one arm (ONE_ARM_HOLD): a grab with the arm a
    * blocker did not control. One hand on the man, no locked wrap, until his
    * body closes on the carrier and the second arm can come around. */
@@ -584,6 +586,18 @@ const HOLD_FINISH = process.env.HOLD_FINISH !== '0';
  * game wraps: median 55% over the first 0.3 s; side-wrap-bench.mts: asking to
  * stop ends a side wrap in 2.5 yd and 0.5 s, running with him 3.7 yd). */
 const HOLD_SINK = process.env.HOLD_SINK === '1';
+/** HOLD_HEAVY (experimental, off; HOLD_HEAVY=1; docs/reviews/2026-11-17-hold-heavy.md): the coached finish of a wrap
+ * that is not stopping the man. A holder beside or behind the runner (he cannot get his body in front: the existing
+ * side/rear branch) reads it from his own body: one beat after the grasp -- his reaction time, longer for a poor
+ * tackler -- he is still being carried at least 85% as fast as when he took hold (over 2 yd/s). A grip slipping in
+ * his hands is the strongest reason, read in half that beat. Then he gets heavy and stays heavy for the bond (a
+ * decision, not re-scored): he stops running with the man (no request along the runner's path, only staying tight to
+ * the hold), sinks to his lowest posture and drops his weight off his feet onto the man (a short drop, not a launch).
+ * The World does the rest: an off-feet holder hangs his weight on the hold and drags on the turf, a hold that cannot
+ * carry it slides down the legs (HANG_GRIP), and a grip too weak for the load is torn off (a broken tackle). If his
+ * hold is stopping the man he keeps his feet; the read starts a new beat. No roll, no rating on the outcome: skill
+ * sets how soon he recognises it and (through grip) how well he keeps the wrap. */
+const HOLD_HEAVY = process.env.HOLD_HEAVY === '1';
 /** HOLD_FACING (experimental, off): a holder beside or behind the runner faces
  * the way he is being carried, not square to the runner every tick. */
 const HOLD_FACING = process.env.HOLD_FACING !== '0';
@@ -759,6 +773,20 @@ export function updateBond(sim: PlaySim, bond: TackleBond, intents: Intent[]): v
         const ux = c.vel.x / cs, uy = c.vel.y / cs, commit = joint.slipping ? 0 : clamp(next, 0, 1);
         vel = { x: c.vel.x - ux * cs * commit + tx * close, y: c.vel.y - uy * cs * commit + ty * close };
       }
+      let heavy = false;
+      if (HOLD_HEAVY) {
+        const hv = (bond.heavy ??= new Map());
+        const mine = Math.hypot(d.vel.x, d.vel.y);
+        let read = hv.get(d);
+        if (!read) hv.set(d, read = { at: t, v0: mine, on: false });
+        const beat = d.profile.reactionTime * (1.5 - d.r('tackling'));
+        if (!read.on && t - read.at >= (joint.slipping ? 0.5 * beat : beat)) {
+          if (joint.slipping || (mine > 2 && mine >= 0.85 * read.v0)) read.on = true;
+          else { read.at = t; read.v0 = mine; }
+        }
+        heavy = read.on;
+        if (heavy) vel = { x: tx * close, y: ty * close };
+      }
       // Planted on a secure hold of his legs and still dragged, he drops his
       // weight and hangs on: off his feet he can no longer chase, but half
       // his weight then hangs on the runner's legs (the World decides what
@@ -775,8 +803,8 @@ export function updateBond(sim: PlaySim, bond: TackleBond, intents: Intent[]): v
       // has; the runner turns him through the hold and the contacts, as far
       // as the World's yaw response gives.
       const facing = HOLD_FACING ? d.body.facing : Math.atan2(ty, tx);
-      intents[d.idx] = { vel, facing, push: 1, posture: 0.6,
-        dive: drop ? { x: tx * 0.2, y: ty * 0.2 } : own?.dive, lunge: own?.lunge };
+      intents[d.idx] = { vel, facing, push: 1, posture: heavy ? 1 : 0.6,
+        dive: drop || (heavy && d.body.support?.state === 'up') ? { x: tx * 0.2, y: ty * 0.2 } : own?.dive, lunge: own?.lunge };
     }
     if (TACKLE_TOUCH && (own?.lunge || d.body.support?.strike)
       && c.body.support?.state === 'up' && d.body.support?.state === 'up'
