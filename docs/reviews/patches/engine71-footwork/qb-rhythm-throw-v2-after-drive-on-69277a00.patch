@@ -1,0 +1,120 @@
+diff --git a/docs/reviews/2026-11-17-qb-drive.md b/docs/reviews/2026-11-17-qb-drive.md
+index 04e1266a5..f383cb4ee 100644
+--- a/docs/reviews/2026-11-17-qb-drive.md
++++ b/docs/reviews/2026-11-17-qb-drive.md
+@@ -39,3 +39,19 @@ ruling): the rhythm start gated on read 1 being ready by the release (t + windup
+ already prices), and the drop's last step not braked to the set point on a rhythm concept.
+ 
+ Guard, scan, provenance and dither pass.
++
++### B, second mechanism (Integration's ruling), built and re-diagnosed
++
++On a concept with a rhythm throw (quick game, or read 1 on time at the set in the plan), his last drop step is not
++braked (RHYTHM_PLANT 0.4 of top speed, chosen), and at the plant he throws read 1 on anticipation if ready() (his forecast
++of the break against a throw started now) and it clears his bar; else he sets and hitches.
++Games (8, seed 11), QB_DRIVE / + QB_RHYTHM_THROW / + THROW_PLATFORM: no-set 4 / 4 / 5%; rhythm throws 0 / 2 / 2 of
++~700; catch 0.683 / 0.699 / 0.696; ints 8 / 4 / 14; pbu 62 / 89 / 58. Quick game snap to release 2.25 / 2.15 / 2.15 s.
++Staged 1536 (DRIVE / +RHYTHM): sacks 3.4 / 3.0%, completions 946 / 935, ints 10 / 13, yd 7.52 / 7.03.
++Why it still fires on 2 throws (scripts: a plant-time gate probe, 8 concepts x 16 plays): the quick concepts with a key
++(slant_flat, quick_outs, curl_flat, double_slants: 16 of 16 keyed) have not read the key by the plant, so read 1 is not
++yet named; on the unkeyed ones (stick, hitches) read 1 is ready-by-release (5 / 16, 16 / 16) but priced under his bar
++(7 / 16 each over it): the break comes 0.17-0.55 s after the release, and the window prices a man who has not broken as
++covered. Two attempts at this mechanism; not tweaked a third time. The next pieces are the key cued on the plant on a
++quick concept, and how the window prices an anticipation throw before the break (a question of the price, shared with
++the open-receiver underrating).
+diff --git a/scripts/diag/eyes/drop-timing.ts b/scripts/diag/eyes/drop-timing.ts
+index 8f8d948ca..c2db37cc2 100644
+--- a/scripts/diag/eyes/drop-timing.ts
++++ b/scripts/diag/eyes/drop-timing.ts
+@@ -15,7 +15,7 @@ PlaySim.prototype.run = function (this: PlaySim) {
+   let setT = null as number | null, setDepth = null as number | null, rel: any = null, arrive = null as number | null;
+   const tb = sim.throwBall.bind(sim);
+   sim.throwBall = (p: any, target: any, v0: any, intended: any, arrivalT: number, away = false, ...rest: any[]) => {
+-    if (p === sim.qb && !rel && !away && intended) rel = { planT: arrivalT - sim.t, natT: (p.behavior as any)?.naturalFlight?.(Math.hypot(intended.x - p.pos.x, intended.y - p.pos.y)) ?? null, t: sim.t, from: { x: p.pos.x, y: p.pos.y }, to: { x: intended.x, y: intended.y }, air: (intended.x - sim.los) * dir };
++    if (p === sim.qb && !rel && !away && intended) rel = { rhythm: ((p.behavior as any)?.rhythmThrows ?? 0) > 0, planT: arrivalT - sim.t, natT: (p.behavior as any)?.naturalFlight?.(Math.hypot(intended.x - p.pos.x, intended.y - p.pos.y)) ?? null, t: sim.t, from: { x: p.pos.x, y: p.pos.y }, to: { x: intended.x, y: intended.y }, air: (intended.x - sim.los) * dir };
+     return tb(p, target, v0, intended, arrivalT, away, ...rest);
+   };
+   const tick = sim.tick.bind(sim);
+@@ -29,7 +29,7 @@ PlaySim.prototype.run = function (this: PlaySim) {
+   if (rel) {
+     const call = sim.offCall, flight = arrive !== null ? arrive - rel.t : null, dist = Math.hypot(rel.to.x - rel.from.x, rel.to.y - rel.from.y);
+     console.log(JSON.stringify({ drop: call.pass?.drop ?? null, family: call.pass?.family ?? null, gun: call.formation.qb !== 'under', setT, setDepth: setDepth === null ? null : +setDepth.toFixed(2),
+-      rel: +rel.t.toFixed(2), planT: +rel.planT.toFixed(2), natT: rel.natT === null ? null : +rel.natT.toFixed(2), flight: flight === null ? null : +flight.toFixed(2), air: +rel.air.toFixed(1), dist: +dist.toFixed(1), speed: flight ? +(dist / flight).toFixed(1) : null, cmp: !!res.stats?.completed,
++      rel: +rel.t.toFixed(2), rhythm: rel.rhythm, planT: +rel.planT.toFixed(2), natT: rel.natT === null ? null : +rel.natT.toFixed(2), flight: flight === null ? null : +flight.toFixed(2), air: +rel.air.toFixed(1), dist: +dist.toFixed(1), speed: flight ? +(dist / flight).toFixed(1) : null, cmp: !!res.stats?.completed,
+       fate: (() => { const ev = sim.events.map((e: any) => e.type); return ev.includes('interception') ? 'int' : res.stats?.completed ? 'catch' : ev.includes('pbu') || ev.includes('deflection') ? 'pbu' : ev.includes('drop') ? 'drop' : 'miss'; })() }));
+   }
+   return res;
+diff --git a/src/sim/behaviors/qb.ts b/src/sim/behaviors/qb.ts
+index a3a4d8c59..a6a3ab2ea 100644
+--- a/src/sim/behaviors/qb.ts
++++ b/src/sim/behaviors/qb.ts
+@@ -108,8 +108,15 @@ const QB_DRIVE = process.env.QB_DRIVE === '1';
+  * step. With it, a throw started in the drop (the existing rhythm start: on his last step, read 1 ready and worth it)
+  * carries the drop's velocity into the plant, decaying to the stride by the delivery (the plant step takes it out), and
+  * the release is charged for what is left by the platform terms (THROW_PLATFORM's translation, QB_ALIGN's rotation), not
+- * by a rule. */
++ * by a rule. That alone moved nothing (8 of 99 throws started in the drop): the drop braked onto the set point and the
++ * rhythm start needed read 1 ready now. So, on a concept with a rhythm throw (quick game, or read 1 on time at the set in
++ * the plan), his last drop step is not braked (RHYTHM_PLANT), and as his back foot hits he throws read 1 on
++ * anticipation if it will be ready by the release (ready(): his forecast of the break against a throw started now; a
++ * late or re-routed receiver he has seen fails it, and he sets and hitches) and is worth it. Integration's ruling. */
+ const QB_RHYTHM_THROW = process.env.QB_RHYTHM_THROW === '1';
++/** QB_RHYTHM_THROW: his speed through his last drop step on a rhythm concept, as a share of his top speed (chosen): he
++ * plants on it rather than braking onto the set point. */
++const RHYTHM_PLANT = 0.4;
+ /** The route ball's natural flight before his arm's scaling (QB_DRIVE: the measured drive throw). */
+ function routeFlight(d: number): number {
+   return QB_DRIVE ? 0.0731 + 0.03945 * d + 0.00022 * d * d : 0.38 + 0.022 * d + 0.00065 * d * d;
+@@ -816,6 +823,11 @@ export class QBPass implements Behavior {
+   private readonly armSpeed: number;
+   private fakeUntil = 0;
+   /** QB_RHYTHM_THROW: the drop's velocity a throw started on the drop's last step carries into the plant. */
++  private rhythmOnTime = false;
++  /** QB_RHYTHM_THROW diagnostics (no effect): rhythm throws made at the plant. */
++  rhythmThrows = 0;
++  /** QB_RHYTHM_THROW: a concept with a rhythm throw (quick game, or read 1 on time at the set in the plan). */
++  private rhythmConcept(): boolean { return QB_RHYTHM_THROW && (this.concept.family === 'quick' || this.rhythmOnTime); }
+   private rhythmVel: Vec2 | null = null;
+   /** Diagnostics: when his play-action fake ended (null until then, or no fake). */
+   fakeEndAt: number | null = null;
+@@ -1009,6 +1021,8 @@ export class QBPass implements Behavior {
+     const tri = p.triangle?.map(ag).filter((r): r is Agent => !!r) ?? null;
+     const peek = p.style === 'vertical_peek';
+     // DECLARED_BREAK: what the plan says of each read's break (route time, as installed) and how it is thrown.
++    // QB_RHYTHM_THROW: a concept with a rhythm throw: read 1 on time at the set in the installed plan.
++    { const r0 = (p.rhythm as { step: string; onTime?: boolean }[] | undefined)?.[0]; this.rhythmOnTime = !!r0 && r0.step === 'set' && r0.onTime === true; }
+     if (FW_STEPS) for (const rh of p.rhythm as { ref: ReceiverRef; step: string; n?: number }[]) {
+       const r = ag(rh.ref);
+       if (r && !this.readStep.has(r)) this.readStep.set(r, rh.n ?? (rh.step === 'set' ? 0 : rh.step === 'hitch' ? 1 : 2));
+@@ -1430,6 +1444,19 @@ export class QBPass implements Behavior {
+       // BLITZ_READ: a free rusher he has recognized ends the drop: he hits his back foot and throws hot.
+       const hotNow = BLITZ_READ && this.hotSeenAt !== null && t - this.hotSeenAt >= this.processing(a);
+       if (d < 0.4 || t > this.snapAt + this.drop.time + 0.4 || (pressure.time < 0.5 && t > this.snapAt + 0.4) || hotNow) {
++        // QB_RHYTHM_THROW: on a rhythm concept, as his back foot hits he throws read 1 if it will be ready by the release
++        // (ready() is his own forecast of the break against a throw started now) and worth it; else he sets and hitches.
++        if (this.rhythmConcept() && !hotNow && !(READ_PLAN && this.plan?.key && !this.keyRead)) {
++          const first = this.reads[0];
++          if (first && this.ready(first, sim)) {
++            const aggression = 0.5 + 0.35 * (a.player.archetype === 'Gunslinger' ? 1 : 0) - 0.25 * a.r('decisionMaking');
++            const ev = this.evaluate(a, sim, first, 0);
++            if (ev && ev.P >= 0.6 - 0.12 * aggression && ev.intRisk <= 0.025 + 0.05 * aggression) {
++              sim.qbEyes = first; this.setAt = t; this.rhythmThrows++;
++              return this.startThrow(a, sim, ev);
++            }
++          }
++        }
+         this.phase = 'set';
+         this.setAt = t;
+         this.readStart = t;
+@@ -1472,9 +1499,9 @@ export class QBPass implements Behavior {
+           // 6 yd, while the most open he gets in the drop rises with depth, 62 to 89 deg: open on the crossover steps,
+           // part-square on the plant step.
+           if (left <= this.stride()) facing = angleTo(a.pos, this.has(sim, this.reads[0]));
+-          return goTo(a, target, { facing, through: 0, speed: clamp(d / left / a.profile.vmax, 0.25, 1) });
++          return goTo(a, target, { facing, through: this.rhythmConcept() ? RHYTHM_PLANT * a.profile.vmax : 0, speed: clamp(d / left / a.profile.vmax, 0.25, 1) });
+         }
+-        return goTo(a, target, { facing, through: 0 });
++        return goTo(a, target, { facing, through: this.rhythmConcept() ? RHYTHM_PLANT * a.profile.vmax : 0 });
+       }
+     }
+ 
