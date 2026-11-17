@@ -53,6 +53,10 @@ export interface ArtSheet {
     progression?: string[];
     screen?: string;
     motion?: string;
+    /** Pre-snap motion as played (MOTION on): the motion man's slot and his waypoints. */
+    motionPath?: { slot: string; path: XY[] };
+    /** The QB's coached key as a role on his own picture (a defender is picked from it live, not fixed by the call). */
+    key?: { role: string; low?: string; high?: string };
     fake?: boolean;
   };
   defense: { coverage: string; family?: string; shell: string; front: string; personnel: string; pressure: string | null; note?: string; zoneStyle: string };
@@ -153,8 +157,15 @@ function sheetOf(sim: any): ArtSheet | null {
     kind: call.kind, name: concept?.name ?? call.label, formation: call.formation.name, personnel: call.formation.personnel,
     drop: call.pass?.drop, read: call.pass?.read, progression, fake: !!call.pass?.fake,
     screen: call.pass?.screen ? `${call.pass.screen.tempo} screen to ${call.pass.screen.receiver} (${slotOf(call.pass.screen.receiver) ?? '?'}), linemen release on a count of ${call.pass.screen.count}s` : undefined,
-    motion: call.motion ? `${call.motion.kind} motion` : undefined,
+    motion: call.motion ? `${call.motion.slot} ${call.motion.kind} motion${sim.motion ? '' : ' (called; not played in this engine setting)'}` : undefined,
   };
+  if (sim.motion?.plan) {
+    const m = sim.motion.plan;
+    const start = off.spots[m.slot]?.pos;
+    if (start) offense.motionPath = { slot: m.slot, path: [xy(start), ...m.legs.map((l: any) => xy(l.to))] };
+  }
+  const qk = sim.qb?.behavior?.plan?.key;
+  if (qk) offense.key = { role: String(qk.role), low: qk.low?.slot, high: qk.high?.slot };
   const defense: ArtSheet['defense'] = {
     coverage: dcall.coverage.name, family: dcall.coverage.family, shell: dcall.coverage.shell, front: dcall.front.name, personnel: dcall.personnel,
     pressure: dcall.pressure?.name ?? null, note: dcall.coverage.note, zoneStyle: dcall.zoneStyle ?? 'match',

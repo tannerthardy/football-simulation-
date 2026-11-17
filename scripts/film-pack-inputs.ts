@@ -132,7 +132,10 @@ export function retainFilmInputs(packDirectory: string) {
         // including its frames/events. This is not a lossless native-state check.
         const expected = reference.find(p => p.id === id);
         const actual = JSON.parse(JSON.stringify(packReplayPlay(film, number - 1)));
-        const difference = firstDifference(expected, actual);
+        // `art` (play art, scripts/play-art.ts) is display data read from the call, not recorded execution: a recapture
+        // without the tap cannot reproduce it, and it is not part of what this comparison guards.
+        const { art: _art, ...expectedRecorded } = (expected ?? {}) as Record<string, unknown>;
+        const difference = firstDifference(expected ? expectedRecorded : expected, actual);
         if (difference) {
           rows.set(id, { id, status: 'unavailable', reason: `original clip mismatch at ${difference.path}` });
           continue;
