@@ -13,6 +13,8 @@
 import type { Vec2 } from '../core/vec.js';
 import type { Agent } from './agent.js';
 import type { PlaySim } from './playsim.js';
+import { shouldersOf } from '../physics/kinematics.js';
+import { ZONE_EYES, zoneEyesFor, zoneEyesTarget } from './zone-eyes.js';
 
 export const HEAD = process.env.HEAD === '1';
 /** Head turn rate (rad/s) and the view cone about the head: GAZE's. */
@@ -76,28 +78,35 @@ export function sideOf(rel: number, headRel: number): number {
 
 /** Turn every head for this tick (before the perception record). */
 export function stepHeads(sim: PlaySim): void {
-  if (!HEAD) return;
+  if (!HEAD && !ZONE_EYES) return;
   const step = HEAD_RATE * sim.dt;
   for (const a of sim.agents) {
     if (a === sim.qb) continue;
+    // ZONE_EYES: a zone defender's head turns with HEAD off too, on his shoulders (the neck sits on the trunk).
+    const zone = zoneEyesFor(a);
+    if (!HEAD && !zone) continue;
     const facing = a.body.facing;
     let head = a.head ?? facing;
     const w = wants.get(a);
-    let toward = facing;
+    let toward = zone ? shouldersOf(a.body) : facing;
     if (w && w.t >= sim.t - sim.dt - 1e-9) {
       // Where he believes the target is: his own picture of a body, or the point he was given.
-      const p = isAgent(w.target) ? sim.perception.perceive(w.target.idx, a.profile.reactionTime).pos : w.target;
+      const p = isAgent(w.target) ? (zone ? sim.see(a, w.target).pos : sim.perception.perceive(w.target.idx, a.profile.reactionTime).pos) : w.target;
       toward = Math.atan2(p.y - a.pos.y, p.x - a.pos.x);
+    } else if (zone) {
+      // ZONE_EYES: nothing else asks; the taught sequence (his key, then the passer), where his own picture has him.
+      const t = zoneEyesTarget(a, sim);
+      if (t) { const p = sim.see(a, t).pos; toward = Math.atan2(p.y - a.pos.y, p.x - a.pos.x); }
     }
-    a.head = turnHead(a, head, toward, step);
+    a.head = turnHead(a, head, toward, step, zone ? shouldersOf(a.body) : facing);
   }
 }
 
 /** The one head turn: from `head` toward the bearing `toward` (rad, field frame) by at most `step` rad, within the
- * neck's range off his body facing, over the shoulder for a target behind him. stepHeads turns every head with it; the
- * QB lane turns the passer's with it (QB_HEAD). */
-export function turnHead(a: Agent, head: number, toward: number, step: number): number {
-  const facing = a.body.facing, neck = neckRange(a);
+ * neck's range off `base` (his body facing; ZONE_EYES: his shoulders), over the shoulder for a target behind him.
+ * stepHeads turns every head with it; the QB lane turns the passer's with it (QB_HEAD). */
+export function turnHead(a: Agent, head: number, toward: number, step: number, base = a.body.facing): number {
+  const facing = base, neck = neckRange(a);
   const lim = facing + Math.max(-neck, Math.min(neck, sideOf(angDiff(toward, facing), angDiff(head, facing))));
   head = head + Math.max(-step, Math.min(step, angDiff(lim, head)));
   return facing + Math.max(-neck, Math.min(neck, angDiff(head, facing)));

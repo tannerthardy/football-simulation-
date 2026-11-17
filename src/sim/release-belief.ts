@@ -35,14 +35,16 @@ const ease = new WeakMap<PlaySim, Map<number, { man: number; hist: { t: number; 
 
 function heardCallAt(sim: PlaySim, a: Agent): number | undefined {
   const E = sim.ballEstimates;
-  if (!E || sim.ball.kind !== 'air') return undefined;
+  // No gate on the ball's true state: a call exists only once a teammate has the ball in his own samples.
+  if (!E) return undefined;
   const take = a.mind.observationDelay(a.profile.reactionTime);
   let best: number | undefined;
   for (const o of sim.defense) {
     if (o === a || !estimatesFor(o)) continue;
     const f = E.firstSeenAt(o);
     if (f === undefined) continue;
-    const d = Math.hypot(o.pos.x - a.pos.x, o.pos.y - a.pos.y);
+    // Where he has the caller (a teammate's place through his own picture; the voice's travel from there).
+    const p = sim.see(a, o).pos, d = Math.hypot(p.x - a.pos.x, p.y - a.pos.y);
     if (d > BALL_CALL_RANGE) continue;
     const heard = f + o.profile.reactionTime + d / SOUND_YDS;
     if (heard + take <= sim.t + 1e-9 && (best === undefined || heard < best)) best = heard;
@@ -82,6 +84,12 @@ export interface ReleaseBelief {
 }
 
 const store = new WeakMap<PlaySim, Map<number, ReleaseBelief & { t: number }>>();
+
+/** Read-only: his release belief as last updated (no update now). For a reader that runs before this tick's cues are in
+ * (ZONE_EYES's head step): it must not fix this tick's belief early for everyone else. */
+export function lastReleaseBelief(sim: PlaySim, a: Agent): ReleaseBelief | undefined {
+  return store.get(sim)?.get(a.idx);
+}
 
 /** His release belief this tick (updated from this tick's cues on first use). */
 export function releaseBelief(sim: PlaySim, a: Agent): ReleaseBelief {

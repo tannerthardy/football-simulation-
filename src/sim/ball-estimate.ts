@@ -258,7 +258,7 @@ interface Track {
 
 const skill = (a: Agent): number => clamp(a.r(a.team === 'O' ? 'ballTracking' : 'ballSkills'), 0, 1);
 
-/** SEEN_EMPTY (experimental, off; SEEN_EMPTY=1; with BALL_EST): a receiver who sees the passer without the ball (his own
+/** SEEN_EMPTY (on by default; SEEN_EMPTY=0 turns it off; with BALL_EST): a receiver who sees the passer without the ball (his own
  * delayed picture, the passer in his eyes) has the throw cue, as if he had seen the arm come through: his look stays on
  * the ball's search after the release instead of waiting for his body-turn window. It says the ball is up, not where it
  * is going or whose it is, and is never used as the release time (his estimate's seed keeps the arm or his first sample).

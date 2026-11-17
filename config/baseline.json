@@ -43,6 +43,8 @@
     "RUSH_ARM": "0",
     "BALL_CALL": "0",
     "NECK_FULL": "0",
+    "ZONE_EYES": "0",
+    "ZONE_EYES_KEY": "0.9",
     "CATCH_CLOSE": "0",
     "CLOSE_HAND_SPEED": "6",
     "CLOSE_HOLD_V": "30",

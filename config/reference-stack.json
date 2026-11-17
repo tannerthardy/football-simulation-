@@ -134,6 +134,7 @@
     "RUSH_ARM": "off",
     "BALL_CALL": "off",
     "NECK_FULL": "off",
+    "ZONE_EYES": "off",
     "CATCH_CLOSE": "off",
     "DIR_CAP": "on",
     "CARRY_POSTURE": "on",
