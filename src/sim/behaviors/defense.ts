@@ -2744,13 +2744,13 @@ const SHOULDER_CONE = 25 * Math.PI / 180;
 const SHOULDER_BALL_SPEED = 17, SHOULDER_FLIGHT_MAX = 1.5;
 /** SHOULDER_LEAD (on; `=0` restores the break to the receiver's seen spot): the shoulder break leads the receiver (#758). */
 const SHOULDER_LEAD = process.env.SHOULDER_LEAD !== '0';
-/** ARM_BREAK (experimental, off; numeric bits; A2): the zone defender's arm read. Bit 1: the shoulder break's reaction
+/** ARM_BREAK (numeric bits; 1 since engine-76, 2026-11-17, `=0` restores; bit 2 stays off; A2): the zone defender's arm read. Bit 1: the shoulder break's reaction
  * runs from the delivery's sample time (the cue already came through his perception delay), not a second full reaction
  * after the pick. Bit 2: on the load he plants and loads toward where the passer's shoulders point (step at
  * ARM_LOAD_PACE of his top speed, facing that receiver), the drop still braked. Measured first (a2-chain): load seen
  * +0.35 s after the windup starts, the break +0.25 s after the release, the flight seen +0.35 s; toward the catch point
  * -0.2 / 0.0 / +0.2 / +1.1 yd/s at -0.3 / 0 / +0.2 / +0.4 s against the NFL's +0.5 / +1.2 / +1.9 / +2.4. */
-const ARM_BREAK = Number(process.env.ARM_BREAK ?? 0) | 0;
+const ARM_BREAK = Number(process.env.ARM_BREAK ?? 1) | 0;
 const ARM_LOAD_PACE = 0.3;
 /** His read of the passer's shoulders: a bearing error drawn once per belief, its spread by anticipation (deg). The
  * rating acts on the read, not on the break's result; a misread sends him to the wrong man, which the passer's eyes and
