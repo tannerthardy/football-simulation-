@@ -103,15 +103,15 @@ describe('carrier recovery is a bounded visible-pose estimate', () => {
     expect(missing.forecast()).toEqual(upright.forecast());
   });
 
-  it('preserves explicit scenario parking without calling it a visible fall', () => {
+  it('does not read a scenario\'s scheduled parking: an upright man he sees is available (2026-11-17 carrier-honest)', () => {
     const { sim, threat, forecast } = scene('up');
     const available = forecast();
     threat.downUntil = sim.t + 5;
     expect(threat.pose).toBe('up');
     const parked = forecast();
-    expect(parked.score).toBeGreaterThan(available.score);
-    expect(parked.heading).toBeCloseTo(0, 12);
-    expect(parked.blocked).toBe(false);
+    expect(parked.score).toBe(available.score);
+    expect(parked.heading).toBe(available.heading);
+    expect(parked.blocked).toBe(available.blocked);
   });
 
   it('consumes actual delayed off-feet pictures without reading the hidden recovery state', () => {
