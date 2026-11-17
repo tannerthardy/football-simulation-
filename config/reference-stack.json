@@ -51,7 +51,8 @@
     "HAND_MOMENT_CAP": { "default": 150, "legacy": 0 },
     "OFF_PEDAL": { "default": 3, "legacy": 0 },
     "QB_FOOTWORK": { "default": 3, "legacy": 0 },
-    "QCORNER": { "default": 0, "legacy": 0 }
+    "QCORNER": { "default": 0, "legacy": 0 },
+    "ARM_BREAK": { "default": 0, "legacy": 0 }
   },
   "flags": {
     "ALIGN_HABIT": "on",
