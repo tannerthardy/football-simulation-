@@ -171,13 +171,17 @@ const CARRY_LABEL = /^(open-carry-seam|carry-wall|carry-run-past)$/;
  * look (no lean), also required a seen set, exited the instant the look moved. */
 const QB_INTENT_BITS = Number(process.env.QB_INTENT ?? 0) | 0;
 const QB_INTENT = (QB_INTENT_BITS & 1) !== 0;
-/** QB_INTENT bit 2 (=3 with the lean; body tells): the passer's set shoulders (his seen trunk facing while set or loading) and the stride he
+/** QB_INTENT bit 2 (=3 with the lean; body tells; bit 4 adds the override below): the passer's set shoulders (his seen trunk facing while set or loading) and the stride he
  * steps into the load with are evidence as well as his head. Head and shoulders on the same receiver: he leans sooner
  * (half the dwell) and with more conviction (pace); shoulders set one way and only the head the other: the shoulders win
  * for an aware dropper (awareness >= 0.5; a head-only look-off fools the young, not the veteran); shoulders alone are
  * enough; the shoulders turning off his man is the reset he can see (the same exit margin). The stride is not in his
  * picture as a foot: the passer's seen motion into the load, along his trunk, is the agreeing tell. */
-const QB_BODY_TELL = QB_INTENT && (QB_INTENT_BITS & 2) !== 0;
+const QB_BODY_TELL = QB_INTENT && (QB_INTENT_BITS & 6) !== 0;
+/** QB_INTENT bit 4: the shoulders may override the head (aware dropper) or stand in for it (no head look). Without it
+ * (bit 2 alone) the shoulders only confirm: agreeing with the head they raise conviction, never more. Off: our QB's set
+ * shoulders point at the eventual catcher only 14-25% of the time when they disagree with his head (lean-src). */
+const QB_SHOULDER_OVERRIDE = QB_INTENT && (QB_INTENT_BITS & 4) !== 0;
 const QB_SHOULDER_CONE = 20 * Math.PI / 180;
 const QB_LEAN_SPEED = 0.4, QB_LEAN_EXIT = 0.2;
 const eyesHeld = new WeakMap<Agent, Agent>();
@@ -2362,7 +2366,7 @@ export class ZoneCoverage implements Behavior {
     if (QB_BODY_TELL) {
       const body = this.seenQbBody(a, sim, threats);
       if (body.shoulders && body.shoulders === qbEyes) conviction = body.stride ? 2 : 1;
-      else if (body.shoulders && (!qbEyes || a.r('awareness') >= 0.5)) { qbEyes = body.shoulders; conviction = body.stride ? 1 : 0; }
+      else if (QB_SHOULDER_OVERRIDE && body.shoulders && (!qbEyes || a.r('awareness') >= 0.5)) { qbEyes = body.shoulders; conviction = body.stride ? 1 : 0; }
     }
     if (qbEyes !== this.intentEyes) { this.intentEyes = qbEyes; this.intentEyesSince = sim.t; }
     if (this.turnedWith && this.turnedWith !== (this.leanOn ?? qbEyes)) { this.leanOn = null; return null; }
