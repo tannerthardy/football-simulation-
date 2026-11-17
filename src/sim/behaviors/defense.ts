@@ -76,13 +76,15 @@ const ZONE_SETTLE = process.env.ZONE_SETTLE !== '0';
  * opposite sides. */
 export const SETTLE_DEPTH = process.env.SETTLE_DEPTH !== '0';
 const SINK_ENTER = 2, SINK_EXIT = 1;
-/** DROP_SET (experimental, off; numeric bits): the underneath dropper's drop ends on the QB's plant step as he sees it.
+/** DROP_SET (experimental, off; numeric bits): the underneath dropper's drop as taught. Bit 2 (the paced drop): see
+ * ZoneCoverage.pacedDrop. Bit 1 (a miss): the drop ends on the QB's plant step as he sees it.
  * Bit 1: ZONE_SETTLE's cue becomes the QB's seen drop speed falling below half its seen peak (peak over 2 yd/s) after he
  * has given a yard (his back foot hitting), instead of the QB already stopped (speed under 1.2) seen a perception delay
  * later; the gather (ZONE_SETTLE's depth cap) and SETTLE_DEPTH's sink for a man short of his landmark are unchanged.
  * Measured first (drop-probe, engine-76): at the QB's set the NFL underneath man is at 5.6 yd sinking +1.0 yd/s, ours at
  * 7.1 yd sinking +2.45; our settle fired 0.25 s after the true set. */
 const DROP_SET = Number(process.env.DROP_SET ?? 0) | 0;
+const DROP_PACE_MIN = 0.8;
 /** SEEN_EYES (default on; SEEN_EYES=0 restores the QB's internal read target): a zone defender
  * reads the QB's look from what he sees of him, not from the QB's internal
  * read target (sim.qbEyes, the exact receiver, instantly, for every defender
@@ -1843,8 +1845,39 @@ export class ZoneCoverage implements Behavior {
     // SHOULDER_READ: an underneath defender reading the QB stops his drop on
     // the throwing motion he has seen; the rest of his zone play goes on.
     if (SHOULDER_READ && !this.deep && underneathPlant(a, sim)) return stopDrop(sim, this.zonePlay(a, sim));
-    return this.zonePlay(a, sim);
+    return this.pacedDrop(a, sim, this.zonePlay(a, sim));
   }
+
+  /** DROP_SET bit 2: the paced drop. An underneath dropper who has read pass and not yet settled gains depth with his
+   * eyes on the QB at the pace that brings him to his landmark as the QB sets, judged from his own picture of the QB's
+   * drop (how far the QB has given from his snap spot, how fast he is going, against the drop he expects: 3 yd from the
+   * gun or pistol, 7 under center; stated choices), not at a sprint. Continuous: his request away from the line is
+   * bounded by depth owed over that time (at least DROP_PACE_MIN), his lateral request untouched. A vertical in his
+   * area (a receiver he sees going downfield over 4 yd/s within 5 yd laterally, at or past his depth; exit under 3 yd/s
+   * or past 6.5 yd) lifts the bound: he opens and runs as before. ZONE_SETTLE still ends the drop. */
+  private pacedDrop(a: Agent, sim: PlaySim, cmd: MoveCommand): MoveCommand {
+    if (!(DROP_SET & 2) || this.deep || this.settledAt >= 0 || !knowsPass(sim, a)) return cmd;
+    const dir = sim.attackDir(sim.offense[0].team), away = cmd.vel.x * dir;
+    if (away <= 0) return cmd;
+    const myDepth = (a.pos.x - sim.los) * dir;
+    let vert = false;
+    for (const o of sim.offense) {
+      if (o === sim.qb || isOL(o)) continue;
+      const s = sim.see(a, o), down = s.vel.x * dir, lat = Math.abs(s.pos.y - a.pos.y), deep = (s.pos.x - sim.los) * dir >= myDepth - 0.5;
+      if (this.paceVert.has(o) ? down > 3 && lat < 6.5 && deep : down > 4 && lat <= 5 && deep) { this.paceVert.add(o); vert = true; }
+      else this.paceVert.delete(o);
+    }
+    if (vert) return cmd;
+    const q = sim.see(a, sim.qb), snap = sim.offAlign.spots.QB?.pos ?? q.pos;
+    const given = Math.max(0, (snap.x - q.pos.x) * dir), gun = (sim.los - snap.x) * dir >= 3;
+    const left = Math.max(0, (gun ? 3 : 7) - given), qv = Math.max(1.5, -q.vel.x * dir);
+    const tLeft = Math.max(0.3, left / qv), owe = Math.max(0, (this.landmark.x - a.pos.x) * dir);
+    const cap = Math.max(DROP_PACE_MIN, owe / tLeft);
+    if (away <= cap) return cmd;
+    a.tags.add('paced-drop');
+    return { ...cmd, vel: { x: cap * dir, y: cmd.vel.y }, facing: angleTo(a.pos, q.pos) };
+  }
+  private readonly paceVert = new Set<Agent>();
 
   /** His zone play with the ball in the QB's hands (no throw seen). */
   private zonePlay(a: Agent, sim: PlaySim): MoveCommand {
