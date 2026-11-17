@@ -44,7 +44,7 @@ const MEASURED: { controller: Record<string, [number, number, number]>; stage: R
     'QB / spacing': [0.0283, 882, 25], 'block / spacing': [0.0683, 4361, 298], 'block / engagement': [0.1456, 4361, 635],
     'rush / mode switch': [0.0589, 2787, 164], 'rush / spacing': [0.0736, 2787, 205], 'rush / engagement': [0.0415, 7756, 322],
     'rush / tackle bond': [0.0055, 7756, 43], 'coverage / spacing': [0.1056, 4149, 438], 'coverage / mode switch': [0.0277, 11522, 319],
-    'coverage / tackle bond': [0.0080, 11522, 92], 'coverage / containment': [0.0020, 11522, 23], 'carrier / spacing': [0.1279, 774, 99], // re-recorded engine-76 (ZONE_EYES on): +5 reversals, all in one play (mesh seed 1, +2/+3 in the +100/+200 draws) whose carrier runs a different course with the zone defenders' eyes moved; no stage flips; the row was at its budget on engine-75 with the flag off (94 in 749 s on carrier-dither.mts)
+    'coverage / tackle bond': [0.0080, 11522, 92], 'coverage / containment': [0.0020, 11522, 23], 'carrier / spacing': [0.1279, 774, 99], // re-recorded engine-77 (ZONE_EYES on): +5 reversals, all in one play (mesh seed 1, +2/+3 in the +100/+200 draws) whose carrier runs a different course with the zone defenders' eyes moved; no stage flips; the row was at its budget on engine-76 with the flag off (94 in 749 s on carrier-dither.mts)
     'carrier / mode switch': [0.0070, 854, 6],
     'route / spacing': [0.0090, 4011, 36],
   },

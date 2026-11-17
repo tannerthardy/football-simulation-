@@ -1,4 +1,4 @@
-/** ZONE_EYES (on by default, engine-76; ZONE_EYES=0 turns it off; C14 zone coached rules item 13, 2026-11-17): a zone defender's eyes follow the sequence
+/** ZONE_EYES (on by default, engine-77; ZONE_EYES=0 turns it off; C14 zone coached rules item 13, 2026-11-17): a zone defender's eyes follow the sequence
  * coaches teach, on one head, and he sees through that head. Off, with GAZE and HEAD off, SIGHT_COVER gives a zone
  * defender occlusion-only sight with no view bound: facing the QB he had every receiver at once, a bailing corner the
  * whole field behind him. On, his head (`Agent.head`, head.ts's turn rate and neck range) is wanted on his key for the
