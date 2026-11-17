@@ -10,6 +10,7 @@ afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 function referenceEngine(plan: string, forecast: string) {
   const flags: Record<string, string> = JSON.parse(readFileSync(new URL('../config/reference-stack.json', import.meta.url), 'utf8')).flags;
   for (const [k, v] of Object.entries(flags)) if (v === 'on') vi.stubEnv(k, '1');
+  for (const k of ['QB_KEY_READ', 'QB_EDGE_THREAT', 'QB_HEAD', 'QB_CALL_ROUTES', 'QB_FOOTWORK', 'CONCEPT_DROPS', 'CONCEPT_FIT', 'BACK_AS_THREE', 'PA_TABLES', 'QUICK_HITCH', 'VERTS_KEYS', 'CURL_SINK', 'SETTLE_DEPTH', 'CRAFT_HOLD', 'CRAFT_EXIT', 'ROUTE_LANDMARK', 'RELEASE_COMMIT', 'PA_HINGE', 'EDGE_SET', 'POCKET_DROP', 'POWER_AIM', 'END_KEY', 'LOOSE_OWN', 'ZONE_HOLD', 'OFF_PEDAL']) vi.stubEnv(k, '0'); // engine-73: scenes recorded before this group of the engine-73 landing; QB to re-record with it on
   vi.stubEnv('READ_PLAN', plan); vi.stubEnv('FORECAST_BREAK', forecast);
 }
 

@@ -30,7 +30,7 @@ const open = (at: BreakDecl['at']): BreakDecl => ({ at, throwFamily: 'seenOpen',
 
 export const BREAK_DECL: Readonly<Record<string, BreakDecl>> = {
   // Thrown on the break: the plant (or roll) at the route's first point.
-  hitch: cut(0, 0.2), curl: cut(0, 0.4), comeback: cut(0, 0.3), stick: cut(0, 0.3), hook: cut(0, 0.3),
+  hitch: cut(0, 0.2), quick_hitch: cut(0, 0.2), curl: cut(0, 0.4), comeback: cut(0, 0.3), stick: cut(0, 0.3), hook: cut(0, 0.3),
   out: cut(0, 0.3), deep_out: cut(0, 0.3), quick_out: cut(0, 0), dig: cut(0, 0), short_in: cut(0, 0), slant: cut(0, 0),
   // The deep breaks are thrown on the break as well (the corner and post over a high-low), with no lead today.
   corner: cut(0, 0), post: cut(0, 0), seam_read: cut(0, 0),

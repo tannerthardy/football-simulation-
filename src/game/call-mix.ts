@@ -38,7 +38,7 @@ export type CallBucket = '1st' | '2nd_short' | '2nd_med' | '2nd_long' | '3rd_sho
 
 /** Break depth that separates a quick route from a breaking one (NFL HITCH 66%, OUT 71%, IN 42% below it). */
 const BREAK_DEPTH = 8;
-const BREAKING = new Set(['hitch', 'stick', 'hook', 'curl', 'comeback', 'quick_out', 'out', 'deep_out', 'short_in', 'dig', 'slant']);
+const BREAKING = new Set(['hitch', 'quick_hitch', 'stick', 'hook', 'curl', 'comeback', 'quick_out', 'out', 'deep_out', 'short_in', 'dig', 'slant']);
 const FLAT = new Set(['flat', 'arrow', 'back_flat', 'swing', 'checkdown', 'angle']);
 const CROSS = new Set(['shallow', 'shallow_high', 'mesh_under', 'cross']);
 

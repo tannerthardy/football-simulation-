@@ -18,6 +18,7 @@ async function throws(flag: string) {
   vi.resetModules();
   const flags: Record<string, string> = JSON.parse(readFileSync(new URL('../config/reference-stack.json', import.meta.url), 'utf8')).flags;
   for (const [k, v] of Object.entries(flags)) if (v === 'on') vi.stubEnv(k, '1');
+  for (const k of ['QB_KEY_READ', 'QB_EDGE_THREAT', 'QB_HEAD', 'QB_CALL_ROUTES', 'QB_FOOTWORK', 'CONCEPT_DROPS', 'CONCEPT_FIT', 'BACK_AS_THREE', 'PA_TABLES']) vi.stubEnv(k, '0'); // engine-73: scenes recorded before this group of the engine-73 landing; QB to re-record with it on
   vi.stubEnv('DECLARED_BREAK', '0'); // engine-68: recorded on the legacy readiness path; re-record on declared breaks with the quick drop
   vi.stubEnv('VERTS_QUICK', '0'); // engine-67: these four_verts scenes were recorded on the five-step set; the quick drop is a different play
   vi.stubEnv('DIR_CAP', '0'); // engine-69: fixture recorded before the monotone direction cap; re-record with DIR_CAP on

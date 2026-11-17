@@ -20,7 +20,7 @@ import { HANDS_CUE, noteHands } from '../hands-cue.js';
 import { CATCH_CHOICE, chooseCatchPoint, type CatchChoice } from '../catch-choice.js';
 import { BALL_EST_RCV as BALL_EST, SEEN_EMPTY, BALL_EST_DEEP_LOOK, BALL_EST_SERVO, BALL_EST_TRUNK, lookJoints, BALL_EST_MOVING_CHOICE, DEEP_LOOK_DEPTH, DEEP_LOOK_HOLD, LOOK_NECK, neckOf, PRE_LOOK_EARLY, PRE_LOOK_LATE, bodyTurnLead, sideOf } from '../ball-estimate.js';
 
-import { firstBreakDepth, getOffDrive, getOffLoss, inGetOff, LINE_START, routeEffort, routePath, steerRoute, type PathPoint, type RouteCursor, type FilletTurn, type FilletPlan } from '../route-motion.js';
+import { firstBreakDepth, getOffDrive, getOffLoss, inGetOff, LINE_START, routeEffort, routePath, steerRoute, type PathPoint, type RouteCursor, type FilletTurn, type FilletPlan, ROUTE_LANDMARK, breaksInside } from '../route-motion.js';
 import { installedRead, readRoute, type RouteChoice, type RouteKeyPicture } from '../route-read.js';
 import { BREAK_DECL } from '../../playbook/route-breaks.js';
 
@@ -148,14 +148,14 @@ const BREAK_LOOK = process.env.BREAK_LOOK !== '0';
  * already holds; held for the episode as a field direction, across whichever man is in the lane, until he has been clear
  * of them for 0.2 s (the bend he committed to runs out that 0.2 s); the bend never takes him back down his route (at least
  * 0.3 of his pace along it) or across to the other side of the man. */
-const CRAFT_HOLD = process.env.CRAFT_HOLD === '1';
+const CRAFT_HOLD = process.env.CRAFT_HOLD !== '0';
 /** CRAFT_EXIT (experimental, off; with CRAFT_HOLD): the held side is a commitment about one man and ends with him. It ends
  * when he is past that man in his picture (level or behind, or stepped across his line onto the held side and out of his
  * lane, unless that side is his route's declared one), with no run-out, and at his route's declared break, which the craft
  * never alters; and a declared leg that comes back toward the line (a settle) names no side to hold. Coverage's paired throws (scripts/diag/catch/paired-throws.ts, 289 pairs): with the hold alone a
  * seam held a 73-degree bend round a nickel already level with him and carried it into the ball's flight, and a stick ran
  * straight up its stem through its own break. */
-const CRAFT_EXIT = process.env.CRAFT_EXIT === '1';
+const CRAFT_EXIT = process.env.CRAFT_EXIT !== '0';
 const craftHeld = new WeakMap<Agent, { d: Agent; across: Vec2; clear: number; at: number; out?: Vec2; declared?: boolean; seeded?: boolean }>();
 /** RELEASE_COMMIT (experimental, off; RELEASE_COMMIT=1; with ROUTE_CRAFT; #35): the release's side seeds the craft's held
  * side for the same man. When he releases round a man (the press release, RELEASE_SEEN's man tight over him at the snap,
@@ -168,7 +168,7 @@ const craftHeld = new WeakMap<Agent, { d: Agent; across: Vec2; clear: number; at
  * across the same man's body: staged double_outs, his lateral request reversed within 0.6 s of contact on 58 of 96
  * touched ends (54 with CRAFT_HOLD + CRAFT_EXIT), the craft's man the rusher who hit him on 60 of 62
  * (scripts/diag/pass-operators/attached-release.mts, attached-craft-who.mts). */
-const RELEASE_COMMIT = process.env.RELEASE_COMMIT === '1';
+const RELEASE_COMMIT = process.env.RELEASE_COMMIT !== '0';
 /** RELEASE_COMMIT: his release round `d` on field side `side` (+1 / -1 in y) seeds the craft's held side for that man. */
 function seedCraftSide(a: Agent, d: Agent, side: number, rr: number, t: number): void {
   if (!RELEASE_COMMIT || side === 0 || craftHeld.get(a)?.d === d) return;
@@ -229,9 +229,11 @@ export function routeCraft(a: Agent, sim: Pick<PlaySim, 'defense' | 'see' | 't'>
   const keep = H ? keep0 : undefined;
   // CRAFT_HOLD: the route's side from the snap (its declared break's leg) when it is clear against his line, else the
   // side he holds (a direction on the field: his route command turns under him), else the per-tick break side.
-  // CRAFT_EXIT: a leg that comes back toward the line (a stick, hook or curl settling) names no side round a man in his
-  // stem: its lateral part is a few tenths of a yard, and read as a side it sent the stick inside the nickel over him.
-  const sideLeg = routeDir && (!CRAFT_EXIT || routeDir.x * u.x + routeDir.y * u.y > 0) ? routeDir : null;
+  // CRAFT_EXIT: a leg that comes back toward the line (a stick, hook, curl or comeback settling: its downfield part at least
+  // 0.3 of it backward) names no side round a man in his stem: its lateral part is a few tenths of a yard, and read as a
+  // side it sent the stick inside the nickel over him. An out's leg (10 yd, then 9.5 yd 12 yd across: 0.04 backward) is
+  // a break toward the sideline, and names its side.
+  const sideLeg = routeDir && (!CRAFT_EXIT || routeDir.x * u.x + routeDir.y * u.y > -0.3) ? routeDir : null;
   // RELEASE_COMMIT: the side his release seeded for this man comes first, kept as the field side it was seeded as.
   const seed = keep?.seeded && keep.d === block.d ? keep.across.x * n.x + keep.across.y * n.y : null;
   const seedSign = seed === null ? 0 : Math.abs(seed) >= 0.5 ? Math.sign(seed) : 0;
@@ -541,7 +543,9 @@ export class RouteRunner implements Behavior {
 
   /** The same waypoint controller is used by the explicitly seeded QB forecast. */
   private steer(body: Body, st: RouteCursor, rr: number, cutSkill: number): MoveCommand | null {
-    return steerRoute(body, st, this.path, this.routeEnd, this.effort, rr, cutSkill);
+    // ROUTE_LANDMARK: an in-breaking route is run from where he is; an out-breaker, a settle and a vertical keep their drawn spot.
+    const at = BREAK_DECL[this.route.id]?.at;
+    return steerRoute(body, st, this.path, this.routeEnd, this.effort, rr, cutSkill, ROUTE_LANDMARK && breaksInside(this.path, typeof at === 'number' ? at : undefined, this.outside));
   }
 
   /** A route-key look down the stem and across nearby underneath leverage.

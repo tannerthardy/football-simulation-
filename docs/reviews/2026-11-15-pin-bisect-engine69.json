@@ -1,0 +1,118 @@
+{
+ "test/apex-leverage.test.ts": [
+  "LINE_START",
+  "ROUTE_CRAFT",
+  "WR_SNAP"
+ ],
+ "test/arrival-lead.test.ts": [],
+ "test/catch-carry.test.ts": [
+  "RELEASE_BELIEF"
+ ],
+ "test/catch-phase-control.test.ts": [
+  "RELEASE_BELIEF"
+ ],
+ "test/chest-shoulders.test.ts": [
+  "CHEST_SHOULDERS"
+ ],
+ "test/combo-climb-coupled.test.ts": [
+  "ENGAGED_TECHNIQUE"
+ ],
+ "test/coverage-run-support.test.ts": [
+  "ALIGN_HABIT",
+  "RELEASE_BELIEF"
+ ],
+ "test/cut-wall.test.ts": [
+  "CUT_WALL"
+ ],
+ "test/declared-break.test.ts": [
+  "WR_SNAP"
+ ],
+ "test/gait-facing-contract.test.ts": [
+  "DIR_CAP"
+ ],
+ "test/grasp-jeopardy.test.ts": [
+  "LB_GUARD_STEP",
+  "LB_LINE_FLOW",
+  "LB_READ_STEP",
+  "LEAN_PITCH",
+  "LEGS_HELD",
+  "LEG_ALLOMETRY",
+  "LEVEL2_TIME",
+  "LINE_START",
+  "LINE_STEP",
+  "LOOK_ONCE",
+  "LOOSE_SEEN",
+  "MESH_GUN_SIDE",
+  "MESH_TEMPO",
+  "MUG_CALLS"
+ ],
+ "test/man-throw-recognition.test.ts": [
+  "RELEASE_BELIEF"
+ ],
+ "test/movement-preview.test.ts": [
+  "DIR_CAP"
+ ],
+ "test/outlet-last.test.ts": [
+  "PLAN_KEYS_2"
+ ],
+ "test/pedal-cap.test.ts": [
+  "DIR_CAP"
+ ],
+ "test/qb-gather-throw.test.ts": [
+  "DIR_CAP"
+ ],
+ "test/qb-installed-box-count.test.ts": [
+  "QB_SEEN_MAN"
+ ],
+ "test/qb-rhythm.test.ts": [],
+ "test/quarter-flat-force-support.test.ts": [
+  "RELEASE_BELIEF"
+ ],
+ "test/quarters-flat-wheel.test.ts": [
+  "RELEASE_BELIEF"
+ ],
+ "test/rat-coverage.test.ts": [
+  "RELEASE_BELIEF"
+ ],
+ "test/release-cushion.test.ts": [
+  "RELEASE_BELIEF"
+ ],
+ "test/release-evidence.test.ts": [
+  "QB_BELIEVED_DEF",
+  "RELEASE_BELIEF"
+ ],
+ "test/route-effort.test.ts": [
+  "ROUTE_FILLET"
+ ],
+ "test/run-anchor.test.ts": [
+  "LEAN_PITCH",
+  "OPEN_HANDS"
+ ],
+ "test/screen-declare.test.ts": [
+  "DECLARED_BREAK"
+ ],
+ "test/screen-install.test.ts": [
+  "CLOUD_KILL"
+ ],
+ "test/seam-delivery.test.ts": [
+  "RELEASE_BELIEF"
+ ],
+ "test/stalk-close.test.ts": [],
+ "test/stretch-closure.test.ts": [
+  "ENGAGE_FELT",
+  "ENGAGE_TRUNK"
+ ],
+ "test/stretch-normal-follow.test.ts": [
+  "ENGAGE_FELT",
+  "ENGAGE_TRUNK"
+ ],
+ "test/throw-sight.test.ts": [
+  "RELEASE_BELIEF"
+ ],
+ "test/trunk-twist.test.ts": [
+  "DIR_CAP"
+ ],
+ "test/zone-track.test.ts": [
+  "SIGHT_COVER"
+ ]
+}
