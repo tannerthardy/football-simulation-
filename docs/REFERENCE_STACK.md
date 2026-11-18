@@ -2,7 +2,7 @@
 
 One combination of experimental flags that Run Game, Defense, Flex and Coverage all measure against. Before this, each agent tested on its own mix (the FLAT_PRESS / ZONE_RUN back-and-forth on 2026-11-09 came from two different flag sets), and no list of anyone's stack existed in the repository.
 
-- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-90`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
+- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-91`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
 
 - **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-88`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
 - **The code:** `run/G3-oz-backfield` a749beb7 + `defense/G2-stance-tell` a0cb0789 (#411) + `defense/G2-lb-start` (#416, with #409) + `claude/quirky-franklin-9lbwbp` (#417, with #415) + develop 6676dfc2.
@@ -611,6 +611,31 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
 
 
+## engine-91: the stem worked to the defender's leverage (2026-11-18)
+
+On: `STEM_WORK` (Rules + Coaching; Integration, from Coverage's flow table). Taught: attack the defender's leverage,
+stemming at his leverage shoulder to make him open, then break; on a vertical, get on top of him (stack him). Off, stems
+were straight lines. On the stem (his route's first leg past 1.5 yd; a vertical's to 12 yd; stems of 5 yd or more,
+since a slant or quick out is won at the release and the break), decided once from his own picture: the nearest
+defender in front within 10 yd deep and 4 yd across, leverage 0.75 yd or more off his line -> he works toward that
+shoulder, by up to 1.5 yd and a fifth of the stem's length; head-up or no one over him -> straight. The bend is gone
+1 yd before the break (2 yd on a leaning break: post, corner), returned gently, at unchanged speed, so a bent stem costs
+the time its extra length costs. An in-breaking route (dig, post) then runs its break from where his stem put him, as
+ROUTE_LANDMARK already does and as taught: its break moves with the stem (median lateral at the break depth: dig 0.82
+-> 1.06 yd, post 0.21 -> 0.81); out-breakers keep their drawn spot (out 0.66 -> 0.66).
+
+Same operator on NFL and sim (scripts/diag/routes/flow_mix.py; BDB 2025 vs sim export, 8 games), stem lateral speed
+0.5 s before the release, by route class: sitting 0.26 -> 0.77 yd/s (NFL 1.30), vertical 0.40 -> 0.60 (1.05), other
+0.78 -> 0.98 (1.37). The route-shape share of the lateral-flow gap to the NFL: -0.47 -> -0.28 yd/s in an underneath
+man's band, -0.57 -> -0.36 one band outside (about 40% closed; the other half of the gap is concept mix, OFF_VARIETY).
+
+Break timing (route_timing.py; off -> on): post 2.45 s / 9.5 yd -> 2.58 / 9.0 (the operator had read part of the bent
+stem as the break; the post reaches every depth at the same time either way), dig 2.70 / 9.7 -> 2.70 / 9.7, out
+2.65 / 9.0 -> 2.60 / 8.8, corner 2.90 / 12.1 -> 2.92 / 12.0, hitch 2.35 / 5.6 -> 2.30 / 5.9. Staged outcomes
+(route-outcome.mts, Cover 1/2/3/4, about 850 attempts): completion .711 -> .720-.736, yards per attempt 8.18 ->
+8.56-8.77 over three runs; the slant's separation 3.27 -> 2.92 yd comes from the other receivers' stems, not its own
+(it runs straight); interceptions on hitches and slants lean up within run spread. Controls (stem-press.mts): press man
+unchanged (the press release runs the stem), off zone straight. Dither budget passes with it on.
 ## engine-90: release reads from what the reader sees: vertical past the line, a back's flat release out of the box (2026-11-18)
 
 On: `READ_VERTICAL_LOS` and `BACK_CLEAR` (Coverage; `src/sim/coverage/reads.ts`, the ReleaseReader every coverage rule
