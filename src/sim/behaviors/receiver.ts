@@ -140,6 +140,25 @@ const STEM_MIN = 5;
  * off the route's first leg by 3 yd past the line (about 10-15 deg), at unchanged speed, then the route takes him on; a
  * go's drawn outside lean is replaced by the plan. The press release (a man on him) is the press fight's, not this. */
 const RELEASE_PLAN = process.env.RELEASE_PLAN === '1';
+/** ROUTE_VARY (experimental, off): a coached route is his intent, run imperfectly by his skill. Drawn once per rep (a
+ * decision he commits to, from the play's own random stream), never an outcome or separation draw:
+ * - the depth of the route: every point moves together by a draw of sd 0.15 yd for the best route runner (about the
+ *   length of his foot: he hits his landmark on the step) to 0.6 yd for the worst (most of a stride: a step early or
+ *   late into the lean or the plant), linear in routeRunning, clipped at 2 sd;
+ * - the size of his release lean (RELEASE_PLAN): a factor of mean 1, sd 0.15 (best) to 0.45 (worst), clipped 0.2-1.6;
+ * - his read of the man's leverage (RELEASE_PLAN, STEM_WORK): the man's lateral place as he judges it, off by a draw of
+ *   sd 0.25 yd (best vision: a quarter of a body) to 0.75 yd (worst: a body and a half), so a man near head-up reads
+ *   either side and a poor reader takes the wrong release more often.
+ * - his release mix (RELEASE_PLAN): a release the man can sit on is a beaten release, so he varies it ("vary your
+ *   releases"): with chance .15 he opens with a set-up jab the other way (his first steps lean away, then he takes his
+ *   planned side by the end of the release), .3 against a pressed man head-up on him (a release move to turn the jam).
+ *   A set-up run as a whole release to the wrong side carried quick routes into the robber (staged quick game: 9 more
+ *   interceptions in 470 throws, every one a set-up rep); a jab finishes on his plan. The NFL release off #1 (BDB 2025 weeks 1-3, see RELEASE_PLAN) has the other side .09-.19 on
+ *   either route and .33 on the slant against press head-up.
+ * The spreads are chosen, not fitted: a step's length bounds what a good receiver misses by. The QB's forecast and the
+ * route table keep the drawn route; the receiver alone runs the varied one. */
+const ROUTE_VARY = process.env.ROUTE_VARY === '1';
+const varySd = (best: number, worst: number, skill: number) => best + (worst - best) * (1 - clamp(skill, 0, 1));
 
 /** ROUTE_END (experimental, off; docs/reviews/2026-11-14-route-end.md): the route's end as coached.
  * - The settle stays alive (hitch, curl, comeback, any `settle` or `sitVsZone` end). After the break he keeps working
@@ -361,6 +380,14 @@ export class RouteRunner implements Behavior {
   private stemWork: number | null = null;
   /** RELEASE_PLAN: his release side, field y sign (null undecided; 0 straight). */
   private releasePlan: number | null = null;
+  /** ROUTE_VARY: this rep's draws (depth shift, yd; release lean factor; leverage misread, yd, + outside). */
+  private varyDepth = 0;
+  private varyLean = 1;
+  private varyLev = 0;
+  /** ROUTE_VARY: this rep's release-mix draw (0-1; under the set-up chance he takes the other side). */
+  private varyMix = 1;
+  /** ROUTE_VARY: this rep's release opens with a set-up jab the other way. */
+  private setUp = false;
   private readonly keyMemory = new Map<string, { at: number; picture: RouteKeyPicture }>();
   private routeEnd: RouteEnd;
   /** Passive diagnostic state; never shared with the quarterback's forecast. */
@@ -412,7 +439,16 @@ export class RouteRunner implements Behavior {
     this.fromBackfield = sim.los - a.pos.x > 2;
     this.effort = route.pace !== undefined ? route.pace + 0.04 * (a.r('routeRunning') - 0.5) : routeEffort(route.family, a.r('routeRunning'));
     this.routeEnd = route.end;
-    this.path = this.buildPath(a.pos, route.points, route.end === 'continue');
+    if (ROUTE_VARY) {
+      const g = sim.rng.fork(`route-vary:${a.slot}:${route.id}`), rr = a.r('routeRunning');
+      const sd = varySd(0.15, 0.6, rr);
+      this.varyDepth = clamp(g.normal(0, sd), -2 * sd, 2 * sd);
+      this.varyLean = clamp(g.normal(1, varySd(0.15, 0.45, rr)), 0.2, 1.6);
+      const sv = varySd(0.25, 0.75, a.r('vision'));
+      this.varyLev = clamp(g.normal(0, sv), -2 * sv, 2 * sv);
+      this.varyMix = g.next();
+    }
+    this.path = this.buildPath(a.pos, this.varyDepth ? route.points.map((p) => ({ ...p, d: Math.max(0, p.d + this.varyDepth) })) : route.points, route.end === 'continue');
     // Break time ≈ distance to the last speed-controlled point at ~85% speed.
     let dist = 0;
     let prev = a.pos;
@@ -588,19 +624,24 @@ export class RouteRunner implements Behavior {
         if (ahead < bd) { bd = ahead; best = d; }
       }
       // His leverage in route terms: + outside of the receiver, - inside.
-      const lev = best ? (best.pos.y - a.pos.y) * this.outside : 0;
+      const lev = best ? (best.pos.y - a.pos.y) * this.outside + this.varyLev : 0;
       const levSide = lev >= 0.5 ? 1 : lev <= -0.5 ? -1 : 0;
       let side: number;
       if (breakSide < 0) side = -1;                           // inside-breaker: inside
       else if (breakSide > 0) side = levSide > 0 ? -1 : 1;     // outside-breaker: outside, or set up inside vs outside leverage
       else side = best ? 1 : 0;                                // vertical: outside, straight with no man over him
+      // ROUTE_VARY: his release mix, a set-up to the other side on some reps (more against a man pressed head-up on him).
+      if (ROUTE_VARY && side !== 0 && this.varyMix < (best && bd <= 2.5 && levSide === 0 ? 0.3 : 0.15)) this.setUp = true;
       this.releasePlan = side * this.outside;
     }
     // The route's first leg, minus a go's drawn lean (the plan replaces it), plus the planned lean, growing to 1 yd by `end`.
     const lineY = this.start.y + (BREAK_DECL[this.route.id]?.at === 'vertical' ? 0 : (first.y - this.start.y)
       * clamp((a.pos.x - this.start.x) / ((first.x - this.start.x) || 1e-6), 0, 1));
     const lean = clamp((depth - (this.start.x - sim.los) * dirn) / (end - (this.start.x - sim.los) * dirn), 0, 1);
-    const goalY = lineY + this.releasePlan * lean;
+    // ROUTE_VARY: a set-up is a jab: the first 40% of the release leans the other way (to 0.6 of his lean), then he
+    // takes his planned side by the release's end. He finishes on his plan; only the first steps say otherwise.
+    const shape = this.setUp ? (lean < 0.4 ? -0.6 * lean / 0.4 : -0.6 + 1.6 * (lean - 0.4) / 0.6) : lean;
+    const goalY = lineY + this.releasePlan * this.varyLean * shape;
     const sp = Math.hypot(cmd.vel.x, cmd.vel.y);
     if (sp < 0.5) return cmd;
     const vy = cmd.vel.y + clamp((goalY - a.pos.y) * 3, -2.5, 2.5) - (BREAK_DECL[this.route.id]?.at === 'vertical' ? cmd.vel.y : 0);
@@ -631,7 +672,7 @@ export class RouteRunner implements Behavior {
         if (ahead <= 0 || ahead > 10 || Math.abs(across) > 4) continue;
         if (ahead < bd) { bd = ahead; best = d; }
       }
-      const off = best ? best.pos.y - a.pos.y : 0;
+      const off = best ? best.pos.y - a.pos.y + this.varyLev * this.outside : 0;
       // Up to 1.5 yd, and no more than a fifth of the stem's length, so a short stem's return stays gentle.
       this.stemWork = Math.abs(off) >= 0.75 ? Math.sign(off) * Math.min(1.5, 0.2 * stemEnd, Math.abs(off)) : 0;
     }
