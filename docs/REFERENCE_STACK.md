@@ -2,7 +2,9 @@
 
 One combination of experimental flags that Run Game, Defense, Flex and Coverage all measure against. Before this, each agent tested on its own mix (the FLAT_PRESS / ZONE_RUN back-and-forth on 2026-11-09 came from two different flag sets), and no list of anyone's stack existed in the repository.
 
-- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-90`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
+- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-91`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
+
+- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-88`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
 - **The code:** `run/G3-oz-backfield` a749beb7 + `defense/G2-stance-tell` a0cb0789 (#411) + `defense/G2-lb-start` (#416, with #409) + `claude/quirky-franklin-9lbwbp` (#417, with #415) + develop 6676dfc2.
 - **Since 2026-11-09 the stack is the engine's default.** The flags listed `on` are read as on unless set to `0`; a bare command in a clean shell and `npm run ref -- <command>` run the same engine. `npm run ref -- --off -- <command>` runs the legacy engine (every listed flag off). `test/reference-stack.test.ts` fails if the file and the code defaults ever disagree. See "Promotion" below.
 
@@ -27,7 +29,7 @@ The stack was published on 2026-11-09 as a reference only, because the first com
 What was done:
 - The 90 `on` flags are read as `!== '0'` in `src` (95 sites). No other code changed. Checked on the 1,321-run set: the stack arm, the legacy arm (`--off`) and a bare run with an empty environment give the same per-play results as before the change, the bare run now matching the stack.
 - **The test suites still run on the legacy engine.** `vitest.config.ts` pins every promoted flag to `0` for all four tiers, so no recorded case moved and nothing was re-recorded. `TEST_ENGINE_DEFAULTS=1 npm test` runs them on the real defaults: 173 core tests in 61 files then fail because they pin legacy behaviour (most in `responsibility-ledger` 16, `combo-transfer` 15, `support-work-off` 9, `support-escape-objective` 9, `man-run-continuity` 8, `runner-side-recovery` 7, `combo-attention` 7). Each lane re-records its files and removes flags from the pin as it goes; a new test should be written for the real defaults (stub the pin off for the flags it needs).
-- **Since 2026-11-14 most of the core suite runs on the real engine.** `test/engine-pin.json` splits the core files: `defaults` run with no flag pinned, `pinned` still run with every promoted flag at `0`. The pinned list may only shrink (`test/engine-pin-manifest.test.ts`): a file leaves it when it passes on the defaults, and a new test file is a defaults file. `node --import tsx scripts/diag/pin-bisect.ts` names, per pinned file, the flags it needs pinned, so a lane can see what blocks deleting a flag and its legacy path; `TEST_PIN_FLAGS=A,B` pins only those flags.
+- **Since 2026-11-14 most of the core suite runs on the real engine.** `test/engine-pin.json` splits the core files: `defaults` run with no flag pinned, `pinned` still run with every promoted flag at `0`. The pinned list may only shrink (`test/engine-pin-manifest.test.ts`): a file leaves it when it passes on the defaults, and a new test file is a defaults file. `node --import tsx scripts/diag/pin-bisect.ts` names, per pinned file, the flags it needs pinned, so a lane can see what blocks deleting a flag and its legacy path; `TEST_PIN_FLAGS=A,B` pins only those flags. The `core` project pins every numeric flag to its legacy value even with `TEST_PIN_FLAGS` empty, so an "unpinned" run there is a mixed engine; judge a pinned file's re-record on `core-defaults` (move it in the manifest).
 - `config/baseline.json` is unchanged: it remains the historical profile, with these flags at `0`.
 
 What the promotion does not fix, in order of size at the game level:
@@ -609,7 +611,7 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
 
 
-## engine-90: the stem worked to the defender's leverage (2026-11-18)
+## engine-91: the stem worked to the defender's leverage (2026-11-18)
 
 On: `STEM_WORK` (Rules + Coaching; Integration, from Coverage's flow table). Taught: attack the defender's leverage,
 stemming at his leverage shoulder to make him open, then break; on a vertical, get on top of him (stack him). Off, stems
@@ -634,6 +636,52 @@ stem as the break; the post reaches every depth at the same time either way), di
 8.56-8.77 over three runs; the slant's separation 3.27 -> 2.92 yd comes from the other receivers' stems, not its own
 (it runs straight); interceptions on hitches and slants lean up within run spread. Controls (stem-press.mts): press man
 unchanged (the press release runs the stem), off zone straight. Dither budget passes with it on.
+## engine-90: release reads from what the reader sees: vertical past the line, a back's flat release out of the box (2026-11-18)
+
+On: `READ_VERTICAL_LOS` and `BACK_CLEAR` (Coverage; `src/sim/coverage/reads.ts`, the ReleaseReader every coverage rule
+reads releases from).
+
+- **READ_VERTICAL_LOS:** a release is vertical only past the line of scrimmage in his picture. A back stepping up in his
+  protection set behind the line no longer latches `vertical`.
+- **BACK_CLEAR:** a back still 1.5+ yd behind the line, inside his rush-side tackle's seen width plus 0.5 yd, moving out
+  toward a rusher he could block (seen within 3 yd, on or behind the line, within 45 degrees of his path) is not a flat
+  release. Before it, his slide to an edge rusher read as a fast flat release: Push fired with the back in protection,
+  pre-empted Smash, and the Cover 2 squat corner left #1 for him.
+- **Controls** (`test/back-clear.test.ts`): a clean swing, a fast back to the flat and a check-release are read at the
+  same tick; a blocking back never reads flat. The one later read: a swing back the end comes straight at behind the
+  line (seed 1, he stalls to 0.9 yd/s) is read once clear.
+- **Tests:** 80 coverage files, 19 failures in 8 files off, 16 in 7 on, the difference only the three cases.
+  Re-records on the real engine (engine-pin `defaults`): coverage-rules, cover3-cover2-rules, quarters-trips-rules,
+  db-slots, projected-cap, coverage-judgment; each change is a staging or a promoted rule, stated in its file.
+- **Recorded, not landed:** KNOWN_PROBLEMS COV-13 (man defenders in traffic; `MAN_TRAFFIC` parked off).
+
+## engine-89: the Cover 2 flat corner takes the #2 flat when #1 cancels (2026-11-18)
+
+On: `FLAT_CARRY` (Rules + Coaching's rule HNFL-099/-334; Coverage built). The flat corner reads #1 himself:
+
+- **#1 cancels:** seen 3+ yd deep moving more across than up (a slant or an in), or slowed under 1 yd/s. Held until
+  #1 climbs again (a double move).
+  - The #2 flat in his area is then his. He squeezes it from on top and outside, which carries it if it turns up.
+  - He keeps it until another defender he sees caps it, it leaves his area, or it reaches 20 yd.
+- **#1 goes vertical:** he sinks with #1 (FLAT_SINK, engine-85) and the half safety takes what's left.
+
+Three ungated attempts took him off a vertical #1: 20+ completions rose 67 -> 86 (COV-12 in KNOWN_PROBLEMS).
+
+Cover 2, Cover 2 match and Tampa 2 staged dropbacks, every concept, 3 seeds, develop 6c7d09b1:
+
+| | off | on |
+|---|---|---|
+| never-touched 20+ completions (`scripts/diag/coverage/flat-carry.mts`) | 26 | 22 |
+| 20+ completions | 82 | 77 |
+| Cover 2 YAC | 6.32 | 5.55 |
+
+- **Throws to #1** (`corner-sink.mts`): unchanged, 6 at 50%, 6.5 yd/att; corner to #1 at arrival 4.7 -> 4.5 yd.
+- **Other rows:** the corner's downfield speed and depth under #1 are unchanged within 0.1. Cover 1, 3 and 4 YAC are
+  identical.
+
+**Open:** on the traced slant_flat from trips his read of #1's slant lands at about 2.8 s (a slant at 45 degrees shows
+"more across than up" late), so that rep is still late. An earlier read of #1's inside release is the next lever.
+
 ## engine-88: deep men priced through their role; the forecast stops an out at its finish (2026-11-18)
 
 On: `QB_ROLE_PATH` (third form, 3b) and `FORECAST_FINISH`. Registered off: `READ_WINDOW` (not yet a finished repair,
