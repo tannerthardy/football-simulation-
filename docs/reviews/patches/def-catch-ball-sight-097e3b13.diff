@@ -47,7 +47,7 @@ index a94b6461..6b71c004 100644
  | `PASS_SINK` | off | experimental | trenches | `src/sim/engagement.ts:696` | set at first review |
  | `PULL_CUE` | off | experimental | defense | `src/sim/run-fits.ts:195` | set at first review |
 diff --git a/src/sim/catching.ts b/src/sim/catching.ts
-index bbdb4378..4aa2e926 100644
+index bbdb4378..14335bdf 100644
 --- a/src/sim/catching.ts
 +++ b/src/sim/catching.ts
 @@ -13,6 +13,7 @@ import type { Agent } from './agent.js';
@@ -162,7 +162,7 @@ index bbdb4378..4aa2e926 100644
    // Over-the-shoulder catches at speed (ball arriving from behind the receiver).
    const rs = R.speed;
    const fromBehindRun = rs > 1 ? (R.vel.x * bv.x + R.vel.y * bv.y) / (rs * (Math.hypot(bv.x, bv.y) || 1)) : 0;
-@@ -229,10 +275,67 @@ function receiverContest(sim: PlaySim, o: Opp, opps: Opp[]): void {
+@@ -229,10 +275,60 @@ function receiverContest(sim: PlaySim, o: Opp, opps: Opp[]): void {
    const fromBehind = TRUNK_TWIST && rs > 1 && R.body.trunk
      ? Math.min(fromBehindRun, (Math.cos(shouldersOf(R.body)) * bv.x + Math.sin(shouldersOf(R.body)) * bv.y) / (Math.hypot(bv.x, bv.y) || 1))
      : fromBehindRun;
@@ -184,24 +184,17 @@ index bbdb4378..4aa2e926 100644
 +  const rng = sim.dice('def-catch', D);
 +  const bv = ball.flight.vel;
 +  const { stretch, high, low, diff, hands } = handsCatch(D, o, bv, Math.hypot(bv.x, bv.y, bv.z), sim.t - ball.releaseT, D.r('ballSkills'), D.r('hands'));
-+  const pCatch = clamp(0.985 - diff * (1.3 - hands) - 0.06 * (1 - hands), 0.2, 0.99);
-+  logContact(sim, D, R, true, 'ball');
-+  // The receiver's arms at the defender's hands (the reach rule contestHands gives a defender at the receiver's hands):
-+  // a hand through his arms knocks the ball out of them, resisted by his own contested-catch strength.
++  // The receiver's arms at the ball (the reach rule contestHands gives a defender at the receiver's hands, from the other
++  // side) make the catch harder, as any other difficulty does: through his hands, resisted by his contested-catch strength.
++  // Attempt 1 rolled it as a separate knock-loose (contestHands' rake law, up to 0.85): it fired on 60 of 87 tries and
++  // took the catch away whenever the receiver was beside the ball, which a contested ball is.
++  let contact = 0;
 +  if (R && !R.isDown(sim.t) && !R.engagement) {
 +    const toHands = Math.hypot(R.pos.x - o.b.x, R.pos.y - o.b.y), armLen = R.profile.reach + 0.15;
-+    if (toHands <= armLen) {
-+      const technique = 0.45 + 0.35 * R.r('contestedCatch') + 0.2 * R.r('strength');
-+      const pLoose = clamp(HANDS_SCALE * Math.pow(1 - toHands / armLen, 0.7) * technique * (1.15 - 0.55 * D.r('contestedCatch')), 0, 0.85);
-+      if (rng.next() < pLoose) {
-+        sim.stats.passDefendedBy = D.player.id;
-+        sim.event('pbu', D, R, 'knocked from his hands');
-+        D.noCatchUntil = touchedUntil(sim, 0.25);
-+        deflect(sim, 0.2, 'drop', D, 0.5);
-+        return 'pbu';
-+      }
-+    }
++    if (toHands <= armLen) contact = Math.pow(1 - toHands / armLen, 0.7) * (0.45 + 0.35 * R.r('contestedCatch') + 0.2 * R.r('strength')) * (1.15 - 0.55 * D.r('contestedCatch'));
 +  }
++  const pCatch = clamp(0.985 - (diff + contact) * (1.3 - hands) - 0.06 * (1 - hands), 0.2, 0.99);
++  logContact(sim, D, R, true, 'ball');
 +  if (rng.chance(pCatch)) {
 +    if (inBounds(D)) { sim.possess(D, 'interception'); return 'int'; }
 +    sim.event('incomplete', D, null, 'out of bounds');
@@ -233,7 +226,7 @@ index bbdb4378..4aa2e926 100644
    let pCatch = clamp(0.985 - diff * (1.3 - hands) - 0.06 * (1 - hands), 0.2, 0.99);
    if (ball.deflected) pCatch *= 0.3;
  
-@@ -346,6 +449,11 @@ function contestHands(sim: PlaySim, R: Agent, o: Opp, opps: Opp[], rng: ReturnTy
+@@ -346,6 +442,11 @@ function contestHands(sim: PlaySim, R: Agent, o: Opp, opps: Opp[], rng: ReturnTy
    for (const D of near) {
      const sees = facingBall(D, bv, sim);
      const own = opps.find((p) => p.a === D);
@@ -245,7 +238,7 @@ index bbdb4378..4aa2e926 100644
      if (own && sees) {
        // Through the hands at the ball: his hands meet it where it is in his window.
        const window = D.profile.reach + 0.3;
-@@ -383,6 +491,7 @@ function contestHands(sim: PlaySim, R: Agent, o: Opp, opps: Opp[], rng: ReturnTy
+@@ -383,6 +484,7 @@ function contestHands(sim: PlaySim, R: Agent, o: Opp, opps: Opp[], rng: ReturnTy
      const technique = 0.45 + 0.35 * D.r('manCoverage') + 0.2 * D.r('strength');
      const pLoose = clamp(HANDS_SCALE * Math.pow(depth, 0.7) * technique * (1.15 - 0.55 * R.r('contestedCatch')), 0, 0.85);
      if (rng.next() < pLoose) {
@@ -253,7 +246,7 @@ index bbdb4378..4aa2e926 100644
        sim.stats.passDefendedBy = D.player.id;
        sim.event('pbu', D, R, 'through the hands');
        D.noCatchUntil = touchedUntil(sim, 0.25);
-@@ -431,12 +540,13 @@ export function secureStep(sim: PlaySim): void {
+@@ -431,12 +533,13 @@ export function secureStep(sim: PlaySim): void {
      const rel = toBody > 1e-6 ? { x: (R.pos.x - D.pos.x) / toBody, y: (R.pos.y - D.pos.y) / toBody } : { x: 1, y: 0 };
      const closing = Math.max(0, (D.vel.x - R.vel.x) * rel.x + (D.vel.y - R.vel.y) * rel.y);
      const hand = toBall <= handReach
@@ -268,7 +261,7 @@ index bbdb4378..4aa2e926 100644
        ball.securing = undefined;
        sim.stats.passDefendedBy = D.player.id;
        sim.event('pbu', D, R, hit > hand ? 'dislodged by the hit' : 'dislodged through the hands');
-@@ -533,6 +643,10 @@ function defenderPlay(sim: PlaySim, o: Opp, tAir: number): boolean {
+@@ -533,6 +636,10 @@ function defenderPlay(sim: PlaySim, o: Opp, tAir: number): boolean {
      if (done && done.at === key && done.who.has(D)) return false;
      if (!done || done.at !== key) playTried.set(sim, { at: key, who: new Set([D]) }); else done.who.add(D);
    }

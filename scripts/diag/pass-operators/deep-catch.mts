@@ -29,7 +29,7 @@ for (const coverage of COVS) for (const concept of Object.keys(PASS_BY_ID).filte
     for (const slot of ['X', 'Z', 'Y', 'H', 'F']) {
       if (!dry.offense.some((o: any) => o.slot === slot && o.behavior?.route)) continue;
       let sim: any; try { sim = new PlaySim({ ...setup, stagedThrow: { at: snap + T, slot } }); } catch { continue; }
-      let rel = -1, arrT = -1, dm: any = null, rec: any = null, arr: any = null; const near: Record<number, number> = {};
+      let rel = -1, arrT = -1, dm: any = null, rec: any = null, arr: any = null, lastB: any = null, lastV: any = null; const near: Record<number, number> = {};
       // Which contest path made each pbu / interception / deflection (the calling function, from the stack).
       const why: any[] = []; const ev0 = sim.event.bind(sim), pos0 = sim.possess.bind(sim);
       const site = () => (new Error().stack ?? '').split('\n').map((l) => l.trim().split(' ')[1]).find((f) => /defenderPlay|contestHands|receiverContest|secureStep/.test(f ?? '')) ?? 'other';
@@ -40,13 +40,14 @@ for (const coverage of COVS) for (const concept of Object.keys(PASS_BY_ID).filte
         tick();
         if (sim.ball.kind === 'air' && rel < 0) { rel = sim.t; arrT = sim.ball.arrivalT; rec = sim.ball.target; }
         if (rel < 0 || arr) return;
+        if (sim.ball.kind === 'air') { lastB = { ...sim.ball.flight.pos }; lastV = { ...sim.ball.flight.vel }; }
         if (sim.ball.kind === 'air') {
           const b = sim.ball.flight.pos;
           for (const d of sim.defense) { const h = Math.hypot(d.pos.x - b.x, d.pos.y - b.y);
             if (b.z <= d.profile.maxCatchHeight && h <= d.profile.reach + 0.3) near[d.idx] = Math.min(near[d.idx] ?? 9, h); }
         }
         if (sim.ball.kind !== 'air' || sim.t >= arrT - 1e-9) {
-          const b = sim.ball.kind === 'air' ? sim.ball.flight.pos : null, bv = sim.ball.kind === 'air' ? sim.ball.flight.vel : null;
+          const b = sim.ball.kind === 'air' ? sim.ball.flight.pos : lastB, bv = sim.ball.kind === 'air' ? sim.ball.flight.vel : lastV; // caught before arrT: its last airborne point
           arr = { t: sim.t, b, bv, snap: sim.defense.map((d: any) => ({ d, p: { ...d.pos }, kind: d.behavior?.kind ?? null, tags: [...(d.tags ?? [])], f: shouldersOf(d.body) })), r: rec ? { ...rec.pos } : null };
         }
       };
