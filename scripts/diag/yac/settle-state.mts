@@ -11,7 +11,7 @@ for (const concept of Object.keys(PASS_BY_ID).filter((id) => !/screen/.test(id))
     for (const formation of ['gun_doubles_11', 'gun_trips_11'])
       for (const flip of [false, true]) {
         let sim: any; try { sim = new PlaySim(nativeTraceSetup({ coverage, concept, seed: 1, roster: 1, formation, flip })); } catch { continue; }
-        let snap: any[] | null = null; const hist = new Map<any, any[]>();
+        let snap = null as any[] | null; const hist = new Map<any, any[]>();
         const tick = sim.tick.bind(sim);
         sim.tick = () => { const t = sim.t; tick(); { const dir = sim.attackDir(sim.offense[0].team); for (const d of sim.defense) (hist.get(d) ?? hist.set(d, []).get(d)!).push({ t, down: d.vel.x * dir }); } if (!snap && sim.ball?.kind === 'air') {
           const dir = sim.attackDir(sim.offense[0].team);

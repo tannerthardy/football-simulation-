@@ -91,6 +91,15 @@ const FORECAST_BREAK = process.env.FORECAST_BREAK !== '0';
  * route while moving along it (about the 90th percentile of observed drift); moving against it, or farther off, is
  * still a contradiction and falls back to his observed motion. */
 const FORECAST_HOLD = process.env.FORECAST_HOLD !== '0';
+/** FORECAST_FINISH (default since engine-88, provisional; FORECAST_FINISH=0 turns it off; QB lane, 2026-11-18): the
+ * forecast honours the route's finish (ROUTE_FINISH: an outward route that runs out of field stops at its margin, in
+ * bounds). Past the last point of a 'continue' route the forecast kept his velocity, so an out finishing 5 yd from the
+ * sideline was forecast running on past it and out of bounds (quick_outs, cover3, trips, seed 2, flipped, ROUTE_SHAPE: the
+ * ball aimed 2.2 yd from the sideline while he stopped at 5): the speed out was led to the boundary instead of the
+ * numbers. On, a route whose last point is its finish ends there, as the receiver does. A flat on its extension is not
+ * held: under ROUTE_END he runs on up the sideline, and the forecast follows him (the late cross-field flat is a decision,
+ * READ_WINDOW's; docs/reviews/2026-11-18-late-cross.md). */
+const FORECAST_FINISH = process.env.FORECAST_FINISH !== '0';
 /** FORECAST_HOLD: how far off its drawn line a run route still reads as that route, by route phase: the 90th
  * percentile of receivers' drift while moving along the route (engine-42 forced-concept panel,
  * scripts/diag/read-plan/forecast-drift.ts): on the stem 1.19 yd, after the break 1.63 (the cut is rounded), on a
@@ -258,7 +267,7 @@ export class ReceiverForecast {
       if (c.estimate.motion === 'observed-motion') cmd = { vel: { ...p!.vel }, cutSkill };
       else if (c.estimate.sampledAt + i * this.dt < (prior.startDelay ?? 0)
         && (!p || (Math.hypot(p.vel.x, p.vel.y) < 1e-6 && st.idx === 0))) cmd = { vel: { x: 0, y: 0 } };
-      else if (done) cmd = active.end === 'continue' ? { vel: body.vel }
+      else if (done) cmd = active.end === 'continue' && !(FORECAST_FINISH && active.path[active.path.length - 1]?.finish) ? { vel: body.vel }
         : { vel: arriveVelocity(body, active.path[active.path.length - 1]?.p ?? body.pos, body.profile.vmax * 0.6, 0) };
       else {
         // ROUTE_LANDMARK: he runs the rest of a route with a declared vertex from where he is seen, as the receiver does.

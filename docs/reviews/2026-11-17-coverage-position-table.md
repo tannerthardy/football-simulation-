@@ -674,3 +674,44 @@ L1 = deep man comes downhill and gets passed. L2 = nobody deeper after a pass-by
 - HNFL wording other than HNFL-202, and every external coaching source listed in ZCR.
 - How often each branch runs in practice (no sims were run).
 - Whether the corner's run role should be `alley` or force/cutback is VS, and I did not check it against a source.
+
+## Build status (2026-11-17, Rules + Coaching)
+
+- Built behind off flags, stacked: HALF_OWN (gap 3), MATCH_DECLARE (gap 6), C2_APEX (item 1), SQUAT_TOPDOWN (item 7),
+  Q_APEX (item 2). Each flag's row in docs/FLAGS.md holds its staged before/after table.
+- C3_HOOK (the Cover 3 hook matching #3's over, and #3 to the flat under a vertical #2): rule written, not landed; no
+  installed concept presents the shape (trips #3 runs only flat, seam or hitch). Concepts that would: a trips Y-cross
+  or drive with #3 on the over; a flood or sail with #3 to the flat under a vertical #2. A playbook that never asks the
+  hook this question is itself a gap in what our offense attacks Cover 3 with.
+- Diagnosed, not rules: drive's weak shallow against quarters and Cover 3 match is caught 1.5-3 yd past the line and
+  goes 9-67 after the catch (pursuit); flood's weak dig and #2 out against Cover 3 match are tight (1-3 yd at the
+  throw) and lost at the catch point; stick's #3 flat against quarters averages 5 yd but for one 65-yd run after the
+  catch. The Book/Stubbie MUSH nickel zones #3's flat where HNFL-050 traps it (item 14).
+- Tampa 2 Mike: carries any vertical within 9 yd of the ball, so he takes #2's corner stem on smash as a seam and
+  releases only when his read turns it out, about 0.9 s after the break (item 9, the Tampa Mike row).
+- Source check (2026-11-18): HNFL cells above rest on the OCR text unless noted. Checked against the sheet image:
+  HNFL-050, 077, 114, 139, 194, 195 (in docs/reviews/2026-11-18-quarters-tree.md). The Book/Stubbie MUSH row is
+  corrected by HNFL-050's image: the nickel (Soft Squat) traps #3's out or flat; "get width to #2 w/ depth" is the
+  safety's line. Stubbie (HNFL-270) zones it (7-seam-flat). Built as MUSH_TRAP.
+- Zone It / Zorro (quarters vs a stack or a reduced #1): held, like C3_HOOK. The check would be one line in
+  QUARTERS_CHECKS, `{ when: ['stack_strong'], to: ['cover4_box'] }` (cover4_box already plays the Zone It pickups:
+  corner outermost upfield, safety innermost, nickel first out, hook first in). No installed formation makes it fire as
+  meant: gun_wing_12's stack_strong is a wing behind the Y (closed trips, Poach); heavy_13 has a weak stack and a
+  reduced #1. A 2x2 or 3x1 set with a receiver stack or a reduced #1 would.
+- PALMS_FIX (Palms trap on #2's out declared inside 5 yd, the wheel before the throw): written, held. It changed no
+  staged play: no installed concept runs #2's out between 6 and 7.5 yd or a pre-throw wheel. Measured MOD vs Palms
+  (gun_doubles_11, gun_spread_10, 70 plays each) differ by two or three single breakaway plays, within noise.
+- CUT_WALL's pass-off (`defender.ts:passUnder`) turns any man or wall directive on an under (7 yd or less) into
+  wall-and-pass. It was wrong where the taught rule keeps the shallow: the quarters apex's "take #2 back across" with
+  #3 away (Q_APEX) and Box's first in (BOX_IN), both now exempted. The same override reaches, unexempted: Cover 6
+  Area's hook ("first in", `area('hook')`, HNFL-052, the same pickup as Box's); Cover 1 banjo's inside man
+  (`cover1_banjo` is `man:false`); the 3-match Mike on a back's angle or under release (`mike3`, final #3); the Cover 2
+  apex matching #2's in under 14 yd (`verticalCurl`); the Cover 3 hook's Push man on #2 when #2 runs short. Each is a
+  taught match, so each is a candidate exemption to measure first.
+- The five unexempted CUT_WALL candidates, measured 2026-11-18 by exempting each from the pass-off (a diagnostic, not
+  committed; all earlier flags on, 2 seeds x flip): Cover 6 Area hook (gun_wing_12, 8 concepts) 6.94 / 6.99 yd/att;
+  Cover 1 banjo inside (gun_bunch_11, 3 Cover 1 calls) 5.32 / 5.35; mike3 (cover2_match/cover4/cover3_match) 7.43 /
+  7.43; Cover 2 apex's in (cover2_match/wild/tampa2) 10.01 / 9.76, every change one slant_flat breakaway; Cover 3 hook's
+  Push (cover3 match/seam/buzz) 7.19 / 6.90, one row (flood's weak dig 23.9 / 19.6). None built: on our installed
+  concepts the pass-off rarely reaches these rules with a shallow under them. Taught exemptions to revisit when the
+  offense runs shallows at those defenders.
