@@ -82,6 +82,12 @@ export const ZONE_COMMIT = process.env.ZONE_COMMIT === '1';
 /** ZONE_GOAL (experimental, off; ZONE_GOAL=1; Coverage, C14 zone relation, attempt 2): the underneath zone defender holds
  * one goal on a crosser in his area until it leaves his band or the ball is out, playing the window ahead on its path. */
 export const ZONE_GOAL = process.env.ZONE_GOAL === '1';
+/** ZONE_FLOW (experimental, off; ZONE_FLOW=1; Coverage, C14 zone relation): pattern-read drift. The underneath zone
+ * defender's feet go with the flow of the routes in and arriving into his area (a held goal, the deeper route first),
+ * eyes on the QB; the break on the throw, vertical carries and the edge pass-off are unchanged. */
+export const ZONE_FLOW = process.env.ZONE_FLOW === '1';
+/** ZONE_FLOW: seconds by which a new route must reach his band sooner to replace the held one (stated choice). */
+const FLOW_BEAT = 0.3;
 const SINK_ENTER = 2, SINK_EXIT = 1;
 /** SEEN_EYES (default on; SEEN_EYES=0 restores the QB's internal read target): a zone defender
  * reads the QB's look from what he sees of him, not from the QB's internal
@@ -1954,6 +1960,8 @@ export class ZoneCoverage implements Behavior {
 
     // Perceived routes in (or about to enter) this zone's lateral band.
     const threats: Array<{ r: Agent; pos: Vec2; vel: Vec2; fut: Vec2; cue: Perceived }> = [];
+    /** ZONE_FLOW: every receiver he sees (his delayed picture), in his band or not. */
+    const seenAll: Array<{ r: Agent; pos: Vec2; vel: Vec2; fut: Vec2; cue: Perceived }> = [];
     for (const r of sim.offense) {
       if (r === sim.qb || ['LT', 'LG', 'C', 'RG', 'RT'].includes(r.slot)) continue;
       let observation = this.observations.get(r);
@@ -1962,6 +1970,7 @@ export class ZoneCoverage implements Behavior {
       const seen = observation.read(cue, sim.t, r.profile, a.profile.reactionTime,
         a.r('anticipation') * a.r('zoneCoverage') * a.mind.focus);
       const fut = { x: seen.pos.x + seen.vel.x * 0.7, y: seen.pos.y + seen.vel.y * 0.7 };
+      seenAll.push({ r, pos: seen.pos, vel: seen.vel, fut, cue });
       if (ZONE_HOLD_BAND || this.ownsArea()) {
         // Held membership: in by ZONE_HOLD_IN inside the band, out only by ZONE_HOLD_OUT outside it.
         const held = this.bandHeld.has(r);
@@ -2204,6 +2213,56 @@ export class ZoneCoverage implements Behavior {
         return withFacingTechnique({ ...carry, facing: openCarryFacing(a, sim, th.r, carry, true) }, { label: 'open-carry-seam', key: th.vel });
       }
       return withFacingTechnique(carry, { label: runPast ? 'carry-run-past' : 'carry-wall', key: th.vel });
+    }
+    // ZONE_FLOW: pattern-read drift. Eyes on the QB, feet with the flow of the routes in and arriving into his area.
+    // His goal is the route moving across through (or toward) his band in his own picture: in it, or within a band's
+    // width of it and moving toward it. A route at or deeper than him less 3 yd (the dig, the over) is his before a
+    // shallow under him: he must not vacate under the dig to run with the shallow, which is in front of him to rally on
+    // the throw. The goal is held until the route leaves his band moving away (passed at the edge) or stops crossing; a
+    // new route replaces it only if it reaches his band sooner by FLOW_BEAT. He moves to where that route is going: the
+    // window ahead of it on its path at a ball's flight time from the QB, kept inside his band; at his own depth over a
+    // shallow, under the path on the throwing lane for a deeper one.
+    if (ZONE_FLOW && !this.deep && knowsPass(sim, a)) {
+      const up = sim.attackDir('O');
+      const width = yhi - ylo, mid = (ylo + yhi) / 2;
+      const myDepth = (a.pos.x - sim.los) * up;
+      const crossing = (th: (typeof seenAll)[number], held: boolean) => {
+        const vx = Math.abs(th.vel.x), vy = Math.abs(th.vel.y);
+        return held ? !(vy < 1.5 || vy < 0.75 * vx) : vy > 2.5 && vy > vx;
+      };
+      // Seconds until the route is inside his band (0 when already in it); null when it is not coming.
+      const arrival = (th: (typeof seenAll)[number]): number | null => {
+        if (th.pos.y >= ylo && th.pos.y <= yhi) return 0;
+        const gap = th.pos.y < ylo ? ylo - th.pos.y : th.pos.y - yhi;
+        const toward = th.pos.y < ylo ? th.vel.y : -th.vel.y;
+        return gap <= width && toward > 1 ? gap / toward : null;
+      };
+      const deepOf = (th: (typeof seenAll)[number]) => (th.pos.x - sim.los) * up >= myDepth - 3;
+      const leaving = (th: (typeof seenAll)[number]) => (th.pos.y < ylo - 1 && th.vel.y < 0) || (th.pos.y > yhi + 1 && th.vel.y > 0);
+      let g = this.goalR ? seenAll.find(th => th.r === this.goalR) : undefined;
+      if (g && (!crossing(g, true) || leaving(g) || (g.pos.x - sim.los) * up > 16)) g = undefined;
+      const cands = seenAll.filter(th => th !== g && crossing(th, false) && (th.pos.x - sim.los) * up < 16 && arrival(th) !== null);
+      const rank = (th: (typeof seenAll)[number]) => (deepOf(th) ? 0 : 10) + (arrival(th) ?? 9);
+      cands.sort((p, q) => rank(p) - rank(q));
+      const c = cands[0];
+      if (c && (!g || rank(c) + FLOW_BEAT < rank(g))) g = c;
+      this.goalR = g?.r ?? null;
+      if (g) {
+        this.selectTarget(a, g.r);
+        // Where the route is going: the window ahead of it on its path, at the time a ball thrown now would take to
+        // get there (the drive flight for that distance, QB_DRIVE's fit), kept inside his band.
+        const vy = g.vel.y;
+        const d = Math.hypot(g.pos.x - qbAt.x, g.pos.y - qbAt.y);
+        const t = 0.0731 + 0.03945 * d + 0.00022 * d * d;
+        const y = clamp(g.pos.y + vy * t, ylo, yhi);
+        const deeper = deepOf(g);
+        const lane = lerp(qbAt, { x: g.pos.x + g.vel.x * t, y }, 0.82);
+        const own = up > 0 ? Math.min(a.pos.x, lm.x) : Math.max(a.pos.x, lm.x);
+        const x = deeper ? (up > 0 ? Math.min(lane.x, g.pos.x - 1) : Math.max(lane.x, g.pos.x + 1)) : own;
+        return withFacingTechnique(goTo(a, { x, y: clamp(y, 0.5, FIELD_WIDTH - 0.5) }, { facing: facingQB, speed: zs * 1.05 }),
+          { label: deeper ? 'flow-under' : 'flow-over', key: g.vel });
+      }
+      void mid;
     }
     // ZONE_GOAL: one held goal on a crosser in his area. He commits to a receiver crossing his band (seen moving across
     // faster than 3 yd/s and more across than up; released under 2 yd/s or more up than across) and keeps him until
