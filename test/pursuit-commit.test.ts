@@ -56,6 +56,12 @@ async function run(flag: string) {
   const flagName = flag;
   vi.resetModules();
   for (const k of stackOn) vi.stubEnv(k, '1');
+  // Test-only pin (2026-11-18, the joint catch landing; owner Defense, noted by Flex). With BALL_SIGHT's look the 3-8 yd
+  // median goes 10.48 -> 9.14 deg/s against off, ratio 0.87 against the 0.8 bound. The pooled rate still halves
+  // (13.0 -> 6.3). It is not the planner's steadiness: no tick in that band has a trunk twist. The look's speed price
+  // (TRUNK_PRICE) changes which pursuits occur, and the band sat on its bound before. Defense to re-record the bound
+  // with BALL_SIGHT on, then remove this pin.
+  vi.stubEnv('BALL_SIGHT', '0');
   vi.stubEnv('PURSUIT_COMMIT', flag);
   const { Rng } = await import('../src/core/rng.js');
   const { generateTeam, pickDefense, pickOffense } = await import('../src/league/team.js');

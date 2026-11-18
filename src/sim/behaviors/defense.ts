@@ -18,7 +18,7 @@ import type { DefSlot, Gap, ZoneId, ZoneStyle } from '../../playbook/types.js';
 import type { Agent, Behavior } from '../agent.js';
 import type { PlaySim } from '../playsim.js';
 import type { Perceived } from '../perception.js';
-import { TRACKING_REACH_BONUS } from '../catching.js';
+import { BALL_SIGHT, TRACKING_REACH_BONUS } from '../catching.js';
 import { asCarrierPursuit } from '../coverage-space.js';
 import { angleTo, chase, goTo, leverage, PURSUIT_COMMIT, pursuitPoint, runThrough, stand, track, watch } from './common.js';
 import { creepPace } from '../backer-creep.js';
@@ -29,7 +29,7 @@ import { executeRunFit, guardStep, lineRead, pullers, type RunFitRead } from '..
 import { linePicture } from '../live-gaps.js';
 import { RouteObservation } from '../coverage-read.js';
 import { movingCatchApproach } from '../catch-approach.js';
-import { RELEASE_BELIEF, releaseBelief } from '../release-belief.js';
+import { lastReleaseBelief, RELEASE_BELIEF, releaseBelief } from '../release-belief.js';
 import { withMovementObjective } from '../movement-objective.js';
 import { OPEN_FIELD, playsBall } from '../open-field.js';
 import { DeepCoverage, StemAcceleration, stemStopped } from '../coverage-leverage.js';
@@ -3268,13 +3268,80 @@ function playObservedFlight(a: Agent, sim: PlaySim, path: PlaySim['ballPath'], a
 
 const lastFlightApproach = new WeakMap<Agent, { cmd: MoveCommand; t: number }>();
 
+/** BALL_SIGHT's look (Integration 2026-11-18), on his own information only. A defender who has seen the ball himself
+ * (his release belief has the ball in his own view: a zone defender facing the passer) keeps it: he opens to it and runs
+ * with his head on it (the zone turn), toward where his own acquired flight has the ball now. He loses it when his run
+ * puts his back to it, more than ZONE_LOSE_IN off his line of run (a speed turn), and has it again under ZONE_LOSE_OUT.
+ * A defender who has not seen the ball does not look: he plays the receiver's hands at the catch (as a man in trail is
+ * taught). The taught cue for a trailer to look (the receiver's eyes and head going back for the ball) is not in
+ * perception yet: what a defender sees of a body is its hips and stance, not its shoulders or head, so it is left out
+ * rather than read from the receiver's own state. The call of "ball" has no hearing channel yet: `ballCalls` logs who
+ * would have heard one (a teammate who saw the ball within EARSHOT, after the sound's travel and his reaction). Off
+ * (and with BALL_SIGHT off) the 'looking' latch below finds the ball for anyone near its path. */
+const ZONE_LOSE_IN = (150 * Math.PI) / 180, ZONE_LOSE_OUT = (135 * Math.PI) / 180;
+/** The "ball" call: earshot on a field (yd, estimated), the speed of sound (yd/s). */
+const EARSHOT = 15, SOUND = 375;
+/** BALL_SIGHT: who would have heard a "ball" call this flight, had calls a channel (for the communication work). */
+export const ballCalls = new WeakMap<PlaySim, { t: number; d: number; from: number }[]>();
+const lookState = new WeakMap<Agent, { key: number | undefined; lost: boolean; called: boolean }>();
+/** Where his own acquired flight has the ball at time t (its nearest sample), or null. */
+function pathAt(path: PlaySim['ballPath'], t: number): { x: number; y: number } | null {
+  if (!path.length) return null;
+  let best = path[0];
+  for (const p of path) if (Math.abs(p.t - t) < Math.abs(best.t - t)) best = p;
+  return { x: best.x, y: best.y };
+}
+function lookDecision(a: Agent, sim: PlaySim, path: PlaySim['ballPath']): { looks: boolean } {
+  const rb = releaseBelief(sim, a);
+  let st = lookState.get(a);
+  if (!st || st.key !== rb.releasedAt) lookState.set(a, st = { key: rb.releasedAt, lost: false, called: false });
+  const seen = rb.ballAt !== undefined;
+  if (!seen) {
+    // The "ball" call he would hear (logged only): a teammate within earshot who has seen the ball, after the sound and
+    // his reaction. Read-only on the teammates' beliefs; nothing here moves him.
+    if (!st.called) for (const m of sim.defense) {
+      if (m === a) continue;
+      const at = lastReleaseBelief(sim, m)?.ballAt; if (at === undefined) continue;
+      const mp = sim.see(a, m).pos, d = Math.hypot(mp.x - a.pos.x, mp.y - a.pos.y);
+      if (d <= EARSHOT && sim.t >= at + d / SOUND + a.profile.reactionTime) {
+        st.called = true; let l = ballCalls.get(sim); if (!l) ballCalls.set(sim, l = []); l.push({ t: sim.t, d: a.idx, from: m.idx }); break;
+      }
+    }
+    return { looks: false };
+  }
+  const at = pathAt(path, sim.t); if (!at) return { looks: false };
+  const run = Math.hypot(a.vel.x, a.vel.y) > 1 ? Math.atan2(a.vel.y, a.vel.x) : a.body.facing;
+  const off = Math.abs(angleDiff(run, Math.atan2(at.y - a.pos.y, at.x - a.pos.x)));
+  if (!st.lost && off > ZONE_LOSE_IN) { st.lost = true; a.tags.add('zone-lost'); }
+  else if (st.lost && off < ZONE_LOSE_OUT) st.lost = false;
+  return { looks: !st.lost };
+}
+/** BALL_SIGHT: the look itself: head, then the shoulders through the trunk, then the hips for what is left (priced by
+ * the facing cap), toward where his own acquired flight has the ball now. */
+function lookJointsToBall(a: Agent, sim: PlaySim, path: PlaySim['ballPath'], cmd: MoveCommand): MoveCommand {
+  const at = pathAt(path, sim.t); if (!at) return cmd;
+  const sp = Math.hypot(cmd.vel.x, cmd.vel.y), heading = sp > 0.4 ? Math.atan2(cmd.vel.y, cmd.vel.x) : (cmd.facing ?? a.facing);
+  return lookJoints(a, cmd, heading, angleDiff(heading, Math.atan2(at.y - a.pos.y, at.x - a.pos.x)), true);
+}
+
 function flightApproach(a: Agent, sim: PlaySim, path: PlaySim['ballPath'], acquired = false): MoveCommand | null {
+  if (!BALL_SIGHT) return flightApproachInner(a, sim, path, acquired);
+  const lb = lookDecision(a, sim, path);
+  const cmd = flightApproachInner(a, sim, path, acquired, lb);
+  if (!cmd) return cmd;
+  if (lb.looks) { a.tags.add('looking'); a.tags.add('zone-turn'); return lookJointsToBall(a, sim, path, cmd); }
+  a.tags.delete('looking');
+  a.tags.add('trail-hands');
+  return cmd;
+}
+
+function flightApproachInner(a: Agent, sim: PlaySim, path: PlaySim['ballPath'], acquired = false, lb: { looks: boolean } | null = null): MoveCommand | null {
   const spot = catchSpot(a, { t: sim.t, ballPath: path });
   const window = observedCatchWindow(a, sim, path);
   if (acquired) rememberCatchOpportunity(a, window);
   // Near the ball's path, a defender with ball skills turns his head and finds
   // it (looking over the shoulder doesn't turn the body).
-  const nearPath = spot && Math.hypot(spot.p.x - a.pos.x, spot.p.y - a.pos.y) < 5;
+  const nearPath = spot && Math.hypot(spot.p.x - a.pos.x, spot.p.y - a.pos.y) < 5 && !lb;
   if (LOOK_ONCE) { if (nearPath && !a.tags.has('looking') && findsBall(a, sim)) a.tags.add('looking'); }
   else if (nearPath && !a.tags.has('looking') && sim.dice('look', a).chance(0.15 + 0.5 * a.r('ballSkills'))) a.tags.add('looking');
   // DRIVE_CATCH: the ball is in a receiver's hands but not yet his: drive

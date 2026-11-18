@@ -349,6 +349,7 @@ problem), resolved.
 | [CALL-3](#call-3) | Pressure rate ignored the coverage shell | G7 | low | on |
 | [CALL-4](#call-4) | The play-caller reads the roster, not the players on the field | G7 | low–medium | open |
 | [INFO-1](#info-1) | Players use information they couldn't have seen | G10 | high | in work (#258, #274, #280, #282 landed; jet-sweep give cue open) |
+| [INFO-2](#info-2) | Perception has no head or eyes for other players | G10 | medium | open (logged with DEF_CATCH / BALL_SIGHT) |
 | [ACT-1](#act-1) | Aims outlive the target they were made for | G10 | medium | on (#251) |
 | [PHY-1](#phy-1) | Contact and hand physics limits | F2, G5 | medium | open |
 | [PHY-2](#phy-2) | Movement detail that's costly or unproven | F2 | low | open |
@@ -3716,6 +3717,34 @@ From the outside audit (`audit`):
 These break the model rule that players act on acquired, delayed information.
 
 <a id="act-1"></a>
+
+### INFO-2: Perception has no head or eyes for other players
+
+- **What:** what a player sees of another body is its position, velocity,
+  hip facing, stance and arm (`src/sim/perception.ts` `record`), plus
+  `Agent.head` where one is set. A head is set only for the passer
+  (QB_BODY_SEEN, QB_HEAD) and for zone defenders under ZONE_EYES; HEAD
+  (one head per player, `src/sim/head.ts`) is off. A receiver or a man
+  defender who looks somewhere else turns his neck and his shoulders
+  through the trunk (`lookJoints`, `cmd.look`, TRUNK_TWIST). Neither is
+  recorded, so nobody can see it: where a receiver's eyes go is invisible.
+- **Readers that want it:**
+  - BALL_SIGHT's trail cue (Flex, 2026-11-18): a man in trail turns his
+    head to find the ball when he sees his receiver's eyes and head go back
+    for it, before the hands come up. It was built on the receiver's own
+    tracking tag, which is his private state. The information scan and the
+    information rule removed it, so today a trailer who never saw the ball
+    plays the hands (as taught when no cue comes).
+  - COV-8's look-back cue: today the receiver's visible turn is read from
+    his hip facing within 3 yd.
+  - The QB lane's look for zone defenders' eyes: where an underneath
+    defender's head points, to tell a defender reading him from one
+    looking elsewhere.
+- **Missing mechanism:** record each body's head (or shoulders) in the
+  perception samples, as `head` already is for the passer, from the joints
+  a look actually uses. Then readers take it with their own delay. HEAD
+  would supply it for everyone; failing that, the shoulders off the trunk
+  (`shouldersOf`) are a visible stand-in.
 ### ACT-1: Aims outlive the target they were made for
 
 - **Symptom:** a player switches to a new target but keeps running at the old

@@ -13,6 +13,7 @@ import type { Agent } from './agent.js';
 import type { PlaySim } from './playsim.js';
 import { BALL_EST_DEF_ONLY, BALL_EST_INCIDENTAL, BALL_EST_NO_TRACKPEN, estimatesFor } from './ball-estimate.js';
 import { shouldersOf, TRUNK_TWIST } from '../physics/kinematics.js';
+import { neckRange } from './head.js';
 
 const INELIGIBLE = new Set(['LT', 'LG', 'C', 'RG', 'RT']);
 /** Extra hand extension available while tracking a visible ball. */
@@ -75,6 +76,51 @@ export const CATCH_SPEED_K = 0.37;
  * (< 5 yd/s) to a running catch on well-placed balls across his line, 73 -> 65% (8.4 points), against 90 -> 71% (18.4)
  * from behind (catch_speed.py, BDB 2025 weeks 1-3, short and deep pooled). */
 export const CATCH_SPEED_ACROSS = 0.46;
+/** DEF_CATCH (on since the joint catch landing; DEF_CATCH=0 restores; Integration 2026-11-18, Flex's deep catch-point measurement): a defender
+ * who reaches a ball he sees makes a catch attempt through the receiver's own hands-catch model (`handsCatch`: where the
+ * ball is in his reach, its height against his chest and his physical catch height, its speed, tracking it in the air and
+ * on the run, his hands), with his own ratings (his tracking is his ball skills: a defender's read and play of the ball),
+ * and contact from the receiver's arms at his hands (the reach rule contestHands gives a defender, from the other side).
+ * Caught is an interception, a hand on it he does not hold is a breakup, otherwise he missed it and the flight goes on.
+ * He tries once (PLAY_ONCE), at his best point of the flight: a defender whose closest approach is still ahead waits for
+ * it, as a tracking receiver does (CATCH_POINT). Off, his one try came on the first tick the ball entered his envelope
+ * (closest approach still ahead on p50 of tries, stretch p50 0.43) against fixed priors that made the breakup about seven
+ * times the interception (0.43 vs 0.06), less 0.15 above 1.1 x his height, which deep balls (about 2.1 yd) met on 15 of
+ * 35 tries: within 2 yd at arrival on 15+ air-yard throws vs zone, NFL catch 29.5 / incomplete 27.5 / breakup 25.4 /
+ * interception 17.6% (n 244), ours breakup 45.8 / catch 35.4 / incomplete 17.4 / interception 0.5% (n 384, staged with
+ * a play seed per throw; scripts/diag/pass-operators/deep-catch.mts, Defense's deep-close selection). */
+export const DEF_CATCH = process.env.DEF_CATCH !== '0';
+/** BALL_SIGHT (on since the joint catch landing; BALL_SIGHT=0 restores; Integration 2026-11-18): whether he sees the ball is his own sight of
+ * it, not a tag. He sees a ball coming from within FOVEA of his shoulders, or, once he has looked for it (the 'looking'
+ * latch, set after his find delay), from within his neck's range (head.ts neckRange: 90 deg standing, 45 at a sprint)
+ * plus FOVEA. A trailing defender running with his back to the ball does not see it, so he cannot play it: he plays the
+ * receiver's hands from what he sees the receiver do (contestHands' rake). Off, the 'looking' tag alone was sight:
+ * a trailing defender with the ball straight behind his shoulders (cosine -0.96) played it as if he saw it. HEAD (off)
+ * would replace the neck bound with his head's actual direction. */
+export const BALL_SIGHT = process.env.BALL_SIGHT !== '0';
+/** BALL_SIGHT: the central cone (rad) a ball must be in for him to play it with his hands (estimated: catching needs the
+ * ball near central vision; the 90 deg HEAD_CONE is peripheral). */
+const FOVEA = (30 * Math.PI) / 180;
+/** DEF_CATCH: his hands' mean speed over a reach to the ball (yd/s; estimated: aimed reaches by athletes peak near
+ * 5-6 m/s, about half of that on average over the movement). */
+const HAND_SPEED = 3;
+/** DEF_CATCH: when each defender first saw this flight (sim time), keyed by its release. */
+const firstSight = new WeakMap<PlaySim, { rel: number; at: Map<Agent, number> }>();
+/** DEF_CATCH: the time he has had to get his hands to this ball, from his first sight of it. */
+function timeToHands(sim: PlaySim, D: Agent): number {
+  const f = firstSight.get(sim), ball = sim.ball;
+  if (ball.kind !== 'air' || !f || f.rel !== ball.releaseT) return 0;
+  const at = f.at.get(D);
+  return at === undefined ? 0 : sim.t - at;
+}
+/** DEF_CATCH / BALL_SIGHT: each contact a defender made at the catch point, with whether he saw the ball then (the head
+ * turned to it) or came through the receiver without it: the count a pass-interference rule will need (Rules). */
+export const ballContacts = new WeakMap<PlaySim, { t: number; d: number; r: number | null; saw: boolean; kind: string }[]>();
+function logContact(sim: PlaySim, D: Agent, R: Agent | null, saw: boolean, kind: string): void {
+  if (!DEF_CATCH && !BALL_SIGHT) return;
+  let l = ballContacts.get(sim); if (!l) ballContacts.set(sim, l = []);
+  l.push({ t: sim.t, d: D.idx, r: R ? R.idx : null, saw, kind });
+}
 /** The tracking-on-the-run term (added to the catch difficulty). */
 export function runTrackTerm(rs: number, cosFromBehind: number, airTime: number, ballTracking: number): number {
   const speed = clamp((rs - 3) / 4.5, 0, 1);
@@ -196,6 +242,12 @@ interface Opp {
 function facingBall(a: Agent, ballVel: Vec3, sim?: PlaySim): boolean {
   // BALL_EST bit 32: he plays a ball only on his own sight of it (one perception per player).
   if (BALL_EST_INCIDENTAL && sim && estimatesFor(a)) return sim.ballEstimates?.seenReady(a, sim) ?? false;
+  if (BALL_SIGHT) {
+    const sp = Math.hypot(ballVel.x, ballVel.y) || 1;
+    const from = Math.atan2(-ballVel.y / sp, -ballVel.x / sp), sh = shouldersOf(a.body);
+    const off = Math.abs(Math.atan2(Math.sin(from - sh), Math.cos(from - sh)));
+    return off <= FOVEA || (a.tags.has('looking') && off <= neckRange(a) + FOVEA);
+  }
   if (a.tags.has('looking')) return true;
   const sp = Math.hypot(ballVel.x, ballVel.y) || 1;
   const f = shouldersOf(a.body); // a look over the shoulder is the shoulders turned, not the hips
@@ -211,6 +263,12 @@ export function resolveCatchOpportunities(sim: PlaySim, prev: Vec3, cur: Vec3,
   const ball = sim.ball;
   if (ball.kind !== 'air') return;
   const tAir = sim.t - ball.releaseT;
+  if (DEF_CATCH) {
+    // His first sight of this flight (his own sight of it, facingBall), for the time he has to get his hands there.
+    let f = firstSight.get(sim);
+    if (!f || f.rel !== ball.releaseT) firstSight.set(sim, f = { rel: ball.releaseT, at: new Map() });
+    for (const d of sim.defense) if (!f.at.has(d) && !d.isDown(sim.t) && facingBall(d, ball.flight.vel, sim)) f.at.set(d, sim.t);
+  }
   if (tAir < 0.1) return;
   const opps: Opp[] = [];
   for (const a of sim.agents) {
@@ -248,11 +306,21 @@ export function resolveCatchOpportunities(sim: PlaySim, prev: Vec3, cur: Vec3,
       if (closing && zNext > 0.25 && zNext <= o.a.profile.maxCatchHeight) opps.splice(i, 1);
     }
   }
+  // DEF_CATCH: a defender playing a ball he sees, whose closest approach is still ahead, waits for it (his best point),
+  // as a tracking receiver does; he stays in `opps`, so a receiver's catch now still meets his hands at the ball.
+  const waiting = new Set<Agent>();
+  if (DEF_CATCH && !ball.deflected) for (const o of opps) {
+    if (o.a.team !== 'D' || o.a.engagement || o.s < 0.999 || !facingBall(o.a, ball.flight.vel, sim)) continue;
+    const vx = cur.x - prev.x, vy = cur.y - prev.y, zNext = cur.z + (cur.z - prev.z);
+    const closing = (o.a.pos.x - cur.x) * vx + (o.a.pos.y - cur.y) * vy > 0;
+    if (closing && zNext > 0.25 && zNext <= o.a.profile.maxCatchHeight) waiting.add(o.a);
+  }
   if (opps.length === 0) return;
   opps.sort((p, q) => p.s - q.s);
 
   for (const o of opps) {
     if (sim.ball.kind !== 'air') return;
+    if (waiting.has(o.a)) continue;
     if (o.a.team === 'O') {
       receiverContest(sim, o, opps);
       return;
@@ -269,22 +337,18 @@ export function resolveCatchOpportunities(sim: PlaySim, prev: Vec3, cur: Vec3,
   }
 }
 
-function receiverContest(sim: PlaySim, o: Opp, opps: Opp[]): void {
-  const ball = sim.ball;
-  if (ball.kind !== 'air') return;
-  const R = o.a;
-  const rng = sim.dice('catch', R);
-  const bv = ball.flight.vel;
-  const ballSpeed = Math.hypot(bv.x, bv.y, bv.z);
-  const airTime = sim.t - ball.releaseT;
-
+/** The hands-catch model (the receiver's; DEF_CATCH gives it to a defender playing the ball): the difficulty of the catch
+ * from where the ball is in his reach, its height against his chest and his physical catch height, its speed, tracking
+ * it (`track`: a receiver's ball tracking, a defender's ball skills) in the air and on the run. */
+function handsCatch(R: Agent, o: Opp, bv: Vec3, ballSpeed: number, airTime: number, track: number, hands: number)
+  : { stretch: number; high: number; low: number; diff: number; hands: number } {
   const reach = R.profile.reach + 0.3;
   const stretch = (o.dh / reach) ** 2;
   const chest = R.profile.heightYd * 1.02;
   const high = o.z > chest ? (o.z - chest) / Math.max(0.2, R.profile.maxCatchHeight - chest) : 0;
   const low = o.z < 0.5 ? (0.5 - o.z) / 0.4 : 0;
   // BALL_EST bit 2: his tracking acts through his own estimate; no second charge at the catch.
-  const trackPen = airTime > 1.4 && !BALL_EST_NO_TRACKPEN ? (1 - R.r('ballTracking')) * 0.25 : 0;
+  const trackPen = airTime > 1.4 && !BALL_EST_NO_TRACKPEN ? (1 - track) * 0.25 : 0;
   // Over-the-shoulder catches at speed (ball arriving from behind the receiver).
   const rs = R.speed;
   const fromBehindRun = rs > 1 ? (R.vel.x * bv.x + R.vel.y * bv.y) / (rs * (Math.hypot(bv.x, bv.y) || 1)) : 0;
@@ -295,11 +359,71 @@ function receiverContest(sim: PlaySim, o: Opp, opps: Opp[]): void {
   const fromBehind = TRUNK_TWIST && rs > 1 && R.body.trunk
     ? Math.min(fromBehindRun, (Math.cos(shouldersOf(R.body)) * bv.x + Math.sin(shouldersOf(R.body)) * bv.y) / (Math.hypot(bv.x, bv.y) || 1))
     : fromBehindRun;
-  const shoulder = CATCH_SPEED ? runTrackTerm(rs, fromBehind, airTime, R.r('ballTracking'))
-    : fromBehind > 0.3 && rs > 6.5 ? 0.12 + 0.12 * (1 - R.r('ballTracking')) : 0;
+  const shoulder = CATCH_SPEED ? runTrackTerm(rs, fromBehind, airTime, track)
+    : fromBehind > 0.3 && rs > 6.5 ? 0.12 + 0.12 * (1 - track) : 0;
   const diff = 0.5 * stretch + 0.4 * high + 0.35 * low + (ballSpeed > 24 ? 0.08 : 0) + trackPen + shoulder;
-  const hands = R.r('hands');
-  // CATCH_CLOSE: closure timing replaces the reach, tracking and on-the-run terms (his hands to the ball, below).
+  return { stretch, high, low, diff, hands };
+}
+
+/** DEF_CATCH: a defender's catch attempt on a ball he sees, through handsCatch with his own ratings, against the
+ * receiver's arms at his hands (`R`, when they reach them). 'int' (he caught it), 'pbu' (a hand on it he did not hold:
+ * it comes off him), 'miss' (his hands did not get it; the flight goes on), 'over' (he caught it out of bounds). */
+function defenderCatch(sim: PlaySim, D: Agent, o: Opp, R: Agent | null): 'int' | 'pbu' | 'miss' | 'over' {
+  const ball = sim.ball;
+  if (ball.kind !== 'air') return 'over';
+  const rng = sim.dice('def-catch', D);
+  const bv = ball.flight.vel;
+  const { stretch, high, low, diff, hands } = handsCatch(D, o, bv, Math.hypot(bv.x, bv.y, bv.z), sim.t - ball.releaseT, D.r('ballSkills'), D.r('hands'));
+  // The receiver's arms at the ball (the reach rule contestHands gives a defender at the receiver's hands, from the other
+  // side) make the catch harder, as any other difficulty does: through his hands, resisted by his contested-catch strength.
+  // Attempt 1 rolled it as a separate knock-loose (contestHands' rake law, up to 0.85): it fired on 60 of 87 tries and
+  // took the catch away whenever the receiver was beside the ball, which a contested ball is.
+  let contact = 0;
+  if (R && !R.isDown(sim.t) && !R.engagement) {
+    const toHands = Math.hypot(R.pos.x - o.b.x, R.pos.y - o.b.y), armLen = R.profile.reach + 0.15;
+    if (toHands <= armLen) contact = Math.pow(1 - toHands / armLen, 0.7) * (0.45 + 0.35 * R.r('contestedCatch') + 0.2 * R.r('strength')) * (1.15 - 0.55 * D.r('contestedCatch'));
+  }
+  // A catch takes time (attempt 3): from his first sight of this flight, the ball must reach his hands no sooner than his
+  // reaction plus his hands' travel to it (from his chest, at HAND_SPEED). With less, a hand gets into its path at best,
+  // in proportion to how far his hands got; with less than his reaction, nothing. The receiver who is the target needs no
+  // such term: he has expected the ball since before its release (his route, the QB's eyes), so receiverContest has none.
+  const travel = Math.hypot(o.dh, o.z - 0.72 * D.profile.heightYd) / HAND_SPEED;
+  const had = timeToHands(sim, D) - D.profile.reactionTime;
+  if (had <= 0) return 'miss';
+  logContact(sim, D, R, true, 'ball');
+  const reached = Math.min(1, had / Math.max(1e-6, travel));
+  // No receiver's floor: a defender who is not the target catches by his hands, and poor hands drop most of it (an LB
+  // with hands 27). The receiver keeps his floor (receiverContest).
+  const pCatch = reached < 1 ? 0 : clamp(0.985 - (diff + contact) * (1.3 - hands) - 0.06 * (1 - hands), 0, 0.99);
+  if (rng.chance(pCatch)) {
+    if (inBounds(D)) { sim.possess(D, 'interception'); return 'int'; }
+    sim.event('incomplete', D, null, 'out of bounds');
+    sim.whistle('incomplete', { x: sim.los, y: sim.ballY });
+    return 'over';
+  }
+  D.noCatchUntil = sim.t + 0.6;
+  // Where the ball was in his window decides whether his hands got to it (the receiver's DEFLECT_BALL rule).
+  const pTouch = clamp(1 - 0.7 * stretch - 0.6 * Math.min(1, high) - 0.5 * Math.min(1, low), 0.15, 1) * reached;
+  if (!rng.chance(pTouch)) return 'miss';
+  const solid = clamp(1 - stretch - 0.5 * Math.min(1, high) - 0.5 * Math.min(1, low), 0, 1) * reached;
+  sim.stats.passDefendedBy = D.player.id;
+  sim.event('pbu', D, ball.target);
+  D.noCatchUntil = touchedUntil(sim, 0.25);
+  deflect(sim, 0.15 + 0.4 * (1 - solid), 'tip', D, solid);
+  return 'pbu';
+}
+
+function receiverContest(sim: PlaySim, o: Opp, opps: Opp[]): void {
+  const ball = sim.ball;
+  if (ball.kind !== 'air') return;
+  const R = o.a;
+  const rng = sim.dice('catch', R);
+  const bv = ball.flight.vel;
+  const ballSpeed = Math.hypot(bv.x, bv.y, bv.z);
+  const airTime = sim.t - ball.releaseT;
+
+  const { stretch, high, low, diff, hands } = handsCatch(R, o, bv, ballSpeed, airTime, R.r('ballTracking'), R.r('hands'));
+  // CATCH_CLOSE: closure timing replaces the reach, tracking and on-the-run terms (his hands to the ball).
   const close = CATCH_CLOSE && estimatesFor(R) && sim.ballEstimates ? closure(sim, R, rng) : null;
   const diffUse = close ? 0.4 * high + 0.35 * low + (ballSpeed > 24 ? 0.08 : 0) : diff;
   let pCatch = clamp(0.985 - diffUse * (1.3 - hands) - 0.06 * (1 - hands), 0.2, 0.99);
@@ -416,6 +540,11 @@ function contestHands(sim: PlaySim, R: Agent, o: Opp, opps: Opp[], rng: ReturnTy
   for (const D of near) {
     const sees = facingBall(D, bv, sim);
     const own = opps.find((p) => p.a === D);
+    if (own && sees && DEF_CATCH) {
+      // DEF_CATCH: his catch attempt at the ball, against the receiver's arms.
+      if (defenderCatch(sim, D, own, R) !== 'miss') return 'over';
+      continue;
+    }
     if (own && sees) {
       // Through the hands at the ball: his hands meet it where it is in his window.
       const window = D.profile.reach + 0.3;
@@ -453,6 +582,7 @@ function contestHands(sim: PlaySim, R: Agent, o: Opp, opps: Opp[], rng: ReturnTy
     const technique = 0.45 + 0.35 * D.r('manCoverage') + 0.2 * D.r('strength');
     const pLoose = clamp(HANDS_SCALE * Math.pow(depth, 0.7) * technique * (1.15 - 0.55 * R.r('contestedCatch')), 0, 0.85);
     if (rng.next() < pLoose) {
+      logContact(sim, D, R, sees, 'through the hands');
       sim.stats.passDefendedBy = D.player.id;
       sim.event('pbu', D, R, 'through the hands');
       D.noCatchUntil = touchedUntil(sim, 0.25);
@@ -501,12 +631,13 @@ export function secureStep(sim: PlaySim): void {
     const rel = toBody > 1e-6 ? { x: (R.pos.x - D.pos.x) / toBody, y: (R.pos.y - D.pos.y) / toBody } : { x: 1, y: 0 };
     const closing = Math.max(0, (D.vel.x - R.vel.x) * rel.x + (D.vel.y - R.vel.y) * rel.y);
     const hand = toBall <= handReach
-      ? (0.25 + 0.35 * D.r('ballSkills') + 0.15 * D.r('manCoverage')) * (1 - 0.6 * toBall / handReach) * (facingBall(D, ball.flight.vel, sim) || D.tags.has('looking') ? 1 : 0.6)
+      ? (0.25 + 0.35 * D.r('ballSkills') + 0.15 * D.r('manCoverage')) * (1 - 0.6 * toBall / handReach) * (facingBall(D, ball.flight.vel, sim) || (!BALL_SIGHT && D.tags.has('looking')) ? 1 : 0.6)
       : 0;
     const hit = toBody <= bodyTouch ? clamp((closing - 1.5) / 6, 0, 0.8) * (0.6 + 0.4 * D.r('hitPower')) * D.profile.massKg / 90 : 0;
     const resist = (1.15 - 0.3 * R.r('hands') - 0.3 * R.r('contestedCatch')) * (1 - 0.7 * progress);
     const pLoose = clamp((1 - (1 - hand) * (1 - hit)) * resist, 0, 0.9);
     if (rng.next() < pLoose) {
+      logContact(sim, D, R, facingBall(D, ball.flight.vel, sim) || (!BALL_SIGHT && D.tags.has('looking')), hit > hand ? 'hit in the securing beat' : 'hands in the securing beat');
       ball.securing = undefined;
       sim.stats.passDefendedBy = D.player.id;
       sim.event('pbu', D, R, hit > hand ? 'dislodged by the hit' : 'dislodged through the hands');
@@ -602,6 +733,18 @@ function defenderPlay(sim: PlaySim, o: Opp, tAir: number): boolean {
     const key = ball.releaseT, done = playTried.get(sim);
     if (done && done.at === key && done.who.has(D)) return false;
     if (!done || done.at !== key) playTried.set(sim, { at: key, who: new Set([D]) }); else done.who.add(D);
+  }
+  if (DEF_CATCH) {
+    // The offensive body whose arms reach the ball now (the reach rule contestHands gives a defender), not the throw's
+    // intended target: the QB's intent is no one's physics, and on an errant ball the target can be yards away while
+    // another receiver is at the ball, or nobody is (Coverage, 2026-11-18).
+    let R: Agent | null = null, best = Infinity;
+    for (const a of sim.offense) {
+      if (a === ball.thrower || a.isDown(sim.t)) continue;
+      const d = Math.hypot(a.pos.x - o.b.x, a.pos.y - o.b.y);
+      if (d <= a.profile.reach + 0.15 && d < best) { best = d; R = a; }
+    }
+    return defenderCatch(sim, D, o, R) !== 'miss';
   }
   const stretch = o.dh / (D.profile.reach + 0.3);
   const high = o.z > D.profile.heightYd * 1.1 ? 0.15 : 0;

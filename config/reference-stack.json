@@ -200,6 +200,8 @@
     "HANG_GRIP": "off",
     "EXTEND": "off",
     "CATCH_CHOICE": "on",
+    "DEF_CATCH": "on",
+    "BALL_SIGHT": "on",
     "CATCH_SPEED": "on",
     "HANDS_CUE": "on",
     "IZ_FLAT": "on",

@@ -140,6 +140,8 @@
     "HELD_SWING": "0",
     "HOLD_SUBSTEPS": "0",
     "CATCH_CHOICE": "0",
+    "DEF_CATCH": "0",
+    "BALL_SIGHT": "0",
     "CATCH_SPEED": "0",
     "HANDS_CUE": "0",
     "KEEPER_TORSO": "1",
