@@ -581,6 +581,7 @@
   "test/wr-snap.test.ts",
   "test/wrap-path.test.ts",
   "test/yac-accounting.test.ts",
+  "test/yaw-cap.test.ts",
   "test/yaw-measurement.test.ts",
   "test/yaw-motor.test.ts",
   "test/yaw-response.test.ts",

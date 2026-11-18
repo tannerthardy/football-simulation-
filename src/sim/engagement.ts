@@ -36,7 +36,7 @@
 import { KEY_REACT, keyScale } from './key-read.js';
 import { clamp, logistic, norm, sub, type Vec2 } from '../core/vec.js';
 import { G } from '../core/units.js';
-import { directionalSpeedFactor, gaitLag, fatigueFactor, movingArrivalVelocity, shouldersOf, TRUNK_TWIST } from '../physics/kinematics.js';
+import { directionalSpeedFactor, hipYawRate, gaitLag, fatigueFactor, movingArrivalVelocity, shouldersOf, TRUNK_TWIST } from '../physics/kinematics.js';
 import { availability, baseRadiusAt, criticalDeviation, omega0, recoverySpeed, supportParams } from '../physics/support.js';
 import { gapY } from '../playbook/alignment.js';
 import { CF_FLOW } from './counterfactual.js';
@@ -2521,7 +2521,7 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   // own turn rate; only an angle beyond that is a lost block.
   const toD = Math.atan2(d.pos.y - b.pos.y, d.pos.x - b.pos.x);
   const off = Math.abs(Math.atan2(Math.sin(toD - chestOf(b)), Math.cos(toD - chestOf(b))));
-  const behind = LEVER_FACING ? Math.max(0, off - b.profile.turnRate * dt) / (Math.PI / 2) : Math.abs(e.phi);
+  const behind = LEVER_FACING ? Math.max(0, off - hipYawRate(b.profile) * dt) / (Math.PI / 2) : Math.abs(e.phi);
   runContactObservers.get(sim)?.(e, 'geometry', { axis, lat, drive: e.drive, phi: e.phi,
     off, behind, support: b.body.support, facing: b.facing, toD, baseB: e.baseB, baseD: e.baseD });
   if (b.body.support?.state !== 'up' || behind >= 1.1) {

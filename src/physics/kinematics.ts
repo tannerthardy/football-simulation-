@@ -237,9 +237,19 @@ export const PLANT_SPEED = 2.5;
 /** How far ahead of his actual path his hips can lead while carrying speed. */
 const FACING_LEAD = Math.PI / 3;
 
+/** YAW_CAP (experimental, off; YAW_CAP=1; docs/reviews/2026-11-18-facing-as-state.md, stage b): the hips' yaw rate is a measured capacity. The profile's `turnRate` (cone and shuttle score, 4.5-12 rad/s) is scaled by one
+ * ratio, YAW_CAP_PCT percent: the NFL orientation yaw rate p99 against ours (BDB 2025 weeks 1-9 dropbacks, `o` differenced at 10 Hz, open movement, speed bins 1.5-3 / 3-5 / 5-7 / 7+ yd/s, receivers and defenders:
+ * 147-304 deg/s; the sim's hips 225-477 with the cap off, 165-307 at 55; scripts/diag/body/yaw_rate.py). NFL `o` is a 10 Hz tracking estimate, so its rate tail is a floor on hip peaks, not a ceiling: the cap is gated by the controls (flip bench,
+ * turn-cost table, route-break speed, planted turns), not by the p99 alone. Every reader of a body's hip turn time (the physics, the coverage flip estimates, the lever facing) reads `hipYawRate`, so a controller's idea of his own
+ * flip time matches his body's. */
+export const YAW_CAP = process.env.YAW_CAP === '1';
+const YAW_CAP_K = Number(process.env.YAW_CAP_PCT ?? 55) / 100;
+/** A profile's hip yaw rate capacity, rad/s. */
+export function hipYawRate(profile: { turnRate: number }): number { return YAW_CAP ? profile.turnRate * YAW_CAP_K : profile.turnRate; }
+
 /** Maximum yaw rate at the current speed. */
 export function turnRateOf(body: Body): number {
-  return body.profile.turnRate * (len(body.vel) > 6 ? 0.75 : 1);
+  return hipYawRate(body.profile) * (len(body.vel) > 6 ? 0.75 : 1);
 }
 
 /**

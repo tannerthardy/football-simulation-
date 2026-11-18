@@ -279,6 +279,8 @@
     "TRUNK_RANGE_DEG": "55",
     "TRUNK_RATE_DEG": "360",
     "TRUNK_TWIST": "0",
+    "YAW_CAP": "0",
+    "YAW_CAP_PCT": "55",
     "VERTICAL_SET": "0",
     "OPEN_HANDS": "0",
     "OPEN_HANDS_BACK_ONLY": "0",

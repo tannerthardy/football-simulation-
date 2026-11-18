@@ -227,6 +227,7 @@
     "EDGE_ARC": "off",
     "POWER_AIM": "on",
     "TRUNK_TWIST": "on",
+    "YAW_CAP": "off",
     "VERTICAL_SET": "on",
     "OPEN_HANDS": "on",
     "OPEN_HANDS_BACK_ONLY": "off",

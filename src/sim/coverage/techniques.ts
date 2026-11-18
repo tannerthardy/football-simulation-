@@ -7,7 +7,7 @@
  */
 import { FIELD_WIDTH } from '../../core/field.js';
 import { clamp, lerp } from '../../core/vec.js';
-import type { MoveCommand } from '../../physics/kinematics.js';
+import { hipYawRate, type MoveCommand } from '../../physics/kinematics.js';
 import type { Gap } from '../../playbook/types.js';
 import type { Vec2 } from '../../core/vec.js';
 import type { Agent, Behavior } from '../agent.js';
@@ -117,7 +117,7 @@ export class Wall extends Technique {
     // 9.1-9.4 at 1.0-2.5 s), stand-in debt. With no flat threat he keeps carrying #2 to the hand-off.
     if (back) aim.x = Math.min(a.pos.x, Math.max(sim.los + 1, back.pos.x + APEX_CUSHION));
     const closing = Math.max(0, rd.vel.x - Math.max(0, a.vel.x));
-    const turnTime = Math.PI / a.profile.turnRate;
+    const turnTime = Math.PI / hipYawRate(a.profile);
     // With a flat threat under him he does not turn and run with #2 (the safety has him over the top); he stays
     // square to the quarterback (a choice: the coached apex keeps his eyes in the backfield, HNFL quarters notes).
     if (back) this.opened = false;
