@@ -509,6 +509,7 @@ window.TELEMETRY_READY = Promise.resolve(true);
     $('group-by').value = 'set';
     document.querySelector('.library-title h1').textContent = 'Pass game film room';
     $('issues').hidden = false;
+    const ce = document.querySelector('.clip-export'); if (ce) ce.hidden = true; // the viewer never grants downloads, so the clip export would do nothing here
     if ($('toggle-filters').getAttribute('aria-expanded') === 'true') $('toggle-filters').click();
     const KEY = 'film-room-known-issues', ta = $('issues-text');
     try { ta.value = localStorage.getItem(KEY) || ''; } catch (e) { /* storage may be blocked */ }
