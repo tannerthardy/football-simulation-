@@ -799,7 +799,7 @@ function readHook(c: RuleCtx, handoff = 8): Directive {
  * #3 from outside-in while the Mike walls #3's release and zones the hook. Stubbie keeps HNFL-270's "3 cancelled =
  * 7-seam-flat" zone. The trap holds while #3 stays shallow; a #3 who turns up is the safety's (Read #3). */
 export const MUSH_TRAP = process.env.MUSH_TRAP !== '0';
-/** MUSH_MATCH (experimental, off): the Book / Stubbie nickel matches #2's flat as taught (HNFL-050, image-checked: "#3 up/in:
+/** MUSH_MATCH (default on, engine-85; MUSH_MATCH=0 turns it off): the Book / Stubbie nickel matches #2's flat as taught (HNFL-050, image-checked: "#3 up/in:
  * match #2; #2 fast flat: match it"; Ross; SAB-TD). Off, a #2 who releases to the flat or out sent him to zone the
  * curl-flat, where he related to #3's hook beside the Mike walling #3: two on #3, none on the flat, which turned up the
  * sideline untouched (Defense's never-touched YAC runs, slant_flat from trips vs Cover 6 Book). On, with #2's release
@@ -808,7 +808,7 @@ export const MUSH_TRAP = process.env.MUSH_TRAP !== '0';
  * taught weakness, #2 from outside leverage with no help). #3 out or flat: trap #3 as before, but a trapped #3 whose
  * release turns up or in (a slow outside release into a hook) hands him to the Mike / safety and the nickel matches a
  * #2 in the flat; #2 in or under: the curl-flat zone as before. */
-export const MUSH_MATCH = process.env.MUSH_MATCH === '1';
+export const MUSH_MATCH = process.env.MUSH_MATCH !== '0';
 const BOOK_CALLS = new Set(['cover4_book_read', 'cover6_book']);
 
 function mush(c: RuleCtx): Directive {

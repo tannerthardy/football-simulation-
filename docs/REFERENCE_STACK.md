@@ -2,7 +2,7 @@
 
 One combination of experimental flags that Run Game, Defense, Flex and Coverage all measure against. Before this, each agent tested on its own mix (the FLAT_PRESS / ZONE_RUN back-and-forth on 2026-11-09 came from two different flag sets), and no list of anyone's stack existed in the repository.
 
-- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-83`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
+- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-85`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
 - **The code:** `run/G3-oz-backfield` a749beb7 + `defense/G2-stance-tell` a0cb0789 (#411) + `defense/G2-lb-start` (#416, with #409) + `claude/quirky-franklin-9lbwbp` (#417, with #415) + develop 6676dfc2.
 - **Since 2026-11-09 the stack is the engine's default.** The flags listed `on` are read as on unless set to `0`; a bare command in a clean shell and `npm run ref -- <command>` run the same engine. `npm run ref -- --off -- <command>` runs the legacy engine (every listed flag off). `test/reference-stack.test.ts` fails if the file and the code defaults ever disagree. See "Promotion" below.
 
@@ -608,6 +608,41 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
 
+
+## engine-85: the Book / Stubbie nickel matches #2's flat (2026-11-18)
+
+On: `MUSH_MATCH` (Rules + Coaching; a repair of the `mush` seat rule against its own source). The Book / Stubbie nickel
+("Soft Squat / MUSH") is taught "#3 up/in: match #2; #2 fast flat: match it; #3 out/flat: trap it" (HNFL-050,
+image-checked; Ross; SAB-TD). Off, a #2 released to the flat sent him to zone the curl-flat, which related him to #3's
+hook beside the read-hook Mike walling #3: two on #3, none on the flat, and #2 turned up the sideline untouched. And a #3
+who drifted outside at the line before turning into his hook was trapped and held. On: with #2 read flat or out and #3
+up or in, man on #2 from outside leverage, carried if he turns up; a trapped #3 who turns up hands on and the nickel
+takes #2; #3 out or flat is trapped and #2 in or under zoned as before.
+
+Defense's never-touched 20+ yd YAC count (zone-yac2.mts, defense/zone-yac-tools a38b130b: slant_flat, four_verts,
+comebacks vs Cover 2/3/4/6, doubles and trips, seeds 1-6 x flip, completions of 10+ air yards): 15 -> 10 of 62, YAC
+per catch 17.27 -> 13.79. All five Cover 6 slant_flat runs gone; the rest are Cover 2 slant_flat (the flat corner,
+FLAT_SINK) and the deep men's pursuit (Defense).
+
+Staged, trips vs Cover 6 / Cover 6 Book / Stubbie / Book Read (they play identically against trips), all concepts,
+3 seeds x flip, 715 attempts per arm:
+
+| | off | on |
+|---|---|---|
+| completion | .713 | .697 |
+| yards per attempt | 9.76 | 7.83 |
+| 20+ / 40+ yd plays | 63 / 26 | 35 / 13 |
+| interceptions | 11 | 11 |
+| slant_flat yd/att | 50.6 | 27.2 |
+| fade_flat yd/att | 19.9 | 1.8 |
+| corner_flat yd/att | 18.9 | 7.3 |
+
+The fall in yards per attempt against trips is large because the hole was large: the flat in Book was simply
+uncovered, and slant_flat's flat went for 60 yd a throw. Controls: the slant behind the nickel. slant_flat's front-side
+slant is not thrown in either arm; the QB moves to the backside slant (10 throws at 15 yd/att, from none), the
+concept's conflict going the other way. Book's taught weakness, #2 from outside leverage with no help, still wins
+(sail_corner's #2 15 -> 16 yd/att, 23 throws). Open: about three distinct plays still go 70 because the nickel falls
+turning out of his open-carry posture at 2.5 s and stays down until the catch (handed to Tools/Physics).
 
 ## engine-83: the quarterback's ball, window, key and committed throw (2026-11-18)
 
@@ -2170,3 +2205,25 @@ Limits of this pass:
 - The matched set is captured at code defaults, so the play-calling flags (`RUN_FORM_PAIR`, `MUG_CALLS`, `NICKEL_FRONTS`, `SHORT_BASE`) change nothing in it. They were exercised only in the test suite run. Capture under `npm run ref --` to measure them.
 - Group and single-flag removals were run on the draft stack (`LB_RUN_THROUGH` and `EDGE_WIDTH` still on); the Results table is the final stack.
 - No scorecard or full-season run was made.
+
+## engine-84: a free downed body rises on the speed he would stand at (2026-11-18)
+
+On: `DOWN_RISE_PLANT` (Tools lane; docs/reviews/2026-11-18-down-slide.md). A body repair from the model's own constants; nothing tuned.
+
+**The law.** In `world.ts` `passive()`, `down` goes to `rising` when he has been down 0.3 s and either his speed is under 0.3 yd/s (as before) or, for a free body, the speed he would stand at is one he can plant at: `v - DOWN_FRICTION x g x getUp <= PLANT_SPEED` (0.75 g = 8.05 yd/s², `getUp` 0.9 s default, PLANT_SPEED 2.5 yd/s from kinematics.ts: "below it he has planted and can square to a new heading"). A rising body is still sliding under the same friction, so he is up at `v - 8.05 x 0.9`: a diver at 8 yd/s was waiting 0.96 s to start a rise whose own friction stops him in 0.9 s. Free means: not the ball carrier (`World.ballCarrier`, named by PlaySim), not held (`heldBodies`, `feetLock`, `HANG_LOAD` weight on him), his spin settled (footprint edge speed under 0.3 yd/s). Friction, the 0.3 s minimum in `down` and the get-up time are unchanged, so the slide distance is unchanged.
+
+**Lone body** (`scripts/diag/body/down-rise-bench.mts`, 12 safety bodies, medians; `test/down-rise-plant.test.ts`):
+
+| going down at (yd/s) | slide off -> on | off his feet off -> on | distance (yd) | speed when up |
+|---|---|---|---|---|
+| 3.8 | 0.50 -> 0.30 s | 1.85 -> 1.65 s | 2.75 | 0.0 |
+| 4.8 | 0.65 -> 0.30 | 1.95 -> 1.65 | 3.66 | 0.0 |
+| 6.6 | 0.85 -> 0.30 | 2.20 -> 1.65 | 5.79 | 0.0 |
+| 8.4 | 1.10 -> 0.30 | 2.45 -> 1.65 | 8.37 | 0.0 |
+| 9.4 | 1.20 -> 0.30 | 2.50 -> 1.65 | 9.90 | 0.0 |
+
+As the ball carrier the numbers equal the flag off at every speed.
+
+**What it moves.** Ordinary games, 16 per arm (seeds 7-22; arms diverge after the first changed play): defender dives 789 / 802; dives still down at the whistle with the play live when he would have been up 120 / 134. Staged and paired (720 zone plays, 12 concepts x 5 coverages x 2 formations x 3 rosters x 2 seeds, identical until a defender dives): 239 plays have a defender dive in either arm and 3 differ (2 worse for the offense, 1 better); completions 422 / 422, zone YAC mean 7.22 / 7.22, 10+ yd YAC 61 / 61, missed-tackle then touchdown 1 / 1, touchdowns 23 / 24, yards per play 7.85 / 7.84. The repair is the diver's own time on the ground and almost never reaches the play.
+
+**Fixtures.** None moved. `npm test` (core and core-defaults, Node 22.22.0) on this tree and on clean develop fe150600 fails the same 29 files with the same failure counts (the Node-version and numeric ones already red on develop); the 6-test `down-rise-plant.test.ts` is new, listed in `test/engine-pin.json` defaults, and sets the flag explicitly for both arms. `dither-budget` passes with the flag on by default.

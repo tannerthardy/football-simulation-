@@ -250,6 +250,7 @@
   "test/dl-flatten.test.ts",
   "test/dl-snap-time.test.ts",
   "test/dl-squeeze.test.ts",
+  "test/down-rise-plant.test.ts",
   "test/draw-edge-set.test.ts",
   "test/drive-connection.test.ts",
   "test/drop-belief.test.ts",
