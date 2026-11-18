@@ -430,6 +430,7 @@ export class PlaySim {
     this.snapX = this.agents.map((a) => a.pos.x);
     this.world = new World(this.agents.map((a) => a.body), { substeps: setup.substeps, supportModel: setup.supportModel, constraintWork: setup.constraintWork, impactTiming: setup.impactTiming, supportIntegration: setup.supportIntegration, handContact: setup.handContact ?? undefined });
     // TORSO_CAPSULE (World): the carrier's torso contact with a defender uses the capsule; every other pair keeps the disc.
+    this.world.ballCarrier = () => this.carrier?.body ?? null;
     this.world.capsulePair = (a, b) => { const c = this.carrier?.body; if (!c) return false; const o = a === c ? b : b === c ? a : null;
       return !!o && this.defense.some((d) => d.body === o); };
     // Linemen and backs start in their stances; skill players upright.

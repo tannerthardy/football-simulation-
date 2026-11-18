@@ -233,7 +233,7 @@ export function commandFacing(body: Body, cmd: MoveCommand): number {
 }
 
 /** Below this speed (yd/s) he has planted and can square to a new heading. */
-const PLANT_SPEED = 2.5;
+export const PLANT_SPEED = 2.5;
 /** How far ahead of his actual path his hips can lead while carrying speed. */
 const FACING_LEAD = Math.PI / 3;
 

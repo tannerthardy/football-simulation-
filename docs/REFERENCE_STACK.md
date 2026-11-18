@@ -2,7 +2,7 @@
 
 One combination of experimental flags that Run Game, Defense, Flex and Coverage all measure against. Before this, each agent tested on its own mix (the FLAT_PRESS / ZONE_RUN back-and-forth on 2026-11-09 came from two different flag sets), and no list of anyone's stack existed in the repository.
 
-- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-82`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
+- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-85`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
 - **The code:** `run/G3-oz-backfield` a749beb7 + `defense/G2-stance-tell` a0cb0789 (#411) + `defense/G2-lb-start` (#416, with #409) + `claude/quirky-franklin-9lbwbp` (#417, with #415) + develop 6676dfc2.
 - **Since 2026-11-09 the stack is the engine's default.** The flags listed `on` are read as on unless set to `0`; a bare command in a clean shell and `npm run ref -- <command>` run the same engine. `npm run ref -- --off -- <command>` runs the legacy engine (every listed flag off). `test/reference-stack.test.ts` fails if the file and the code defaults ever disagree. See "Promotion" below.
 
@@ -638,6 +638,83 @@ Not landed: `SETTLE_DEPTH` retired to off was measured with it and stays on. Off
 65.2% / 10.94 yd/att (FLAT_SINK alone 61.0% / 9.38); the men who settled in front of a sitting receiver lost their depth
 over him (p50 1.8 -> 0.2 yd), though the post-set sink came nearer the NFL's (0.5-1.0 s after the set 0.90 -> 1.17 yd/s
 deeper at the release; NFL 1.3-1.4). The conflict with "stop when the QB sets" stays open for the zone-relation work.
+
+## engine-83: the quarterback's ball, window, key and committed throw (2026-11-18)
+
+On: `QB_DRIVE`, `QB_RHYTHM_THROW`, `QB_WINDOW_ARRIVE`, `QB_KEY_PLANT`, `QB_STICK` (QB lane; records
+docs/reviews/2026-11-17-qb-drive.md, 2026-11-18-window-key-stick.md, 2026-11-18-fv-smash-tampa-mike.md on
+claude/exciting-cori-hc8l4u). The number is provisional: Integration renumbers it if 81 and 82 land first.
+
+**QB_DRIVE: his natural ball at NFL speed for its distance.**
+- The flight is fitted to NFL flights by distance: routeFlight(d) = 0.0731 + 0.03945 d + 0.00022 d^2 s (BDB 2025).
+- Before it, his flights ran about 15% long against the NFL's (to the planned arrival).
+
+**QB_RHYTHM_THROW: on a rhythm concept the last drop step is not braked.**
+- Rhythm concepts: quick game, or read 1 on time at the set.
+- RHYTHM_PLANT is 0.4 of top speed, chosen.
+- At the plant he throws read 1 on anticipation if it is ready and clears his bar, carrying the drop's velocity into
+  the plant. Otherwise he sets and hitches.
+
+**QB_WINDOW_ARRIVE: a defender's course toward the catch point counts through his reaction.**
+- He pays only the share of his reaction his seen course does not already serve, carrying that share of his velocity.
+- A man seen tied in a block is priced as before.
+- Four attempts, each narrowing the cause:
+  - the course credit gave rushers in the lane;
+  - a man standing in the window was charged no reaction;
+  - a carry-away tripled game picks.
+- Staged calibration (480 plays):
+  - defended-ball error 0.1395 → 0.115;
+  - the trailing man within 3 yd: predicted / real 0.19 / 0.37 → 0.30 / 0.29;
+  - pick error 0.010 → 0.011.
+- Games (2 seeds × 4): completion 0.710 → 0.725, ints 5/672 → 7/632, 20+ yd throws 21 → 11 (completing 0.33 → 0.55).
+
+**QB_KEY_PLANT: on a keyed quick concept the key is read on the plant, from his picture of the key man then.**
+- An undeclared key gets no sitter default. He throws its first lean (trusted at 0.25–0.75 of the commit margin by
+  awareness and experience), or takes one re-read hitch (0.35 s) and goes with the lean then.
+- Staged quick concepts (192): key read median +0.25 → −0.05 s against the plant; rhythm throws 11 → 29; completions
+  133 → 135; ints 4 → 2.
+- The re-read branch has not fired in play: no key holds still at a gun plant.
+
+**QB_STICK: a started throw is pulled down only on a perceived change since the decision**, with a wider exit before
+the same man is thrown again (margins chosen). The changes:
+- a defender newly within 1.5 yd of the catch point (from beyond 2.5);
+- a defender newly in the lane;
+- the receiver down, or 2+ yd off where he expected him.
+
+Results:
+- Games: pumps per dropback 0.071 → 0.018. The 24 throws the old recheck would have pulled were caught 16, with 1 int.
+- DEEP_GATE's effect on the throw is nil with it on or off (360 staged Cover 2/3 plays).
+
+**Card on 5b49bb93, three seeds (23 / 37 / 11), against the reference:**
+
+| arm | Y/A | YAC per reception |
+|---|---|---|
+| drive | +0.07 / +0.41 / +0.57 | +0.06 / +0.12 / +0.96 |
+| stick | +0.17 / +0.34 / +0.07 | +0.13 / +0.69 / +0.27 |
+| read (window + key + rhythm) | +0.09 / −0.35 / +0.28 | +0.23 / +0.16 / +0.46 |
+| all (with QB_ALIGN, which is not in this step) | +0.74 / +0.01 / +0.51 | +0.79 / +0.58 / +1.19 |
+
+- Completion is flat everywhere. Ints, all: −0.2 / +0.7 / +0.9.
+- Nearly all of the Y/A is after the catch: the defenders' closing showing through a better-timed ball (Coverage's
+  in-flight closing table: our defenders close slower than the NFL's underneath and deep).
+- Integration's ruling: land on realism and absence of defects, not on the score.
+
+Off in this step: QB_ALIGN (held for the base item), QB_BODY_FOLLOW, QB_PEEK_CLOCK, QB_MOF_READ, QB_DEEP_WAIT, QB_STANCE.
+
+**Tests.** On 021a42a7 with the landing, seven core files fail that pass on develop. The other 29 core files that
+fail here fail on clean develop in this container too: memory, and baseline-runner's Node pin. The seven, each pinned
+to the flags that move it, found one flag at a time:
+- **engine-pin manifest:** qb-key-plant, qb-stick and qb-peek-clock join the defaults list.
+- **acc-radius:** QB_DRIVE, QB_STICK, QB_WINDOW_ARRIVE (each alone). QB to re-record.
+- **qb-grass-read:** QB_WINDOW_ARRIVE. QB to re-record.
+- **qb-gather-throw:** QB_RHYTHM_THROW. The rhythm drop's last step is not braked by design. QB to re-record on a
+  non-rhythm concept.
+- **corner-one-release:** the five (Coverage to re-record).
+- **man-trail-carry:** QB_DRIVE (Defense to re-find).
+- **rush-lean-bound:** QB_WINDOW_ARRIVE (Flex to re-search).
+
+Checks: typecheck, reference-stack, engine-pin manifest, provenance, guard, scan and dither pass, plus the QB tests
+(qb-stick, qb-key-plant, qb-peek-clock, qb-key-read, read-plan).
 
 ## engine-82: the in and out breaks rolled, as taught (2026-11-18)
 
@@ -2123,3 +2200,25 @@ Limits of this pass:
 - The matched set is captured at code defaults, so the play-calling flags (`RUN_FORM_PAIR`, `MUG_CALLS`, `NICKEL_FRONTS`, `SHORT_BASE`) change nothing in it. They were exercised only in the test suite run. Capture under `npm run ref --` to measure them.
 - Group and single-flag removals were run on the draft stack (`LB_RUN_THROUGH` and `EDGE_WIDTH` still on); the Results table is the final stack.
 - No scorecard or full-season run was made.
+
+## engine-84: a free downed body rises on the speed he would stand at (2026-11-18)
+
+On: `DOWN_RISE_PLANT` (Tools lane; docs/reviews/2026-11-18-down-slide.md). A body repair from the model's own constants; nothing tuned.
+
+**The law.** In `world.ts` `passive()`, `down` goes to `rising` when he has been down 0.3 s and either his speed is under 0.3 yd/s (as before) or, for a free body, the speed he would stand at is one he can plant at: `v - DOWN_FRICTION x g x getUp <= PLANT_SPEED` (0.75 g = 8.05 yd/s², `getUp` 0.9 s default, PLANT_SPEED 2.5 yd/s from kinematics.ts: "below it he has planted and can square to a new heading"). A rising body is still sliding under the same friction, so he is up at `v - 8.05 x 0.9`: a diver at 8 yd/s was waiting 0.96 s to start a rise whose own friction stops him in 0.9 s. Free means: not the ball carrier (`World.ballCarrier`, named by PlaySim), not held (`heldBodies`, `feetLock`, `HANG_LOAD` weight on him), his spin settled (footprint edge speed under 0.3 yd/s). Friction, the 0.3 s minimum in `down` and the get-up time are unchanged, so the slide distance is unchanged.
+
+**Lone body** (`scripts/diag/body/down-rise-bench.mts`, 12 safety bodies, medians; `test/down-rise-plant.test.ts`):
+
+| going down at (yd/s) | slide off -> on | off his feet off -> on | distance (yd) | speed when up |
+|---|---|---|---|---|
+| 3.8 | 0.50 -> 0.30 s | 1.85 -> 1.65 s | 2.75 | 0.0 |
+| 4.8 | 0.65 -> 0.30 | 1.95 -> 1.65 | 3.66 | 0.0 |
+| 6.6 | 0.85 -> 0.30 | 2.20 -> 1.65 | 5.79 | 0.0 |
+| 8.4 | 1.10 -> 0.30 | 2.45 -> 1.65 | 8.37 | 0.0 |
+| 9.4 | 1.20 -> 0.30 | 2.50 -> 1.65 | 9.90 | 0.0 |
+
+As the ball carrier the numbers equal the flag off at every speed.
+
+**What it moves.** Ordinary games, 16 per arm (seeds 7-22; arms diverge after the first changed play): defender dives 789 / 802; dives still down at the whistle with the play live when he would have been up 120 / 134. Staged and paired (720 zone plays, 12 concepts x 5 coverages x 2 formations x 3 rosters x 2 seeds, identical until a defender dives): 239 plays have a defender dive in either arm and 3 differ (2 worse for the offense, 1 better); completions 422 / 422, zone YAC mean 7.22 / 7.22, 10+ yd YAC 61 / 61, missed-tackle then touchdown 1 / 1, touchdowns 23 / 24, yards per play 7.85 / 7.84. The repair is the diver's own time on the ground and almost never reaches the play.
+
+**Fixtures.** None moved. `npm test` (core and core-defaults, Node 22.22.0) on this tree and on clean develop fe150600 fails the same 29 files with the same failure counts (the Node-version and numeric ones already red on develop); the 6-test `down-rise-plant.test.ts` is new, listed in `test/engine-pin.json` defaults, and sets the flag explicitly for both arms. `dither-budget` passes with the flag on by default.
