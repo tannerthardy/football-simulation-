@@ -3018,9 +3018,10 @@ export function toward(a: Vec2, b: Vec2): Vec2 {
  *     the QB's set (he plants where he is when he sees the QB stop at the top of his drop; no sink to the landmark).
  *  2. Relate to the nearest threat in his area: a receiver whose projected spot is in his band (enter 0.5 inside, leave
  *     1.5 outside), scored by distance to his landmark with an arriving / sitting receiver ahead of a leaving one; the
- *     one he is playing keeps him until another beats it by LADDER_PICK_BEAT. Underneath an intermediate route he takes
- *     the point on the QB's line to it at his own depth; under a short one he widens to it at his depth (no drive down:
- *     the ball brings him down). A vertical in his area is carried to his zone's carry depth, then passed.
+ *     one he is playing keeps him until another beats it by LADDER_PICK_BEAT, and of threats within that margin the
+ *     deeper wins (the ball brings him down: he does not leave a deeper threat for a shallow one). Underneath an
+ *     intermediate route he takes the point on the QB's line to it at his own depth; against a short one he gets in front
+ *     of it (LADDER_FRONT yd in front, on the QB's line). A vertical in his area is carried to his zone's carry depth, then passed.
  *  3. Break on the throw (his release belief; playBall, unchanged), with the ladder as his coverage until he sees it.
  * Coverage-specific rules enter only as the landmark (zoneLandmark), his area (zoneBand) and the carry depth. Left out
  * (old modes not ported): match-after-declare man conversions, wall / cross-wall, trap / rob, the quarters apex and C2
@@ -3028,7 +3029,7 @@ export function toward(a: Vec2, b: Vec2): Vec2 {
  * sink, ZONE_HOLD's lean (replaced by the look-held slide), the box backer's guard step. */
 export const ZONE_LADDER = process.env.ZONE_LADDER === '1';
 const LADDER_CARRY: Partial<Record<ZoneId, number>> = { hook_s: 14, hook_w: 14, hook_mid: 14, hole: 14, robber: 14, curl_flat_s: 12, curl_flat_w: 12, flat_s: 9, flat_w: 9 };
-const LADDER_PICK_BEAT = 1.5, LADDER_IN = 0.5, LADDER_OUT = 1.5, LADDER_TAU = 0.3, LADDER_STEADY = 0.6;
+const LADDER_FRONT = 1, LADDER_PICK_BEAT = 1.5, LADDER_IN = 0.5, LADDER_OUT = 1.5, LADDER_TAU = 0.3, LADDER_STEADY = 0.6;
 export class UnderneathLadder implements Behavior {
   readonly kind = 'zone';
   readonly zoneEyes = true;
@@ -3084,8 +3085,11 @@ export class UnderneathLadder implements Behavior {
       } else {
         const fut = { x: s.pos.x + s.vel.x * 0.4, y: s.pos.y + s.vel.y * 0.4 }, fd = depthOf(fut), qd = depthOf(q.pos);
         // Under an intermediate route: the point on the QB's line to it at his depth. Under a short one: widen to it.
-        const y = fd > holdDepth + 0.5 && fd - qd > 0.5 ? q.pos.y + (fut.y - q.pos.y) * clamp((holdDepth - qd) / (fd - qd), 0, 1) : fut.y;
-        const tgt = { x: atDepth(holdDepth), y: clamp(y, 0.5, FIELD_WIDTH - 0.5) };
+        // Under an intermediate route: the point on the QB's line to it at his depth. In front of a short one: a yard in
+        // front of it on the QB's line (between the passer and the route), not held above it.
+        const want = fd > holdDepth + 0.5 ? holdDepth : clamp(fd - LADDER_FRONT, 0.5, holdDepth);
+        const y = fd - qd > 0.5 ? q.pos.y + (fut.y - q.pos.y) * clamp((want - qd) / (fd - qd), 0, 1) : fut.y;
+        const tgt = { x: atDepth(want), y: clamp(y, 0.5, FIELD_WIDTH - 0.5) };
         return withFacingTechnique(track(a, tgt, { x: 0, y: s.vel.y * 0.8 }, { facing: facingQB, speed: 0.95, gain: 1.6 }), { label: 'ladder-relate', key: s.vel });
       }
     }
@@ -3106,6 +3110,7 @@ export class UnderneathLadder implements Behavior {
   private pick(a: Agent, sim: PlaySim): Agent | null {
     const [ylo, yhi] = this.band, lm = this.landmark, dir = sim.attackDir(sim.offense[0].team);
     let best: Agent | null = null, bs = Infinity;
+    const cands: { r: Agent; score: number; depth: number }[] = [];
     for (const r of sim.offense) {
       if (r === sim.qb || ['LT', 'LG', 'C', 'RG', 'RT'].includes(r.slot) || this.passed.has(r)) continue;
       const s = sim.see(a, r), fut = { x: s.pos.x + s.vel.x * 0.7, y: s.pos.y + s.vel.y * 0.7 };
@@ -3118,8 +3123,12 @@ export class UnderneathLadder implements Behavior {
       const leaving = (dx * s.vel.x + dy * s.vel.y) / d; // + leaving his landmark, - arriving
       let score = d + 0.5 * clamp(leaving, -4, 4);
       if (r === this.threat) score -= LADDER_PICK_BEAT;
+      cands.push({ r, score, depth });
       if (score < bs) { bs = score; best = r; }
     }
+    // The ball brings him down: of threats within the pick margin of the best, the deeper one.
+    const bd = cands.find((x) => x.r === best)?.depth ?? 0;
+    for (const c of cands) if (best && c.r !== best && c.score - bs < LADDER_PICK_BEAT && c.depth > bd + 2) best = c.r;
     this.threat = best;
     return best;
   }

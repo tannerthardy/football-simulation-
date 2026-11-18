@@ -11,14 +11,13 @@ for (const [g, concepts] of Object.entries(groups)) {
   for (const concept of concepts) for (const coverage of ['cover2', 'cover3', 'cover4', 'cover6', 'cover3_mable', 'cover9'])
     for (const formation of ['gun_doubles_11', 'gun_trips_11']) for (let seed = 1; seed <= seeds; seed++) for (const flip of [false, true]) {
       let sim: any; try { sim = new PlaySim(nativeTraceSetup({ coverage, concept, seed, roster: seed, formation, flip })); } catch { continue; }
-      let T: any = null, aimX = 0;
-      const tb = sim.throwBall.bind(sim); sim.throwBall = (p: any, target: any, v0: any, intended: any, ...r: any[]) => { if (p === sim.qb && !T && target) { T = target; aimX = (intended.x - sim.los) * sim.attackDir(sim.offense[0].team); } return tb(p, target, v0, intended, ...r); };
+      let T: any = null, aimX = 0, route = '?';
+      const tb = sim.throwBall.bind(sim); sim.throwBall = (p: any, target: any, v0: any, intended: any, ...r: any[]) => { if (p === sim.qb && !T && target) { T = target; route = target.behavior?.route?.id ?? target.behavior?.fallback?.route?.id ?? '?'; aimX = (intended.x - sim.los) * sim.attackDir(sim.offense[0].team); } return tb(p, target, v0, intended, ...r); };
       let res: any; try { res = sim.run(); } catch { continue; }
       if (!T) continue;
-      const route = T.behavior?.route?.id ?? T.behavior?.fallback?.route?.id ?? '?';
       if (g === 'dig' && !(aimX >= 10 && aimX <= 16)) continue;
       if (g === 'cross' && !/cross|shallow|mesh|drag|under/.test(route)) continue;
-      rows.push({ comp: !!res.stats.completed, yds: res.stats.yards ?? 0, yac: res.stats.yac ?? null, route });
+      rows.push({ comp: !!res.stats.completed, yds: res.yards ?? 0, yac: res.stats.yac ?? null, route });
     }
   const n = rows.length, c = rows.filter(r => r.comp);
   const q = (v: number[]) => { const w = v.filter(Number.isFinite).sort((a, b) => a - b); return w.length ? [0.25, 0.5, 0.75].map(f => w[Math.floor(f * (w.length - 1))].toFixed(1)).join('/') : '-'; };
