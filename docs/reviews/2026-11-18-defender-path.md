@@ -128,3 +128,26 @@ driving downhill on a ball in front of him was priced as carrying his backpedal.
   are 8 against 2. These are likely intermediate balls within 2 yd of a safety's depth still on the deep path.
 - To trace (the picker, his role, the ball's depth against his) before a fourth form. The margin is not to be tightened
   by hand.
+
+## Tracing 3b's picks and completion (8 games, seeds 11 and 31)
+
+**Picks** (`int-margin.ts` with the margin trace marking deep zone men and carriers): 13.
+- 1 is on the deep zone path: a post against Cover 1's middle safety.
+- The rest are mostly man-coverage corners on hitches, slants, outs and crosses, on pickers the window either did not
+  count or priced on the unchanged path.
+- So the deep-zone price does not make the 5–15 yd picks.
+
+**Completion by air band, off → 3b:**
+
+| air yd | throws | completion | ints |
+|---|---|---|---|
+| < 0 | 63 → 80 | 0.73 → 0.75 | 1 → 0 |
+| 0–5 | 210 → 216 | 0.743 → 0.699 | 5 → 3 |
+| 5–10 | 279 → 256 | 0.703 → 0.641 | 2 → 6 |
+| 10–15 | 74 → 82 | 0.527 → 0.561 | 0 → 2 |
+| 15+ | 14 → 48 | 0.50 → 0.60 | 1 → 2 |
+
+- **The short bands' drop is not his decision.** Time to throw is the same (0–5 yd 2.55 → 2.50 s; 5–10 yd 2.70 → 2.65 s).
+  His believed P is the same or higher (0.69 → 0.71; 0.68 → 0.70). Fewer are made under pressure.
+- With identical pricing on those throws, a 4–6 pt drop in 8 games (about 3 pt sd per band) reads as game divergence.
+- **Needs a larger sample:** the card's six seeds. No fourth form until that.

@@ -192,7 +192,7 @@ index 97f772e0d..d49f430cf 100644
    if (read !== null) for (const r of sim.offense) {
      if (r === sim.qb || isOL(r)) continue;
 diff --git a/src/sim/behaviors/qb.ts b/src/sim/behaviors/qb.ts
-index e383832ad..7ebe7cb0d 100644
+index e383832ad..dd9199f28 100644
 --- a/src/sim/behaviors/qb.ts
 +++ b/src/sim/behaviors/qb.ts
 @@ -17,7 +17,7 @@
@@ -368,7 +368,7 @@ index e383832ad..7ebe7cb0d 100644
          intPath += iPath; intJump += iJump; intContest += iContest;
          if (marginTrace && pt === point && (contest > 0.05 || iPath + iJump + iContest > 0.001)) marginTrace.push({ slot: d.slot, m: +m.toFixed(3), first: +first.toFixed(3),
 -          contest: +contest.toFixed(3), blind: +blind.toFixed(3), react: +react.toFixed(3), wind: +wind.toFixed(3), total: +total.toFixed(3), touch: +touch.toFixed(4),
-+          contest: +contest.toFixed(3), roof, deepBail, under, dDepth: +((seen.pos.x - sim.los) * sim.attackDir(a.team)).toFixed(1), tDepth: +((target.x - sim.los) * sim.attackDir(a.team)).toFixed(1), dTgt: +Math.hypot(seen.pos.x - target.x, seen.pos.y - target.y).toFixed(1), blind: +blind.toFixed(3), react: +react.toFixed(3), wind: +wind.toFixed(3), total: +total.toFixed(3), touch: +touch.toFixed(4),
++          contest: +contest.toFixed(3), roof, deepBail, under, deepZone, carry: carryTt !== null, dDepth: +((seen.pos.x - sim.los) * sim.attackDir(a.team)).toFixed(1), tDepth: +((target.x - sim.los) * sim.attackDir(a.team)).toFixed(1), dTgt: +Math.hypot(seen.pos.x - target.x, seen.pos.y - target.y).toFixed(1), blind: +blind.toFixed(3), react: +react.toFixed(3), wind: +wind.toFixed(3), total: +total.toFixed(3), touch: +touch.toFixed(4),
            iPath: +iPath.toFixed(4), iJump: +iJump.toFixed(4), iContest: +iContest.toFixed(4), facingQB, ballSkills: +dBall.toFixed(2) });
          if (INT_BELIEF) {
            noPathPick *= 1 - clamp(iPath * PATH_PICK * intBelief, 0, 0.95);
