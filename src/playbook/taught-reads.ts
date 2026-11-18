@@ -39,7 +39,8 @@ export const TAUGHT_READS: Record<string, ReceiverRef[]> = {
   y_cross: ['W1', 'S2', 'S3', 'W2', 'B'],
   // Peek the seam, the in to the dig off the apex (short to deep), the backside hook, the back (Smart Football, Levels).
   levels: ['S3', 'S2', 'S1', 'W2', 'B'],
-  // The comeback, the dig, the hook, the backside, the back (low: Smart Football, Drive's comeback key).
+  // PROVISIONAL (no source names it; nearest taught: Drive's comeback key, Smart Football): the comeback, the dig, the
+  // hook, the backside, the back.
   comebacks: ['S1', 'S2', 'S3', 'W1', 'W2', 'B'],
   // High-low the safety, post / dig; the backside dig; the hook (Throw Deep, Yankee).
   pa_post_dig: ['S1', 'S2', 'W1', 'W2'],
@@ -51,13 +52,16 @@ export const TAUGHT_READS: Record<string, ReceiverRef[]> = {
   double_slants: ['S2', 'S1', 'S3', 'W2'],
   // The fade's hole shot, then the flat defender, flat / hitch; the backside; the back (from Tare: Bowen).
   fade_flat: ['S1', 'S2', 'S3', 'W1', 'B'],
-  // The hitch, the post, the flat, the backside, the back (from hitch-seam: Win With The Pass; low).
+  // PROVISIONAL (no source names it; nearest taught: hitch-seam, Win With The Pass): the hitch, the post, the flat,
+  // the backside, the back.
   hitch_post: ['S1', 'S2', 'S3', 'W2', 'B'],
-  // High-low the flat defender, out / quick out; the hitch; the backside; the back (from sail; low).
+  // PROVISIONAL (no source names it; nearest taught: sail / Smash-7, Bowen): high-low the flat defender, out / quick
+  // out; the hitch; the backside; the back.
   double_outs: ['S1', 'S2', 'S3', 'W1', 'W2', 'B'],
   // The flat defender, quick out / hitch; the outside hitch; the backside; the back (from stick; low-medium).
   hitch_out: ['S2', 'S3', 'S1', 'W1', 'W2', 'B'],
-  // The apex, slant / hitch; the backside seam and slant (no source: reasoning; the go clears).
+  // PROVISIONAL (no source found; nearest taught: double slant's apex read, Coach Hoover): the apex, slant / hitch;
+  // the backside seam and slant; the go a peek.
   seam_slant: ['S2', 'S3', 'W2', 'W1'],
   // The cross over the linebackers, the curl-flat outlet, the drag, the back (Throw Deep).
   hitch_cross: ['S2', 'S1', 'S3', 'W2', 'B'],
