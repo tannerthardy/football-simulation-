@@ -16,10 +16,11 @@ import type { Agent } from '../agent.js';
 import type { Vec2 } from '../../core/vec.js';
 import { zoneLandmark } from '../../playbook/alignment.js';
 import type { ManOptions } from '../behaviors/defense.js';
-import { knowsPass } from '../behaviors/defense.js';
+import { believesRun, knowsPass } from '../behaviors/defense.js';
 import type { PlaySim } from '../playsim.js';
 import { isQuickOut, type ReceiverRead, type ReleaseReader } from './reads.js';
 import { hasVisibleCap } from './judgment.js';
+import { FIELD_WIDTH } from '../../core/field.js';
 
 export const APEX_LEVERAGE = Number(process.env.APEX_LEVERAGE ?? 7);
 /** CUT_WALL (experimental, off; CUT_WALL=1): a hook defender walls a shallow crosser from his own area and passes him
@@ -178,6 +179,7 @@ const fastFlat = (rd: ReceiverRead | null): boolean => !!rd && rd.release === 'f
  * #1 settling short with #2 vertical sends the overhang to hunt #1 while the
  * corner bails under #2. */
 function seamCurlFlat(c: RuleCtx, carry: number, deliver = false): Directive {
+  if (MATCH_DECLARE) return seamCurlFlatDeclared(c, carry, deliver);
   // With no #2 to this side the released back is #2 (Cover 9's weak seam/flat on the RB).
   const two0 = ref(c, 2);
   const two = two0 ?? backTo(c);
@@ -210,6 +212,61 @@ function seamCurlFlat(c: RuleCtx, carry: number, deliver = false): Directive {
   }
   if (two.release !== 'vertical' && two.release !== 'block') c.state.mode = 'zoned';
   return zoneOf(c);
+}
+
+/** MATCH_DECLARE (default on, engine-80; MATCH_DECLARE=0 turns it off): the match seam/curl-flat player (Rip/Liz
+ * `c3_curl_flat`, `c3_seam` in Seam, Cover 9 and fire zone) reads #2 through the taught declare phase, about three steps
+ * or 5 yd (Saban Rip/Liz; USA Football 7272; coverage-position spec gap 6), before he commits, and re-reads when the
+ * route changes instead of latching "zoned" on the first break:
+ * - undeclared (#2 not yet 5 yd deep, inside the first `MATCH_DECLARE_T` s, and not in the flat): read his release;
+ * - vertical: carry to `carry`, then deliver (unchanged); once delivered, the hand-off is final;
+ * - out or flat: match #2 out (and up), top-down, outside leverage (HNFL-056 "match #2 out and up"); an out-and-up
+ *   re-reads to the vertical carry;
+ * - in or under: with #3 away (no #3 here, the back released to the other side) take #2 back across (HNFL-292), a man
+ *   carry CUT_WALL's pass-off leaves alone; otherwise deliver him to the hook ("under") and play the curl;
+ * - stop: sit in the curl-flat zone over him.
+ * Push and Smash are unchanged. Every input is his own read of the receivers (ReleaseReader). */
+export const MATCH_DECLARE = process.env.MATCH_DECLARE !== '0';
+/** MATCH_DECLARE: the declare phase's time (s after the snap; about three steps) and depth (yd). */
+const MATCH_DECLARE_T = 0.9;
+const MATCH_DECLARE_YD = 5;
+
+function seamCurlFlatDeclared(c: RuleCtx, carry: number, deliver: boolean): Directive {
+  const st = c.state;
+  const two0 = ref(c, 2);
+  const two = two0 ?? backTo(c);
+  const one = ref(c, 1);
+  const three = two0 ? threeTo(c) : null;
+  if (st.mode === 'push' && three) return man(three, { lev: 'inside', overTop: true });
+  if (st.mode === 'smash' && one) return man(one, { lev: 'inside' });
+  if (!two || st.mode === 'delivered') return zoneOf(c);
+  if (fastFlat(three) && two.depth < carry && two.release !== 'flat' && two.release !== 'out') {
+    st.mode = 'push';
+    return man(three!, { lev: 'inside', overTop: true });
+  }
+  if (oneShallow(one) && one!.release === 'stop' && two.release === 'vertical') {
+    st.mode = 'smash';
+    return man(one!, { lev: 'inside' });
+  }
+  st.mode = undefined;
+  const declared = two.release === 'flat' || two.deepest >= MATCH_DECLARE_YD || c.sim.t >= MATCH_DECLARE_T;
+  if (two.release === 'none' || !declared) return readRelease(two);
+  switch (two.release) {
+    case 'vertical':
+      if (two.depth > carry) {
+        if (deliver && !hasVisibleCap(c.a, c.sim, two)) return man(two, { lev: 'inside' });
+        st.mode = 'delivered';
+        return zoneOf(c);
+      }
+      return man(two, { lev: 'inside' });
+    case 'out': case 'flat':
+      return man(two, { lev: 'outside', overTop: true });
+    case 'in': case 'under':
+      if (threeAway(c)) { st.mode = 'across'; return man(two, { lev: 'inside' }); }
+      return zoneOf(c);
+    default:
+      return zoneOf(c);
+  }
 }
 
 /**
@@ -338,9 +395,30 @@ function qCorner(c: RuleCtx, meg: boolean): Directive {
 }
 
 /** Quarters safety: #2 decides. Vertical → carry #2 over the top; out/flat/under/stop (or pass-blocking) → help #1 (cap a vertical, rob an in-breaker). */
+/** SCREW (default on, engine-80; SCREW=0 turns it off): Screw, the quarters answer to play action (HNFL-114, image-checked:
+ * "plays as MOD unless there is any sort of play fake between the QB and back; then the apex triggers and the strong
+ * safety takes #2 up and out; nickel reroutes, but no carry"; USA Football 7422 "Mix"). When the quarters safety reads
+ * run, he takes #2 man while #2 goes up or out, over the top from outside, instead of easing down into his alley (#2
+ * breaking in or short returns him to his #2-to-1 key and his help on #1); the
+ * apex's force is unchanged. A real handoff he sees still pulls him into his fit (the coverage defender's keyed run
+ * support fires on the carrier he sees), so play action costs him nothing while a run costs him a beat. A game-plan
+ * call in the sources (played when #2's split makes Read useless); here a switch for every q_safety call. */
+export const SCREW = process.env.SCREW !== '0';
+
 function qSafety(c: RuleCtx): Directive {
   const one = ref(c, 1);
   const two = ref(c, 2);
+  // Screw: #2 up (or not yet declared) or out is his; #2 breaking in or short hands him back to his #2-to-1 key.
+  const upOrOut = (rd: ReceiverRead) => rd.release === 'none' || rd.release === 'vertical' || rd.release === 'out' || rd.release === 'flat';
+  if (SCREW && two && two.release !== 'block') {
+    if (c.state.mode === 'screw') {
+      if (upOrOut(two)) return man(two, { overTop: true, lev: 'outside' });
+      c.state.mode = undefined;
+    } else if (c.state.mode === undefined && believesRun(c.sim, c.a) && upOrOut(two)) {
+      c.state.mode = 'screw';
+      return man(two, { overTop: true, lev: 'outside' });
+    }
+  }
   if (c.state.mode === 'two' && two) return man(two, { overTop: true, lev: 'inside' });
   if (c.state.mode === 'one') return helpOne(c, one);
   if (!two) return one && climbing(one) ? man(one, { overTop: true, lev: 'inside' }) : zoneOf(c);
@@ -382,7 +460,38 @@ function wallTwo(c: RuleCtx, handoff: number, readStem = false, apex = false): D
  * apex pushes to #1's route. When #2 runs shallow inside with #3 away, the
  * midpoint is occupied by #3 and cannot take a delivery: the apex carries #2
  * back across himself. */
+/** Q_APEX (default on, engine-80; Q_APEX=0 turns it off): the quarters apex (`q_apex`: MOD, MEG, Palms, the 6/8 quarters
+ * side) adds his taught rules for #3 and the flat (coverage-position spec item 2; HNFL-200/365/078/198/051), from his
+ * own read, before the existing ones:
+ * - #2 under with #3 away: take him back across (the existing "two" carry), which CUT_WALL's pass-off now leaves alone
+ *   (defender.ts: there is nobody to pass him to);
+ * - #2 still climbing past 10 yd (walled to the hand-off) while #3 or the back to his side goes to the flat: take the first
+ *   flat, top-down, inside-out;
+ * - Palms (the corner traps #2's flat): close the curl window over #1 instead of chasing the flat, walling #1 inside. */
+export const Q_APEX = process.env.Q_APEX !== '0';
+
+function quarterFlatTaught(c: RuleCtx): Directive | null {
+  const two = ref(c, 2), one = ref(c, 1);
+  const corner = c.sim.defAlign.coverage.roles[c.side === 'S' ? 'CB_S' : 'CB_W'];
+  const cornerTakesFlat = corner?.kind === 'zone' && corner.rule === 'palms_corner';
+  if (c.state.mode === 'flat3') {
+    const f = c.state.match ? [ref(c, 3), backTo(c)].find((rd) => rd?.r === c.state.match) : null;
+    if (f) return man(f, { lev: 'inside', overTop: true });
+    c.state.mode = undefined; c.state.match = undefined;
+  }
+  if (two && two.release === 'vertical' && two.depth >= 10 && two.vel.x > 3) {
+    const f = [ref(c, 3), backTo(c)].find((rd) => !!rd && rd.r !== two.r && rd.outSign === c.sign && rd.release === 'flat');
+    if (f) { c.state.mode = 'flat3'; c.state.match = f.r; return man(f, { lev: 'inside', overTop: true }); }
+  }
+  if (cornerTakesFlat && two && (two.release === 'flat' || two.release === 'out') && !two.climbed) {
+    if (one && (one.release === 'in' || one.release === 'under') && one.depth < 14) return man(one, { lev: 'inside' });
+    return zoneOf(c, c.side === 'S' ? 'curl_s' : 'curl_w');
+  }
+  return null;
+}
+
 function quarterFlat(c: RuleCtx): Directive {
+  if (Q_APEX) { const d = quarterFlatTaught(c); if (d) return d; }
   const two = ref(c, 2);
   const one = ref(c, 1);
   const corner = c.sim.defAlign.coverage.roles[c.side === 'S' ? 'CB_S' : 'CB_W'];
@@ -477,7 +586,46 @@ function palmsSafety(c: RuleCtx): Directive {
  * `sink` (Cover 2 match / trap): with no flat threat he sinks under #1's
  * vertical to ~13 yards, squeezing the hole shot between him and the half safety.
  */
+/** SQUAT_TOPDOWN (default on, engine-80; SQUAT_TOPDOWN=0 turns it off): the Cover 2 squat/cloud corner plays the flat
+ * top-down, as taught (coverage-position spec item 7; HNFL-099/097/334: "the ball brings you flat", "sink and
+ * squeeze the hole shot"), from his own read, re-read every tick instead of locking the flat:
+ * - a flat threat (#2, #3 or the back to the flat, or a short out) with a high threat over him (#1 climbing outside,
+ *   or a #2 who has climbed past 7 yd breaking out: fade, corner, sail): sink under the high threat, trailing him from
+ *   inside, until he passes 15 yd (the half safety's), then come back down to the flat;
+ * - a flat threat with nothing over him: the flat zone;
+ * - a flat runner who turns up past 7 yd (the wheel): stay on him over the top;
+ * - no flat threat: man under #1 (`sink`) as before.
+ * The throw still brings him down through the ball phase. */
+export const SQUAT_TOPDOWN = process.env.SQUAT_TOPDOWN !== '0';
+
+function squatTopDown(c: RuleCtx, sink: boolean): Directive {
+  const st = c.state;
+  const one = ref(c, 1), two = ref(c, 2), three = ref(c, 3), back = backTo(c);
+  const runners = [two, three, back].filter((rd): rd is ReceiverRead => !!rd);
+  if (st.match) {
+    const w = runners.find((rd) => rd.r === st.match);
+    if (w && w.release === 'vertical' && w.depth > 7) return man(w, { lev: 'outside', overTop: true });
+    st.match = undefined;
+  }
+  const flat = runners.find((rd) => rd.release === 'flat' || (rd.release === 'out' && rd.depth < 6 && !rd.climbed));
+  const wheel = runners.find((rd) => rd.first === 'flat' && rd.release === 'vertical' && rd.depth > 7);
+  if (wheel) { st.match = wheel.r; return man(wheel, { lev: 'outside', overTop: true }); }
+  if (flat) {
+    const high = [one, two].find((rd) => !!rd && rd.r !== flat.r && rd.depth < 15 && rd.climbed
+      && (rd.release === 'out' || (rd.release === 'vertical' && rd === one)));
+    st.mode = 'flat';
+    if (high) return man(high, { lev: 'inside', trail: true });
+    return zoneOf(c);
+  }
+  st.mode = undefined;
+  const inside = [two, three].filter((rd): rd is ReceiverRead => !!rd);
+  const declared = inside.every((rd) => rd.release !== 'none' && rd.release !== 'flat' && rd.release !== 'out');
+  if (sink && one && declared && one.release !== 'none' && one.release !== 'block') return man(one, { lev: 'outside', trail: true });
+  return zoneOf(c);
+}
+
 function cloudCorner(c: RuleCtx, sink: boolean): Directive {
+  if (SQUAT_TOPDOWN) return squatTopDown(c, sink);
   const one = ref(c, 1);
   const flat = [ref(c, 2), ref(c, 3), backTo(c)].find((rd) => rd && (rd.release === 'flat' || (rd.release === 'out' && rd.depth < 6)));
   if (flat || c.state.mode === 'flat') {
@@ -500,7 +648,39 @@ function cloudCorner(c: RuleCtx, sink: boolean): Directive {
 }
 
 /** Tampa 2 Mike: run the pipe — carry the inside-most vertical through the middle to ~20 yards, otherwise the deep hole. */
+/** TAMPA_PIPE (default on, engine-80; TAMPA_PIPE=0 turns it off): the Tampa 2 Mike runs the pipe as taught (coverage-
+ * position spec item 9; HNFL-028 "Mid Run", HNFL-241 "Middle Read #3"), from his own picture:
+ * - he carries a true vertical by #2 or #3 (or the back) down the middle, between the hashes plus a yard, inside
+ *   trail, and keeps the one he took (no re-pick each tick);
+ * - he comes off a stem the moment he sees it break outside of him (its seen velocity outward from the middle at
+ *   1.5 yd/s and more than half its upfield speed), or leave the pipe, not when the release read later turns "out";
+ * - two verticals in the pipe: he takes depth in the middle between them (the safeties squeeze from outside);
+ * - nothing vertical in the pipe: his deep-middle zone (unchanged). */
+export const TAMPA_PIPE = process.env.TAMPA_PIPE !== '0';
+const PIPE_HALF = 4;
+
+function tampaPipe(c: RuleCtx): Directive {
+  const sim = c.sim, mid = FIELD_WIDTH / 2;
+  const outward = (rd: ReceiverRead) => Math.sign(rd.pos.y - mid || 1) * rd.vel.y;
+  const inPipe = (rd: ReceiverRead) => Math.abs(rd.pos.y - mid) <= PIPE_HALF && rd.depth < 20
+    && !(outward(rd) > 1.5 && outward(rd) > 0.5 * Math.max(0, rd.vel.x));
+  if (c.state.match) {
+    const rd = c.reader.read(sim, c.state.match);
+    if (rd && inPipe(rd) && rd.release !== 'out') return man(rd, { lev: 'inside', trail: true });
+    c.state.match = undefined;
+  }
+  const cand: ReceiverRead[] = [];
+  for (const r of sim.offense) {
+    const rd = c.reader.read(sim, r);
+    if (rd && vertical(rd, 4) && inPipe(rd)) cand.push(rd);
+  }
+  if (cand.length !== 1) return zoneOf(c);
+  c.state.match = cand[0].r;
+  return man(cand[0], { lev: 'inside', trail: true });
+}
+
 function tampaMike(c: RuleCtx): Directive {
+  if (TAMPA_PIPE) return tampaPipe(c);
   const sim = c.sim;
   let best: ReceiverRead | null = null;
   for (const r of sim.offense) {
@@ -573,9 +753,27 @@ function readHook(c: RuleCtx, handoff = 8): Directive {
  * (zone the curl-flat). With #2 and #3 both vertical the nickel keeps #2,
  * because the safety has #3.
  */
+/** MUSH_TRAP (default on, engine-80; MUSH_TRAP=0 turns it off): in Book (cover4_book_read, cover6_book) the nickel is the
+ * "Soft Squat": #3 out or flat = trap it (HNFL-050, image-checked; Ross: "if #3 runs an out, he traps it"), driving on
+ * #3 from outside-in while the Mike walls #3's release and zones the hook. Stubbie keeps HNFL-270's "3 cancelled =
+ * 7-seam-flat" zone. The trap holds while #3 stays shallow; a #3 who turns up is the safety's (Read #3). */
+export const MUSH_TRAP = process.env.MUSH_TRAP !== '0';
+const BOOK_CALLS = new Set(['cover4_book_read', 'cover6_book']);
+
 function mush(c: RuleCtx): Directive {
   const two = ref(c, 2);
   const three = ref(c, 3);
+  if (MUSH_TRAP && BOOK_CALLS.has(c.sim.defAlign.coverage.id) && three) {
+    if (c.state.mode === 'trap') {
+      if (three.release !== 'vertical' || three.depth < 7) return { t: 'trap', r: three.r };
+      c.state.mode = 'zoned';
+      return zoneOf(c);
+    }
+    if (c.state.mode !== 'zoned' && (three.release === 'flat' || three.release === 'out') && three.depth < NO_COVER) {
+      c.state.mode = 'trap';
+      return { t: 'trap', r: three.r };
+    }
+  }
   if (!two || c.state.mode === 'zoned') return zoneOf(c);
   const cancels = !!three && (three.release === 'flat' || three.release === 'out') && three.depth < NO_COVER;
   const shallow = two.deepest <= NO_COVER && two.release !== 'none' && two.release !== 'vertical' && two.release !== 'block';
@@ -611,7 +809,48 @@ function stubbieSafety(c: RuleCtx): Directive {
 /** Halves apex, vertical curl (HNFL-097): wall #2's vertical to 12 and match
  * #2 up and in; anything else zones the curl (a flat by #2 belongs to the
  * squat corner) and cuts what comes under. */
+/** C2_APEX (default on, engine-80; C2_APEX=0 turns it off): the Cover 2 vertical-curl apex (`c2_hook`: Cover 2 Match,
+ * Wild, Inverted, Tampa hooks, the 6/8 half-side hook) plays his taught rule on #2 (coverage-position spec item 1;
+ * HNFL-334/-097 vertical curl, HNFL-015 smash), from his own read of #2 and #1, re-read every tick:
+ * - undeclared (#2 not yet 5 yd, inside 0.9 s, not in the flat): read #2's release (MATCH_DECLARE's declare phase);
+ * - vertical: wall him; hand him to the half safety once a safety is seen over the top past 10 yd (or at 15 yd);
+ * - in (under 14 yd): match him inside (unchanged);
+ * - corner, sail or deep out (an out by a #2 who has climbed past 7 yd): match it from underneath, trailing under him
+ *   (the squat corner sinks on #1 or takes the flat);
+ * - flat or short out: zone the curl window on his side, not the hook, and wall #1 (the new #2) breaking inside;
+ * - stop or anything else: hook zone and the crosser wall (unchanged). */
+export const C2_APEX = process.env.C2_APEX !== '0';
+
+function verticalCurlTaught(c: RuleCtx): Directive {
+  const st = c.state;
+  const two = ref(c, 2);
+  const one = ref(c, 1);
+  const hook = () => cut(c) ?? zoneOf(c);
+  if (!two || st.mode === 'handed') return hook();
+  const declared = two.release === 'flat' || two.deepest >= MATCH_DECLARE_YD || c.sim.t >= MATCH_DECLARE_T;
+  if (two.release === 'none' || !declared) return readRelease(two);
+  const curl = (): Directive => {
+    if (one && (one.release === 'in' || one.release === 'under') && one.depth < 14) return man(one, { lev: 'inside' });
+    return zoneOf(c, c.side === 'S' ? 'curl_s' : 'curl_w');
+  };
+  switch (two.release) {
+    case 'vertical':
+      if (two.depth >= 15 || (two.depth >= 10 && hasVisibleCap(c.a, c.sim, two))) { st.mode = 'handed'; return hook(); }
+      return { t: 'wall', r: two.r };
+    case 'in':
+      return two.depth < 14 ? man(two, { lev: 'inside' }) : hook();
+    case 'out':
+      if (two.climbed) return man(two, { lev: 'inside', trail: true });
+      return curl();
+    case 'flat':
+      return curl();
+    default:
+      return hook();
+  }
+}
+
 function verticalCurl(c: RuleCtx): Directive {
+  if (C2_APEX) return verticalCurlTaught(c);
   const two = ref(c, 2);
   if (c.state.mode === 'in' && two) return man(two, { lev: 'inside' });
   if (two && c.state.mode !== 'zoned' && two.release === 'in' && two.depth < 14) {
@@ -742,6 +981,11 @@ function settle(c: RuleCtx, pick: ReceiverRead | null, lock: boolean, opts: ManO
  * the safety the innermost (one vertical gets both: "1 vertical route =
  * 2-on-1"). Every pool member is read every tick so the order is honest.
  */
+/** BOX_IN (default on, engine-80; BOX_IN=0 turns it off): the Box low inside defender keeps the first in-breaker from the
+ * bunch (HNFL-053 "hook takes the first in") instead of CUT_WALL walling and passing him: in a bunch pickup the exchange
+ * has already been made, and the shallow from the bunch has no one else to go to. */
+export const BOX_IN = process.env.BOX_IN !== '0';
+
 function box(c: RuleCtx, job: 'out_low' | 'in_low' | 'out_deep' | 'in_deep'): Directive {
   const pool = ([1, 2, 3] as const).map(n => ref(c, n)).filter((rd): rd is ReceiverRead => !!rd);
   if (!pool.length) return zoneOf(c);

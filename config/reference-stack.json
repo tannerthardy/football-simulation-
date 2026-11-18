@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "engine-79",
+  "id": "engine-80",
   "runSet": {
     "commit": "1b5415de99b5b7194eff045f3c37a07a4c54c1a9",
     "seeds": [
@@ -362,6 +362,16 @@
     "BACK_AS_THREE": "on",
     "PA_TABLES": "on",
     "QUICK_HITCH": "on",
+    "HALF_OWN": "on",
+    "MATCH_DECLARE": "on",
+    "C2_APEX": "on",
+    "SQUAT_TOPDOWN": "on",
+    "Q_APEX": "on",
+    "TAMPA_PIPE": "on",
+    "MUSH_TRAP": "on",
+    "QUARTERS_CHECK": "on",
+    "SCREW": "on",
+    "BOX_IN": "on",
     "RELEASE_SIDE": "on",
     "SCREEN_DECLARE": "on",
     "ROUTE_SHAPE": "off",

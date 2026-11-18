@@ -2,7 +2,7 @@
 
 One combination of experimental flags that Run Game, Defense, Flex and Coverage all measure against. Before this, each agent tested on its own mix (the FLAT_PRESS / ZONE_RUN back-and-forth on 2026-11-09 came from two different flag sets), and no list of anyone's stack existed in the repository.
 
-- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-79`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
+- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-80`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
 - **The code:** `run/G3-oz-backfield` a749beb7 + `defense/G2-stance-tell` a0cb0789 (#411) + `defense/G2-lb-start` (#416, with #409) + `claude/quirky-franklin-9lbwbp` (#417, with #415) + develop 6676dfc2.
 - **Since 2026-11-09 the stack is the engine's default.** The flags listed `on` are read as on unless set to `0`; a bare command in a clean shell and `npm run ref -- <command>` run the same engine. `npm run ref -- --off -- <command>` runs the legacy engine (every listed flag off). `test/reference-stack.test.ts` fails if the file and the code defaults ever disagree. See "Promotion" below.
 
@@ -608,6 +608,42 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
 
+
+## engine-80: coverage rules by position, as taught (2026-11-18)
+
+On: ten coverage rules from Rules + Coaching's coverage-position spec (docs/reviews/2026-11-17-coverage-position-spec.md,
+its table, and docs/reviews/2026-11-18-quarters-tree.md), each closing a hole found in staged play against the rule the
+sources teach. Before -> after are the staged tables in each flag's FLAGS row (the other rules of the stack on in both
+arms where they were measured stacked).
+
+| flag | the hole | before -> after (staged) | source |
+|---|---|---|---|
+| `HALF_OWN` | halves and the middle re-picked their verticals each tick and leaned the two-vertical split to the QB's look | midpoint miss at the throw 1.13 -> 1.00 yd; outcomes flat (yd/att 6.85 -> 6.83); lateral reversals 0.308 -> 0.292 | HNFL-334/-097 split & squeeze; Bowen |
+| `MATCH_DECLARE` | the Rip/Liz seam/flat man zoned off on any out: #2's flat caught 32/32 at ~12 yd/att | curl_flat's flat 12/24 at 4.7; Cover 3 match family yd/att 7.65 -> 6.93 | Saban Rip/Liz; USA Football 7272; HNFL-056/-292 |
+| `C2_APEX` | the Cover 2 apex went to the hook on #2's flat, leaving the curl | curl_flat's curl 24/26 at 13.1 -> 12/15 at 10.1; Cover 2 family 9.48 -> 8.31 | HNFL-334/-097/-015 |
+| `SQUAT_TOPDOWN` | the squat corner locked the flat under a sail or corner (a 70-yd sideline run) | flood's #2 out 16.1 -> 8.2 yd/att; the flat it now leaves 10.2 -> 14.3 (taught trade) | HNFL-099/-097/-334 |
+| `Q_APEX` | CUT_WALL's pass-off overrode the quarters apex's "take #2 across" with #3 away | mesh's #2 shallow 10.0 -> 6.2 yd/att; quarters set 7.91 -> 7.72 | HNFL-200/-365/-078/-198/-051 |
+| `TAMPA_PIPE` | the Tampa Mike rode smash's corner stem to 16 yd | he holds the pipe (y 22-24 while the stem crosses 19); 6.31 -> 6.46 (smash corner and seams not thrown in either arm) | HNFL-028/-241 |
+| `MUSH_TRAP` | the Book nickel zoned #3's flat where the sheet traps it | stick's #3 flat 18/18 at 17.5 -> 14/18 at 7.4; Book/Stubbie set 10.72 -> 9.34 | HNFL-050 (image), Ross |
+| `QUARTERS_CHECK` | Cover 6 vs 8 and Palms were random draws | the half to the boundary, Palms vs two detached #2s, MOD vs an attached #2; 8.42 -> 8.23 | HNFL-085/-229/-260, -051/-195 |
+| `SCREW` | the quarters safety eased into his alley on any run read, play action included | play action 6.68 -> 6.24 yd/att; runs unchanged (iz 3.21 -> 3.31, oz 4.38 -> 4.28) | HNFL-114 (image); USA Football 7422 |
+| `BOX_IN` | CUT_WALL's pass-off overrode Box's first in from the bunch | mesh's #2 from bunch 13.8 -> 5.1 yd/att; Box 6.98 -> 6.25 | HNFL-053 |
+
+Card (Integration, six seeds, whole games, the first eight together against the reference): yards per attempt
+-0.21 / -0.24 / +0.15 / -0.49 / +0.40 / -0.27 (mean -0.11); YAC per reception -0.58 / -0.44 / +0.42 / -0.59 / +0.56 /
+-0.61 (mean -0.21); 20+ yd completions -0.7 / -1.2 / -0.1 / -1.3 / +1.2 / -1.3 (mean -0.6): four of six favorable,
+nothing adverse elsewhere. By layer (four seeds): the two Cover 3 rules about flat, the two Cover 2 rules carry most of
+it. All ten (with SCREW and BOX_IN), seeds 61 / 88: yards per attempt +0.08 / -0.54, YAC +0.14 / -0.65.
+
+Held, with why:
+- `C3_HOOK` (the Cover 3 hook on #3's over, and #3 to the flat under a vertical #2): written, not landed; no installed
+  concept presents the shape.
+- `PALMS_FIX` (the Palms trap on #2's out inside 5 yd, the wheel before the throw): written, not landed; it changed no
+  staged play (no installed #2 out at 6-7.5 yd, no pre-throw wheel).
+- `ZONE_IT` (quarters vs a receiver stack checks to Box): needs a stack formation; built with the offense-variety
+  formations (rules/off-variety, OFF_VARIETY), not in this step.
+- CUT_WALL's other taught exemptions (Cover 6 Area hook, banjo inside, mike3, the Cover 2 apex's in, the Cover 3
+  hook's Push): measured, none moves a staged row; our offense rarely runs a shallow under them.
 
 ## engine-79: a receiver leaves his route only once he knows the ball (2026-11-18)
 
