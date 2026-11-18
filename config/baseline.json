@@ -493,7 +493,8 @@
     "HONEST_TACKLE": "0",
     "QB_RELEASE": "0",
     "OPEN_FIELD": "0",
-    "OPEN_FIELD_GAIN": "0"
+    "OPEN_FIELD_GAIN": "0",
+    "OPEN_FIELD_FINISH": "0"
   },
   "worldDefaults": {
     "handContact": "center",

@@ -49,6 +49,30 @@ const SHORT = 2;
 const LANE = 1.5;
 
 const onTop = new WeakMap<Agent, boolean>();
+/** OPEN_FIELD_FINISH (on since engine-86, with OPEN_FIELD_GAIN; OPEN_FIELD_FINISH=0 restores): the mirror is for a runner who can still cut both ways. Once the runner
+ * he sees has committed to a line (running near top speed, where a cut costs him the speed he would beat the angle
+ * with) or has the sideline on his outside (less room to that side than he covers in one cut time), the defender stops
+ * giving ground and takes chase's meeting angle at his inside leverage, the sideline as help. The switch has enter and
+ * exit margins and persists per defender (the commit rule): it reopens only when the runner slows well below the line
+ * speed and has room both ways again. Why: with OPEN_FIELD_GAIN the on-top mirror applies past the sticks, and against a
+ * runner already at full speed it held a cushion that never closed (cover4 stick: 3.5 -> 4.1 yd at 9 yd/s); 6 of 9 new
+ * touchdowns in the paired staged set were mid-field catches the chase had pushed out or tackled. */
+export const OPEN_FIELD_FINISH = process.env.OPEN_FIELD_FINISH !== '0';
+/** A runner at or above this seen speed has committed to his line (yd/s); he is free again below the exit speed. */
+const FINISH_SPEED_ENTER = 7, FINISH_SPEED_EXIT = 6;
+/** One cut's time (s): the sideline is on his outside when he has less room to it than he covers in this time, plus
+ * FINISH_SIDE yd; he has room again past FINISH_SIDE_EXIT more. */
+const FINISH_CUT_T = 0.5, FINISH_SIDE = 1, FINISH_SIDE_EXIT = 1.5;
+const finishing = new WeakMap<Agent, boolean>();
+/** OPEN_FIELD_FINISH: whether this defender has stopped mirroring the runner he sees (persists with margins). */
+function finishes(a: Agent, seen: Perceived): boolean {
+  const speed = Math.hypot(seen.vel.x, seen.vel.y), side = Math.min(seen.pos.y, FIELD_WIDTH - seen.pos.y);
+  const room = FINISH_SIDE + FINISH_CUT_T * speed;
+  const was = finishing.get(a) ?? false;
+  const now = was ? speed > FINISH_SPEED_EXIT || side < room + FINISH_SIDE_EXIT : speed >= FINISH_SPEED_ENTER || side < room;
+  finishing.set(a, now);
+  return now;
+}
 
 /** Attempt 2: the gather's goal shift (yd along x) that keeps the arrival on top of the runner: the cushion shrinking
  * linearly to nothing at contact, while the on-top approach applies (decided by onTopPoint this tick). */
@@ -87,6 +111,7 @@ export function onTopPoint(sim: PlaySim, a: Agent, target: Agent, seen: Perceive
       if (t > 0 && t < 1 && Math.hypot(a.pos.x + dx * t - q.x, a.pos.y + dy * t - q.y) < LANE) { ok = false; break; }
     }
   }
+  if (ok && OPEN_FIELD_FINISH && finishes(a, seen)) ok = false;
   onTop.set(a, ok);
   if (!ok) return null;
   const tau = clamp(dist / Math.max(1, a.profile.vmax), 0, LEAD_MAX);

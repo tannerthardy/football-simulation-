@@ -164,6 +164,7 @@
     "HAND_MOMENT": "off",
     "OPEN_FIELD": "on",
     "OPEN_FIELD_GAIN": "on",
+    "OPEN_FIELD_FINISH": "on",
     "HEAD": "off",
     "GRAB_CONNECT": "off",
     "GRASP_ARM_MOMENT": "on",
