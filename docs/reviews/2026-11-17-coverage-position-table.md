@@ -708,3 +708,10 @@ L1 = deep man comes downhill and gets passed. L2 = nobody deeper after a pass-by
   (`cover1_banjo` is `man:false`); the 3-match Mike on a back's angle or under release (`mike3`, final #3); the Cover 2
   apex matching #2's in under 14 yd (`verticalCurl`); the Cover 3 hook's Push man on #2 when #2 runs short. Each is a
   taught match, so each is a candidate exemption to measure first.
+- The five unexempted CUT_WALL candidates, measured 2026-11-18 by exempting each from the pass-off (a diagnostic, not
+  committed; all earlier flags on, 2 seeds x flip): Cover 6 Area hook (gun_wing_12, 8 concepts) 6.94 / 6.99 yd/att;
+  Cover 1 banjo inside (gun_bunch_11, 3 Cover 1 calls) 5.32 / 5.35; mike3 (cover2_match/cover4/cover3_match) 7.43 /
+  7.43; Cover 2 apex's in (cover2_match/wild/tampa2) 10.01 / 9.76, every change one slant_flat breakaway; Cover 3 hook's
+  Push (cover3 match/seam/buzz) 7.19 / 6.90, one row (flood's weak dig 23.9 / 19.6). None built: on our installed
+  concepts the pass-off rarely reaches these rules with a shallow under them. Taught exemptions to revisit when the
+  offense runs shallows at those defenders.
