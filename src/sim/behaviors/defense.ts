@@ -3020,10 +3020,10 @@ export function toward(a: Vec2, b: Vec2): Vec2 {
  *     1.5 outside), scored by distance to his landmark with an arriving / sitting receiver ahead of a leaving one; the
  *     one he is playing keeps him until another beats it by LADDER_PICK_BEAT, and of threats within that margin the
  *     deeper wins (the ball brings him down: he does not leave a deeper threat for a shallow one). Underneath an
- *     intermediate route he takes the point on the QB's line to it at his own depth; against a short route that has sat
- *     down he gets in front of it (LADDER_FRONT yd, on the QB's line); against a short one still moving he takes the
- *     lane halfway down to it, a yard above it at least (v2's in-front on every short route put him in front 76% vs
- *     the NFL's 57% and behind the catcher at the catch). A vertical in his area is carried to his zone's carry depth, then passed.
+ *     throwing-lane point between the QB and that threat, tight to the receiver: the zone lane's own geometry (0.82 of
+ *     the way from the QB, half a yard in front of him at least, within his radius of the landmark, the receiver's
+ *     motion fed forward), with nothing pre-empting it. (v1 held his set depth over short routes: in front 34%; v2 put
+ *     him a yard in front of every short route: 76%, NFL 57%. Neither constant was taught; the lane point is.) A vertical in his area is carried to his zone's carry depth, then passed.
  *  3. Break on the throw (his release belief; playBall, unchanged), with the ladder as his coverage until he sees it.
  * Coverage-specific rules enter only as the landmark (zoneLandmark), his area (zoneBand) and the carry depth. Ported:
  * the Cover 2 flat (squat) corner sinks with #1 until the flat is threatened in front of him (Rules + Coaching). Left out
@@ -3032,7 +3032,7 @@ export function toward(a: Vec2, b: Vec2): Vec2 {
  * sink, ZONE_HOLD's lean (replaced by the look-held slide), the box backer's guard step. */
 export const ZONE_LADDER = process.env.ZONE_LADDER === '1';
 const LADDER_CARRY: Partial<Record<ZoneId, number>> = { hook_s: 14, hook_w: 14, hook_mid: 14, hole: 14, robber: 14, curl_flat_s: 12, curl_flat_w: 12, flat_s: 18, flat_w: 18 };
-const LADDER_FRONT = 1, LADDER_PICK_BEAT = 1.5, LADDER_IN = 0.5, LADDER_OUT = 1.5, LADDER_TAU = 0.3, LADDER_STEADY = 0.6;
+const LADDER_PICK_BEAT = 1.5, LADDER_IN = 0.5, LADDER_OUT = 1.5, LADDER_TAU = 0.3, LADDER_STEADY = 0.6;
 export class UnderneathLadder implements Behavior {
   readonly kind = 'zone';
   readonly zoneEyes = true;
@@ -3092,18 +3092,15 @@ export class UnderneathLadder implements Behavior {
         }
         this.passed.add(th); this.carrying = null; this.threat = null;
       } else {
-        const fut = { x: s.pos.x + s.vel.x * 0.4, y: s.pos.y + s.vel.y * 0.4 }, fd = depthOf(fut), qd = depthOf(q.pos);
-        // Under an intermediate route: the point on the QB's line to it at his depth. Under a short one: widen to it.
-        // Under an intermediate route: the point on the QB's line to it at his depth. In front of a short one: a yard in
-        // front of it on the QB's line (between the passer and the route), not held above it.
-        // A settled (sitting) short route: in front of it. A moving one: the throwing lane between his depth and the route,
-        // a yard above it at least (he is not passed by it, and does not leave the deeper part of his area).
-        const sitting = Math.hypot(s.vel.x, s.vel.y) < 2.5;
-        const want = fd > holdDepth + 0.5 ? holdDepth
-          : sitting ? clamp(fd - LADDER_FRONT, 0.5, holdDepth) : clamp(Math.max(fd + 1, (fd + holdDepth) / 2), 0.5, holdDepth);
-        const y = fd - qd > 0.5 ? q.pos.y + (fut.y - q.pos.y) * clamp((want - qd) / (fd - qd), 0, 1) : fut.y;
-        const tgt = { x: atDepth(want), y: clamp(y, 0.5, FIELD_WIDTH - 0.5) };
-        return withFacingTechnique(track(a, tgt, { x: 0, y: s.vel.y * 0.8 }, { facing: facingQB, speed: 0.95, gain: 1.6 }), { label: 'ladder-relate', key: s.vel });
+        // The throwing-lane point between the QB and the threat, tight to the receiver (the zone lane's geometry: 0.82 of the
+        // way from the QB, at least half a yard in front of him, within his radius of the landmark), with the receiver's
+        // motion fed forward. No settle, stem-read or flat-hold mode pre-empts it.
+        const lane = lerp(q.pos, s.pos, 0.82);
+        let tgt = depthOf(lane) > depthOf(s.pos) - 0.5 ? { x: atDepth(depthOf(s.pos) - 0.5), y: lane.y } : lane;
+        const off = sub(tgt, lm), ol = Math.hypot(off.x, off.y), radius = this.zone.includes('flat') ? 11 : this.zone === 'robber' || this.zone === 'hook_mid' || this.zone === 'hole' ? 6.5 : 7.5;
+        if (ol > radius) tgt = { x: lm.x + (off.x / ol) * radius, y: lm.y + (off.y / ol) * radius };
+        tgt = { x: tgt.x, y: clamp(tgt.y, 0.5, FIELD_WIDTH - 0.5) };
+        return withFacingTechnique(track(a, tgt, { x: s.vel.x * 0.5, y: s.vel.y * 0.8 }, { facing: facingQB, speed: 1, gain: 1.6 }), { label: 'ladder-relate', key: s.vel });
       }
     }
     // Rung 1: his landmark, sliding with the QB's look.
