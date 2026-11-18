@@ -316,6 +316,7 @@
     "OWNED_FIX": "on",
     "RCV_KNOWS": "on",
     "FLAT_SINK": "on",
+    "FLAT_CARRY": "off",
     "ZONE_EYES": "on",
     "QB_HONEST_FEEL": "on",
     "THROW_PLATFORM": "off",
