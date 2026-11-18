@@ -106,7 +106,7 @@ function clearLane(a: Agent, sim: PlaySim, cmd: MoveCommand): MoveCommand {
  * 53%) and their bodies touched 40% of the time within 5 yd of the line (NFL
  * 11%) (lane.py, engine-31 vs BDB 2025 weeks 1-3). */
 const ROUTE_CRAFT = process.env.ROUTE_CRAFT !== '0';
-/** STEM_WORK (experimental, off): the stem is worked against the leverage of the defender over him, as taught ("attack
+/** STEM_WORK (default on, engine-90; STEM_WORK=0 turns it off): the stem is worked against the leverage of the defender over him, as taught ("attack
  * the defender's leverage": stem at his leverage shoulder to make him open, then break; on a vertical, get on top of him,
  * stacking him). Off, stems are straight lines: NFL stems near the underneath men move 1.40 yd/s laterally 0.5 s before
  * the release, ours 0.22 (sitting routes); verticals 1.05 vs 0.36 (scripts/diag/routes/flow_mix.py, BDB 2025).
@@ -121,7 +121,7 @@ const ROUTE_CRAFT = process.env.ROUTE_CRAFT !== '0';
  *   back on his line 2 yd before the break, so the return is not run as the lean), so his break point and landmark are unchanged (the QB's
  *   forecast holds). His speed is unchanged: a stem that is not straight is longer, so the break arrives as late as his
  *   body makes it. */
-const STEM_WORK = process.env.STEM_WORK === '1';
+const STEM_WORK = process.env.STEM_WORK !== '0';
 const STEM_MIN = 5;
 
 /** ROUTE_END (experimental, off; docs/reviews/2026-11-14-route-end.md): the route's end as coached.
