@@ -4,7 +4,9 @@
  * while he reads, before he has decided on anyone. On: he holds his set point until his eyes are finishing on the man
  * he has decided on, and his step from there is toward that man and no longer than a hitch. */
 import { afterEach, describe, expect, it, vi } from 'vitest';
-vi.hoisted(() => { process.env.QB_FOOTWORK = '0'; process.env.QB_KEY_READ = '0'; process.env.QB_EDGE_THREAT = '0'; process.env.QB_HEAD = '0'; process.env.QB_CALL_ROUTES = '0'; process.env.CONCEPT_DROPS = '0'; process.env.CONCEPT_FIT = '0'; process.env.BACK_AS_THREE = '0'; process.env.PA_TABLES = '0'; }); // engine-73: fixture recorded before the QB group of the engine-73 landing; QB to re-record with it on
+vi.hoisted(() => { process.env.QB_FOOTWORK = '0'; process.env.QB_KEY_READ = '0'; process.env.QB_EDGE_THREAT = '0'; process.env.QB_HEAD = '0'; process.env.QB_CALL_ROUTES = '0'; process.env.CONCEPT_DROPS = '0'; process.env.CONCEPT_FIT = '0'; process.env.BACK_AS_THREE = '0'; process.env.PA_TABLES = '0'; process.env.OWNED_FIX = '0'; }); // engine-73: fixture recorded before the QB group of the engine-73 landing; QB to re-record with it on
+// engine-81 (Defense): OWNED_FIX pinned off here. The deep-third corner now keeps #2 with #1, which moves the Cover 3 scene
+// around the pocket; on one of these plays his single step after the gate becomes 1.28 yd (limit 1.1). QB lane to re-record with it on.
 
 afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 
