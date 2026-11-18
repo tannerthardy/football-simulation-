@@ -1,4 +1,16 @@
-# Running with a twisted trunk is free (Tools item, from Flex, 2026-11-18)
+# Running with a twisted trunk is free (Tools item, from Flex, 2026-11-18): RETRACTED
+
+**Retracted the same day.** A twisted trunk is priced. `trunkPrice` (`src/physics/kinematics.ts`) takes `TRUNK_PRICE`
+(0.0018 per degree: 10 percent of the speed cap at the 55 deg limit; Coverage's stated choice, checked against the NFL's
+shoulder-off-travel curve, `twist_price.py`) off the speed cap whenever the trunk is twisted (DIR_CAP on). My matched
+arrival speeds showed no loss because a cap only binds a body running at it, and these defenders mostly were not. The
+price also shows in `test/pursuit-commit.test.ts`. With BALL_SIGHT's look, pursuers' requests turn more: 9.14 against
+8.40 deg/s. With `trunkPrice` held at 1 the claim holds again. With the gaze cone on the hips instead of the shoulders,
+or with the look's hip turn removed, it still fails. So nothing here is for Tools. What follows is kept as the record.
+
+---
+
+
 
 Integration asked for this to be logged for Tools, to hand over after DIR_START lands. Not built.
 
