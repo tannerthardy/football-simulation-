@@ -1687,7 +1687,8 @@ const SAFETY_DEPTH = process.env.SAFETY_DEPTH !== '0';
  * at +0.6 s (BDB 2025 wk 1-4, Cover 2/6); ours bailed 3.6-4.8 yd/s, from 2-8 yd deeper. */
 const DEEP_DECLARE = process.env.DEEP_DECLARE === '1';
 /** DEEP_CUSHION (experimental, off): a deep safety's depth over the deepest vertical he sees is the cushion he needs to
- * turn and run with him, not a fixed drop. With the receiver's seen downfield speed vr and his own backward speed vd,
+ * turn and run with him, not a fixed drop. With vr the faster of a stated receiver top speed (DEEP_CUSHION_TOP, 9 yd/s)
+ * and the fastest he has seen this receiver run this play, and his own backward speed vd,
  * the receiver gains (vr - vd) over his half-turn and reaction (his turn rate and perception delay) and (vr - vd)^2 / 2a
  * while he accelerates to match (a = his top speed over his sprint time constant); on top of that a base cushion,
  * DEEP_CUSHION_BASE (4 yd, a stated choice: two bodies and a reach with a step to spare). Floored at his landmark. He
@@ -1695,6 +1696,9 @@ const DEEP_DECLARE = process.env.DEEP_DECLARE === '1';
  * 2 yd over it): a receiver who throttles down or sits lets him slow; one who keeps climbing keeps him bailing. */
 const DEEP_CUSHION = process.env.DEEP_CUSHION === '1';
 const DEEP_CUSHION_BASE = 4;
+/** DEEP_CUSHION: the top speed he assumes any receiver can reach until he has seen one run faster (yd/s, a stated
+ * belief: a fast NFL receiver at full speed). */
+const DEEP_CUSHION_TOP = 9;
 function deepCushionNeed(a: Agent, receiverVx: number): number {
   const gap = Math.max(0, receiverVx - Math.max(0, a.vel.x));
   const turn = 0.5 * Math.PI / a.profile.turnRate + a.profile.reactionTime;
@@ -1756,6 +1760,8 @@ export class ZoneCoverage implements Behavior {
   private declSeen: { r: Agent; since: number } | null = null;
   private declOn: Agent | null = null;
   private declVertSince = -1;
+  /** DEEP_CUSHION: the fastest downfield speed he has seen each vertical threat run this play. */
+  private seenTop = new Map<Agent, number>();
   /** ZONE_HOLD bit 32: his held lean point on the QB's seen head line (null until he has seen the head). */
   private leanAt: Vec2 | null = null;
   /** ZONE_HOLD bit 64: the direction he was moving at the hand-off (null when none is binding), and last tick's technique. */
@@ -2115,7 +2121,9 @@ export class ZoneCoverage implements Behavior {
       // receiver, floored at his landmark; he keeps pace with the stem only as far as he is short of that cushion.
       let txUse = tx;
       if (DEEP_CUSHION && this.initialDepth >= 9) {
-        const need = deepCushionNeed(a, deepest.vel.x);
+        // He respects speed he has not seen yet: a stated top speed for any receiver, or the faster he has seen.
+        for (const th of vert) this.seenTop.set(th.r, Math.max(this.seenTop.get(th.r) ?? 0, th.vel.x));
+        const need = deepCushionNeed(a, Math.max(DEEP_CUSHION_TOP, this.seenTop.get(deepest.r) ?? 0));
         txUse = Math.min(END_LINE_X - a.profile.radius, Math.max(lm.x, deepest.pos.x + need));
         tv.x *= clamp((need + 2 - (a.pos.x - deepest.pos.x)) / 2, 0, 1);
       }
