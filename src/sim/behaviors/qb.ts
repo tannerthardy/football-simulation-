@@ -17,7 +17,7 @@
 import { FIELD_WIDTH } from '../../core/field.js';
 import { clamp, logistic, wrapAngle, type Vec2, type Vec3 } from '../../core/vec.js';
 import { arcPoint, dragFreeLaunch, minFlightTime, qbArmSpeed, solveLaunch, DRAG_SPIRAL } from '../../physics/ball.js';
-import type { MoveCommand } from '../../physics/kinematics.js';
+import { stepBody, type Body, type MoveCommand } from '../../physics/kinematics.js';
 import { timeToReach } from '../../physics/reach.js';
 import { supportParams } from '../../physics/support.js';
 import type { PassConcept, ReceiverRef } from '../../playbook/types.js';
@@ -474,6 +474,17 @@ const QB_BREAK = process.env.QB_BREAK === '1';
  * With QB_BREAK, moving is the other answer at that moment: he leaves with the ball up when a spot outside is there,
  * and reads on from it. */
 const QB_RELOOK = process.env.QB_RELOOK !== '0';
+/** READ_WINDOW (experimental, off; READ_WINDOW=1 turns it on; not yet a finished repair, see
+ * docs/REFERENCE_STACK.md engine-88): Integration, 2026-11-18 (engine-83's late cross-field
+ * flats, docs/reviews/2026-11-18-late-cross.md). On a quick concept a read is live through its window and dead once he
+ * has moved off it: the progression advances on its own clock (the dwell and the plan's beats, as before), and a read he
+ * has passed is never reopened, not by the relook when his reads run out (QB_RELOOK sent him back to read 0, the flat,
+ * at 2.6-3.1 s) and not by a late flip of the key read (which reapplied the pair and reset him to its first route).
+ * Out of live reads, the plan's checkdown (its outlet) gets one more look; nothing there, the ball comes out now: the
+ * pocket break (QB_BREAK), else a scramble if he has the lane, else thrown away (not held for his clock: without this he
+ * stood until sacked, slant_flat sacks 1 -> 24 of 252). A read his eyes moved off is kept on the read he ends each tick
+ * on, so a key reorder within the tick cannot reopen it. Off, a passed quick read could come back and be thrown across the field at 3.1-3.5 s. */
+const READ_WINDOW = process.env.READ_WINDOW === '1';
 /** QB_KEY_MAN (experimental, off; QB_KEY_MAN=1; with READ_PLAN's defender keys): his key read is taken on the defender
  * the concept names, not on whoever is nearest the line between the two routes (on corner_flat that was the middle
  * linebacker once the corner sank under the corner route). Before the snap he picks the man by the role's alignment
@@ -792,6 +803,47 @@ const HOT_LOOK = process.env.HOT_LOOK !== '0';
  * still reacts in full to reach the ball's path), carrying his seen velocity through it before he redirects. A man he
  * sees tied up in a block is priced as before: his velocity is the block's, not a course of his own. */
 const QB_WINDOW_ARRIVE = process.env.QB_WINDOW_ARRIVE !== '0';
+/** QB_CLOSE_BELIEF (experimental, off; QB_CLOSE_BELIEF=1 turns it on): Integration, 2026-11-18. For a defender he sees
+ * moving away from the catch point (seen speed over 1 yd/s, heading more than about 100 deg off it) or occupied (within
+ * 2.5 yd of another receiver he sees and moving with him), the window's arrival is the engine's own movement from the
+ * state he sees: the man keeps his velocity through his start time, then brakes, turns and runs at the point under the
+ * same body step the engine moves him with (stepBody: his acceleration, braking, lateral and turn limits), not the
+ * timeToReach approximation from a reaction spent standing still. An occupied man's eyes are on his man, not the
+ * passer, so his start is the ball seen in the air (the release, then a not-facing reaction); so is one moving away with
+ * his back to the passer (attempt 2: from his own start he was still priced to contest 0.44 against 0.00 real). Everyone else is priced as
+ * before. Staged held-ball truth, the seam at the second hitch (docs/reviews/2026-11-18-peek-clock.md): a man seen moving
+ * away was priced to contest 0.53 and was never within 1.5 yd of the ball (median 6.4 yd off); occupied 0.41 against
+ * 0.14. No NFL constant: the movement is the engine's. */
+const QB_CLOSE_BELIEF = process.env.QB_CLOSE_BELIEF === '1';
+/** QB_ROLE_PATH (default since engine-88, provisional; QB_ROLE_PATH=0 turns it off): Integration's deep-mix item,
+ * 2026-11-18. The window prices a deep defender through the path his role really takes, from what the passer sees of him
+ * (docs/reviews/2026-11-18-defender-path.md: our deep men see the ball 0.25-0.30 s after the release, but the eyes-on
+ * ones are match carriers keeping a roof over a receiver and playing the catch, a median 2.7 yd from the aim; the
+ * bailing ones reverse after 0.8 s and never get back).
+ * - A carrier: a deep man (8+ yd) deeper than a receiver by half a yard, within 7 yd of him, moving with him (velocity
+ *   cosine above 0.7) and not closing on him faster than 1.5 yd/s (chosen; a safety driving downhill is not a carry).
+ *   Carrying the target, he contests only a ball thrown at or beyond him; a ball under him he plays from behind (only
+ *   the securing window's dislodge at his arrival). Carrying another receiver, he is priced from where that route takes
+ *   him at the arrival.
+ * - A deep man (10+ yd) bailing away from the point keeps his velocity through the catch window.
+ * - Any other deep zone man (10+ yd), for a ball thrown at or beyond him (within 2 yd short of his depth, chosen), runs
+ *   the engine's body (stepBody) from his seen velocity and facing, held until his belief of the ball.
+ * Everyone else is priced as before. Six-seed card (fe150600, off vs on): completion -0.6 pt, Y/A +0.34, INT +0.15 pt,
+ * YAC +0.03, 20+ plays +0.7 pt. */
+const QB_ROLE_PATH = process.env.QB_ROLE_PATH !== '0';
+/** QB_CLOSE_BELIEF: his time (s) to play `pt` within `radius`: his seen velocity kept for `start` s, then the body's run at it. */
+function bodyArrive(seen: { pos: { x: number; y: number }; vel: { x: number; y: number }; facing: number }, profile: any, speedScale: number,
+  pt: { x: number; y: number }, radius: number, start: number): number {
+  const body: Body = { pos: { ...seen.pos }, vel: { ...seen.vel }, facing: seen.facing, energy: 1, sprintLoad: 0, profile };
+  const dt = 0.05, vmax = profile.vmax * speedScale;
+  for (let t = 0; t < 4; t += dt) {
+    const dx = pt.x - body.pos.x, dy = pt.y - body.pos.y, d = Math.hypot(dx, dy);
+    if (d <= radius) return t;
+    const cmd: MoveCommand = t < start ? { vel: { ...body.vel } } : { vel: { x: dx / d * vmax, y: dy / d * vmax }, facing: Math.atan2(dy, dx) };
+    stepBody(body, cmd, dt);
+  }
+  return 4;
+}
 /** QB_WINDOW_ARRIVE: when a defender can play `pt` (within `radius`): his reaction, less the share his seen course already
  * serves, carrying his velocity through it; the moment that carry passes within reach, else then his redirect from there. */
 function arriveTime(mover: { pos: { x: number; y: number }; vel: { x: number; y: number }; profile: any; speedScale?: number }, pt: { x: number; y: number }, radius: number, react: number, goal: { x: number; y: number } = pt): number {
@@ -1177,6 +1229,13 @@ export class QBPass implements Behavior {
   }
   /** READ_PLAN: the plan's outlet (the back), as installed; QB_PEEK_CLOCK sends a finished vertical peek to him. */
   private planOutlet: Agent | null = null;
+  /** READ_WINDOW: reads he has moved off on a quick concept (dead for the play), and the read he was on last tick. */
+  private expired = new Set<Agent>();
+  /** READ_WINDOW: reads whose footwork step has let him throw them (onStep true while he was on the read). */
+  private stepOpen = new Set<Agent>();
+  private lastLive: Agent | null = null;
+  private outletSeen = false;
+  private readWindow(): boolean { return READ_WINDOW && this.concept.family === 'quick'; }
   private initPlan(sim: PlaySim): boolean {
     const p = installedPlan(this.concept, sim.offCall.formation.id);
     if (!p) return false;
@@ -1482,6 +1541,16 @@ export class QBPass implements Behavior {
     return clamp(hitIn - 0.05 - this.delivery(a), Math.min(full, 0.05), full);
   }
 
+  /** READ_WINDOW: the read he ended the last tick on, against the one before. Any read his eyes have moved off is dead for
+   * the play (the plan's checkdown keeps one more look). Kept on the read he finished each tick on, so a move that a
+   * later reorder (a key flip) or reset undoes within a tick still counts. */
+  private noteRead(): void {
+    if (!this.readWindow() || this.setAt < 0) return;
+    const cur = this.reads[this.readIdx] ?? null, prev = this.lastLive;
+    if (prev && prev !== cur) { if (prev === this.planOutlet) this.outletSeen = true; else this.expired.add(prev); }
+    this.lastLive = cur;
+  }
+
   update(a: Agent, sim: PlaySim): MoveCommand {
     const t = sim.t;
     if (sim.carrier !== a) { if (QB_BREAK) a.carryPosture = null; return stand(); }
@@ -1491,6 +1560,7 @@ export class QBPass implements Behavior {
     // Wrapped up by a tackler he cannot start a throw (with only a hand on him he
     // still can); a throw already on its way comes out, wobbling.
     if (heldBy(a, sim) >= 0.6 && this.phase !== 'windup') return stand();
+    this.noteRead();
 
     // Eyes: what he looks at is what he sees; everything else is memory and belief.
     let gaze = this.gazePoint(sim);
@@ -1789,6 +1859,10 @@ export class QBPass implements Behavior {
       const k = target ? this.reads.indexOf(target) : -1;
       if (k >= 0) { this.readIdx = k; this.readStart = t; if (HOT_LOOK) this.triDone = true; }
     }
+    // READ_WINDOW: a reset, a relook or a reordered progression never lands on a read he has moved off (noteRead).
+    if (this.readWindow() && this.setAt >= 0) {
+      while (this.reads[this.readIdx] && this.expired.has(this.reads[this.readIdx])) this.readIdx++;
+    }
     let read = this.reads[this.readIdx];
     // QB_FOOTWORK bit 8: a grass read is decided by its step (the plant for read 1), with no dwell: not thrown by then,
     // he is on to his next read.
@@ -1908,12 +1982,19 @@ export class QBPass implements Behavior {
         const go = this.startIfFinish(a, sim, ev);
         if (go) { this.pendingSpot = toSpotNow.spot; return go; }
       }
-      if (ev && ev.P >= need && ev.intRisk <= risk && (!FW_STEPS || this.onStep(a, read, u, t))) { const go = this.startIfFinish(a, sim, ev); if (go) { if (QB_KEY_THROW && this.keyAnswer?.target === read) { this.keyThrows++; this.keyAnswer = null; } return go; } }
+      const stepOk = !FW_STEPS || this.onStep(a, read, u, t);
+      if (stepOk) this.stepOpen.add(read);
+      if (ev && ev.P >= need && ev.intRisk <= risk && stepOk) { const go = this.startIfFinish(a, sim, ev); if (go) { if (QB_KEY_THROW && this.keyAnswer?.target === read) { this.keyThrows++; this.keyAnswer = null; } return go; } }
       // A read that has made his break and is plainly covered is done: he
       // moves on after a glance rather than waiting out the read.
       const forecast = this.receiverForecasts.get(read);
       const broken = !!forecast?.hasBreak && forecast.estimate?.motion === 'installed-route' && forecast.breakAt() === null;
-      if (!keyHold && (FW_STEPS && this.onBeats(read) ? this.beatDue(read, t, glance) : (t - this.readStart > readDwell || (broken && (!ev || ev.P < 0.5 * need) && t - this.readStart > glance)))) {
+      // READ_WINDOW: a quick read thrown on a footwork step is not passed on the dwell before that step has let him throw
+      // it (the read is decided by its step; the 0.35 s dwell ran out before a hitch step's 0.75 s stride, so an open
+      // read went by unthrown and, dead, ended the play in a throwaway). Bounded by one stride past the dwell; a read
+      // plainly covered after its break still goes on a glance.
+      const stepPending = this.readWindow() && FW_STEPS && !!this.stepOf.get(read) && !this.stepOpen.has(read) && t - this.readStart <= readDwell + this.stride();
+      if (!keyHold && (FW_STEPS && this.onBeats(read) ? this.beatDue(read, t, glance) : ((t - this.readStart > readDwell && !stepPending) || (broken && (!ev || ev.P < 0.5 * need) && t - this.readStart > glance)))) {
         // QB_RHYTHM: moving off a read, his eyes pass the outlet; a released
         // outlet that is there now is the throw, in rhythm, not at the end.
         // READ_PLAN: the back is a read in the plan, at his window on the side he releases to (HonestNFL 224,
@@ -1923,6 +2004,22 @@ export class QBPass implements Behavior {
         if (outlet) { const go = this.startIfFinish(a, sim, outlet); if (go) return go; }
         this.readIdx++;
         this.readStart = t;
+      }
+    } else if (!read && this.readWindow()) {
+      // READ_WINDOW: out of reads, only a live one can come back (the checkdown); with none, the best live option, else he
+      // breaks the pocket (QB_BREAK), scrambles or throws it away; never a read he passed.
+      this.relooks++;
+      const live = this.reads.findIndex((r) => !this.expired.has(r) && !(r === this.planOutlet && this.outletSeen));
+      if (live >= 0) { this.readIdx = live; this.readStart = t; }
+      else {
+        const best = this.bestOption(a, sim, u);
+        if (best && best.P >= thr - 0.1 && best.intRisk <= maxInt + 0.03) { const go = this.startIfFinish(a, sim, best); if (go) return go; }
+        if (QB_BREAK && this.tryBreak(a, sim, 'reads')) return this.outTick(a, sim);
+        // Quick game with every read gone and no checkdown: the ball comes out now (a scramble if he has the lane, else
+        // thrown away), not held in the pocket waiting for his clock (off this branch, 24 of 252 slant_flat snaps were
+        // sacks at 4-5 s after his reads ran out at about 2.8 s).
+        if (!QB_BREAK && this.shouldScramble(a, sim, false)) return this.scramble(a, sim);
+        return this.throwAway(a, sim);
       }
     } else if (!read && QB_RELOOK) {
       // QB_RELOOK: his reads are done and nothing was there. He moves and reads on (QB_BREAK), or goes back to his
@@ -2788,6 +2885,45 @@ export class QBPass implements Behavior {
       // start; one on the target follows the stem until the break; anyone
       // else keeps his course until the ball is out.
       const onTarget = Math.hypot(seen.pos.x - target.x, seen.pos.y - target.y) < 3;
+      // QB_CLOSE_BELIEF: moving away from where the ball is going, or occupied with another receiver, as he sees him.
+      let closeState: 'away' | 'occupied' | null = null;
+      if (QB_CLOSE_BELIEF) {
+        const sp = Math.hypot(seen.vel.x, seen.vel.y), gx = point.x - seen.pos.x, gy = point.y - seen.pos.y, gl = Math.hypot(gx, gy) || 1;
+        // Occupied means eyes on his man, not the passer: a zone man by a receiver but facing him reads the throw (attempt 3:
+        // without this, Cover 3 corners carrying #1 were priced late and picked the hitch inside them in games).
+        const occupied = sp > 1 && !facingQB && sim.offense.some((o) => {
+          if (o === r || o === a || !this.receiverForecasts.has(o)) return false;
+          const so = this.has(sim, o), sv = this.receiverForecasts.get(o)!.predict(sim.t, 0.1) ?? so;
+          const ovx = (sv.x - so.x) / 0.1, ovy = (sv.y - so.y) / 0.1, os = Math.hypot(ovx, ovy);
+          return Math.hypot(so.x - seen.pos.x, so.y - seen.pos.y) < 2.5 && os > 1 && (ovx * seen.vel.x + ovy * seen.vel.y) / (os * sp) > 0.7;
+        });
+        closeState = occupied ? 'occupied' : sp > 1 && (gx * seen.vel.x + gy * seen.vel.y) / (gl * sp) < -0.2 ? 'away' : null;
+      }
+      // QB_ROLE_PATH: the roof carrier over the target, and a deep man bailing away, as he sees them.
+      let roof = false, deepBail = false, carryAt: { x: number; y: number } | null = null;
+      if (QB_ROLE_PATH) {
+        const dirX = sim.attackDir(a.team), sp = Math.hypot(seen.vel.x, seen.vel.y);
+        // The receiver he carries, as the passer sees it: one he is deeper than (by half a yard), within 7 yd of, moving
+        // with him. His path to the arrival is that receiver's route with his offset kept (the carry's roof).
+        let carried: Agent | null = null, best = 7;
+        if (sp > 1 && (seen.pos.x - sim.los) * dirX >= 8) for (const o of sim.offense) {
+          const f = this.receiverForecasts.get(o); if (!f || o === a) continue;
+          const now = o === r ? target : this.has(sim, o), nx = f.predict(sim.t, 0.1) ?? now, vx = (nx.x - now.x) / 0.1, vy = (nx.y - now.y) / 0.1, vs = Math.hypot(vx, vy);
+          const dd = Math.hypot(seen.pos.x - now.x, seen.pos.y - now.y);
+          // Breaking downhill on him (a robber, a quarters safety on a declared in-break, a deep break on a corner/out cut) is
+          // not a carry: the gap to him closing faster than 1.5 yd/s in his picture (chosen margin) keeps him a ball-chaser.
+          const closingOn = dd > 1e-6 ? ((seen.vel.x - vx) * (now.x - seen.pos.x) + (seen.vel.y - vy) * (now.y - seen.pos.y)) / dd : 0;
+          if (vs > 1 && dd < best && closingOn < 1.5 && (seen.pos.x - now.x) * dirX >= 0.5 && (seen.vel.x * vx + seen.vel.y * vy) / (sp * vs) > 0.7) {
+            best = dd; carried = o;
+            const at = f.predict(sim.t, total) ?? now; carryAt = { x: at.x + seen.pos.x - now.x, y: at.y + seen.pos.y - now.y };
+          }
+        }
+        roof = carried === r;
+        if (carried && carried !== r) roof = false; else carryAt = roof ? carryAt : null;
+        if (carried && carried !== r) closeState = closeState ?? null;
+        const gx = point.x - seen.pos.x, gy = point.y - seen.pos.y, gl = Math.hypot(gx, gy) || 1;
+        deepBail = (seen.pos.x - sim.los) * dirX >= 10 && sp > 1 && (gx * seen.vel.x + gy * seen.vel.y) / (gl * sp) < -0.2;
+      }
       // THROW_REACT: no defender breaks on the ball before it is in the air.
       // One facing him in zone keys the motion, so he goes at the release or
       // a reaction after the motion starts, whichever is later; one in man
@@ -2813,7 +2949,7 @@ export class QBPass implements Behavior {
         const age = this.mind.pictureAge(d), A = dp.vmax / Math.max(dp.tau, 1e-3);
         spreadD = Math.min(0.5 * A * age * age, dp.vmax * age) / Math.max(dp.vmax, 1e-3);
       }
-      return { d, dp, dBall, blind, mover, react, leap, spreadD, facingQB, tied, estimateError: a.mind.judgment(`reach:${d.slot}`) * noise };
+      return { d, dp, dBall, blind, mover, react, leap, spreadD, facingQB, tied, closeState, roof, deepBail, carryAt, seen, speedScale: mover.speedScale, estimateError: a.mind.judgment(`reach:${d.slot}`) * noise };
     });
     // A ball that arrives at `pt`: who contests it at the catch, who can get a
     // hand on it on the way, and how many of those become picks.
@@ -2834,29 +2970,50 @@ export class QBPass implements Behavior {
     const at = (pt: Vec3) => {
       let pOpen = 1, pClear = 1, intRisk = 0, pSecure = 1, intPath = 0, intJump = 0, intContest = 0, noPathPick = 1, noCatchPick = 1;
       const v0 = dragFreeLaunch(from, pt, T);
-      for (const { d, dp, dBall, blind, mover, react, leap, spreadD, facingQB, tied, estimateError } of defenders) {
-        const tt = blind + (QB_WINDOW_ARRIVE && !tied ? arriveTime(mover, pt, dp.reach + 0.3, react) : timeToReach(mover, pt, dp.reach + 0.3) + react);
+      for (const { d, dp, dBall, blind, mover, react, leap, spreadD, facingQB, tied, closeState, roof, deepBail, carryAt, seen, speedScale, estimateError } of defenders) {
+        // QB_CLOSE_BELIEF: an occupied man starts from the ball seen in the air (the release, a not-facing reaction); one
+        // moving away from his own start time; both run the engine's body from what he sees.
+        const cbStart = closeState === 'occupied' || (closeState === 'away' && !facingQB) ? wind + dp.reactionTime * 1.8 : blind + react;
+        const cbArrive = (q: { x: number; y: number }, rad: number) => bodyArrive(seen, dp, speedScale ?? 1, q, rad, cbStart);
+        // QB_ROLE_PATH: a deep man bailing away keeps going through the catch window; the roof carrier, for a ball thrown
+        // under him, plays the catch from behind (no contest in flight or at the catch; only the late dislodge).
+        const dirX = sim.attackDir(a.team);
+        const under = QB_ROLE_PATH && roof && !tied && (pt.x - sim.los) * dirX < (seen.pos.x + seen.vel.x * total - sim.los) * dirX - dp.reach;
+        // QB_ROLE_PATH: a deep man carrying another receiver stays with him: where that route takes him at the arrival, then
+        // only from there (he does not leave his man for the ball in flight).
+        const carryTt = QB_ROLE_PATH && carryAt && !roof && !tied ? total + timeToReach({ pos: carryAt, vel: { x: 0, y: 0 }, profile: dp, speedScale: speedScale ?? 1 }, pt, dp.reach + 0.3) : null;
+        // QB_ROLE_PATH (third form): any other deep zone man (10+ yd in his picture) runs the engine's own body from what he
+        // sees: his velocity and facing held until his belief of the ball (the release, then his reaction), then the turn
+        // and the run, not timeToReach from rest after a standing reaction. (Defense, NFL week 1: deep men close 2.7 / 3.6 /
+        // 4.8 / 5.3 yd/s at 0 / 0.4 / 0.8 / 1.2 s; ours 3.9 / 4.2 / 5.2: the defenders are NFL-like, the price was not.)
+        // Only for a ball thrown at or beyond him (within 2 yd short of his depth, chosen): a deep man driving downhill on a
+        // ball in front of him (a curl or dig under a safety) keys it as before (games, attempt 3 unrestricted: ints 9 -> 19,
+        // the rise on 5-15 yd throws).
+        const deepZone = QB_ROLE_PATH && !tied && carryTt === null && !roof && !deepBail && (seen.pos.x - sim.los) * dirX >= 10
+          && (pt.x - sim.los) * dirX >= (seen.pos.x - sim.los) * dirX - 2;
+        const dzStart = wind + dp.reactionTime;
+        const tt = carryTt !== null ? carryTt : deepZone ? bodyArrive(seen, dp, speedScale ?? 1, pt, dp.reach + 0.3, dzStart) : QB_ROLE_PATH && deepBail && !tied ? Math.max(total, bodyArrive(seen, dp, speedScale ?? 1, pt, dp.reach + 0.3, total)) : closeState && !tied ? cbArrive(pt, dp.reach + 0.3) : blind + (QB_WINDOW_ARRIVE && !tied ? arriveTime(mover, pt, dp.reach + 0.3, react) : timeToReach(mover, pt, dp.reach + 0.3) + react);
         // BLITZ_READ: a defender he believes is rushing is going elsewhere, not to this point.
         const m = tt - total + estimateError + (BLITZ_READ ? 3 * this.rushOf(d) : 0);
         const sCatch = PICTURE_AGE ? Math.hypot(0.13, spreadD, spreadR / Math.max(dp.vmax, 1e-3)) : 0.13;
         const sPath = PICTURE_AGE ? Math.hypot(0.1, spreadD) : 0.1;
-        const contest = 1 - logistic((m - 0.05) / sCatch);
+        const contest = under ? 0 : 1 - logistic((m - 0.05) / sCatch);
         // A defender who gets there well before the ball is sitting on the route.
-        const first = 1 - logistic((m + 0.3) / sCatch);
+        const first = under ? 0 : 1 - logistic((m + 0.3) / sCatch);
         pOpen *= 1 - contest * (0.55 + 0.3 * dBall);
         // DEF_BELIEF: arriving after the ball but inside the securing window, he can still get it out.
         if (DEF_BELIEF) {
-          const late = Math.max(0, (1 - logistic((m - 0.05 - SECURE_T) / Math.max(sCatch, 0.1))) - contest);
+          const late = Math.max(0, (1 - logistic((Math.max(m, under ? 0.06 : -Infinity) - 0.05 - SECURE_T) / Math.max(sCatch, 0.1))) - contest);
           pSecure *= 1 - late * dislodge;
         }
         // Undercut risk along the flight path: a hand on the ball kills the
         // completion, and some of those become picks.
         let touch = 0;
-        for (const f of [0.3, 0.45, 0.6, 0.75, 0.88]) {
+        for (const f of (under || carryTt !== null ? [] : [0.3, 0.45, 0.6, 0.75, 0.88])) {
           const tau = T * f;
           const b = arcPoint(from, v0, tau);
           if (b.z > leap + 0.1) continue;
-          const tb = blind + (QB_WINDOW_ARRIVE && !tied ? arriveTime(mover, b, dp.reach, react, pt) : timeToReach(mover, b, dp.reach) + react);
+          const tb = deepZone ? bodyArrive(seen, dp, speedScale ?? 1, b, dp.reach, dzStart) : closeState && !tied ? cbArrive(b, dp.reach) : blind + (QB_WINDOW_ARRIVE && !tied ? arriveTime(mover, b, dp.reach, react, pt) : timeToReach(mover, b, dp.reach) + react);
           const mb = tb - (wind + tau) + estimateError;
           touch = Math.max(touch, logistic(-(mb - 0.05) / sPath));
         }
@@ -2867,7 +3024,7 @@ export class QBPass implements Behavior {
         intRisk += iPath + iJump + iContest;
         intPath += iPath; intJump += iJump; intContest += iContest;
         if (marginTrace && pt === point && (contest > 0.05 || iPath + iJump + iContest > 0.001)) marginTrace.push({ slot: d.slot, m: +m.toFixed(3), first: +first.toFixed(3),
-          contest: +contest.toFixed(3), blind: +blind.toFixed(3), react: +react.toFixed(3), wind: +wind.toFixed(3), total: +total.toFixed(3), touch: +touch.toFixed(4),
+          contest: +contest.toFixed(3), roof, deepBail, under, deepZone, carry: carryTt !== null, dDepth: +((seen.pos.x - sim.los) * sim.attackDir(a.team)).toFixed(1), tDepth: +((target.x - sim.los) * sim.attackDir(a.team)).toFixed(1), dTgt: +Math.hypot(seen.pos.x - target.x, seen.pos.y - target.y).toFixed(1), blind: +blind.toFixed(3), react: +react.toFixed(3), wind: +wind.toFixed(3), total: +total.toFixed(3), touch: +touch.toFixed(4),
           iPath: +iPath.toFixed(4), iJump: +iJump.toFixed(4), iContest: +iContest.toFixed(4), facingQB, ballSkills: +dBall.toFixed(2) });
         if (INT_BELIEF) {
           noPathPick *= 1 - clamp(iPath * PATH_PICK * intBelief, 0, 0.95);
@@ -2924,6 +3081,7 @@ export class QBPass implements Behavior {
   private bestOption(a: Agent, sim: PlaySim, urgency: number): ThrowEval | null {
     let best: ThrowEval | null = null;
     for (const r of this.reads) {
+      if (this.readWindow() && this.expired.has(r)) continue; // READ_WINDOW: a passed read is dead
       if (!this.ready(r, sim) && urgency < 0.8) continue;
       const ev = this.evaluate(a, sim, r, urgency);
       if (ev && (!best || ev.value > best.value)) best = ev;

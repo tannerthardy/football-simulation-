@@ -84,7 +84,7 @@ export const SETTLE_DEPTH = process.env.SETTLE_DEPTH !== '0';
  * first (Rules, hole-shot, Cover 2 throws to #1 at 15+ air yards): NFL corner downfield 3.6 yd/s at the throw, ours
  * 0.5 (planted on the set); corner to #1 at arrival 6.4 vs 11.8 yd. */
 export const FLAT_SINK = process.env.FLAT_SINK !== '0';
-/** FLAT_CARRY (on since engine-93; FLAT_CARRY=0 restores; Coverage, Rules + Coaching's rule HNFL-099/-334): with #1 cancelled
+/** FLAT_CARRY (on since engine-89; FLAT_CARRY=0 restores; Coverage, Rules + Coaching's rule HNFL-099/-334): with #1 cancelled
  * (not vertical, his own read with a margin) the Cover 2 flat corner carries the #2 flat that turns up until it is
  * capped (ZoneCoverage.flatCarry); with #1 vertical he sinks with #1 as before. */
 export const FLAT_CARRY = process.env.FLAT_CARRY !== '0';
@@ -98,6 +98,10 @@ const SINK_ENTER = 2, SINK_EXIT = 1;
  * is the one, in his own delayed picture, nearest the QB's perceived facing,
  * within 20 deg (12 deg when he is 20+ yd from the QB). Otherwise no read. */
 const SEEN_EYES = process.env.SEEN_EYES !== '0';
+/** QB_STANCE (behaviors/qb.ts; read here too): with the passer in his throwing stance his chest is open to his
+ * throwing-arm side of the man he is on until the throw rotates him, so a reader of where he is looking or aiming takes
+ * his head (the gaze he shows), not his chest: SEEN_EYES's look and the arm read's pick. */
+const QB_STANCE_SEEN = process.env.QB_STANCE === '1';
 /** HONEST_READS (experimental, off; HONEST_READS=1 turns it on): removes
  * true-state reads found by the 2026-11-13 defense audit. A blitzer peels to
  * the ball only once he has seen the throw, on his acquired flight; the ball
@@ -182,7 +186,7 @@ export function seenQbEyes(a: Agent, sim: PlaySim): Agent | null {
   if (Math.cos(a.body.facing - toQB) > Math.cos(100 * Math.PI / 180)) {
     const cone = (dist > 20 ? 12 : 20) * Math.PI / 180, tol = Math.cos(cone);
     let best = tol;
-    const look = QB_BODY_SEEN ? q.head ?? q.facing : q.facing;
+    const look = QB_BODY_SEEN || QB_STANCE_SEEN ? q.head ?? q.facing : q.facing;
     const off = new Map<Agent, number>();
     for (const o of sim.offense) {
       if (o === sim.qb || ['LT', 'LG', 'C', 'RG', 'RT'].includes(o.slot)) continue;
@@ -2971,7 +2975,8 @@ function shoulderTarget(a: Agent, sim: PlaySim, key: number): { R: Agent | null;
   // The passer he is watching, through the tracking channel (his gaze is on him: the arm key requires it).
   const q = sim.track(a, sim.qb, 1, true);
   const err = sim.dice('shoulder', a).normal(0, (SHOULDER_READ_SD_MIN + SHOULDER_READ_SD_SPAN * (1 - a.r('anticipation'))) * Math.PI / 180);
-  const read = q.facing === undefined ? null : q.facing + err;
+  const aim = QB_STANCE_SEEN ? q.head ?? q.facing : q.facing;
+  const read = aim === undefined || aim === null ? null : aim + err;
   let best: Agent | null = null, bestOff = SHOULDER_CONE, seenBearing: number | null = null;
   if (read !== null) for (const r of sim.offense) {
     if (r === sim.qb || isOL(r)) continue;

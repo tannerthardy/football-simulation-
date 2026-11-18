@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "engine-93",
+  "id": "engine-89",
   "runSet": {
     "commit": "1b5415de99b5b7194eff045f3c37a07a4c54c1a9",
     "seeds": [
@@ -147,6 +147,7 @@
     "CATCH_CARRY": "on",
     "FORECAST_BREAK": "on",
     "FORECAST_HOLD": "on",
+    "FORECAST_FINISH": "on",
     "GAP_CLIMB": "on",
     "GAZE": "off",
     "PERCEIVE_TRACK": "off",
@@ -219,6 +220,8 @@
     "QB_MOF_READ": "off",
     "QB_DEEP_WAIT": "off",
     "QB_STANCE": "off",
+    "QB_CLOSE_BELIEF": "off",
+    "QB_ROLE_PATH": "on",
     "TACKLE_SET": "off",
     "EDGE_ARC": "off",
     "POWER_AIM": "on",
@@ -298,6 +301,7 @@
     "QB_POCKET": "off",
     "QB_BREAK": "off",
     "QB_RELOOK": "on",
+    "READ_WINDOW": "off",
     "QB_KEY_MAN": "on",
     "QB_KEY_THROW": "off",
     "PLAN_CLOCK": "on",
