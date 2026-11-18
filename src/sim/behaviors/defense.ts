@@ -85,7 +85,7 @@ export const SETTLE_DEPTH = process.env.SETTLE_DEPTH !== '0';
  * 0.5 (planted on the set); corner to #1 at arrival 6.4 vs 11.8 yd. */
 export const FLAT_SINK = process.env.FLAT_SINK !== '0';
 /** MAN_TRAFFIC (experimental, off; MAN_TRAFFIC=1; Coverage): a man defender passes a body that is not his man over the
- * top or under, by his leverage, when he sees it in time (ManCoverage.avoidTraffic); a rub can still pick him. */
+ * top or under, on his man's side as he sees him, when he sees it in time (ManCoverage.avoidTraffic); a rub can still pick him. */
 export const MAN_TRAFFIC = process.env.MAN_TRAFFIC === '1';
 const FLAT_SINK_DEPTH = 18;
 const SINK_ENTER = 2, SINK_EXIT = 1;
@@ -1372,8 +1372,8 @@ export class ManCoverage implements Behavior {
   /**
    * MAN_TRAFFIC: over the top or under the trash. From his own picture (seen positions and velocities), a body that is
    * not his man and that his requested path would run into within the next 0.8 s (closest approach inside both bodies'
-   * radii plus 0.4 yd) is passed on the side his leverage dictates: under it (the line-of-scrimmage side) when he trails
-   * his man, over the top (the deep side) when he has a cushion. Speed is unchanged, so the longer path costs him. A
+   * radii plus 0.4 yd) is passed on his man's side as he sees his man (the shorter way back to him): over the top
+   * when the man is deeper than the body, under when he is shallower. Speed is unchanged, so the longer path costs him. A
    * body that would reach him sooner than he can react (his reaction time) is not avoided: a rub can still pick him.
    * The side is held until he is past the body.
    */
@@ -1397,9 +1397,11 @@ export class ManCoverage implements Behavior {
     if (!hit) return cmd;
     const ux = v.x / sp, uy = v.y / sp, nx = -uy, ny = ux;
     if (this.traffic?.o !== hit.o) {
-      const trailing = !!this.opts.trail || (a.pos.x - R.pos.x) * dir < 0;
-      const deepSide = Math.sign(nx * dir) || Math.sign((a.pos.y - hit.at.y) * ny) || 1;
-      this.traffic = { o: hit.o, side: trailing ? -deepSide : deepSide };
+      // Pass it on his man's side, as he sees his man: the shorter way back to him. Over the top when the man is
+      // deeper than the body, under when he is shallower (a back in the backfield). Ties go over the top.
+      const rc = sim.see(a, R);
+      const deepSide = Math.sign(nx * dir) || 1;
+      this.traffic = { o: hit.o, side: Math.sign((rc.pos.x - hit.at.x) * nx + (rc.pos.y - hit.at.y) * ny) || deepSide };
     }
     const aim = { x: hit.at.x + nx * this.traffic.side * hit.r, y: hit.at.y + ny * this.traffic.side * hit.r };
     const dx = aim.x - a.pos.x, dy = aim.y - a.pos.y, d = Math.hypot(dx, dy) || 1;
