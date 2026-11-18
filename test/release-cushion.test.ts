@@ -13,6 +13,7 @@ import { playBall, runFit, sawThrow } from '../src/sim/behaviors/defense.js';
 import { CoverageDefender } from '../src/sim/coverage/defender.js';
 import type { Perceived } from '../src/sim/perception.js';
 import { PlaySim } from '../src/sim/playsim.js';
+import { releaseBelief } from '../src/sim/release-belief.js';
 
 const offense = generateTeam(new Rng(401), 'Release offense', 'RCO', { strength: .6 });
 const defense = generateTeam(new Rng(402), 'Release defense', 'RCD', { strength: .6 });
@@ -51,12 +52,18 @@ function stage(rule: MatchRule = 'c3_curl_flat', flip = false) {
   return { sim, a, r, out, startY, pictures, behavior, picture, update };
 }
 
+/** A staged flight. Recognized (RELEASE_BELIEF, re-recorded 2026-11-18): he earns it as in play, from his own record of
+ * the ball in front of him a perception delay old; unrecognized: asked on the tick it is staged, he has seen nothing. */
 function flight(f: ReturnType<typeof stage>, recognized: boolean) {
-  f.sim.throwAt = recognized ? .01 : f.sim.t;
+  f.sim.throwAt = f.sim.t;
   f.sim.ball = { kind: 'air', flight: { pos: { x: 43, y: f.a.pos.y, z: 2 }, vel: { x: 20, y: 0, z: -1 }, drag: 0 },
     thrower: f.sim.qb, target: f.r, releaseT: f.sim.throwAt, releaseX: 35,
-    intended: { x: f.a.pos.x - .2, y: f.a.pos.y, z: 1.2 }, arrivalT: f.sim.t + .1,
+    intended: { x: f.a.pos.x - .2, y: f.a.pos.y, z: 1.2 }, arrivalT: f.sim.t + .6,
     deflected: false, throwaway: false }; f.sim.throwSight.stageRelease(f.sim, f.sim.throwAt);
+  if (recognized) {
+    const t0 = f.sim.t;
+    for (let k = 0; k < 10; k++) { f.sim.t = +(t0 + k * f.sim.dt).toFixed(2); f.sim.recordPerception(); releaseBelief(f.sim, f.a); }
+  }
   f.sim.ballPath = [{ t: f.sim.t + .1, x: f.a.pos.x - .2, y: f.a.pos.y, z: 1.2 }];
 }
 
