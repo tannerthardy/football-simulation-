@@ -84,6 +84,9 @@ export const SETTLE_DEPTH = process.env.SETTLE_DEPTH !== '0';
  * first (Rules, hole-shot, Cover 2 throws to #1 at 15+ air yards): NFL corner downfield 3.6 yd/s at the throw, ours
  * 0.5 (planted on the set); corner to #1 at arrival 6.4 vs 11.8 yd. */
 export const FLAT_SINK = process.env.FLAT_SINK !== '0';
+/** MAN_TRAFFIC (experimental, off; MAN_TRAFFIC=1; Coverage): a man defender passes a body that is not his man over the
+ * top or under, by his leverage, when he sees it in time (ManCoverage.avoidTraffic); a rub can still pick him. */
+export const MAN_TRAFFIC = process.env.MAN_TRAFFIC === '1';
 const FLAT_SINK_DEPTH = 18;
 const SINK_ENTER = 2, SINK_EXIT = 1;
 /** SEEN_EYES (default on; SEEN_EYES=0 restores the QB's internal read target): a zone defender
@@ -1360,7 +1363,47 @@ export class ManCoverage implements Behavior {
       if (!continuing) this.blockingRun = false;
       return command;
     }
-    return this.coverMan(a, sim);
+    const cmd = this.coverMan(a, sim);
+    return MAN_TRAFFIC ? this.avoidTraffic(a, sim, cmd) : cmd;
+  }
+
+  /** MAN_TRAFFIC: the body he is avoiding and the side, held until he is past it. */
+  private traffic: { o: Agent; side: number } | null = null;
+  /**
+   * MAN_TRAFFIC: over the top or under the trash. From his own picture (seen positions and velocities), a body that is
+   * not his man and that his requested path would run into within the next 0.8 s (closest approach inside both bodies'
+   * radii plus 0.4 yd) is passed on the side his leverage dictates: under it (the line-of-scrimmage side) when he trails
+   * his man, over the top (the deep side) when he has a cushion. Speed is unchanged, so the longer path costs him. A
+   * body that would reach him sooner than he can react (his reaction time) is not avoided: a rub can still pick him.
+   * The side is held until he is past the body.
+   */
+  private avoidTraffic(a: Agent, sim: PlaySim, cmd: MoveCommand): MoveCommand {
+    const v = cmd.vel, sp = Math.hypot(v.x, v.y);
+    if (sp < 1) { this.traffic = null; return cmd; }
+    const R = this.target, dir = sim.attackDir(R.team);
+    let hit: { o: Agent; tc: number; at: Vec2; r: number } | null = null;
+    for (const o of sim.offense) {
+      if (o === R) continue;
+      const c = sim.see(a, o);
+      const px = c.pos.x - a.pos.x, py = c.pos.y - a.pos.y, wx = v.x - c.vel.x, wy = v.y - c.vel.y;
+      const ww = wx * wx + wy * wy; if (ww < 1e-6) continue;
+      const tc = (px * wx + py * wy) / ww;
+      if (tc <= 0 || tc > 0.8) { if (this.traffic?.o === o) this.traffic = null; continue; }
+      const r = a.profile.radius + o.profile.radius + 0.4;
+      if (Math.hypot(px - wx * tc, py - wy * tc) >= r) { if (this.traffic?.o === o) this.traffic = null; continue; }
+      if (tc < a.profile.reactionTime && this.traffic?.o !== o) continue;
+      if (!hit || tc < hit.tc) hit = { o, tc, at: { x: c.pos.x + c.vel.x * tc, y: c.pos.y + c.vel.y * tc }, r };
+    }
+    if (!hit) return cmd;
+    const ux = v.x / sp, uy = v.y / sp, nx = -uy, ny = ux;
+    if (this.traffic?.o !== hit.o) {
+      const trailing = !!this.opts.trail || (a.pos.x - R.pos.x) * dir < 0;
+      const deepSide = Math.sign(nx * dir) || Math.sign((a.pos.y - hit.at.y) * ny) || 1;
+      this.traffic = { o: hit.o, side: trailing ? -deepSide : deepSide };
+    }
+    const aim = { x: hit.at.x + nx * this.traffic.side * hit.r, y: hit.at.y + ny * this.traffic.side * hit.r };
+    const dx = aim.x - a.pos.x, dy = aim.y - a.pos.y, d = Math.hypot(dx, dy) || 1;
+    return { ...cmd, vel: { x: (dx / d) * sp, y: (dy / d) * sp } };
   }
 
   /** An unrecognized throw does not erase the installed man technique. */
