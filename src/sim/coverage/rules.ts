@@ -732,9 +732,27 @@ function readHook(c: RuleCtx, handoff = 8): Directive {
  * (zone the curl-flat). With #2 and #3 both vertical the nickel keeps #2,
  * because the safety has #3.
  */
+/** MUSH_TRAP (experimental, off; MUSH_TRAP=1 turns it on): in Book (cover4_book_read, cover6_book) the nickel is the
+ * "Soft Squat": #3 out or flat = trap it (HNFL-050, image-checked; Ross: "if #3 runs an out, he traps it"), driving on
+ * #3 from outside-in while the Mike walls #3's release and zones the hook. Stubbie keeps HNFL-270's "3 cancelled =
+ * 7-seam-flat" zone. The trap holds while #3 stays shallow; a #3 who turns up is the safety's (Read #3). */
+export const MUSH_TRAP = process.env.MUSH_TRAP === '1';
+const BOOK_CALLS = new Set(['cover4_book_read', 'cover6_book']);
+
 function mush(c: RuleCtx): Directive {
   const two = ref(c, 2);
   const three = ref(c, 3);
+  if (MUSH_TRAP && BOOK_CALLS.has(c.sim.defAlign.coverage.id) && three) {
+    if (c.state.mode === 'trap') {
+      if (three.release !== 'vertical' || three.depth < 7) return { t: 'trap', r: three.r };
+      c.state.mode = 'zoned';
+      return zoneOf(c);
+    }
+    if (c.state.mode !== 'zoned' && (three.release === 'flat' || three.release === 'out') && three.depth < NO_COVER) {
+      c.state.mode = 'trap';
+      return { t: 'trap', r: three.r };
+    }
+  }
   if (!two || c.state.mode === 'zoned') return zoneOf(c);
   const cancels = !!three && (three.release === 'flat' || three.release === 'out') && three.depth < NO_COVER;
   const shallow = two.deepest <= NO_COVER && two.release !== 'none' && two.release !== 'vertical' && two.release !== 'block';

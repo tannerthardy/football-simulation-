@@ -689,3 +689,7 @@ L1 = deep man comes downhill and gets passed. L2 = nobody deeper after a pass-by
   catch. The Book/Stubbie MUSH nickel zones #3's flat where HNFL-050 traps it (item 14).
 - Tampa 2 Mike: carries any vertical within 9 yd of the ball, so he takes #2's corner stem on smash as a seam and
   releases only when his read turns it out, about 0.9 s after the break (item 9, the Tampa Mike row).
+- Source check (2026-11-18): HNFL cells above rest on the OCR text unless noted. Checked against the sheet image:
+  HNFL-050, 077, 114, 139, 194, 195 (in docs/reviews/2026-11-18-quarters-tree.md). The Book/Stubbie MUSH row is
+  corrected by HNFL-050's image: the nickel (Soft Squat) traps #3's out or flat; "get width to #2 w/ depth" is the
+  safety's line. Stubbie (HNFL-270) zones it (7-seam-flat). Built as MUSH_TRAP.

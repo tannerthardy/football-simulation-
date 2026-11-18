@@ -366,6 +366,7 @@
     "SQUAT_TOPDOWN": "off",
     "Q_APEX": "off",
     "TAMPA_PIPE": "off",
+    "MUSH_TRAP": "off",
     "RELEASE_SIDE": "on",
     "SCREEN_DECLARE": "on",
     "ROUTE_SHAPE": "off",
