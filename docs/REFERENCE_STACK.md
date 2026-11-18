@@ -609,6 +609,39 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
 
 
+## engine-86: an open-field defender past the sticks stays on top, and finishes once the runner has committed (2026-11-18)
+
+On: `OPEN_FIELD_GAIN` and `OPEN_FIELD_FINISH` (Defense lane), carded together. `OPEN_FIELD` (engine-64) is unchanged otherwise.
+
+**The bug (`OPEN_FIELD_GAIN`).** `onTopPoint`'s short-yardage exception, `(firstDownX - x) * dir <= 2`, was also true for
+every runner already past the line to gain. So the on-top approach never applied after a first-down catch, which is
+nearly every completion of 10+ air yards. With the fix, only a runner within 2 yd short of the line counts as short yardage.
+
+**What the fix exposed (`OPEN_FIELD_FINISH`).** Past the sticks, the mirror (lead up to 0.6 s, cushion 0.4 x distance,
+inside-out offset) ran against runners already at full speed on long runs. It held a cushion that never closed: on cover4
+stick (doubles, seed 3) the quarter safety's distance grew from 3.5 to 4.1 yd at 9 yd/s. Coached: mirror only while the
+runner can still cut both ways. Once the runner he sees is at 7+ yd/s (exit below 6), or has less room to the sideline
+than 1 yd plus 0.5 s of his speed (exit 1.5 yd more), the defender stops giving ground and takes chase's meeting angle
+with inside leverage, the sideline as help. The switch persists per defender.
+
+**Staged, paired** (`scripts/diag/zone-yac/zone-yac2.mts`, every zone completion, all non-screen concepts x cover
+2/3/4/6 x doubles/trips x 3 seeds x flip, n 1,013 per arm, all keys paired):
+
+| arm | YAC mean | p90 | 20+ YAC | never touched 20+ | TD | out of bounds | missed tackles / play | broken / play |
+|---|---|---|---|---|---|---|---|---|
+| base | 5.97 | 12.1 | 5.7% | 33 | 34 | 9.7% | 0.021 | 0.081 |
+| GAIN | 6.05 | 12.1 | 5.2% | 34 | 42 | 9.4% | 0.013 | 0.083 |
+| GAIN + FINISH | 5.86 | 12.1 | 5.4% | 30 | 35 | 9.5% | 0.015 | 0.080 |
+
+- GAIN alone is a wash: 169 better / 121 worse, +0.08 yd. It adds 8 touchdowns, 6 of them mid-field catches the chase
+  had ended at the sideline.
+- The pair: 158 better / 135 worse, -0.11 yd.
+- Short concepts (flats, sticks, hitches, slants, outs, drive, mesh; n 675): YAC 6.43 / 6.52 / 6.27, TD 29 / 36 / 30,
+  missed tackles per play 0.024 / 0.015 / 0.015. Stopping the mirror against a committed runner did not cost more misses.
+
+**Checks.** typecheck, build, reference-stack, baseline-runner, decision-information scan and guard, and dither-budget
+pass with both flags on by default. test:all is in the PR.
+
 ## engine-83: the quarterback's ball, window, key and committed throw (2026-11-18)
 
 On: `QB_DRIVE`, `QB_RHYTHM_THROW`, `QB_WINDOW_ARRIVE`, `QB_KEY_PLANT`, `QB_STICK` (QB lane; records
