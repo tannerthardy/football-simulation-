@@ -214,7 +214,7 @@ function seamCurlFlat(c: RuleCtx, carry: number, deliver = false): Directive {
   return zoneOf(c);
 }
 
-/** MATCH_DECLARE (experimental, off; MATCH_DECLARE=1 turns it on): the match seam/curl-flat player (Rip/Liz
+/** MATCH_DECLARE (default on, engine-79; MATCH_DECLARE=0 turns it off): the match seam/curl-flat player (Rip/Liz
  * `c3_curl_flat`, `c3_seam` in Seam, Cover 9 and fire zone) reads #2 through the taught declare phase, about three steps
  * or 5 yd (Saban Rip/Liz; USA Football 7272; coverage-position spec gap 6), before he commits, and re-reads when the
  * route changes instead of latching "zoned" on the first break:
@@ -226,7 +226,7 @@ function seamCurlFlat(c: RuleCtx, carry: number, deliver = false): Directive {
  *   carry CUT_WALL's pass-off leaves alone; otherwise deliver him to the hook ("under") and play the curl;
  * - stop: sit in the curl-flat zone over him.
  * Push and Smash are unchanged. Every input is his own read of the receivers (ReleaseReader). */
-export const MATCH_DECLARE = process.env.MATCH_DECLARE === '1';
+export const MATCH_DECLARE = process.env.MATCH_DECLARE !== '0';
 /** MATCH_DECLARE: the declare phase's time (s after the snap; about three steps) and depth (yd). */
 const MATCH_DECLARE_T = 0.9;
 const MATCH_DECLARE_YD = 5;
@@ -395,7 +395,7 @@ function qCorner(c: RuleCtx, meg: boolean): Directive {
 }
 
 /** Quarters safety: #2 decides. Vertical → carry #2 over the top; out/flat/under/stop (or pass-blocking) → help #1 (cap a vertical, rob an in-breaker). */
-/** SCREW (experimental, off; SCREW=1 turns it on): Screw, the quarters answer to play action (HNFL-114, image-checked:
+/** SCREW (default on, engine-79; SCREW=0 turns it off): Screw, the quarters answer to play action (HNFL-114, image-checked:
  * "plays as MOD unless there is any sort of play fake between the QB and back; then the apex triggers and the strong
  * safety takes #2 up and out; nickel reroutes, but no carry"; USA Football 7422 "Mix"). When the quarters safety reads
  * run, he takes #2 man while #2 goes up or out, over the top from outside, instead of easing down into his alley (#2
@@ -403,7 +403,7 @@ function qCorner(c: RuleCtx, meg: boolean): Directive {
  * apex's force is unchanged. A real handoff he sees still pulls him into his fit (the coverage defender's keyed run
  * support fires on the carrier he sees), so play action costs him nothing while a run costs him a beat. A game-plan
  * call in the sources (played when #2's split makes Read useless); here a switch for every q_safety call. */
-export const SCREW = process.env.SCREW === '1';
+export const SCREW = process.env.SCREW !== '0';
 
 function qSafety(c: RuleCtx): Directive {
   const one = ref(c, 1);
@@ -460,7 +460,7 @@ function wallTwo(c: RuleCtx, handoff: number, readStem = false, apex = false): D
  * apex pushes to #1's route. When #2 runs shallow inside with #3 away, the
  * midpoint is occupied by #3 and cannot take a delivery: the apex carries #2
  * back across himself. */
-/** Q_APEX (experimental, off; Q_APEX=1 turns it on): the quarters apex (`q_apex`: MOD, MEG, Palms, the 6/8 quarters
+/** Q_APEX (default on, engine-79; Q_APEX=0 turns it off): the quarters apex (`q_apex`: MOD, MEG, Palms, the 6/8 quarters
  * side) adds his taught rules for #3 and the flat (coverage-position spec item 2; HNFL-200/365/078/198/051), from his
  * own read, before the existing ones:
  * - #2 under with #3 away: take him back across (the existing "two" carry), which CUT_WALL's pass-off now leaves alone
@@ -468,7 +468,7 @@ function wallTwo(c: RuleCtx, handoff: number, readStem = false, apex = false): D
  * - #2 still climbing past 10 yd (walled to the hand-off) while #3 or the back to his side goes to the flat: take the first
  *   flat, top-down, inside-out;
  * - Palms (the corner traps #2's flat): close the curl window over #1 instead of chasing the flat, walling #1 inside. */
-export const Q_APEX = process.env.Q_APEX === '1';
+export const Q_APEX = process.env.Q_APEX !== '0';
 
 function quarterFlatTaught(c: RuleCtx): Directive | null {
   const two = ref(c, 2), one = ref(c, 1);
@@ -586,7 +586,7 @@ function palmsSafety(c: RuleCtx): Directive {
  * `sink` (Cover 2 match / trap): with no flat threat he sinks under #1's
  * vertical to ~13 yards, squeezing the hole shot between him and the half safety.
  */
-/** SQUAT_TOPDOWN (experimental, off; SQUAT_TOPDOWN=1 turns it on): the Cover 2 squat/cloud corner plays the flat
+/** SQUAT_TOPDOWN (default on, engine-79; SQUAT_TOPDOWN=0 turns it off): the Cover 2 squat/cloud corner plays the flat
  * top-down, as taught (coverage-position spec item 7; HNFL-099/097/334: "the ball brings you flat", "sink and
  * squeeze the hole shot"), from his own read, re-read every tick instead of locking the flat:
  * - a flat threat (#2, #3 or the back to the flat, or a short out) with a high threat over him (#1 climbing outside,
@@ -596,7 +596,7 @@ function palmsSafety(c: RuleCtx): Directive {
  * - a flat runner who turns up past 7 yd (the wheel): stay on him over the top;
  * - no flat threat: man under #1 (`sink`) as before.
  * The throw still brings him down through the ball phase. */
-export const SQUAT_TOPDOWN = process.env.SQUAT_TOPDOWN === '1';
+export const SQUAT_TOPDOWN = process.env.SQUAT_TOPDOWN !== '0';
 
 function squatTopDown(c: RuleCtx, sink: boolean): Directive {
   const st = c.state;
@@ -648,7 +648,7 @@ function cloudCorner(c: RuleCtx, sink: boolean): Directive {
 }
 
 /** Tampa 2 Mike: run the pipe — carry the inside-most vertical through the middle to ~20 yards, otherwise the deep hole. */
-/** TAMPA_PIPE (experimental, off; TAMPA_PIPE=1 turns it on): the Tampa 2 Mike runs the pipe as taught (coverage-
+/** TAMPA_PIPE (default on, engine-79; TAMPA_PIPE=0 turns it off): the Tampa 2 Mike runs the pipe as taught (coverage-
  * position spec item 9; HNFL-028 "Mid Run", HNFL-241 "Middle Read #3"), from his own picture:
  * - he carries a true vertical by #2 or #3 (or the back) down the middle, between the hashes plus a yard, inside
  *   trail, and keeps the one he took (no re-pick each tick);
@@ -656,7 +656,7 @@ function cloudCorner(c: RuleCtx, sink: boolean): Directive {
  *   1.5 yd/s and more than half its upfield speed), or leave the pipe, not when the release read later turns "out";
  * - two verticals in the pipe: he takes depth in the middle between them (the safeties squeeze from outside);
  * - nothing vertical in the pipe: his deep-middle zone (unchanged). */
-export const TAMPA_PIPE = process.env.TAMPA_PIPE === '1';
+export const TAMPA_PIPE = process.env.TAMPA_PIPE !== '0';
 const PIPE_HALF = 4;
 
 function tampaPipe(c: RuleCtx): Directive {
@@ -753,11 +753,11 @@ function readHook(c: RuleCtx, handoff = 8): Directive {
  * (zone the curl-flat). With #2 and #3 both vertical the nickel keeps #2,
  * because the safety has #3.
  */
-/** MUSH_TRAP (experimental, off; MUSH_TRAP=1 turns it on): in Book (cover4_book_read, cover6_book) the nickel is the
+/** MUSH_TRAP (default on, engine-79; MUSH_TRAP=0 turns it off): in Book (cover4_book_read, cover6_book) the nickel is the
  * "Soft Squat": #3 out or flat = trap it (HNFL-050, image-checked; Ross: "if #3 runs an out, he traps it"), driving on
  * #3 from outside-in while the Mike walls #3's release and zones the hook. Stubbie keeps HNFL-270's "3 cancelled =
  * 7-seam-flat" zone. The trap holds while #3 stays shallow; a #3 who turns up is the safety's (Read #3). */
-export const MUSH_TRAP = process.env.MUSH_TRAP === '1';
+export const MUSH_TRAP = process.env.MUSH_TRAP !== '0';
 const BOOK_CALLS = new Set(['cover4_book_read', 'cover6_book']);
 
 function mush(c: RuleCtx): Directive {
@@ -809,7 +809,7 @@ function stubbieSafety(c: RuleCtx): Directive {
 /** Halves apex, vertical curl (HNFL-097): wall #2's vertical to 12 and match
  * #2 up and in; anything else zones the curl (a flat by #2 belongs to the
  * squat corner) and cuts what comes under. */
-/** C2_APEX (experimental, off; C2_APEX=1 turns it on): the Cover 2 vertical-curl apex (`c2_hook`: Cover 2 Match,
+/** C2_APEX (default on, engine-79; C2_APEX=0 turns it off): the Cover 2 vertical-curl apex (`c2_hook`: Cover 2 Match,
  * Wild, Inverted, Tampa hooks, the 6/8 half-side hook) plays his taught rule on #2 (coverage-position spec item 1;
  * HNFL-334/-097 vertical curl, HNFL-015 smash), from his own read of #2 and #1, re-read every tick:
  * - undeclared (#2 not yet 5 yd, inside 0.9 s, not in the flat): read #2's release (MATCH_DECLARE's declare phase);
@@ -819,7 +819,7 @@ function stubbieSafety(c: RuleCtx): Directive {
  *   (the squat corner sinks on #1 or takes the flat);
  * - flat or short out: zone the curl window on his side, not the hook, and wall #1 (the new #2) breaking inside;
  * - stop or anything else: hook zone and the crosser wall (unchanged). */
-export const C2_APEX = process.env.C2_APEX === '1';
+export const C2_APEX = process.env.C2_APEX !== '0';
 
 function verticalCurlTaught(c: RuleCtx): Directive {
   const st = c.state;
@@ -981,10 +981,10 @@ function settle(c: RuleCtx, pick: ReceiverRead | null, lock: boolean, opts: ManO
  * the safety the innermost (one vertical gets both: "1 vertical route =
  * 2-on-1"). Every pool member is read every tick so the order is honest.
  */
-/** BOX_IN (experimental, off; BOX_IN=1 turns it on): the Box low inside defender keeps the first in-breaker from the
+/** BOX_IN (default on, engine-79; BOX_IN=0 turns it off): the Box low inside defender keeps the first in-breaker from the
  * bunch (HNFL-053 "hook takes the first in") instead of CUT_WALL walling and passing him: in a bunch pickup the exchange
  * has already been made, and the shallow from the bunch has no one else to go to. */
-export const BOX_IN = process.env.BOX_IN === '1';
+export const BOX_IN = process.env.BOX_IN !== '0';
 
 function box(c: RuleCtx, job: 'out_low' | 'in_low' | 'out_deep' | 'in_deep'): Directive {
   const pool = ([1, 2, 3] as const).map(n => ref(c, n)).filter((rd): rd is ReceiverRead => !!rd);

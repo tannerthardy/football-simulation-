@@ -1,4 +1,7 @@
-import { vi, describe, expect, it } from 'vitest';
+import { vi, describe, expect, it, afterAll } from 'vitest';
+// engine-79 (pinned test-only, Rules + Coaching's coverage landing): c3_curl_flat's block and exchange contract is the pre-engine-79 seam/flat rule (MATCH_DECLARE re-reads #2 instead of latching zoned). The file's owner to re-record with the rule on.
+vi.hoisted(() => { process.env.MATCH_DECLARE = '0'; });
+afterAll(() => { delete process.env.MATCH_DECLARE; });
 vi.hoisted(() => { process.env.MIRROR_SCATTER = '0'; }); // engine-72: fixture recorded on the old alignment scatter; the lane that owns it re-records with MIRROR_SCATTER on (docs/reviews/2026-11-16-pin-delta-engine72.md)
 import { Rng } from '../src/core/rng.js';
 import { generateTeam, pickDefense, pickOffense } from '../src/league/team.js';

@@ -1681,13 +1681,13 @@ export const CURL_SINK = process.env.CURL_SINK !== '0';
  * A call that sends a safety down gives him an underneath zone and is
  * unchanged. */
 const SAFETY_DEPTH = process.env.SAFETY_DEPTH !== '0';
-/** HALF_OWN (experimental, off; HALF_OWN=1 turns it on): a half-field or middle-third safety (an unruled `deep_half_*`
+/** HALF_OWN (default on, engine-79; HALF_OWN=0 turns it off): a half-field or middle-third safety (an unruled `deep_half_*`
  * or `deep_mid` zone) owns his area as taught (coverage-position spec gap 3; HNFL-334/-097, Bowen: "split & squeeze",
  * midpoint, deeper than the deepest). Which receivers are vertical in his half or third comes from his own picture with
  * held membership (in and out of his area, and vertical or not, with ZONE_HOLD's band margins), not re-picked each tick.
  * Two verticals there: he holds their midpoint, with no lean to the QB's look, and does not drive down on either before
  * the throw. One vertical, or none, is unchanged (the pre-throw drive on a single stopped route is gap 2). */
-const HALF_OWN = process.env.HALF_OWN === '1';
+const HALF_OWN = process.env.HALF_OWN !== '0';
 /** SAFETY_DEPTH: a deep safety's depth over the deepest route in his zone, as he sees it, with that route `r` yd past
  * the line: NFL deep safeties' median depth over it is 13.0 / 11.7 / 8.5 yd with the route at 1.2 / 3.7 / 9.7 yd
  * (BDB 2025, safety_cushion.py), i.e. 13.4 - 0.5 r. A slower safety keeps more and a better reader less (scale
@@ -2474,6 +2474,20 @@ function zoneBand(zone: ZoneId, sim: PlaySim): [number, number] {
  * planted defender gives up depth to a route behind him. Replaces the earlier
  * eyes-directed lean (as often wrong as right on catches 0-10 yd). */
 const SHOULDER_READ = process.env.SHOULDER_READ !== '0';
+/** DEEP_GATE (on since engine-78, 2026-11-18; `=0` restores; Rules' coverage-position table gap 1): Cover 3 and Cover 2
+ * deep players (deep thirds, the deep middle, deep halves, Tampa's middle) hold until they see the ball out: an arm-only
+ * belief (the load, a delivery, a pump) keeps his coverage running, with no plant and no shoulder break. Quarter seats
+ * (quarters, palms, Cover 6's quarter side) keep their route triggers. Taught: the deep third and half read the QB and
+ * break on the ball, not the arm (HNFL-027/292; Bowen; docs/reviews/2026-11-17-coverage-position-table.md). Off,
+ * playBelievedBall had no deep check: those seats planted on the load and broke on the shoulders on 59-88% of staged
+ * plays, pumps included (release-belief.ts: a pump counts as a delivery). */
+const DEEP_GATE = process.env.DEEP_GATE !== '0';
+const HELD_DEEP = new Set(['deep_third_s', 'deep_third_w', 'deep_mid', 'deep_half_s', 'deep_half_w', 'tampa_mid']);
+function heldDeepSeat(a: Agent): boolean {
+  const b = a.behavior as { zone?: string; recordedZone?: () => string | undefined } | undefined;
+  const z = b instanceof ZoneCoverage ? b.zone : b?.recordedZone?.();
+  return !!z && HELD_DEEP.has(z);
+}
 /** QB_BODY_SEEN (experimental, off; QB_BODY_SEEN=1): the passer's throwing motion and head are read from what a
  * defender sees of his body (`Agent.arm`, `Agent.head`, recorded with every perception sample), with that defender's
  * own delay and view, instead of from the published `sim.windupAt` / `sim.windupEndAt` (the time the motion started,
@@ -2713,6 +2727,9 @@ function playBelievedBall(a: Agent, sim: PlaySim, man: Agent | null, continueCov
     if (man && BALL_EST_MAN_LOOK && estimatesFor(a) && !hasObservedFlight(a) && manLooks(a, sim, man, rb.releasedAt)) return manLook(a, sim, fallback());
     a.tags.add('arm-bite');
     if (!continueCoverage) return fallback();
+    // DEEP_GATE: a deep-third, deep-middle, deep-half or Tampa-middle player holds his coverage on the arm alone (a pump
+    // moves him nothing); he breaks once he has seen the ball out. Quarter seats keep their route triggers.
+    if (DEEP_GATE && !man && heldDeepSeat(a)) { a.tags.add('deep-hold'); return continueCoverage(); }
     // A zone defender breaks on the passer's shoulders at the delivery (the arm coming through; on the load alone he
     // plants): toward the receiver they point at, read through the tracking channel of the passer he is watching,
     // chosen once for this belief, with his reaction time after the choice. With none lined up, he plants (stops his
