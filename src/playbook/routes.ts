@@ -25,8 +25,8 @@ const ROUTE_FILLET = process.env.ROUTE_FILLET !== '0';
  * zone as against man (Throw Deep: the same coaching points; one coordinator's "do not run past the center" against
  * zone is not adopted without a second source). */
 const CROSS_OVER = process.env.CROSS_OVER === '1';
-/** ROUTE_SHAPE (experimental, off): the in and out breaks as rolls, as taught (see SHAPES below). */
-const ROUTE_SHAPE = process.env.ROUTE_SHAPE === '1';
+/** ROUTE_SHAPE (default on, engine-82; ROUTE_SHAPE=0 turns it off): the in and out breaks as rolls, as taught (see SHAPES below). */
+const ROUTE_SHAPE = process.env.ROUTE_SHAPE !== '0';
 /** CROSS_FLAT (experimental, off): the shallow crossers reach their depth in the first leg and run flat across, as
  * taught ("run under the linebackers, flat across"; docs/reviews/2026-11-14-crosser-depth.md). Off, the shallow
  * climbs on a diagonal from a 2.5 yd stem to 5 yd across 22 yd: still rising at 3.0 s (4.7 yd median against zone, ball

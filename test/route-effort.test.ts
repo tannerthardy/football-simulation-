@@ -45,6 +45,9 @@ describe('ROUTE_EFFORT break table (src/playbook/routes.ts)', () => {
 describe('break table columns follow their flags', () => {
   async function routes(fillet: boolean, effort: boolean) {
     vi.stubEnv('ROUTE_FILLET', fillet ? '1' : '0'); vi.stubEnv('ROUTE_EFFORT', effort ? '1' : '0');
+    // The columns on the authored table: ROUTE_SHAPE (default on, engine-82) replaces the dig's points with its roll,
+    // which route-shape.test.ts covers.
+    vi.stubEnv('ROUTE_SHAPE', '0');
     vi.resetModules();
     return (await import('../src/playbook/routes.js')).ROUTES;
   }

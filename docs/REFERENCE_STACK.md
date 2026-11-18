@@ -2,7 +2,7 @@
 
 One combination of experimental flags that Run Game, Defense, Flex and Coverage all measure against. Before this, each agent tested on its own mix (the FLAT_PRESS / ZONE_RUN back-and-forth on 2026-11-09 came from two different flag sets), and no list of anyone's stack existed in the repository.
 
-- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-80`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
+- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-82`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
 - **The code:** `run/G3-oz-backfield` a749beb7 + `defense/G2-stance-tell` a0cb0789 (#411) + `defense/G2-lb-start` (#416, with #409) + `claude/quirky-franklin-9lbwbp` (#417, with #415) + develop 6676dfc2.
 - **Since 2026-11-09 the stack is the engine's default.** The flags listed `on` are read as on unless set to `0`; a bare command in a clean shell and `npm run ref -- <command>` run the same engine. `npm run ref -- --off -- <command>` runs the legacy engine (every listed flag off). `test/reference-stack.test.ts` fails if the file and the code defaults ever disagree. See "Promotion" below.
 
@@ -608,6 +608,33 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
 
+
+## engine-82: the in and out breaks rolled, as taught (2026-11-18)
+
+On: `ROUTE_SHAPE` (Rules + Coaching; routes, 2026-11-14). The dig, out and speed out break as rolls, not square plants,
+as taught past about 8 yd and on the speed out (USA Football, Coaching the Wide Receiver: Square Break, Speed Drop,
+Speed Cut; Viqtory Sports' dig); the short in stays square. Same operator on NFL tracking (BDB 2025 week 1, traditional
+dropbacks, no play action) and staged sim routes, NFL banded at the sim's break depth
+(scripts/diag/routes/route_timing.py):
+
+| route | arm | break t | break d | v into | v out |
+|---|---|---|---|---|---|
+| dig | NFL @9.7 yd | 2.50 | 9.8 | 5.8 | 5.9 |
+| dig | on | 2.70 | 9.7 | 5.1 | 5.1 |
+| dig | off | 3.08 | 12.2 | 4.5 | 4.7 |
+| out | NFL @8.9 yd | 2.40 | 9.0 | 6.2 | 6.1 |
+| out | on | 2.60 | 8.9 | 4.7 | 4.8 |
+| out | off | 3.20 | 10.4 | 2.8 | 3.9 |
+
+Staged outcomes (scripts/diag/routes/route-outcome.mts, 4 coverages x 2 formations x 2 seeds x flip, about 860
+attempts per arm, develop 021a42a7 with RCV_KNOWS): completion .705 -> .683, yards per attempt 8.01 -> 8.00; out
+36/42 at 12.6 -> 33/42 at 13.3, quick_out 84/94 at 6.5 -> 78/96 at 8.3, dig 28/44 at 10.6 -> 30/49 at 8.3. Before
+RCV_KNOWS the flag cost 0.76 yd/att (the out 7.7 yd/att): the receiver's glimpse defect, repaired in engine-79.
+
+Open, not the route: of the 11 paired out / quick_out plays caught off and missed on (scripts/diag/routes/out-miss.mts),
+7 are the QB's lead, 2-3 yd from the sideline on the shaped last leg, the receiver braking for the boundary 0.5-1.7 yd
+short of it (handed to the QB lane: the speed out is thrown to the numbers); 2 a defender at the catch; 2 the receiver
+off the ball's line at arrival.
 
 ## engine-80: coverage rules by position, as taught (2026-11-18)
 
