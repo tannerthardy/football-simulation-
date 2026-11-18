@@ -330,7 +330,8 @@ function laneAim(a: Agent, sim: PlaySim, R: Agent, path: PlaySim['ballPath'] | n
 }
 /** FLIGHT_LANE applies to an underneath man playing his own estimate (FLIGHT_MAN, estimatesFor). */
 function laneMan(a: Agent): boolean {
-  return FLIGHT_LANE && FLIGHT_MAN && estimatesFor(a) && !a.engagement && (a.behavior as { plastersScramble?: boolean } | undefined)?.plastersScramble !== true;
+  const z = (a.behavior as { zone?: string } | undefined)?.zone;
+  return FLIGHT_LANE && FLIGHT_MAN && estimatesFor(a) && !a.engagement && (a.behavior as { plastersScramble?: boolean } | undefined)?.plastersScramble !== true && !(z && isDeepZone(z as never));
 }
 
 /** Diagnostic: his FLIGHT_MAN branch this play ('in' looks for the ball, 'out' plays the man, 'split' between two). */
