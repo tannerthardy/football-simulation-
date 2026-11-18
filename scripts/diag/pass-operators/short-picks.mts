@@ -17,17 +17,17 @@ const { generateTeam, leagueSample } = await import(`${W}/src/league/team.ts`);
 const { PlaySim } = await import(`${W}/src/sim/playsim.ts`);
 const arg = (n: string, f: string) => { const i = process.argv.indexOf(n); return i >= 0 ? process.argv[i + 1] : f; };
 const seed = Number(arg('--seed', '101')), out = arg('--out', 'sp.json');
-const rows: any[] = []; let throws = 0;
+const rows: any[] = []; let throws = 0, playNo = 0;
 const orig = PlaySim.prototype.run;
 PlaySim.prototype.run = function (this: any) {
-  const sim: any = this; if (!sim.isPass) return orig.apply(this);
+  playNo++; const sim: any = this; if (!sim.isPass) return orig.apply(this);
   let rel: any = null;
   const tick = sim.tick.bind(sim); sim.tick = () => { const b: any = sim.qb.behavior; if (b?.kind === 'qb-pass') b.marginProbe = true; tick(); };
   const tb = sim.throwBall.bind(sim);
   sim.throwBall = (p: any, target: any, v0: any, intended: any, arrivalT: number, away = false, ...rest: any[]) => {
     if (p === sim.qb && !rel && !away && intended) {
       throws++;
-      rel = { t: sim.t, qb: { ...sim.qb.pos }, target: target?.slot ?? null, flightPlan: arrivalT - sim.t, margins: (p.behavior as any)?.marginLast ?? null,
+      rel = { t: sim.t, throwRec: (p.behavior as any)?.throwRec ? { P: +(p.behavior as any).throwRec.P.toFixed(3), intRisk: +(p.behavior as any).throwRec.intRisk.toFixed(3) } : null, qb: { ...sim.qb.pos }, target: target?.slot ?? null, flightPlan: arrivalT - sim.t, margins: (p.behavior as any)?.marginLast ?? null,
         defs: new Map(sim.defense.map((d: any) => [d, { pos: { ...d.pos }, vel: { ...d.vel }, facing: d.body.facing, kind: d.behavior?.kind ?? null, tags: [...(d.tags ?? [])] }])) };
     }
     return tb(p, target, v0, intended, arrivalT, away, ...rest);
@@ -46,7 +46,7 @@ PlaySim.prototype.run = function (this: any) {
       const maxRun = vmax * flight - (vmax - v0) * tau * (1 - Math.exp(-flight / tau)), reach = D.profile.reach + 0.3;
       const m = (rel.margins ?? []).find((r: any) => r.slot === D.slot) ?? null;
       const verdict = maxRun + reach < need - 0.3 ? 'reach beyond his body' : off <= reach + 0.5 && along > 0 && along < 1.1 && eyes <= 60 ? 'in the lane, eyes on the QB' : 'broke on it';
-      rows.push({ seed, cov: sim.defCall?.coverage?.id ?? null, concept: sim.offCall?.pass?.id ?? null, target: rel.target, air: +((spot.x - sim.los) * dir).toFixed(1), flight: +flight.toFixed(2),
+      rows.push({ seed, playNo, releaseT: +rel.t.toFixed(2), throwRec: rel.throwRec, cov: sim.defCall?.coverage?.id ?? null, concept: sim.offCall?.pass?.id ?? null, target: rel.target, air: +((spot.x - sim.los) * dir).toFixed(1), flight: +flight.toFixed(2),
         slot: D.slot, pos: D.player.position, kind0: s0.kind, tags0: s0.tags, tagsPick: [...(D.tags ?? [])], off: +off.toFixed(2), along: +along.toFixed(2), eyes: Math.round(eyes),
         speed0: +Math.hypot(s0.vel.x, s0.vel.y).toFixed(2), need: +need.toFixed(2), maxRun: +maxRun.toFixed(2), reach: +reach.toFixed(2), window: m, verdict });
     }
