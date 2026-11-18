@@ -158,6 +158,7 @@
   "test/approach-control.test.ts",
   "test/arrival-lead.test.ts",
   "test/back-block-fit.test.ts",
+  "test/back-clear.test.ts",
   "test/back-front.test.ts",
   "test/back-paths.test.ts",
   "test/back-three.test.ts",
