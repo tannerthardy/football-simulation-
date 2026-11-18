@@ -46,12 +46,148 @@ index 29d79e14..2928088c 100644
  | `CATCH_SPEED` | on | promoted 2026-11-12 (engine-47; `=0` restores); was experimental (C14 catch, 2026-11-12) | receivers | `src/sim/catching.ts` (`runTrackTerm`, the `shoulder` term) | set at first review. Tracking a ball he is not facing while he runs: replaces the over-the-shoulder step (from behind, above 6.5 yd/s only, +0.12-0.24) with K x clamp((speed - 3) / 4.5, 0, 1) x angle x clamp(air time / 1.3, 0, 1) x (0.7 + 0.6 x (1 - ball tracking)), angle from behind 1, straight across 0.46 (second constant, from the NFL's pooled across-vs-behind loss, 8.4 vs 18.4 points), facing past 120 deg 0; through hands like the other terms. By design it is smaller than the old step for a fast catch on a short-flight ball (air time well under 1.3 s: e.g. 0.15 at 0.6 s against the old 0.12-0.24 from behind above 6.5 yd/s), and larger on every deep ball (air time >= 1.3 s), so it can only make the same deep catch harder. K = 0.37, estimated from the NFL's fall in completion on well-placed balls with no defender within 2 yd (catch_speed.py: short 88%, deep 72% at 5+ yd/s; ours were 92-100 / 89-90). Debt: a stand-in for hands and eyes at speed; a physical model of the hand path against the ball replaces it. Pooled read (catch_speed.py, seeds 11 + 23, 16 games each, on 3081064c; baseline -> CATCH_SPEED -> with CATCH_CHOICE, NFL in brackets): at 5+ yd/s with no defender within 2 yd short 93 -> 95 -> 87% (88), deep 89 -> 84 -> 80% (72); defender within 2 yd short 73 -> 66 -> 65% (57), deep 65 -> 61 -> 53% (52); deep from behind 0-5 / 5-6.5 / 6.5+ 75 / 73 / 81 -> with both 84 / 66 / 68% (78 / 57 / 60); deep across his line stays easy (both 95 / 94 / 86% vs 65 / 53 / 73, n 7-96); control (short, facing it) 86 -> 85 -> 90% (77; the term is zero there). Deep man 0-2 yd completion 44 -> 53 -> 59% (32; n 81-98, ~5 pts sampling error). Forced outside go balls (identical throws by construction, forced-meet.ts, n 211): completions 110 -> 102 with CATCH_SPEED, 123 with CATCH_CHOICE, 115 with both. Test `test/catch-speed.test.ts`. |
  | `PASS_SINK` | off | experimental | trenches | `src/sim/engagement.ts:696` | set at first review |
  | `PULL_CUE` | off | experimental | defense | `src/sim/run-fits.ts:195` | set at first review |
+diff --git a/scripts/diag/eyes/nfl_slant_flat.py b/scripts/diag/eyes/nfl_slant_flat.py
+new file mode 100644
+index 00000000..bb151d28
+--- /dev/null
++++ b/scripts/diag/eyes/nfl_slant_flat.py
+@@ -0,0 +1,32 @@
++# QB lane 2026-11-18 (Integration: the quick game on time). BDB 2025 drop-backs (population.py) with at least one SLANT
++# and one FLAT among the route runners, against zone (pff_manZone). Per play: time to throw, the target's route, the
++# result (C / I / IN / S / R), air yards. By coverage family too. Labels are PFF's.
++#   python3 -I scripts/diag/eyes/nfl_slant_flat.py data/raw/bdb2025/big-data-bowl-data
++import csv, sys, os, collections as C, statistics as st
++sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'pass-matrix'))
++from population import nfl_population
++D = sys.argv[1]
++pop, _ = nfl_population(D); keep = {k for k, w in pop.items() if w == 'keep'}
++plays = {(r['gameId'], r['playId']): r for r in csv.DictReader(open(f'{D}/plays.csv'))}
++route = C.defaultdict(list); tgt = {}
++for r in csv.DictReader(open(f'{D}/player_play.csv')):
++  k = (r['gameId'], r['playId'])
++  if k not in keep: continue
++  if r['wasRunningRoute'] in ('1', 'TRUE', 'True'): route[k].append(r['routeRan'])
++  if r['wasTargettedReceiver'] in ('1', 'TRUE', 'True'): tgt[k] = r['routeRan']
++def q(xs, p): xs = sorted(xs); return xs[min(len(xs) - 1, int(p * len(xs)))] if xs else float('nan')
++def summary(name, ks):
++  tt = [float(plays[k]['timeToThrow']) for k in ks if plays[k]['timeToThrow'] not in ('', 'NA')]
++  res = C.Counter(plays[k]['passResult'] for k in ks)
++  tr = C.Counter(tgt.get(k, 'none') for k in ks)
++  n = len(ks); thrown = sum(res[x] for x in ('C', 'I', 'IN'))
++  print(f"{name}: n {n} | time to throw p25/50/75/90 {q(tt,.25):.2f} / {q(tt,.5):.2f} / {q(tt,.75):.2f} / {q(tt,.9):.2f}"
++        f" | result {dict(res)} | completion of thrown {res['C'] / max(1, thrown):.3f} | target route {dict(tr.most_common(8))}")
++  if tt:
++    by = C.Counter(tgt.get(k, 'none') for k in ks if plays[k]['timeToThrow'] not in ('', 'NA') and float(plays[k]['timeToThrow']) <= 2.5)
++    print(f"   thrown by 2.5 s: {sum(1 for x in tt if x <= 2.5)} of {len(tt)}; targets then {dict(by.most_common(6))}")
++sf = [k for k in keep if 'SLANT' in route[k] and 'FLAT' in route[k] and plays[k]['pff_manZone'] == 'Zone']
++summary('slant+flat vs zone', sf)
++for cov in ['Cover-2', 'Cover-3', 'Quarters', 'Cover-6']:
++  summary(f'  {cov}', [k for k in sf if plays[k]['pff_passCoverage'].startswith(cov)])
++summary('all drop-backs vs zone', [k for k in keep if plays[k]['pff_manZone'] == 'Zone'])
+diff --git a/scripts/diag/eyes/quick-open.ts b/scripts/diag/eyes/quick-open.ts
+new file mode 100644
+index 00000000..50f6dfd5
+--- /dev/null
++++ b/scripts/diag/eyes/quick-open.ts
+@@ -0,0 +1,26 @@
++// QB lane 2026-11-18: on slant_flat plays (keys from QT rows with a throwaway), every ready read evaluated every tick
++// (u = 0; no dice): when each read first cleared his bar, its best P and when, and when his eyes got to it.
++import { readFileSync } from 'node:fs';
++import { PlaySim } from '../../../src/sim/playsim.js';
++import { nativeTraceSetup } from '../command-trace.js';
++const rows = readFileSync(process.env.QT!, 'utf8').trim().split('\n').map((l) => JSON.parse(l)).filter((r) => r.throwaway);
++for (const row of rows) {
++  const [formation, coverage, roster, seed, flip] = row.key.split('|');
++  const sim: any = new PlaySim(nativeTraceSetup({ coverage, concept: process.env.QC ?? 'slant_flat', seed: +seed, roster: +roster, formation, flip: flip === 'true' }));
++  const per = new Map<string, any>();
++  for (let i = 0; i < 80 && sim.phase === 'live' && sim.carrier === sim.qb; i++) {
++    sim.tick(); const b: any = sim.qb.behavior;
++    if (b?.kind !== 'qb-pass' || !b.reads) continue;
++    const need = b.barNow?.thr ?? 0.55, risk = b.barNow?.maxInt ?? 0.05, onR = b.reads[b.readIdx];
++    for (const r of b.reads) {
++      const s = per.get(r.slot) ?? { slot: r.slot, route: r.behavior?.route?.id, idx: b.reads.indexOf(r), clearAt: null, best: 0, bestAt: null, eyesAt: null };
++      per.set(r.slot, s);
++      if (onR === r && s.eyesAt === null && b.setAt >= 0) s.eyesAt = +sim.t.toFixed(2);
++      let ready = false; try { ready = b.ready(r, sim); } catch {} if (!ready) continue;
++      let e: any = null; try { e = b.evaluate(sim.qb, sim, r, 0); } catch {} if (!e) continue;
++      if (e.P > s.best) { s.best = +e.P.toFixed(2); s.bestAt = +sim.t.toFixed(2); }
++      if (s.clearAt === null && e.P >= need && e.intRisk <= risk) s.clearAt = +sim.t.toFixed(2);
++    }
++  }
++  console.log(JSON.stringify({ key: row.key, setAt: +(sim.qb.behavior?.setAt ?? -1).toFixed?.(2), reads: [...per.values()] }));
++}
+diff --git a/scripts/diag/eyes/quick-trace.ts b/scripts/diag/eyes/quick-trace.ts
+new file mode 100644
+index 00000000..dcb2eb1f
+--- /dev/null
++++ b/scripts/diag/eyes/quick-trace.ts
+@@ -0,0 +1,37 @@
++// QB lane 2026-11-18 (Integration: why the quick game is not thrown on time). slant_flat x doubles / trips x 7 zone
++// shells x 3 rosters x 3 seeds x flip, READ_WINDOW as set. Per read visit (the ticks his read index is on it, once
++// set): ready ticks, his best P against his bar, pick risk against his max, whether the footwork step allowed it, the
++// cause it was not thrown, and the defenders closing the window most at his best look (marginProbe: slot, depth, margin).
++import { PlaySim } from '../../../src/sim/playsim.js';
++import { nativeTraceSetup } from '../command-trace.js';
++for (const formation of ['gun_doubles_11', 'gun_trips_11']) for (const coverage of ['cover2', 'cover2_match', 'cover3', 'cover3_match', 'cover4', 'cover6', 'tampa2'])
++  for (const roster of [3, 7, 11]) for (const seed of [1, 2, 3]) for (const flip of [false, true]) {
++    let sim: any; try { sim = new PlaySim(nativeTraceSetup({ coverage, concept: process.env.QC ?? 'slant_flat', seed, roster, formation, flip })); } catch { continue; }
++    const dir = sim.attackDir(sim.offense[0].team);
++    const visits: any[] = []; let cur: any = null, thrown: any = null;
++    for (let i = 0; i < 160 && sim.phase === 'live'; i++) {
++      const was = sim.ball.kind; sim.tick();
++      if (!thrown && was !== 'air' && sim.ball.kind === 'air') thrown = { t: +sim.t.toFixed(2), slot: sim.ball.target?.slot ?? null };
++      const b: any = sim.qb.behavior;
++      if (thrown || b?.kind !== 'qb-pass' || sim.carrier !== sim.qb || b.setAt < 0 || !b.reads) continue;
++      const r = b.reads[b.readIdx] ?? null;
++      if (!r) continue;
++      if (!cur || cur.r !== r) { cur = { r, slot: r.slot, route: r.behavior?.route?.id, idx: b.readIdx, from: +sim.t.toFixed(2), to: 0, ticks: 0, ready: 0, best: null as any, stepBlocked: 0, riskBlocked: 0 }; visits.push(cur); }
++      cur.to = +sim.t.toFixed(2); cur.ticks++;
++      const u = b.barNow?.u ?? 0, need = b.barNow?.thr ?? 0.5, risk = b.barNow?.maxInt ?? 0.05;
++      let ready = false; try { ready = b.ready(r, sim); } catch {}
++      if (!ready) continue;
++      cur.ready++;
++      b.marginProbe = true; let ev: any = null; try { ev = b.evaluate(sim.qb, sim, r, u); } catch {} b.marginProbe = false;
++      if (!ev) continue;
++      const step = (() => { try { return b.onStep(sim.qb, r, u, sim.t); } catch { return true; } })();
++      if (ev.P >= need && ev.intRisk <= risk && !step) cur.stepBlocked++;
++      if (ev.P >= need && ev.intRisk > risk) cur.riskBlocked++;
++      if (!cur.best || ev.P > cur.best.P) cur.best = { t: +sim.t.toFixed(2), P: +ev.P.toFixed(2), need: +need.toFixed(2), iR: +ev.intRisk.toFixed(3), risk: +risk.toFixed(3), parts: ev.parts && Object.fromEntries(Object.entries(ev.parts).map(([k, v]: any) => [k, +(+v).toFixed(3)])),
++        margins: (b.marginLast ?? []).slice().sort((x: any, y: any) => x.m - y.m).slice(0, 2).map((m: any) => { const d = sim.defense.find((q: any) => q.slot === m.slot); return { slot: m.slot, m: m.m, depth: d ? +((d.pos.x - sim.los) * dir).toFixed(1) : null }; }) };
++    }
++    let res: any; try { res = sim.run(); } catch { continue; }
++    const ev = sim.events as any[];
++    console.log(JSON.stringify({ key: [formation, coverage, roster, seed, flip].join('|'), thrown, throwaway: ev.some((e) => e.type === 'throwaway'), sack: ev.some((e) => e.type === 'sack'), cmp: !!sim.stats.completed,
++      visits: visits.map(({ r, ...v }) => ({ ...v, cause: v.ready === 0 ? 'not-ready' : v.stepBlocked > 0 ? 'step' : v.riskBlocked > 0 ? 'risk' : v.best && v.best.P < v.best.need ? 'price' : 'other' })) }));
++  }
+diff --git a/scripts/diag/eyes/read-clock.ts b/scripts/diag/eyes/read-clock.ts
+new file mode 100644
+index 00000000..97324cb8
+--- /dev/null
++++ b/scripts/diag/eyes/read-clock.ts
+@@ -0,0 +1,17 @@
++// QB lane 2026-11-18 (Integration's third question): per pass concept, what moves his eyes off each read. One play
++// per concept and formation (cover3, seed 1, roster 7), at his set: whether the read is on the plan's beats
++// (onBeats: beatDue), has a footwork step but no beats (the dwell decides, or READ_WINDOW's quick clock on a quick
++// concept), or neither (the dwell). Also whether the concept is a triangle or a peek (their own hold rules).
++import { PlaySim } from '../../../src/sim/playsim.js';
++import { nativeTraceSetup } from '../command-trace.js';
++import { PASS_BY_ID } from '../../../src/playbook/concepts.js';
++for (const formation of ['gun_doubles_11', 'gun_trips_11']) for (const [id, c] of Object.entries(PASS_BY_ID) as [string, any][]) {
++  let sim: any; try { sim = new PlaySim(nativeTraceSetup({ coverage: 'cover3', concept: id, seed: 1, roster: 7, formation, flip: false })); } catch { continue; }
++  for (let i = 0; i < 80; i++) { sim.tick(); const b: any = sim.qb.behavior;
++    if (b?.kind === 'qb-pass' && b.setAt >= 0 && b.reads) {
++      const cls = b.reads.map((r: any) => { let beats = false; try { beats = !!b.onBeats(r); } catch {} const s = b.stepOf?.get?.(r);
++        return beats ? 'beats' : s ? 'step' : 'dwell'; });
++      console.log(JSON.stringify({ id, formation, family: c.family, drop: c.drop, tri: !!b.plan?.triangle, peek: !!b.plan?.peek, reads: cls }));
++      break; }
++    if (sim.phase !== 'live') break; }
++}
 diff --git a/scripts/diag/pass-operators/short-picks.mts b/scripts/diag/pass-operators/short-picks.mts
 new file mode 100644
-index 00000000..22899019
+index 00000000..0a0efe76
 --- /dev/null
 +++ b/scripts/diag/pass-operators/short-picks.mts
-@@ -0,0 +1,59 @@
+@@ -0,0 +1,62 @@
 +// Interceptions in whole games, for the QB lane and DEF_CATCH (Integration, 2026-11-18). In-sim, with the QB lane's window
 +// probe (int-margin.ts's hook: marginProbe on the QB, his window's rows at the last evaluation before the release). Per
 +// interception: the call (coverage, concept), air yards, time of flight; the picker (slot, behavior kind, technique tags at
@@ -61,7 +197,8 @@ index 00000000..22899019
 +// QB window's row for him (m: believed margin in s, negative = there first; first; iPath / iJump / iContest; blind;
 +// facingQB; role path) or none (the window gave him nothing). Verdict: 'reach beyond his body' (moved more than his
 +// sprint allows: physics), 'in the lane, eyes on the QB' (within his reach of the lane, facing the QB at the release: a
-+// throw at a seen defender), else 'broke on it'.
++// throw at a seen defender), else 'broke on it'. Also the ball's miss from the QB's aim (the pick spot against the aim), and
++// the picker's distance to the aim at the release and at the pick (the QB lane's errant-ball split).
 +// usage: DEF_CATCH=1 BALL_SIGHT=1 READ_WINDOW=1 node --import tsx scripts/diag/pass-operators/short-picks.mts --seed 101 --out rows.json
 +import { writeFileSync } from 'node:fs';
 +const W = process.cwd();
@@ -81,7 +218,7 @@ index 00000000..22899019
 +  sim.throwBall = (p: any, target: any, v0: any, intended: any, arrivalT: number, away = false, ...rest: any[]) => {
 +    if (p === sim.qb && !rel && !away && intended) {
 +      throws++;
-+      rel = { t: sim.t, throwRec: (p.behavior as any)?.throwRec ? { P: +(p.behavior as any).throwRec.P.toFixed(3), intRisk: +(p.behavior as any).throwRec.intRisk.toFixed(3) } : null, qb: { ...sim.qb.pos }, target: target?.slot ?? null, flightPlan: arrivalT - sim.t, margins: (p.behavior as any)?.marginLast ?? null,
++      rel = { t: sim.t, aim: { x: intended.x, y: intended.y }, throwRec: (p.behavior as any)?.throwRec ? { P: +(p.behavior as any).throwRec.P.toFixed(3), intRisk: +(p.behavior as any).throwRec.intRisk.toFixed(3) } : null, qb: { ...sim.qb.pos }, target: target?.slot ?? null, flightPlan: arrivalT - sim.t, margins: (p.behavior as any)?.marginLast ?? null,
 +        defs: new Map(sim.defense.map((d: any) => [d, { pos: { ...d.pos }, vel: { ...d.vel }, facing: d.body.facing, kind: d.behavior?.kind ?? null, tags: [...(d.tags ?? [])] }])) };
 +    }
 +    return tb(p, target, v0, intended, arrivalT, away, ...rest);
@@ -99,10 +236,12 @@ index 00000000..22899019
 +      const v0 = need > 0 ? Math.max(0, (s0.vel.x * mx + s0.vel.y * my) / need) : 0, { vmax, tau } = D.profile;
 +      const maxRun = vmax * flight - (vmax - v0) * tau * (1 - Math.exp(-flight / tau)), reach = D.profile.reach + 0.3;
 +      const m = (rel.margins ?? []).find((r: any) => r.slot === D.slot) ?? null;
++      // The QB lane's split (2026-11-18): an errant ball onto a defender near the aim, or a break to the aim.
++      const miss = Math.hypot(spot.x - rel.aim.x, spot.y - rel.aim.y), toAim0 = Math.hypot(s0.pos.x - rel.aim.x, s0.pos.y - rel.aim.y), toAimPick = Math.hypot(D.pos.x - rel.aim.x, D.pos.y - rel.aim.y);
 +      const verdict = maxRun + reach < need - 0.3 ? 'reach beyond his body' : off <= reach + 0.5 && along > 0 && along < 1.1 && eyes <= 60 ? 'in the lane, eyes on the QB' : 'broke on it';
 +      rows.push({ seed, playNo, releaseT: +rel.t.toFixed(2), throwRec: rel.throwRec, cov: sim.defCall?.coverage?.id ?? null, concept: sim.offCall?.pass?.id ?? null, target: rel.target, air: +((spot.x - sim.los) * dir).toFixed(1), flight: +flight.toFixed(2),
 +        slot: D.slot, pos: D.player.position, kind0: s0.kind, tags0: s0.tags, tagsPick: [...(D.tags ?? [])], off: +off.toFixed(2), along: +along.toFixed(2), eyes: Math.round(eyes),
-+        speed0: +Math.hypot(s0.vel.x, s0.vel.y).toFixed(2), need: +need.toFixed(2), maxRun: +maxRun.toFixed(2), reach: +reach.toFixed(2), window: m, verdict });
++        speed0: +Math.hypot(s0.vel.x, s0.vel.y).toFixed(2), miss: +miss.toFixed(2), toAim0: +toAim0.toFixed(2), toAimPick: +toAimPick.toFixed(2), need: +need.toFixed(2), maxRun: +maxRun.toFixed(2), reach: +reach.toFixed(2), window: m, verdict });
 +    }
 +  }
 +  return res;
@@ -236,6 +375,95 @@ index 6a7dc6b7..c7ff1864 100644
    if (LOOK_ONCE) { if (nearPath && !a.tags.has('looking') && findsBall(a, sim)) a.tags.add('looking'); }
    else if (nearPath && !a.tags.has('looking') && sim.dice('look', a).chance(0.15 + 0.5 * a.r('ballSkills'))) a.tags.add('looking');
    // DRIVE_CATCH: the ball is in a receiver's hands but not yet his: drive
+diff --git a/src/sim/behaviors/qb.ts b/src/sim/behaviors/qb.ts
+index d72fe057..4de35b82 100644
+--- a/src/sim/behaviors/qb.ts
++++ b/src/sim/behaviors/qb.ts
+@@ -483,7 +483,9 @@ const QB_RELOOK = process.env.QB_RELOOK !== '0';
+  * Out of live reads, the plan's checkdown (its outlet) gets one more look; nothing there, the ball comes out now: the
+  * pocket break (QB_BREAK), else a scramble if he has the lane, else thrown away (not held for his clock: without this he
+  * stood until sacked, slant_flat sacks 1 -> 24 of 252). A read his eyes moved off is kept on the read he ends each tick
+- * on, so a key reorder within the tick cannot reopen it. Off, a passed quick read could come back and be thrown across the field at 3.1-3.5 s. */
++ * on, so a key reorder within the tick cannot reopen it. The quick clock (docs/reviews/2026-11-18-quick-clock.md): a
++ * quick read on footwork step n is his until step n + 1 lands, and on the last step a dwell from its landing or his eyes'
++ * arrival; the quick drop's hitch is one of his strides (the gun three-step's), not the whole one-step drop. Off, a passed quick read could come back and be thrown across the field at 3.1-3.5 s. */
+ const READ_WINDOW = process.env.READ_WINDOW === '1';
+ /** QB_KEY_MAN (experimental, off; QB_KEY_MAN=1; with READ_PLAN's defender keys): his key read is taken on the defender
+  * the concept names, not on whoever is nearest the line between the two routes (on corner_flat that was the middle
+@@ -1233,6 +1235,10 @@ export class QBPass implements Behavior {
+   private expired = new Set<Agent>();
+   /** READ_WINDOW: reads whose footwork step has let him throw them (onStep true while he was on the read). */
+   private stepOpen = new Set<Agent>();
++  /** READ_WINDOW: the keyed pair, one look. */
++  private keyPair: Set<Agent> | null = null;
++  /** READ_WINDOW: when each of his footwork steps landed (play time). */
++  private stepLandAt = new Map<number, number>();
+   private lastLive: Agent | null = null;
+   private outletSeen = false;
+   private readWindow(): boolean { return READ_WINDOW && this.concept.family === 'quick'; }
+@@ -1255,6 +1261,9 @@ export class QBPass implements Behavior {
+     if (!reads.length) return false;
+     this.reads = reads;
+     const low = ag(p.key?.low ?? null), high = ag(p.key?.high ?? null);
++    // READ_WINDOW: a keyed high-low is one look (one place in the plan's rhythm); moving between its two routes is the key's
++    // answer, not a read passed.
++    this.keyPair = low && high ? new Set([low, high]) : null;
+     const tri = p.triangle?.map(ag).filter((r): r is Agent => !!r) ?? null;
+     const peek = p.style === 'vertical_peek';
+     // DECLARED_BREAK: what the plan says of each read's break (route time, as installed) and how it is thrown.
+@@ -1547,7 +1556,8 @@ export class QBPass implements Behavior {
+   private noteRead(): void {
+     if (!this.readWindow() || this.setAt < 0) return;
+     const cur = this.reads[this.readIdx] ?? null, prev = this.lastLive;
+-    if (prev && prev !== cur) { if (prev === this.planOutlet) this.outletSeen = true; else this.expired.add(prev); }
++    const onePair = !!prev && !!cur && !!this.keyPair?.has(prev) && this.keyPair.has(cur);
++    if (prev && prev !== cur && !onePair) { if (prev === this.planOutlet) this.outletSeen = true; else this.expired.add(prev); }
+     this.lastLive = cur;
+   }
+ 
+@@ -1993,8 +2003,17 @@ export class QBPass implements Behavior {
+       // it (the read is decided by its step; the 0.35 s dwell ran out before a hitch step's 0.75 s stride, so an open
+       // read went by unthrown and, dead, ended the play in a throwaway). Bounded by one stride past the dwell; a read
+       // plainly covered after its break still goes on a glance.
+-      const stepPending = this.readWindow() && FW_STEPS && !!this.stepOf.get(read) && !this.stepOpen.has(read) && t - this.readStart <= readDwell + this.stride();
+-      if (!keyHold && (FW_STEPS && this.onBeats(read) ? this.beatDue(read, t, glance) : ((t - this.readStart > readDwell && !stepPending) || (broken && (!ev || ev.P < 0.5 * need) && t - this.readStart > glance)))) {
++      // READ_PLAN alert: a yes/no glance before the progression, on its own glance dwell; the quick clock is not its.
++      const alertGlance = READ_PLAN && !!this.plan?.alert && read === this.plan.alert && this.readIdx === 0;
++      const stepPending = this.readWindow() && FW_STEPS && !alertGlance && !!this.stepOf.get(read) && !this.stepOpen.has(read) && t - this.readStart <= readDwell + this.stride();
++      // READ_WINDOW (the quick clock): a quick read on footwork step n is his until step n + 1 lands (his next hitch); on
++      // the plan's last step, where no hitch follows, a dwell from its landing or from when his eyes got there, whichever
++      // is later. His feet, not a dwell from the set, move his eyes on.
++      const qs = this.readWindow() && FW_STEPS && !alertGlance ? this.stepOf.get(read) : undefined;
++      let lastStep = 0; for (const n of this.readStep.values()) lastStep = Math.max(lastStep, n);
++      const stepPassed = qs ? (this.landedSteps > qs.n || (qs.n >= lastStep && this.stepLandAt.has(qs.n) && t - Math.max(this.stepLandAt.get(qs.n)!, this.readStart) > readDwell)) : false;
++      const dwellOver = qs ? stepPassed && !stepPending : t - this.readStart > readDwell && !stepPending;
++      if (!keyHold && (FW_STEPS && this.onBeats(read) ? this.beatDue(read, t, glance) : (dwellOver || (broken && (!ev || ev.P < 0.5 * need) && t - this.readStart > glance)))) {
+         // QB_RHYTHM: moving off a read, his eyes pass the outlet; a released
+         // outlet that is there now is the throw, in rhythm, not at the end.
+         // READ_PLAN: the back is a read in the plan, at his window on the side he releases to (HonestNFL 224,
+@@ -2326,7 +2345,13 @@ export class QBPass implements Behavior {
+     return t >= this.setAt + sn.beat - this.stride() && t - this.readStart >= glance;
+   }
+   /** One stride of his own drop (s): the hitch's length in time. */
+-  private stride(): number { return this.drop.time / (DROP_STEPS[this.concept.drop] ?? 5); }
++  private stride(): number {
++    // READ_WINDOW (the quick clock): a hitch is one of his strides. The one-step quick drop from the gun (catch, gather and
++    // a step, 0.75 s) is not a stride, and timing a hitch by it put the plan's hitch (set + 0.4 s, Rules' rhythm table)
++    // at set + 0.75 and its second at set + 1.5; his stride there is the gun three-step's (1.0 s over three steps).
++    if (READ_WINDOW && this.concept.drop === 'quick') return dropSpec('gun3', 0, 0, true).time / DROP_STEPS.gun3;
++    return this.drop.time / (DROP_STEPS[this.concept.drop] ?? 5);
++  }
+   /** His feet keep the plan's clock: step k starts one stride before it lands, at k strides after his set, up to the
+    * plan's last step, whatever read his eyes are on; it lands when its stride is done. (A first form took a step only
+    * when the read his eyes were on needed it, so eyes held on a keyed pair and then moved to the outlet waited a
+@@ -2336,6 +2361,7 @@ export class QBPass implements Behavior {
+     const st = this.step;
+     if (st && !st.landed && sim.t - st.since >= this.stride() - 1e-9) {
+       st.landed = true; this.landedSteps = st.n;
++      this.stepLandAt.set(st.n, sim.t);
+       // QB_FOOTWORK bit 2: a step that lands sets his shoulders to the read he is on.
+       if (FW_HIPS && _read) this.shoulderOn = _read;
+     }
 diff --git a/src/sim/catching.ts b/src/sim/catching.ts
 index bbdb4378..66b54aed 100644
 --- a/src/sim/catching.ts
@@ -497,3 +725,59 @@ index bbdb4378..66b54aed 100644
    const stretch = o.dh / (D.profile.reach + 0.3);
    const high = o.z > D.profile.heightYd * 1.1 ? 0.15 : 0;
    let pInt = clamp(0.03 + 0.3 * D.r('ballSkills') + 0.06 * D.r('hands') - 0.28 * stretch - high, 0.02, 0.45);
+diff --git a/test/qb-stick.test.ts b/test/qb-stick.test.ts
+index c912fc29..66c2a724 100644
+--- a/test/qb-stick.test.ts
++++ b/test/qb-stick.test.ts
+@@ -18,7 +18,8 @@ async function pumps(flag: string) {
+   for (const concept of ['four_verts', 'dagger', 'smash', 'flood']) for (const coverage of ['cover2', 'cover3']) for (const roster of [3, 7]) for (const seed of [1, 2, 3]) {
+     const sim: any = new PlaySim(nativeTraceSetup({ coverage, concept, seed, roster, formation: 'gun_doubles_11', flip: false }));
+     let b: any = null; const tick0 = sim.tick.bind(sim);
+-    sim.tick = () => { tick0(); if (sim.qb.behavior?.kind === 'qb-pass') b = sim.qb.behavior; };
++    // The passer's QBPass (its stickPumps): after the ball is out a ConvoyCue also reports kind 'qb-pass' without them.
++    sim.tick = () => { tick0(); if (sim.qb.behavior?.kind === 'qb-pass' && sim.qb.behavior.stickPumps) b = sim.qb.behavior; };
+     try { sim.run(); } catch { /* a play that cannot finish staging */ }
+     n += sim.events.filter((e: any) => e.type === 'pump').length;
+     if (b) caused += Object.values((b.stickPumps ?? {}) as Record<string, number>).reduce((s, x) => s + x, 0);
+diff --git a/test/read-window.test.ts b/test/read-window.test.ts
+index 9217b823..2283829a 100644
+--- a/test/read-window.test.ts
++++ b/test/read-window.test.ts
+@@ -1,8 +1,8 @@
+ /** READ_WINDOW (behaviors/qb.ts; experimental, off) and FORECAST_FINISH (receiver-forecast.ts; on since engine-88,
+  * provisional), QB lane 2026-11-18 (docs/reviews/2026-11-18-late-cross.md, 2026-11-18-forecast-finish.md).
+  * 1. READ_WINDOW, on slant_flat from trips: no throw goes to a read his eyes have moved off (the plan's checkdown keeps
+- *    one more look); off, many do. Not asserted: that no late flat remains. With the flag on, some still come (a key
+- *    reorder puts the flat, never looked at, first after 2 s; the engine-88 section), which is why the flag is off.
++ *    one more look), and with the quick clock (each quick read decided on its footwork step, the quick drop's hitch one
++ *    of his strides) no flat is thrown late and long; off, both happen.
+  * 2. FORECAST_FINISH (quick_outs, ROUTE_FINISH): an out that finishes at its margin is forecast to stop there, as the
+  *    receiver does; off, the forecast runs him on toward the sideline. */
+ import { readFileSync } from 'node:fs';
+@@ -38,7 +38,9 @@ async function panel(rw: string, ff: string) {
+       const b: any = sim.qb.behavior;
+       if (done || b?.kind !== 'qb-pass' || !b.reads) return;
+       const cur = b.reads[b.readIdx] ?? null;
+-      if (prev && cur !== prev) movedOff.add(prev);
++      // A keyed high-low is one look: moving between its two routes is the key's answer, not a read passed.
++      const pair = b.keyPair as Set<unknown> | null;
++      if (prev && cur !== prev && !(pair?.has(prev) && pair.has(cur))) movedOff.add(prev);
+       prev = cur;
+     };
+     try { sim.run(); } catch { /* a play that cannot finish staging */ }
+@@ -82,12 +84,14 @@ async function outs(ff: string) {
+ }
+ 
+ describe('READ_WINDOW and FORECAST_FINISH', () => {
+-  it('a passed quick read is not thrown', async () => {
++  it('a passed quick read is not thrown, and no late flat', async () => {
+     const off = await panel('0', '0'), on = await panel('1', '1');
+     console.log('read-window off', JSON.stringify(off), 'on', JSON.stringify(on));
+     expect(off.reopened).toBeGreaterThan(0);
+     expect(off.lateFlat).toBeGreaterThan(0);
+     expect(on.reopened).toBe(0);
++    // The quick clock (his reads on his footwork steps, the quick drop's hitch one of his strides): no late flat.
++    expect(on.lateFlat).toBe(0);
+   }, 600_000);
+   it('an out with a finish is forecast to stop on it', async () => {
+     const off = await outs('0'), on = await outs('1');
