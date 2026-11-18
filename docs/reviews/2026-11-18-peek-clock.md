@@ -231,3 +231,41 @@ flat_w):
 - That is a catch / loose-ball question for the receiver lane, not a pricing defect. His pick belief does not include
   "the back drops it and the ball hangs".
 - Develop's other pick (four_verts cover2, roster 3, thrown at 4.0 s) is a different case: no drop, picked in the air.
+
+## The two-high cue (Integration's step 2): taught, but not yet shown by our defense
+
+**Rules' cue sheet** (their sources and strength as given):
+- **Common:** confirm two-high at the snap, hitch, eyes to the seam read; on a second hitch with no window, the back
+  (Gonzalez, Smart Football 2009). Ball "typically gone in under 2.5 s".
+- **Cover 2 / cover2_match:**
+  - Defense rule (HNFL-334/-097): the half safety keys #1 to #2. "If #1 is vertical, widen and see #2. If both
+    vertical, vision & squeeze."
+  - Cue at the first hitch, per side: he widens or opens to #1 → #2's seam / bender inside him; he sits or squeezes
+    over #2 → #1's hole shot between the squat corner and him (USA Football 7368).
+  - This is his-side safety, sourced; the middle-hole key is not sourced for Cover 2.
+- **Tampa 2:**
+  - The Mike runs the pipe (HNFL-028/-241, TAMPA_PIPE).
+  - He carries a seam → the other seam or the back under him; he stays shallow → the seam over him (7368).
+  - The seam bending inside or away from him: unsourced.
+- **Quarters:** #2 vertical is the safety's man (HNFL-077/-202), so no seam: the inside receiver's convert or curl at
+  14–16 yd, then the back.
+- **Cover 6:** the quarter side as quarters. The cloud side as Cover 2 (inference, not an offense source).
+
+**Engine-80 (021a42a7), what the defense shows at his first hitch** (`safety-hitch.ts`; truth; median 2.1 s; four_verts,
+verts_hitch, smash, curl_flat, stick, flood × 3 rosters × 4 seeds; widening = change in width from the ball since the
+snap):
+
+| coverage | #1 not vertical | #1 vertical, #2 not | both vertical |
+|---|---|---|---|
+| cover2, cover2_match, tampa2 (identical) | 5.2 yd (IQR 3.8–6.0) | 4.5–4.7 (4.0–5.7) | 4.2 (3.7–5.6) |
+| cover4 | 0.8 | 0.3 | 0.5 |
+
+- **The Cover 2 half safeties widen 4–5 yd by the first hitch whatever the routes.** They go to their landmark. The
+  taught difference (widen with #1, squeeze over #2) is about half a yard and inside the spread, so his-side safety
+  width cannot be read for the answer.
+- **The Tampa Mike is 10.0 yd deep at the first hitch** (deeper than 12 yd on 6%). The "carries a seam" cue has not
+  happened yet when he would read it.
+
+**Not built.** A read on a cue the defense does not present reads noise. The cue appears when the half safety plays
+HNFL-334 by #1 / #2 (the Defense / Coverage lane; HALF_OWN, as Rules suspected). The read is then the his-side safety
+key as sourced, keyed post-snap at the first hitch, with QB_MOF_READ's middle-hole two-high form dropped.
