@@ -148,7 +148,7 @@ index 000000000..97324cb82
 +    if (sim.phase !== 'live') break; }
 +}
 diff --git a/src/sim/behaviors/qb.ts b/src/sim/behaviors/qb.ts
-index d72fe0575..c26db4c60 100644
+index d72fe0575..4de35b822 100644
 --- a/src/sim/behaviors/qb.ts
 +++ b/src/sim/behaviors/qb.ts
 @@ -483,7 +483,9 @@ const QB_RELOOK = process.env.QB_RELOOK !== '0';
@@ -193,15 +193,19 @@ index d72fe0575..c26db4c60 100644
      this.lastLive = cur;
    }
  
-@@ -1994,7 +2004,14 @@ export class QBPass implements Behavior {
+@@ -1993,8 +2003,17 @@ export class QBPass implements Behavior {
+       // it (the read is decided by its step; the 0.35 s dwell ran out before a hitch step's 0.75 s stride, so an open
        // read went by unthrown and, dead, ended the play in a throwaway). Bounded by one stride past the dwell; a read
        // plainly covered after its break still goes on a glance.
-       const stepPending = this.readWindow() && FW_STEPS && !!this.stepOf.get(read) && !this.stepOpen.has(read) && t - this.readStart <= readDwell + this.stride();
+-      const stepPending = this.readWindow() && FW_STEPS && !!this.stepOf.get(read) && !this.stepOpen.has(read) && t - this.readStart <= readDwell + this.stride();
 -      if (!keyHold && (FW_STEPS && this.onBeats(read) ? this.beatDue(read, t, glance) : ((t - this.readStart > readDwell && !stepPending) || (broken && (!ev || ev.P < 0.5 * need) && t - this.readStart > glance)))) {
++      // READ_PLAN alert: a yes/no glance before the progression, on its own glance dwell; the quick clock is not its.
++      const alertGlance = READ_PLAN && !!this.plan?.alert && read === this.plan.alert && this.readIdx === 0;
++      const stepPending = this.readWindow() && FW_STEPS && !alertGlance && !!this.stepOf.get(read) && !this.stepOpen.has(read) && t - this.readStart <= readDwell + this.stride();
 +      // READ_WINDOW (the quick clock): a quick read on footwork step n is his until step n + 1 lands (his next hitch); on
 +      // the plan's last step, where no hitch follows, a dwell from its landing or from when his eyes got there, whichever
 +      // is later. His feet, not a dwell from the set, move his eyes on.
-+      const qs = this.readWindow() && FW_STEPS ? this.stepOf.get(read) : undefined;
++      const qs = this.readWindow() && FW_STEPS && !alertGlance ? this.stepOf.get(read) : undefined;
 +      let lastStep = 0; for (const n of this.readStep.values()) lastStep = Math.max(lastStep, n);
 +      const stepPassed = qs ? (this.landedSteps > qs.n || (qs.n >= lastStep && this.stepLandAt.has(qs.n) && t - Math.max(this.stepLandAt.get(qs.n)!, this.readStart) > readDwell)) : false;
 +      const dwellOver = qs ? stepPassed && !stepPending : t - this.readStart > readDwell && !stepPending;
@@ -209,7 +213,7 @@ index d72fe0575..c26db4c60 100644
          // QB_RHYTHM: moving off a read, his eyes pass the outlet; a released
          // outlet that is there now is the throw, in rhythm, not at the end.
          // READ_PLAN: the back is a read in the plan, at his window on the side he releases to (HonestNFL 224,
-@@ -2326,7 +2343,13 @@ export class QBPass implements Behavior {
+@@ -2326,7 +2345,13 @@ export class QBPass implements Behavior {
      return t >= this.setAt + sn.beat - this.stride() && t - this.readStart >= glance;
    }
    /** One stride of his own drop (s): the hitch's length in time. */
@@ -224,7 +228,7 @@ index d72fe0575..c26db4c60 100644
    /** His feet keep the plan's clock: step k starts one stride before it lands, at k strides after his set, up to the
     * plan's last step, whatever read his eyes are on; it lands when its stride is done. (A first form took a step only
     * when the read his eyes were on needed it, so eyes held on a keyed pair and then moved to the outlet waited a
-@@ -2336,6 +2359,7 @@ export class QBPass implements Behavior {
+@@ -2336,6 +2361,7 @@ export class QBPass implements Behavior {
      const st = this.step;
      if (st && !st.landed && sim.t - st.since >= this.stride() - 1e-9) {
        st.landed = true; this.landedSteps = st.n;

@@ -127,3 +127,29 @@ engine-88 with a pump whose cause looked unrecorded (smash, cover2, roster 3, se
 ("in-lane": DE_S in the throw's lane). But after the ball is out the passer's behavior becomes a ConvoyCue, which also
 reports kind 'qb-pass' without QBPass's fields, and the test read its counts from that. The test now keeps the QBPass
 that holds them; it passes. The fix is in the patch.
+
+## In structure, and the alert glance (update)
+
+Rules: trips_stick and seam_slant (and double_slants) need a #3, and CONCEPT_FIT does not call them from 2x2. The staged
+panel had called them from doubles; from doubles, trips_stick threw away 21 of 126 and seam_slant 14. Counted in their own
+structure, trips_stick throws away 2 and seam_slant 3.
+
+One more fix: the plan's alert (trips_stick's backside go, a yes/no glance before the progression on its own glance
+dwell) sits on hitch 2 in the rhythm table, and the quick clock held his eyes on it to 2.55 s. Before this, trips_stick
+from trips had time to throw p90 3.50 s and 39% thrown by 2.5 s, against 2.80 s and 66% off. The quick clock and the
+step gate now leave the alert glance alone.
+
+**Panel, each concept in its own structure** (1,638 snaps):
+
+| | off | on |
+|---|---|---|
+| throwaways | 10 | 24 (1.5%) |
+| sacks | 2 | 0 |
+| completion of throws | 0.737 | 0.750 |
+| interceptions | 20 | 22 |
+| time to throw p50 / p90 | 2.40 / 3.20 s | 2.30 / 3.00 s |
+| thrown by 2.5 s | 61% | 67% |
+| late flats led 10+ yd | 48 | 3 |
+
+Per concept, on: trips_stick p90 2.75 s with 66% by 2.5 s (off 2.80 s, 66%); slant_flat 2.85 s, 64% (off 3.75 s, 34%);
+seam_slant 3.20 s, 67% (off 3.60 s, 52%).
