@@ -69,3 +69,58 @@ The quick concept's clock, as taught and as the user asked (reads keyed to footw
 - READ_WINDOW's dead read is then a read whose step has passed.
 
 To be built and measured against the NFL's 2.07 s and the flat / slant split. Not built here.
+
+## Built: the quick clock (in READ_WINDOW, still off; patch on PR #852's head d57506543)
+
+Patch: `docs/reviews/patches/engine71-footwork/read-window-quick-clock-on-pr852-d57506543.patch`.
+
+**Why his feet were late.** Rules' table (`installedPlan(...).rhythm`) puts slant-flat's keyed pair on the hitch (n 1, plan
+time 1.8 s) and the backside on the second hitch (n 2, 2.2 s), one beat (0.4 s) apart. His step clock was
+`stride = drop.time / DROP_STEPS[drop]`. For the one-step quick drop from the gun that is the whole drop (catch, gather
+and a step, 0.75 s), so his hitch landed at set + 0.75 (2.15 s) and the second at set + 1.5 (2.9 s). Every other drop's
+stride is 0.28-0.36 s (gun3 1.0 s / 3).
+
+**Built** (READ_WINDOW; no constant fitted to the NFL):
+1. On a quick drop a hitch is one of his strides: the gun three-step's (1.0 s / 3). Step 1 lands at about 1.73 s and
+   step 2 at 2.06 s, against the plan's 1.8 and 2.2.
+2. A quick read on footwork step n is his until step n + 1 lands. On the plan's last step there is no next hitch, so
+   it gets a dwell from its landing or his eyes' arrival, whichever is later. He cannot leave a read before its step
+   has let him throw it (the step gate).
+3. A keyed high-low is one look: moving between its two routes (the key's answer, its one re-read) does not kill
+   either.
+
+**Staged panel** (`snap-fate.ts`: the eight quick concepts × doubles / trips × 7 zone shells × 3 rosters × 3 seeds × flip,
+2,016 snaps; READ_WINDOW off → on):
+
+| | off | on |
+|---|---|---|
+| throwaways | 21 | 59 (2.9%) |
+| sacks | 4 | 1 |
+| completion of throws | 0.733 | 0.747 |
+| interceptions | 25 | 27 |
+| time to throw p50 / p90 | 2.35 / 3.20 s | 2.30 / 3.05 s |
+| late (3.1 s+) flats led 10+ yd | 48 | 3 |
+
+- slant_flat: throwaways 7 → 5, time to throw p50 3.10 → 2.40 s and p90 3.75 → 2.85 s, thrown by 2.5 s 34% → 64% (NFL
+  77%), completion 0.765 → 0.785, late led flats 37 → 1.
+- Throwaways that remain: trips_stick 23 and seam_slant 17. trips_stick's back (the angle) clears his bar at 1.6 s but is
+  his last read, reached at 2.75 s: the read order is Rules' table, a question for them.
+
+**Games** (8: seeds 11 and 31; quick concepts, about 104 plays an arm): time to throw p90 3.30 → 2.75 s, sacks 2.9 → 1.9%,
+throwaways 1.0 → 1.0%, no throw 3.9 → 1.9%, completion 0.724 → 0.696, interceptions 0 → 1. Non-quick plays move only by
+game divergence.
+
+**Left for Defense: the on-time flat's YAC.** slant_flat flats are now thrown at 2.25 s and caught with room: YAC median 9.3
+yd, mean 23.8, and 37 of 104 go 20+ (off, thrown at 3.05 s: median 8.8, mean 17.4, 40 of 99). The NFL flat's YAC is about
+5 yd. The never-touched tail now sits on an on-time flat that no defender rallies to.
+
+**Integration's third question: the 0.35 s dwell in the drop-back game.** `read-clock.ts` (one play per concept and
+formation, cover3): every read has a footwork step, and what moves his eyes off it is:
+- the plan's beats: quick 27 reads, drop-back 74, play-action 4;
+- the 0.35 s dwell after the step gate: quick 45, drop-back 132 (64%), play-action 20.
+
+So most of the drop-back game is moved by the dwell. Its strides are 0.28-0.36 s, so the step gate rarely blocks there.
+Whether the dwell mistimes drop-back reads as it did slant-flat needs `quick-open.ts` on drop-back concepts. Not done.
+
+**Found on the way.** `test/qb-stick.test.ts` (QB lane) fails on clean develop cebd890b and on engine-88: one pump with
+no recorded perceived change. That breaks the commit rule, and it is the QB lane's to fix.

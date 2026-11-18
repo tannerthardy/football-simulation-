@@ -6,7 +6,7 @@ import { nativeTraceSetup } from '../command-trace.js';
 const rows = readFileSync(process.env.QT!, 'utf8').trim().split('\n').map((l) => JSON.parse(l)).filter((r) => r.throwaway);
 for (const row of rows) {
   const [formation, coverage, roster, seed, flip] = row.key.split('|');
-  const sim: any = new PlaySim(nativeTraceSetup({ coverage, concept: 'slant_flat', seed: +seed, roster: +roster, formation, flip: flip === 'true' }));
+  const sim: any = new PlaySim(nativeTraceSetup({ coverage, concept: process.env.QC ?? 'slant_flat', seed: +seed, roster: +roster, formation, flip: flip === 'true' }));
   const per = new Map<string, any>();
   for (let i = 0; i < 80 && sim.phase === 'live' && sim.carrier === sim.qb; i++) {
     sim.tick(); const b: any = sim.qb.behavior;

@@ -6,7 +6,7 @@ import { PlaySim } from '../../../src/sim/playsim.js';
 import { nativeTraceSetup } from '../command-trace.js';
 for (const formation of ['gun_doubles_11', 'gun_trips_11']) for (const coverage of ['cover2', 'cover2_match', 'cover3', 'cover3_match', 'cover4', 'cover6', 'tampa2'])
   for (const roster of [3, 7, 11]) for (const seed of [1, 2, 3]) for (const flip of [false, true]) {
-    let sim: any; try { sim = new PlaySim(nativeTraceSetup({ coverage, concept: 'slant_flat', seed, roster, formation, flip })); } catch { continue; }
+    let sim: any; try { sim = new PlaySim(nativeTraceSetup({ coverage, concept: process.env.QC ?? 'slant_flat', seed, roster, formation, flip })); } catch { continue; }
     const dir = sim.attackDir(sim.offense[0].team);
     const visits: any[] = []; let cur: any = null, thrown: any = null;
     for (let i = 0; i < 160 && sim.phase === 'live'; i++) {
