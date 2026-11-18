@@ -47,7 +47,7 @@ index a94b6461..6b71c004 100644
  | `PASS_SINK` | off | experimental | trenches | `src/sim/engagement.ts:696` | set at first review |
  | `PULL_CUE` | off | experimental | defense | `src/sim/run-fits.ts:195` | set at first review |
 diff --git a/src/sim/behaviors/defense.ts b/src/sim/behaviors/defense.ts
-index 64cdbfe0..45ee8776 100644
+index 64cdbfe0..a706ee74 100644
 --- a/src/sim/behaviors/defense.ts
 +++ b/src/sim/behaviors/defense.ts
 @@ -18,7 +18,7 @@ import type { DefSlot, Gap, ZoneId, ZoneStyle } from '../../playbook/types.js';
@@ -59,20 +59,43 @@ index 64cdbfe0..45ee8776 100644
  import { asCarrierPursuit } from '../coverage-space.js';
  import { angleTo, chase, goTo, leverage, PURSUIT_COMMIT, pursuitPoint, runThrough, stand, track, watch } from './common.js';
  import { creepPace } from '../backer-creep.js';
-@@ -2877,13 +2877,67 @@ function playObservedFlight(a: Agent, sim: PlaySim, path: PlaySim['ballPath'], a
+@@ -29,7 +29,7 @@ import { executeRunFit, guardStep, lineRead, pullers, type RunFitRead } from '..
+ import { linePicture } from '../live-gaps.js';
+ import { RouteObservation } from '../coverage-read.js';
+ import { movingCatchApproach } from '../catch-approach.js';
+-import { RELEASE_BELIEF, releaseBelief } from '../release-belief.js';
++import { lastReleaseBelief, RELEASE_BELIEF, releaseBelief } from '../release-belief.js';
+ import { withMovementObjective } from '../movement-objective.js';
+ import { OPEN_FIELD, playsBall } from '../open-field.js';
+ import { DeepCoverage, StemAcceleration, stemStopped } from '../coverage-leverage.js';
+@@ -2877,13 +2877,101 @@ function playObservedFlight(a: Agent, sim: PlaySim, path: PlaySim['ballPath'], a
  
  const lastFlightApproach = new WeakMap<Agent, { cmd: MoveCommand; t: number }>();
  
 +/** BALL_SIGHT's look-back (Integration 2026-11-18): a defender with a receiver decides whether to turn and find the ball
 + * from his own picture of that receiver. In phase (on top of or hip to hip: no more than PHASE_BEHIND behind him along
 + * his run and within PHASE_SIDE of it; out again past LOOK_EXIT_BEHIND / LOOK_EXIT_SIDE) he turns his head and trunk to
-+ * the ball once he sees the receiver's eyes and hands go up (the receiver tracking the ball), after his reaction time;
++ * the ball once he sees the receiver's eyes go back for it (the receiver tracking the ball: his eyes and head, before his
++ * hands come up for the catch), after his reaction time;
 + * having turned, he keeps looking for this flight (one committed look). Out of phase he does not look: he stays on the
-+ * receiver and plays the hands at the catch, as taught. The call of "ball" from a teammate is not modelled. Off (and
++ * receiver and plays the hands at the catch, as taught. A defender who saw the ball himself (his release belief came
++ * from the ball in his own view: a zone defender facing the passer) never needs the cue: he opens to it and keeps his
++ * head on it (the zone turn), paying in speed through the facing cap; he loses it only when the ball is more than
++ * ZONE_LOSE_IN off his run (a speed turn, his back to it; regained under ZONE_LOSE_OUT), and then decides as above. The
++ * call of "ball" has no hearing channel yet: `ballCalls` logs who would have heard one (a teammate who saw the ball
++ * within EARSHOT, after the sound's travel and his reaction). Off (and
 + * with BALL_SIGHT off) the 'looking' latch below finds the ball for anyone near its path, whatever his phase. */
 +const LOOK_EXIT_BEHIND = 1.6, LOOK_EXIT_SIDE = 2.2;
-+const lookBack = new WeakMap<Agent, { rel: number; R: Agent | null; inPhase: boolean; cueAt: number; looks: boolean }>();
-+function lookBackDecision(a: Agent, sim: PlaySim): { R: Agent; looks: boolean } | null {
++/** The zone turn: the ball off his run heading (rad) past which he has turned his back (enter / exit). */
++const ZONE_LOSE_IN = (150 * Math.PI) / 180, ZONE_LOSE_OUT = (135 * Math.PI) / 180;
++/** The "ball" call: earshot on a field (yd, estimated), the speed of sound (yd/s). */
++const EARSHOT = 15, SOUND = 375;
++/** BALL_SIGHT: who would have heard a "ball" call this flight, had calls a channel (for the communication work). */
++export const ballCalls = new WeakMap<PlaySim, { t: number; d: number; from: number }[]>();
++const lookBack = new WeakMap<Agent, { rel: number; R: Agent | null; inPhase: boolean; cueAt: number; looks: boolean; zone: boolean; lost: boolean; called: boolean }>();
++/** BALL_SIGHT: whether he has the ball in his own view from its flight (his release belief came from the ball). */
++const sawBall = (sim: PlaySim, a: Agent): boolean => releaseBelief(sim, a).ballAt !== undefined;
++function lookBackDecision(a: Agent, sim: PlaySim): { R: Agent; looks: boolean; zone?: boolean } | null {
 +  const ball = sim.ball;
 +  if (ball.kind !== 'air') return null;
 +  let st = lookBack.get(a);
@@ -84,7 +107,27 @@ index 64cdbfe0..45ee8776 100644
 +      const q = sim.see(a, o).pos, d = Math.hypot(q.x - a.pos.x, q.y - a.pos.y);
 +      if (d < best) { best = d; R = o; }
 +    }
-+    lookBack.set(a, st = { rel: ball.releaseT, R, inPhase: false, cueAt: -1, looks: false });
++    lookBack.set(a, st = { rel: ball.releaseT, R, inPhase: false, cueAt: -1, looks: false, zone: sawBall(sim, a), lost: false, called: false });
++  }
++  // The zone turn: he saw the ball himself and keeps it, unless his run has turned his back to it.
++  if (st.zone && !st.lost) {
++    const run = Math.hypot(a.vel.x, a.vel.y) > 1 ? Math.atan2(a.vel.y, a.vel.x) : a.body.facing;
++    const off = Math.abs(angleDiff(run, Math.atan2(ball.flight.pos.y - a.pos.y, ball.flight.pos.x - a.pos.x)));
++    if (off > ZONE_LOSE_IN) st.lost = true;
++    else return { R: st.R ?? a, looks: true, zone: true };
++  }
++  if (st.zone && st.lost) {
++    const run = Math.hypot(a.vel.x, a.vel.y) > 1 ? Math.atan2(a.vel.y, a.vel.x) : a.body.facing;
++    if (Math.abs(angleDiff(run, Math.atan2(ball.flight.pos.y - a.pos.y, ball.flight.pos.x - a.pos.x))) < ZONE_LOSE_OUT) { st.lost = false; return { R: st.R ?? a, looks: true, zone: true }; }
++  }
++  // The "ball" call he would hear (logged only): a teammate within earshot who has seen the ball, after the sound and his reaction.
++  if (!st.called && !sawBall(sim, a)) for (const m of sim.defense) {
++    if (m === a) continue;
++    const at = lastReleaseBelief(sim, m)?.ballAt; if (at === undefined) continue; // read-only: never fix his belief early
++    const d = Math.hypot(m.pos.x - a.pos.x, m.pos.y - a.pos.y);
++    if (d <= EARSHOT && sim.t >= at + d / SOUND + a.profile.reactionTime) {
++      st.called = true; let l = ballCalls.get(sim); if (!l) ballCalls.set(sim, l = []); l.push({ t: sim.t, d: a.idx, from: m.idx }); break;
++    }
 +  }
 +  if (!st.R) return null;
 +  const R = st.R, seen = sim.see(a, R), sp = Math.hypot(seen.vel.x, seen.vel.y);
@@ -112,7 +155,7 @@ index 64cdbfe0..45ee8776 100644
 +  const lb = lookBackDecision(a, sim);
 +  const cmd = flightApproachInner(a, sim, path, acquired, lb);
 +  if (!cmd || !lb) return cmd;
-+  if (lb.looks) { a.tags.add('looking'); a.tags.add('look-back'); return lookBackJoints(a, sim, cmd); }
++  if (lb.looks) { a.tags.add('looking'); a.tags.add(lb.zone ? 'zone-turn' : 'look-back'); return lookBackJoints(a, sim, cmd); }
 +  a.tags.add('trail-hands');
 +  return cmd;
 +}
