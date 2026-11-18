@@ -107,3 +107,31 @@ pass.
 - Late-cross probe on the landing: throws 176 → 92, late + long 49 → 0, completions 120 → 61, 20+ yd plays 36 → 2,
   yards a throw 15.5 → 8.1.
 - `test/read-window.test.ts`: off, 21 of 32 throws go to a read he had moved off (13 late flats); on, 0 of each.
+
+## On develop 097e3b13 (engine-88 patch): where the snaps go, and why READ_WINDOW stays off
+
+`snap-fate.ts` (staged, paired: slant_flat, four_verts, comebacks × doubles / trips × 7 zone shells × 3 rosters × 3
+seeds × flip, 756 plays). four_verts and comebacks are identical between arms (not quick concepts). slant_flat, 252 snaps:
+
+| arm | throwaways | sacks | completions | 20+ yd plays | ints | throw time p50 / p90 | late (3.1 s+) flats, led 10+ yd |
+|---|---|---|---|---|---|---|---|
+| off | 7 | 1 | 186 | 46 | 2 | 3.10 / 3.75 | 56, 37 |
+| on as patched for engine-87 | 71 | 24 | 120 | 11 | 4 | 2.50 / 3.15 | 6, 5 |
+| + the ball out when no live read is left | 96 | 0 | 120 | 11 | 4 | 2.50 / 3.15 | 6, 5 |
+| + the step gate | 51 | 0 | 156 | 37 | 6 | 3.05 / 3.20 | 30, 18 |
+
+1. **Sacks.** Out of live reads with no checkdown (slant_flat has none) and QB_BREAK off, he stood in the pocket from about
+   2.8 s until sacked. Fixed in the flag: the ball comes out now (a scramble if he has the lane, else thrown away).
+2. **The read clock outran the feet.** cover2, roster 7, seed 1: X's slant was priced 0.60 from 1.3 s and 0.82 from 1.8 s,
+   and he was on it from 2.20 to 2.55 s without throwing. X is thrown on footwork step 2, which started at 2.15 s with a
+   0.75 s stride, and onStep opens within his load (0.21 s) of landing, at 2.69 s. The 0.35 s dwell moved him off at
+   2.55 s. Older than READ_WINDOW; READ_WINDOW turned it into lost plays. Fixed in the flag: a quick read on a step is
+   not passed before its step has let him throw it (bounded by one stride).
+3. **Half the late flats come back with that.** 21 of the 30 are read 0 at 3.1 s: the key's read after his hitch puts
+   the flat, never looked at, first after 2 s, and the step gate holds him on it to its step. Gating the late rekey
+   changed nothing (reverted).
+
+Three repairs in, neither arm is coherent football: 38% throwaways, or half the late led flats back. Stopped. What is
+missing is the quick concept's clock: a quick read is live only in its window (the plan's break and the drop), so that the
+key's answer, a late key read and a held step all end with it. READ_WINDOW is registered off in the engine-88 patch with
+these fixes behind it.
