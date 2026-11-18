@@ -301,6 +301,7 @@
     "QB_LOOKOFF_RHYTHM": "off",
     "TECH_CONT": "on",
     "DEEP_GATE": "on",
+    "DEEP_DECLARE": "off",
     "RCV_KNOWS": "on",
     "ZONE_EYES": "on",
     "QB_HONEST_FEEL": "on",

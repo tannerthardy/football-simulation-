@@ -1681,6 +1681,11 @@ export const CURL_SINK = process.env.CURL_SINK !== '0';
  * A call that sends a safety down gives him an underneath zone and is
  * unchanged. */
 const SAFETY_DEPTH = process.env.SAFETY_DEPTH !== '0';
+/** DEEP_DECLARE (experimental, off): a deep-half player breaks on an out-breaking declare (corner, out) of the vertical
+ * he caps, from his own picture, and drives top-down to the route instead of bailing until he sees the ball (see
+ * ZoneCoverage.declareDrive). NFL deep men over a #2 corner breaking inside 10.5 yd bail 1.5 yd/s at the break and 0.7
+ * at +0.6 s (BDB 2025 wk 1-4, Cover 2/6); ours bailed 3.6-4.8 yd/s, from 2-8 yd deeper. */
+const DEEP_DECLARE = process.env.DEEP_DECLARE === '1';
 /** HALF_OWN (default on, engine-80; HALF_OWN=0 turns it off): a half-field or middle-third safety (an unruled `deep_half_*`
  * or `deep_mid` zone) owns his area as taught (coverage-position spec gap 3; HNFL-334/-097, Bowen: "split & squeeze",
  * midpoint, deeper than the deepest). Which receivers are vertical in his half or third comes from his own picture with
@@ -1731,6 +1736,11 @@ export class ZoneCoverage implements Behavior {
   /** ZONE_HOLD bit 1: receivers held in his threat set, and those held as verticals (deep zones). */
   private bandHeld = new Set<Agent>();
   private vertHeld = new Set<Agent>();
+  /** DEEP_DECLARE: the out-breaking cut he is reading (receiver, when his picture first showed it), the break he has
+   * declared and is driving on, and when that receiver first showed a new vertical stem after it. */
+  private declSeen: { r: Agent; since: number } | null = null;
+  private declOn: Agent | null = null;
+  private declVertSince = -1;
   /** ZONE_HOLD bit 32: his held lean point on the QB's seen head line (null until he has seen the head). */
   private leanAt: Vec2 | null = null;
   /** ZONE_HOLD bit 64: the direction he was moving at the hand-off (null when none is binding), and last tick's technique. */
@@ -2031,6 +2041,11 @@ export class ZoneCoverage implements Behavior {
         // HALF_OWN: with two verticals in his area he holds their midpoint until the throw.
         || (this.ownsArea() && vert.length >= 2);
       if (this.ownsArea() && vert.length >= 2) a.tags.add('half-own');
+      // DEEP_DECLARE: the deep-half player breaks on the route's declare, not the ball.
+      if (DEEP_DECLARE && !climbing && this.zone.startsWith('deep_half')) {
+        const drive = this.declareDrive(a, sim, vert);
+        if (drive) return drive;
+      }
       // (Pattern reads are match technique; a spot dropper waits for the QB's arm.)
       if ((!spot || OPP_GOAL_X - sim.los <= 10) && !climbing && deepest.vel.x < 3.0 && deepest.pos.x < lm.x + 1
         && deepest.pos.x - sim.los > Math.min(6, Math.max(1, (OPP_GOAL_X - sim.los) * 0.5))) {
@@ -2317,6 +2332,52 @@ export class ZoneCoverage implements Behavior {
     }
     return withFacingTechnique(laneReq,
       { label: carryingAcross ? 'lane-carry' : stemRead ? 'hook-stem-read' : holdFlat ? 'lane-hold' : 'lane', key: best.vel });
+  }
+
+  /**
+   * DEEP_DECLARE: a deep-half player reads the vertical he is capping. When his own picture of that receiver shows an
+   * out-breaking cut under him (a corner or an out: outward speed > 2 yd/s and > 0.7 of his downfield speed, at least 2
+   * yd shallower than the defender and 4 yd past the line), held for his read dwell (0.1 s at full play recognition to
+   * 0.3 s at none), the break is declared: he stops his bail and drives top-down to the route, to where the receiver
+   * will be when he gets there, a yard over it. Decided once per receiver; the same picture never undoes it. A new
+   * vertical stem from that receiver in his picture (downfield speed > 3 yd/s and > 1.5 of his outward speed, held for
+   * the same dwell) is a new declaration: he goes back to capping him, so a stem nod or a double move can beat him and
+   * costs the receiver who runs it. Not while another vertical climbs behind it in his area (the caller's guard).
+   * In-breaking cuts stay with the existing pattern read.
+   */
+  private declareDrive(a: Agent, sim: PlaySim, vert: Array<{ r: Agent; pos: Vec2; vel: Vec2; fut: Vec2 }>): MoveCommand | null {
+    const dwell = 0.1 + 0.2 * (1 - clamp(a.r('playRecognition'), 0, 1));
+    const outSign = (th: { fut: Vec2 }) => (th.fut.y > FIELD_WIDTH / 2 ? 1 : -1);
+    const cut = (th: { pos: Vec2; vel: Vec2; fut: Vec2 }) => {
+      const vOut = th.vel.y * outSign(th);
+      return vOut > 2 && vOut > 0.7 * Math.max(0, th.vel.x) && th.pos.x < a.pos.x - 2 && th.pos.x - sim.los > 4;
+    };
+    if (this.declOn) {
+      const th = vert.find((t) => t.r === this.declOn);
+      if (!th) { this.declOn = null; this.declVertSince = -1; }
+      else {
+        const vOut = Math.max(0, th.vel.y * outSign(th));
+        if (th.vel.x > 3 && th.vel.x > 1.5 * vOut) {
+          if (this.declVertSince < 0) this.declVertSince = sim.t;
+          if (sim.t - this.declVertSince >= dwell) { this.declOn = null; this.declVertSince = -1; this.declSeen = null; }
+        } else this.declVertSince = -1;
+      }
+    }
+    if (!this.declOn) {
+      const th = vert.find((t) => cut(t));
+      if (!th) { this.declSeen = null; return null; }
+      if (!this.declSeen || this.declSeen.r !== th.r) { this.declSeen = { r: th.r, since: sim.t }; return null; }
+      if (sim.t - this.declSeen.since < dwell) return null;
+      this.declOn = th.r; this.declVertSince = -1;
+      a.tags.add('deep-declare');
+    }
+    const th = vert.find((t) => t.r === this.declOn);
+    if (!th) return null;
+    const d = Math.hypot(th.pos.x - a.pos.x, th.pos.y - a.pos.y);
+    const lead = clamp(d / Math.max(1, 0.85 * a.profile.vmax), 0, 1.2);
+    const spot = { x: th.pos.x + th.vel.x * lead + 1.0, y: clamp(th.pos.y + th.vel.y * lead, 0.5, FIELD_WIDTH - 0.5) };
+    this.selectTarget(a, th.r);
+    return withFacingTechnique(goTo(a, spot, { speed: 1 }), { label: 'deep-declare', key: th.vel });
   }
 
   /**
