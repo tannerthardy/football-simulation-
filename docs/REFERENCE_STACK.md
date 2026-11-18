@@ -619,6 +619,31 @@ On: `DIR_START` (Tools/Physics; `DIR_START_PCT` = 67) and `READ_COMMIT_TICK` (a 
 
 Lone body (LB profiles, 12 bodies, hips held, ask 5, speed at 0.2 / 0.4 / 0.8 s): forward 1.30 / 2.27 / 3.51 either arm, lateral reaction 0.91 / 1.65 / 2.75 (NFL matched band 0.92 / 1.61 / 3.20), loaded lateral = forward, hips opened to travel converge on forward. 16 games: reaction starts of defenders move toward the NFL (lateral 1.57 / 2.50 / 3.63 to 1.41 / 2.20 / 3.35; NFL 0.95 / 1.67 / 3.28); the sim shuffle opens its hips to travel faster than the NFL's, so the law decays early (the next body question).
 
+## engine-91: the stem worked to the defender's leverage (2026-11-18)
+
+On: `STEM_WORK` (Rules + Coaching; Integration, from Coverage's flow table). Taught: attack the defender's leverage,
+stemming at his leverage shoulder to make him open, then break; on a vertical, get on top of him (stack him). Off, stems
+were straight lines. On the stem (his route's first leg past 1.5 yd; a vertical's to 12 yd; stems of 5 yd or more,
+since a slant or quick out is won at the release and the break), decided once from his own picture: the nearest
+defender in front within 10 yd deep and 4 yd across, leverage 0.75 yd or more off his line -> he works toward that
+shoulder, by up to 1.5 yd and a fifth of the stem's length; head-up or no one over him -> straight. The bend is gone
+1 yd before the break (2 yd on a leaning break: post, corner), returned gently, at unchanged speed, so a bent stem costs
+the time its extra length costs. An in-breaking route (dig, post) then runs its break from where his stem put him, as
+ROUTE_LANDMARK already does and as taught: its break moves with the stem (median lateral at the break depth: dig 0.82
+-> 1.06 yd, post 0.21 -> 0.81); out-breakers keep their drawn spot (out 0.66 -> 0.66).
+
+Same operator on NFL and sim (scripts/diag/routes/flow_mix.py; BDB 2025 vs sim export, 8 games), stem lateral speed
+0.5 s before the release, by route class: sitting 0.26 -> 0.77 yd/s (NFL 1.30), vertical 0.40 -> 0.60 (1.05), other
+0.78 -> 0.98 (1.37). The route-shape share of the lateral-flow gap to the NFL: -0.47 -> -0.28 yd/s in an underneath
+man's band, -0.57 -> -0.36 one band outside (about 40% closed; the other half of the gap is concept mix, OFF_VARIETY).
+
+Break timing (route_timing.py; off -> on): post 2.45 s / 9.5 yd -> 2.58 / 9.0 (the operator had read part of the bent
+stem as the break; the post reaches every depth at the same time either way), dig 2.70 / 9.7 -> 2.70 / 9.7, out
+2.65 / 9.0 -> 2.60 / 8.8, corner 2.90 / 12.1 -> 2.92 / 12.0, hitch 2.35 / 5.6 -> 2.30 / 5.9. Staged outcomes
+(route-outcome.mts, Cover 1/2/3/4, about 850 attempts): completion .711 -> .720-.736, yards per attempt 8.18 ->
+8.56-8.77 over three runs; the slant's separation 3.27 -> 2.92 yd comes from the other receivers' stems, not its own
+(it runs straight); interceptions on hitches and slants lean up within run spread. Controls (stem-press.mts): press man
+unchanged (the press release runs the stem), off zone straight. Dither budget passes with it on.
 ## engine-90: release reads from what the reader sees: vertical past the line, a back's flat release out of the box (2026-11-18)
 
 On: `READ_VERTICAL_LOS` and `BACK_CLEAR` (Coverage; `src/sim/coverage/reads.ts`, the ReleaseReader every coverage rule

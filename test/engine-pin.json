@@ -552,6 +552,7 @@
   "test/stalk-moving-surface.test.ts",
   "test/stalk-visual-request.test.ts",
   "test/start-force.test.ts",
+  "test/stem-work.test.ts",
   "test/stretch-anchor-footwork.test.ts",
   "test/stretch-closure.test.ts",
   "test/stretch-normal-follow.test.ts",
