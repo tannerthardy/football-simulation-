@@ -12,6 +12,7 @@ const { PlaySim } = await import(`${W}/src/sim/playsim.ts`);
 const { nativeTraceSetup } = await import(`${W}/scripts/diag/command-trace.ts`);
 const { PASS_BY_ID } = await import(`${W}/src/playbook/concepts.ts`);
 const { shouldersOf } = await import(`${W}/src/physics/kinematics.ts`);
+const CAT: any = await import(`${W}/src/sim/catching.ts`);
 const { writeFileSync } = await import('node:fs');
 const COVS = (process.env.COVS ?? 'cover2,cover3,cover4,cover6').split(','), SEEDS = Number(process.argv[2] ?? 2);
 const TS = (process.env.TS ?? '2.5').split(',').map(Number);
@@ -64,7 +65,7 @@ for (const coverage of COVS) for (const concept of Object.keys(PASS_BY_ID).filte
         dArr: +Math.hypot(m.p.x - cp.x, m.p.y - cp.y).toFixed(2), dRec: rp ? +Math.hypot(m.p.x - rp.x, m.p.y - rp.y).toFixed(2) : null,
         recArr: rp ? +Math.hypot(rp.x - cp.x, rp.y - cp.y).toFixed(2) : null,
         front: rp ? (m.p.x - rp.x) * dir < 0 : null, cosF: +cosF.toFixed(2), sees: cosF > -0.35, hands: near[m.d.idx] ?? null,
-        kind: m.kind, tags: m.tags, looking: m.tags.includes('looking'), bs: +m.d.r('ballSkills').toFixed(2), hn: +m.d.r('hands').toFixed(2), why, deepIdx: m.d.idx, outcome, byDeep: by === m.d.idx, bySlot: by != null ? sim.agents[by]?.slot ?? null : null });
+        contacts: (CAT.ballContacts?.get(sim) ?? []).map((c: any) => ({ kind: c.kind, saw: c.saw, deep: c.d === m.d.idx })), kind: m.kind, tags: m.tags, looking: m.tags.includes('looking'), bs: +m.d.r('ballSkills').toFixed(2), hn: +m.d.r('hands').toFixed(2), why, deepIdx: m.d.idx, outcome, byDeep: by === m.d.idx, bySlot: by != null ? sim.agents[by]?.slot ?? null : null });
     }
   }
 writeFileSync(process.argv[3], JSON.stringify(out)); console.log('rows', out.length);
