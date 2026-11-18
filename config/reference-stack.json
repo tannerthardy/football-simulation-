@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "engine-89",
+  "id": "engine-90",
   "runSet": {
     "commit": "1b5415de99b5b7194eff045f3c37a07a4c54c1a9",
     "seeds": [
@@ -321,6 +321,8 @@
     "RCV_KNOWS": "on",
     "FLAT_SINK": "on",
     "FLAT_CARRY": "on",
+    "READ_VERTICAL_LOS": "on",
+    "BACK_CLEAR": "on",
     "ZONE_EYES": "on",
     "QB_HONEST_FEEL": "on",
     "THROW_PLATFORM": "off",

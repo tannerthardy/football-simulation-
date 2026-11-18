@@ -331,6 +331,7 @@ problem), resolved.
 | [COV-10](#cov-10) | Sim route releases are too fast and too vertical, so release-keyed reads get no hard negatives | G3 | medium | open (needs an owner: offense route runner) |
 | [COV-11](#cov-11) | Quarters apex with a flat back: level with No. 2 rather than outside him; the seam is roomier | C14 | medium | flag (`APEX_LEVERAGE`, #702) |
 | [COV-12](#cov-12) | Underneath zone defenders switch technique 1.6 times a second and barely drift with the routes | C14 | medium | open (ZONE_LADDER recorded, not landed) |
+| [COV-13](#cov-13) | A man defender meets bodies that are not his man (traffic) without passing over or under them | C14 | low | open (`MAN_TRAFFIC` parked off, two attempts) |
 | [BALL-1](#ball-1) | Too many interceptions | G4 | high | flag (partial) |
 | [BALL-2](#ball-2) | Throws always leave from standing height | — | low | open |
 | [QB-1](#qb-1) | Throws come out early and deep | G3, G7 | medium | open |
@@ -3325,6 +3326,40 @@ From the issue register:
   - Script: `scripts/diag/coverage/flat-carry.mts`.
 - **Open:** re-measure the slopes after Rules' STEM_WORK and the QB's pocket item land. The dither needs a held technique
   in the old classes that keeps the lane's undercut; hysteresis on two switches alone only moves the flips.
+
+### COV-13: A man defender meets bodies that are not his man (traffic) without passing over or under them
+
+- **Symptom:** before the throw a man defender runs his path to his man and meets other receivers and backs in the way.
+  Coached form is to see the traffic and go over the top or under it; a rub that reaches him too soon should still pick him.
+- **Measure** (`scripts/diag/body/man-collide.mts`, Tools, run from `scripts/diag/body/`; 16 games, two seeds, develop
+  6c7d09b1; touches with a non-target offensive body, per game):
+
+  | | off | v1 (side by leverage) | v2 (his man's seen side) |
+  |---|---|---|---|
+  | non-target touches | 8.75 | 8.62 | 7.50 |
+  | hard (closing 3+ yd/s), defender the faster: should fall | 0.44 | 0.56 | 0.69 |
+  | hard, receiver the faster (the rub): should stay | 0.81 | 1.19 | 0.88 |
+  | defender falls | 1.69 | 1.19 | 1.81 |
+
+- **First measure** (Tools, 8 games, seed 101, develop 097e3b13, same script): 71 touches before the throw in 2,812
+  man-defender plays (2.5%, about 9 a game); 14 at 3+ yd/s closing (1.75 a game), 6 at 5+; the defender down or falling
+  within 1 s in 11 (about 1.4 a game; 3 of the 4 at 6+ yd/s). His man's separation 1.0 s after contact (or at the throw)
+  against same-concept, same-slot man defenders with no collision: +0.44 yd on all touches (median -0.10), +1.19 yd at
+  3+ yd/s (n 12), +3.3 yd when the defender goes down (n 7). Per man-defender play by concept: slant family .066, bunch
+  .046, Y-Cross .039, drive and four verticals .033, mesh .030 (2 touches), hitch-cross .029, corner .021, smash .013.
+  Staged high-rate case: Rules' slant_flat (roster 1 seed 1, cover6_book, the nickel into Z at 11 yd/s closing, both
+  down, H runs 70 yd).
+- **Cause** (Tools, *confirmed*): `ManCoverage` reads his target, the QB and his own landmarks and nothing else; the
+  spacing and traffic-route stage (`src/sim/spacing.ts`, `traffic-route.ts`) skips every body not on his own team, so
+  his request never bends for an offensive body that is not his man; only physical contact slows him.
+- **Tried:** `MAN_TRAFFIC` (branch `coverage/C14-man-traffic`, off). From his own picture, a body his requested path meets
+  within 0.8 s (closest approach inside both radii plus 0.4 yd, not sooner than his reaction time) is passed at unchanged
+  speed. v1 chose the side by leverage, and its "trailing" test read his man's true position (removed in v2); it sent
+  linebackers on the back over the top into the tight end's release (Y-on-LB hard touches 1 -> 6). v2 passes on his man's
+  seen side: that fixed the linebackers (6 -> 2) and the rubs, but the defender-fast hard touches did not fall.
+- **Open question before any third design:** are the defender-fast touches bodies he cannot avoid (not in his picture,
+  or reaching him inside his reaction time) or paths he chose? Counts are small (7-11 events in 16 games).
+- **Where:** `src/sim/behaviors/defense.ts` (`ManCoverage`), `src/sim/spacing.ts`.
 
 ### ALN-1: Defensive pre-snap picture unlike tracking
 

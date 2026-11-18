@@ -12,11 +12,14 @@ import { COVERAGE_BY_ID } from '../src/playbook/coverages.js';
 import { FRONT_BY_ID } from '../src/playbook/defense.js';
 import { FORMATION_BY_ID } from '../src/playbook/formations.js';
 import type { PassConcept, SkillSlot } from '../src/playbook/types.js';
+import { stand } from '../src/sim/behaviors/common.js';
 import { CoverageDefender } from '../src/sim/coverage/defender.js';
 import { PlaySim } from '../src/sim/playsim.js';
 import type { Perceived } from '../src/sim/perception.js';
 // The rules play out in a full native rep; FRONT_ALIGN's rush changes when it ends.
-vi.hoisted(() => { process.env.FRONT_ALIGN = '0'; });
+// QUARTERS_CHECK (engine-80) replaces the drawn quarters call from the formation before the snap (Palms vs two-by-two
+// becomes Cover 4); these scenes ask about each call's own rules, so the drawn call is staged.
+vi.hoisted(() => { process.env.FRONT_ALIGN = '0'; process.env.QUARTERS_CHECK = '0'; });
 
 const offense = generateTeam(new Rng(21), 'Offense', 'OFF', { strength: 0.6 });
 const defense = generateTeam(new Rng(22), 'Defense', 'DEF', { strength: 0.6 });
@@ -37,6 +40,9 @@ function run(form: string, coverage: string, strong: Routes, weak: Routes, opts:
   // The rules under test are the exchanges as routes declare; keep the ball
   // in the quarterback's hands so his timing cannot end the snap early.
   sim.throwBall = () => undefined;
+  // The QB holds the ball: with engine-83's throw timing a stubbed throwBall still brings the arm through (a pump the
+  // defenders see and play); these reps ask about the route exchanges, so the QB stands with it.
+  sim.qb.behavior = { kind: 'qb-hold', update: () => stand() } as never;
   const step = sim as unknown as { tick(): void };
   while (sim.phase === 'live' && sim.t < (opts.until ?? 2.4) && sim.throwAt < 0) step.tick();
   const jobs = (slot: string): string[] => {
@@ -128,16 +134,24 @@ describe('Cover 3 match (Rip/Liz)', () => {
   });
 
   it('corner zones off a slant, then protects the exposed next vertical', () => {
-    const jobsCB = run('gun_doubles_11', 'cover3_match', { 1: 'go', 2: 'go' }, { 1: 'slant', 2: 'seam' }).jobs('CB_W');
+    // On the real engine the exchange runs later because the routes do: #1 starts on the ball he sees move (WR_SNAP,
+    // 0.2 s), crosses the line at 0.9 s and breaks at 1.35 s; the slant reads under at about 1.7 s, the corner zones off
+    // at 2.0 s and takes the exposed seam at 2.6 s. The rep runs to 3.0 s so the second exchange is in it.
+    const jobsCB = run('gun_doubles_11', 'cover3_match', { 1: 'go', 2: 'go' }, { 1: 'slant', 2: 'seam' }, { until: 3.0 }).jobs('CB_W');
     expect(jobsCB).toContain('zone:deep_third_w');
     expect(jobsCB[jobsCB.length - 1]).toBe('man:H');
   });
 });
 
 describe('Cover 2 match', () => {
-  it('corner sinks under #1 with no flat threat, squats when #2 runs to the flat', () => {
+  it('corner sinks under #1 with no flat threat; with #2 in the flat he sinks under the vertical #1, then comes down to the flat', () => {
     expect(run('gun_doubles_11', 'cover2_match', { 1: 'go', 2: 'go' }, { 1: 'go', 2: 'hitch' }).jobs('CB_W')).toContain('man:X');
-    expect(run('gun_doubles_11', 'cover2_match', { 1: 'go', 2: 'go' }, { 1: 'go', 2: 'flat' }).jobs('CB_W')).not.toContain('man:X');
+    // SQUAT_TOPDOWN (engine-80): a flat threat with a high threat over him (#1 climbing outside) is played top-down
+    // (HNFL-099/097/334): sink under #1, squeezing the hole shot, until #1 passes the half safety's depth, then down to
+    // the flat. Before it, the old control locked the flat and never took #1.
+    const flat = run('gun_doubles_11', 'cover2_match', { 1: 'go', 2: 'go' }, { 1: 'go', 2: 'flat' }, { until: 3.2 }).jobs('CB_W');
+    expect(flat).toContain('man:X');
+    expect(flat.at(-1)).toBe('zone:flat_w');
   });
 });
 

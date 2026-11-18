@@ -10,7 +10,9 @@ import { describe, expect, it, vi } from 'vitest';
 // tackle's vertical kick (#215) the back's flat release in the #3-away case is
 // walled behind the weak tackle (3.7 yd behind the line at 2.8 s), so the
 // scene no longer stages a released #3. Restage or fix the release by review 2.
-vi.hoisted(() => { process.env.PASS_KICK = '0'; });
+// QUARTERS_CHECK=0 (re-recorded 2026-11-18, Coverage): these scenes stage the drawn Quarter Flat; the engine-80 staff check
+// would call Palms against the two-removed 2x2 (gun_spread_10), so the scene would no longer ask about the apex's rule.
+vi.hoisted(() => { process.env.PASS_KICK = '0'; process.env.QUARTERS_CHECK = '0'; });
 import { filmScene, jobsOf, modeOf } from '../src/lab/coverage-scene.js';
 
 const after = (jobs: string[], job: string) => jobs.slice(jobs.indexOf(job) + 1);
@@ -41,7 +43,9 @@ describe('Quarter Flat apex', () => {
     // meets the back at 1.5 s, and a rusher at 3.4 yd/s now loses part of his
     // drive with speed, so the contact runs longer. The back is checked at
     // 2.8 s at -2.0 yd (develop: -0.3) and still going upfield at 3.7 yd/s.
-    expect(rb.pos.x - away.sim.los).toBeGreaterThan(-2.5);
+    // Re-recorded 2026-11-18 (Coverage): under BACK_PATHS (engine-53) the back's flat runs about 4.5 yd behind the line
+    // while it widens (NFL -3.7 yd at 2.5 s), so at 2.8 s he is about -3.5 yd: released, wide and going upfield.
+    expect(rb.pos.x - away.sim.los).toBeGreaterThan(-4.5);
     expect(rb.vel.x).toBeGreaterThan(1);
     expect(Math.sign(rb.pos.y - away.sim.ballY)).toBe(-away.sim.offAlign.strongSign);
     expect(modeOf(away, 'NB')).toBe('two');

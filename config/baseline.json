@@ -356,6 +356,8 @@
     "RCV_KNOWS": "0",
     "FLAT_SINK": "0",
     "FLAT_CARRY": "0",
+    "READ_VERTICAL_LOS": "0",
+    "BACK_CLEAR": "0",
     "ZONE_EYES": "0",
     "ZONE_EYES_KEY": "9",
     "QB_FOOTWORK": "0",
