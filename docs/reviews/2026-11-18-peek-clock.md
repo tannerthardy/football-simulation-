@@ -198,3 +198,36 @@ QB_PEEK_CLOCK and QB_MOF_READ on. Each factor of his price at the decision is se
   - He breaks on a floated checkdown thrown at 2.8–3.15 s and picks it about 1.1 s later.
   - These are not late throws after waiting on the seam. They are more balls to the back into the flat defender, and
     with the read on they spread from one seed to rosters 3, 7 and 11 and to verts_hitch.
+
+## The back_flat picks on engine-80 (develop 021a42a7)
+
+The whole stack is rebased as one patch, `qb-stack-all-on-develop-021a42a7.patch`: the six carded flags plus
+QB_BODY_FOLLOW, QB_PEEK_CLOCK, QB_MOF_READ and QB_DEEP_WAIT, all off. On that tree typecheck, reference-stack,
+provenance, guard, scan, qb-stick, qb-key-plant and qb-peek-clock pass.
+
+Staged vertical-peek set, `peek-staged.ts` with each pick's price, distinct plays:
+
+| arm | picks |
+|---|---|
+| develop | 2 |
+| QB_WINDOW_ARRIVE + QB_PEEK_CLOCK | 0 |
+| + QB_MOF_READ | 4 |
+
+On 5b49bb93 the read arm had 13. Rules' coverage landing (SQUAT_TOPDOWN, MATCH_DECLARE) moved this corner.
+
+**His price was right; the ball was dropped and then hung there.** The four read-arm picks, all against cover2 (CB_W,
+flat_w):
+
+| | value |
+|---|---|
+| price | P 0.67–0.75, intRisk 0.002–0.011, pOpen 0.96–0.98 |
+| the corner as priced | margin +0.36 to +0.48 s (he arrives that long after the ball), facing him |
+| flight | priced 0.74–0.76 s; real 0.76–0.78 s |
+| events | the back's drop at 0.65 s, then the corner's interception 1.10–1.20 s after the release |
+
+- The corner reached the ball 0.35–0.4 s after it arrived, which is what the window priced. He took it off the drop.
+- After the drop the ball stays at chest height beside the back for about 0.45 s (z 1.6 → 1.4 yd, moving with him).
+  A ball loose at 1.5 yd should be on the ground in about 0.5 s.
+- That is a catch / loose-ball question for the receiver lane, not a pricing defect. His pick belief does not include
+  "the back drops it and the ball hangs".
+- Develop's other pick (four_verts cover2, roster 3, thrown at 4.0 s) is a different case: no drop, picked in the air.
