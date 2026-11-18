@@ -72,3 +72,32 @@ Controls:
 - A shallow under a dig: he must not vacate under the dig.
 - Flood / levels: the flow goes one way, then the throwback, which must stay punishable.
 - The Book nickel (MUSH_MATCH).
+
+## Record (2026-11-18): not landed, flag off
+
+| | off | v2 velocity drift | v5 (v2 + sitting route keeps lane + arriving lean) | NFL |
+|---|---|---|---|---|
+| band slope (r) | 0.48 (0.46) | 0.60 (0.52) | 0.44 (0.42) | 0.66 (0.59) |
+| outside-band slope | -0.10 | -0.02 | 0.04 | 0.37 |
+| request / body lateral reversals per s | 0.54 / 0.13 | 0.30 / 0.04 | 0.37 / 0.05 | |
+| completion / PBU / INT | 74.0 / 46 / 10 | 75.2 / 49 / 5 | 73.6 / 52 / 5 | |
+| digs | 63.2% / 9.28 | 69.3% / 11.02 | 67.6% / 10.80 | |
+| zone YAC C2 / C3 | 6.75 / 5.40 | 3.87 / 5.26 | 4.92 / 5.13 | |
+
+Develop 097e3b13, staged sets and 8-game exports.
+
+Controls (`scripts/diag/coverage/ladder-controls.mts`, 3 seeds, off -> v5):
+- drive's shallow: 15.7 -> 24.2 yd/att, YAC 13.1 -> 21.5 (he stays over the dig and the shallow runs free).
+- flood's back_flat: YAC 14.2 -> 29.5; flat YAC 3.7 -> 10.8.
+- levels: neutral.
+
+Interceptions (`int-diff.mts`): 5 of the 10 lost were by the old lane / stem-read position, 2-5 yd from the catch at the
+release (the undercut); 4 were path divergence in untouched jobs.
+
+**What this established:**
+- The single-technique drift buys steadier defenders and lower YAC.
+- It does not produce the NFL's anticipation of routes arriving from the next band in any version.
+- It costs the shallow-under-dig and the flood flat, and gives up the lane's undercuts.
+- The outside-band gap is largely the offense's: our arriving flow is half the NFL's, and the QB has no launch drift.
+- Re-measure after Rules' STEM_WORK and the QB's pocket item land.
+- (v4, c8f2d8c1f, carried v3's lateral hold by mistake; v5 is the clean version.)
