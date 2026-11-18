@@ -101,6 +101,7 @@
     "GAIT_STEP": "0",
     "DIR_START": "0",
     "DIR_START_PCT": "67",
+    "READ_COMMIT_TICK": "0",
     "DOWN_RISE_PLANT": "0",
     "HANG_LOAD": "0",
     "HAND_FIGHT": "0",

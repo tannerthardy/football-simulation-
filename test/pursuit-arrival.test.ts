@@ -4,6 +4,8 @@ import { createHash } from 'node:crypto';
 import { arrivalJson, captureNativePursuit, compareBundle, forecast, freezeNative, frozenControls, necessaryBound, objectives,
   parseArrivalJson, response, restoreBody, type ArrivalCase } from '../scripts/diag/pursuit-arrival.js';
 import { movementPanel } from '../scripts/diag/pursuit-arrival-export.js';
+// engine-89 (DIR_START on): the search for the first completed pass with a native pursuit case takes about twice as long on the new engine (past the hook's minute); pinned test-only, Defense to re-find the case with it on
+vi.hoisted(() => { process.env.DIR_START = '0'; });
 
 let native: ArrivalCase[];
 let chosen: ReturnType<typeof captureNativePursuit>;

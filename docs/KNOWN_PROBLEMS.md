@@ -330,6 +330,7 @@ problem), resolved.
 | [REC-1](#rec-1) | Receiver options and continuation can contradict available information or route intent | G3, G10 | medium | candidate: acquired route reads; catch/release limits remain |
 | [COV-10](#cov-10) | Sim route releases are too fast and too vertical, so release-keyed reads get no hard negatives | G3 | medium | open (needs an owner: offense route runner) |
 | [COV-11](#cov-11) | Quarters apex with a flat back: level with No. 2 rather than outside him; the seam is roomier | C14 | medium | flag (`APEX_LEVERAGE`, #702) |
+| [COV-12](#cov-12) | A man defender runs through an offensive player who is not his man (the spacing stage skips opposing bodies) | C14 | low | open (parked, not assigned) |
 | [BALL-1](#ball-1) | Too many interceptions | G4 | high | flag (partial) |
 | [BALL-2](#ball-2) | Throws always leave from standing height | — | low | open |
 | [QB-1](#qb-1) | Throws come out early and deep | G3, G7 | medium | open |
@@ -3270,6 +3271,15 @@ From the issue register:
   `apex-fixture.ts` seam_flat.
 - **Open:** whether the width comes with the anticipation commit; whether
   the seam row moves when the QB reads the apex.
+
+### COV-12: A man defender runs through an offensive player who is not his man
+
+- **Symptom:** a man defender at full request hits a crosser, a bunch release or a rub who is not his man, and goes down; taught: over the top or under the trash on his man's hip, never through it.
+- **Measure:** 8 games, seed 101, develop 097e3b13 (scripts/diag/body/man-collide.mts): 71 touches before the throw in 2,812 man-defender plays (2.5%, about 9 a game); 14 at 3+ yd/s closing (1.75 a game), 6 at 5+; the defender is down or falling within 1 s in 11 (about 1.4 a game; 3 of the 4 at 6+ yd/s). His man's separation 1.0 s after contact (or at the throw) against same-concept same-slot no-collision man defenders: +0.44 yd on all touches (median -0.10), +1.19 yd at 3+ yd/s (n 12), +3.3 yd when the defender goes down (n 7). Per man-defender play by concept: slant family .066, bunch .046, Y-Cross .039, drive and four verticals .033, hitch-cross .029, mesh .030 (2 touches), corner .021, smash .013. Staged slant_flat is the high-rate case (Rules' nickel: roster 1 seed 1, cover6_book, NB into Z at 11 yd/s closing, both down, H runs 70 yd).
+- **Cause:** *confirmed:* `ManCoverage` reads his target, the QB and his own landmarks and nothing else; the spacing and traffic-route stage (`src/sim/spacing.ts`, `traffic-route.ts`) skips every body not on his own team (`if (b.team !== a.team) continue`), so a man defender's request never bends for an offensive body that is not his man; only physical contact slows him.
+- **Tried:** nothing. Parked by Integration, not assigned (2026-11-18).
+- **Where:** `src/sim/behaviors/defense.ts` (`ManCoverage`), `src/sim/spacing.ts`.
+- **Open:** a man defender's route read of bodies between him and his man from his acquired picture (over the top / under the trash), and the spacing stage seeing the opposing bodies he must not run through. A controller question, not a body change.
 
 ## Pre-snap
 

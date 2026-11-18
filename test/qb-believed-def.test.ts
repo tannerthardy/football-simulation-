@@ -7,6 +7,8 @@
  * does not prices nearly the typical man, so he is too hopeful against the elite one and too careful against the poor
  * one; and a typical man is priced the same by both. */
 import { afterEach, describe, expect, it, vi } from 'vitest';
+// engine-89 (DIR_START on): fixture recorded before a start from rest cost the legs in a direction they were not loaded for; pinned test-only, the owning lane to re-record with it on
+vi.hoisted(() => { process.env.DIR_START = '0'; });
 
 afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 

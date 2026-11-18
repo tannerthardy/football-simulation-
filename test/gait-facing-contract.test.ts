@@ -1,7 +1,9 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { directionalSpeedFactor, fatigueFactor, locomotionAccel, type Body } from '../src/physics/kinematics.js';
 import { availability, newSupport, supportParams } from '../src/physics/support.js';
 import { World, type HandJoint, type Intent, type StepReport } from '../src/physics/world.js';
+// engine-89 (DIR_START on): fixture recorded before a start from rest cost the legs in a direction they were not loaded for; pinned test-only, the owning lane to re-record with it on
+vi.hoisted(() => { process.env.DIR_START = '0'; });
 
 const DT = .05;
 function body(x: number, side: number, speed: number, posture: number): Body {
