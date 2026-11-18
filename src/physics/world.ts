@@ -347,12 +347,12 @@ const DEFAULT_POSTURE = 0.2;
 const FALL_TIP = 3;
 const FALL_FRICTION = 0.25;
 const DOWN_FRICTION = 0.75;
-/** DOWN_RISE_PLANT (experimental, off; DOWN_RISE_PLANT=1; docs/reviews/2026-11-18-down-slide.md): a free body starts to rise from the ground when the speed he would STAND at is one he can plant
+/** DOWN_RISE_PLANT (on since engine-84; DOWN_RISE_PLANT=0 restores; docs/reviews/2026-11-18-down-slide.md): a free body starts to rise from the ground when the speed he would STAND at is one he can plant
  * at, not only after he has slid to rest. A rising body keeps sliding under DOWN_FRICTION, so he is up at v - DOWN_FRICTION g x getUp (8 yd/s going down: 0.75 yd/s after 0.9 s); the
  * bound is PLANT_SPEED (kinematics.ts: below it he has planted and can square to a new heading). Off, he waits to be under 0.3 yd/s: a diver at 8 yd/s slid 0.96 s before a rise whose own
  * friction would have stopped him in 0.9 s. Friction, the 0.3 s minimum in `down` and the get-up time are unchanged. Free bodies only: not the ball carrier (World.ballCarrier), not held
  * (a hold on his legs or a joint) and not carrying anyone's weight (HANG_LOAD); his spin must have settled (the footprint's edge speed under 0.3 yd/s, as the slide test). */
-const DOWN_RISE_PLANT = process.env.DOWN_RISE_PLANT === '1';
+const DOWN_RISE_PLANT = process.env.DOWN_RISE_PLANT !== '0';
 const FOLLOW_MARGIN = 1.1;
 /** Experimental (HOLD_SUBSTEPS=n, off): minimum substeps while a grasp is live. */
 const HOLD_SUBSTEPS = Number(process.env.HOLD_SUBSTEPS ?? 0);

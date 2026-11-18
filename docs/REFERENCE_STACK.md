@@ -2,7 +2,7 @@
 
 One combination of experimental flags that Run Game, Defense, Flex and Coverage all measure against. Before this, each agent tested on its own mix (the FLAT_PRESS / ZONE_RUN back-and-forth on 2026-11-09 came from two different flag sets), and no list of anyone's stack existed in the repository.
 
-- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-82`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
+- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-83`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
 - **The code:** `run/G3-oz-backfield` a749beb7 + `defense/G2-stance-tell` a0cb0789 (#411) + `defense/G2-lb-start` (#416, with #409) + `claude/quirky-franklin-9lbwbp` (#417, with #415) + develop 6676dfc2.
 - **Since 2026-11-09 the stack is the engine's default.** The flags listed `on` are read as on unless set to `0`; a bare command in a clean shell and `npm run ref -- <command>` run the same engine. `npm run ref -- --off -- <command>` runs the legacy engine (every listed flag off). `test/reference-stack.test.ts` fails if the file and the code defaults ever disagree. See "Promotion" below.
 
@@ -608,6 +608,83 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
 
+
+## engine-83: the quarterback's ball, window, key and committed throw (2026-11-18)
+
+On: `QB_DRIVE`, `QB_RHYTHM_THROW`, `QB_WINDOW_ARRIVE`, `QB_KEY_PLANT`, `QB_STICK` (QB lane; records
+docs/reviews/2026-11-17-qb-drive.md, 2026-11-18-window-key-stick.md, 2026-11-18-fv-smash-tampa-mike.md on
+claude/exciting-cori-hc8l4u). The number is provisional: Integration renumbers it if 81 and 82 land first.
+
+**QB_DRIVE: his natural ball at NFL speed for its distance.**
+- The flight is fitted to NFL flights by distance: routeFlight(d) = 0.0731 + 0.03945 d + 0.00022 d^2 s (BDB 2025).
+- Before it, his flights ran about 15% long against the NFL's (to the planned arrival).
+
+**QB_RHYTHM_THROW: on a rhythm concept the last drop step is not braked.**
+- Rhythm concepts: quick game, or read 1 on time at the set.
+- RHYTHM_PLANT is 0.4 of top speed, chosen.
+- At the plant he throws read 1 on anticipation if it is ready and clears his bar, carrying the drop's velocity into
+  the plant. Otherwise he sets and hitches.
+
+**QB_WINDOW_ARRIVE: a defender's course toward the catch point counts through his reaction.**
+- He pays only the share of his reaction his seen course does not already serve, carrying that share of his velocity.
+- A man seen tied in a block is priced as before.
+- Four attempts, each narrowing the cause:
+  - the course credit gave rushers in the lane;
+  - a man standing in the window was charged no reaction;
+  - a carry-away tripled game picks.
+- Staged calibration (480 plays):
+  - defended-ball error 0.1395 → 0.115;
+  - the trailing man within 3 yd: predicted / real 0.19 / 0.37 → 0.30 / 0.29;
+  - pick error 0.010 → 0.011.
+- Games (2 seeds × 4): completion 0.710 → 0.725, ints 5/672 → 7/632, 20+ yd throws 21 → 11 (completing 0.33 → 0.55).
+
+**QB_KEY_PLANT: on a keyed quick concept the key is read on the plant, from his picture of the key man then.**
+- An undeclared key gets no sitter default. He throws its first lean (trusted at 0.25–0.75 of the commit margin by
+  awareness and experience), or takes one re-read hitch (0.35 s) and goes with the lean then.
+- Staged quick concepts (192): key read median +0.25 → −0.05 s against the plant; rhythm throws 11 → 29; completions
+  133 → 135; ints 4 → 2.
+- The re-read branch has not fired in play: no key holds still at a gun plant.
+
+**QB_STICK: a started throw is pulled down only on a perceived change since the decision**, with a wider exit before
+the same man is thrown again (margins chosen). The changes:
+- a defender newly within 1.5 yd of the catch point (from beyond 2.5);
+- a defender newly in the lane;
+- the receiver down, or 2+ yd off where he expected him.
+
+Results:
+- Games: pumps per dropback 0.071 → 0.018. The 24 throws the old recheck would have pulled were caught 16, with 1 int.
+- DEEP_GATE's effect on the throw is nil with it on or off (360 staged Cover 2/3 plays).
+
+**Card on 5b49bb93, three seeds (23 / 37 / 11), against the reference:**
+
+| arm | Y/A | YAC per reception |
+|---|---|---|
+| drive | +0.07 / +0.41 / +0.57 | +0.06 / +0.12 / +0.96 |
+| stick | +0.17 / +0.34 / +0.07 | +0.13 / +0.69 / +0.27 |
+| read (window + key + rhythm) | +0.09 / −0.35 / +0.28 | +0.23 / +0.16 / +0.46 |
+| all (with QB_ALIGN, which is not in this step) | +0.74 / +0.01 / +0.51 | +0.79 / +0.58 / +1.19 |
+
+- Completion is flat everywhere. Ints, all: −0.2 / +0.7 / +0.9.
+- Nearly all of the Y/A is after the catch: the defenders' closing showing through a better-timed ball (Coverage's
+  in-flight closing table: our defenders close slower than the NFL's underneath and deep).
+- Integration's ruling: land on realism and absence of defects, not on the score.
+
+Off in this step: QB_ALIGN (held for the base item), QB_BODY_FOLLOW, QB_PEEK_CLOCK, QB_MOF_READ, QB_DEEP_WAIT, QB_STANCE.
+
+**Tests.** On 021a42a7 with the landing, seven core files fail that pass on develop. The other 29 core files that
+fail here fail on clean develop in this container too: memory, and baseline-runner's Node pin. The seven, each pinned
+to the flags that move it, found one flag at a time:
+- **engine-pin manifest:** qb-key-plant, qb-stick and qb-peek-clock join the defaults list.
+- **acc-radius:** QB_DRIVE, QB_STICK, QB_WINDOW_ARRIVE (each alone). QB to re-record.
+- **qb-grass-read:** QB_WINDOW_ARRIVE. QB to re-record.
+- **qb-gather-throw:** QB_RHYTHM_THROW. The rhythm drop's last step is not braked by design. QB to re-record on a
+  non-rhythm concept.
+- **corner-one-release:** the five (Coverage to re-record).
+- **man-trail-carry:** QB_DRIVE (Defense to re-find).
+- **rush-lean-bound:** QB_WINDOW_ARRIVE (Flex to re-search).
+
+Checks: typecheck, reference-stack, engine-pin manifest, provenance, guard, scan and dither pass, plus the QB tests
+(qb-stick, qb-key-plant, qb-peek-clock, qb-key-read, read-plan).
 
 ## engine-82: the in and out breaks rolled, as taught (2026-11-18)
 
