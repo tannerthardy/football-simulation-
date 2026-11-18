@@ -331,6 +331,7 @@ problem), resolved.
 | [REC-1](#rec-1) | Receiver options and continuation can contradict available information or route intent | G3, G10 | medium | candidate: acquired route reads; catch/release limits remain |
 | [COV-10](#cov-10) | Sim route releases are too fast and too vertical, so release-keyed reads get no hard negatives | G3 | medium | open (needs an owner: offense route runner) |
 | [COV-11](#cov-11) | Quarters apex with a flat back: level with No. 2 rather than outside him; the seam is roomier | C14 | medium | flag (`APEX_LEVERAGE`, #702) |
+| [COV-12](#cov-12) | On-time flats from trips: the Cover 2 flat corner is pulled inside by #1; the Cover 3/4 curl-flat player widens late | G3 | medium | open (Cover 2: Coverage; Cover 3/4: logged, not urgent) |
 | [BALL-1](#ball-1) | Too many interceptions | G4 | high | flag (partial) |
 | [BALL-2](#ball-2) | Throws always leave from standing height | — | low | open |
 | [QB-1](#qb-1) | Throws come out early and deep | G3, G7 | medium | open |
@@ -3304,6 +3305,33 @@ From the issue register:
   `apex-fixture.ts` seam_flat.
 - **Open:** whether the width comes with the anticipation commit; whether
   the seam row moves when the QB reads the apex.
+
+<a id="cov-12"></a>
+### COV-12: On-time flats from trips: the Cover 2 flat corner is pulled inside; the Cover 3/4 curl-flat widens late
+
+Recorded 2026-11-18 (Defense), from the READ_WINDOW quick-clock gate.
+
+- **Symptom:** a flat thrown on time from trips is caught with room. NFL flat YAC is about 5 yd.
+- **Measure:** `scripts/diag/zone-yac/flat-def.mts`, every completion to a flat route. PR #852 head plus QB's quick-clock
+  patch, `READ_WINDOW=1`, cover 2/3/4/6, all non-screen concepts, doubles/trips, 6 seeds, flip. n 432, throw p50 2.95 s,
+  YAC p50 5.4 / mean 9.7.
+
+  | Coverage | Formation | n | YAC p50 / mean | 20+ YAC | Flat defender by rule at the catch (distance, depth vs catcher) |
+  | --- | --- | --- | --- | --- | --- |
+  | Cover 2 | doubles | 26 | 6.8 / 10.4 | 2 | flat corner, 3.1 yd, 2.5 yd deeper |
+  | Cover 2 | trips | 68 | 9.8 / 18.5 | 16 | flat corner, 4.5 yd, level; on the 20+ plays 7-11 yd, 2-5 yd shallower |
+  | Cover 3 | trips | 94 | 5.5 / 8.5 | 4 | curl-flat NB, 7.0 yd, 3.7 deeper |
+  | Cover 4 | trips | 77 | 5.1 / 7.4 | 6 | curl-flat NB, 8.3 yd, 4.8 deeper |
+
+- **Cause, Cover 2 trips** (*confirmed* on the 20+ plays): #1's inside break (slant, hitch, cross) carries the squat
+  corner inside while #2/#3's flat goes outside him. On all 16 his job at the catch is still the flat; 6 were still
+  matched on #1, 5 on the flat runner with their feet still inside, and 4 were the weak corner on the RB's flat.
+  `FLAT_CARRY` (engine-89, develop b6658fef) takes the 6 still-matched-on-#1 plays to 2 and the 20+ plays from 16 to
+  12. The late pass-off (5) is unchanged; Coverage's cancel read lands at about 2.8 s against the throw at p50 2.95 s.
+- **Cause, Cover 3/4 trips** (*likely*): the curl-flat player widens to the flat late from the curl. YAC is moderate.
+  Logged at Integration's request; not urgent.
+- **Owner:** Coverage (the Cover 2 squat corner's pass-off, as taught: reroute #1, sit in the flat with outside leverage,
+  hand #1's inside route to the hook).
 
 ## Pre-snap
 
