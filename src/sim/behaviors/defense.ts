@@ -1710,6 +1710,14 @@ const HALF_OWN = process.env.HALF_OWN !== '0';
  * after 1 s), and removes that receiver; both removed, he plays as before. Depth stays over the deeper weighted one.
  * Unruled `deep_half_*` only. */
 const HALF_KEY = process.env.HALF_KEY !== '0';
+/** HALF_CAP (experimental, off): "if either cancels, cap the remaining vertical threat" (HNFL-334), continuously. With
+ * HALF_KEY, a cancelled #1 or #2 was removed from the half safety's aim until re-read vertical (7 yd and climbing, or a
+ * 5.2 yd/s stem), so a flat that turned up at 3 s was not capped before the ball (Coverage's turned-up flat, slant_flat
+ * from trips vs Cover 2: caught at 12 yd, never touched); and with both cancelled he fell back to the band split and
+ * drifted toward a hook that was still climbing. On: a cancelled receiver is weighed like the rest (projected depth share
+ * times how vertically he runs, upfield less lateral speed, over his shown top), so he regains weight as he climbs and a
+ * slant or a flat weighs ~0; other receivers in his half the same way over 5 yd/s (a sat hook weighs ~0); nothing vertical left: he plays his half and the QB. */
+const HALF_CAP = process.env.HALF_CAP === '1';
 /** SAFETY_DEPTH: a deep safety's depth over the deepest route in his zone, as he sees it, with that route `r` yd past
  * the line: NFL deep safeties' median depth over it is 13.0 / 11.7 / 8.5 yd with the route at 1.2 / 3.7 / 9.7 yd
  * (BDB 2025, safety_cushion.py), i.e. 13.4 - 0.5 r. A slower safety keeps more and a better reader less (scale
@@ -1868,15 +1876,20 @@ export class ZoneCoverage implements Behavior {
     const t1 = seen.get(rs[0]), t2 = seen.get(rs[1]);
     if (!t1 || !t2) return null;
     const mine = Math.max(1, a.pos.x - sim.los);
-    const threat = (th: ZoneThreat, i: number) => k.c[i] === 'C' ? 0
-      : clamp((th.fut.x - sim.los) / mine, 0, 1) * clamp(th.vel.x / Math.max(k.peak[i], 3), 0, 1);
+    // HALF_CAP: a cancelled receiver is not removed but weighed like the rest, so one who turns up (a flat up the
+    // sideline, a hitch-and-go) regains weight from his first steps up; while he sits or runs flat his weight is ~0.
+    const threat = (th: ZoneThreat, i: number) => k.c[i] === 'C' && !HALF_CAP ? 0
+      : clamp((th.fut.x - sim.los) / mine, 0, 1) * clamp((HALF_CAP ? th.vel.x - Math.abs(th.vel.y) : th.vel.x) / Math.max(k.peak[i], 3), 0, 1);
     const w1 = threat(t1, 0), w2 = k.c[1] === 'C' ? 0 : Math.max(threat(t2, 1), 0.15);
     // Any other vertical in his half (trips #3's seam, a back's wheel) is a deep threat too: "cap the remaining vertical
     // threat". Weighted by its depth toward his own, like his numbers.
-    const others = vert.filter((th) => th.r !== rs[0] && th.r !== rs[1]).map((th) => ({ th, w: clamp((th.fut.x - sim.los) / mine, 0, 1) }));
+    // HALF_CAP: by depth and by how fast he still climbs (a hook that has sat is no vertical threat).
+    const others = vert.filter((th) => th.r !== rs[0] && th.r !== rs[1]).map((th) => ({ th,
+      w: clamp((th.fut.x - sim.los) / mine, 0, 1) * (HALF_CAP ? clamp((th.vel.x - Math.abs(th.vel.y)) / 5, 0, 1) : 1) }));
     const W = w1 + w2 + others.reduce((t, o) => t + o.w, 0);
     this.keyAim = null;
-    if (W < 0.05) return null;
+    // HALF_CAP: nothing vertical left in his half: he plays his half and the QB (his landmark), not the old band split.
+    if (W < 0.05) return HALF_CAP && k.c[0] !== '?' ? [] : null;
     this.keyAim = (w1 * t1.fut.y + w2 * t2.fut.y + others.reduce((t, o) => t + o.w * o.th.fut.y, 0)) / W;
     return [...(w1 >= 0.05 ? [t1] : []), ...(w2 >= 0.05 ? [t2] : []), ...others.filter((o) => o.w >= 0.05).map((o) => o.th)];
   }
