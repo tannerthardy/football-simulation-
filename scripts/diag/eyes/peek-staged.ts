@@ -11,12 +11,12 @@ for (const formation of ['gun_doubles_11', 'gun_trips_11']) for (const [id, c] o
   if (plan?.style !== 'vertical_peek') continue;
   for (const coverage of COVS) for (const roster of [3, 7, 11]) for (const seed of [1, 2, 3, 4]) {
     let sim: any; try { sim = new PlaySim(nativeTraceSetup({ coverage, concept: id, seed, roster, formation, flip: false })); } catch { continue; }
-    const dir = sim.attackDir(sim.offense[0].team); let offPeek: number | null = null;
-    const tick0 = sim.tick.bind(sim); sim.tick = () => { tick0(); const b: any = sim.qb.behavior; if (offPeek === null && b?.kind === 'qb-pass' && b.triDone) offPeek = +sim.t.toFixed(2); };
+    const dir = sim.attackDir(sim.offense[0].team); let offPeek: number | null = null, key: any = null;
+    const tick0 = sim.tick.bind(sim); sim.tick = () => { tick0(); const b: any = sim.qb.behavior; if (offPeek === null && b?.kind === 'qb-pass' && b.triDone) offPeek = +sim.t.toFixed(2); if (!key && b?.kind === 'qb-pass' && b.keyRead && b.plan?.key) key = { at: +b.keyRead.at.toFixed(2), to: b.keyRead.throwTo, mode: b.keyRead.mode ?? null, role: b.plan.key.role, man: b.plan.key.man?.slot ?? null, target: (b.keyRead.throwTo === 'low' ? b.plan.key.low : b.plan.key.high)?.slot ?? null }; };
     let thr: any = null; const tb = sim.throwBall.bind(sim);
-    sim.throwBall = (p: any, target: any, v0: any, intended: any, ...rest: any[]) => { if (p === sim.qb && !thr) thr = { t: +sim.t.toFixed(2), route: target?.behavior?.route?.id ?? null, back: target?.slot === 'RB', air: intended ? +((intended.x - sim.los) * dir).toFixed(1) : null }; return tb(p, target, v0, intended, ...rest); };
+    sim.throwBall = (p: any, target: any, v0: any, intended: any, ...rest: any[]) => { if (p === sim.qb && !thr) thr = { t: +sim.t.toFixed(2), slot: target?.slot ?? null, route: target?.behavior?.route?.id ?? null, back: target?.slot === 'RB', air: intended ? +((intended.x - sim.los) * dir).toFixed(1) : null }; return tb(p, target, v0, intended, ...rest); };
     let res: any; try { res = sim.run(); } catch { continue; }
     const ev = sim.events.map((e: any) => e.type);
-    console.log(JSON.stringify({ concept: id, formation, coverage, roster, seed, offPeek, thr, cmp: !!res.stats.completed, int: ev.includes('interception'), sack: ev.includes('sack'), yards: res.yards ?? 0 }));
+    console.log(JSON.stringify({ concept: id, formation, coverage, roster, seed, offPeek, key, thr, cmp: !!res.stats.completed, int: ev.includes('interception'), sack: ev.includes('sack'), yards: res.yards ?? 0 }));
   }
 }

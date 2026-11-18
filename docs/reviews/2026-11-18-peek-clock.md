@@ -117,3 +117,51 @@ Two parts:
    declare price open.
 
 The clock stays as built.
+
+## QB_MOF_READ and QB_DEEP_WAIT: built, both off, not ready to card
+
+Patch: `qb-mof-read-deep-wait-after-peek-clock-on-5b49bb93.patch`, after the consolidated and peek-clock patches. It
+uses the existing key machinery, with no compiler change. At his first tick a key is built from his pre-snap picture
+(shell from pSingleHigh; low and high halves; the man; cue at his first hitch). It is read by QB_KEY_READ's displacement
+read, and the answer is thrown, then the back.
+
+Arms on the vertical-peek staged set, distinct plays (QB_WINDOW_ARRIVE and QB_PEEK_CLOCK on in all three, so "base"
+is the new clock alone):
+
+| arm | verticals thrown (median t, caught) | 20+ yd (caught) | to the back | completions | ints | sacks | yd per play |
+|---|---|---|---|---|---|---|---|
+| base | 25 (1.95, 18) | 0 | 121 | 107 | 3 | 6 | 7.28 |
+| + QB_MOF_READ, attempt 1 | 7 (2.40, 2) | 2 (0) | 136 | 106 | 7 | 11 | 4.75 |
+| + QB_MOF_READ, attempt 2 | 7 (2.55, 3) | 3 (0) | 149 | 110 | 13 | 12 | 5.07 |
+| + QB_MOF_READ 2 + QB_DEEP_WAIT | 9 (2.65, 4) | 5 (1) | 148 | 109 | 13 | 12 | 5.13 |
+
+- The base arm's early "verticals" are mostly the tight end's seam dumped at 1.7–2.0 s for 2–6 air yards.
+- Its real seams at about 2.5 s (14–19 yd) were caught 5 of 6.
+- The new ints are back_flat checkdowns (4 shells repeat the same plays), from more balls going to the back.
+
+**Truth at the arrival** (`seam-truth.ts`: his throws are held, so the play runs on with no ball; each vertical priced
+at his second hitch, then checked at the hitch plus the flight). "Truly open" means the nearest defender is 2.5 yd or
+more away and the receiver is within 2 yd of the aimed point.
+
+| | key's seam: priced pOpen / truly open | the other seam: priced / truly open |
+|---|---|---|
+| one-high (middle safety key) | 0.37 / **0.57** | 0.23 / 0.28 |
+| two-high, attempt 1 (his side's safety) | 0.23 / 0.34 | 0.60 / 0.65 |
+| two-high, attempt 2 (middle-hole defender) | 0.40 / 0.39 | 0.32 / 0.49 |
+
+- **Calibration overall:** truly open share by priced band is 0.24, 0.26, 0.46, 0.45, 0.51.
+
+What the attempts narrowed:
+1. **The one-high read is right.** The seam away from the middle safety is open twice as often.
+2. **The two-high read picks no better than the other seam** in either form. Our two-high seams are open about half
+   the time whichever way the key goes. The right two-high cue is not found yet: the safeties' width, a hook player's
+   carry, or a second look.
+3. **The binding constraint is the price.** The right seam is truly open 57% but priced 0.37, so it does not clear his
+   bar at the second hitch, and the clock sends him to the back. This is the open-receiver under-pricing noted
+   earlier.
+4. **QB_DEEP_WAIT moves almost nothing.** By the decision the deep seats have turned to run, so they no longer face him,
+   and the window already starts them at the release plus a 1.8× reaction. The deep-start belief is not what shuts
+   the seams.
+
+Not tweaked a third time. The next piece is the window's under-pricing of an open seam: P = pOpen × pClear × pAcc ×
+hands at 15–20 yd. Then the two-high cue.
