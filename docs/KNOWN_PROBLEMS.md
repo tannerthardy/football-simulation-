@@ -3341,6 +3341,17 @@ From the issue register:
   | hard, receiver the faster (the rub): should stay | 0.81 | 1.19 | 0.88 |
   | defender falls | 1.69 | 1.19 | 1.81 |
 
+- **First measure** (Tools, 8 games, seed 101, develop 097e3b13, same script): 71 touches before the throw in 2,812
+  man-defender plays (2.5%, about 9 a game); 14 at 3+ yd/s closing (1.75 a game), 6 at 5+; the defender down or falling
+  within 1 s in 11 (about 1.4 a game; 3 of the 4 at 6+ yd/s). His man's separation 1.0 s after contact (or at the throw)
+  against same-concept, same-slot man defenders with no collision: +0.44 yd on all touches (median -0.10), +1.19 yd at
+  3+ yd/s (n 12), +3.3 yd when the defender goes down (n 7). Per man-defender play by concept: slant family .066, bunch
+  .046, Y-Cross .039, drive and four verticals .033, mesh .030 (2 touches), hitch-cross .029, corner .021, smash .013.
+  Staged high-rate case: Rules' slant_flat (roster 1 seed 1, cover6_book, the nickel into Z at 11 yd/s closing, both
+  down, H runs 70 yd).
+- **Cause** (Tools, *confirmed*): `ManCoverage` reads his target, the QB and his own landmarks and nothing else; the
+  spacing and traffic-route stage (`src/sim/spacing.ts`, `traffic-route.ts`) skips every body not on his own team, so
+  his request never bends for an offensive body that is not his man; only physical contact slows him.
 - **Tried:** `MAN_TRAFFIC` (branch `coverage/C14-man-traffic`, off). From his own picture, a body his requested path meets
   within 0.8 s (closest approach inside both radii plus 0.4 yd, not sooner than his reaction time) is passed at unchanged
   speed. v1 chose the side by leverage, and its "trailing" test read his man's true position (removed in v2); it sent
@@ -3348,6 +3359,7 @@ From the issue register:
   seen side: that fixed the linebackers (6 -> 2) and the rubs, but the defender-fast hard touches did not fall.
 - **Open question before any third design:** are the defender-fast touches bodies he cannot avoid (not in his picture,
   or reaching him inside his reaction time) or paths he chose? Counts are small (7-11 events in 16 games).
+- **Where:** `src/sim/behaviors/defense.ts` (`ManCoverage`), `src/sim/spacing.ts`.
 
 ### ALN-1: Defensive pre-snap picture unlike tracking
 
