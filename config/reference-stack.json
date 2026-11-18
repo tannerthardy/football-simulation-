@@ -272,6 +272,7 @@
     "LINE_START": "on",
     "LINE_STEP": "on",
     "MAN_PHASE": "off",
+    "MAN_TURN": "off",
     "MESH_GUN_SIDE": "on",
     "MESH_TEMPO": "on",
     "MUG_CALLS": "on",

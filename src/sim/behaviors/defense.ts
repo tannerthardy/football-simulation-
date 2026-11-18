@@ -113,6 +113,23 @@ const QB_STANCE_SEEN = process.env.QB_STANCE === '1';
  * in contact (seen contact, src/sim/seen-contact.ts),
  * not by its engagement state. */
 export const HONEST_READS = process.env.HONEST_READS !== '0';
+/** MAN_TURN (experimental, off; MAN_TURN=1 turns it on; Coverage, 2026-11-18): a press corner in a man call plays with
+ * his eyes and hips on his man from the release, not squared to the QB. Before the throw, pedal or open, he faces his
+ * bearing to the man as he sees him (in his picture), so as the receiver releases past him his body turns from the line, through
+ * side-on, to running with him ("in his hip"). NFL press man (BDB 2025 weeks 1-3, wide #1 on a go, n 212): face-QB
+ * cosine 0.30 at 1.0 s and 0.17 at 1.2 s; ours before 0.83 and 0.93 (square in a backpedal, then a hard flip at 1.4 s).
+ * An off corner in man pedals square until his cushion breaks (unchanged), then opens along his man's seen run (the
+ * man is still in front of him, so facing the man would keep him pedalling): a turn into the run rather than a stop-and-flip (ours lost speed through it: 3.5 -> 3.0 yd/s at 2.0 s against
+ * the NFL's 4.7). */
+export const MAN_TURN = process.env.MAN_TURN === '1';
+/** MAN_TURN: he faces where his man will be when he can next act on it (his reaction time along the man's seen run):
+ * the man while the man is in front of him; once level or past, where the man is going, which turns him to run in
+ * the hip. */
+function manHipFacing(a: Agent, seen: { pos: Vec2; vel: Vec2 }): number {
+  const lead = a.profile.reactionTime;
+  const px = seen.pos.x + seen.vel.x * lead, py = seen.pos.y + seen.vel.y * lead;
+  return Math.atan2(py - a.pos.y, px - a.pos.x);
+}
 /** HONEST_FLIGHT (experimental, off; HONEST_FLIGHT=1 turns it on): the flight half of the audit, waiting on the ball-
  * perception channel (acquireFlight's estimate, built with Coverage). A defender drives on a catch at the receiver his own
  * flight estimate brings the ball to, at the facing he sees, not at the private securing state; the switch from playing
@@ -1494,7 +1511,9 @@ export class ManCoverage implements Behavior {
     // hip. A plant or break ends the race; he closes on the body as before.
     const vSeen = Math.hypot(seen.vel.x, seen.vel.y);
     const onStem = vSeen > 3 && vx > 0.8 * vSeen;
-    const levMag = MAN_PHASE && this.hipsOpen && deep > 2 && onStem
+    // MAN_TURN: a press corner in man rides in the hip: beside his man by both bodies and a reach, not on his line.
+    const inHip = MAN_TURN && this.press && sim.defCall.coverage.man && deep > 1;
+    const levMag = (MAN_PHASE && this.hipsOpen && deep > 2 && onStem) || inHip
       ? a.profile.radius + R.profile.radius + a.player.measurables.armIn / 36 * 0.7
       : o.trail ? 0.9 : 0.7;
     // CUSHION_BREAK: a carry inside a zone call plays to a shoulder, never
@@ -1539,7 +1558,7 @@ export class ManCoverage implements Behavior {
     let ty = seen.pos.y + lev;
     if (this.press && vx >= 0) {
       const developing = clamp(deep / 4, 0, 1);
-      tx += this.initialCushion * (1 - developing) + 0.6 * developing;
+      tx += this.initialCushion * (1 - developing) + (inHip ? 0 : 0.6) * developing;
     }
     else if (vx > 3 && deep > 3) tx = Math.max(tx, seen.pos.x + cushion * 0.5);
     else if (!this.hipsOpen) {
@@ -1597,9 +1616,15 @@ export class ManCoverage implements Behavior {
     let command = openReq
       ? underCarry
         ? withFacingTechnique({ ...openReq, facing: openCarryFacing(a, sim, R, openReq, vx > 3) }, { label: 'open-carry', key: seen.vel })
-        : withFacingTechnique(openReq, { label: 'man-open', key: seen.vel })
-      : withFacingTechnique(track(a, tgt, { x: Math.max(0, seen.vel.x), y: seen.vel.y }, { facing: Math.PI, gain: 1.6 }),
-        { label: 'man-pedal', key: seen.vel });
+        : MAN_TURN && sim.defCall.coverage.man
+          ? withFacingTechnique({ ...openReq, facing: this.press || Math.hypot(seen.vel.x, seen.vel.y) < 1
+            ? manHipFacing(a, seen) : Math.atan2(seen.vel.y, seen.vel.x) }, { label: 'man-hip', key: seen.vel })
+          : withFacingTechnique(openReq, { label: 'man-open', key: seen.vel })
+      : MAN_TURN && this.press && sim.defCall.coverage.man
+        ? withFacingTechnique(track(a, tgt, { x: Math.max(0, seen.vel.x), y: seen.vel.y },
+          { facing: manHipFacing(a, seen), gain: 1.6 }), { label: 'man-hip', key: seen.vel })
+        : withFacingTechnique(track(a, tgt, { x: Math.max(0, seen.vel.x), y: seen.vel.y }, { facing: Math.PI, gain: 1.6 }),
+          { label: 'man-pedal', key: seen.vel });
     if (!o.protectDepth) return command;
     // CARRY_READ: while the receiver will still be climbing, he asks for at
     // least the upfield speed his carry needs (the slowest that keeps his spare
