@@ -365,6 +365,7 @@
     "C2_APEX": "off",
     "SQUAT_TOPDOWN": "off",
     "Q_APEX": "off",
+    "TAMPA_PIPE": "off",
     "RELEASE_SIDE": "on",
     "SCREEN_DECLARE": "on",
     "ROUTE_SHAPE": "off",

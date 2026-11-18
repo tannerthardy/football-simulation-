@@ -20,6 +20,7 @@ import { knowsPass } from '../behaviors/defense.js';
 import type { PlaySim } from '../playsim.js';
 import { isQuickOut, type ReceiverRead, type ReleaseReader } from './reads.js';
 import { hasVisibleCap } from './judgment.js';
+import { FIELD_WIDTH } from '../../core/field.js';
 
 export const APEX_LEVERAGE = Number(process.env.APEX_LEVERAGE ?? 7);
 /** CUT_WALL (experimental, off; CUT_WALL=1): a hook defender walls a shallow crosser from his own area and passes him
@@ -338,7 +339,24 @@ function cutWall(c: RuleCtx): Directive | null {
 
 /** Match hook: carry #3 (or the back to his side) vertical to 15; cut a shallow crosser into him; otherwise play the hook and robot.
  * On a Push (fast #3 to the flat while #2 climbs) he takes #2, the new #3, up the seam. */
+/** C3_HOOK (experimental, off; C3_HOOK=1 turns it on): the Cover 3 match hook (`c3_hook`) adds his taught #3 rules
+ * (coverage-position spec item 3; HNFL-292 "match the final #3 up/over", HNFL-335/204 "#2 vertical: take #3 to the
+ * flat"), from his own read, before the existing ones:
+ * - #3 breaking in past 6.5 yd (an over or dig) inside 15 yd: match him up and over, inside leverage;
+ * - #3 (or the back to his side) to the flat, not fast (no Push), while #2 climbs: take him through to the flat. */
+export const C3_HOOK = process.env.C3_HOOK === '1';
+
+function c3HookTaught(c: RuleCtx): Directive | null {
+  const three = ref(c, 3) ?? backTo(c);
+  const two = ref(c, 2);
+  if (!three || c.state.mode === 'push' || c.state.mode === 'zoned') return null;
+  if (three.release === 'in' && three.depth < 15) return man(three, { lev: 'inside' });
+  if (three.release === 'flat' && !fastFlat(three) && two && two.release === 'vertical') return man(three, { lev: 'inside', overTop: true });
+  return null;
+}
+
 function c3Hook(c: RuleCtx): Directive {
+  if (C3_HOOK) { const d = c3HookTaught(c); if (d) return d; }
   const three = ref(c, 3) ?? backTo(c);
   const two = ref(c, 2);
   if (c.state.mode === 'push' && two) {
@@ -626,7 +644,39 @@ function cloudCorner(c: RuleCtx, sink: boolean): Directive {
 }
 
 /** Tampa 2 Mike: run the pipe — carry the inside-most vertical through the middle to ~20 yards, otherwise the deep hole. */
+/** TAMPA_PIPE (experimental, off; TAMPA_PIPE=1 turns it on): the Tampa 2 Mike runs the pipe as taught (coverage-
+ * position spec item 9; HNFL-028 "Mid Run", HNFL-241 "Middle Read #3"), from his own picture:
+ * - he carries a true vertical by #2 or #3 (or the back) down the middle, between the hashes plus a yard, inside
+ *   trail, and keeps the one he took (no re-pick each tick);
+ * - he comes off a stem the moment he sees it break outside of him (its seen velocity outward from the middle at
+ *   1.5 yd/s and more than half its upfield speed), or leave the pipe, not when the release read later turns "out";
+ * - two verticals in the pipe: he takes depth in the middle between them (the safeties squeeze from outside);
+ * - nothing vertical in the pipe: his deep-middle zone (unchanged). */
+export const TAMPA_PIPE = process.env.TAMPA_PIPE === '1';
+const PIPE_HALF = 4;
+
+function tampaPipe(c: RuleCtx): Directive {
+  const sim = c.sim, mid = FIELD_WIDTH / 2;
+  const outward = (rd: ReceiverRead) => Math.sign(rd.pos.y - mid || 1) * rd.vel.y;
+  const inPipe = (rd: ReceiverRead) => Math.abs(rd.pos.y - mid) <= PIPE_HALF && rd.depth < 20
+    && !(outward(rd) > 1.5 && outward(rd) > 0.5 * Math.max(0, rd.vel.x));
+  if (c.state.match) {
+    const rd = c.reader.read(sim, c.state.match);
+    if (rd && inPipe(rd) && rd.release !== 'out') return man(rd, { lev: 'inside', trail: true });
+    c.state.match = undefined;
+  }
+  const cand: ReceiverRead[] = [];
+  for (const r of sim.offense) {
+    const rd = c.reader.read(sim, r);
+    if (rd && vertical(rd, 4) && inPipe(rd)) cand.push(rd);
+  }
+  if (cand.length !== 1) return zoneOf(c);
+  c.state.match = cand[0].r;
+  return man(cand[0], { lev: 'inside', trail: true });
+}
+
 function tampaMike(c: RuleCtx): Directive {
+  if (TAMPA_PIPE) return tampaPipe(c);
   const sim = c.sim;
   let best: ReceiverRead | null = null;
   for (const r of sim.offense) {

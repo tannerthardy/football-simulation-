@@ -545,6 +545,7 @@
   "test/tackle-set.test.ts",
   "test/tackle-touch.test.ts",
   "test/tackle-wait-constraints.test.ts",
+  "test/tampa-pipe.test.ts",
   "test/target-action-lifetime.test.ts",
   "test/team-identity.test.ts",
   "test/throw-platform.test.ts",
