@@ -1688,6 +1688,20 @@ const SAFETY_DEPTH = process.env.SAFETY_DEPTH !== '0';
  * Two verticals there: he holds their midpoint, with no lean to the QB's look, and does not drive down on either before
  * the throw. One vertical, or none, is unchanged (the pre-throw drive on a single stopped route is gap 2). */
 const HALF_OWN = process.env.HALF_OWN !== '0';
+/** HALF_KEY (experimental, off): the Cover 2 half safety keys #1 to #2 on his side, as taught (HNFL-334 SAFETY, HNFL-097
+ * STRONG SAFETY: "Drop to deep-half landmark while seeing the release of #1. If #1 is vertical, widen and see #2. If both
+ * vertical, vision & squeeze. If either cancels, cap the remaining vertical threat"; "If #1 cancels, tighten to deflate #2
+ * top-down"). His #1 and #2 are the alignment's numbering on his side (seen before the snap). Each release is read from
+ * his own delayed picture of that receiver and committed as vertical or cancelled only once it has held for his
+ * confirm time, 0.12 x (1.6 - 0.6 focus) s (the release reader's), with margins: vertical once 7 yd past the line and
+ * climbing at 3 yd/s; cancelled once 2.5 yd past it and stopped (< 1.2 yd/s upfield) or running flatter than 1.3 : 1
+ * across, or breaking down past 3 yd (upfield speed under 55% of the top he has shown), or still at the line after 1.2 s.
+ * Before that, the release itself: a stem 3 yd deep at 5.2 yd/s reads vertical, one 1.5-7 yd deep at under 4.4 yd/s
+ * after 1 s reads cancelled (NFL #1s at 1.5 s: 5.4 vs 3.7 yd/s); either read changes when the other holds. A cancelled release can go vertical again (out-and-up) the same way. Then the
+ * verticals he plays are: both vertical, the two (HALF_OWN's midpoint); #1 vertical and #2 not yet read, the two; #1
+ * vertical and #2 cancelled, #1; #1 cancelled and #2 vertical, #2 (deflate it top-down); neither vertical, as before
+ * (his area's verticals, the QB). Until #1 is read he plays as before. Unruled `deep_half_*` only. */
+const HALF_KEY = process.env.HALF_KEY === '1';
 /** SAFETY_DEPTH: a deep safety's depth over the deepest route in his zone, as he sees it, with that route `r` yd past
  * the line: NFL deep safeties' median depth over it is 13.0 / 11.7 / 8.5 yd with the route at 1.2 / 3.7 / 9.7 yd
  * (BDB 2025, safety_cushion.py), i.e. 13.4 - 0.5 r. A slower safety keeps more and a better reader less (scale
@@ -1702,6 +1716,8 @@ function safetyOver(a: Agent, r: number): number {
   const scale = clamp(9.6 / a.profile.vmax, 0.85, 1.25) * (1.1 - 0.2 * a.r('playRecognition'));
   return Math.max(2, (13.4 - 0.5 * Math.max(0, r)) * scale);
 }
+type ZoneThreat = { r: Agent; pos: Vec2; vel: Vec2; fut: Vec2; cue: Perceived };
+
 export class ZoneCoverage implements Behavior {
   readonly kind = 'zone';
   private readonly landmark: Vec2;
@@ -1731,6 +1747,8 @@ export class ZoneCoverage implements Behavior {
   /** ZONE_HOLD bit 1: receivers held in his threat set, and those held as verticals (deep zones). */
   private bandHeld = new Set<Agent>();
   private vertHeld = new Set<Agent>();
+  /** HALF_KEY: his read of #1 and #2 ('?' unread, 'V' vertical, 'C' cancelled) and since when each candidate has held. */
+  private halfKey = { c: ['?', '?'] as Array<'?' | 'V' | 'C'>, cand: ['?', '?'] as Array<'?' | 'V' | 'C'>, since: [-1, -1], peak: [0, 0] };
   /** ZONE_HOLD bit 32: his held lean point on the QB's seen head line (null until he has seen the head). */
   private leanAt: Vec2 | null = null;
   /** ZONE_HOLD bit 64: the direction he was moving at the hand-off (null when none is binding), and last tick's technique. */
@@ -1807,6 +1825,38 @@ export class ZoneCoverage implements Behavior {
       a.tags.add('safety-depth');
     }
     this.style = style;
+  }
+
+  /** HALF_KEY: the verticals his #1-to-#2 key gives him, or null to play as before (see HALF_KEY). */
+  private halfKeyVert(a: Agent, sim: PlaySim, seen: Map<Agent, ZoneThreat>, vert: ZoneThreat[]): ZoneThreat[] | null {
+    if (!HALF_KEY || (this.zone !== 'deep_half_s' && this.zone !== 'deep_half_w')) return null;
+    const side = this.zone === 'deep_half_s' ? 'S' : 'W';
+    const slots = [sim.offAlign.numbering[`${side}1` as 'S1'], sim.offAlign.numbering[`${side}2` as 'S2']];
+    const rs = slots.map((sl) => sim.offense.find((r) => r.slot === sl) ?? null);
+    if (!rs[0] || !rs[1]) return null;
+    const confirm = 0.12 * (1.6 - 0.6 * a.mind.focus);
+    const k = this.halfKey;
+    for (let i = 0; i < 2; i++) {
+      const th = seen.get(rs[i]!);
+      if (!th) continue;
+      const depth = th.pos.x - sim.los, up = th.vel.x, across = Math.abs(th.vel.y);
+      k.peak[i] = Math.max(k.peak[i], up);
+      // Breaking down: under 55% of the top upfield speed he has shown (a hitch's chop, a curl's sink) once past 3 yd.
+      const brake = depth >= 3 && k.peak[i] >= 3 && up < 0.55 * k.peak[i];
+      // The release: a vertical release is run at speed, a stem to a break is not (NFL #1s at 1.5 s, BDB 2025 Cover 2:
+      // 5.4 yd/s for those that go vertical, 3.7 for those that break or sit; scripts/diag/coverage/half_key.py).
+      const fastStem = depth >= 3 && up >= 5.2, slowStem = sim.t >= 1.0 && depth >= 1.5 && depth < 7 && up < 4.4;
+      const cand = (depth >= 7 && up >= 3) || fastStem ? 'V'
+        : (depth >= 2.5 && (up < 1.2 || across > 1.3 * up)) || brake || slowStem || (depth < 1 && sim.t > 1.2) ? 'C' : k.c[i];
+      if (cand !== k.cand[i]) { k.cand[i] = cand; k.since[i] = sim.t; }
+      if (cand !== k.c[i] && cand !== '?' && sim.t - k.since[i] >= confirm) k.c[i] = cand;
+    }
+    const [c1, c2] = k.c;
+    if (c1 === '?') return null;
+    const t1 = seen.get(rs[0])!, t2 = seen.get(rs[1])!;
+    if (c1 === 'V') return c2 === 'C' ? [t1] : [t1, t2];
+    if (c2 === 'V') return [t2];
+    return null;
   }
 
   /** HALF_OWN: an unruled half-field or middle-third safety. */
@@ -1940,7 +1990,8 @@ export class ZoneCoverage implements Behavior {
     const inside = (y: number) => Math.sign(sim.ballY - y) || 1;
 
     // Perceived routes in (or about to enter) this zone's lateral band.
-    const threats: Array<{ r: Agent; pos: Vec2; vel: Vec2; fut: Vec2; cue: Perceived }> = [];
+    const threats: ZoneThreat[] = [];
+    const seenAll = new Map<Agent, ZoneThreat>();
     for (const r of sim.offense) {
       if (r === sim.qb || ['LT', 'LG', 'C', 'RG', 'RT'].includes(r.slot)) continue;
       let observation = this.observations.get(r);
@@ -1949,6 +2000,7 @@ export class ZoneCoverage implements Behavior {
       const seen = observation.read(cue, sim.t, r.profile, a.profile.reactionTime,
         a.r('anticipation') * a.r('zoneCoverage') * a.mind.focus);
       const fut = { x: seen.pos.x + seen.vel.x * 0.7, y: seen.pos.y + seen.vel.y * 0.7 };
+      if (HALF_KEY) seenAll.set(r, { r, pos: seen.pos, vel: seen.vel, fut, cue });
       if (ZONE_HOLD_BAND || this.ownsArea()) {
         // Held membership: in by ZONE_HOLD_IN inside the band, out only by ZONE_HOLD_OUT outside it.
         const held = this.bandHeld.has(r);
@@ -2006,6 +2058,8 @@ export class ZoneCoverage implements Behavior {
         const owned = vert.find(th => th.r.slot === slot);
         if (owned) vert = [owned];
       }
+      const keyed = this.halfKeyVert(a, sim, seenAll, vert);
+      if (keyed) vert = keyed;
       if (vert.length === 0) {
         a.mind.setAimTarget('zone-drive', null);
         let tgt = lm;

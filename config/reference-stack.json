@@ -363,6 +363,7 @@
     "PA_TABLES": "on",
     "QUICK_HITCH": "on",
     "HALF_OWN": "on",
+    "HALF_KEY": "off",
     "MATCH_DECLARE": "on",
     "C2_APEX": "on",
     "SQUAT_TOPDOWN": "on",
