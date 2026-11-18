@@ -31,9 +31,9 @@ import type { Perceived } from './perception.js';
 import type { PlaySim } from './playsim.js';
 
 export const OPEN_FIELD = process.env.OPEN_FIELD !== '0';
-/** OPEN_FIELD_GAIN (off; OPEN_FIELD_GAIN=1): the short-yardage exception counts a runner short of the line to gain, not
- * one already past it (see onTopPoint). */
-export const OPEN_FIELD_GAIN = process.env.OPEN_FIELD_GAIN === '1';
+/** OPEN_FIELD_GAIN (on since engine-86; OPEN_FIELD_GAIN=0 restores): the short-yardage exception counts a runner short
+ * of the line to gain, not one already past it (see onTopPoint). */
+export const OPEN_FIELD_GAIN = process.env.OPEN_FIELD_GAIN !== '0';
 /** Depth (yd upfield of the runner) at which he takes the on-top approach, and below which he leaves it. */
 const ENTER_DEPTH = -0.3, EXIT_DEPTH = -0.8;
 /** Beyond this he is not yet in the open-field approach (yd). */

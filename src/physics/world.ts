@@ -33,7 +33,7 @@
 import { G } from '../core/units.js';
 import { hypot2, angleDiff, clamp, type Vec2 } from '../core/vec.js';
 import { bodyRadius } from './bodyshape.js';
-import { commandFacing, legDriveFactor, trunkPrice, fatigueFactor, followAccel, locomotionAccel, spendEnergy, shouldersOf, TRUNK_TWIST, turnRateOf, updateSqueeze, updateTrunk, type Body, type MoveCommand } from './kinematics.js';
+import { commandFacing, legDriveFactor, trunkPrice, fatigueFactor, followAccel, locomotionAccel, spendEnergy, shouldersOf, PLANT_SPEED, TRUNK_TWIST, turnRateOf, updateSqueeze, updateTrunk, type Body, type MoveCommand } from './kinematics.js';
 import { advanceRecovery, availability, legDrive, baseRadiusAt, comHeightAt, fallTime, newSupport, omega0, padHeightAt, recoverySpeed, supportParams, type Support, type SupportParams } from './support.js';
 import { ARM_SPEED, turnBodyResponse, workFraction } from './actuation.js';
 import { newVirtualFoot, recoveryRamp, supportInverseMass, supportVelocity, supportWorkChange } from './virtual-foot.js';
@@ -347,6 +347,12 @@ const DEFAULT_POSTURE = 0.2;
 const FALL_TIP = 3;
 const FALL_FRICTION = 0.25;
 const DOWN_FRICTION = 0.75;
+/** DOWN_RISE_PLANT (on since engine-84; DOWN_RISE_PLANT=0 restores; docs/reviews/2026-11-18-down-slide.md): a free body starts to rise from the ground when the speed he would STAND at is one he can plant
+ * at, not only after he has slid to rest. A rising body keeps sliding under DOWN_FRICTION, so he is up at v - DOWN_FRICTION g x getUp (8 yd/s going down: 0.75 yd/s after 0.9 s); the
+ * bound is PLANT_SPEED (kinematics.ts: below it he has planted and can square to a new heading). Off, he waits to be under 0.3 yd/s: a diver at 8 yd/s slid 0.96 s before a rise whose own
+ * friction would have stopped him in 0.9 s. Friction, the 0.3 s minimum in `down` and the get-up time are unchanged. Free bodies only: not the ball carrier (World.ballCarrier), not held
+ * (a hold on his legs or a joint) and not carrying anyone's weight (HANG_LOAD); his spin must have settled (the footprint's edge speed under 0.3 yd/s, as the slide test). */
+const DOWN_RISE_PLANT = process.env.DOWN_RISE_PLANT !== '0';
 const FOLLOW_MARGIN = 1.1;
 /** Experimental (HOLD_SUBSTEPS=n, off): minimum substeps while a grasp is live. */
 const HOLD_SUBSTEPS = Number(process.env.HOLD_SUBSTEPS ?? 0);
@@ -818,6 +824,8 @@ export class World {
   joints: Joint[] = [];
   /** TORSO_CAPSULE: the body pairs whose torso contact uses the capsule (set by the owner). */
   capsulePair: ((a: Body, b: Body) => boolean) | null = null;
+  /** The ball carrier's body (owner-supplied: PlaySim), for the rules that treat him apart (DOWN_RISE_PLANT). */
+  ballCarrier: (() => Body | null) | null = null;
   /** World clock, seconds (the owner may set it to keep a shared clock). */
   time = 0;
   /** Fixed substep count for convergence studies; adaptive when unset. */
@@ -2328,7 +2336,7 @@ export class World {
     const t = this.time;
     if (sup.state === 'falling' && t - sup.since >= fallTime(sp, sup.posture)) {
       sup.state = 'down'; sup.since = t; report.downs.push(i);
-    } else if (sup.state === 'down' && hypot2(b.vel.x, b.vel.y) < 0.3 && t - sup.since >= 0.3) {
+    } else if (sup.state === 'down' && t - sup.since >= 0.3 && (hypot2(b.vel.x, b.vel.y) < 0.3 || this.risesSliding(b, sp, i))) {
       sup.state = 'rising'; sup.since = t;
     } else if (sup.state === 'rising' && t - sup.since >= sp.getUp) {
       sup.state = 'up'; sup.since = t; sup.xi = { x: 0, y: 0 }; sup.lean = { x: 0, y: 0 };
@@ -2339,6 +2347,13 @@ export class World {
       if (sup.foot && this.supportModel === 'virtual-foot') sup.foot = newVirtualFoot(b.pos);
       sup.out = 0;
     }
+  }
+
+  /** DOWN_RISE_PLANT: may this downed body start to rise while he is still sliding? */
+  private risesSliding(b: Body, sp: SupportParams, i: number): boolean {
+    if (!DOWN_RISE_PLANT || this.ballCarrier?.() === b || this.heldBodies.has(b) || b.support!.feetLock > 0 || (HANG_LOAD && this.hangCarried[i] > 0)) return false;
+    if (Math.abs(b.spin ?? 0) * 2 * b.profile.radius / 3 >= 0.3) return false;
+    return hypot2(b.vel.x, b.vel.y) - DOWN_FRICTION * G * sp.getUp <= PLANT_SPEED;
   }
 
   private startFall(sup: Support, dir: Vec2, cause: Support['cause'], report: StepReport, i: number): void {
