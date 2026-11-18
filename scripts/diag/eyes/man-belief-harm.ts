@@ -11,8 +11,11 @@ PlaySim.prototype.run = function (this: any) { const sim: any = this; if (!sim.i
   let dec: any = null, hooked = false; const tick0 = sim.tick.bind(sim);
   sim.tick = () => { const b: any = sim.qb.behavior;
     if (!hooked && b?.kind === 'qb-pass') { hooked = true; b.marginProbe = true; const st = b.startThrow.bind(b);
-      b.startThrow = (a: any, s: any, ev: any) => { if (!dec) dec = { t: +s.t.toFixed(2), pMan: +b.mind.pMan().toFixed(3), target: ev.target.slot, P: ev.P, iR: ev.intRisk,
-        rows: (b.marginLast ?? []).filter((m: any) => m.facingQB).map((m: any) => ({ slot: m.slot, m: m.m, first: m.first, blind: m.blind, react: m.react, wind: m.wind })) }; return st(a, s, ev); }; }
+      b.startThrow = (a: any, s: any, ev: any) => { const keys = (slot: string) => { const d = s.defense.find((x: any) => x.slot === slot); if (!d) return null;
+          const ang = Math.atan2(s.qb.pos.y - d.pos.y, s.qb.pos.x - d.pos.x), zoneEyes = d.behavior?.constructor?.name === 'ZoneCoverage' || d.behavior?.zoneEyes === true;
+          return { facing: Math.cos(d.body.facing - ang) > (zoneEyes ? -0.2 : 0.1), zoneEyes, beh: d.behavior?.constructor?.name ?? null }; };
+        if (!dec) dec = { t: +s.t.toFixed(2), pMan: +b.mind.pMan().toFixed(3), target: ev.target.slot, P: ev.P, iR: ev.intRisk,
+        rows: (b.marginLast ?? []).filter((m: any) => m.facingQB).map((m: any) => ({ truth: keys(m.slot), slot: m.slot, m: m.m, first: m.first, blind: m.blind, react: m.react, wind: m.wind, pReads: m.pReads })) }; return st(a, s, ev); }; }
     tick0(); };
   const res = orig.apply(this);
   if (dec) { const cov: any = sim.defCall?.coverage;

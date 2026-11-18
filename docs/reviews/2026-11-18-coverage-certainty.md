@@ -63,3 +63,45 @@ pre-snap read (PRE_SIGMA, a Gaussian on hand-set pre-snap templates) has the sam
 having no man/zone signal, cannot undo it. Next: the same treatment for the pre-snap read (fit its features from his
 looks; a broad component), and the turned cue to Coverage. The post-snap refit stays off: it does not repair the
 mechanism by itself.
+
+## The user's correction: no single man/zone label; price each defender by what he does (QB_DEF_ROLE, off, not landed)
+
+Match calls (a quarters corner manning a vertical, the hook player not) and split-field calls (Cover 6) have no whole-
+defense man/zone label. So each defender facing the QB should be priced by what the QB sees him doing, with the coverage
+belief only as a prior about him.
+
+**What today's man belief does.** It enters pricing in one place: the window's start for a defender facing the QB
+(THROW_REACT), `pMan × windup + (1 − pMan) × max(0, windup − reaction)`. Man belief has him wait for the release; zone
+belief has him go on the arm, about 0.23 s earlier. It also reorders reads when pMan > 0.6 and feeds the blitz
+expectation; neither prices anyone.
+
+**Built** (patch `docs/reviews/patches/engine71-footwork/qb-cov-fit-def-role-wip-on-b6658fef-plus-rw.diff`, with the
+post-snap refit):
+- `QBMind.pZoneSeat(slot)`: over his coverage belief, each coverage's role for that slot (zone or match seat against
+  man seat). A split-field call gives different seats per slot, so no side model is needed.
+- QB_DEF_ROLE=1: running with a receiver (within 3.5 yd, moving with him, not closing fast) means man, he reads the
+  release; facing the QB with no receiver near means a zone reader, he reads the arm; otherwise the seat prior.
+- QB_DEF_ROLE=2 (diagnostic): the seat prior alone.
+
+**Measured** (`man-belief-harm.ts`, league game seed 101; truth is the defense's own rule at the decision: a zone-eyes
+behavior facing the QB keys the arm):
+
+| arm | coverage defenders facing the QB, right | mean error |
+|---|---|---|
+| legacy (pMan) | 0.70 (87 rows) | 0.285 |
+| QB_DEF_ROLE=1, behavior | 0.65 (89) | 0.339 |
+| QB_DEF_ROLE=2, seat prior | 0.71 (99) | 0.294 |
+
+- **The behavior rule is worse,** because our man defenders do not show man. They face the QB and backpedal slower
+  than their receivers, so "running with him" misses them, and match zone players carrying a vertical read as man.
+  There is no visible behavior to price until man coverage turns and runs (the same finding as the dead turned cue;
+  Coverage's).
+- **The seat prior is about as good as the legacy blend.**
+- **The window applies the man/zone start to pass rushers.** 63-72 rows a game are PassRushers facing the QB, priced as
+  if reading coverage. That is a separate fix: a rusher's reaction to a thrown ball is not a coverage read.
+- An earlier count used the defense's readArm tag as truth. That tag is set only when a defender's ball-reading code
+  runs, so defenders who never go to the ball are untagged; the counts in the table above replace it. Read with that
+  caveat: under the man belief, 18 facing defenders keyed the arm, none of them a picker.
+
+Two attempts on the per-defender rule; stopped. Not landed. Waiting on man coverage that plays like man (Coverage), so
+there is a behavior to read.
