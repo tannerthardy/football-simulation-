@@ -311,6 +311,7 @@ problem), resolved.
 | [TKL-5](#tkl-5) | "Reach" means different things in each tackle branch | G1, G10 | high | in work (#264 needs rework) |
 | [TKL-6](#tkl-6) | An engaged tackler's miss is a flat bonus, not his reach, balance or the blocker's hold | G1 | medium | open |
 | [TKL-8](#tkl-8) | The tackling rating slows a defender's approach | P1 | low | open |
+| [TKL-9](#tkl-9) | Front contacts on a moderate-speed carrier stop him sooner than the NFL's (opposite-sign gap) | G1 | low | open (recorded, not chased) |
 | [PRO-OPTRUST](#pro-optrust) | Inferred come-off counts are a lower-bound sample (24% of charted pressures) | G5 | medium | open |
 | [PRO-INFO](#pro-info) | Information leaks and rating-awarded outcomes in protection and the rush | G5 | high | in work |
 | [PRO-1](#pro-1) | Edge rushers meet the tackle at the line and walk through him | G5 | high | in work (G5, #215) |
@@ -1261,6 +1262,39 @@ Carried over from the issue register; each was measured on an older develop.
   approach speed is parked ([PARKED](PARKED.md), `TACKLE_APPROACH`), with
   `arrival_finish.py`, `contact_finish.py` and `arrival-control.mts` as the
   measure to re-open it.
+
+<a id="tkl-9"></a>
+### TKL-9: Front contacts on a moderate-speed carrier stop him sooner than the NFL's
+
+Recorded 2026-11-18 at Integration's request: an opposite-sign gap, kept so nobody
+reads it as headroom or tunes the wrap toward it. Not being chased.
+
+- **Symptom:** a defender meeting the carrier from in front, with the carrier
+  moving 3–5 yd/s, ends the run in less ground than NFL tacklers do. Everywhere
+  else contact matches or runs the other way.
+- **Measure** (same operator both sides; BDB 2025 against a pre-engine-81 build):
+  - Contact to tackle, all plays, front contacts with the carrier at
+    3–5 yd/s: ours 1.9 yd, NFL 3.1 yd (scratch `contact-tackle`). By the same
+    operator, behind contacts with the carrier at 5+ yd/s, solo: p50/p75 ours
+    4.0/4.8 yd, NFL 4.5/8.2. The wrap's drag is NFL-like, so `HOLD_SINK` and
+    `HOLD_HEAVY` stay parked.
+  - Zone completions of 10+ air yards (scratch `zone-yac`; first contact means
+    any defender within 1.0 yd of the catcher). The nearest defender at the catch
+    is in front; carrier 3–5 yd/s at the catch:
+
+    | Source | n | 5+ yd after first contact |
+    | --- | --- | --- |
+    | Ours | 49 | 4% |
+    | NFL | 68 | 12% |
+
+    The other cells differ in both directions on small samples (n 25–158), and
+    the overall rate is 20.6% against 22.5%.
+- **Cause:** *hypothesis:* the front tackle bond at moderate closing speed
+  transfers more of the carrier's momentum than the NFL's ankle tackles and
+  glancing hits do. Not traced.
+- **Where:** `src/sim/tackle.ts` (bond and fall), `src/sim/contact-holding.ts`.
+- **Owner:** tackling. Do not shorten or lengthen anything toward it. It
+  matters only if a contact-physics change moves it further from the NFL.
 
 ## Pass protection
 
