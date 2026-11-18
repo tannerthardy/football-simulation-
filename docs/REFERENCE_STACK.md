@@ -2,7 +2,7 @@
 
 One combination of experimental flags that Run Game, Defense, Flex and Coverage all measure against. Before this, each agent tested on its own mix (the FLAT_PRESS / ZONE_RUN back-and-forth on 2026-11-09 came from two different flag sets), and no list of anyone's stack existed in the repository.
 
-- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-77`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
+- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-78`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
 - **The code:** `run/G3-oz-backfield` a749beb7 + `defense/G2-stance-tell` a0cb0789 (#411) + `defense/G2-lb-start` (#416, with #409) + `claude/quirky-franklin-9lbwbp` (#417, with #415) + develop 6676dfc2.
 - **Since 2026-11-09 the stack is the engine's default.** The flags listed `on` are read as on unless set to `0`; a bare command in a clean shell and `npm run ref -- <command>` run the same engine. `npm run ref -- --off -- <command>` runs the legacy engine (every listed flag off). `test/reference-stack.test.ts` fails if the file and the code defaults ever disagree. See "Promotion" below.
 
@@ -607,6 +607,27 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 | Fixed 1,321 runs on run-ref-15, paired yards a run | | `FIT_TE_GAP` +0.05 ± 0.05; `FIT_BLITZ_SLIDE` +0.01 ± 0.04 |
 
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
+
+
+## engine-78: deep thirds and halves wait for the ball (2026-11-18)
+
+On: `DEEP_GATE` (Defense, B4/B5 gap 1 of Rules' coverage-position table; a coached-rule repair). Deep-third, deep-middle, deep-half and Tampa-middle players hold their coverage on an arm-only belief (the load, a delivery, a pump): no plant, no shoulder break. They break on the ball they have seen. Quarter seats (quarters, palms, Cover 6's quarter side) keep their route triggers. DEEP_BREAK stays a separate flag, off.
+
+Deep seats acting on the passer's shoulders before seeing the ball (deep-bite.mts, 1,024 staged plays, 66 with a pump; off -> on):
+
+| seat | off | on |
+|---|---|---|
+| Cover 2 deep half | 81% | 0 |
+| Cover 6 deep half | 88% | 0 |
+| Cover 3 deep middle | 74% | 0 |
+| Cover 3 deep third | 59% | 0 |
+| quarter seats (Cover 4, Cover 6) | 32-36% | unchanged |
+
+The deep man at the catch (deep-flight, Cover 2 / Cover 3): depth 9.7 / 9.8 -> 10.3 / 10.4 yd (NFL Cover 2 10.7); closing in flight 2.5 / 2.6 -> 2.1 / 2.2 yd/s (he waits for the ball).
+
+Staged set (engine-76 base): zone YAC 5.27 -> 5.24, 20+ 4.7 -> 4.9%; man YAC 3.17 -> 3.07; throws of 10-20 air yards 67.0 -> 67.3% complete, YAC 7.1 -> 7.0; short completion 75.6 -> 75.8%; yards per attempt 8.87 -> 8.88; run set 3.87 yards per carry unchanged; head-on control 2.5 -> 2.8%. Throws of 15+ air yards: 21 in the staged set, no signal.
+
+Dither: measured on the engine-76 base, the carrier spacing row moved to its budget line on the suite's panel. Attributed (dither-panel and carrier-dither, off -> on): carrier spacing reversals 44 -> 43, moving 288 -> 287 s, run plays identical; the gate reorders which pass plays carry a reversal (curl_flat 1 and 3: 2 -> 0; rb_slip_screen 9: 1 -> 3; wide_now_screen 9: 0 -> 1). On engine-77 (develop 69277a00, the carrier spacing row recorded at 0.1230 with ZONE_EYES) `dither-budget` passes with the gate on, so the row is not re-recorded.
 
 ## engine-77: zone defenders see through one head that follows the taught eye sequence (2026-11-17)
 

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "engine-77",
+  "id": "engine-78",
   "runSet": {
     "commit": "1b5415de99b5b7194eff045f3c37a07a4c54c1a9",
     "seeds": [
@@ -300,6 +300,7 @@
     "BLITZ_SECOND": "on",
     "QB_LOOKOFF_RHYTHM": "off",
     "TECH_CONT": "on",
+    "DEEP_GATE": "on",
     "ZONE_EYES": "on",
     "QB_HONEST_FEEL": "on",
     "THROW_PLATFORM": "off",
