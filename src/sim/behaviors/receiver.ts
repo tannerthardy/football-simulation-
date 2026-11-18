@@ -130,8 +130,9 @@ const STEM_MIN = 5;
  * - an inside-breaker (slant, dig, post, cross) wins inside, or, against a man with inside leverage, takes an outside
  *   release first as a set-up (it costs him the path);
  * - an outside-breaker (out, corner, flat) takes the outside, or sets up inside against outside leverage;
- * - a vertical (go, fade, seam) takes the release the man gives (outside against inside leverage, inside against outside
- *   leverage), straight against a head-up man or no one;
+ * - a vertical (go, fade, seam) wins outside, keeping his landmark and the sideline space the ball is thrown to,
+ *   except against a pressed man head-up or outside of him (2.5 yd or less in front), where the jam decides the side and
+ *   he plans none (NFL go at 1.0 s: path 9.8 deg outside, Coverage's slant_go_sep.py; Integration 2026-11-18);
  * so a slant and a go against the same leverage leave the line alike. The man over him: the nearest defender in front
  * within 9 yd deep and 4 yd across; leverage is 0.5 yd or more inside or outside his line. The release leans up to 1 yd
  * off the route's first leg by 3 yd past the line (about 10-15 deg), at unchanged speed, then the route takes him on; a
@@ -590,7 +591,7 @@ export class RouteRunner implements Behavior {
       let side: number;
       if (breakSide < 0) side = levSide < 0 ? 1 : -1;          // inside-breaker: inside, or set up outside vs inside leverage
       else if (breakSide > 0) side = levSide > 0 ? -1 : 1;     // outside-breaker: outside, or set up inside vs outside leverage
-      else side = -levSide;                                    // vertical: the release the man gives
+      else side = best && bd <= 2.5 && levSide >= 0 ? 0 : 1;  // vertical: outside, unless a pressed man over or outside him
       this.releasePlan = side * this.outside;
     }
     // The route's first leg, minus a go's drawn lean (the plan replaces it), plus the planned lean, growing to 1 yd by `end`.
