@@ -207,7 +207,7 @@ index 0e4789ac..5cc91ade 100644
    else if (nearPath && !a.tags.has('looking') && sim.dice('look', a).chance(0.15 + 0.5 * a.r('ballSkills'))) a.tags.add('looking');
    // DRIVE_CATCH: the ball is in a receiver's hands but not yet his: drive
 diff --git a/src/sim/catching.ts b/src/sim/catching.ts
-index bbdb4378..d3824afd 100644
+index bbdb4378..8ac13d5b 100644
 --- a/src/sim/catching.ts
 +++ b/src/sim/catching.ts
 @@ -13,6 +13,7 @@ import type { Agent } from './agent.js';
@@ -456,12 +456,20 @@ index bbdb4378..d3824afd 100644
        ball.securing = undefined;
        sim.stats.passDefendedBy = D.player.id;
        sim.event('pbu', D, R, hit > hand ? 'dislodged by the hit' : 'dislodged through the hands');
-@@ -533,6 +664,10 @@ function defenderPlay(sim: PlaySim, o: Opp, tAir: number): boolean {
+@@ -533,6 +664,18 @@ function defenderPlay(sim: PlaySim, o: Opp, tAir: number): boolean {
      if (done && done.at === key && done.who.has(D)) return false;
      if (!done || done.at !== key) playTried.set(sim, { at: key, who: new Set([D]) }); else done.who.add(D);
    }
 +  if (DEF_CATCH) {
-+    const R = ball.target && ball.target.team === 'O' ? ball.target : null;
++    // The offensive body whose arms reach the ball now (the reach rule contestHands gives a defender), not the throw's
++    // intended target: the QB's intent is no one's physics, and on an errant ball the target can be yards away while
++    // another receiver is at the ball, or nobody is (Coverage, 2026-11-18).
++    let R: Agent | null = null, best = Infinity;
++    for (const a of sim.offense) {
++      if (a === ball.thrower || a.isDown(sim.t)) continue;
++      const d = Math.hypot(a.pos.x - o.b.x, a.pos.y - o.b.y);
++      if (d <= a.profile.reach + 0.15 && d < best) { best = d; R = a; }
++    }
 +    return defenderCatch(sim, D, o, R) !== 'miss';
 +  }
    const stretch = o.dh / (D.profile.reach + 0.3);
