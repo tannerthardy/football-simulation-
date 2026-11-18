@@ -31,7 +31,7 @@ import type { Perceived } from './perception.js';
 import type { PlaySim } from './playsim.js';
 
 export const OPEN_FIELD = process.env.OPEN_FIELD !== '0';
-/** OPEN_FIELD_GAIN (on since engine-86; OPEN_FIELD_GAIN=0 restores): the short-yardage exception counts a runner short
+/** OPEN_FIELD_GAIN (on since engine-91; OPEN_FIELD_GAIN=0 restores): the short-yardage exception counts a runner short
  * of the line to gain, not one already past it (see onTopPoint). */
 export const OPEN_FIELD_GAIN = process.env.OPEN_FIELD_GAIN !== '0';
 /** Depth (yd upfield of the runner) at which he takes the on-top approach, and below which he leaves it. */
@@ -49,7 +49,7 @@ const SHORT = 2;
 const LANE = 1.5;
 
 const onTop = new WeakMap<Agent, boolean>();
-/** OPEN_FIELD_FINISH (on since engine-86, with OPEN_FIELD_GAIN; OPEN_FIELD_FINISH=0 restores): the mirror is for a runner who can still cut both ways. Once the runner
+/** OPEN_FIELD_FINISH (on since engine-91, with OPEN_FIELD_GAIN; OPEN_FIELD_FINISH=0 restores): the mirror is for a runner who can still cut both ways. Once the runner
  * he sees has committed to a line (running near top speed, where a cut costs him the speed he would beat the angle
  * with) or has the sideline on his outside (less room to that side than he covers in one cut time), the defender stops
  * giving ground and takes chase's meeting angle at his inside leverage, the sideline as help. The switch has enter and
