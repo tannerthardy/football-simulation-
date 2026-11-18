@@ -293,20 +293,44 @@ function flightInPhase(a: Agent, sim: PlaySim, R: Agent): boolean {
  * acts when the ball comes within his reach, as before. */
 const FLIGHT_LANE = process.env.FLIGHT_LANE === '1';
 const LANE_BLEND_START = 0.6, LANE_BLEND_FULL = 0.15;
-function laneAim(a: Agent, sim: PlaySim, R: Agent, path: PlaySim['ballPath'], shoulder: Vec2): Vec2 | null {
+/** Attempt 2 (2026-11-18; lane-aims.mts): the lane as first built ran to the receiver where he is, but the ball goes
+ * where he will be (a crosser's line was 3.25 yd off the true ball line at p50; led, 0.83), and it waited for the ball
+ * in view (+0.2 s) while he needed 4.7 yd in 0.7 s. Now the line ends at the receiver carried along his seen run for
+ * the flight he judges from the passer's distance (SHOULDER_BALL_SPEED, the same rule-of-thumb ball speed as the
+ * shoulder break; no hidden break: if the receiver breaks in the air he is wrong); his aim is the earliest point on it
+ * he can reach (his own body) before the ball does at that speed, else the point nearest him; and it runs from his
+ * throw belief (the shoulder break), before he has any ball sample. */
+function laneAim(a: Agent, sim: PlaySim, R: Agent, path: PlaySim['ballPath'] | null, releasedAt: number): Vec2 | null {
   const dir = sim.attackDir(sim.offense[0].team), q = sim.see(a, R);
   // Help over the top, as he sees it.
   const help = sim.defense.some((o) => o !== a && (() => { const p = sim.see(a, o).pos; return (p.x - q.pos.x) * dir > 0 && Math.abs(p.y - q.pos.y) <= 6 && Math.hypot(p.x - q.pos.x, p.y - q.pos.y) <= 10; })());
   if (!help) return null;
-  const qb = sim.see(a, sim.qb).pos, ux = shoulder.x - qb.x, uy = shoulder.y - qb.y, L2 = ux * ux + uy * uy || 1;
-  const k = clamp(((a.pos.x - qb.x) * ux + (a.pos.y - qb.y) * uy) / L2, 0, 1);
-  const lane = { x: qb.x + ux * k, y: qb.y + uy * k };
+  const qb = sim.see(a, sim.qb).pos, el = Math.max(0, sim.t - releasedAt), up = a.profile.radius + R.profile.radius + a.profile.reach;
+  // The flight he judges: from the passer to where the receiver will be (iterated), and how much of it is gone.
+  let tf = Math.hypot(q.pos.x - qb.x, q.pos.y - qb.y) / SHOULDER_BALL_SPEED, end = { x: q.pos.x, y: q.pos.y };
+  for (let i = 0; i < 4; i++) {
+    const rem = clamp(tf - el, 0, SHOULDER_FLIGHT_MAX);
+    end = { x: q.pos.x + q.vel.x * rem + dir * up, y: clamp(q.pos.y + q.vel.y * rem, 0.5, FIELD_WIDTH - 0.5) };
+    tf = Math.hypot(end.x - qb.x, end.y - qb.y) / SHOULDER_BALL_SPEED;
+  }
+  const ux = end.x - qb.x, uy = end.y - qb.y, L2 = ux * ux + uy * uy || 1;
+  let lane: Vec2 | null = null;
+  for (let k = 0.05; k <= 1 + 1e-9; k += 0.05) {
+    const p = { x: qb.x + ux * k, y: qb.y + uy * k };
+    if (timeToReach(a, p, a.profile.reach * 0.8) <= k * tf - el) { lane = p; break; }
+  }
+  if (!lane) { const k = clamp(((a.pos.x - qb.x) * ux + (a.pos.y - qb.y) * uy) / L2, 0, 1); lane = { x: qb.x + ux * k, y: qb.y + uy * k }; }
+  if (!path?.length) return lane;
   // His estimate's line: its nearest point to him ahead in time, and the time left until it is there.
   let best: { x: number; y: number; t: number } | null = null, bd = Infinity;
   for (const p of path) { if (p.t < sim.t) continue; const d2 = Math.hypot(p.x - a.pos.x, p.y - a.pos.y); if (d2 < bd) { bd = d2; best = p; } }
   if (!best) return lane;
   const w = clamp((LANE_BLEND_START - (best.t - sim.t)) / (LANE_BLEND_START - LANE_BLEND_FULL), 0, 1);
   return { x: lane.x + (best.x - lane.x) * w, y: lane.y + (best.y - lane.y) * w };
+}
+/** FLIGHT_LANE applies to an underneath man playing his own estimate (FLIGHT_MAN, estimatesFor). */
+function laneMan(a: Agent): boolean {
+  return FLIGHT_LANE && FLIGHT_MAN && estimatesFor(a) && !a.engagement && (a.behavior as { plastersScramble?: boolean } | undefined)?.plastersScramble !== true;
 }
 
 /** Diagnostic: his FLIGHT_MAN branch this play ('in' looks for the ball, 'out' plays the man, 'split' between two). */
@@ -2860,6 +2884,11 @@ function playBelievedBall(a: Agent, sim: PlaySim, man: Agent | null, continueCov
     const since = ARM_BREAK & 1 ? sim.t - rb.releasedAt : sim.t - pick.at;
     if (pick.R && since >= react - 1e-9) {
       a.tags.add('shoulder-break');
+      // FLIGHT_LANE attempt 2: an underneath man on his own estimate breaks to the throwing lane from his throw belief.
+      if (!man && laneMan(a)) {
+        const aim = laneAim(a, sim, pick.R, null, rb.releasedAt);
+        if (aim) { a.tags.add('flight-lane'); flightManBranch.set(a, { branch: 'lane', R: pick.R, t: sim.t }); return arriveUnderControl(a, aim); }
+      }
       // He breaks to where that receiver will be when the ball gets there: the receiver as he now sees him, carried
       // along his seen velocity for the rest of the throw's flight, judged from the passer's distance (a coached
       // rule-of-thumb ball speed). One receiver per belief; his projected spot updates as his picture does.
@@ -2894,9 +2923,9 @@ function playBelievedBall(a: Agent, sim: PlaySim, man: Agent | null, continueCov
         a.tags.add('flight-in-view');
         const flight = acquireFlight(a, sim);
         // FLIGHT_LANE: an underneath man with the ball in view plays the throwing lane (his feet in the ball's way).
-        const deepMan = (a.behavior as { plastersScramble?: boolean } | undefined)?.plastersScramble === true;
-        if (FLIGHT_LANE && !deepMan && fm.R && flight.length) {
-          const aim = laneAim(a, sim, fm.R, flight, fm.p);
+        const relAt = releaseBelief(sim, a).releasedAt;
+        if (laneMan(a) && fm.R && flight.length && relAt !== undefined) {
+          const aim = laneAim(a, sim, fm.R, flight, relAt);
           if (aim) { a.tags.add('flight-lane'); flightManBranch.set(a, { branch: 'lane', R: fm.R, t: sim.t }); return arriveUnderControl(a, aim); }
         }
         return flight.length && (!BALL_EST_FLIGHT_SETTLE || settledFlight(a, sim, flight)) ? playObservedFlight(a, sim, flight, true) : arriveUnderControl(a, fm.p);
@@ -2911,6 +2940,10 @@ function playBelievedBall(a: Agent, sim: PlaySim, man: Agent | null, continueCov
           const f = q.facing ?? Math.atan2(a.pos.y - q.pos.y, a.pos.x - q.pos.x);
           return runThrough(a, { x: q.pos.x + Math.cos(f) * 0.35, y: q.pos.y + Math.sin(f) * 0.35 }, { speed: 1 });
         }
+        // FLIGHT_LANE attempt 2: the lane does not need the ball in view (the passer and the receiver give it).
+        const relAt = releaseBelief(sim, a).releasedAt;
+        const aim = laneMan(a) && relAt !== undefined ? laneAim(a, sim, fm.R, E.peek(a, sim), relAt) : null;
+        if (aim) { a.tags.add('flight-lane'); flightManBranch.set(a, { branch: 'lane', R: fm.R, t: sim.t }); return arriveUnderControl(a, aim); }
       }
       return arriveUnderControl(a, fm.p);
     }
