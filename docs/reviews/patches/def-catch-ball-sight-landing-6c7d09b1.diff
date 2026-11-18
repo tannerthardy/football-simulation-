@@ -1,0 +1,413 @@
+diff --git a/config/baseline.json b/config/baseline.json
+index 32bfea96..b0da6918 100644
+--- a/config/baseline.json
++++ b/config/baseline.json
+@@ -124,6 +124,8 @@
+     "HELD_SWING": "0",
+     "HOLD_SUBSTEPS": "0",
+     "CATCH_CHOICE": "0",
++    "DEF_CATCH": "0",
++    "BALL_SIGHT": "0",
+     "CATCH_SPEED": "0",
+     "HANDS_CUE": "0",
+     "KEEPER_TORSO": "1",
+diff --git a/config/reference-stack.json b/config/reference-stack.json
+index 2ab7adb1..9d6a8db8 100644
+--- a/config/reference-stack.json
++++ b/config/reference-stack.json
+@@ -188,6 +188,8 @@
+     "HANG_GRIP": "off",
+     "EXTEND": "off",
+     "CATCH_CHOICE": "on",
++    "DEF_CATCH": "on",
++    "BALL_SIGHT": "on",
+     "CATCH_SPEED": "on",
+     "HANDS_CUE": "on",
+     "IZ_FLAT": "on",
+diff --git a/docs/FLAGS.md b/docs/FLAGS.md
+index 0647eb38..28d46722 100644
+--- a/docs/FLAGS.md
++++ b/docs/FLAGS.md
+@@ -2,7 +2,7 @@
+ 
+ Every engine switch read from the environment, recounted from `src` at `57f50fc3` on 2026-10-22. This includes #210's promotion and #205's two additional default-on switches. Flags that are not on develop (parked, removed from a PR, or only on a side branch) are kept in [PARKED.md](PARKED.md) so the ideas are not lost. Registration rules are in [PLAN.md](PLAN.md): at most 10 experimental flags, and each expires two reviews after it lands.
+ 
+-There are 490 flags read from the environment in `src` (recounted 2026-11-18, engine-87: engine-86 plus HALF_KEY (on); engine-86 was engine-85 plus MUSH_MATCH (on); engine-85 was engine-84 plus FLAT_SINK (on); engine-84 was engine-83 plus DOWN_RISE_PLANT (on); engine-83 was engine-82 plus QB_DRIVE, QB_RHYTHM_THROW, QB_ALIGN, QB_BODY_FOLLOW, QB_WINDOW_ARRIVE, QB_KEY_PLANT, QB_STICK, QB_PEEK_CLOCK, QB_MOF_READ, QB_DEEP_WAIT and QB_STANCE; QB_DRIVE, QB_RHYTHM_THROW, QB_WINDOW_ARRIVE, QB_KEY_PLANT and QB_STICK on): 373 are on unless set to `0`, 89 are off unless set to `1`, and 28 are numeric scales or modes (identity value unless listed in the stack's numeric section). The rows below carry each flag's history.
++There are 492 flags read from the environment in `src` (recounted 2026-11-18, engine-89: engine-87 plus DEF_CATCH and BALL_SIGHT (on); engine-87 was engine-86 plus HALF_KEY (on); engine-86 was engine-85 plus MUSH_MATCH (on); engine-85 was engine-84 plus FLAT_SINK (on); engine-84 was engine-83 plus DOWN_RISE_PLANT (on); engine-83 was engine-82 plus QB_DRIVE, QB_RHYTHM_THROW, QB_ALIGN, QB_BODY_FOLLOW, QB_WINDOW_ARRIVE, QB_KEY_PLANT, QB_STICK, QB_PEEK_CLOCK, QB_MOF_READ, QB_DEEP_WAIT and QB_STANCE; QB_DRIVE, QB_RHYTHM_THROW, QB_WINDOW_ARRIVE, QB_KEY_PLANT and QB_STICK on): 375 are on unless set to `0`, 89 are off unless set to `1`, and 28 are numeric scales or modes (identity value unless listed in the stack's numeric section). The rows below carry each flag's history.
+ 
+ **Promotion (2026-11-09):** the reference stack `run-ref-4` is now the engine's default. The 90 flags it lists `on` are read as on unless set to `0` (rows marked "promoted" below); the rest are unchanged. Decisions and evidence for each flag are in [REFERENCE_STACK.md](REFERENCE_STACK.md); `npm run ref -- --list` is the current inventory, and `npm run ref -- --off -- <command>` runs the engine as it was before. The test suites still run on the pre-promotion engine (pinned in `vitest.config.ts`) until their recorded cases are re-recorded. The counts in the paragraph above predate all of this.
+ 
+@@ -415,6 +415,8 @@ There are 490 flags read from the environment in `src` (recounted 2026-11-18, en
+ | `RELEASE_SEEN` | on | promoted 2026-11-12 (engine-45; `=0` restores); was experimental (C14 release, 2026-11-12) | receivers | `src/sim/behaviors/receiver.ts` (`RouteRunner.handleRelease` release-around, `tightAtSnap`) | set at first review. Model-rule repair: the release-around (PRESS_MIRROR / PRESS_RELEASE) was keyed on the defence's call (`defAlign.spots[d.slot].press && manTarget === a.slot`), a private assignment the receiver cannot know. With it he releases around any defender he saw tight over him at the snap (within 2.5 yd ahead and 1.5 yd either side, as he saw them), on that defender's seen position; release side and how cleanly he clears are the existing technique (route side vs seen shade; cut skill by release rating). The corner's own jam still reads the corner's assignment. Games (seed 11, 8 per arm, off -> on): stalled at the line (press_stall.py) 10 -> 7% (NFL 3%), with a lineman nearest 31 -> 12% (NFL 5%); off-ball tight receivers stalled 21 -> 13% (NFL 5%); press rows within 0.1 s to 5 yd. Review `docs/reviews/2026-11-12-release-seen.md`. Test `test/release-seen.test.ts`. |
+ | `HANDS_CUE` | on | promoted 2026-11-12 (engine-47; `=0` restores); was experimental (C14 man trail, 2026-11-12) | receivers, coverage | `src/sim/hands-cue.ts`, `src/sim/behaviors/receiver.ts` (`TrackBall.update`), `src/sim/behaviors/defense.ts` (`readsHandsAt`) | set at first review. A receiver's hands coming up for the ball as evidence a trailer within 3 yd can see. While he tracks a ball to him his hands come up a lead before it reaches his spot, 0.55 - 0.35 x route running s (stand-in debt: hands are not in tracking, so the lead is estimated, bounded by the trailer's observable break: recognition through the cue lands at p50 0.10 s after the secure event, later than the NFL trailer's break onset, p50 0.40 s before arrival, trail_break.py; late hands is receiver craft against this read); his running facing and speed are untouched (no separate head/hands channel exists, so it is a state, not a pose). The trailer's throw cue takes the earliest of his own sight of the ball, the existing look-back facing cue, and this, with his usual reaction delay. No hands without a ball coming (decoy hands not modelled: false-cue rate 0 by construction). Fixture (man-trail-fixture.ts, engine-44, off -> on): trailers who recognise the throw by the secure event 48/62 -> 56/60; those with no flight picture by then 14 -> 4 (off, 11 of the 14 recognised it at p50 0.20 s after); closing at +0.25 s pooled about 0.64 -> 0.71 yd/s (a trailer behind a faster crosser still cannot close). Test `test/hands-cue.test.ts`. |
+ | `CATCH_CHOICE` | on | promoted 2026-11-12 (engine-47; `=0` restores); was experimental (C14 catch, 2026-11-12) | receivers | `src/sim/catch-choice.ts` (`chooseCatchPoint`), `src/sim/behaviors/receiver.ts` (`TrackBall.update`) | set at first review. Where on the ball's path he plays it, as his choice: the reachable segment of the path from the earliest point (today's `catchSpot`: the high point, or coming back to a short ball) to the latest point with the ball still at or above his shoulders (0.82 of his height, estimated: hands carried while running); he plays the latest point the two nearest defenders, as he sees them, cannot reach before the ball by 0.1 s, else the point with the best margin over them. One judgment error per throw on those margins, sd 0.1 + 0.2 x (1 - ball tracking) s. Re-read every 0.1 s, committed in the last 0.3 s. Superseded and replaced `IN_STRIDE_CATCH` (removed 2026-11-12; see PARKED.md). Pooled read (seeds 11 + 23, 16 games each, on 3081064c; off -> on, NFL in brackets): deep man 0-2 yd completion 44 -> 58% (32), catch at 5+ yd/s with room short 93 -> 96%, deep 89 -> 86%; with CATCH_SPEED 87 / 80% (88 / 72); intermediate zone yd/att 9.11 -> 9.22 (6.85). Blocked in games by natural deep throws landing short of his full-speed spot (Rules+Coaching) and by the catch at speed (CATCH_SPEED). Review docs/reviews/2026-11-12-catch-choice.md. Test `test/catch-choice.test.ts`. |
++| `DEF_CATCH` | on | promoted 2026-11-18 (engine-89; `=0` restores); was experimental (Flex, 2026-11-18; Integration, the deep catch point) | pass defense / catch | `src/sim/catching.ts` (`defenderCatch`, `handsCatch`, the closest-approach wait in `resolveCatchOpportunities`) | a defender who reaches a ball he sees makes a catch attempt through the receiver's hands-catch model with his own ratings (tracking = his ball skills; no receiver's floor), against the receiver's arms at the ball as a catch difficulty, once, at his best point of the flight (closest approach), and only if his time from first sight covers his reaction and his hands' travel (else a hand in the path at best). Off: one early roll from fixed priors (breakup about 7x the interception). Staged deep throws (15+ air vs zone) within 2 yd at arrival, with BALL_SIGHT: INT 12.6 / PBU 27.6 / catch 39.9% (NFL 17.6 / 25.4 / 29.5; off 4.0 / 43.6 / 35.3). |
++| `BALL_SIGHT` | on | promoted 2026-11-18 (engine-89; `=0` restores); was experimental (Flex, 2026-11-18; Integration, information rule) | pass defense / catch | `src/sim/catching.ts` (`facingBall`, `secureStep`, `ballContacts`); `src/sim/behaviors/defense.ts` (`lookBackDecision`, `flightApproach`) | his sight of the ball is his own: within 30 deg of his shoulders, or, once he looks, his neck's range plus that. A defender who saw the ball keeps it (the zone turn) until a speed turn puts his back to it (150 / 135 deg); a man with a receiver looks back in phase (on top or hip to hip, with exit margins) once he sees the receiver's eyes go back, after his reaction; out of phase he plays the hands. Contacts at the catch point are logged with whether he saw the ball (`ballContacts`), and who would have heard a "ball" call (`ballCalls`; no hearing channel yet). Off: the 'looking' tag alone was sight. |
+ | `CATCH_SPEED` | on | promoted 2026-11-12 (engine-47; `=0` restores); was experimental (C14 catch, 2026-11-12) | receivers | `src/sim/catching.ts` (`runTrackTerm`, the `shoulder` term) | set at first review. Tracking a ball he is not facing while he runs: replaces the over-the-shoulder step (from behind, above 6.5 yd/s only, +0.12-0.24) with K x clamp((speed - 3) / 4.5, 0, 1) x angle x clamp(air time / 1.3, 0, 1) x (0.7 + 0.6 x (1 - ball tracking)), angle from behind 1, straight across 0.46 (second constant, from the NFL's pooled across-vs-behind loss, 8.4 vs 18.4 points), facing past 120 deg 0; through hands like the other terms. By design it is smaller than the old step for a fast catch on a short-flight ball (air time well under 1.3 s: e.g. 0.15 at 0.6 s against the old 0.12-0.24 from behind above 6.5 yd/s), and larger on every deep ball (air time >= 1.3 s), so it can only make the same deep catch harder. K = 0.37, estimated from the NFL's fall in completion on well-placed balls with no defender within 2 yd (catch_speed.py: short 88%, deep 72% at 5+ yd/s; ours were 92-100 / 89-90). Debt: a stand-in for hands and eyes at speed; a physical model of the hand path against the ball replaces it. Pooled read (catch_speed.py, seeds 11 + 23, 16 games each, on 3081064c; baseline -> CATCH_SPEED -> with CATCH_CHOICE, NFL in brackets): at 5+ yd/s with no defender within 2 yd short 93 -> 95 -> 87% (88), deep 89 -> 84 -> 80% (72); defender within 2 yd short 73 -> 66 -> 65% (57), deep 65 -> 61 -> 53% (52); deep from behind 0-5 / 5-6.5 / 6.5+ 75 / 73 / 81 -> with both 84 / 66 / 68% (78 / 57 / 60); deep across his line stays easy (both 95 / 94 / 86% vs 65 / 53 / 73, n 7-96); control (short, facing it) 86 -> 85 -> 90% (77; the term is zero there). Deep man 0-2 yd completion 44 -> 53 -> 59% (32; n 81-98, ~5 pts sampling error). Forced outside go balls (identical throws by construction, forced-meet.ts, n 211): completions 110 -> 102 with CATCH_SPEED, 123 with CATCH_CHOICE, 115 with both. Test `test/catch-speed.test.ts`. |
+ | `PASS_SINK` | off | experimental | trenches | `src/sim/engagement.ts:696` | set at first review |
+ | `PULL_CUE` | off | experimental | defense | `src/sim/run-fits.ts:195` | set at first review |
+diff --git a/src/sim/behaviors/defense.ts b/src/sim/behaviors/defense.ts
+index 46785696..0d8c9708 100644
+--- a/src/sim/behaviors/defense.ts
++++ b/src/sim/behaviors/defense.ts
+@@ -18,7 +18,7 @@ import type { DefSlot, Gap, ZoneId, ZoneStyle } from '../../playbook/types.js';
+ import type { Agent, Behavior } from '../agent.js';
+ import type { PlaySim } from '../playsim.js';
+ import type { Perceived } from '../perception.js';
+-import { TRACKING_REACH_BONUS } from '../catching.js';
++import { BALL_SIGHT, TRACKING_REACH_BONUS } from '../catching.js';
+ import { asCarrierPursuit } from '../coverage-space.js';
+ import { angleTo, chase, goTo, leverage, PURSUIT_COMMIT, pursuitPoint, runThrough, stand, track, watch } from './common.js';
+ import { creepPace } from '../backer-creep.js';
+@@ -29,7 +29,7 @@ import { executeRunFit, guardStep, lineRead, pullers, type RunFitRead } from '..
+ import { linePicture } from '../live-gaps.js';
+ import { RouteObservation } from '../coverage-read.js';
+ import { movingCatchApproach } from '../catch-approach.js';
+-import { RELEASE_BELIEF, releaseBelief } from '../release-belief.js';
++import { lastReleaseBelief, RELEASE_BELIEF, releaseBelief } from '../release-belief.js';
+ import { withMovementObjective } from '../movement-objective.js';
+ import { OPEN_FIELD, playsBall } from '../open-field.js';
+ import { DeepCoverage, StemAcceleration, stemStopped } from '../coverage-leverage.js';
+@@ -2945,13 +2945,80 @@ function playObservedFlight(a: Agent, sim: PlaySim, path: PlaySim['ballPath'], a
+ 
+ const lastFlightApproach = new WeakMap<Agent, { cmd: MoveCommand; t: number }>();
+ 
++/** BALL_SIGHT's look (Integration 2026-11-18), on his own information only. A defender who has seen the ball himself
++ * (his release belief has the ball in his own view: a zone defender facing the passer) keeps it: he opens to it and runs
++ * with his head on it (the zone turn), toward where his own acquired flight has the ball now. He loses it when his run
++ * puts his back to it, more than ZONE_LOSE_IN off his line of run (a speed turn), and has it again under ZONE_LOSE_OUT.
++ * A defender who has not seen the ball does not look: he plays the receiver's hands at the catch (as a man in trail is
++ * taught). The taught cue for a trailer to look (the receiver's eyes and head going back for the ball) is not in
++ * perception yet: what a defender sees of a body is its hips and stance, not its shoulders or head, so it is left out
++ * rather than read from the receiver's own state. The call of "ball" has no hearing channel yet: `ballCalls` logs who
++ * would have heard one (a teammate who saw the ball within EARSHOT, after the sound's travel and his reaction). Off
++ * (and with BALL_SIGHT off) the 'looking' latch below finds the ball for anyone near its path. */
++const ZONE_LOSE_IN = (150 * Math.PI) / 180, ZONE_LOSE_OUT = (135 * Math.PI) / 180;
++/** The "ball" call: earshot on a field (yd, estimated), the speed of sound (yd/s). */
++const EARSHOT = 15, SOUND = 375;
++/** BALL_SIGHT: who would have heard a "ball" call this flight, had calls a channel (for the communication work). */
++export const ballCalls = new WeakMap<PlaySim, { t: number; d: number; from: number }[]>();
++const lookState = new WeakMap<Agent, { key: number | undefined; lost: boolean; called: boolean }>();
++/** Where his own acquired flight has the ball at time t (its nearest sample), or null. */
++function pathAt(path: PlaySim['ballPath'], t: number): { x: number; y: number } | null {
++  if (!path.length) return null;
++  let best = path[0];
++  for (const p of path) if (Math.abs(p.t - t) < Math.abs(best.t - t)) best = p;
++  return { x: best.x, y: best.y };
++}
++function lookDecision(a: Agent, sim: PlaySim, path: PlaySim['ballPath']): { looks: boolean } {
++  const rb = releaseBelief(sim, a);
++  let st = lookState.get(a);
++  if (!st || st.key !== rb.releasedAt) lookState.set(a, st = { key: rb.releasedAt, lost: false, called: false });
++  const seen = rb.ballAt !== undefined;
++  if (!seen) {
++    // The "ball" call he would hear (logged only): a teammate within earshot who has seen the ball, after the sound and
++    // his reaction. Read-only on the teammates' beliefs; nothing here moves him.
++    if (!st.called) for (const m of sim.defense) {
++      if (m === a) continue;
++      const at = lastReleaseBelief(sim, m)?.ballAt; if (at === undefined) continue;
++      const mp = sim.see(a, m).pos, d = Math.hypot(mp.x - a.pos.x, mp.y - a.pos.y);
++      if (d <= EARSHOT && sim.t >= at + d / SOUND + a.profile.reactionTime) {
++        st.called = true; let l = ballCalls.get(sim); if (!l) ballCalls.set(sim, l = []); l.push({ t: sim.t, d: a.idx, from: m.idx }); break;
++      }
++    }
++    return { looks: false };
++  }
++  const at = pathAt(path, sim.t); if (!at) return { looks: false };
++  const run = Math.hypot(a.vel.x, a.vel.y) > 1 ? Math.atan2(a.vel.y, a.vel.x) : a.body.facing;
++  const off = Math.abs(angleDiff(run, Math.atan2(at.y - a.pos.y, at.x - a.pos.x)));
++  if (!st.lost && off > ZONE_LOSE_IN) { st.lost = true; a.tags.add('zone-lost'); }
++  else if (st.lost && off < ZONE_LOSE_OUT) st.lost = false;
++  return { looks: !st.lost };
++}
++/** BALL_SIGHT: the look itself: head, then the shoulders through the trunk, then the hips for what is left (priced by
++ * the facing cap), toward where his own acquired flight has the ball now. */
++function lookJointsToBall(a: Agent, sim: PlaySim, path: PlaySim['ballPath'], cmd: MoveCommand): MoveCommand {
++  const at = pathAt(path, sim.t); if (!at) return cmd;
++  const sp = Math.hypot(cmd.vel.x, cmd.vel.y), heading = sp > 0.4 ? Math.atan2(cmd.vel.y, cmd.vel.x) : (cmd.facing ?? a.facing);
++  return lookJoints(a, cmd, heading, angleDiff(heading, Math.atan2(at.y - a.pos.y, at.x - a.pos.x)), true);
++}
++
+ function flightApproach(a: Agent, sim: PlaySim, path: PlaySim['ballPath'], acquired = false): MoveCommand | null {
++  if (!BALL_SIGHT) return flightApproachInner(a, sim, path, acquired);
++  const lb = lookDecision(a, sim, path);
++  const cmd = flightApproachInner(a, sim, path, acquired, lb);
++  if (!cmd) return cmd;
++  if (lb.looks) { a.tags.add('looking'); a.tags.add('zone-turn'); return lookJointsToBall(a, sim, path, cmd); }
++  a.tags.delete('looking');
++  a.tags.add('trail-hands');
++  return cmd;
++}
++
++function flightApproachInner(a: Agent, sim: PlaySim, path: PlaySim['ballPath'], acquired = false, lb: { looks: boolean } | null = null): MoveCommand | null {
+   const spot = catchSpot(a, { t: sim.t, ballPath: path });
+   const window = observedCatchWindow(a, sim, path);
+   if (acquired) rememberCatchOpportunity(a, window);
+   // Near the ball's path, a defender with ball skills turns his head and finds
+   // it (looking over the shoulder doesn't turn the body).
+-  const nearPath = spot && Math.hypot(spot.p.x - a.pos.x, spot.p.y - a.pos.y) < 5;
++  const nearPath = spot && Math.hypot(spot.p.x - a.pos.x, spot.p.y - a.pos.y) < 5 && !lb;
+   if (LOOK_ONCE) { if (nearPath && !a.tags.has('looking') && findsBall(a, sim)) a.tags.add('looking'); }
+   else if (nearPath && !a.tags.has('looking') && sim.dice('look', a).chance(0.15 + 0.5 * a.r('ballSkills'))) a.tags.add('looking');
+   // DRIVE_CATCH: the ball is in a receiver's hands but not yet his: drive
+diff --git a/src/sim/catching.ts b/src/sim/catching.ts
+index bbdb4378..eab3141b 100644
+--- a/src/sim/catching.ts
++++ b/src/sim/catching.ts
+@@ -13,6 +13,7 @@ import type { Agent } from './agent.js';
+ import type { PlaySim } from './playsim.js';
+ import { BALL_EST_DEF_ONLY, BALL_EST_INCIDENTAL, BALL_EST_NO_TRACKPEN, estimatesFor } from './ball-estimate.js';
+ import { shouldersOf, TRUNK_TWIST } from '../physics/kinematics.js';
++import { neckRange } from './head.js';
+ 
+ const INELIGIBLE = new Set(['LT', 'LG', 'C', 'RG', 'RT']);
+ /** Extra hand extension available while tracking a visible ball. */
+@@ -75,6 +76,51 @@ export const CATCH_SPEED_K = 0.37;
+  * (< 5 yd/s) to a running catch on well-placed balls across his line, 73 -> 65% (8.4 points), against 90 -> 71% (18.4)
+  * from behind (catch_speed.py, BDB 2025 weeks 1-3, short and deep pooled). */
+ export const CATCH_SPEED_ACROSS = 0.46;
++/** DEF_CATCH (on since engine-89; DEF_CATCH=0 restores; Integration 2026-11-18, Flex's deep catch-point measurement): a defender
++ * who reaches a ball he sees makes a catch attempt through the receiver's own hands-catch model (`handsCatch`: where the
++ * ball is in his reach, its height against his chest and his physical catch height, its speed, tracking it in the air and
++ * on the run, his hands), with his own ratings (his tracking is his ball skills: a defender's read and play of the ball),
++ * and contact from the receiver's arms at his hands (the reach rule contestHands gives a defender, from the other side).
++ * Caught is an interception, a hand on it he does not hold is a breakup, otherwise he missed it and the flight goes on.
++ * He tries once (PLAY_ONCE), at his best point of the flight: a defender whose closest approach is still ahead waits for
++ * it, as a tracking receiver does (CATCH_POINT). Off, his one try came on the first tick the ball entered his envelope
++ * (closest approach still ahead on p50 of tries, stretch p50 0.43) against fixed priors that made the breakup about seven
++ * times the interception (0.43 vs 0.06), less 0.15 above 1.1 x his height, which deep balls (about 2.1 yd) met on 15 of
++ * 35 tries: within 2 yd at arrival on 15+ air-yard throws vs zone, NFL catch 29.5 / incomplete 27.5 / breakup 25.4 /
++ * interception 17.6% (n 244), ours breakup 45.8 / catch 35.4 / incomplete 17.4 / interception 0.5% (n 384, staged with
++ * a play seed per throw; scripts/diag/pass-operators/deep-catch.mts, Defense's deep-close selection). */
++export const DEF_CATCH = process.env.DEF_CATCH !== '0';
++/** BALL_SIGHT (on since engine-89; BALL_SIGHT=0 restores; Integration 2026-11-18): whether he sees the ball is his own sight of
++ * it, not a tag. He sees a ball coming from within FOVEA of his shoulders, or, once he has looked for it (the 'looking'
++ * latch, set after his find delay), from within his neck's range (head.ts neckRange: 90 deg standing, 45 at a sprint)
++ * plus FOVEA. A trailing defender running with his back to the ball does not see it, so he cannot play it: he plays the
++ * receiver's hands from what he sees the receiver do (contestHands' rake). Off, the 'looking' tag alone was sight:
++ * a trailing defender with the ball straight behind his shoulders (cosine -0.96) played it as if he saw it. HEAD (off)
++ * would replace the neck bound with his head's actual direction. */
++export const BALL_SIGHT = process.env.BALL_SIGHT !== '0';
++/** BALL_SIGHT: the central cone (rad) a ball must be in for him to play it with his hands (estimated: catching needs the
++ * ball near central vision; the 90 deg HEAD_CONE is peripheral). */
++const FOVEA = (30 * Math.PI) / 180;
++/** DEF_CATCH: his hands' mean speed over a reach to the ball (yd/s; estimated: aimed reaches by athletes peak near
++ * 5-6 m/s, about half of that on average over the movement). */
++const HAND_SPEED = 3;
++/** DEF_CATCH: when each defender first saw this flight (sim time), keyed by its release. */
++const firstSight = new WeakMap<PlaySim, { rel: number; at: Map<Agent, number> }>();
++/** DEF_CATCH: the time he has had to get his hands to this ball, from his first sight of it. */
++function timeToHands(sim: PlaySim, D: Agent): number {
++  const f = firstSight.get(sim), ball = sim.ball;
++  if (ball.kind !== 'air' || !f || f.rel !== ball.releaseT) return 0;
++  const at = f.at.get(D);
++  return at === undefined ? 0 : sim.t - at;
++}
++/** DEF_CATCH / BALL_SIGHT: each contact a defender made at the catch point, with whether he saw the ball then (the head
++ * turned to it) or came through the receiver without it: the count a pass-interference rule will need (Rules). */
++export const ballContacts = new WeakMap<PlaySim, { t: number; d: number; r: number | null; saw: boolean; kind: string }[]>();
++function logContact(sim: PlaySim, D: Agent, R: Agent | null, saw: boolean, kind: string): void {
++  if (!DEF_CATCH && !BALL_SIGHT) return;
++  let l = ballContacts.get(sim); if (!l) ballContacts.set(sim, l = []);
++  l.push({ t: sim.t, d: D.idx, r: R ? R.idx : null, saw, kind });
++}
+ /** The tracking-on-the-run term (added to the catch difficulty). */
+ export function runTrackTerm(rs: number, cosFromBehind: number, airTime: number, ballTracking: number): number {
+   const speed = clamp((rs - 3) / 4.5, 0, 1);
+@@ -130,6 +176,12 @@ interface Opp {
+ function facingBall(a: Agent, ballVel: Vec3, sim?: PlaySim): boolean {
+   // BALL_EST bit 32: he plays a ball only on his own sight of it (one perception per player).
+   if (BALL_EST_INCIDENTAL && sim && estimatesFor(a)) return sim.ballEstimates?.seenReady(a, sim) ?? false;
++  if (BALL_SIGHT) {
++    const sp = Math.hypot(ballVel.x, ballVel.y) || 1;
++    const from = Math.atan2(-ballVel.y / sp, -ballVel.x / sp), sh = shouldersOf(a.body);
++    const off = Math.abs(Math.atan2(Math.sin(from - sh), Math.cos(from - sh)));
++    return off <= FOVEA || (a.tags.has('looking') && off <= neckRange(a) + FOVEA);
++  }
+   if (a.tags.has('looking')) return true;
+   const sp = Math.hypot(ballVel.x, ballVel.y) || 1;
+   const f = shouldersOf(a.body); // a look over the shoulder is the shoulders turned, not the hips
+@@ -145,6 +197,12 @@ export function resolveCatchOpportunities(sim: PlaySim, prev: Vec3, cur: Vec3,
+   const ball = sim.ball;
+   if (ball.kind !== 'air') return;
+   const tAir = sim.t - ball.releaseT;
++  if (DEF_CATCH) {
++    // His first sight of this flight (his own sight of it, facingBall), for the time he has to get his hands there.
++    let f = firstSight.get(sim);
++    if (!f || f.rel !== ball.releaseT) firstSight.set(sim, f = { rel: ball.releaseT, at: new Map() });
++    for (const d of sim.defense) if (!f.at.has(d) && !d.isDown(sim.t) && facingBall(d, ball.flight.vel, sim)) f.at.set(d, sim.t);
++  }
+   if (tAir < 0.1) return;
+   const opps: Opp[] = [];
+   for (const a of sim.agents) {
+@@ -182,11 +240,21 @@ export function resolveCatchOpportunities(sim: PlaySim, prev: Vec3, cur: Vec3,
+       if (closing && zNext > 0.25 && zNext <= o.a.profile.maxCatchHeight) opps.splice(i, 1);
+     }
+   }
++  // DEF_CATCH: a defender playing a ball he sees, whose closest approach is still ahead, waits for it (his best point),
++  // as a tracking receiver does; he stays in `opps`, so a receiver's catch now still meets his hands at the ball.
++  const waiting = new Set<Agent>();
++  if (DEF_CATCH && !ball.deflected) for (const o of opps) {
++    if (o.a.team !== 'D' || o.a.engagement || o.s < 0.999 || !facingBall(o.a, ball.flight.vel, sim)) continue;
++    const vx = cur.x - prev.x, vy = cur.y - prev.y, zNext = cur.z + (cur.z - prev.z);
++    const closing = (o.a.pos.x - cur.x) * vx + (o.a.pos.y - cur.y) * vy > 0;
++    if (closing && zNext > 0.25 && zNext <= o.a.profile.maxCatchHeight) waiting.add(o.a);
++  }
+   if (opps.length === 0) return;
+   opps.sort((p, q) => p.s - q.s);
+ 
+   for (const o of opps) {
+     if (sim.ball.kind !== 'air') return;
++    if (waiting.has(o.a)) continue;
+     if (o.a.team === 'O') {
+       receiverContest(sim, o, opps);
+       return;
+@@ -203,22 +271,18 @@ export function resolveCatchOpportunities(sim: PlaySim, prev: Vec3, cur: Vec3,
+   }
+ }
+ 
+-function receiverContest(sim: PlaySim, o: Opp, opps: Opp[]): void {
+-  const ball = sim.ball;
+-  if (ball.kind !== 'air') return;
+-  const R = o.a;
+-  const rng = sim.dice('catch', R);
+-  const bv = ball.flight.vel;
+-  const ballSpeed = Math.hypot(bv.x, bv.y, bv.z);
+-  const airTime = sim.t - ball.releaseT;
+-
++/** The hands-catch model (the receiver's; DEF_CATCH gives it to a defender playing the ball): the difficulty of the catch
++ * from where the ball is in his reach, its height against his chest and his physical catch height, its speed, tracking
++ * it (`track`: a receiver's ball tracking, a defender's ball skills) in the air and on the run. */
++function handsCatch(R: Agent, o: Opp, bv: Vec3, ballSpeed: number, airTime: number, track: number, hands: number)
++  : { stretch: number; high: number; low: number; diff: number; hands: number } {
+   const reach = R.profile.reach + 0.3;
+   const stretch = (o.dh / reach) ** 2;
+   const chest = R.profile.heightYd * 1.02;
+   const high = o.z > chest ? (o.z - chest) / Math.max(0.2, R.profile.maxCatchHeight - chest) : 0;
+   const low = o.z < 0.5 ? (0.5 - o.z) / 0.4 : 0;
+   // BALL_EST bit 2: his tracking acts through his own estimate; no second charge at the catch.
+-  const trackPen = airTime > 1.4 && !BALL_EST_NO_TRACKPEN ? (1 - R.r('ballTracking')) * 0.25 : 0;
++  const trackPen = airTime > 1.4 && !BALL_EST_NO_TRACKPEN ? (1 - track) * 0.25 : 0;
+   // Over-the-shoulder catches at speed (ball arriving from behind the receiver).
+   const rs = R.speed;
+   const fromBehindRun = rs > 1 ? (R.vel.x * bv.x + R.vel.y * bv.y) / (rs * (Math.hypot(bv.x, bv.y) || 1)) : 0;
+@@ -229,10 +293,70 @@ function receiverContest(sim: PlaySim, o: Opp, opps: Opp[]): void {
+   const fromBehind = TRUNK_TWIST && rs > 1 && R.body.trunk
+     ? Math.min(fromBehindRun, (Math.cos(shouldersOf(R.body)) * bv.x + Math.sin(shouldersOf(R.body)) * bv.y) / (Math.hypot(bv.x, bv.y) || 1))
+     : fromBehindRun;
+-  const shoulder = CATCH_SPEED ? runTrackTerm(rs, fromBehind, airTime, R.r('ballTracking'))
+-    : fromBehind > 0.3 && rs > 6.5 ? 0.12 + 0.12 * (1 - R.r('ballTracking')) : 0;
++  const shoulder = CATCH_SPEED ? runTrackTerm(rs, fromBehind, airTime, track)
++    : fromBehind > 0.3 && rs > 6.5 ? 0.12 + 0.12 * (1 - track) : 0;
+   const diff = 0.5 * stretch + 0.4 * high + 0.35 * low + (ballSpeed > 24 ? 0.08 : 0) + trackPen + shoulder;
+-  const hands = R.r('hands');
++  return { stretch, high, low, diff, hands };
++}
++
++/** DEF_CATCH: a defender's catch attempt on a ball he sees, through handsCatch with his own ratings, against the
++ * receiver's arms at his hands (`R`, when they reach them). 'int' (he caught it), 'pbu' (a hand on it he did not hold:
++ * it comes off him), 'miss' (his hands did not get it; the flight goes on), 'over' (he caught it out of bounds). */
++function defenderCatch(sim: PlaySim, D: Agent, o: Opp, R: Agent | null): 'int' | 'pbu' | 'miss' | 'over' {
++  const ball = sim.ball;
++  if (ball.kind !== 'air') return 'over';
++  const rng = sim.dice('def-catch', D);
++  const bv = ball.flight.vel;
++  const { stretch, high, low, diff, hands } = handsCatch(D, o, bv, Math.hypot(bv.x, bv.y, bv.z), sim.t - ball.releaseT, D.r('ballSkills'), D.r('hands'));
++  // The receiver's arms at the ball (the reach rule contestHands gives a defender at the receiver's hands, from the other
++  // side) make the catch harder, as any other difficulty does: through his hands, resisted by his contested-catch strength.
++  // Attempt 1 rolled it as a separate knock-loose (contestHands' rake law, up to 0.85): it fired on 60 of 87 tries and
++  // took the catch away whenever the receiver was beside the ball, which a contested ball is.
++  let contact = 0;
++  if (R && !R.isDown(sim.t) && !R.engagement) {
++    const toHands = Math.hypot(R.pos.x - o.b.x, R.pos.y - o.b.y), armLen = R.profile.reach + 0.15;
++    if (toHands <= armLen) contact = Math.pow(1 - toHands / armLen, 0.7) * (0.45 + 0.35 * R.r('contestedCatch') + 0.2 * R.r('strength')) * (1.15 - 0.55 * D.r('contestedCatch'));
++  }
++  // A catch takes time (attempt 3): from his first sight of this flight, the ball must reach his hands no sooner than his
++  // reaction plus his hands' travel to it (from his chest, at HAND_SPEED). With less, a hand gets into its path at best,
++  // in proportion to how far his hands got; with less than his reaction, nothing. The receiver who is the target needs no
++  // such term: he has expected the ball since before its release (his route, the QB's eyes), so receiverContest has none.
++  const travel = Math.hypot(o.dh, o.z - 0.72 * D.profile.heightYd) / HAND_SPEED;
++  const had = timeToHands(sim, D) - D.profile.reactionTime;
++  if (had <= 0) return 'miss';
++  logContact(sim, D, R, true, 'ball');
++  const reached = Math.min(1, had / Math.max(1e-6, travel));
++  // No receiver's floor: a defender who is not the target catches by his hands, and poor hands drop most of it (an LB
++  // with hands 27). The receiver keeps his floor (receiverContest).
++  const pCatch = reached < 1 ? 0 : clamp(0.985 - (diff + contact) * (1.3 - hands) - 0.06 * (1 - hands), 0, 0.99);
++  if (rng.chance(pCatch)) {
++    if (inBounds(D)) { sim.possess(D, 'interception'); return 'int'; }
++    sim.event('incomplete', D, null, 'out of bounds');
++    sim.whistle('incomplete', { x: sim.los, y: sim.ballY });
++    return 'over';
++  }
++  D.noCatchUntil = sim.t + 0.6;
++  // Where the ball was in his window decides whether his hands got to it (the receiver's DEFLECT_BALL rule).
++  const pTouch = clamp(1 - 0.7 * stretch - 0.6 * Math.min(1, high) - 0.5 * Math.min(1, low), 0.15, 1) * reached;
++  if (!rng.chance(pTouch)) return 'miss';
++  const solid = clamp(1 - stretch - 0.5 * Math.min(1, high) - 0.5 * Math.min(1, low), 0, 1) * reached;
++  sim.stats.passDefendedBy = D.player.id;
++  sim.event('pbu', D, ball.target);
++  D.noCatchUntil = touchedUntil(sim, 0.25);
++  deflect(sim, 0.15 + 0.4 * (1 - solid), 'tip', D, solid);
++  return 'pbu';
++}
++
++function receiverContest(sim: PlaySim, o: Opp, opps: Opp[]): void {
++  const ball = sim.ball;
++  if (ball.kind !== 'air') return;
++  const R = o.a;
++  const rng = sim.dice('catch', R);
++  const bv = ball.flight.vel;
++  const ballSpeed = Math.hypot(bv.x, bv.y, bv.z);
++  const airTime = sim.t - ball.releaseT;
++
++  const { stretch, high, low, diff, hands } = handsCatch(R, o, bv, ballSpeed, airTime, R.r('ballTracking'), R.r('hands'));
+   let pCatch = clamp(0.985 - diff * (1.3 - hands) - 0.06 * (1 - hands), 0.2, 0.99);
+   if (ball.deflected) pCatch *= 0.3;
+ 
+@@ -346,6 +470,11 @@ function contestHands(sim: PlaySim, R: Agent, o: Opp, opps: Opp[], rng: ReturnTy
+   for (const D of near) {
+     const sees = facingBall(D, bv, sim);
+     const own = opps.find((p) => p.a === D);
++    if (own && sees && DEF_CATCH) {
++      // DEF_CATCH: his catch attempt at the ball, against the receiver's arms.
++      if (defenderCatch(sim, D, own, R) !== 'miss') return 'over';
++      continue;
++    }
+     if (own && sees) {
+       // Through the hands at the ball: his hands meet it where it is in his window.
+       const window = D.profile.reach + 0.3;
+@@ -383,6 +512,7 @@ function contestHands(sim: PlaySim, R: Agent, o: Opp, opps: Opp[], rng: ReturnTy
+     const technique = 0.45 + 0.35 * D.r('manCoverage') + 0.2 * D.r('strength');
+     const pLoose = clamp(HANDS_SCALE * Math.pow(depth, 0.7) * technique * (1.15 - 0.55 * R.r('contestedCatch')), 0, 0.85);
+     if (rng.next() < pLoose) {
++      logContact(sim, D, R, sees, 'through the hands');
+       sim.stats.passDefendedBy = D.player.id;
+       sim.event('pbu', D, R, 'through the hands');
+       D.noCatchUntil = touchedUntil(sim, 0.25);
+@@ -431,12 +561,13 @@ export function secureStep(sim: PlaySim): void {
+     const rel = toBody > 1e-6 ? { x: (R.pos.x - D.pos.x) / toBody, y: (R.pos.y - D.pos.y) / toBody } : { x: 1, y: 0 };
+     const closing = Math.max(0, (D.vel.x - R.vel.x) * rel.x + (D.vel.y - R.vel.y) * rel.y);
+     const hand = toBall <= handReach
+-      ? (0.25 + 0.35 * D.r('ballSkills') + 0.15 * D.r('manCoverage')) * (1 - 0.6 * toBall / handReach) * (facingBall(D, ball.flight.vel, sim) || D.tags.has('looking') ? 1 : 0.6)
++      ? (0.25 + 0.35 * D.r('ballSkills') + 0.15 * D.r('manCoverage')) * (1 - 0.6 * toBall / handReach) * (facingBall(D, ball.flight.vel, sim) || (!BALL_SIGHT && D.tags.has('looking')) ? 1 : 0.6)
+       : 0;
+     const hit = toBody <= bodyTouch ? clamp((closing - 1.5) / 6, 0, 0.8) * (0.6 + 0.4 * D.r('hitPower')) * D.profile.massKg / 90 : 0;
+     const resist = (1.15 - 0.3 * R.r('hands') - 0.3 * R.r('contestedCatch')) * (1 - 0.7 * progress);
+     const pLoose = clamp((1 - (1 - hand) * (1 - hit)) * resist, 0, 0.9);
+     if (rng.next() < pLoose) {
++      logContact(sim, D, R, facingBall(D, ball.flight.vel, sim) || (!BALL_SIGHT && D.tags.has('looking')), hit > hand ? 'hit in the securing beat' : 'hands in the securing beat');
+       ball.securing = undefined;
+       sim.stats.passDefendedBy = D.player.id;
+       sim.event('pbu', D, R, hit > hand ? 'dislodged by the hit' : 'dislodged through the hands');
+@@ -533,6 +664,10 @@ function defenderPlay(sim: PlaySim, o: Opp, tAir: number): boolean {
+     if (done && done.at === key && done.who.has(D)) return false;
+     if (!done || done.at !== key) playTried.set(sim, { at: key, who: new Set([D]) }); else done.who.add(D);
+   }
++  if (DEF_CATCH) {
++    const R = ball.target && ball.target.team === 'O' ? ball.target : null;
++    return defenderCatch(sim, D, o, R) !== 'miss';
++  }
+   const stretch = o.dh / (D.profile.reach + 0.3);
+   const high = o.z > D.profile.heightYd * 1.1 ? 0.15 : 0;
+   let pInt = clamp(0.03 + 0.3 * D.r('ballSkills') + 0.06 * D.r('hands') - 0.28 * stretch - high, 0.02, 0.45);
