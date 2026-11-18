@@ -1686,6 +1686,21 @@ const SAFETY_DEPTH = process.env.SAFETY_DEPTH !== '0';
  * ZoneCoverage.declareDrive). NFL deep men over a #2 corner breaking inside 10.5 yd bail 1.5 yd/s at the break and 0.7
  * at +0.6 s (BDB 2025 wk 1-4, Cover 2/6); ours bailed 3.6-4.8 yd/s, from 2-8 yd deeper. */
 const DEEP_DECLARE = process.env.DEEP_DECLARE === '1';
+/** DEEP_CUSHION (experimental, off): a deep safety's depth over the deepest vertical he sees is the cushion he needs to
+ * turn and run with him, not a fixed drop. With the receiver's seen downfield speed vr and his own backward speed vd,
+ * the receiver gains (vr - vd) over his half-turn and reaction (his turn rate and perception delay) and (vr - vd)^2 / 2a
+ * while he accelerates to match (a = his top speed over his sprint time constant); on top of that a base cushion,
+ * DEEP_CUSHION_BASE (4 yd, a stated choice: two bodies and a reach with a step to spare). Floored at his landmark. He
+ * keeps pace with a climbing stem only in proportion to how short of that cushion he is (full pace at the cushion, none
+ * 2 yd over it): a receiver who throttles down or sits lets him slow; one who keeps climbing keeps him bailing. */
+const DEEP_CUSHION = process.env.DEEP_CUSHION === '1';
+const DEEP_CUSHION_BASE = 4;
+function deepCushionNeed(a: Agent, receiverVx: number): number {
+  const gap = Math.max(0, receiverVx - Math.max(0, a.vel.x));
+  const turn = 0.5 * Math.PI / a.profile.turnRate + a.profile.reactionTime;
+  const accel = a.profile.vmax / Math.max(0.1, a.profile.tau);
+  return DEEP_CUSHION_BASE + gap * turn + (gap * gap) / (2 * accel);
+}
 /** HALF_OWN (default on, engine-80; HALF_OWN=0 turns it off): a half-field or middle-third safety (an unruled `deep_half_*`
  * or `deep_mid` zone) owns his area as taught (coverage-position spec gap 3; HNFL-334/-097, Bowen: "split & squeeze",
  * midpoint, deeper than the deepest). Which receivers are vertical in his half or third comes from his own picture with
@@ -2096,8 +2111,16 @@ export class ZoneCoverage implements Behavior {
         this.turnedWith = deepest.r;
       const turnRun = this.turnedWith === deepest.r && deepest.vel.x > 3;
       const tv = { x: Math.max(0, deepest.vel.x), y: deepest.vel.y * 0.9 };
+      // DEEP_CUSHION: his depth is the cushion he needs to turn and run with the deepest vertical he sees, over that
+      // receiver, floored at his landmark; he keeps pace with the stem only as far as he is short of that cushion.
+      let txUse = tx;
+      if (DEEP_CUSHION && this.initialDepth >= 9) {
+        const need = deepCushionNeed(a, deepest.vel.x);
+        txUse = Math.min(END_LINE_X - a.profile.radius, Math.max(lm.x, deepest.pos.x + need));
+        tv.x *= clamp((need + 2 - (a.pos.x - deepest.pos.x)) / 2, 0, 1);
+      }
       this.selectTarget(a, deepest.r);
-      const overReq = track(a, { x: tx, y: clamp(ty, 0.5, FIELD_WIDTH - 0.5) }, tv, {
+      const overReq = track(a, { x: txUse, y: clamp(ty, 0.5, FIELD_WIDTH - 0.5) }, tv, {
         facing: turnRun ? undefined : facingQB,
         speed: turnRun ? 1 : zs * 1.05,
         gain: 1.8,
