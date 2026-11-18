@@ -30,6 +30,6 @@ proto.tick = function (this: any) {
 };
 const rng = new Rng(7);
 const home = generateTeam(rng, 'Ironmen', 'IRN', { strength: 0.55 }), away = generateTeam(rng, 'Comets', 'COM', { strength: 0.55 });
-let plays = 0;
-for (const seed of seeds) { const g: any = simulateGame(home, away, { seed } as any); plays += g.log.length; }
-writeFileSync(out, JSON.stringify({ seeds, plays: playNo, episodes: eps })); console.log(seeds, playNo, 'sims', eps.length, 'episodes ->', out);
+const log: any[] = [];
+for (const seed of seeds) { const g: any = simulateGame(home, away, { seed } as any); for (const p of g.log) log.push({ seed, index: p.index, kind: p.kind, outcome: p.outcome, yards: r2(p.yards), completed: !!p.stats?.completed, yac: p.stats?.yac !== undefined ? r2(p.stats.yac) : null, missed: p.stats?.missedTackles ?? 0, family: p.plan?.family ?? null, coverage: p.plan?.coverage ?? null, td: p.outcome === 'touchdown', nullified: !!p.nullified }); }
+writeFileSync(out, JSON.stringify({ seeds, plays: playNo, episodes: eps, log })); console.log(seeds, playNo, 'sims', eps.length, 'episodes ->', out);
