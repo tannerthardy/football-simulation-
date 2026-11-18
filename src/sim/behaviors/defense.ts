@@ -1691,16 +1691,14 @@ const HALF_OWN = process.env.HALF_OWN !== '0';
 /** HALF_KEY (experimental, off): the Cover 2 half safety keys #1 to #2 on his side, as taught (HNFL-334 SAFETY, HNFL-097
  * STRONG SAFETY: "Drop to deep-half landmark while seeing the release of #1. If #1 is vertical, widen and see #2. If both
  * vertical, vision & squeeze. If either cancels, cap the remaining vertical threat"; "If #1 cancels, tighten to deflate #2
- * top-down"). His #1 and #2 are the alignment's numbering on his side (seen before the snap). Each release is read from
- * his own delayed picture of that receiver and committed as vertical or cancelled only once it has held for his
- * confirm time, 0.12 x (1.6 - 0.6 focus) s (the release reader's), with margins: vertical once 7 yd past the line and
- * climbing at 3 yd/s; cancelled once 2.5 yd past it and stopped (< 1.2 yd/s upfield) or running flatter than 1.3 : 1
- * across, or breaking down past 3 yd (upfield speed under 55% of the top he has shown), or still at the line after 1.2 s.
- * Before that, the release itself: a stem 3 yd deep at 5.2 yd/s reads vertical, one 1.5-7 yd deep at under 4.4 yd/s
- * after 1 s reads cancelled (NFL #1s at 1.5 s: 5.4 vs 3.7 yd/s); either read changes when the other holds. A cancelled release can go vertical again (out-and-up) the same way. Then the
- * verticals he plays are: both vertical, the two (HALF_OWN's midpoint); #1 vertical and #2 not yet read, the two; #1
- * vertical and #2 cancelled, #1; #1 cancelled and #2 vertical, #2 (deflate it top-down); neither vertical, as before
- * (his area's verticals, the QB). Until #1 is read he plays as before. Unruled `deep_half_*` only. */
+ * top-down"). His #1 and #2 are the alignment's numbering on his side (seen before the snap). He aims laterally at the
+ * point from which he can still get on top of both, from his own delayed picture: each weighted by how much of a deep
+ * threat he still is (his projected spot 0.7 s ahead as a share of the safety's own depth, times his upfield speed as a
+ * share of the top he has shown), #2 with a floor of 0.15, any other vertical in his half by its depth alone; so he widens with #1's release as it climbs and comes back
+ * to #2 as it slows. A cancel is committed only once it has held for his confirm time, 0.12 x (1.6 - 0.6 focus) s, with
+ * margins (stopped under 1.2 yd/s, flatter than 1.3 : 1, under 55% of his top speed past 3 yd, or a stem under 4.4 yd/s
+ * after 1 s), and removes that receiver; both removed, he plays as before. Depth stays over the deeper weighted one.
+ * Unruled `deep_half_*` only. */
 const HALF_KEY = process.env.HALF_KEY === '1';
 /** SAFETY_DEPTH: a deep safety's depth over the deepest route in his zone, as he sees it, with that route `r` yd past
  * the line: NFL deep safeties' median depth over it is 13.0 / 11.7 / 8.5 yd with the route at 1.2 / 3.7 / 9.7 yd
@@ -1749,6 +1747,8 @@ export class ZoneCoverage implements Behavior {
   private vertHeld = new Set<Agent>();
   /** HALF_KEY: his read of #1 and #2 ('?' unread, 'V' vertical, 'C' cancelled) and since when each candidate has held. */
   private halfKey = { c: ['?', '?'] as Array<'?' | 'V' | 'C'>, cand: ['?', '?'] as Array<'?' | 'V' | 'C'>, since: [-1, -1], peak: [0, 0] };
+  /** HALF_KEY: this tick's lateral aim from his weighted #1 / #2 (null: not keyed). */
+  private keyAim: number | null = null;
   /** ZONE_HOLD bit 32: his held lean point on the QB's seen head line (null until he has seen the head). */
   private leanAt: Vec2 | null = null;
   /** ZONE_HOLD bit 64: the direction he was moving at the hand-off (null when none is binding), and last tick's technique. */
@@ -1851,12 +1851,24 @@ export class ZoneCoverage implements Behavior {
       if (cand !== k.cand[i]) { k.cand[i] = cand; k.since[i] = sim.t; }
       if (cand !== k.c[i] && cand !== '?' && sim.t - k.since[i] >= confirm) k.c[i] = cand;
     }
-    const [c1, c2] = k.c;
-    if (c1 === '?') return null;
-    const t1 = seen.get(rs[0])!, t2 = seen.get(rs[1])!;
-    if (c1 === 'V') return c2 === 'C' ? [t1] : [t1, t2];
-    if (c2 === 'V') return [t2];
-    return null;
+    // His aim is continuous: the point from which he can still get on top of both, each receiver weighted by how much of
+    // a deep threat he still is from what he sees: how far his projected spot (0.7 s ahead) has come toward the safety's
+    // own depth, times how much of the top upfield speed he has shown he is still running (a stem that slows, sits or
+    // flattens decays). A confirmed cancel removes him; #2 keeps a floor (his first deep threat inside) until he cancels.
+    const t1 = seen.get(rs[0]), t2 = seen.get(rs[1]);
+    if (!t1 || !t2) return null;
+    const mine = Math.max(1, a.pos.x - sim.los);
+    const threat = (th: ZoneThreat, i: number) => k.c[i] === 'C' ? 0
+      : clamp((th.fut.x - sim.los) / mine, 0, 1) * clamp(th.vel.x / Math.max(k.peak[i], 3), 0, 1);
+    const w1 = threat(t1, 0), w2 = k.c[1] === 'C' ? 0 : Math.max(threat(t2, 1), 0.15);
+    // Any other vertical in his half (trips #3's seam, a back's wheel) is a deep threat too: "cap the remaining vertical
+    // threat". Weighted by its depth toward his own, like his numbers.
+    const others = vert.filter((th) => th.r !== rs[0] && th.r !== rs[1]).map((th) => ({ th, w: clamp((th.fut.x - sim.los) / mine, 0, 1) }));
+    const W = w1 + w2 + others.reduce((t, o) => t + o.w, 0);
+    this.keyAim = null;
+    if (W < 0.05) return null;
+    this.keyAim = (w1 * t1.fut.y + w2 * t2.fut.y + others.reduce((t, o) => t + o.w * o.th.fut.y, 0)) / W;
+    return [...(w1 >= 0.05 ? [t1] : []), ...(w2 >= 0.05 ? [t2] : []), ...others.filter((o) => o.w >= 0.05).map((o) => o.th)];
   }
 
   /** HALF_OWN: an unruled half-field or middle-third safety. */
@@ -2058,6 +2070,7 @@ export class ZoneCoverage implements Behavior {
         const owned = vert.find(th => th.r.slot === slot);
         if (owned) vert = [owned];
       }
+      this.keyAim = null;
       const keyed = this.halfKeyVert(a, sim, seenAll, vert);
       if (keyed) vert = keyed;
       if (vert.length === 0) {
@@ -2108,6 +2121,7 @@ export class ZoneCoverage implements Behavior {
       } else ty = deepest.fut.y + inside(deepest.fut.y) * (CUSHION_BREAK
         // CUSHION_BREAK: a deep-zone carry plays a shoulder off the receiver's line (bodies plus a reach).
         ? a.profile.radius + deepest.r.profile.radius + a.player.measurables.armIn / 36 * 0.7 : 0.8);
+      if (this.keyAim !== null) ty = this.keyAim;
       // A landmark describes responsibility, not a minimum depth to sprint
       // to regardless of the release. Let the initial cushion compress as
       // the stem climbs; otherwise a corner retreats from a hitch into grass.

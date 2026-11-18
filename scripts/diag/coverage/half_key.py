@@ -126,7 +126,9 @@ def table(paths, t):
 
 
 if __name__ == '__main__':
-    if sys.argv[1] == 'nfl':
+    if sys.argv[1] == 'budget':
+        pass
+    elif sys.argv[1] == 'nfl':
         nfl(sys.argv[2], sys.argv[3], sys.argv[4] if len(sys.argv) > 4 else '1')
     else:
         args = [a for a in sys.argv[2:] if not a.startswith('--')]
@@ -134,3 +136,35 @@ if __name__ == '__main__':
         if '--t' in sys.argv:
             args.remove(sys.argv[sys.argv.index('--t') + 1])
         table(args, tt)
+
+
+def budget(paths):
+    """The half safety's speed budget on both-vertical plays (#1 and #2 vertical at 2.9 s): his depth, lateral and total
+    speed over the 0.3 s before T, and his depth cushion over the deeper of #1 / #2, at 1.5 / 2.1 / 2.5 / 2.9 s.
+      python3 -I half_key.py budget <rows.jsonl> [...]"""
+    g = defaultdict(lambda: defaultdict(list))
+    for path in paths:
+        for line in open(path):
+            row = json.loads(line)
+            if row.get('throw') is not None and row['throw'] < 2.9:
+                continue
+            if cls(row, 'r1', 2.9) != 'V' or cls(row, 'r2', 2.9) != 'V':
+                continue
+            for t in (1.5, 2.1, 2.5, 2.9):
+                p, q = at(row, 's', t), at(row, 's', t - 0.3)
+                a, b = at(row, 'r1', t), at(row, 'r2', t)
+                if not p or not q or not a or not b:
+                    continue
+                vx, vy = (p[0] - q[0]) * row['dir'] / 0.3, abs(p[1] - q[1]) / 0.3
+                deep = max((a[0] - row['los']) * row['dir'], (b[0] - row['los']) * row['dir'])
+                g[row['cov']][t].append((vx, vy, (vx * vx + vy * vy) ** .5, (p[0] - row['los']) * row['dir'] - deep))
+    print('| coverage | t | n | depth speed | lateral speed | total | cushion over the deeper |')
+    print('|---|---|---|---|---|---|---|')
+    for cov in sorted(g):
+        for t, v in sorted(g[cov].items()):
+            m = lambda i: f'{st.median([x[i] for x in v]):.1f}'
+            print(f'| {cov} | {t:g} | {len(v)} | {m(0)} | {m(1)} | {m(2)} | {m(3)} |')
+
+
+if __name__ == '__main__' and sys.argv[1] == 'budget':
+    budget(sys.argv[2:])
