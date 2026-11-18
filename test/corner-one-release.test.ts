@@ -7,7 +7,7 @@
  * Film: node --import tsx scripts/corner-one-film.ts > out/corner-one-film.json
  */
 import { describe, expect, it, vi } from 'vitest';
-vi.hoisted(() => { process.env.SET_SPOT = '0'; process.env.QB_DRIVE = '0'; process.env.QB_STICK = '0'; process.env.QB_WINDOW_ARRIVE = '0'; process.env.QB_KEY_PLANT = '0'; process.env.QB_RHYTHM_THROW = '0'; }); // engine-72: fixture recorded on the old pass set; the lane that owns it re-records with SET_SPOT on (docs/reviews/2026-11-16-pin-delta-engine72.md). engine-83 (QB landing, pinned test-only): the five QB flags off; these carries were recorded against the pre-engine-83 ball and throw timing; Coverage to re-record with them on
+vi.hoisted(() => { process.env.SET_SPOT = '0'; process.env.QB_DRIVE = '0'; process.env.QB_STICK = '0'; process.env.QB_WINDOW_ARRIVE = '0'; process.env.QB_KEY_PLANT = '0'; process.env.QB_RHYTHM_THROW = '0'; process.env.QB_ROLE_PATH = '0'; }); // engine-72: fixture recorded on the old pass set; the lane that owns it re-records with SET_SPOT on (docs/reviews/2026-11-16-pin-delta-engine72.md). engine-83 (QB landing, pinned test-only): the five QB flags off; these carries were recorded against the pre-engine-83 ball and throw timing; Coverage to re-record with them on. engine-88 (QB landing, pinned test-only): QB_ROLE_PATH off; with the deep man priced through his role the go by #1 is thrown, and the corner plays the ball (rob:X, not man:X) at the sample; Coverage to re-record with it on
 import { CENTER_Y } from '../src/core/field.js';
 // Registers the lab routes for #1 (lab_curl7, lab_stop_go, lab_out_up4).
 import '../src/lab/coverage-scene.js';

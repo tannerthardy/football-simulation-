@@ -26,6 +26,10 @@ async function throws(flag: string) {
   // engine-72: these small counts (4-6 plays) move with each of the engine-72 groups; recorded on engine-71. QB lane to re-record when ACC_RADIUS is carded with the grass read.
   for (const k of ['SET_SPOT', 'SET_SPOT_TACKLE', 'POCKET_LEVEL', 'PASS_OFF', 'BLITZ_READ', 'BLITZ_DEPTH', 'BLITZ_SKILL', 'BLITZ_SECOND', 'QB_EVADE_UP', 'QB_FACE_SEEN', 'CARRY_POSTURE', 'CORNER_DROP', 'CARRY_TURN', 'MIRROR_SCATTER', 'LEVEL2_TRACK', 'SIGHT_PURE', 'BREAK_LOOK', 'SEEN_EMPTY']) vi.stubEnv(k, '0');
   for (const k of ['QB_DRIVE', 'QB_STICK', 'QB_WINDOW_ARRIVE']) vi.stubEnv(k, '0'); // engine-83 (QB landing, pinned test-only): the four_verts two-high scenes were recorded on the old ball speed, the re-priced pull-down and the window without arrival momentum; each alone moves the on-time vertical count (3 against 6). Kept after re-check 2026-11-18: the open seam is priced shut by the over-priced deep man's closing (held-ball truth, docs/reviews/2026-11-18-peek-clock.md), so the vertical is not thrown on time; re-record once that price is settled, not by weakening this contract
+  // engine-88 (QB lane, test-only): QB_ROLE_PATH settles the deep man's price this panel waited for. With it on, off
+  // (ACC_RADIUS) he throws the vertical on 7 of 10 (median 2.3 s, 2 check-downs) and on 10 of 10 (all by 3.2 s), so the
+  // off arm's check-down premise is gone. Pinned off here to keep ACC_RADIUS's own contrast; ACC_RADIUS is held.
+  vi.stubEnv('QB_ROLE_PATH', '0');
   vi.stubEnv('ACC_RADIUS', flag);
   const { PlaySim } = await import('../src/sim/playsim.js');
   const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');
