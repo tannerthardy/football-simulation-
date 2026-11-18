@@ -17,7 +17,7 @@ const PLAYS = [['iz_strong', 3], ['power', 7], ['oz_strong', 11], ['iz_weak', 19
 
 async function fumbles(on: boolean): Promise<{ first: number[]; atOnce: number; lateAt25: number; n: number; lost: number; others: number }[]> {
   for (const f of stackOn) vi.stubEnv(f, '1');
-  vi.stubEnv('DIR_START', '0'); // engine-89: fixture recorded before a start from rest cost the legs in a direction they were not loaded for; the owning lane to re-record with it on
+  vi.stubEnv('DIR_START', '0'); // engine-92: fixture recorded before a start from rest cost the legs in a direction they were not loaded for; the owning lane to re-record with it on
   for (const k of ['PA_HINGE', 'EDGE_SET', 'POCKET_DROP', 'POWER_AIM', 'END_KEY']) vi.stubEnv(k, '0'); // engine-73: scenes recorded before this group of the engine-73 landing; Defense to re-record with it on
   vi.stubEnv('DIR_CAP', '0'); // engine-69: these fumble scenes were found before the monotone direction cap; re-find with DIR_CAP on
   vi.stubEnv('LOOSE_SEEN', on ? '1' : '0');

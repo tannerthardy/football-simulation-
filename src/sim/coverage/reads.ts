@@ -17,6 +17,21 @@ import { RouteObservation } from '../coverage-read.js';
 import { observedBlocking, showsBlock } from '../coverage-cues.js';
 import type { PlaySim } from '../playsim.js';
 
+/** READ_VERTICAL_LOS (on since engine-90; READ_VERTICAL_LOS=0 restores): a release is read as
+ * vertical only past the line of scrimmage in the reader's picture (a protecting back stepping up behind it is not). */
+export const READ_VERTICAL_LOS = process.env.READ_VERTICAL_LOS !== '0';
+
+/** BACK_CLEAR (on since engine-90; BACK_CLEAR=0 restores): a back who started in the backfield
+ * declares a flat release from what the reader sees of him clearing the box, not from lateral speed behind the line.
+ * Behind the line (deeper than BACK_CLEAR_DEPTH) and inside his rush-side tackle's seen width plus BACK_CLEAR_WIDTH, a
+ * back moving out toward a rusher he could block (a defender seen within BACK_CLEAR_RANGE, on or behind the line, ahead
+ * of his seen path within 45 degrees) is not read as a flat release: that is a protector working to the edge.
+ * Once he is past the tackle's width, up near the line, or not squaring on a rusher (a swing away from the rush, a
+ * check-release after his chip), the flat read is as fast as before. Margins are stated choices: 0.5 yd of width,
+ * 1.5 yd of depth, 3 yd of range, 45 degrees. */
+export const BACK_CLEAR = process.env.BACK_CLEAR !== '0';
+const BACK_CLEAR_WIDTH = 0.5, BACK_CLEAR_DEPTH = 1.5, BACK_CLEAR_RANGE = 3;
+
 export type Release = 'none' | 'block' | 'vertical' | 'out' | 'flat' | 'under' | 'in' | 'stop';
 
 export interface ReceiverRead {
@@ -108,9 +123,14 @@ export class ReleaseReader {
     if (blocking) now = 'block';
     // Breaks count once the path leans about 30° off vertical: a slant is an
     // in-breaker from its first step inside, not when it flattens.
-    else if (vOut > 1.8 && vOut > Math.abs(vx) * 0.6) now = depth < 3.5 && !m.climbed ? 'flat' : 'out';
+    else if (vOut > 1.8 && vOut > Math.abs(vx) * 0.6) {
+      now = depth < 3.5 && !m.climbed ? 'flat' : 'out';
+      if (now === 'flat' && BACK_CLEAR && m.start.x - sim.los < -2 && protectingSlide(a, sim, seen, outSign, depth)) now = 'none';
+    }
     else if (-vOut > 1.8 && -vOut > Math.abs(vx) * 0.6) now = depth < 6.5 ? 'under' : 'in';
-    else if (vx > 2.5 && vx > Math.abs(seen.vel.y)) now = 'vertical';
+    // READ_VERTICAL_LOS: a vertical release is upfield motion past the line of scrimmage as he sees it; a back stepping
+    // up in his protection set behind the line (and latching 'vertical') is not one.
+    else if (vx > 2.5 && vx > Math.abs(seen.vel.y) && (!READ_VERTICAL_LOS || depth > 0)) now = 'vertical';
     else if (speed < 2.2 && depth > 2.5) now = 'stop';
     // Believe a new declaration only after it persists (focus shortens it).
     if (now !== 'none' && now !== m.release) {
@@ -155,6 +175,22 @@ export class ReleaseReader {
     }
     return out.sort((p, q) => Math.abs(q.pos.y - sim.ballY) - Math.abs(p.pos.y - sim.ballY));
   }
+}
+
+/** BACK_CLEAR: from his own picture, is this back still inside the box behind the line and moving onto a rusher? */
+function protectingSlide(a: Agent, sim: PlaySim, seen: { pos: Vec2; vel: Vec2 }, outSign: number, depth: number): boolean {
+  if (depth > -BACK_CLEAR_DEPTH) return false;
+  let tackleWidth = 0;
+  for (const o of sim.offense) if (isLineman(o)) tackleWidth = Math.max(tackleWidth, (sim.see(a, o).pos.y - sim.ballY) * outSign);
+  if ((seen.pos.y - sim.ballY) * outSign > tackleWidth + BACK_CLEAR_WIDTH) return false;
+  const sp = Math.hypot(seen.vel.x, seen.vel.y) || 1;
+  return sim.defense.some(d => {
+    if (d === a) return false;
+    const c = sim.see(a, d);
+    if (c.pos.x - sim.los > 1) return false;
+    const dx = c.pos.x - seen.pos.x, dy = c.pos.y - seen.pos.y, dist = Math.hypot(dx, dy);
+    return dist < BACK_CLEAR_RANGE && dist > 0.05 && (dx * seen.vel.x + dy * seen.vel.y) / (dist * sp) > Math.SQRT1_2;
+  });
 }
 
 export function isLineman(a: Agent): boolean {

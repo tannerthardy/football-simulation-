@@ -47,7 +47,7 @@ Downstream (off -> on; the 16-game and 720-play staged runs are paired by seed b
 
 **The parameter is a defender measurement.** NFL start speed at 0.2 / 0.4 s, lateral over forward, same operator (peak >= 2.0 yd/s): DB/LB/DL .66-.70 / .70; WR/TE .83 / .84; QB .83 / .90 (737 lateral, 172 forward starts); RB .89 / .98; OL 1.06 / 1.05. L = .67 applied to every body over-penalises the offence relative to the data; stance and a known snap count (hips already set toward the first step, so the angle to the pelvis is small) are the likely difference, which the law's angle would carry if the offence's pelvis were turned toward its first step.
 
-### The penalty is the cost of a start the body was not loaded for (Integration, 2026-11-18; lands as engine-89)
+### The penalty is the cost of a start the body was not loaded for (Integration, 2026-11-18; lands as engine-92)
 
 The law above applied to every body made the offence pay for starts it plans before the snap: the sack row moved (.035 -> .059, z 3.2), the QB's own lateral starts carried about 60% of it, the OL's start the pressure drop, and the carrier saw a different mesh line into the exchange (51-58 deg against 28). The data say the same: NFL lateral over forward start speed at 0.2 / 0.4 s is .66-.70 / .70 for DB/LB/DL reactions, .83 / .84 WR/TE, .83 / .90 QB, .89 / .98 RB, 1.06 / 1.05 OL.
 

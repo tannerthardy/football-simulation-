@@ -1,15 +1,20 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { Rng } from '../src/core/rng.js';
-import { DB_SLOTS, generateTeam, pickDefense } from '../src/league/team.js';
+import { DB_SLOTS, generateTeam } from '../src/league/team.js';
 
 const rosters = (n: number) => Array.from({ length: n }, (_, i) => generateTeam(new Rng(5000 + i), 'T', `T${i}`, { strength: 0.55 }));
 
 describe('DB_SLOTS: safeties fill the safety slots before the nickel and dime', () => {
   afterEach(() => { delete process.env.DB_SLOTS; vi.resetModules(); });
 
-  it('is off by default, leaving the installed order (an LB can still take SS)', () => {
-    expect(DB_SLOTS).toBe(false);
-    const ss = rosters(40).map((t) => pickDefense(t, 'dime').SS!.position);
+  // Promoted on at run-ref-21 (re-recorded 2026-11-18, Coverage): on by default; DB_SLOTS=0 restores the installed order.
+  it('is on by default; DB_SLOTS=0 leaves the installed order (an LB can still take SS)', async () => {
+    expect(DB_SLOTS).toBe(true);
+    process.env.DB_SLOTS = '0';
+    vi.resetModules();
+    const team = await import('../src/league/team.js');
+    expect(team.DB_SLOTS).toBe(false);
+    const ss = rosters(40).map((t) => team.pickDefense(t, 'dime').SS!.position);
     expect(ss).toContain('LB');
   });
 

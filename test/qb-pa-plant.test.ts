@@ -10,7 +10,7 @@ async function run(fw: string) {
   vi.resetModules();
   const stack = JSON.parse(readFileSync(new URL('../config/reference-stack.json', import.meta.url), 'utf8'));
   for (const [k, v] of Object.entries(stack.flags as Record<string, string>)) if (v === 'on') vi.stubEnv(k, '1');
-  vi.stubEnv('DIR_START', '0'); // engine-89: fixture recorded before a start from rest cost the legs in a direction they were not loaded for; the owning lane to re-record with it on
+  vi.stubEnv('DIR_START', '0'); // engine-92: fixture recorded before a start from rest cost the legs in a direction they were not loaded for; the owning lane to re-record with it on
   for (const [k, v] of Object.entries(stack.numeric ?? {}) as [string, { default: number }][]) vi.stubEnv(k, String(v.default));
   vi.stubEnv('CONCEPT_DROPS', '1'); vi.stubEnv('QB_FOOTWORK', fw);
   const { PlaySim } = await import('../src/sim/playsim.js');

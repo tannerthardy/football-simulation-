@@ -151,7 +151,9 @@ describe('projected roofs with ordinary delayed decisions', () => {
       disappearing.reader.read(disappearing.sim, disappearing.own)!)).toBe(false);
     expect(disappearing.choose()).toBe(disappearing.own);
     expect(disappearing.mind.reason).toBe('rule');
-    const coMoving = delayedSetup('up', false, { depth: 0.5, helperVx: 6 });
+    // Re-recorded 2026-11-18 (Coverage): 0.8 yd over, a clear cap for any rating. At 0.5 yd it sat on the cap margin
+    // (0.4 - the observer's error): DB_SLOTS put a real safety at FS whose discipline makes 0.5 yd too thin to trust.
+    const coMoving = delayedSetup('up', false, { depth: 0.8, helperVx: 6 });
     expect(hasVisibleCap(coMoving.a, coMoving.sim, coMoving.reader.read(coMoving.sim, coMoving.own)!)).toBe(true);
     expect(coMoving.choose()).toBe(coMoving.other);
   });

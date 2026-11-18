@@ -35,7 +35,7 @@ const CONTROL: Case = { coverage: 'cover1', concept: 'mesh', formation: 'gun_dou
 async function closing(flag: string, c: Case): Promise<number> {
   vi.resetModules();
   for (const k of stackOn) vi.stubEnv(k, '1');
-  vi.stubEnv('DIR_START', '0'); // engine-89: fixture recorded before a start from rest cost the legs in a direction they were not loaded for; the owning lane to re-record with it on
+  vi.stubEnv('DIR_START', '0'); // engine-92: fixture recorded before a start from rest cost the legs in a direction they were not loaded for; the owning lane to re-record with it on
   for (const k of ['QUICK_HITCH', 'VERTS_KEYS', 'CURL_SINK', 'SETTLE_DEPTH', 'CRAFT_HOLD', 'CRAFT_EXIT', 'ROUTE_LANDMARK', 'RELEASE_COMMIT']) vi.stubEnv(k, '0'); // engine-73: scenes recorded before this group of the engine-73 landing; Rules to re-record with it on
   vi.stubEnv('MIRROR_SCATTER', '0'); // engine-72: fixture recorded on the old alignment scatter; Defense to re-record with MIRROR_SCATTER on
   vi.stubEnv('BALL_EST', '0'); // engine-72: with the delayed ball estimate (default 6145) these scenes' trailing man no longer trails at the catch; the premise was found on the direct read. Defense to re-find the cases with BALL_EST on

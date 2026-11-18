@@ -2,7 +2,7 @@
 
 One combination of experimental flags that Run Game, Defense, Flex and Coverage all measure against. Before this, each agent tested on its own mix (the FLAT_PRESS / ZONE_RUN back-and-forth on 2026-11-09 came from two different flag sets), and no list of anyone's stack existed in the repository.
 
-- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-89`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
+- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-92`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
 - **The code:** `run/G3-oz-backfield` a749beb7 + `defense/G2-stance-tell` a0cb0789 (#411) + `defense/G2-lb-start` (#416, with #409) + `claude/quirky-franklin-9lbwbp` (#417, with #415) + develop 6676dfc2.
 - **Since 2026-11-09 the stack is the engine's default.** The flags listed `on` are read as on unless set to `0`; a bare command in a clean shell and `npm run ref -- <command>` run the same engine. `npm run ref -- --off -- <command>` runs the legacy engine (every listed flag off). `test/reference-stack.test.ts` fails if the file and the code defaults ever disagree. See "Promotion" below.
 
@@ -27,7 +27,7 @@ The stack was published on 2026-11-09 as a reference only, because the first com
 What was done:
 - The 90 `on` flags are read as `!== '0'` in `src` (95 sites). No other code changed. Checked on the 1,321-run set: the stack arm, the legacy arm (`--off`) and a bare run with an empty environment give the same per-play results as before the change, the bare run now matching the stack.
 - **The test suites still run on the legacy engine.** `vitest.config.ts` pins every promoted flag to `0` for all four tiers, so no recorded case moved and nothing was re-recorded. `TEST_ENGINE_DEFAULTS=1 npm test` runs them on the real defaults: 173 core tests in 61 files then fail because they pin legacy behaviour (most in `responsibility-ledger` 16, `combo-transfer` 15, `support-work-off` 9, `support-escape-objective` 9, `man-run-continuity` 8, `runner-side-recovery` 7, `combo-attention` 7). Each lane re-records its files and removes flags from the pin as it goes; a new test should be written for the real defaults (stub the pin off for the flags it needs).
-- **Since 2026-11-14 most of the core suite runs on the real engine.** `test/engine-pin.json` splits the core files: `defaults` run with no flag pinned, `pinned` still run with every promoted flag at `0`. The pinned list may only shrink (`test/engine-pin-manifest.test.ts`): a file leaves it when it passes on the defaults, and a new test file is a defaults file. `node --import tsx scripts/diag/pin-bisect.ts` names, per pinned file, the flags it needs pinned, so a lane can see what blocks deleting a flag and its legacy path; `TEST_PIN_FLAGS=A,B` pins only those flags.
+- **Since 2026-11-14 most of the core suite runs on the real engine.** `test/engine-pin.json` splits the core files: `defaults` run with no flag pinned, `pinned` still run with every promoted flag at `0`. The pinned list may only shrink (`test/engine-pin-manifest.test.ts`): a file leaves it when it passes on the defaults, and a new test file is a defaults file. `node --import tsx scripts/diag/pin-bisect.ts` names, per pinned file, the flags it needs pinned, so a lane can see what blocks deleting a flag and its legacy path; `TEST_PIN_FLAGS=A,B` pins only those flags. The `core` project pins every numeric flag to its legacy value even with `TEST_PIN_FLAGS` empty, so an "unpinned" run there is a mixed engine; judge a pinned file's re-record on `core-defaults` (move it in the manifest).
 - `config/baseline.json` is unchanged: it remains the historical profile, with these flags at `0`.
 
 What the promotion does not fix, in order of size at the game level:
@@ -609,7 +609,7 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
 
 
-## engine-89: a start from rest costs the legs in a direction they were not loaded for (2026-11-18)
+## engine-92: a start from rest costs the legs in a direction they were not loaded for (2026-11-18)
 
 On: `DIR_START` (Tools/Physics; `DIR_START_PCT` = 67) and `READ_COMMIT_TICK` (a repair in the carrier's first request). Details, tables and tools: [the start-from-rest review](reviews/2026-11-18-start-from-rest.md).
 
@@ -618,6 +618,157 @@ On: `DIR_START` (Tools/Physics; `DIR_START_PCT` = 67) and `READ_COMMIT_TICK` (a 
 `READ_COMMIT_TICK`: the tick a zone read commits, or the designed phase's own exit test ends the design window, the carrier runs the ordinary lane read at once instead of finishing the tick on the designed press (duo seed 2: first request 1 deg then 15 deg against a 19 deg mesh line, now 19 / 19).
 
 Lone body (LB profiles, 12 bodies, hips held, ask 5, speed at 0.2 / 0.4 / 0.8 s): forward 1.30 / 2.27 / 3.51 either arm, lateral reaction 0.91 / 1.65 / 2.75 (NFL matched band 0.92 / 1.61 / 3.20), loaded lateral = forward, hips opened to travel converge on forward. 16 games: reaction starts of defenders move toward the NFL (lateral 1.57 / 2.50 / 3.63 to 1.41 / 2.20 / 3.35; NFL 0.95 / 1.67 / 3.28); the sim shuffle opens its hips to travel faster than the NFL's, so the law decays early (the next body question).
+
+## engine-90: release reads from what the reader sees: vertical past the line, a back's flat release out of the box (2026-11-18)
+
+On: `READ_VERTICAL_LOS` and `BACK_CLEAR` (Coverage; `src/sim/coverage/reads.ts`, the ReleaseReader every coverage rule
+reads releases from).
+
+- **READ_VERTICAL_LOS:** a release is vertical only past the line of scrimmage in his picture. A back stepping up in his
+  protection set behind the line no longer latches `vertical`.
+- **BACK_CLEAR:** a back still 1.5+ yd behind the line, inside his rush-side tackle's seen width plus 0.5 yd, moving out
+  toward a rusher he could block (seen within 3 yd, on or behind the line, within 45 degrees of his path) is not a flat
+  release. Before it, his slide to an edge rusher read as a fast flat release: Push fired with the back in protection,
+  pre-empted Smash, and the Cover 2 squat corner left #1 for him.
+- **Controls** (`test/back-clear.test.ts`): a clean swing, a fast back to the flat and a check-release are read at the
+  same tick; a blocking back never reads flat. The one later read: a swing back the end comes straight at behind the
+  line (seed 1, he stalls to 0.9 yd/s) is read once clear.
+- **Tests:** 80 coverage files, 19 failures in 8 files off, 16 in 7 on, the difference only the three cases.
+  Re-records on the real engine (engine-pin `defaults`): coverage-rules, cover3-cover2-rules, quarters-trips-rules,
+  db-slots, projected-cap, coverage-judgment; each change is a staging or a promoted rule, stated in its file.
+- **Recorded, not landed:** KNOWN_PROBLEMS COV-13 (man defenders in traffic; `MAN_TRAFFIC` parked off).
+
+## engine-89: the Cover 2 flat corner takes the #2 flat when #1 cancels (2026-11-18)
+
+On: `FLAT_CARRY` (Rules + Coaching's rule HNFL-099/-334; Coverage built). The flat corner reads #1 himself:
+
+- **#1 cancels:** seen 3+ yd deep moving more across than up (a slant or an in), or slowed under 1 yd/s. Held until
+  #1 climbs again (a double move).
+  - The #2 flat in his area is then his. He squeezes it from on top and outside, which carries it if it turns up.
+  - He keeps it until another defender he sees caps it, it leaves his area, or it reaches 20 yd.
+- **#1 goes vertical:** he sinks with #1 (FLAT_SINK, engine-85) and the half safety takes what's left.
+
+Three ungated attempts took him off a vertical #1: 20+ completions rose 67 -> 86 (COV-12 in KNOWN_PROBLEMS).
+
+Cover 2, Cover 2 match and Tampa 2 staged dropbacks, every concept, 3 seeds, develop 6c7d09b1:
+
+| | off | on |
+|---|---|---|
+| never-touched 20+ completions (`scripts/diag/coverage/flat-carry.mts`) | 26 | 22 |
+| 20+ completions | 82 | 77 |
+| Cover 2 YAC | 6.32 | 5.55 |
+
+- **Throws to #1** (`corner-sink.mts`): unchanged, 6 at 50%, 6.5 yd/att; corner to #1 at arrival 4.7 -> 4.5 yd.
+- **Other rows:** the corner's downfield speed and depth under #1 are unchanged within 0.1. Cover 1, 3 and 4 YAC are
+  identical.
+
+**Open:** on the traced slant_flat from trips his read of #1's slant lands at about 2.8 s (a slant at 45 degrees shows
+"more across than up" late), so that rep is still late. An earlier read of #1's inside release is the next lever.
+
+## engine-88: deep men priced through their role; the forecast stops an out at its finish (2026-11-18)
+
+On: `QB_ROLE_PATH` (third form, 3b) and `FORECAST_FINISH`. Registered off: `READ_WINDOW` (not yet a finished repair,
+below) and `QB_CLOSE_BELIEF` (held).
+QB lane; records docs/reviews/2026-11-18-late-cross.md, 2026-11-18-forecast-finish.md and 2026-11-18-defender-path.md on
+claude/exciting-cori-hc8l4u. On develop cebd890b (engine-87).
+
+### READ_WINDOW (off): a quick read his eyes have moved off is dead for the play; not yet a repair
+
+**What it is for.** engine-83's never-touched long runs (Defense, via Integration): slant_flat from trips threw H's flat
+at 3.1 s or later, led 8-10 yd up the sideline, caught 12-16 yd deep with the nearest defender 4-7 yd away. Taught
+slant-flat throws the flat on the plant to its landmark, or not at all.
+
+**What it does, on.** On a quick concept (`concept.family === 'quick'`):
+- A read his eyes have moved off is dead; neither QB_RELOOK, a reset nor a key reorder reopens it. Kept on the read he
+  ends each tick on, so a move a key reorder undoes within the tick still counts.
+- Out of live reads: the plan's checkdown once, then the best live option, else the ball comes out now (the pocket
+  break, a scramble, or thrown away). Without this he stood in the pocket after his reads ran out at about 2.8 s.
+- A read thrown on a footwork step is not passed on the 0.35 s dwell before that step has let him throw it (bounded by
+  one stride). Without this an open read (X's slant at P 0.82, cover2 roster 7 seed 1) went by unthrown while his
+  hitch step (0.75 s stride) was still in the air: the read clock outran the feet. This is older than READ_WINDOW;
+  READ_WINDOW turned it into lost plays.
+
+**Why it is off** (`scripts/diag/eyes/snap-fate.ts`, staged and paired: slant_flat x doubles / trips x 7 zone shells x 3
+rosters x 3 seeds x flip, 252 snaps, measured on 097e3b13 with this patch; four_verts and comebacks are identical, not quick concepts):
+
+| arm | throwaways | sacks | completions | 20+ yd plays | ints | throw time p50 / p90 | late (3.1 s+) flats, led 10+ yd | yards a play |
+|---|---|---|---|---|---|---|---|---|
+| off | 7 | 1 | 186 | 46 | 2 | 3.10 / 3.75 s | 56, 37 | 14.1 |
+| on, dead reads + ball out | 96 | 0 | 120 | 11 | 4 | 2.50 / 3.15 s | 6, 5 | 6.9 |
+| on, + the step gate (this patch) | 51 | 0 | 156 | 37 | 6 | 3.05 / 3.20 s | 30, 18 | 11.1 |
+
+- Without the step gate the late flat is gone, but by throwing away 38% of the snaps.
+- With it, half the late led flats come back. 21 of the 30 late flats are read 0 at 3.1 s: the key's read (QB_KEY_PLANT's
+  re-read, after his hitch) puts the flat, never looked at, first after 2 s, and the step gate holds him on it to its
+  step. Not the late rekey (gating it changed nothing).
+- The off arm's late completions (61 of 89 on the snaps the first on arm threw away, 18.7 yd a catch) are the balls
+  the defenders do not break on (Defense's half), so the off arm is not a target either.
+- What is left is the quick concept's clock: when a quick read is live (its window from the plan's break and the drop),
+  so that the key's answer, a late key read and a held step all end with it. Next QB item; not tuned here.
+
+**Defense's count** (fe150600 + the first READ_WINDOW, zone 10+ air-yard completions): never-touched 20+ YAC catches 24
+(7.0%) -> 13 (4.2%), YAC mean 7.82 -> 6.00; all of the change on slant_flat. That arm had no ball-out step, so it held
+the snaps that became sacks.
+
+### FORECAST_FINISH: an out that finishes is forecast to stop at its finish
+
+- Under ROUTE_FINISH an outward route that runs out of field stops at its margin, in bounds. The forecast kept his
+  velocity past it, so the speed out was led 2-3 yd from the sideline instead of to the numbers.
+- On, a route whose last point is its finish ends there in the forecast, as the receiver does. Rules' out-trace with
+  ROUTE_SHAPE: quick-out completions 42 -> 44 of 56, miss on completions 0.91 -> 0.78 yd.
+- Not in it: the flat's extension hold proposed in the late-cross record. Under ROUTE_END a flat past his declared
+  points runs on up the sideline, so holding him at his landmark would be a false belief that steers the aim; the
+  defenders' ball estimate shares the forecast, and the hold moved three other lanes' fixtures. The late flat is a
+  decision, READ_WINDOW's.
+
+### QB_ROLE_PATH (3b): the window prices a deep defender through his role's real path
+
+Our deep men see the ball 0.25-0.30 s after the release, like the NFL's, but the eyes-on ones are match carriers keeping
+a roof over a receiver, and the window priced every counted man as a ball-chaser from rest after a standing reaction.
+- A carrier (deep 8+ yd, deeper than a receiver by half a yard, within 7 yd, moving with him, not closing on him faster
+  than 1.5 yd/s): over the target he contests only a ball thrown at or beyond him, else plays it from behind (only the
+  securing dislodge); over another receiver he is priced from where that route takes him.
+- A deep man (10+ yd) bailing away keeps going through the catch window.
+- Any other deep zone man (10+ yd), for a ball thrown at or beyond him (within 2 yd short of his depth, chosen), runs
+  the engine's body from his seen velocity and facing, held until his belief of the ball.
+
+**Integration's six-seed card** (fe150600, off vs on; seeds 23, 37, 11, 5, 61, 88): completion -0.7 / -1.9 / +0.1 / -0.3 /
++0.3 / -1.3 (mean -0.6 pt); Y/A mean +0.34; INT mean +0.15 pt (within noise); YAC +0.03; sacks +0.25 pt; 20+ plays +0.7 pt;
+aDOT 5.04 -> 5.66 (seed 23). Yards come through depth of target, not after the catch.
+
+**The deep share, by shell** (8 games, seeds 11 and 31, engine-83 with QB_ROLE_PATH off vs on; 15+ air yards, share of
+throws):
+
+| shell | off | on | NFL |
+|---|---|---|---|
+| one-high | 2.1% | 7.9% | |
+| two-high | 2.6% | 4.9% | |
+| zero | 0% | 13% (n 30) | |
+| all | 2.2% | **7.0%** | **13.4%** |
+
+It is 7% against the NFL's 13.4%: half the gap is closed. The remaining over-pricing, named:
+- the eyes-on deep man on a held ball: believed 0.36 against 0.17 real (0.59 before);
+- the staged deep seam: his believed pick risk 0.19 against 0.03 real, and his believed completion 0.19 against 0.31
+  real. He still prices the deep ball too dangerous and too hard;
+- the not-facing deep man is now right (0.36 / 0.36).
+
+**Fixtures.** `test/read-window.test.ts` is new (listed in `test/engine-pin.json`); it sets its flags itself:
+- READ_WINDOW on slant_flat: off, 21 of 32 throws go to a read he had moved off; on, none. (Late flats: 10 off, 4 on;
+  not asserted.)
+- FORECAST_FINISH on quick_outs: off, 152 of 208 of the QB's 4 s forecasts put the out more than 3 yd past its finish;
+  on, none.
+
+Full `npm test` (core and core-defaults) on 097e3b13 with this patch against clean 097e3b13: five tests newly fail, four of
+them moved by QB_ROLE_PATH alone (each passes with it off), and rush-lean-bound passes on rerun (a search under load).
+Pinned test-only, with owner notes:
+- `acc-radius` (QB lane): the panel waited for the deep man's price to settle, and QB_ROLE_PATH settles it. With it on,
+  ACC_RADIUS off already throws the vertical on 7 of 10 (median 2.3 s; 2 check-downs), and on throws it on 10 of 10
+  (all by 3.2 s), so the off arm's check-down premise is gone. Pinned off to keep ACC_RADIUS's own contrast.
+- `corner-one-release` (Coverage): #1's go is now thrown and the corner plays the ball (rob:X, not man:X) at the sample.
+- `screw` (Coverage / Rules): the pa_shot is thrown earlier; the safety plays the ball, a behavior with no recordedRule.
+- `rush-arm-balance` (Flex): the searched bull fall moves with the throw's timing.
+Rebased onto cebd890b (engine-87, HALF_KEY): the pinned and new tests, guard, scan, provenance, reference-stack,
+engine-pin, dither-budget, read-plan and half-key pass.
 
 ## engine-87: the Cover 2 half safety keys #1 to #2 (2026-11-18)
 

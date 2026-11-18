@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from 'vitest';
 import {RunBlocker,playSideSign} from '../src/sim/behaviors/blocking.js';
 import {PlaySim} from '../src/sim/playsim.js';
 import {restoreSetup} from '../scripts/diag/saved-play.js';
-// engine-89 (DIR_START on): fixture recorded before a start from rest cost the legs in a direction they were not loaded for; pinned test-only, the owning lane to re-record with it on
+// engine-92 (DIR_START on): fixture recorded before a start from rest cost the legs in a direction they were not loaded for; pinned test-only, the owning lane to re-record with it on
 vi.hoisted(() => { process.env.DIR_START = '0'; });
 
 // Counter's wrapping tackle rounds his corner and keeps running to work, as

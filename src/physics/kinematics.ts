@@ -240,7 +240,7 @@ export const PLANT_SPEED = 2.5;
 /** How far ahead of his actual path his hips can lead while carrying speed. */
 const FACING_LEAD = Math.PI / 3;
 
-/** DIR_START (on since engine-89; DIR_START=0 restores; docs/reviews/2026-11-18-start-from-rest.md): the start from rest depends on the angle between the push and the pelvis, and costs the legs when
+/** DIR_START (on since engine-92; DIR_START=0 restores; docs/reviews/2026-11-18-start-from-rest.md): the start from rest depends on the angle between the push and the pelvis, and costs the legs when
  * the start is not planned: the direction penalty is the cost of pushing off in a direction the body was not loaded for. A first step planned before the start (the assignment he holds at the snap
  * cue: every offensive player, and a rusher, blitzer or zone defender: PlaySim.loadPlannedStarts) is loaded for it and pays nothing; one start only, every later movement is a reaction for everyone.
  * The start from rest depends on the angle between the push and the pelvis. The start force

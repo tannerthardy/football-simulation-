@@ -31,7 +31,7 @@ const POOLED = new Set(['controller QB', 'controller QB facing', 'controller car
   'stage coverage / mode switch', 'stage coverage / tackle bond', 'stage coverage / containment', 'stage carrier / spacing', 'stage route / spacing']);
 const POOLED_DISPERSION = 1.4;
 
-/** carrier / mode switch (6 events, 0.0070/s) is not recorded since engine-89: READ_COMMIT_TICK removed the first-tick transient after the handoff (the tick a zone read commits or the design window's exit ends, he finished on the designed press while the next tick's lane read chose its own line); three pooled draws now read under the 5-event floor.
+/** carrier / mode switch (6 events, 0.0070/s) is not recorded since engine-92: READ_COMMIT_TICK removed the first-tick transient after the handoff (the tick a zone read commits or the design window's exit ends, he finished on the designed press while the next tick's lane read chose its own line); three pooled draws now read under the 5-event floor.
  * Measured 2026-11-12 on develop 121d458b (engine-49, PURSUIT_FIELD on). The POOLED rows (above) were re-recorded 2026-11-16 from three pooled panel draws (moving s and events are the pool's), on the engine-72
  * defaults with the engine-73 set off (its flags and numerics QB_FOOTWORK, ZONE_HOLD, END_KEY, OFF_PEDAL stubbed to 0), in the project the test runs in now (core-defaults: BALL_EST 6145 and SIGHT_STALE 7 at their
  * defaults). The first pooled record, on ae9f566c4, ran with every numeric pinned to 0, which is not the engine the test runs on (it read pursuit 0.4025, containment 0.0031, carrier / spacing 0.0847). */

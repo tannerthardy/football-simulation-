@@ -82,7 +82,10 @@ describe('coverage judgment and continuous evidence', () => {
     const wall = new Wall(one, new ReleaseReader(a, sim), 'C', -1);
     a.recog!.read = 'pass';
     const cmd = wall.update(a, sim);
-    expect(cmd.facing).toBeUndefined();
+    // Re-recorded 2026-11-18 (Coverage): under OPEN_CARRY (engine-44) the carry keeps a facing, as square to the QB as
+    // the run allows (openCarryFacing), where it once ran on travel (facing undefined). The claim is the speed: zone gaze
+    // must not cap him at his backpedal.
+    expect(cmd.facing === undefined || Number.isFinite(cmd.facing)).toBe(true);
     expect(cmd.vel.x).toBeGreaterThan(a.profile.vmax * a.profile.backpedal);
   });
 

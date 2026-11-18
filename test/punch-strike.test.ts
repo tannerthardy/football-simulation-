@@ -21,7 +21,7 @@ afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 async function falls(flags: Record<string, string>, roster: number, coverage = 'cover2', seed = 5) {
   vi.resetModules();
   for (const [k, v] of Object.entries(stack)) if (v === 'on') vi.stubEnv(k, '1');
-  vi.stubEnv('DIR_START', '0'); // engine-89: fixture recorded before a start from rest cost the legs in a direction they were not loaded for; the owning lane to re-record with it on
+  vi.stubEnv('DIR_START', '0'); // engine-92: fixture recorded before a start from rest cost the legs in a direction they were not loaded for; the owning lane to re-record with it on
   for (const k of ['QB_KEY_READ', 'QB_EDGE_THREAT', 'QB_HEAD', 'QB_CALL_ROUTES', 'QB_FOOTWORK', 'CONCEPT_DROPS', 'CONCEPT_FIT', 'BACK_AS_THREE', 'PA_TABLES', 'QUICK_HITCH', 'VERTS_KEYS', 'CURL_SINK', 'SETTLE_DEPTH', 'CRAFT_HOLD', 'CRAFT_EXIT', 'ROUTE_LANDMARK', 'RELEASE_COMMIT', 'PA_HINGE', 'EDGE_SET', 'POCKET_DROP', 'POWER_AIM', 'END_KEY', 'LOOSE_OWN', 'ZONE_HOLD', 'OFF_PEDAL']) vi.stubEnv(k, '0'); // engine-73: scenes recorded before this group of the engine-73 landing; Flex to re-record with it on
   vi.stubEnv('SET_SPOT', '0'); // engine-72: fixture recorded with the tackle and guards setting off the live quarterback; Flex to re-record on the call's set spot
   vi.stubEnv('VERTS_QUICK', '0'); // engine-67: these four_verts scenes were recorded on the five-step set; the quick drop is a different play
@@ -80,7 +80,7 @@ describe('PUNCH_STRIKE', () => {
     // 0.6 of that press in the 0.3 s before. Requirement: at least one exists on the current stack.
     vi.resetModules();
     for (const [k, v] of Object.entries(stack)) if (v === 'on') vi.stubEnv(k, '1');
-    vi.stubEnv('DIR_START', '0'); // engine-89: fixture recorded before a start from rest cost the legs in a direction they were not loaded for; the owning lane to re-record with it on
+    vi.stubEnv('DIR_START', '0'); // engine-92: fixture recorded before a start from rest cost the legs in a direction they were not loaded for; the owning lane to re-record with it on
     for (const k of ['QB_KEY_READ', 'QB_EDGE_THREAT', 'QB_HEAD', 'QB_CALL_ROUTES', 'QB_FOOTWORK', 'CONCEPT_DROPS', 'CONCEPT_FIT', 'BACK_AS_THREE', 'PA_TABLES', 'QUICK_HITCH', 'VERTS_KEYS', 'CURL_SINK', 'SETTLE_DEPTH', 'CRAFT_HOLD', 'CRAFT_EXIT', 'ROUTE_LANDMARK', 'RELEASE_COMMIT', 'PA_HINGE', 'EDGE_SET', 'POCKET_DROP', 'POWER_AIM', 'END_KEY', 'LOOSE_OWN', 'ZONE_HOLD', 'OFF_PEDAL']) vi.stubEnv(k, '0'); // engine-73: scenes recorded before this group of the engine-73 landing; Flex to re-record with it on
     vi.stubEnv('SET_SPOT', '0'); // engine-72: fixture recorded with the tackle and guards setting off the live quarterback; Flex to re-record on the call's set spot
       vi.stubEnv('VERTS_QUICK', '0'); // engine-67: these four_verts scenes were recorded on the five-step set; the quick drop is a different play
