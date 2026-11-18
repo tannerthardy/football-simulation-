@@ -182,6 +182,13 @@ const QB_BODY_TELL = QB_INTENT && (QB_INTENT_BITS & 6) !== 0;
  * (bit 2 alone) the shoulders only confirm: agreeing with the head they raise conviction, never more. Off: our QB's set
  * shoulders point at the eventual catcher only 14-25% of the time when they disagree with his head (lean-src). */
 const QB_SHOULDER_OVERRIDE = QB_INTENT && (QB_INTENT_BITS & 4) !== 0;
+/** QB_INTENT bit 8 (the eyes take you to the receiver in your window): his lean reads the receiver in or entering his
+ * own window who sits nearest the passer's seen look line (the seen head; within the same cone the eyes read uses,
+ * 20 deg, 12 deg past 20 yd), not the one receiver anywhere the head is held on. The pick keeps ZONE_HOLD's angular
+ * margins (held while inside the cone widened by the exit margin and no other in-window receiver is nearer the line by
+ * the beat margin). No trunk. Integration's reading of =7 (2026-11-18): the shoulder override gained by restricting the
+ * pick to his window (the trunk and head point the same way at its ticks: median 1 deg apart). */
+const QB_EYES_WINDOW = QB_INTENT && (QB_INTENT_BITS & 8) !== 0;
 const QB_SHOULDER_CONE = 20 * Math.PI / 180;
 const QB_LEAN_SPEED = 0.4, QB_LEAN_EXIT = 0.2;
 const eyesHeld = new WeakMap<Agent, Agent>();
@@ -2359,10 +2366,35 @@ export class ZoneCoverage implements Behavior {
     return { shoulders: best, stride };
   }
 
+  /** QB_INTENT bit 8: the receiver in or entering his window nearest the passer's seen look line, held with ZONE_HOLD's
+   * angular margins; null when his eyes are not on the passer, no head is seen, or none is inside the cone. */
+  private windowLook: Agent | null = null;
+  private windowOnLook(a: Agent, sim: PlaySim, threats: Array<{ r: Agent; pos: Vec2; vel: Vec2; fut: Vec2 }>): Agent | null {
+    const q = sim.see(a, sim.qb);
+    const toQB = Math.atan2(q.pos.y - a.pos.y, q.pos.x - a.pos.x), dist = Math.hypot(q.pos.x - a.pos.x, q.pos.y - a.pos.y);
+    const look = q.head ?? undefined;
+    if (look === undefined || Math.cos(a.body.facing - toQB) <= Math.cos(100 * Math.PI / 180)) { this.windowLook = null; return null; }
+    const cone = (dist > 20 ? 12 : 20) * Math.PI / 180, lm = this.landmark;
+    const off = new Map<Agent, number>();
+    let r: Agent | null = null, best = cone;
+    for (const th of threats) {
+      if (Math.hypot(th.fut.x - lm.x, th.fut.y - lm.y) >= this.radius + 2) continue;
+      const v = Math.abs(angleDiff(Math.atan2(th.pos.y - q.pos.y, th.pos.x - q.pos.x), look));
+      off.set(th.r, v);
+      if (v < best) { best = v; r = th.r; }
+    }
+    const held = this.windowLook, ho = held ? off.get(held) : undefined;
+    if (held && ho !== undefined && ho < cone + ZONE_HOLD_EYES_OUT
+      && ![...off.entries()].some(([o, v]) => o !== held && v < cone && v < ho - ZONE_HOLD_EYES_BEAT)) r = held;
+    this.windowLook = r;
+    return r;
+  }
+
   /** QB_INTENT's lean and break (null: none this tick), from his own picture only. */
   private qbLean(a: Agent, sim: PlaySim, threats: Array<{ r: Agent; pos: Vec2; vel: Vec2; fut: Vec2 }>, qbEyes: Agent | null, qbAt: Vec2): MoveCommand | null {
     // QB_BODY_TELL: what he reads the passer pointing at, head and body together, through his own picture of him.
     let conviction = 0;
+    if (QB_EYES_WINDOW) qbEyes = this.windowOnLook(a, sim, threats);
     if (QB_BODY_TELL) {
       const body = this.seenQbBody(a, sim, threats);
       if (body.shoulders && body.shoulders === qbEyes) conviction = body.stride ? 2 : 1;
