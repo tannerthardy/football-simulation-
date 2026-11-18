@@ -60,3 +60,21 @@ The 14 by defenders he believed more than a second late at the catch point: path
 he does not believe are mostly along the late flight path, not at the catch point. The window's path term (pClear's touch
 and iPath, sampled along the flight) uses a still narrower spread (sPath 0.1 s) than the catch term (sCatch 0.13 s, itself
 about half of what the arrival calibration supports). That is where the next fix belongs, not in the catch-point arrival.
+
+## Release re-aim and rusher start: attempts, not landed
+
+Diff: `docs/reviews/patches/engine71-footwork/aim-commit-rush-start-attempts-on-joint.diff`. 8 games each, the catch-law
+window tree (honest tracking not yet in):
+
+| arm | throws | INT | short INT | completion | yds/att | sacks | no throw |
+|---|---|---|---|---|---|---|---|
+| catch-law window | 646 | 28 (4.3%) | 17 | 0.704 | 7.53 | 29 | 65 |
+| + QB_AIM_COMMIT v1 (ball to the recheck's priced point; with rusher start) | 638 | 26 (4.1%) | 16 | 0.674 | 7.20 | 37 | 79 |
+| + QB_AIM_COMMIT v2 (release re-aim held within 1 yd of the priced point) | 626 | 33 (5.3%) | 17 | 0.679 | 8.79 | 39 | 83 |
+| + QB_RUSH_START (rushers start on the ball) | 647 | 38 (5.9%) | 26 | 0.682 | 7.69 | 29 | 66 |
+
+- Aim commit: no visible pick reduction; completion down 2.5-3 pt (the ball goes to an older picture of the receiver).
+  Eight divergent games swing about ±6 picks and cannot resolve the re-aim's share (4 of 28). It needs a paired staged
+  probe: the same play with and without the release re-aim.
+- Rusher start: wrong premise. A rusher facing the passer sees the arm best and bats balls at the line; starting him at
+  the release made him later in the window, and short picks went 17 to 26. If anything he is an arm reader.

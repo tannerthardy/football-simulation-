@@ -1,0 +1,80 @@
+diff --git a/src/sim/behaviors/qb.ts b/src/sim/behaviors/qb.ts
+index da661c70e..a4faf1c49 100644
+--- a/src/sim/behaviors/qb.ts
++++ b/src/sim/behaviors/qb.ts
+@@ -832,6 +832,20 @@ const QB_CLOSE_BELIEF = process.env.QB_CLOSE_BELIEF === '1';
+  * Everyone else is priced as before. Six-seed card (fe150600, off vs on): completion -0.6 pt, Y/A +0.34, INT +0.15 pt,
+  * YAC +0.03, 20+ plays +0.7 pt. */
+ const QB_ROLE_PATH = process.env.QB_ROLE_PATH !== '0';
++/** QB_AIM_COMMIT (on in the joint catch landing; QB_AIM_COMMIT=0 restores; QB lane, 2026-11-18, Integration: the commit
++ * rule on the throw itself): the ball goes within AIM_HOLD of the point he last priced: the recheck's re-aim (its window
++ * was re-priced on that point), or the decision's aim if no recheck ran. Off, the release re-predicted the receiver and threw to that new,
++ * unpriced point (seed 101 play 35: 3 yd from the decided aim, onto a corner the window had not priced there; 4 of 28
++ * picks in 8 games were release re-aims of more than 1.5 yd). */
++const QB_AIM_COMMIT = process.env.QB_AIM_COMMIT !== '0';
++/** QB_AIM_COMMIT: how far from his last priced point the release may still place the ball (yd; chosen: inside the catch
++ * radius his window priced, about 1.6 yd and up, so the price he decided on still holds). */
++const AIM_HOLD = 1.0;
++/** QB_RUSH_START (on in the joint catch landing; QB_RUSH_START=0 restores; QB lane, 2026-11-18): a rusher he sees coming at
++ * him (at or behind the line, moving toward him) is not a coverage reader: he reacts to the ball itself, not to the arm, so
++ * THROW_REACT's arm-read start does not apply to him. Off, rushers facing the passer (63-72 a game) were priced through
++ * the coverage man/zone belief. */
++const QB_RUSH_START = process.env.QB_RUSH_START !== '0';
+ /** QB_CLOSE_BELIEF: his time (s) to play `pt` within `radius`: his seen velocity kept for `start` s, then the body's run at it. */
+ function bodyArrive(seen: { pos: { x: number; y: number }; vel: { x: number; y: number }; facing: number }, profile: any, speedScale: number,
+   pt: { x: number; y: number }, radius: number, start: number): number {
+@@ -1188,6 +1202,8 @@ export class QBPass implements Behavior {
+   private mofKey = false;
+   /** QB_DEEP_WAIT: the defenders he saw in a deep seat before the snap (he believes they wait for the ball). */
+   private deepWait = new Set<Agent>();
++  /** QB_AIM_COMMIT: the point the recheck priced for the pending throw. */
++  private recheckAim: Vec3 | null = null;
+   /** Diagnostics (no effect): marginProbe records every defender at the aimed point, not only those the window counts. */
+   marginProbeAll = false;
+   /** QB_MOF_READ / QB_DEEP_WAIT: his pre-snap picture of the shell and the seats, taken once at his first tick. */
+@@ -2931,7 +2947,12 @@ export class QBPass implements Behavior {
+       // One facing him in zone keys the motion, so he goes at the release or
+       // a reaction after the motion starts, whichever is later; one in man
+       // reads the release itself. Weighted by his own man/zone belief.
+-      const pMan = this.mind.pMan();
++      let pMan = this.mind.pMan();
++      if (QB_RUSH_START) {
++        const dirR = sim.attackDir(a.team), tq = Math.hypot(a.pos.x - seen.pos.x, a.pos.y - seen.pos.y) || 1;
++        const toward = (seen.vel.x * (a.pos.x - seen.pos.x) + seen.vel.y * (a.pos.y - seen.pos.y)) / tq;
++        if ((seen.pos.x - sim.los) * dirR < 1.5 && toward > 1) pMan = 1; // a rusher: he goes on the ball, not the arm
++      }
+       const facingBlind = THROW_REACT ? pMan * wind + (1 - pMan) * Math.max(0, wind - dp.reactionTime) : 0;
+       // QB_DEEP_WAIT: a man he saw in a deep seat waits for the ball: he goes at the release, then his reaction.
+       const blind = facingQB ? (QB_DEEP_WAIT && this.deepWait.has(d) ? wind : facingBlind) : onTarget ? Math.min(untilBreak, wind) : wind;
+@@ -3165,6 +3186,7 @@ export class QBPass implements Behavior {
+   }
+ 
+   private startThrow(a: Agent, sim: PlaySim, ev: ThrowEval): MoveCommand {
++    this.recheckAim = null; // QB_AIM_COMMIT: a new decision has no recheck yet
+     // QB_RHYTHM_THROW: a throw started on the drop's last step carries the drop's velocity into the plant.
+     this.rhythmVel = QB_RHYTHM_THROW && this.phase === 'drop' ? { x: a.vel.x, y: a.vel.y } : null;
+     // Test staging: his own throws are held until the staged one (he keeps his drop and set).
+@@ -3301,6 +3323,8 @@ export class QBPass implements Behavior {
+     const p = this.receiverForecasts.get(ev.target)?.predict(sim.t, left + ev.T);
+     if (!p) return false;
+     const point: Vec3 = { x: p.x, y: clamp(p.y, 2, FIELD_WIDTH - 2), z: ev.point.z };
++    // QB_AIM_COMMIT: this is the point the recheck prices; the ball goes here if he keeps the throw.
++    this.recheckAim = point;
+     const urgency = clamp((0.9 - pressure.time) / 0.7, 0, 1) * (0.5 + 0.5 * a.r('pocketPresence'));
+     const w = this.window(a, sim, ev.target, { x: a.pos.x, y: a.pos.y, z: RELEASE_Z }, point, ev.T, left, urgency);
+     // QB_COMMIT: a started throw holds unless what he now sees clears a margin beyond what he started on: the window
+@@ -3328,6 +3352,14 @@ export class QBPass implements Behavior {
+     if (p) {
+       point = { x: p.x, y: clamp(p.y, 2, FIELD_WIDTH - 2), z: ev.point.z };
+     }
++    // QB_AIM_COMMIT: he places the ball on his newest picture of the receiver only within AIM_HOLD of the point he last
++    // priced (the recheck's, else the decided one); a larger jump is a new throw he has not priced, so it is held there.
++    const priced = this.recheckAim ?? ev.point;
++    if (QB_AIM_COMMIT) {
++      const dx = point.x - priced.x, dy = point.y - priced.y, dd = Math.hypot(dx, dy);
++      if (dd > AIM_HOLD) point = { x: priced.x + dx / dd * AIM_HOLD, y: priced.y + dy / dd * AIM_HOLD, z: point.z };
++    }
++    this.recheckAim = null;
+     const dist = Math.hypot(point.x - from.x, point.y - from.y);
+     const pressure = this.pressure(a, sim);
+     const urgency = clamp((0.9 - pressure.time) / 0.7, 0, 1);
