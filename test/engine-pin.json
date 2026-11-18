@@ -355,6 +355,7 @@
   "test/movement-yaw-continuity.test.ts",
   "test/mug-calls.test.ts",
   "test/mug-pressures.test.ts",
+  "test/mush-match.test.ts",
   "test/mush-trap.test.ts",
   "test/native-endzone-fouls.test.ts",
   "test/native-kick-game.test.ts",

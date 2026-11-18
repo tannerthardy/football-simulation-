@@ -799,6 +799,16 @@ function readHook(c: RuleCtx, handoff = 8): Directive {
  * #3 from outside-in while the Mike walls #3's release and zones the hook. Stubbie keeps HNFL-270's "3 cancelled =
  * 7-seam-flat" zone. The trap holds while #3 stays shallow; a #3 who turns up is the safety's (Read #3). */
 export const MUSH_TRAP = process.env.MUSH_TRAP !== '0';
+/** MUSH_MATCH (experimental, off): the Book / Stubbie nickel matches #2's flat as taught (HNFL-050, image-checked: "#3 up/in:
+ * match #2; #2 fast flat: match it"; Ross; SAB-TD). Off, a #2 who releases to the flat or out sent him to zone the
+ * curl-flat, where he related to #3's hook beside the Mike walling #3: two on #3, none on the flat, which turned up the
+ * sideline untouched (Defense's never-touched YAC runs, slant_flat from trips vs Cover 6 Book). On, with #2's release
+ * read flat or out (the release reader's confirm time, from his own picture) and #3 not out or flat: man on #2 from
+ * outside leverage, carried if he turns up (the 3/2 safety caps #2 only when #3 cancels; otherwise #2 is his: Book's
+ * taught weakness, #2 from outside leverage with no help). #3 out or flat: trap #3 as before, but a trapped #3 whose
+ * release turns up or in (a slow outside release into a hook) hands him to the Mike / safety and the nickel matches a
+ * #2 in the flat; #2 in or under: the curl-flat zone as before. */
+export const MUSH_MATCH = process.env.MUSH_MATCH === '1';
 const BOOK_CALLS = new Set(['cover4_book_read', 'cover6_book']);
 
 function mush(c: RuleCtx): Directive {
@@ -806,6 +816,13 @@ function mush(c: RuleCtx): Directive {
   const three = ref(c, 3);
   if (MUSH_TRAP && BOOK_CALLS.has(c.sim.defAlign.coverage.id) && three) {
     if (c.state.mode === 'trap') {
+      // MUSH_MATCH: a #3 who turned up out of his outside release is no longer a flat to trap ("#3 up/in: match #2"):
+      // with #2 in the flat, he leaves the trap and matches #2.
+      const twoFlat = !!two && (two.release === 'flat' || two.release === 'out');
+      if (MUSH_MATCH && twoFlat && three.release !== 'flat' && three.release !== 'out') {
+        c.state.mode = 'match2';
+        return man(two!, { lev: 'outside' });
+      }
       if (three.release !== 'vertical' || three.depth < 7) return { t: 'trap', r: three.r };
       c.state.mode = 'zoned';
       return zoneOf(c);
@@ -813,6 +830,14 @@ function mush(c: RuleCtx): Directive {
     if (c.state.mode !== 'zoned' && (three.release === 'flat' || three.release === 'out') && three.depth < NO_COVER) {
       c.state.mode = 'trap';
       return { t: 'trap', r: three.r };
+    }
+  }
+  if (MUSH_MATCH && two) {
+    if (c.state.mode === 'match2') return man(two, { lev: 'outside' });
+    const threeOut = !!three && (three.release === 'flat' || three.release === 'out') && three.depth < NO_COVER;
+    if (c.state.mode !== 'zoned' && !threeOut && (two.release === 'flat' || two.release === 'out')) {
+      c.state.mode = 'match2';
+      return man(two, { lev: 'outside' });
     }
   }
   if (!two || c.state.mode === 'zoned') return zoneOf(c);
