@@ -36,7 +36,9 @@ export const BREAK_DECL: Readonly<Record<string, BreakDecl>> = {
   corner: cut(0, 0), post: cut(0, 0), seam_read: cut(0, 0),
   // Seen open: crossers once across, verticals at depth, the back's releases once moved; the wheel at its turn up.
   shallow: open('moved'), shallow_high: open('moved'), mesh_under: open('moved'), cross: open('moved'),
-  go: open('vertical'), fade: open('vertical'), seam: open('vertical'), wheel: open(1),
+  go: open('vertical'), fade: open('vertical'), seam: open('vertical'),
+  // OFF_VARIETY double moves: thrown when seen open deep, past the fake.
+  sluggo: open('vertical'), out_up: open('vertical'), stutter_go: open('vertical'), wheel: open(1),
   flat: open('moved'), arrow: open('moved'), swing: open('moved'), back_flat: open('moved'),
   angle: cut(0, 0.3), back_out: open(1), checkdown: open(1),
   // Screens: the turn back to the catch point; the now screen is turned to the ball at the snap.

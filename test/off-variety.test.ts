@@ -36,3 +36,22 @@ describe('ZONE_IT', () => {
     }
   });
 });
+
+describe('OFF_VARIETY double moves', () => {
+  it('installs the sluggo, out-and-up and stutter-go concepts only with the flag, each from a staged formation', async () => {
+    vi.stubEnv('OFF_VARIETY', '0'); vi.resetModules();
+    const off = await import('../src/playbook/concepts.js');
+    for (const id of ['sluggo_flat', 'out_up', 'stutter_go']) expect(off.PASS_BY_ID[id]).toBeUndefined();
+    vi.stubEnv('OFF_VARIETY', '1'); vi.resetModules();
+    const on = await import('../src/playbook/concepts.js');
+    const { ROUTES } = await import('../src/playbook/routes.js');
+    expect(on.PASS_BY_ID.sluggo_flat.strong[1]).toBe('sluggo');
+    expect(on.PASS_BY_ID.out_up.strong[1]).toBe('out_up');
+    expect(on.PASS_BY_ID.stutter_go.strong[1]).toBe('stutter_go');
+    // The fake first (inside for the slant, outside for the out, a stop for the hitch), then up the field.
+    expect(ROUTES.sluggo.points[1].l).toBeLessThan(0);
+    expect(ROUTES.out_up.points[1].l).toBeGreaterThan(0);
+    expect(ROUTES.stutter_go.points[0].s).toBeLessThan(0.5);
+    for (const id of ['sluggo', 'out_up', 'stutter_go']) expect(ROUTES[id].points.at(-1)!.d).toBeGreaterThan(40);
+  });
+});

@@ -85,6 +85,13 @@ const ROUTE_TABLE: Record<string, RouteDef> = {
   corner: { id: 'corner', family: 'deep', depth: 18, end: 'continue', points: [{ d: 11, l: 0, s: 0.65 }, { d: 24, l: 11 }, { d: 34, l: 14 }] },
   // OFF_VARIETY: the smash corner, breaking at 8-9 yd beside the deep corner's 11-12 (43% of NFL corners break under 9 yd,
   // 27% at 11-14; BDB 2025 week 1, docs/reviews/2026-11-18-route-timing.md). The same shape, three yards shallower.
+  // OFF_VARIETY double moves (Coverage's control for an underneath zone that slides or breaks on what it sees): the
+  // fake is run as the route he sells, then he turns up. Sluggo: three-step slant, plant, up the field outside the
+  // slant's line. Out-and-up: the quick out's stem and first step out, then up the sideline. Stutter-go: the hitch's
+  // stem and chop at 5-6 yd (break speed .3), then up.
+  sluggo: { id: 'sluggo', family: 'deep', depth: 25, end: 'continue', points: [{ d: 2, l: 0, s: 0.75 }, { d: 4.5, l: -2, s: 0.55 }, { d: 45, l: 1 }] },
+  out_up: { id: 'out_up', family: 'deep', depth: 25, end: 'continue', points: [{ d: 5, l: 0, s: 0.45 }, { d: 5.5, l: 3, s: 0.55 }, { d: 45, l: 4 }] },
+  stutter_go: { id: 'stutter_go', family: 'deep', depth: 25, end: 'continue', points: [{ d: 5.5, l: 0, s: 0.3 }, { d: 45, l: 1.5 }] },
   smash_corner: { id: 'smash_corner', family: 'deep', depth: 15, end: 'continue', points: [{ d: 8, l: 0, s: 0.65 }, { d: 21, l: 11 }, { d: 31, l: 14 }] },
   deep_out: { id: 'deep_out', family: 'intermediate', depth: 14, end: 'continue', points: [{ d: 14, l: 0, s: 0.4 }, { d: 13.5, l: 12, s: 0.9 }] },
   // Crossers

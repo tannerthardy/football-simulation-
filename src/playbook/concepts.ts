@@ -201,7 +201,28 @@ export const MENU_CONCEPTS: PassConcept[] = [
     strong: { 1: 'go', 2: 'seam', 3: 'hitch' }, weak: { 1: 'go', 2: 'hitch' }, back: 'check',
     progression: ['S2', 'S3', 'W2', 'S1', 'B'], needs: ['S2', 'S3'], beats: ['cover3', 'cover1'],
     read: 'the middle-of-field safety: he stays middle: #2 seam; he shades to #2: #3 hitch under the seam, then the backside seam',
-  },
+  },  // OFF_VARIETY double moves: the fake sells a short route an underneath defender breaks on; the QB takes the double move
+  // first when the defender over it bites, else the short answer. Staged by concept id (Coverage's ZONE_LADDER control).
+  ...(OFF_VARIETY ? [
+    {
+      id: 'sluggo_flat', name: 'Sluggo-Flat', family: 'dropback', drop: 'gun5',
+      strong: { 1: 'sluggo', 2: 'flat', 3: 'hitch' }, weak: { 1: 'slant', 2: 'hitch' }, back: 'check',
+      progression: ['S1', 'S2', 'S3', 'W1', 'B'], needs: ['S1', 'S2'], beats: ['cover3', 'cover1'],
+      read: 'the curl-flat / hook defender inside #1: he jumps the slant: #1 up; he stays: #2 flat',
+    },
+    {
+      id: 'out_up', name: 'Out-and-Up', family: 'dropback', drop: 'gun5',
+      strong: { 1: 'out_up', 2: 'hitch', 3: 'flat' }, weak: { 1: 'hitch', 2: 'quick_out' }, back: 'check',
+      progression: ['S1', 'S2', 'S3', 'W2', 'B'], needs: ['S1', 'S2'], beats: ['cover2', 'cover3', 'cover1'],
+      read: 'the flat defender / corner over #1: he breaks on the out: #1 up the sideline; he sinks: #2 hitch',
+    },
+    {
+      id: 'stutter_go', name: 'Stutter-Go', family: 'dropback', drop: 'gun5',
+      strong: { 1: 'stutter_go', 2: 'hitch', 3: 'flat' }, weak: { 1: 'hitch', 2: 'slant' }, back: 'check',
+      progression: ['S1', 'S2', 'S3', 'W1', 'B'], needs: ['S1', 'S2'], beats: ['cover3', 'cover1', 'cover4'],
+      read: 'the corner over #1: he squats on the hitch: #1 up; he bails: #2 hitch',
+    },
+  ] as PassConcept[] : []),
 ];
 
 /** CONCEPT_DROPS (experimental, off; read plans, 2026-11-14; the QB lane owns the drops' depths and times in
