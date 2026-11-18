@@ -91,3 +91,19 @@ pass.
 - One is the same play as off (quick_outs, cover6_rev, thrown at 1.95 s).
 - The new ones are thrown early (quick_outs at 1.9 s; double_slants at 2.5 s), not on a reopened read.
 - The other 10 are on concepts the flag does not touch: game divergence, not the mechanism.
+
+## The landing (engine-87 provisional, on develop 63582b08): the extension lead dropped, the read bookkeeping fixed
+
+- **The extension lead is not built.** Under ROUTE_END a flat past his declared points runs on up the sideline, turned
+  to the QB (`receiver.ts`). A forecast that holds him at his landmark is a false belief that steers the aim. As written
+  it also predicted a runner already past the point turning back toward it. The late flat is a decision, and
+  READ_WINDOW removes it by itself (late + long 49 → 0). In the landing the hold also moved forecast-break,
+  pursuit-commit and rush-lean-bound: the defenders' ball estimate shares the forecast. FORECAST_FINISH keeps only its
+  finish part (the out).
+- **READ_WINDOW now keeps its books on the read he ends each tick on.** tampa2, roster 11, seed 1, flipped: he moved
+  H → Y at 2.05 s after the bookkeeping had run, and a key reorder at 2.10 put him back on H before it ran again. H was
+  never marked passed, and Y was thrown later from a reopened sequence. Any move off a read now kills it (the plan's
+  checkdown keeps one more look).
+- Late-cross probe on the landing: throws 176 → 92, late + long 49 → 0, completions 120 → 61, 20+ yd plays 36 → 2,
+  yards a throw 15.5 → 8.1.
+- `test/read-window.test.ts`: off, 21 of 32 throws go to a read he had moved off (13 late flats); on, 0 of each.

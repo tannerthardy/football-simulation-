@@ -32,3 +32,8 @@ cover 1/2/3/4 × doubles / trips × seeds 1–2 × flip):
 
 **Checks.** Typecheck, reference-stack, guard, scan and provenance pass. qb-receiver-forecast fails on clean develop
 in this container too.
+
+**Landing (engine-87 provisional, on 63582b08).** Finish part only. The extension hold for flats was tried and dropped:
+the flat runner does run on past his landmark, so the forecast follows him (docs/reviews/2026-11-18-late-cross.md).
+Test, quick_outs from trips: off, 152 of 208 of the QB's 4 s forecasts of an out put him more than 3 yd past his finish
+toward the sideline (up to 10.8 yd); on, none (at most 1.9 yd, the forecast body braking).
