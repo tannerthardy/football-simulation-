@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "engine-81",
+  "id": "engine-82",
   "runSet": {
     "commit": "1b5415de99b5b7194eff045f3c37a07a4c54c1a9",
     "seeds": [
@@ -376,7 +376,7 @@
     "BOX_IN": "on",
     "RELEASE_SIDE": "on",
     "SCREEN_DECLARE": "on",
-    "ROUTE_SHAPE": "off",
+    "ROUTE_SHAPE": "on",
     "READ_RISK_TRACE": "off",
     "RECEIVER_DEPTH": "on",
     "RELEASE_INTERCEPT": "on",
