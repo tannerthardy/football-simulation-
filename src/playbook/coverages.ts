@@ -32,6 +32,11 @@ const NINE_DEEP = {
 
 // Quarters pieces shared by several calls.
 /** Quarters structure checks (HNFL-194 Sub Quads menu): Box vs bunch, Book/Read vs empty. Trips keep the distribution checks. */
+/** ZONE_IT (experimental, off; ZONE_IT=1 turns it on): quarters vs a receiver stack to the strength checks to Box, whose
+ * zone pickups are Zone It's (HNFL-024/193/194/324: zone off the stack, corner and safety take the first vertical, the
+ * apex the first in): docs/reviews/2026-11-18-quarters-tree.md. Two-by-two with the stack to the strength only: a wing
+ * behind an attached end (gun_wing_12, closed trips) also reads as a stack and keeps its trips check. */
+export const ZONE_IT = process.env.ZONE_IT === '1';
 const QUARTERS_CHECKS = [
   { when: ['bunch_strong'], to: ['cover4_box'] },
   { when: ['empty_3x2'], to: ['cover4_book_read'] },
@@ -710,5 +715,10 @@ export function installCoverage(call: DefensivePlayCall, off: OffenseAlignment):
   const zeus = call.zeus;
   const resolved = zeus ? resolveZeus(call, off.refOf[zeus], Math.min(off.counts.S, off.counts.W)) : call;
   const st = formationStructure(off);
-  return checkCall(QUARTERS_CHECK && !zeus ? quartersCheck(resolved, st) : resolved, st);
+  const checked = QUARTERS_CHECK && !zeus ? quartersCheck(resolved, st) : resolved;
+  if (ZONE_IT && ['cover4', 'cover4_meg', 'cover4_palms'].includes(checked.coverage.id) && st.key === '2x2' && st.strong.stack) {
+    const box = COVERAGE_BY_ID.cover4_box;
+    if (box && checkInstallable(checked, box)) return { ...checked, coverage: box, check: { from: checked.coverage.id, when: 'stack' }, label: `${checked.label} → ${box.name}` };
+  }
+  return checkCall(checked, st);
 }

@@ -83,6 +83,9 @@ const ROUTE_TABLE: Record<string, RouteDef> = {
   // Deep breaking
   post: { id: 'post', family: 'deep', depth: 22, end: 'continue', points: [{ d: 12, l: 0, s: 0.7 }, { d: 40, l: -16 }] },
   corner: { id: 'corner', family: 'deep', depth: 18, end: 'continue', points: [{ d: 11, l: 0, s: 0.65 }, { d: 24, l: 11 }, { d: 34, l: 14 }] },
+  // OFF_VARIETY: the smash corner, breaking at 8-9 yd beside the deep corner's 11-12 (43% of NFL corners break under 9 yd,
+  // 27% at 11-14; BDB 2025 week 1, docs/reviews/2026-11-18-route-timing.md). The same shape, three yards shallower.
+  smash_corner: { id: 'smash_corner', family: 'deep', depth: 15, end: 'continue', points: [{ d: 8, l: 0, s: 0.65 }, { d: 21, l: 11 }, { d: 31, l: 14 }] },
   deep_out: { id: 'deep_out', family: 'intermediate', depth: 14, end: 'continue', points: [{ d: 14, l: 0, s: 0.4 }, { d: 13.5, l: 12, s: 0.9 }] },
   // Crossers
   shallow: CROSS_FLAT
@@ -203,7 +206,7 @@ const BREAKS: Record<string, ReadonlyArray<{ cut?: boolean; s?: number } | null>
   slant: [{ cut: true, s: 0.35 }],
   out: [{ cut: true, s: 0.4 }], deep_out: [{ cut: true, s: 0.4 }], dig: [{ cut: true, s: 0.4 }], short_in: [{ cut: true, s: 0.4 }],
   hitch: [{ cut: true }], quick_hitch: [{ cut: true }], curl: [{ cut: true }], comeback: [{ cut: true }], stick: [{ cut: true }], hook: [{ cut: true }],
-  corner: [{ s: 1 }, { s: 1 }], post: [{ s: 1 }],
+  corner: [{ s: 1 }, { s: 1 }], smash_corner: [{ s: 1 }, { s: 1 }], post: [{ s: 1 }],
   shallow: [{ s: 1 }], shallow_high: [{ s: 1 }], cross: [{ s: 1 }, { s: 1 }],
 };
 /** The table's two columns follow their own flags: a point's break type (`cut`: planted, no lead; absent: led as a roll)

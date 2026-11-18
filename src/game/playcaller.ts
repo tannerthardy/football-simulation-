@@ -21,7 +21,7 @@ import type { ManPreference } from '../playbook/alignment.js';
 import { coverageHasNamedZonePlayers, pressureIsInstallable } from '../playbook/call-integrity.js';
 import { PASS_CONCEPTS, RPO_CONCEPTS, RUN_BY_ID, RUN_CONCEPTS, SCREEN_BY_ID } from '../playbook/concepts.js';
 import { COVERAGE_BY_ID, FRONTS, MENU_FRONTS, NICKEL_FRONT_IDS, PRESSURES } from '../playbook/defense.js';
-import { FORMATION_BY_ID, FORMATIONS } from '../playbook/formations.js';
+import { FORMATION_BY_ID, FORMATIONS, OFF_VARIETY } from '../playbook/formations.js';
 import type { Coverage, DefPersonnelId, DefSlot, DefensivePlayCall, Formation, MotionCall, OffensivePlayCall, OffSlot, PassConcept, PersonnelId, ReceiverRef, RunConcept, SkillSlot, ZoneStyle } from '../playbook/types.js';
 import { DEF_PERSONNEL, OFF_PERSONNEL } from '../playbook/types.js';
 import { alignStyle, pickOffense, type CoverageSystem, type Team } from '../league/team.js';
@@ -505,13 +505,14 @@ export class OffensiveCoordinator {
     const scheme = this.team.offScheme;
     const shortYd = s.distance <= 2 || 100 - s.yardline <= 3;
     if (shortYd && !isPass) return pickWeighted(this.rng, [['12', 3], ['21', 3], ['22', 2], ['13', 1.5], ['11', 1]]);
-    if (s.hurry || (s.down >= 3 && s.distance >= 7)) return pickWeighted(this.rng, [['11', 7], ['10', scheme === 'air-raid' || scheme === 'spread' ? 3.5 : 1.5], ['12', 0.5]]);
+    // OFF_VARIETY: 10 personnel near its NFL share (1.3% of snaps, BDB 2025 week 1; it was 13.3% of ours).
+    if (s.hurry || (s.down >= 3 && s.distance >= 7)) return pickWeighted(this.rng, [['11', 7], ['10', OFF_VARIETY ? (scheme === 'air-raid' || scheme === 'spread' ? 0.6 : 0.15) : scheme === 'air-raid' || scheme === 'spread' ? 3.5 : 1.5], ['12', 0.5]]);
     // 20 personnel was 0.6% of 2022 snaps (weeks 1-9): a weight of 0.06 in
     // tables that sum to about 10.
     const table: Record<string, Array<[PersonnelId, number]>> = {
-      'air-raid': [['10', 3], ['11', 6], ['12', 1], ['20', 0.06]],
-      spread: [['11', 6.5], ['10', 1.5], ['12', 2], ['20', 0.06]],
-      'west-coast': [['11', 5.5], ['12', 2.5], ['21', 1.5], ['10', 0.5], ['20', 0.06]],
+      'air-raid': [['10', OFF_VARIETY ? 0.5 : 3], ['11', 6], ['12', 1], ['20', 0.06]],
+      spread: [['11', 6.5], ['10', OFF_VARIETY ? 0.25 : 1.5], ['12', 2], ['20', 0.06]],
+      'west-coast': [['11', 5.5], ['12', 2.5], ['21', 1.5], ['10', OFF_VARIETY ? 0.05 : 0.5], ['20', 0.06]],
       'wide-zone': [['11', 5.5], ['12', 2.5], ['21', 1.5], ['13', 0.5], ['20', 0.06]],
       power: [['11', 4], ['12', 3], ['21', 2], ['22', 1], ['20', 0.06]],
     };

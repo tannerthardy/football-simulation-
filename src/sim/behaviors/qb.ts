@@ -532,7 +532,7 @@ const FW_PA_READ = (QB_FOOTWORK & 16) !== 0;
 // The set agreed with Rules from the sources (2026-11-16): go and fade (Gonzalez; Marinelli); the corner as read 1 and
 // not half of a key (Win With The Pass, mesh). Not the seam at the plant (decided "as he passes by the linebacker":
 // the plan's later step carries it); not the post or the deep out (Walsh: thrown on the break).
-const GRASS_ROUTES = new Set(['go', 'fade', 'corner']);
+const GRASS_ROUTES = new Set(['go', 'fade', 'corner', 'smash_corner']);
 /** GRASS_READ (Rules, #802): the plan marks grass reads (`rhythm[i].grass`: landing in the plan's frame, the route time
  * there, decided on the entry's step n). With it, the plan is the source of which reads are grass reads and where they
  * land; without it, the fallbacks above (read 1 only, decided on the plant). */
