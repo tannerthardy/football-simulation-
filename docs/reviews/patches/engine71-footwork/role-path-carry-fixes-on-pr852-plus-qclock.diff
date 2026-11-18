@@ -1,0 +1,27 @@
+--- ../qb.wtP.bak	2026-11-18 14:33:15.784821783 +0000
++++ src/sim/behaviors/qb.ts	2026-11-18 14:51:07.062927542 +0000
+@@ -2939,7 +2939,10 @@
+           // Breaking downhill on him (a robber, a quarters safety on a declared in-break, a deep break on a corner/out cut) is
+           // not a carry: the gap to him closing faster than 1.5 yd/s in his picture (chosen margin) keeps him a ball-chaser.
+           const closingOn = dd > 1e-6 ? ((seen.vel.x - vx) * (now.x - seen.pos.x) + (seen.vel.y - vy) * (now.y - seen.pos.y)) / dd : 0;
+-          if (vs > 1 && dd < best && closingOn < 1.5 && (seen.pos.x - now.x) * dirX >= 0.5 && (seen.vel.x * vx + seen.vel.y * vy) / (sp * vs) > 0.7) {
++          // A carry over the top is a technique against a vertical route: the receiver he carries is running downfield (his
++          // velocity within 45 degrees of straight up the field, as the passer sees him); a crosser is not carried.
++          const vertical = (vx * dirX) / vs > 0.7;
++          if (vs > 1 && dd < best && vertical && closingOn < 1.5 && (seen.pos.x - now.x) * dirX >= 0.5 && (seen.vel.x * vx + seen.vel.y * vy) / (sp * vs) > 0.7) {
+             best = dd; carried = o;
+             const at = f.predict(sim.t, total) ?? now; carryAt = { x: at.x + seen.pos.x - now.x, y: at.y + seen.pos.y - now.y };
+           }
+@@ -3006,8 +3009,10 @@
+         const dirX = sim.attackDir(a.team);
+         const under = QB_ROLE_PATH && roof && !tied && (pt.x - sim.los) * dirX < (seen.pos.x + seen.vel.x * total - sim.los) * dirX - dp.reach;
+         // QB_ROLE_PATH: a deep man carrying another receiver stays with him: where that route takes him at the arrival, then
+-        // only from there (he does not leave his man for the ball in flight).
+-        const carryTt = QB_ROLE_PATH && carryAt && !roof && !tied ? total + timeToReach({ pos: carryAt, vel: { x: 0, y: 0 }, profile: dp, speedScale: speedScale ?? 1 }, pt, dp.reach + 0.3) : null;
++        // only from there (he does not leave his man for the ball in flight). Only for a ball at or beyond him (within 2 yd
++        // short of his depth, as the deep zone man's): on a ball in front of him he drives downhill on it, priced as before
++        // (a zone corner over a hitch-cross broke on the ball and picked it; the carry had him 2.2 s late).
++        const carryTt = QB_ROLE_PATH && carryAt && !roof && !tied && (pt.x - sim.los) * dirX >= (seen.pos.x - sim.los) * dirX - 2 ? total + timeToReach({ pos: carryAt, vel: { x: 0, y: 0 }, profile: dp, speedScale: speedScale ?? 1 }, pt, dp.reach + 0.3) : null;
+         // QB_ROLE_PATH (third form): any other deep zone man (10+ yd in his picture) runs the engine's own body from what he
+         // sees: his velocity and facing held until his belief of the ball (the release, then his reaction), then the turn
+         // and the run, not timeToReach from rest after a standing reaction. (Defense, NFL week 1: deep men close 2.7 / 3.6 /
