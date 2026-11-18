@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "engine-88",
+  "id": "engine-92",
   "runSet": {
     "commit": "1b5415de99b5b7194eff045f3c37a07a4c54c1a9",
     "seeds": [
@@ -164,6 +164,8 @@
     "SIGHT_PURE": "on",
     "HAND_MOMENT": "off",
     "OPEN_FIELD": "on",
+    "OPEN_FIELD_GAIN": "on",
+    "OPEN_FIELD_FINISH": "on",
     "HEAD": "off",
     "GRAB_CONNECT": "off",
     "GRASP_ARM_MOMENT": "on",
