@@ -56,3 +56,41 @@ sail = OUT breaking at 10+. Medians.
 - Not isolated here: CRAFT_HOLD, CRAFT_EXIT and ROUTE_LANDMARK (on by default) act on the release and the leg after the
   break; the through speed and the taught depth explain the late breaks above without them. A flag-off pass of the
   same export would separate them.
+
+## Notes for the offense list
+- Corner depth: left as taught. Ours breaks at 11-12 yd (a deep corner, 12-14 yd, is a taught depth) where the NFL
+  median is 9.3; at the same depth it is on NFL time. A smash corner at about 10 yd and a deep corner at 12-14 both
+  exist; the playbook has one. A variety item, not a timing fault.
+- Release: every family is 0.4-1.0 yd shallower at 1.0 s. What sets the first second here: the stance and first steps
+  from rest (no receiver is moving at the snap in staged plays, where NFL receivers in motion are), the release moves
+  (RELEASE_SIDE / RELEASE_COMMIT / CRAFT_HOLD round a man over him) and any jam. To be looked at with the release work.
+
+## The out and dig as taught speed cuts: ROUTE_SHAPE (off), measured with this operator
+`s: 0.4` sits on the square plant (`cut: true`), where the follower's corner law already caps him at what his lateral
+grip and cut skill allow on a 90 deg plant (about 4 yd/s): the fraction is a second, invented brake ahead of it. The
+taught out, and the dig as Viqtory Sports and USA Football teach it ("push to 10, speed cut, flatten at 12"), is a
+rounded speed cut: ROUTE_SHAPE (`routes.ts SHAPES`, built 2026-11-14 from those sources) runs both at s 1 as rolls,
+so the turn and the speed through it come from the body's lateral envelope at his cut skill (the fillet plan in
+`route-motion.ts`), the same envelope the physics executes. Choice marked: dig = speed cut (Viqtory, USA Football);
+the square-plant dig stays available as the off arm. Engine defaults, same staged set:
+
+| route | arm | break t | break d | v into | v out | d@2s | NFL at the same depth (t / v into) |
+|---|---|---|---|---|---|---|---|
+| out | off | 3.20 | 10.4 | 2.8 | 3.9 | 5.8 | 2.50 / 6.4 (at 10.4 yd) |
+| out | ROUTE_SHAPE | 2.60 | 8.9 | 4.7 | 4.8 | 5.7 | 2.40 / 6.2 (at 8.9 yd) |
+| dig | off | 3.10 | 12.2 | 4.5 | 4.7 | 5.8 | 2.80 / 6.0 (at 12.2 yd) |
+| dig | ROUTE_SHAPE | 2.70 | 9.7 | 5.1 | 5.1 | 5.8 | 2.50 / 5.8 (at 9.7 yd) |
+
+Post and hitch do not change. Still 0.2 s behind the NFL at the same depth: the stem is about 1 yd shallow at 2.0 s
+(the release, above), not the break. Outcomes by the target's route (`route-outcome.mts`, same set):
+
+| route | off: comp, yd/att, sep at throw, throw t | ROUTE_SHAPE |
+|---|---|---|
+| out | 32/42, 14.19, 2.42, 2.75 | 25/42, 7.73, 2.62, 2.70 |
+| dig | 26/44, 9.50, 2.72, 3.70 | 30/49, 8.26, 2.81, 3.40 |
+| quick_out | 85/95, 8.92, 3.72, 2.60 | 79/96, 7.25, 3.85, 2.60 |
+| hitch | 92/124, 5.07, 4.66 | 91/125, 4.93, 4.59 |
+
+Adverse and open: the out completes less with more separation (incompletions in trips_sail, double_outs, trips_outs vs
+Cover 2/3, separation about 2.6 at the throw). Not traced: the throw's lead on the rounded out (the QB's forecast of the
+new path) is the first suspect. Dither budget passes with ROUTE_SHAPE on.

@@ -55,7 +55,9 @@ def brk(r):
             if k > j and abs((heading(r, j, k) - stem + math.pi) % (2 * math.pi) - math.pi) > math.radians(35):
                 p = near(ts[i] - 0.3)
                 v = math.hypot(r['d'][i] - r['d'][p], r['w'][i] - r['w'][p]) / max(1e-9, ts[i] - ts[p])
-                return ts[i], r['d'][i], v
+                q = near(ts[i] + 0.5)
+                vo = math.hypot(r['d'][q] - r['d'][k], r['w'][q] - r['w'][k]) / max(1e-9, ts[q] - ts[k]) if q > k else float('nan')
+                return ts[i], r['d'][i], v, vo
     return None
 
 
@@ -65,7 +67,9 @@ def summarize(rows):
         v = [x for x in (at(r, t) for r in rows) if x is not None]
         out[t] = (st.median(v), len(v)) if len(v) >= 5 else None
     b = [x for x in (brk(r) for r in rows) if x]
-    out['brk'] = (st.median([x[0] for x in b]), st.median([x[1] for x in b]), st.median([x[2] for x in b]), len(b)) if len(b) >= 5 else None
+    vo = [x[3] for x in b if x[3] == x[3]]
+    out['brk'] = (st.median([x[0] for x in b]), st.median([x[1] for x in b]), st.median([x[2] for x in b]), len(b),
+                  st.median(vo) if vo else float('nan')) if len(b) >= 5 else None
     return out
 
 
@@ -138,7 +142,7 @@ def table(nfl_path, sim_path):
                 g[r['family']].append(r)
         return g
     a, b = load(nfl_path), load(sim_path)
-    head = '| route | src | n | ' + ' | '.join(f'd@{t:g}s' for t in TIMES) + ' | break t | break d | v into break |'
+    head = '| route | src | n | ' + ' | '.join(f'd@{t:g}s' for t in TIMES) + ' | break t | break d | v into | v out (0.3-0.5 s after) |'
     print(head)
     print('|' + '---|' * (head.count('|') - 1))
     for fam in FAMILIES:
@@ -149,7 +153,7 @@ def table(nfl_path, sim_path):
             s = summarize(rows)
             cells = [f'{s[t][0]:.1f}' if s[t] else '-' for t in TIMES]
             bk = s['brk']
-            bc = [f'{bk[0]:.2f}', f'{bk[1]:.1f}', f'{bk[2]:.1f}'] if bk else ['-', '-', '-']
+            bc = [f'{bk[0]:.2f}', f'{bk[1]:.1f}', f'{bk[2]:.1f}', f'{bk[4]:.1f}'] if bk else ['-', '-', '-', '-']
             print(f'| {fam} | {name} | {len(rows)} | ' + ' | '.join(cells) + ' | ' + ' | '.join(bc) + ' |')
 
 
@@ -191,7 +195,7 @@ def banded(nfl_path, sim_path):
             continue
         cells = [f'{s[t][0]:.1f}' if s[t] else '-' for t in TIMES]
         bk = s['brk']
-        bc = [f'{bk[0]:.2f}', f'{bk[1]:.1f}', f'{bk[2]:.1f}'] if bk else ['-', '-', '-']
+        bc = [f'{bk[0]:.2f}', f'{bk[1]:.1f}', f'{bk[2]:.1f}', f'{bk[4]:.1f}'] if bk else ['-', '-', '-', '-']
         print(f'| {fam} | NFL@{ref:.1f}yd | {len(sel)} | ' + ' | '.join(cells) + ' | ' + ' | '.join(bc) + ' |')
 
 

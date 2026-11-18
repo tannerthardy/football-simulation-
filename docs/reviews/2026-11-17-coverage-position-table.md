@@ -701,3 +701,10 @@ L1 = deep man comes downhill and gets passed. L2 = nobody deeper after a pass-by
 - PALMS_FIX (Palms trap on #2's out declared inside 5 yd, the wheel before the throw): written, held. It changed no
   staged play: no installed concept runs #2's out between 6 and 7.5 yd or a pre-throw wheel. Measured MOD vs Palms
   (gun_doubles_11, gun_spread_10, 70 plays each) differ by two or three single breakaway plays, within noise.
+- CUT_WALL's pass-off (`defender.ts:passUnder`) turns any man or wall directive on an under (7 yd or less) into
+  wall-and-pass. It was wrong where the taught rule keeps the shallow: the quarters apex's "take #2 back across" with
+  #3 away (Q_APEX) and Box's first in (BOX_IN), both now exempted. The same override reaches, unexempted: Cover 6
+  Area's hook ("first in", `area('hook')`, HNFL-052, the same pickup as Box's); Cover 1 banjo's inside man
+  (`cover1_banjo` is `man:false`); the 3-match Mike on a back's angle or under release (`mike3`, final #3); the Cover 2
+  apex matching #2's in under 14 yd (`verticalCurl`); the Cover 3 hook's Push man on #2 when #2 runs short. Each is a
+  taught match, so each is a candidate exemption to measure first.
