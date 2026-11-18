@@ -15,10 +15,13 @@ const { shouldersOf } = await import(`${W}/src/physics/kinematics.ts`);
 const { writeFileSync } = await import('node:fs');
 const COVS = (process.env.COVS ?? 'cover2,cover3,cover4,cover6').split(','), SEEDS = Number(process.argv[2] ?? 2);
 const TS = (process.env.TS ?? '2.5').split(',').map(Number);
-const out: any[] = [];
+const out: any[] = []; let uniq = 0;
 for (const coverage of COVS) for (const concept of Object.keys(PASS_BY_ID).filter((id) => !/screen/.test(id)))
   for (const formation of ['gun_doubles_11', 'gun_trips_11']) for (let seed = 1; seed <= SEEDS; seed++) for (const T of TS) {
-    const setup: any = nativeTraceSetup({ coverage, concept, seed, roster: seed, formation, flip: seed % 2 === 0 });
+    // DICE_UNIQUE=1: each staged play its own play seed (the same roster): the contest dice ('catch:O:<slot>') fork from the
+    // play seed, so with Defense's seed = roster every throw to a slot on a seed drew the same rolls.
+    const playSeed = process.env.DICE_UNIQUE === '1' ? 1000 + (uniq++) : seed;
+    const setup: any = nativeTraceSetup({ coverage, concept, seed: playSeed, roster: seed, formation, flip: seed % 2 === 0 });
     let dry: any; try { dry = new PlaySim(setup); } catch { continue; }
     for (let i = 0; i < 400 && (dry.snapAt ?? -1) < 0; i++) dry.tick();
     const snap = dry.snapAt ?? 0;
@@ -26,6 +29,11 @@ for (const coverage of COVS) for (const concept of Object.keys(PASS_BY_ID).filte
       if (!dry.offense.some((o: any) => o.slot === slot && o.behavior?.route)) continue;
       let sim: any; try { sim = new PlaySim({ ...setup, stagedThrow: { at: snap + T, slot } }); } catch { continue; }
       let rel = -1, arrT = -1, dm: any = null, rec: any = null, arr: any = null; const near: Record<number, number> = {};
+      // Which contest path made each pbu / interception / deflection (the calling function, from the stack).
+      const why: any[] = []; const ev0 = sim.event.bind(sim), pos0 = sim.possess.bind(sim);
+      const site = () => (new Error().stack ?? '').split('\n').map((l) => l.trim().split(' ')[1]).find((f) => /defenderPlay|contestHands|receiverContest|secureStep/.test(f ?? '')) ?? 'other';
+      sim.event = (type: any, a?: any, b?: any, note?: any) => { if (['pbu', 'deflection', 'interception'].includes(type)) why.push({ type, a: a?.idx, site: site(), note }); return ev0(type, a, b, note); };
+      sim.possess = (a: any, how: any) => { if (how === 'interception') why.push({ type: 'int', a: a?.idx, site: site() }); return pos0(a, how); };
       const tick = sim.tick.bind(sim);
       sim.tick = () => {
         tick();
@@ -56,7 +64,7 @@ for (const coverage of COVS) for (const concept of Object.keys(PASS_BY_ID).filte
         dArr: +Math.hypot(m.p.x - cp.x, m.p.y - cp.y).toFixed(2), dRec: rp ? +Math.hypot(m.p.x - rp.x, m.p.y - rp.y).toFixed(2) : null,
         recArr: rp ? +Math.hypot(rp.x - cp.x, rp.y - cp.y).toFixed(2) : null,
         front: rp ? (m.p.x - rp.x) * dir < 0 : null, cosF: +cosF.toFixed(2), sees: cosF > -0.35, hands: near[m.d.idx] ?? null,
-        kind: m.kind, tags: m.tags, outcome, byDeep: by === m.d.idx, bySlot: by != null ? sim.agents[by]?.slot ?? null : null });
+        kind: m.kind, tags: m.tags, looking: m.tags.includes('looking'), bs: +m.d.r('ballSkills').toFixed(2), hn: +m.d.r('hands').toFixed(2), why, deepIdx: m.d.idx, outcome, byDeep: by === m.d.idx, bySlot: by != null ? sim.agents[by]?.slot ?? null : null });
     }
   }
 writeFileSync(process.argv[3], JSON.stringify(out)); console.log('rows', out.length);
