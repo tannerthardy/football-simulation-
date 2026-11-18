@@ -14,6 +14,7 @@ async function modes(on: boolean, seed: number) {
   vi.resetModules();
   for (const k of stackOn) vi.stubEnv(k, '1');
   vi.stubEnv('SCREW', on ? '1' : '0');
+  vi.stubEnv('QB_ROLE_PATH', '0'); // engine-88 (QB landing, pinned test-only): with the deep man priced through his role the pa_shot is thrown earlier and the safety plays the ball (a behavior with no recordedRule); Coverage / Rules to re-record with it on
   const { PlaySim } = await import('../src/sim/playsim.js');
   const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');
   const sim = new PlaySim(nativeTraceSetup({ coverage: 'cover4', concept: 'pa_shot', seed, roster: seed, formation: 'gun_doubles_11', flip: false }));
