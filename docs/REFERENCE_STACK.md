@@ -2,7 +2,7 @@
 
 One combination of experimental flags that Run Game, Defense, Flex and Coverage all measure against. Before this, each agent tested on its own mix (the FLAT_PRESS / ZONE_RUN back-and-forth on 2026-11-09 came from two different flag sets), and no list of anyone's stack existed in the repository.
 
-- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-89`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
+- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-90`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
 
 - **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-88`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
 - **The code:** `run/G3-oz-backfield` a749beb7 + `defense/G2-stance-tell` a0cb0789 (#411) + `defense/G2-lb-start` (#416, with #409) + `claude/quirky-franklin-9lbwbp` (#417, with #415) + develop 6676dfc2.
@@ -610,6 +610,25 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
 
+
+## engine-90: release reads from what the reader sees: vertical past the line, a back's flat release out of the box (2026-11-18)
+
+On: `READ_VERTICAL_LOS` and `BACK_CLEAR` (Coverage; `src/sim/coverage/reads.ts`, the ReleaseReader every coverage rule
+reads releases from).
+
+- **READ_VERTICAL_LOS:** a release is vertical only past the line of scrimmage in his picture. A back stepping up in his
+  protection set behind the line no longer latches `vertical`.
+- **BACK_CLEAR:** a back still 1.5+ yd behind the line, inside his rush-side tackle's seen width plus 0.5 yd, moving out
+  toward a rusher he could block (seen within 3 yd, on or behind the line, within 45 degrees of his path) is not a flat
+  release. Before it, his slide to an edge rusher read as a fast flat release: Push fired with the back in protection,
+  pre-empted Smash, and the Cover 2 squat corner left #1 for him.
+- **Controls** (`test/back-clear.test.ts`): a clean swing, a fast back to the flat and a check-release are read at the
+  same tick; a blocking back never reads flat. The one later read: a swing back the end comes straight at behind the
+  line (seed 1, he stalls to 0.9 yd/s) is read once clear.
+- **Tests:** 80 coverage files, 19 failures in 8 files off, 16 in 7 on, the difference only the three cases.
+  Re-records on the real engine (engine-pin `defaults`): coverage-rules, cover3-cover2-rules, quarters-trips-rules,
+  db-slots, projected-cap, coverage-judgment; each change is a staging or a promoted rule, stated in its file.
+- **Recorded, not landed:** KNOWN_PROBLEMS COV-13 (man defenders in traffic; `MAN_TRAFFIC` parked off).
 
 ## engine-89: the Cover 2 flat corner takes the #2 flat when #1 cancels (2026-11-18)
 

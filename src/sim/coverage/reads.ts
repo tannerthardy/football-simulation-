@@ -17,11 +17,11 @@ import { RouteObservation } from '../coverage-read.js';
 import { observedBlocking, showsBlock } from '../coverage-cues.js';
 import type { PlaySim } from '../playsim.js';
 
-/** READ_VERTICAL_LOS (on since the Coverage re-record landing; READ_VERTICAL_LOS=0 restores): a release is read as
+/** READ_VERTICAL_LOS (on since engine-90; READ_VERTICAL_LOS=0 restores): a release is read as
  * vertical only past the line of scrimmage in the reader's picture (a protecting back stepping up behind it is not). */
 export const READ_VERTICAL_LOS = process.env.READ_VERTICAL_LOS !== '0';
 
-/** BACK_CLEAR (on with READ_VERTICAL_LOS's landing; BACK_CLEAR=0 restores): a back who started in the backfield
+/** BACK_CLEAR (on since engine-90; BACK_CLEAR=0 restores): a back who started in the backfield
  * declares a flat release from what the reader sees of him clearing the box, not from lateral speed behind the line.
  * Behind the line (deeper than BACK_CLEAR_DEPTH) and inside his rush-side tackle's seen width plus BACK_CLEAR_WIDTH, a
  * back moving out toward a rusher he could block (a defender seen within BACK_CLEAR_RANGE, on or behind the line, ahead
