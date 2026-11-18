@@ -40,6 +40,7 @@ async function closing(flag: string, c: Case): Promise<number> {
   vi.stubEnv('BALL_EST', '0'); // engine-72: with the delayed ball estimate (default 6145) these scenes' trailing man no longer trails at the catch; the premise was found on the direct read. Defense to re-find the cases with BALL_EST on
   vi.stubEnv('ARM_BREAK', '0'); // engine-76 (this file's scenes, pinned test-only): with one reaction on the arm read (ARM_BREAK 1) the control's staged throw (cover1 doubles s2) is no longer a catch, and the original control space (mesh, cover1 doubles, s1-12, both flips) has two man-trail catches, both closing at about 0, none over 0.3; Defense to re-find the control in a wider space with it on
   vi.stubEnv('CATCH_CARRY', flag);
+  vi.stubEnv('QB_DRIVE', '0'); // engine-83 (QB landing, pinned test-only): the trail-man scenes were found with the old ball speed; a faster natural ball changes who trails at the catch. Defense to re-find with QB_DRIVE on
   const { PlaySim } = await import('../src/sim/playsim.js');
   const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');
   const sim: any = new PlaySim({ ...nativeTraceSetup({ ...c, roster: c.seed }), stagedThrow: c.staged });

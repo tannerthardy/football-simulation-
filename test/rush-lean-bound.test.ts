@@ -17,6 +17,7 @@ async function falls(flag: string, roster: number, coverage: string, seed: numbe
   vi.stubEnv('SET_SPOT', '0'); // engine-72: the searched edge fall was found with the old pass set; Flex to re-record on the call's set spot
   vi.stubEnv('VERTS_QUICK', '0'); // engine-67: these four_verts scenes were recorded on the five-step set; the quick drop is a different play
   vi.stubEnv('RUSH_LEAN_BOUND', flag);
+  vi.stubEnv('QB_WINDOW_ARRIVE', '0'); // engine-83 (QB landing, pinned test-only): the searched edge fall was found with the old window; the throw's timing moves with arrival momentum. Flex to re-search with it on
   const { PlaySim } = await import('../src/sim/playsim.js');
   const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');
   const sim: any = new PlaySim(nativeTraceSetup({ coverage, concept: 'four_verts', seed, roster, formation: 'gun_doubles_11', flip: false }));
@@ -66,6 +67,7 @@ describe('RUSH_LEAN_BOUND', () => {
     vi.resetModules();
     for (const [k, v] of Object.entries(stack)) if (v === 'on') vi.stubEnv(k, '1');
     for (const k of ['PA_HINGE', 'EDGE_SET', 'POCKET_DROP', 'POWER_AIM', 'END_KEY']) vi.stubEnv(k, '0'); // engine-73: scenes recorded before this group of the engine-73 landing; Flex to re-record with it on
+    vi.stubEnv('QB_WINDOW_ARRIVE', '0'); // engine-83 (QB landing, pinned test-only): the searched edge fall was found with the old window; the throw's timing moves with arrival momentum. Flex to re-search with it on
     vi.stubEnv('SET_SPOT', '0'); // engine-72: the searched edge fall was found with the old pass set; Flex to re-record on the call's set spot
     vi.stubEnv('VERTS_QUICK', '0'); // engine-67: these four_verts scenes were recorded on the five-step set; the quick drop is a different play
     vi.stubEnv('RUSH_LEAN_BOUND', '1');
