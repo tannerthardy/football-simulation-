@@ -2,7 +2,7 @@
  * The film room: a small set of pass plays from the engine as it is now, each with the call drawn before the snap, for a person to read.
  *
  *   node --import tsx scripts/film-room.ts collect --seed 101 --games 4 --out out/film/c101.json      (simulate; keep the pass plays that were filmed)
- *   node --import tsx scripts/film-room.ts build out/film/c101.json [more.json ...] [--random 60] [--zone-yac 20] [--min-yac 10] [--pick-seed 1] [--out out/film/film-room.html]
+ *   node --import tsx scripts/film-room.ts build out/film/c101.json [more.json ...] [--random 60] [--zone-yac 20] [--min-yac 10] [--pick-seed 1] [--issues issues.txt] [--out out/film/film-room.html]
  *
  * `collect` is the engine's own game (scripts/export-replay.ts's recipe: the same teams, simulateGame, the read-only play-art tap) and keeps every filmed
  * scrimmage pass play with its art sheet. `build` draws the set: RANDOM ordinary pass plays (any result: completions, incompletions, sacks, throwaways)
@@ -51,6 +51,7 @@ if (mode === 'collect') {
   const files = args.slice(1).filter((a, i, all) => !a.startsWith('--') && (i === 0 || !all[i - 1].startsWith('--')));
   const nRandom = Number(opt('--random', '60')), nZone = Number(opt('--zone-yac', '20')), minYac = Number(opt('--min-yac', '10')), pickSeed = Number(opt('--pick-seed', '1'));
   const out = opt('--out', 'out/film/film-room.html');
+  const issuesFile = opt('--issues', ''); const issuesText = issuesFile ? readFileSync(resolve(root, issuesFile), 'utf8') : '';
   const all: any[] = []; let source = ''; let seeds: number[] = [];
   for (const f of files) { const j = JSON.parse(readFileSync(resolve(root, f), 'utf8')); all.push(...j.plays.map((p: any) => ({ ...p, id: `${j.seed}-${p.id}`, gameSeed: j.seed + p.game }))); source = j.source; seeds.push(j.seed); }
   const isZoneYac = (p: any) => p.flags.complete && (p.stats?.yac ?? 0) >= minYac && COVERAGE_BY_ID[p.plan?.coverage]?.man === false;
@@ -73,7 +74,7 @@ if (mode === 'collect') {
   const data = {
     meta: { seed: seeds[0], games: [], final: { home: 0, away: 0 }, quarters: [], sourceSha256: source,
       home: { name: 'Ironmen', abbr: 'IRN', color: '#a3302a', alt: '#f4efe6', text: '#ffffff' }, away: { name: 'Comets', abbr: 'COM', color: '#1d4f91', alt: '#f2c14e', text: '#ffffff' },
-      telemetryLevel: 'light', film: { seeds, pool: all.length, zonePool: zonePool.length, random: random.length, zone: zone.length, minYac, pickSeed, source } },
+      telemetryLevel: 'light', film: { issues: issuesText, seeds, pool: all.length, zonePool: zonePool.length, random: random.length, zone: zone.length, minYac, pickSeed, source } },
     games: [], plays: compactReplayPlays(plays as never),
     catalog: { coverage: Object.fromEntries(COVERAGES.map((c) => [c.id, c.name])), front: Object.fromEntries(FRONTS.map((f) => [f.id, f.name])), formation: Object.fromEntries(FORMATIONS.map((f) => [f.id, `${f.name} · ${f.personnel}`])) },
   };
