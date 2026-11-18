@@ -228,14 +228,14 @@ export function knowsPass(_sim: PlaySim, a: Agent): boolean {
  * along the route instead (attempt 1) aimed behind settling catchers. */
 const ARRIVE_LEAD = process.env.ARRIVE_LEAD !== '0';
 /** An underneath zone player: a zone seat or zone-eyed match defender without deep responsibility. */
-/** FLIGHT_MAN (off; C14 honest defender, 2026-11-17, attempt 1): for a defender who estimates the flight himself (BALL_EST,
+/** FLIGHT_MAN (on since engine-92, the honest-defender landing; FLIGHT_MAN=0 restores; C14 honest defender, 2026-11-17): for a defender who estimates the flight himself (BALL_EST,
  * estimatesFor), the estimate's job is to pick the receiver, and his feet play that receiver, the man he sees: the
  * upfield shoulder for an underneath player, over the top for a deep one, arriving under control. The landing estimate
  * is no longer a place to run to; he plays the ball itself only when his estimate has settled and he can reach it
  * first (the hands, late). Between two receivers the flight does not yet separate (fit within FLIGHT_MAN_MARGIN yd of
  * each other) he splits them until it does, and keeps a pick until another fits better by the margin (no flipping).
  * Off, he steered on his own estimate's catch point (2.6 yd off at p50 on staged zone completions, honest-after.mts). */
-export const FLIGHT_MAN = process.env.FLIGHT_MAN === '1';
+export const FLIGHT_MAN = process.env.FLIGHT_MAN !== '0';
 const FLIGHT_MAN_MARGIN = 1.5, FLIGHT_MAN_OVER = 2;
 const flightPick = new WeakMap<Agent, { flight: unknown; R: Agent | null }>();
 /** How far each receiver he sees, carried along his seen run, would be from the flight he estimates at its nearest

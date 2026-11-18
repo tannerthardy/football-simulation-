@@ -46,7 +46,10 @@ import type { PlaySim } from './playsim.js';
 
 /** BALL_EST is a bitmask (0 off): 1 the estimator; 4 a committed catch point moves with his estimate; 8 looming; 2 removes catching.ts's tracking penalty (ballTracking acts through
  * the estimator; charging it again at the catch double-counts). */
-const BALL_EST_RAW = Number(process.env.BALL_EST ?? 6145);
+// Default 26657 since engine-92 (the honest-defender landing): 1 + 32 + 2048 + 8192 + 16384, bit 4096 clear, so a defender
+// estimates the flight from his own samples and never reads the true path (acquireFlight's copy). 6145 restores
+// defenders on the true flight (receivers-only estimation).
+const BALL_EST_RAW = Number(process.env.BALL_EST ?? 26657);
 /** Bit 1024 is the receiver's one meaning for a card: the receiver on his own sight of the ball. It carries the receiver
  * bits it was built on (2 no tracking penalty, 4 moving choice, 16 deep look, 64 trunk look), so 1025 = 1111; the
  * single bits stay for the parked designs' reads only. */

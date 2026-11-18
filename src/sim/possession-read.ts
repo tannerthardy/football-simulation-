@@ -8,15 +8,15 @@ import type { PlaySim } from './playsim.js';
 import { estimatesFor } from './ball-estimate.js';
 import { sawAt } from './release-evidence.js';
 
-/** ACQ_SEEN (off; ACQ_SEEN=1; a repair with the honest defense): `acquiredAt` is when he last saw the ball in flight
+/** ACQ_SEEN (on since engine-92; ACQ_SEEN=0 restores; a repair with the honest defense): `acquiredAt` is when he last saw the ball in flight
  * (under BALL_EST, his own last sample), not the moment he last asked for his flight. observedHolder drops any
  * held-body picture older than it ("he saw an unheld ball after it"); a defender on his own estimate asks every tick
  * while that estimate still has the ball up, after the catch too, so `acquiredAt` was always "now" and every picture of
  * the catcher holding the ball was dropped until his estimate landed (attended defenders started on the carrier
  * 0.8-1.15 s after the catch, against 0.35-0.55 s for those never attended; def-late.ts, engine-71). The oracle path
  * (the true flight copied) is unchanged: first acquisition kept as before. */
-const ACQ_SEEN = process.env.ACQ_SEEN === '1';
-/** TRACKED_CATCH (off; TRACKED_CATCH=1): perception's fast/slow split for a catch. A receiver who has been in his view
+const ACQ_SEEN = process.env.ACQ_SEEN !== '0';
+/** TRACKED_CATCH (on since engine-92; TRACKED_CATCH=0 restores): perception's fast/slow split for a catch. A receiver who has been in his view
  * for TRACKED_CATCH_SPAN before now (sawAt's rule: his recorded head cone, else 1.8 rad of his body facing, with a clear
  * line of sight, on every tick of the span) is a man he is tracking, and the ball arriving into him is a tracked event:
  * he reads the catcher through the tracking loop (`track()`, its latency), not the choice-reaction `see()`. A catch
@@ -24,7 +24,7 @@ const ACQ_SEEN = process.env.ACQ_SEEN === '1';
  * secured is not yet `carrying` and stays unread either way. Skill enters through the loop's latency, not the outcome.
  * For every observer the same class of event (a hand-off mesh in plain view) should be checked against it, not changed
  * here. */
-const TRACKED_CATCH = process.env.TRACKED_CATCH === '1';
+const TRACKED_CATCH = process.env.TRACKED_CATCH !== '0';
 const TRACKED_CATCH_SPAN = Number(process.env.TRACKED_CATCH_SPAN ?? 30) / 100;
 function trackedOver(a: Agent, sim: PlaySim, target: Agent): boolean {
   const n = Math.round(TRACKED_CATCH_SPAN / sim.dt), h = target.profile.heightYd * 0.7;
