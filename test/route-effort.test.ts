@@ -21,7 +21,9 @@ describe('ROUTE_EFFORT', () => {
 
 describe('ROUTE_EFFORT break table (src/playbook/routes.ts)', () => {
   async function routes(on: boolean) {
-    vi.stubEnv('ROUTE_EFFORT', on ? '1' : '0');
+    // Off is the table as authored: ROUTE_FILLET (default on) plants the cuts and ROUTE_SHAPE (default on, engine-82)
+    // replaces the out and dig with rolls, so both are set with the arm (route-shape.test.ts covers the rolls).
+    vi.stubEnv('ROUTE_EFFORT', on ? '1' : '0'); vi.stubEnv('ROUTE_FILLET', on ? '1' : '0'); vi.stubEnv('ROUTE_SHAPE', '0');
     vi.resetModules();
     return (await import('../src/playbook/routes.js')).ROUTES;
   }
