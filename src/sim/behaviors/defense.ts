@@ -234,7 +234,8 @@ const ARRIVE_LEAD = process.env.ARRIVE_LEAD !== '0';
  * receiver's seen lateral run over that time. Underneath men keep ARRIVE_LEAD, which does not carry the route's
  * downfield component. The ball is still his to play when he can get to its path in time, with a margin: once on top
  * he goes back to the ball only when he would beat it by DEEP_ARRIVE_MARGIN, so the choice is a decision, not a
- * flicker. Why: on the never-touched 20+ yd catch-and-runs (zone, 10+ air yards, develop fe150600) the deep half drove
+ * flicker. Attempt 2: only when he would arrive later than the catch's securing beat; within it he still drives
+ * through the hands (attempt 1 cost 7 points of completion and breakups on throws he started within 6 yd of). Why: on the never-touched 20+ yd catch-and-runs (zone, 10+ air yards, develop fe150600) the deep half drove
  * flat onto the catch point for the whole flight while the receiver ran on upfield, then carved a 70 deg/s turn at
  * 5.5 yd/s and was passed. */
 const DEEP_ARRIVE = process.env.DEEP_ARRIVE === '1';
@@ -242,6 +243,8 @@ const DEEP_ARRIVE = process.env.DEEP_ARRIVE === '1';
 const DEEP_ARRIVE_BELOW = 0.5;
 /** Once on top, he goes back to playing the ball only when he would beat it by this much (s). */
 const DEEP_ARRIVE_MARGIN = 0.1;
+/** He takes the upfield hip only on a receiver he sees running upfield at least this fast (yd/s; exit 0.5 below). */
+const DEEP_ARRIVE_RUN = 2;
 const deepArriveTop = new WeakMap<Agent, boolean>();
 /** An underneath zone player: a zone seat or zone-eyed match defender without deep responsibility. */
 function underneathZone(a: Agent): boolean {
@@ -3184,11 +3187,26 @@ function flightApproach(a: Agent, sim: PlaySim, path: PlaySim['ballPath'], acqui
       if ((a.pos.x - land.x) * dir > -DEEP_ARRIVE_BELOW) {
         const late = Math.max(0, timeToReach({ pos: a.pos, vel: a.vel, profile: a.profile, speedScale: a.speedScale }, land, a.profile.reach)
           - (window.t - sim.t));
-        const down = Math.max(0, window.seen.vel.x * dir);
-        const upfield = a.profile.radius + window.receiver.profile.radius + a.profile.reach + down * late;
-        const across = window.seen.vel.y * late * (0.6 + 0.4 * a.r('pursuit'));
-        tgt = { x: land.x + dir * upfield, y: clamp(land.y + across, 0.5, FIELD_WIDTH - 0.5) };
-        deepArriveTop.set(a, true);
+        // Attempt 2: he can still play through the hands when he gets there within the catch's securing beat
+        // (DRIVE_SECURE); only later than that does he take the upfield hip (exit DEEP_ARRIVE_MARGIN under it).
+        // Attempt 3: and only on a receiver he sees running away upfield. A comeback or a settling receiver is
+        // coming to the ball; the catch point is where he plays it (attempt 2 still cost breakups on comebacks).
+        const was = deepArriveTop.get(a) ?? false, down = Math.max(0, window.seen.vel.x * dir);
+        // Attempt 4: a deep man already at the ball's end (within bodies and reach of where it comes down) is in the
+        // contest and plays it; the margin keeps the choice from flickering.
+        const ballEnd = arrivalPoint(sim, path), atBall = !!ballEnd && Math.hypot(a.pos.x - ballEnd.x, a.pos.y - ballEnd.y)
+          <= a.profile.radius + window.receiver.profile.radius + a.profile.reach + (was ? 0.5 : 1);
+        const top = !atBall && late > DRIVE_SECURE - (was ? DEEP_ARRIVE_MARGIN : 0) && down >= (was ? DEEP_ARRIVE_RUN - 0.5 : DEEP_ARRIVE_RUN);
+        deepArriveTop.set(a, top);
+        if (top) {
+          // Attempt 4: the receiver's run ends where the ball comes down (the window point is the earliest catch, which
+          // on a deep ball sits short of the ball's end); he stays on the ball's line instead of overrunning it.
+          const bodies = a.profile.radius + window.receiver.profile.radius + a.profile.reach;
+          const end = arrivalPoint(sim, path), toEnd = end ? Math.max(0, (end.x - land.x) * dir) : 0;
+          const upfield = bodies + Math.min(down * late, toEnd);
+          const across = window.seen.vel.y * late * (0.6 + 0.4 * a.r('pursuit'));
+          tgt = { x: land.x + dir * upfield, y: clamp(land.y + across, 0.5, FIELD_WIDTH - 0.5) };
+        }
       }
     }
     const dx = tgt.x - a.pos.x;
