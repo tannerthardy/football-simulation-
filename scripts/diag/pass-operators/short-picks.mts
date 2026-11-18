@@ -7,7 +7,8 @@
 // QB window's row for him (m: believed margin in s, negative = there first; first; iPath / iJump / iContest; blind;
 // facingQB; role path) or none (the window gave him nothing). Verdict: 'reach beyond his body' (moved more than his
 // sprint allows: physics), 'in the lane, eyes on the QB' (within his reach of the lane, facing the QB at the release: a
-// throw at a seen defender), else 'broke on it'.
+// throw at a seen defender), else 'broke on it'. Also the ball's miss from the QB's aim (the pick spot against the aim), and
+// the picker's distance to the aim at the release and at the pick (the QB lane's errant-ball split).
 // usage: DEF_CATCH=1 BALL_SIGHT=1 READ_WINDOW=1 node --import tsx scripts/diag/pass-operators/short-picks.mts --seed 101 --out rows.json
 import { writeFileSync } from 'node:fs';
 const W = process.cwd();
@@ -27,7 +28,7 @@ PlaySim.prototype.run = function (this: any) {
   sim.throwBall = (p: any, target: any, v0: any, intended: any, arrivalT: number, away = false, ...rest: any[]) => {
     if (p === sim.qb && !rel && !away && intended) {
       throws++;
-      rel = { t: sim.t, throwRec: (p.behavior as any)?.throwRec ? { P: +(p.behavior as any).throwRec.P.toFixed(3), intRisk: +(p.behavior as any).throwRec.intRisk.toFixed(3) } : null, qb: { ...sim.qb.pos }, target: target?.slot ?? null, flightPlan: arrivalT - sim.t, margins: (p.behavior as any)?.marginLast ?? null,
+      rel = { t: sim.t, aim: { x: intended.x, y: intended.y }, throwRec: (p.behavior as any)?.throwRec ? { P: +(p.behavior as any).throwRec.P.toFixed(3), intRisk: +(p.behavior as any).throwRec.intRisk.toFixed(3) } : null, qb: { ...sim.qb.pos }, target: target?.slot ?? null, flightPlan: arrivalT - sim.t, margins: (p.behavior as any)?.marginLast ?? null,
         defs: new Map(sim.defense.map((d: any) => [d, { pos: { ...d.pos }, vel: { ...d.vel }, facing: d.body.facing, kind: d.behavior?.kind ?? null, tags: [...(d.tags ?? [])] }])) };
     }
     return tb(p, target, v0, intended, arrivalT, away, ...rest);
@@ -45,10 +46,12 @@ PlaySim.prototype.run = function (this: any) {
       const v0 = need > 0 ? Math.max(0, (s0.vel.x * mx + s0.vel.y * my) / need) : 0, { vmax, tau } = D.profile;
       const maxRun = vmax * flight - (vmax - v0) * tau * (1 - Math.exp(-flight / tau)), reach = D.profile.reach + 0.3;
       const m = (rel.margins ?? []).find((r: any) => r.slot === D.slot) ?? null;
+      // The QB lane's split (2026-11-18): an errant ball onto a defender near the aim, or a break to the aim.
+      const miss = Math.hypot(spot.x - rel.aim.x, spot.y - rel.aim.y), toAim0 = Math.hypot(s0.pos.x - rel.aim.x, s0.pos.y - rel.aim.y), toAimPick = Math.hypot(D.pos.x - rel.aim.x, D.pos.y - rel.aim.y);
       const verdict = maxRun + reach < need - 0.3 ? 'reach beyond his body' : off <= reach + 0.5 && along > 0 && along < 1.1 && eyes <= 60 ? 'in the lane, eyes on the QB' : 'broke on it';
       rows.push({ seed, playNo, releaseT: +rel.t.toFixed(2), throwRec: rel.throwRec, cov: sim.defCall?.coverage?.id ?? null, concept: sim.offCall?.pass?.id ?? null, target: rel.target, air: +((spot.x - sim.los) * dir).toFixed(1), flight: +flight.toFixed(2),
         slot: D.slot, pos: D.player.position, kind0: s0.kind, tags0: s0.tags, tagsPick: [...(D.tags ?? [])], off: +off.toFixed(2), along: +along.toFixed(2), eyes: Math.round(eyes),
-        speed0: +Math.hypot(s0.vel.x, s0.vel.y).toFixed(2), need: +need.toFixed(2), maxRun: +maxRun.toFixed(2), reach: +reach.toFixed(2), window: m, verdict });
+        speed0: +Math.hypot(s0.vel.x, s0.vel.y).toFixed(2), miss: +miss.toFixed(2), toAim0: +toAim0.toFixed(2), toAimPick: +toAimPick.toFixed(2), need: +need.toFixed(2), maxRun: +maxRun.toFixed(2), reach: +reach.toFixed(2), window: m, verdict });
     }
   }
   return res;
