@@ -57,6 +57,7 @@ describe('RUSH_ARM_BALANCE', () => {
     vi.resetModules();
     for (const [k, v] of Object.entries(stack)) if (v === 'on') vi.stubEnv(k, '1');
     for (const k of ['RUSH_HANDS', 'PUNCH_STRIKE', 'ANCHOR_BASE', 'RUSH_ARM_BALANCE']) vi.stubEnv(k, '1');
+    vi.stubEnv('QB_ROLE_PATH', '0'); // engine-88 (QB landing, pinned test-only): the searched bull fall was found with the old deep price; the throw's timing moves with it. Flex to re-search with it on
     vi.stubEnv('RUSH_LEAN_BOUND', '0');
     const { PlaySim } = await import('../src/sim/playsim.js');
     const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');

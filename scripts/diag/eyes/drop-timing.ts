@@ -28,7 +28,7 @@ PlaySim.prototype.run = function (this: PlaySim) {
   const res: any = orig.apply(this);
   if (rel) {
     const call = sim.offCall, flight = arrive !== null ? arrive - rel.t : null, dist = Math.hypot(rel.to.x - rel.from.x, rel.to.y - rel.from.y);
-    console.log(JSON.stringify({ drop: call.pass?.drop ?? null, family: call.pass?.family ?? null, gun: call.formation.qb !== 'under', setT, setDepth: setDepth === null ? null : +setDepth.toFixed(2),
+    console.log(JSON.stringify({ cov: sim.defCall?.coverage?.id ?? null, shell: sim.defCall?.coverage?.shell ?? null, drop: call.pass?.drop ?? null, family: call.pass?.family ?? null, gun: call.formation.qb !== 'under', setT, setDepth: setDepth === null ? null : +setDepth.toFixed(2),
       rel: +rel.t.toFixed(2), rhythm: rel.rhythm, planT: +rel.planT.toFixed(2), natT: rel.natT === null ? null : +rel.natT.toFixed(2), flight: flight === null ? null : +flight.toFixed(2), air: +rel.air.toFixed(1), dist: +dist.toFixed(1), speed: flight ? +(dist / flight).toFixed(1) : null, cmp: !!res.stats?.completed, dec: rel.dec,
       fate: (() => { const ev = sim.events.map((e: any) => e.type); return ev.includes('interception') ? 'int' : res.stats?.completed ? 'catch' : ev.includes('pbu') || ev.includes('deflection') ? 'pbu' : ev.includes('drop') ? 'drop' : 'miss'; })() }));
   }
