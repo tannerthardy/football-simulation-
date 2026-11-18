@@ -435,6 +435,7 @@
   "test/qb-seen-rec.test.ts",
   "test/qb-tick-picture.test.ts",
   "test/quarter-flat-force-support.test.ts",
+  "test/quarters-check.test.ts",
   "test/quarters-flat-wheel.test.ts",
   "test/quick-hitch.test.ts",
   "test/race-lean.test.ts",

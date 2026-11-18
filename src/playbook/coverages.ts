@@ -678,6 +678,30 @@ export function resolveZeus(call: DefensivePlayCall, ref: string | undefined, we
  * resolved call (Cover 8 vs trips is Trix; Stuff vs trips is Book;
  * MatchQuarters Zeus/HNFL-261).
  */
+/** QUARTERS_CHECK (experimental, off; QUARTERS_CHECK=1 turns it on): two split-field choices a staff makes from the
+ * formation the defense sees before the snap, instead of a draw (quarters tree, step 2a; HNFL-085/229/260 field and
+ * boundary direction; HNFL-051/195 Palms vs a detached #2):
+ * - Cover 6 vs Cover 8 against two-by-two: the half goes to the boundary and quarters to the field (the call sheet's
+ *   default direction; a Zeus tag still points the half at the named receiver). Ball in the middle, or trips: as drawn.
+ * - Quarters vs two-by-two with both #2s detached (two-removed, no attached end): Palms; with an attached #2 (a tight
+ *   end): MOD. MEG, a man call, stays as called.
+ * The inputs are the alignment the defense sees (formationStructure) and the hash; never the offense's play. */
+export const QUARTERS_CHECK = process.env.QUARTERS_CHECK === '1';
+
+function quartersCheck(call: DefensivePlayCall, st: FormationStructure): DefensivePlayCall {
+  const id = call.coverage.id;
+  const twoByTwo = st.strong.count === 2 && st.weak.count === 2;
+  let to: string | null = null, when = '';
+  if ((id === 'cover6' || id === 'cover6_rev') && twoByTwo && st.strongToField !== null) {
+    to = st.strongToField ? 'cover6' : 'cover6_rev'; when = 'half-to-boundary';
+  } else if ((id === 'cover4' || id === 'cover4_palms') && twoByTwo) {
+    to = st.strong.detached >= 2 && st.weak.detached >= 2 ? 'cover4_palms' : 'cover4'; when = to === 'cover4_palms' ? 'two-removed' : 'attached-2';
+  }
+  const cov = to && to !== id ? COVERAGE_BY_ID[to] : undefined;
+  if (!cov || !checkInstallable(call, cov)) return call;
+  return { ...call, coverage: cov, check: { from: id, when }, label: `${call.label} → ${cov.name}` };
+}
+
 export function installCoverage(call: DefensivePlayCall, off: OffenseAlignment): DefensivePlayCall {
   // A zone pressure that brings its own coverage (Deuce) replaces the called
   // shell's coverage outright; it has its own structure checks, not Zeus.
@@ -685,5 +709,6 @@ export function installCoverage(call: DefensivePlayCall, off: OffenseAlignment):
   if (own) return checkCall({ ...call, coverage: own, zeus: undefined }, formationStructure(off));
   const zeus = call.zeus;
   const resolved = zeus ? resolveZeus(call, off.refOf[zeus], Math.min(off.counts.S, off.counts.W)) : call;
-  return checkCall(resolved, formationStructure(off));
+  const st = formationStructure(off);
+  return checkCall(QUARTERS_CHECK && !zeus ? quartersCheck(resolved, st) : resolved, st);
 }
