@@ -12,7 +12,7 @@ import csv, json, math, sys, statistics as st
 from collections import defaultdict
 
 TIMES = (1.0, 1.5, 2.0, 2.5, 3.0)
-FAMILIES = ['corner', 'post', 'dig', 'out', 'comeback', 'curl', 'sail', 'over', 'hitch']
+FAMILIES = ['slant', 'corner', 'post', 'dig', 'out', 'comeback', 'curl', 'sail', 'over', 'hitch']
 
 
 def at(r, t):
@@ -74,7 +74,7 @@ def summarize(rows):
 
 
 def family_nfl(route, brk_depth):
-    m = {'CORNER': 'corner', 'POST': 'post', 'IN': 'dig', 'CROSS': 'over', 'HITCH': 'hitch'}
+    m = {'SLANT': 'slant', 'CORNER': 'corner', 'POST': 'post', 'IN': 'dig', 'CROSS': 'over', 'HITCH': 'hitch'}
     if route == 'OUT':
         return 'out' if brk_depth is None or brk_depth < 10 else 'sail'
     if route == 'HITCH' and brk_depth is not None and brk_depth >= 9:
@@ -90,7 +90,7 @@ def nfl(src, out_path, weeks='1'):
     routes = {}
     for r in csv.DictReader(open(f'{src}/player_play.csv')):
         k = (r['gameId'], r['playId'])
-        if k in plays and r['routeRan'] in ('CORNER', 'POST', 'IN', 'OUT', 'CROSS', 'HITCH'):
+        if k in plays and r['routeRan'] in ('SLANT', 'CORNER', 'POST', 'IN', 'OUT', 'CROSS', 'HITCH'):
             routes[(k, r['nflId'])] = r['routeRan']
     keys = {k for k, _ in routes}
     frames = defaultdict(list)
@@ -166,7 +166,7 @@ if __name__ == '__main__':
 
 def banded(nfl_path, sim_path):
     """NFL routes of the same PFF label whose break depth lies within 1.5 yd of the sim family's median break depth."""
-    label = {'corner': 'CORNER', 'post': 'POST', 'dig': 'IN', 'out': 'OUT', 'comeback': 'OUT', 'curl': 'HITCH', 'over': 'CROSS', 'hitch': 'HITCH'}
+    label = {'slant': 'SLANT', 'corner': 'CORNER', 'post': 'POST', 'dig': 'IN', 'out': 'OUT', 'comeback': 'OUT', 'curl': 'HITCH', 'over': 'CROSS', 'hitch': 'HITCH'}
     nfl = [json.loads(l) for l in open(nfl_path)]
     sim = defaultdict(list)
     for l in open(sim_path):
