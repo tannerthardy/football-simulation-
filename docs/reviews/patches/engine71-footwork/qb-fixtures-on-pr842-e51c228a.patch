@@ -1,0 +1,75 @@
+diff --git a/scripts/diag/eyes/grass-staged.ts b/scripts/diag/eyes/grass-staged.ts
+new file mode 100644
+index 000000000..55bab299b
+--- /dev/null
++++ b/scripts/diag/eyes/grass-staged.ts
+@@ -0,0 +1,15 @@
++// QB lane 2026-11-18: mesh's corner thrown at the plant (staged), qb-grass-read's scenes: his price vs the result.
++import { PlaySim } from '../../../src/sim/playsim.js';
++import { nativeTraceSetup } from '../command-trace.js';
++for (const coverage of ['cover2', 'tampa2']) for (const roster of [3, 7, 11]) for (const seed of [1, 2, 3]) {
++  const sim: any = new PlaySim(nativeTraceSetup({ coverage, concept: 'mesh', seed, roster, formation: 'gun_doubles_11', flip: false }));
++  const corner = sim.offense.find((o: any) => o.behavior?.route?.id === 'corner');
++  sim.stagedThrow = { at: 99, slot: corner?.slot ?? 'X' }; let rec: any = null, set = false;
++  const tick0 = sim.tick.bind(sim);
++  sim.tick = () => { tick0(); const b: any = sim.qb.behavior; if (!set && b?.kind === 'qb-pass' && b.phase === 'set') { set = true; sim.stagedThrow = { at: sim.t, slot: corner.slot }; } };
++  const tb = sim.throwBall.bind(sim);
++  sim.throwBall = (p: any, target: any, ...rest: any[]) => { if (p === sim.qb && !rec) { const r = p.behavior?.throwRec; rec = r ? { t: +sim.t.toFixed(2), P: +r.P.toFixed(3), pOpen: +r.parts.pOpen.toFixed(3), iR: +r.intRisk.toFixed(3) } : null; } return tb(p, target, ...rest); };
++  let res: any; try { res = sim.run(); } catch { continue; }
++  const ev = sim.events.map((e: any) => e.type);
++  console.log(JSON.stringify({ coverage, roster, seed, rec, cmp: !!res.stats.completed, int: ev.includes('interception'), pbu: ev.includes('pbu') }));
++}
+diff --git a/test/acc-radius.test.ts b/test/acc-radius.test.ts
+index 5cac9e4ad..07044e955 100644
+--- a/test/acc-radius.test.ts
++++ b/test/acc-radius.test.ts
+@@ -25,7 +25,7 @@ async function throws(flag: string) {
+   vi.stubEnv('ROUTE_FINISH', '0'); // engine-70: the check-down count was recorded with outward routes running on; re-record with ROUTE_FINISH on
+   // engine-72: these small counts (4-6 plays) move with each of the engine-72 groups; recorded on engine-71. QB lane to re-record when ACC_RADIUS is carded with the grass read.
+   for (const k of ['SET_SPOT', 'SET_SPOT_TACKLE', 'POCKET_LEVEL', 'PASS_OFF', 'BLITZ_READ', 'BLITZ_DEPTH', 'BLITZ_SKILL', 'BLITZ_SECOND', 'QB_EVADE_UP', 'QB_FACE_SEEN', 'CARRY_POSTURE', 'CORNER_DROP', 'CARRY_TURN', 'MIRROR_SCATTER', 'LEVEL2_TRACK', 'SIGHT_PURE', 'BREAK_LOOK', 'SEEN_EMPTY']) vi.stubEnv(k, '0');
+-  for (const k of ['QB_DRIVE', 'QB_STICK', 'QB_WINDOW_ARRIVE']) vi.stubEnv(k, '0'); // engine-83 (QB landing, pinned test-only): the four_verts two-high scenes were recorded on the old ball speed, the re-priced pull-down and the window without arrival momentum; each alone moves the on-time vertical count (3 against 6). QB to re-record with them on
++  for (const k of ['QB_DRIVE', 'QB_STICK', 'QB_WINDOW_ARRIVE']) vi.stubEnv(k, '0'); // engine-83 (QB landing, pinned test-only): the four_verts two-high scenes were recorded on the old ball speed, the re-priced pull-down and the window without arrival momentum; each alone moves the on-time vertical count (3 against 6). Kept after re-check 2026-11-18: the open seam is priced shut by the over-priced deep man's closing (held-ball truth, docs/reviews/2026-11-18-peek-clock.md), so the vertical is not thrown on time; re-record once that price is settled, not by weakening this contract
+   vi.stubEnv('ACC_RADIUS', flag);
+   const { PlaySim } = await import('../src/sim/playsim.js');
+   const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');
+diff --git a/test/qb-gather-throw.test.ts b/test/qb-gather-throw.test.ts
+index 9300bf73d..64d55be64 100644
+--- a/test/qb-gather-throw.test.ts
++++ b/test/qb-gather-throw.test.ts
+@@ -4,9 +4,11 @@
+  * while he reads, before he has decided on anyone. On: he holds his set point until his eyes are finishing on the man
+  * he has decided on, and his step from there is toward that man and no longer than a hitch. */
+ import { afterEach, describe, expect, it, vi } from 'vitest';
+-vi.hoisted(() => { process.env.QB_FOOTWORK = '0'; process.env.QB_KEY_READ = '0'; process.env.QB_EDGE_THREAT = '0'; process.env.QB_HEAD = '0'; process.env.QB_CALL_ROUTES = '0'; process.env.CONCEPT_DROPS = '0'; process.env.CONCEPT_FIT = '0'; process.env.BACK_AS_THREE = '0'; process.env.PA_TABLES = '0'; process.env.QB_RHYTHM_THROW = '0'; process.env.OWNED_FIX = '0'; }); // engine-73: fixture recorded before the QB group of the engine-73 landing; QB to re-record with it on. engine-83: QB_RHYTHM_THROW off too (on a rhythm concept his last drop step is not braked by design, so this scene's set point is the old drop's); QB to re-record on a non-rhythm concept
+-// engine-81 (Defense): OWNED_FIX pinned off here. The deep-third corner now keeps #2 with #1, which moves the Cover 3 scene
+-// around the pocket; on one of these plays his single step after the gate becomes 1.28 yd (limit 1.1). QB lane to re-record with it on.
++vi.hoisted(() => { process.env.QB_FOOTWORK = '0'; process.env.QB_KEY_READ = '0'; process.env.QB_EDGE_THREAT = '0'; process.env.QB_HEAD = '0'; process.env.QB_CALL_ROUTES = '0'; process.env.CONCEPT_DROPS = '0'; process.env.CONCEPT_FIT = '0'; process.env.BACK_AS_THREE = '0'; process.env.PA_TABLES = '0'; }); // engine-73: fixture recorded before the QB group of the engine-73 landing; QB to re-record with it on
++// Re-recorded 2026-11-18 on engine-83 (QB lane) with OWNED_FIX and QB_RHYTHM_THROW on: no pin. Every gated step is 0.23-0.66
++// yd, inside the hitch limit (engine-81's 1.28 yd step was with QB_RHYTHM_THROW off), so the limit stands and the gather is
++// right. stick (cover3, seed 3) leaves the list: it is a rhythm concept, whose last drop step is not braked by design
++// (QB_RHYTHM_THROW), so with no throw on the plant he slides 0.84 yd into his set; this test is the gather on a set.
+ 
+ afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
+ 
+@@ -14,7 +16,7 @@ afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
+ // the legacy engine's, and of the original six plays only two now reach the gate (the tick his eyes finish on the man he has decided on) before the windup, short of
+ // the three the test needs. Six plays that gate on the defaults, with the original seam_hitch (cover1) which gates without a step toward his man, kept for variety.
+ // The assertions are unchanged.
+-const PLAYS: [string, string, number][] = [['dagger', 'cover3', 3], ['dagger', 'cover3', 2], ['drive', 'cover3', 3], ['smash', 'cover3', 3], ['seam_hitch', 'cover3', 4], ['stick', 'cover3', 3], ['seam_hitch', 'cover1', 4]];
++const PLAYS: [string, string, number][] = [['dagger', 'cover3', 3], ['dagger', 'cover3', 2], ['drive', 'cover3', 3], ['smash', 'cover3', 3], ['seam_hitch', 'cover3', 4], ['seam_hitch', 'cover1', 4]];
+ 
+ interface Row { readCreep: number; upBeforeGate: number; step: number; toward: number | null; gated: boolean }
+ 
+diff --git a/test/qb-grass-read.test.ts b/test/qb-grass-read.test.ts
+index 4f8e339a3..6bf192999 100644
+--- a/test/qb-grass-read.test.ts
++++ b/test/qb-grass-read.test.ts
+@@ -20,7 +20,7 @@ async function run(fw: string) {
+   // The reference stack's numeric settings too (the suite pins them to their legacy values).
+   for (const [k, v] of Object.entries(stack.numeric ?? {}) as [string, { default: number }][]) vi.stubEnv(k, String(v.default));
+   vi.stubEnv('CONCEPT_DROPS', '1'); vi.stubEnv('QB_FOOTWORK', fw);
+-  vi.stubEnv('QB_WINDOW_ARRIVE', '0'); // engine-83 (QB landing, pinned test-only): with arrival momentum the deep defender bailing to the corner's landing prices the corner off the plant in these scenes. QB to re-record with it on
++  vi.stubEnv('QB_WINDOW_ARRIVE', '0'); // engine-83 (QB landing, pinned test-only): kept after re-check 2026-11-18. With arrival momentum the deep defender running to the corner's landing prices the corner off the plant (P 0.40 -> 0.29), yet thrown there it is caught 18 of 18 in these scenes (scripts/diag/eyes/grass-staged.ts): the window over-prices a deep man's closing (docs/reviews/2026-11-18-peek-clock.md, by state). Re-record once that price is settled (after Coverage's closing repair), not by weakening this contract
+   const { PlaySim } = await import('../src/sim/playsim.js');
+   const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');
+   const out: { dwell: number; corner: number | null; setAt: number | null }[] = [];
