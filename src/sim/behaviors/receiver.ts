@@ -106,6 +106,18 @@ function clearLane(a: Agent, sim: PlaySim, cmd: MoveCommand): MoveCommand {
  * 53%) and their bodies touched 40% of the time within 5 yd of the line (NFL
  * 11%) (lane.py, engine-31 vs BDB 2025 weeks 1-3). */
 const ROUTE_CRAFT = process.env.ROUTE_CRAFT !== '0';
+/** STEM_WORK (experimental, off): the stem is worked against the leverage of the defender over him, as taught ("attack
+ * the defender's leverage": stem at his leverage shoulder to make him open, then break; on a vertical, get on top of him,
+ * stacking him). Off, stems are straight lines: NFL stems near the underneath men move 1.40 yd/s laterally 0.5 s before
+ * the release, ours 0.22 (sitting routes); verticals 1.05 vs 0.36 (scripts/diag/routes/flow_mix.py, BDB 2025).
+ * - The stem is his route's first leg, past 1.5 yd and short of his first point (a vertical's: to 12 yd).
+ * - Decided once, from his own picture (the route-key look): the nearest defender in front of him within 10 yd deep and
+ *   4 yd across. Leverage 0.75 yd or more off his line: he works toward that shoulder, by up to 1.5 yd. Head-up or no
+ *   one over him: he runs straight. The decision holds (no re-aim each tick).
+ * - Bounded: the offset fades out over the last 2 yd of the stem, so his break point and landmark are unchanged (the QB's
+ *   forecast holds). His speed is unchanged: a stem that is not straight is longer, so the break arrives as late as his
+ *   body makes it. */
+const STEM_WORK = process.env.STEM_WORK === '1';
 
 /** ROUTE_END (experimental, off; docs/reviews/2026-11-14-route-end.md): the route's end as coached.
  * - The settle stays alive (hitch, curl, comeback, any `settle` or `sitVsZone` end). After the break he keeps working
@@ -323,6 +335,8 @@ export class RouteRunner implements Behavior {
   /** RELEASE_THROUGH: the side of his press release (0 if he had none); kept for the rest of the route. */
   private releaseSide = 0;
   private converted = false;
+  /** STEM_WORK: his stem's decision (null undecided; 0 straight; otherwise the lateral offset he works to, yd). */
+  private stemWork: number | null = null;
   private readonly keyMemory = new Map<string, { at: number; picture: RouteKeyPicture }>();
   private routeEnd: RouteEnd;
   /** Passive diagnostic state; never shared with the quarterback's forecast. */
@@ -523,9 +537,42 @@ export class RouteRunner implements Behavior {
       this.settled = this.routeEnd !== 'continue';
       return this.settle(a, sim);
     }
+    if (STEM_WORK) cmd = this.workStem(a, sim, cmd);
     if (ROUTE_CLEAR && this.fromBackfield) return clearLane(a, sim, cmd);
     if (ROUTE_CRAFT) return routeCraft(a, sim, cmd, rr, this.breakSide(a), CRAFT_HOLD ? this.routeSide() : null, this.pastDeclaredBreak());
     return cmd;
+  }
+
+  /** STEM_WORK: bend the stem toward the leverage of the defender over him (see STEM_WORK). */
+  private workStem(a: Agent, sim: PlaySim, cmd: MoveCommand): MoveCommand {
+    if (this.idx !== 0 && !(BREAK_DECL[this.route.id]?.at === 'vertical' && this.idx <= 1)) return cmd;
+    const dirn = Math.sign(this.path[this.path.length - 1].p.x - this.start.x) || 1;
+    const depth = (a.pos.x - sim.los) * dirn;
+    const vertical = BREAK_DECL[this.route.id]?.at === 'vertical';
+    const end = vertical ? 12 : (this.path[0].p.x - sim.los) * dirn;
+    if (depth < 1.5 || depth > end) return cmd;
+    if (this.stemWork === null) {
+      let best: RouteKeyPicture | null = null, bd = Infinity;
+      for (const d of this.readKeys(a, sim)) {
+        if (d.age > 0.5) continue;
+        const ahead = (d.pos.x - a.pos.x) * dirn, across = d.pos.y - a.pos.y;
+        if (ahead <= 0 || ahead > 10 || Math.abs(across) > 4) continue;
+        if (ahead < bd) { bd = ahead; best = d; }
+      }
+      const off = best ? best.pos.y - a.pos.y : 0;
+      this.stemWork = Math.abs(off) >= 0.75 ? Math.sign(off) * Math.min(1.5, Math.abs(off)) : 0;
+    }
+    if (!this.stemWork) return cmd;
+    // The route line's lateral spot at his depth (start -> first point), plus the offset, faded over the last 2 yd.
+    const a0 = this.start, b0 = this.path[0].p, span = (b0.x - a0.x) || 1e-6;
+    const lineY = a0.y + (b0.y - a0.y) * clamp((a.pos.x - a0.x) / span, 0, 1);
+    const fade = clamp((end - depth) / 2, 0, 1);
+    const goalY = lineY + this.stemWork * fade;
+    const sp = Math.hypot(cmd.vel.x, cmd.vel.y);
+    if (sp < 0.5) return cmd;
+    const vy = cmd.vel.y + clamp((goalY - a.pos.y) * 1.5, -2.5, 2.5);
+    const n = Math.hypot(cmd.vel.x, vy) || 1;
+    return { ...cmd, vel: { x: cmd.vel.x / n * sp, y: vy / n * sp } };
   }
 
   /** ROUTE_CRAFT: which way his next break turns relative to his current
