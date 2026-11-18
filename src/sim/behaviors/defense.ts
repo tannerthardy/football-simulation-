@@ -2226,8 +2226,7 @@ export class ZoneCoverage implements Behavior {
       // under the deep defender, he drives downhill on it.
       // Never while another receiver is climbing into the zone behind it.
       // (Only verticals near him; a seam on the far hash belongs to the middle safety.)
-      const climbing = (OWNED_FIX ? inArea : vert).some((th) => th !== deepest && th.vel.x > 3.5 && th.pos.x - sim.los > 2 && Math.abs(th.pos.y - a.pos.y) < 8)
-      const climbingBehind = vert.some((th) => th !== deepest && th.vel.x > 3.5 && th.pos.x - sim.los > 2 && Math.abs(th.pos.y - a.pos.y) < 8);
+      const climbingBehind = (OWNED_FIX ? inArea : vert).some((th) => th !== deepest && th.vel.x > 3.5 && th.pos.x - sim.los > 2 && Math.abs(th.pos.y - a.pos.y) < 8);
       const climbing = climbingBehind
         // HALF_OWN: with two verticals in his area he holds their midpoint until the throw.
         || (this.ownsArea() && vert.length >= 2);
