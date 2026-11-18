@@ -11,7 +11,7 @@ What the drop gives it (`deflect`, DEFLECT_BALL on):
 
 So z "1.6 to 1.4 over 0.45 s" is a ball thrown at shoulder height falling with a small pop: z after the drop (seed 11, play 12): 1.92, 2.03, 2.05, 1.95, 1.75, 1.44, 1.02, 0.50 at 0, .1 ... .7 s. A corner who reaches it 0.4-0.55 s after the drop takes it at 1.0-1.2 yd before it lands, which is what the staged arm shows.
 
-**How common (seeds 7-14, Ironmen v Comets 0.55, 8 games, develop):** 35 drops in 351 filmed passes. 29 end on the ground. 6 are followed by a catch or interception more than 0.3 s later: 2 interceptions (0.40 s and 0.55 s after the drop; DNB and DCB_S) and 4 re-catches by the dropper's own team (0.85-1.0 s after the drop event, after the ball was pinned again).
+**How common (seeds 7-14, Ironmen v Comets 0.55, 8 games, develop):** 35 drops (the first four of those games had 365 passes). 29 end on the ground. 6 are followed by a catch or interception more than 0.3 s later: 2 interceptions (0.40 s and 0.55 s after the drop; DNB and DCB_S) and 4 re-catches by the dropper's own team (0.85-1.0 s after the drop event, after the ball was pinned again).
 
 **One asymmetry, not material:** the dropper cannot catch again for 0.6 s (`R.noCatchUntil = sim.t + 0.6`), about the whole hang time, while a defender can. Cutting it to 0.15 s (tried as a numeric flag, not kept) on 4 of the same seeds changed re-catches from 3 to 4 and drops that end on the ground from 13 to 17; games diverge after the first changed play, so this is noise-level, and I did not ship it.
 
