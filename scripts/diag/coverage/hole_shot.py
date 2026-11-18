@@ -69,7 +69,7 @@ def nfl(src, out, weeks):
             cbV1 = (at[cb][thr + 10][0] - at[cb][thr + 7][0]) * dirn / 0.3 if thr + 10 in at[cb] and thr + 7 in at[cb] else None
             r = pp[k][tgt]
             tackler = [pos.get(i) for i, x in pp[k].items() if x['soloTackle'] == '1' or x['tackleAssist'] == '1' or x['assistedTackle'] == '1']
-            o.write(json.dumps({'src': 'NFL', 'jam': jam, 'reroute': rr, 'under': under, 'flight': (arr - thr) / 10, 'cbV': cbV, 'cbV1': cbV1,
+            o.write(json.dumps({'src': 'NFL', 'gameId': k[0], 'playId': k[1], 'jam': jam, 'reroute': rr, 'under': under, 'flight': (arr - thr) / 10, 'cbV': cbV, 'cbV1': cbV1,
                                 'cbAtArr': d(cb, tgt, arr), 'sAtArr': d(sf, tgt, arr), 'caught': p['passResult'] == 'C',
                                 'int': p['passResult'] == 'IN', 'yards': float(p['yardsGained'] or 0),
                                 'yac': float(r['yardageGainedAfterTheCatch'] or 0) if p['passResult'] == 'C' else None,
