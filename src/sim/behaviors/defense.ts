@@ -1981,6 +1981,8 @@ export class ZoneCoverage implements Behavior {
         const outer = vert.filter((th) => Math.min(th.fut.y, FIELD_WIDTH - th.fut.y) < third + 2);
         if (outer.length) vert = outer;
       }
+      // OWNED_FIX: the verticals in his area before the ownership filter (the deep-drive guard reads these).
+      const inArea = vert;
       // Quarters is a route distribution: the corner carries #1, the safety
       // keys #2. Splitting both verticals here duplicated the corner's help
       // and left the slot free. Deep-third corners likewise own the outside
@@ -1992,7 +1994,10 @@ export class ZoneCoverage implements Behavior {
         const number = this.zone.endsWith('_in') ? '2' : '1';
         const slot = sim.offAlign.numbering[`${side}${number}` as 'S1' | 'S2' | 'W1' | 'W2'];
         const owned = vert.find(th => th.r.slot === slot);
-        if (owned) vert = [owned];
+        // OWNED_FIX: the Sky (deep-third) corner owns #1 and #2 deep (HNFL-027/292 Clue 1/3; Bowen): #2 working into his
+        // outside third stays in his picture with #1, so the split and the squeeze run.
+        const two = OWNED_FIX && thirdCorner ? vert.find(th => th !== owned && th.r.slot === sim.offAlign.numbering[`${side}2` as 'S2' | 'W2']) : undefined;
+        if (owned) vert = two ? [owned, two] : [owned];
       }
       if (vert.length === 0) {
         a.mind.setAimTarget('zone-drive', null);
@@ -2015,7 +2020,7 @@ export class ZoneCoverage implements Behavior {
       // under the deep defender, he drives downhill on it.
       // Never while another receiver is climbing into the zone behind it.
       // (Only verticals near him; a seam on the far hash belongs to the middle safety.)
-      const climbing = vert.some((th) => th !== deepest && th.vel.x > 3.5 && th.pos.x - sim.los > 2 && Math.abs(th.pos.y - a.pos.y) < 8);
+      const climbing = (OWNED_FIX ? inArea : vert).some((th) => th !== deepest && th.vel.x > 3.5 && th.pos.x - sim.los > 2 && Math.abs(th.pos.y - a.pos.y) < 8);
       // (Pattern reads are match technique; a spot dropper waits for the QB's arm.)
       if ((!spot || OPP_GOAL_X - sim.los <= 10) && !climbing && deepest.vel.x < 3.0 && deepest.pos.x < lm.x + 1
         && deepest.pos.x - sim.los > Math.min(6, Math.max(1, (OPP_GOAL_X - sim.los) * 0.5))) {
@@ -2466,6 +2471,12 @@ const SHOULDER_READ = process.env.SHOULDER_READ !== '0';
  * playBelievedBall had no deep check: those seats planted on the load and broke on the shoulders on 59-88% of staged
  * plays, pumps included (release-belief.ts: a pump counts as a delivery). */
 const DEEP_GATE = process.env.DEEP_GATE !== '0';
+/** OWNED_FIX (experimental, off; Rules' table gap 2/7): the deep ownership filter (quarter seats keep their numbered man,
+ * deep-third corners #1) cut the deep player's picture to one receiver. Under the flag the deep-third corner keeps #2
+ * with #1 when #2 works into his outside third (he owns both deep: the split and the squeeze run), and the deep-drive
+ * guard (another receiver climbing behind a stopped route) reads the verticals in his area before the ownership filter,
+ * so a climbing #2 stops a quarter or third player driving down on a stopped #1. */
+const OWNED_FIX = process.env.OWNED_FIX === '1';
 const HELD_DEEP = new Set(['deep_third_s', 'deep_third_w', 'deep_mid', 'deep_half_s', 'deep_half_w', 'tampa_mid']);
 function heldDeepSeat(a: Agent): boolean {
   const b = a.behavior as { zone?: string; recordedZone?: () => string | undefined } | undefined;
