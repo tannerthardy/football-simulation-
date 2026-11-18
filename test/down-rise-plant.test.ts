@@ -10,7 +10,7 @@ const profile: PhysicalProfile = { massKg: 100, radius: .3, reach: 1, heightYd: 
 /** A body at speed v dives; follow its states every 0.05 s until it is up. The flag is read at import, so each arm loads a fresh module. */
 async function dive(on: boolean, v: number, carrier = false) {
   vi.resetModules();
-  if (on) process.env.DOWN_RISE_PLANT = '1'; else delete process.env.DOWN_RISE_PLANT;
+  process.env.DOWN_RISE_PLANT = on ? '1' : '0';
   const { World } = await import('../src/physics/world.js');
   const { newSupport } = await import('../src/physics/support.js');
   const b: Body = { pos: { x: 0, y: 0 }, vel: { x: v, y: 0 }, facing: 0, energy: 1, profile: { ...profile }, support: newSupport(0.3) };
@@ -31,7 +31,7 @@ async function dive(on: boolean, v: number, carrier = false) {
 
 afterEach(() => { delete process.env.DOWN_RISE_PLANT; vi.resetModules(); });
 
-describe('DOWN_RISE_PLANT: a free body rises on the speed he would stand at, not only after he has slid to rest', () => {
+describe('DOWN_RISE_PLANT (default on since engine-84): a free body rises on the speed he would stand at, not only after he has slid to rest', () => {
   it('off: a diver at 8 yd/s slides about a second in `down` before he starts to rise', async () => {
     const r = await dive(false, 8);
     expect(r.slide).toBeGreaterThan(0.9);
