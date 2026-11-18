@@ -2037,12 +2037,15 @@ export class ZoneCoverage implements Behavior {
       // under the deep defender, he drives downhill on it.
       // Never while another receiver is climbing into the zone behind it.
       // (Only verticals near him; a seam on the far hash belongs to the middle safety.)
-      const climbing = vert.some((th) => th !== deepest && th.vel.x > 3.5 && th.pos.x - sim.los > 2 && Math.abs(th.pos.y - a.pos.y) < 8)
+      const climbingBehind = vert.some((th) => th !== deepest && th.vel.x > 3.5 && th.pos.x - sim.los > 2 && Math.abs(th.pos.y - a.pos.y) < 8);
+      const climbing = climbingBehind
         // HALF_OWN: with two verticals in his area he holds their midpoint until the throw.
         || (this.ownsArea() && vert.length >= 2);
       if (this.ownsArea() && vert.length >= 2) a.tags.add('half-own');
       // DEEP_DECLARE: the deep-half player breaks on the route's declare, not the ball.
-      if (DEEP_DECLARE && !climbing && this.zone.startsWith('deep_half')) {
+      // A declared break outranks HALF_OWN's midpoint hold: the hold is for two verticals both still threatening;
+      // only another receiver actually climbing behind the cut keeps him on top.
+      if (DEEP_DECLARE && this.zone.startsWith('deep_half')) {
         const drive = this.declareDrive(a, sim, vert);
         if (drive) return drive;
       }
@@ -2336,21 +2339,25 @@ export class ZoneCoverage implements Behavior {
 
   /**
    * DEEP_DECLARE: a deep-half player reads the vertical he is capping. When his own picture of that receiver shows an
-   * out-breaking cut under him (a corner or an out: outward speed > 2 yd/s and > 0.7 of his downfield speed, at least 2
+   * out-breaking cut under him (a corner or an out: the path leaning about 30 deg outward, outward speed > 1.8 yd/s and
+   * > 0.6 of his downfield speed, the release reader's break convention; at least 2
    * yd shallower than the defender and 4 yd past the line), held for his read dwell (0.1 s at full play recognition to
    * 0.3 s at none), the break is declared: he stops his bail and drives top-down to the route, to where the receiver
    * will be when he gets there, a yard over it. Decided once per receiver; the same picture never undoes it. A new
    * vertical stem from that receiver in his picture (downfield speed > 3 yd/s and > 1.5 of his outward speed, held for
    * the same dwell) is a new declaration: he goes back to capping him, so a stem nod or a double move can beat him and
-   * costs the receiver who runs it. Not while another vertical climbs behind it in his area (the caller's guard).
+   * costs the receiver who runs it. Not while another receiver climbs behind the cut in his area (deeper, still running);
+   * the declare outranks HALF_OWN's two-vertical midpoint hold.
    * In-breaking cuts stay with the existing pattern read.
    */
   private declareDrive(a: Agent, sim: PlaySim, vert: Array<{ r: Agent; pos: Vec2; vel: Vec2; fut: Vec2 }>): MoveCommand | null {
+    // Another receiver climbing behind a cut (deeper than it, still running) keeps him on top.
+    const behind = (cutR: Agent, cutX: number) => vert.some((t) => t.r !== cutR && t.vel.x > 3.5 && t.pos.x > cutX && t.pos.x - sim.los > 2 && Math.abs(t.pos.y - a.pos.y) < 8);
     const dwell = 0.1 + 0.2 * (1 - clamp(a.r('playRecognition'), 0, 1));
     const outSign = (th: { fut: Vec2 }) => (th.fut.y > FIELD_WIDTH / 2 ? 1 : -1);
     const cut = (th: { pos: Vec2; vel: Vec2; fut: Vec2 }) => {
       const vOut = th.vel.y * outSign(th);
-      return vOut > 2 && vOut > 0.7 * Math.max(0, th.vel.x) && th.pos.x < a.pos.x - 2 && th.pos.x - sim.los > 4;
+      return vOut > 1.8 && vOut > 0.6 * Math.max(0, th.vel.x) && th.pos.x < a.pos.x - 2 && th.pos.x - sim.los > 4;
     };
     if (this.declOn) {
       const th = vert.find((t) => t.r === this.declOn);
@@ -2364,7 +2371,7 @@ export class ZoneCoverage implements Behavior {
       }
     }
     if (!this.declOn) {
-      const th = vert.find((t) => cut(t));
+      const th = vert.find((t) => cut(t) && !behind(t.r, t.pos.x));
       if (!th) { this.declSeen = null; return null; }
       if (!this.declSeen || this.declSeen.r !== th.r) { this.declSeen = { r: th.r, since: sim.t }; return null; }
       if (sim.t - this.declSeen.since < dwell) return null;
@@ -2372,7 +2379,7 @@ export class ZoneCoverage implements Behavior {
       a.tags.add('deep-declare');
     }
     const th = vert.find((t) => t.r === this.declOn);
-    if (!th) return null;
+    if (!th || behind(th.r, th.pos.x)) return null;
     const d = Math.hypot(th.pos.x - a.pos.x, th.pos.y - a.pos.y);
     const lead = clamp(d / Math.max(1, 0.85 * a.profile.vmax), 0, 1.2);
     const spot = { x: th.pos.x + th.vel.x * lead + 1.0, y: clamp(th.pos.y + th.vel.y * lead, 0.5, FIELD_WIDTH - 0.5) };
