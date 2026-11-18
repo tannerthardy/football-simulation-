@@ -302,6 +302,7 @@
     "TECH_CONT": "on",
     "DEEP_GATE": "on",
     "RCV_KNOWS": "on",
+    "ZONE_LADDER": "off",
     "ZONE_EYES": "on",
     "QB_HONEST_FEEL": "on",
     "THROW_PLATFORM": "off",

@@ -2997,3 +2997,119 @@ export class FumbleScramble implements Behavior {
 export function toward(a: Vec2, b: Vec2): Vec2 {
   return norm(sub(b, a));
 }
+
+/** ZONE_LADDER (experimental, off; Coverage, 2026-11-18; the user's direction via Integration: one decision built from the
+ * coached ladder, not the existing modes rearranged). With it on, an underneath zone seat (flat, curl-flat, hook, hole,
+ * robber) is this behavior instead of ZoneCoverage / CoverageDefender, and none of their pre-throw modes run for him.
+ * The ladder, as taught (docs/reviews/2026-11-17-zone-coached-rules.md):
+ *  1. Drop to his landmark with his eyes on the QB; slide with the QB's look (how long the look he sees has held, to
+ *     (0.6 + 0.4 x anticipation) of the way, restarted when it moves, so a look-off pulls him honestly wrong); stop on
+ *     the QB's set (he plants where he is when he sees the QB stop at the top of his drop; no sink to the landmark).
+ *  2. Relate to the nearest threat in his area: a receiver whose projected spot is in his band (enter 0.5 inside, leave
+ *     1.5 outside), scored by distance to his landmark with an arriving / sitting receiver ahead of a leaving one; the
+ *     one he is playing keeps him until another beats it by LADDER_PICK_BEAT. Underneath an intermediate route he takes
+ *     the point on the QB's line to it at his own depth; under a short one he widens to it at his depth (no drive down:
+ *     the ball brings him down). A vertical in his area is carried to his zone's carry depth, then passed.
+ *  3. Break on the throw (his release belief; playBall, unchanged), with the ladder as his coverage until he sees it.
+ * Coverage-specific rules enter only as the landmark (zoneLandmark), his area (zoneBand) and the carry depth. Left out
+ * (old modes not ported): match-after-declare man conversions, wall / cross-wall, trap / rob, the quarters apex and C2
+ * apex rules, squat, curl-flat-back widening, open-carry facing, stem-read and flat-hold depth holds, SETTLE_DEPTH's
+ * sink, ZONE_HOLD's lean (replaced by the look-held slide), the box backer's guard step. */
+export const ZONE_LADDER = process.env.ZONE_LADDER === '1';
+const LADDER_CARRY: Partial<Record<ZoneId, number>> = { hook_s: 14, hook_w: 14, hook_mid: 14, hole: 14, robber: 14, curl_flat_s: 12, curl_flat_w: 12, flat_s: 9, flat_w: 9 };
+const LADDER_PICK_BEAT = 1.5, LADDER_IN = 0.5, LADDER_OUT = 1.5, LADDER_TAU = 0.3, LADDER_STEADY = 0.6;
+export class UnderneathLadder implements Behavior {
+  readonly kind = 'zone';
+  readonly zoneEyes = true;
+  readonly deep = false;
+  private readonly landmark: Vec2;
+  private readonly band: [number, number];
+  private threat: Agent | null = null;
+  private carrying: Agent | null = null;
+  private readonly passed = new Set<Agent>();
+  private readonly inBand = new Set<Agent>();
+  private settledAt = -1;
+  private qbDeepest = Infinity;
+  private lookRaw: Vec2 | null = null;
+  private lookT = -1;
+  private lookHeld = 0;
+  constructor(_a: Agent, sim: PlaySim, readonly zone: ZoneId, private readonly gap: Gap, private readonly gapSign: number) {
+    this.landmark = zoneLandmark(zone, sim.offAlign);
+    this.band = zoneBand(zone, sim);
+  }
+  recordedZone(): ZoneId { return this.zone; }
+  update(a: Agent, sim: PlaySim): MoveCommand {
+    const live = pursueIfLive(sim, a);
+    if (live) return live;
+    if (playsThrow(a, sim, null)) return playBall(a, sim, null, RELEASE_BELIEF ? () => this.ladder(a, sim) : undefined);
+    if (believesRun(sim, a)) return runFit(a, sim, this.gap, this.gapSign);
+    return this.ladder(a, sim);
+  }
+  private ladder(a: Agent, sim: PlaySim): MoveCommand {
+    const dir = sim.attackDir(sim.offense[0].team), lm = this.landmark;
+    const q = sim.see(a, sim.qb), facingQB = angleTo(a.pos, q.pos);
+    watch(sim, a, sim.qb);
+    const depthOf = (p: Vec2) => (p.x - sim.los) * dir, atDepth = (d: number) => sim.los + d * dir;
+    // A box backer reads before he drops.
+    if (!knowsPass(sim, a) && boxBacker(a, sim)) return withFacingTechnique({ vel: { x: 0, y: 0 }, facing: facingQB }, { label: 'ladder-read' });
+    // Stop on his set: the QB, in his picture, has given ground and stopped.
+    this.qbDeepest = Math.min(this.qbDeepest, q.pos.x * dir);
+    const qbSpot = sim.offAlign.spots.QB?.pos.x ?? q.pos.x;
+    if (this.settledAt < 0 && knowsPass(sim, a) && qbSpot * dir - this.qbDeepest >= 1 && Math.hypot(q.vel.x, q.vel.y) < 1.2) this.settledAt = sim.t;
+    const myDepth = depthOf(a.pos), holdDepth = this.settledAt >= 0 ? Math.min(myDepth, depthOf(lm)) : depthOf(lm);
+    // Rung 2: the threat in his area.
+    const th = this.pick(a, sim);
+    if (th) {
+      const s = sim.see(a, th), down = s.vel.x * dir, rd = depthOf(s.pos);
+      const carryTo = LADDER_CARRY[this.zone] ?? 12;
+      if (this.carrying === th || (down > 4 && rd >= myDepth - 1.5 && !this.passed.has(th))) {
+        if (rd < carryTo) {
+          this.carrying = th;
+          const inside = Math.sign(sim.ballY - s.pos.y) || 1;
+          const tgt = { x: s.pos.x - dir * 1.0, y: s.pos.y + inside * 0.7 };
+          return withFacingTechnique(track(a, tgt, { x: s.vel.x, y: s.vel.y }, { facing: facingQB, speed: 1, gain: 1.8 }), { label: 'ladder-carry', key: s.vel });
+        }
+        this.passed.add(th); this.carrying = null; this.threat = null;
+      } else {
+        const fut = { x: s.pos.x + s.vel.x * 0.4, y: s.pos.y + s.vel.y * 0.4 }, fd = depthOf(fut), qd = depthOf(q.pos);
+        // Under an intermediate route: the point on the QB's line to it at his depth. Under a short one: widen to it.
+        const y = fd > holdDepth + 0.5 && fd - qd > 0.5 ? q.pos.y + (fut.y - q.pos.y) * clamp((holdDepth - qd) / (fd - qd), 0, 1) : fut.y;
+        const tgt = { x: atDepth(holdDepth), y: clamp(y, 0.5, FIELD_WIDTH - 0.5) };
+        return withFacingTechnique(track(a, tgt, { x: 0, y: s.vel.y * 0.8 }, { facing: facingQB, speed: 0.95, gain: 1.6 }), { label: 'ladder-relate', key: s.vel });
+      }
+    }
+    // Rung 1: his landmark, sliding with the QB's look.
+    let y = lm.y;
+    const look = q.head ?? q.facing;
+    if (look !== undefined && look !== null) {
+      const r = Math.hypot(lm.x - q.pos.x, lm.y - q.pos.y);
+      const p = { x: q.pos.x + r * Math.cos(look), y: clamp(q.pos.y + r * Math.sin(look), 0.5, FIELD_WIDTH - 0.5) };
+      if (this.lookRaw && this.lookT < sim.t) this.lookHeld = Math.hypot(p.x - this.lookRaw.x, p.y - this.lookRaw.y) <= LADDER_STEADY ? this.lookHeld + (sim.t - this.lookT) : 0;
+      if (this.lookT < sim.t) { this.lookRaw = p; this.lookT = sim.t; }
+      if (knowsPass(sim, a)) y = lm.y + (p.y - lm.y) * (0.6 + 0.4 * a.r('anticipation')) * (1 - Math.exp(-this.lookHeld / LADDER_TAU));
+    }
+    const tgt = { x: atDepth(holdDepth), y };
+    return withFacingTechnique(goTo(a, tgt, { facing: facingQB, speed: 0.95 }), { label: this.settledAt >= 0 ? 'ladder-set' : 'ladder-drop' });
+  }
+  /** The nearest threat in his area: projected spot in his band (with margins), arriving / sitting ahead of leaving. */
+  private pick(a: Agent, sim: PlaySim): Agent | null {
+    const [ylo, yhi] = this.band, lm = this.landmark, dir = sim.attackDir(sim.offense[0].team);
+    let best: Agent | null = null, bs = Infinity;
+    for (const r of sim.offense) {
+      if (r === sim.qb || ['LT', 'LG', 'C', 'RG', 'RT'].includes(r.slot) || this.passed.has(r)) continue;
+      const s = sim.see(a, r), fut = { x: s.pos.x + s.vel.x * 0.7, y: s.pos.y + s.vel.y * 0.7 };
+      const held = this.inBand.has(r);
+      const inBand = held ? fut.y >= ylo - LADDER_OUT && fut.y <= yhi + LADDER_OUT : fut.y >= ylo + LADDER_IN && fut.y <= yhi - LADDER_IN;
+      if (inBand) this.inBand.add(r); else this.inBand.delete(r);
+      const depth = (s.pos.x - sim.los) * dir;
+      if (!inBand || depth > (LADDER_CARRY[this.zone] ?? 12) + 2 || depth < -3) continue;
+      const dx = fut.x - lm.x, dy = fut.y - lm.y, d = Math.hypot(dx, dy) || 1;
+      const leaving = (dx * s.vel.x + dy * s.vel.y) / d; // + leaving his landmark, - arriving
+      let score = d + 0.5 * clamp(leaving, -4, 4);
+      if (r === this.threat) score -= LADDER_PICK_BEAT;
+      if (score < bs) { bs = score; best = r; }
+    }
+    this.threat = best;
+    return best;
+  }
+}

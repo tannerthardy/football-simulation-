@@ -11,7 +11,7 @@ import { previewFreeMovement } from '../physics/movement-preview.js';
 import { READ_SCHEMES, RUN_READ, runRead } from './run-read.js';
 import { clamp, type Vec2 } from '../core/vec.js';
 import type { MoveCommand } from '../physics/kinematics.js';
-import { gapY, lineOffset } from '../playbook/alignment.js';
+import { gapY, isDeepZone, lineOffset } from '../playbook/alignment.js';
 import { GUN_QB_DEPTH } from '../playbook/formations.js';
 import { getRoute } from '../playbook/routes.js';
 import { CONCEPT_MENU } from '../playbook/concepts.js';
@@ -22,7 +22,7 @@ import type { Agent, Behavior } from './agent.js';
 import { boxThreats, isOL, planRunBlocking, playSideSign, PassProtector, PRO_CALL, ProtectionCoordinator, RpoRunBlocker, RunBlocker } from './behaviors/blocking.js';
 import { BallCarrier } from './behaviors/carrier.js';
 import { goTo, stand } from './behaviors/common.js';
-import { Blitzer, FumbleScramble, ManCoverage, PassRusher, Pursuit, ZoneCoverage } from './behaviors/defense.js';
+import { Blitzer, FumbleScramble, ManCoverage, PassRusher, Pursuit, UnderneathLadder, ZONE_LADDER, ZoneCoverage } from './behaviors/defense.js';
 import { QBHandoff, QBPass } from './behaviors/qb.js';
 import { GUN_SNAP, QB_EXTEND, snapSecured } from './ball-transfer.js';
 import { ConvoyCue, DownfieldBlocker, RCV_SEEN, RouteRunner, TrackBall } from './behaviors/receiver.js';
@@ -145,7 +145,9 @@ export function assignBehaviors(sim: PlaySim): void {
         // plain zones keep the landmark technique.
         const style = role.style ?? (role.zone === 'robber' || role.zone === 'hole' ? 'match' : sim.defCall.zoneStyle ?? 'match');
         setEyeZone(d, role.zone);
-        d.behavior = role.rule && style === 'match'
+        d.behavior = ZONE_LADDER && !isDeepZone(role.zone)
+          ? new UnderneathLadder(d, sim, role.zone, spot.gap, spot.gapSign)
+          : role.rule && style === 'match'
           ? new CoverageDefender(d, sim, role.rule, role.zone, style, spot.gap, spot.gapSign)
           : new ZoneCoverage(d, sim, role.zone, spot.gap, spot.gapSign, role.style);
         break;
