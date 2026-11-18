@@ -149,6 +149,9 @@ select, input[type="search"] { width: 100%; min-width: 0; border: 1px solid var(
 .detail-list button { font-family: var(--mono); font-size: 11px; padding: 2px 5px; margin-right: 5px; }
 @media (max-width: 680px) { .filter-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .app { padding-inline: 8px; } .linescore { display: none; } }
 .list { overflow-y: auto; padding: 4px 0 8px; }
+.view-panel { border: 1px solid var(--line); border-radius: 8px; margin: 8px 0; padding: 6px 10px 8px; display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 4px 12px; }
+.view-panel legend { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; padding: 0 4px; }
+.view-panel label { font-size: 12px; display: flex; gap: 6px; align-items: center; }
 .qhead { position: sticky; top: 0; background: var(--panel); font-family: var(--display); font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; font-size: 13px; color: var(--muted); padding: 8px 12px 4px; border-bottom: 1px solid var(--line); }
 .play { display: grid; grid-template-columns: 4px minmax(0, 1fr); gap: 0 10px; padding: 8px 12px; border-bottom: 1px solid var(--line); cursor: pointer; }
 .play[aria-current="true"] { background: var(--panel-2); }
@@ -255,6 +258,18 @@ select, input[type="search"] { width: 100%; min-width: 0; border: 1px solid var(
           <label><input id="layer-contact" type="checkbox">Block &amp; tackle contact</label>
           <label><input id="layer-perception" type="checkbox">Perceived targets</label>
         </div>
+        <fieldset class="view-panel" id="view-panel" aria-label="View"><legend>View</legend>
+          <label><input type="checkbox" data-v="cone">QB vision cone</label>
+          <label><input type="checkbox" data-v="art">Play art kept on during the play</label>
+          <label><input type="checkbox" data-v="routes">Routes &amp; protection</label>
+          <label><input type="checkbox" data-v="zones">Zone areas</label>
+          <label><input type="checkbox" data-v="man">Man assignments</label>
+          <label><input type="checkbox" data-v="rush">Rush paths</label>
+          <label><input type="checkbox" data-v="labels">Player labels / numbers</label>
+          <label><input type="checkbox" data-v="ball">Ball trail</label>
+          <label><input type="checkbox" data-v="read">QB read &amp; footwork step</label>
+          <label><input type="checkbox" data-v="dface">Defenders' facing ticks</label>
+        </fieldset>
         <div id="telemetry-status" class="status-note"></div>
         <div class="clip-export" aria-label="Export a video clip">
           <div class="row"><label>Start <input id="clip-start" type="number" min="0" step="0.1" aria-label="Video clip start in seconds">s</label><label>End <input id="clip-end" type="number" min="0" step="0.1" aria-label="Video clip end in seconds">s</label><button id="clip-whole">Whole play</button><button id="clip-from-here">Start here</button><button id="export-video">Export clip (.webm)</button><button id="cancel-export" hidden>Cancel export</button></div>
@@ -353,6 +368,10 @@ window.TELEMETRY_READY = Promise.resolve(true);
   let showSlots = true;
   let showTrails = true;
   let artOn = true, artKeep = false, artHold = 0;
+  // The film room's View panel: independent on/off switches, remembered per viewer (localStorage is only a convenience; the page works without it).
+  const V = { cone: true, art: false, routes: true, zones: true, man: true, rush: true, labels: true, ball: false, read: true, dface: true };
+  try { Object.assign(V, JSON.parse(localStorage.getItem('film-view') || '{}')); } catch (e) { /* no storage: defaults */ }
+  artKeep = V.art;
   let wide = false;
   let auto = true;
   let loopPlaylist = false;
@@ -690,7 +709,9 @@ window.TELEMETRY_READY = Promise.resolve(true);
   toggle('labels', () => showSlots, (v) => (showSlots = v));
   toggle('trails', () => showTrails, (v) => (showTrails = v));
   toggle('artbtn', () => artOn, (v) => { artOn = v; artHold = 0; });
-  $('layer-art').onchange = () => { artKeep = $('layer-art').checked; };
+  $('layer-art').onchange = () => { artKeep = $('layer-art').checked; V.art = artKeep; const b = document.querySelector('[data-v=art]'); if (b) b.checked = artKeep; try { localStorage.setItem('film-view', JSON.stringify(V)); } catch (e) {} };
+  document.querySelectorAll('#view-panel [data-v]').forEach((el) => { el.checked = !!V[el.dataset.v]; el.onchange = () => { V[el.dataset.v] = el.checked; if (el.dataset.v === 'art') { artKeep = el.checked; $('layer-art').checked = el.checked; } try { localStorage.setItem('film-view', JSON.stringify(V)); } catch (e) {} }; });
+  $('layer-art').checked = artKeep;
   $('art-body').onclick = (e) => { const row = e.target.closest('.art-row'); if (!row) return; const sel = $('inspect-player'); const on = sel.value === row.dataset.i; sel.value = on ? '-1' : row.dataset.i; inspectorStamp = ''; document.querySelectorAll('.art-row').forEach((r) => r.classList.toggle('on', !on && r === row)); };
   toggle('wide', () => wide, (v) => { wide = v; resize(); });
   toggle('auto', () => auto, (v) => { auto = v; holdUntil = 0; });
@@ -968,6 +989,33 @@ window.TELEMETRY_READY = Promise.resolve(true);
   const zoneKind = (z) => /^(deep|quarter|tampa)/.test(z) ? 'deep' : /^(flat|curl_flat)/.test(z) ? 'flat' : 'under';
   const artShown = (p) => !!(p && p.art && !exportTask && (artKeep || (artOn && t < 0.05)));
   const DROP_YD = { quick: 1.5, gun3: 2.5, gun5: 4, five: 4, seven: 6, pa: 5, boot: 4 };
+  // The passer's recorded look: his own head direction every 0.1 s (the engine's `head`), the cone his clear vision covers and the wider periphery
+  // (QBMind clearHalf / periphHalf), the receiver his eyes are on and the one his read is on. Recorded by a read-only tap; nothing here is read by a player.
+  function qbSample(p, time) { const q = p.art && p.art.qb; if (!q || !q.s.length) return null; let lo = 0; for (let k = 0; k < q.s.length; k++) { if (q.s[k][0] <= time + 1e-6) lo = k; else break; } return { q, s: q.s[lo] }; }
+  function drawQbLook(p, positions, X, Y, sc) {
+    const got = qbSample(p, t); if (!got) return;
+    const qi = p.roster.findIndex((r) => r[0] === 'O' && r[1] === 'QB'); if (qi < 0 || !positions[qi]) return;
+    const { q, s: smp } = got, [, , , head, eyes, readSlot, phase] = smp, me = positions[qi];
+    const slotIdx = (slot) => slot ? p.roster.findIndex((r) => r[0] === 'O' && r[1] === slot) : -1;
+    const nOf = (slot) => { const m = {}; ((p.art.offense && p.art.offense.progression) || []).forEach((r, k) => { const x = /\((\w+)\)/.exec(r); if (x) m[x[1]] = k + 1; }); return slot ? m[slot] : undefined; };
+    const px = X(me[0]), py = Y(me[1]), ang = (h) => -h;
+    if (V.cone) {
+      ctx.save();
+      for (const [half, R, fill] of [[q.periph, 18, 'rgba(255,214,64,0.10)'], [q.clear, 24, 'rgba(255,214,64,0.26)']]) {
+        ctx.beginPath(); ctx.moveTo(px, py); ctx.arc(px, py, R * sc, ang(head + half), ang(head - half)); ctx.closePath(); ctx.fillStyle = fill; ctx.fill();
+      }
+      ctx.strokeStyle = 'rgba(255,214,64,0.9)'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(px, py); ctx.lineTo(px + Math.cos(ang(head)) * 24 * sc, py + Math.sin(ang(head)) * 24 * sc); ctx.stroke();
+      const ring = (i, color, dash, w) => { if (i < 0 || !positions[i]) return; ctx.strokeStyle = color; ctx.lineWidth = w; ctx.setLineDash(dash); ctx.beginPath(); ctx.arc(X(positions[i][0]), Y(positions[i][1]), Math.max(9, sc * 0.95), 0, 7); ctx.stroke(); ctx.setLineDash([]); };
+      const focus = eyes || readSlot; if (readSlot && eyes && readSlot !== eyes) ring(slotIdx(readSlot), 'rgba(255,255,255,0.85)', [4, 3], 2); ring(slotIdx(focus), '#ffd23f', [], 3.5);
+      ctx.restore();
+    }
+    if (V.read) {
+      const focus = eyes || readSlot, n = nOf(focus), steps = (p.art.offense && p.art.offense.steps) || [], st = n ? steps[n - 1] : null;
+      const lines = [`QB ${phase || ''}`.trim(), focus ? `${eyes ? 'eyes on' : 'read on'} ${focus}${n ? ` · read ${n}` : ''}` : 'looking: not on a receiver', readSlot && eyes && readSlot !== eyes ? `read on ${readSlot}` : '', st ? st.text.replace(/^Read \d+: /, '') : ''].filter(Boolean);
+      ctx.save(); ctx.font = '600 12px monospace'; ctx.textAlign = 'left'; ctx.textBaseline = 'top'; const w = Math.max(...lines.map((l) => ctx.measureText(l).width)) + 12;
+      ctx.fillStyle = 'rgba(0,0,0,0.62)'; ctx.fillRect(10, 10, w, lines.length * 16 + 8); ctx.fillStyle = '#ffd23f'; lines.forEach((l, k) => { ctx.fillStyle = k === 0 ? '#ffd23f' : '#fff'; ctx.fillText(l, 16, 14 + k * 16); }); ctx.restore();
+    }
+  }
   function drawArt(p, positions, X, Y, sc, sel) {
     const art = p.art; if (!art) return;
     const idx = (team, slot) => p.roster.findIndex((r) => r[0] === team && r[1] === slot);
@@ -985,23 +1033,28 @@ window.TELEMETRY_READY = Promise.resolve(true);
       if (!j) return; const r = p.roster[i]; if (r[0] !== 'D') return;
       ctx.globalAlpha = dim(i) ? 0.18 : 1; const me = pos(i); if (!me) return;
       if (j.t === 'zone') {
+        if (!V.zones) return;
         const k = zoneKind(j.zone), col = ART_C[k], [x0, x1, y0, y1] = j.area;
         ctx.fillStyle = col + '38'; ctx.fillRect(X(x0), Y(y1), (x1 - x0) * sc, (y1 - y0) * sc);
         ctx.strokeStyle = col; ctx.lineWidth = 1.5; ctx.setLineDash(j.rule ? [5, 3] : []); ctx.strokeRect(X(x0), Y(y1), (x1 - x0) * sc, (y1 - y0) * sc); ctx.setLineDash([]);
         poly([[me[0], me[1]], j.center], col, 1.2, [2, 4]);
         tag(`${r[1]}${j.rule ? ' ◆' : ''}`, [(x0 + x1) / 2, (y0 + y1) / 2], col);
       } else if (j.t === 'man') {
+        if (!V.man) return;
         const ti = idx('O', j.target), tp = ti >= 0 ? pos(ti) : null;
         if (tp) { arrow(me, tp, ART_C.man, 2.2); tag(j.press ? 'press' : 'man', [(me[0] + tp[0]) / 2, (me[1] + tp[1]) / 2], ART_C.man); }
       } else if (j.t === 'rush' || j.t === 'blitz') {
+        if (!V.rush) return;
         arrow(me, j.to, ART_C.rush, j.t === 'blitz' ? 3.4 : 2); if (j.t === 'blitz') tag('blitz', [(me[0] + j.to[0]) / 2, (me[1] + j.to[1]) / 2], ART_C.rush);
       } else if (j.t === 'fit') {
+        if (!V.rush) return;
         arrow(me, j.to, ART_C.rush, 2, [5, 3]); tag(j.gap, [(me[0] + j.to[0]) / 2, (me[1] + j.to[1]) / 2], ART_C.rush);
-      } else if (j.t === 'spy') { ctx.strokeStyle = ART_C.man; ctx.setLineDash([3, 3]); ctx.beginPath(); ctx.arc(X(me[0]), Y(me[1]), Math.max(10, sc * 1.2), 0, 7); ctx.stroke(); ctx.setLineDash([]); tag('spy', me, ART_C.man, -16); }
+      } else if (j.t === 'spy') { if (!V.man) return; ctx.strokeStyle = ART_C.man; ctx.setLineDash([3, 3]); ctx.beginPath(); ctx.arc(X(me[0]), Y(me[1]), Math.max(10, sc * 1.2), 0, 7); ctx.stroke(); ctx.setLineDash([]); tag('spy', me, ART_C.man, -16); }
     });
     art.jobs.forEach((j, i) => {
       if (!j) return; const r = p.roster[i]; if (r[0] !== 'O') return;
       ctx.globalAlpha = dim(i) ? 0.18 : 1; const me = pos(i); if (!me) return;
+      if (!V.routes && j.t !== 'qb') return;
       if (j.t === 'route') {
         poly(j.path, ART_C.route, 2.6); head(j.path[j.path.length - 2] || me, j.path[j.path.length - 1], ART_C.route, 9);
         if (j.brk != null && j.path[j.brk]) { ctx.fillStyle = ART_C.route; ctx.beginPath(); ctx.arc(X(j.path[j.brk][0]), Y(j.path[j.brk][1]), 3.5, 0, 7); ctx.fill(); }
@@ -1206,6 +1259,8 @@ window.TELEMETRY_READY = Promise.resolve(true);
     const rad = Math.max(5, sc * 0.55);
     const carrier = f < 0.5 ? F.c[a] : F.c[b];
     if (artView) drawArt(p, positions, X, Y, sc, inspected);
+    if (V.ball) { ctx.save(); ctx.strokeStyle = 'rgba(255,255,255,0.7)'; ctx.lineWidth = 1.5; ctx.setLineDash([2, 3]); ctx.beginPath(); for (let k = 0; k <= a; k++) { const bx0 = X(F.b[k * 3]), by0 = Y(F.b[k * 3 + 1]); if (k === 0) ctx.moveTo(bx0, by0); else ctx.lineTo(bx0, by0); } ctx.stroke(); ctx.restore(); }
+    drawQbLook(p, positions, X, Y, sc);
     drawLayers(p,telemetry,positions,X,Y,sc,inspected);
     fieldProjection = {players:positions.map((p)=>[X(p[0]),Y(p[1])]),radius:rad};
     for (let i = 0; i < n; i++) {
@@ -1231,15 +1286,17 @@ window.TELEMETRY_READY = Promise.resolve(true);
       ctx.strokeStyle = i === carrier ? css('--fd') : tm.alt;
       ctx.stroke();
       // Body-facing tick (not a gaze or vision ray).
+      if (r[0] === 'O' || V.dface) {
       ctx.beginPath();
       ctx.moveTo(px + Math.cos(fc) * rad * 0.6, py - Math.sin(fc) * rad * 0.6);
       ctx.lineTo(px + Math.cos(fc) * rad * 1.45, py - Math.sin(fc) * rad * 1.45);
       ctx.lineWidth = 2;
       ctx.strokeStyle = tm.alt;
       ctx.stroke();
+      }
       ctx.fillStyle = tm.text;
       ctx.font = `600 ${Math.max(8, rad * 0.95)}px ${css('--mono')}`;
-      ctx.fillText(showSlots ? r[1].replace('_', '') : String(r[3]), px, py + 0.5);
+      if (V.labels) ctx.fillText(showSlots ? r[1].replace('_', '') : String(r[3]), px, py + 0.5);
     }
     // Ball: shadow on the ground, ball drawn higher and larger with height.
     const bx = F.b[a * 3] + (F.b[b * 3] - F.b[a * 3]) * f;

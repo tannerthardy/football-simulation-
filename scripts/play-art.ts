@@ -39,6 +39,8 @@ export type Job =
   | { t: 'spy'; text: string };
 
 export interface ArtSheet {
+  /** The passer's recorded look (read-only tap): his head direction every 0.1 s with the receiver his eyes are on and the one his read is on, and the half-widths of his clear cone and periphery. */
+  qb?: { clear: number; periph: number; s: [number, number, number, number, string | null, string | null, string][] };
   los: number;
   formation: string;
   coverage: string;
@@ -135,6 +137,17 @@ function zoneArea(zone: ZoneId, c: XY, los: number): [number, number, number, nu
 // ---------------------------------------------------------------------------------- the tap
 const sheets: ArtSheet[] = [];
 const seen = new WeakSet<object>();
+const trackOf = new WeakMap<object, ArtSheet>();
+/** Every 0.1 s of a pass play: where the passer's head points (his own `head`), the receiver his eyes are on (`eyesOn`) and the one his read is on (`recordedState().read`). Reads existing state only. */
+function sampleQb(sim: any, sh: ArtSheet): void {
+  const qb = sim.qb; if (!qb || !sh.offense || sh.offense.kind !== 'pass') return;
+  const k = Math.round(sim.t * 10); if (k < 0 || k > 80) return;
+  const q = sh.qb ?? (sh.qb = { clear: Math.round((sim.qbMind?.clearHalf ?? 0.45) * 1000) / 1000, periph: Math.round((sim.qbMind?.periphHalf ?? 1.2) * 1000) / 1000, s: [] });
+  if (q.s.length && q.s[q.s.length - 1][0] >= k / 10 - 1e-9) return;
+  const b = qb.behavior, st = b?.recordedState?.(), eyes = b?.eyesOn, readIdx = st?.read;
+  const slot = (i: any) => (typeof i === 'number' && sim.agents[i] ? String(sim.agents[i].slot) : null);
+  q.s.push([k / 10, Math.round(qb.pos.x * 100) / 100, Math.round(qb.pos.y * 100) / 100, Math.round((qb.head ?? qb.body.facing) * 1000) / 1000, eyes ? String(eyes.slot) : null, slot(readIdx), String(st?.phase ?? '')]);
+}
 let installed = false;
 
 /** Install the read-only tap (idempotent). Sheets are collected in the order plays are simulated. */
@@ -144,8 +157,11 @@ export function installPlayArtTap(): void {
   const proto = PlaySim.prototype as unknown as { tick: () => void };
   const tick = proto.tick;
   proto.tick = function (this: any) {
-    if (!seen.has(this)) { seen.add(this); if (!compilingPlan()) try { const s = sheetOf(this); if (s) sheets.push(s); } catch (e) { sheets.push(null as never); } }
-    return tick.call(this);
+    if (!seen.has(this)) { seen.add(this); if (!compilingPlan()) try { const s = sheetOf(this); if (s) { sheets.push(s); trackOf.set(this, s); } } catch (e) { sheets.push(null as never); } }
+    const out = tick.call(this);
+    const sh = trackOf.get(this);
+    if (sh) try { sampleQb(this, sh); } catch { /* the tap never changes a play */ }
+    return out;
   };
 }
 export const takeSheets = (): ArtSheet[] => sheets.splice(0, sheets.length);
@@ -317,5 +333,5 @@ export function matchSheets(plays: PlayLog[], all: ArtSheet[]): Map<PlayLog, Art
 /** Roster-indexed art for one packed play: `jobs[i]` is the job of replay player i (roster order), null for none. */
 export function packArt(sheet: ArtSheet, roster: ReadonlyArray<{ team: string; slot: string }>) {
   const jobs = roster.map((r) => sheet.players.find((q) => q.team === r.team && q.slot === r.slot)?.job ?? null);
-  return { v: 1, offense: sheet.offense, defense: sheet.defense, jobs };
+  return { v: 1, offense: sheet.offense, defense: sheet.defense, jobs, qb: sheet.qb };
 }

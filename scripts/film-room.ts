@@ -28,21 +28,21 @@ const args = process.argv.slice(2), mode = args[0];
 const opt = (n: string, d: string) => { const i = args.indexOf(n); return i >= 0 && args[i + 1] && !args[i + 1].startsWith('--') ? args[i + 1] : d; };
 
 if (mode === 'collect') {
-  const seed = Number(opt('--seed', '101')), games = Number(opt('--games', '4')), out = opt('--out', `out/film/c${seed}.json`);
+  const seed = Number(opt('--seed', '101')), games = Number(opt('--games', '4')), first = Number(opt('--first', '0')), out = opt('--out', `out/film/c${seed}.json`);
   installPlayArtTap();
   const rng = new Rng(seed);
   const home = generateTeam(rng, 'Ironmen', 'IRN', { strength: 0.55 }), away = generateTeam(rng, 'Comets', 'COM', { strength: 0.55 });
   const kept: unknown[] = [];
   for (let i = 0; i < games; i++) {
     takeSheets();
-    const g = simulateGame(home, away, { seed: seed + i, record: true, recordLevel: 'light' });
+    const g = simulateGame(home, away, { seed: seed + first + i, record: true, recordLevel: 'light' });
     const art = matchSheets(g.log, takeSheets());
     let n = 0;
     for (const p of g.log) {
       if (p.kind !== 'pass' || p.nullified || !p.replay || !art.get(p)) continue;
-      kept.push(packReplayPlay(p, i, art.get(p))); n++;
+      kept.push(packReplayPlay(p, first + i, art.get(p))); n++;
     }
-    console.error(`game ${i + 1}/${games} (seed ${seed + i}): ${n} pass plays kept`);
+    console.error(`game ${i + 1}/${games} (seed ${seed + first + i}): ${n} pass plays kept`);
   }
   mkdirSync(resolve(root, dirname(out)), { recursive: true });
   writeFileSync(resolve(root, out), JSON.stringify({ seed, games, source: sourceVersion(), plays: kept }));
