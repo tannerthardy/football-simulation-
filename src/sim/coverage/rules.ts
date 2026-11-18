@@ -55,6 +55,10 @@ export interface RuleState {
   pendingAt?: number;
   /** APEX_LEVERAGE: the back the apex has committed to as a flat threat under him. */
   flatBack?: Agent;
+  /** ROB_COMMIT: the help on #1 he has taken ('top', 'rob' or 'free'), on whom, and the declaration time it answered. */
+  help?: 'top' | 'rob' | 'free';
+  helpR?: Agent;
+  helpAt?: number;
 }
 
 export interface RuleCtx {
@@ -156,9 +160,46 @@ function threeAway(c: RuleCtx): boolean {
 
 /** Over-the-top help on #1 if he is going deep, else rob his in-breaker. */
 function helpOne(c: RuleCtx, one: ReceiverRead | null, lev: 'inside' | 'outside' = 'inside'): Directive {
+  if (ROB_COMMIT_BITS) return helpOneCommitted(c, one, lev);
   if (!one) return zoneOf(c);
   if (climbing(one)) return man(one, { overTop: true, lev });
   return { t: 'rob', r: one.r };
+}
+
+/** ROB_COMMIT (numeric bitmask; 7 since engine-81, 2026-11-18, `=0` restores; gap 5 of Rules' deep table): how a safety helping #1 reads him.
+ * Legacy re-scores every tick (over the top while #1 is "vertical" or has ever climbed past 7, else rob), so he flips
+ * rob/top/rob as an under or a dig crosses 7 yd, and robs a #1 who has not declared yet.
+ * bit 1: #1 has not declared (no release believed): he keeps his quarter, eyes on #1, until #1 shows his stem.
+ * bit 2: commit. He changes help only on a new declaration by #1 believed after his last change (the reader's own
+ *   confirmation is the margin): vertical takes him over the top, an in-breaker takes him to rob it. A past climb alone
+ *   does not move him; a route that stays in its declaration keeps his job.
+ * bit 4: a short #1 (under, stop, out or flat inside ROB_MIN yd) is not his to rob: the corner and the underneath players
+ *   have it. He plays his quarter (free) instead of driving down to a 5 yd window. */
+const ROB_COMMIT_BITS = Number(process.env.ROB_COMMIT ?? 7);
+const ROB_MIN = 7;
+function helpWanted(one: ReceiverRead): 'top' | 'rob' | 'free' {
+  const r = one.release;
+  if (r === 'vertical') return 'top';
+  if (r === 'none' || r === 'block') {
+    if (ROB_COMMIT_BITS & 1) return 'free';
+    return one.climbed ? 'top' : 'rob';
+  }
+  if (r === 'in') return (ROB_COMMIT_BITS & 4) && one.depth < ROB_MIN && !one.climbed ? 'free' : 'rob';
+  // under, stop, out, flat
+  if ((ROB_COMMIT_BITS & 4) && one.depth < ROB_MIN) return 'free';
+  return (ROB_COMMIT_BITS & 2) ? 'rob' : (one.climbed ? 'top' : 'rob');
+}
+function helpOneCommitted(c: RuleCtx, one: ReceiverRead | null, lev: 'inside' | 'outside'): Directive {
+  if (!one) return zoneOf(c);
+  const st = c.state;
+  if (!(ROB_COMMIT_BITS & 2) || st.help === undefined || st.helpR !== one.r || one.since > (st.helpAt ?? -Infinity)) {
+    const want = helpWanted(one);
+    if (want !== st.help || st.helpR !== one.r) { st.help = want; st.helpR = one.r; }
+    st.helpAt = one.since;
+  }
+  if (st.help === 'top') return man(one, { overTop: true, lev });
+  if (st.help === 'rob') return { t: 'rob', r: one.r };
+  return zoneOf(c);
 }
 
 // ------------------------------------------------------------ rules
