@@ -1,0 +1,57 @@
+From 033644fc1cfe0ed151929ed616cb806aabe8f4cb Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Wed, 18 Nov 2026 00:01:08 +0000
+Subject: [PATCH] KNOWN_PROBLEMS: PRO-GETOFF, the get-off vs pressure source
+ (NGS-checked on BDB 2025) and ours (no slope)
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01QSrvCvX4CHRx28KhAUQuC1
+---
+ docs/KNOWN_PROBLEMS.md | 31 +++++++++++++++++++++++++++++++
+ 1 file changed, 31 insertions(+)
+
+diff --git a/docs/KNOWN_PROBLEMS.md b/docs/KNOWN_PROBLEMS.md
+index c67abce6..207e0a38 100644
+--- a/docs/KNOWN_PROBLEMS.md
++++ b/docs/KNOWN_PROBLEMS.md
+@@ -2536,6 +2536,37 @@ BDB2025 weeks 1–2 with `run_film_reference.py`.
+   sack persists at 3.15–3.20 s (#189 film).
+ 
+ <a id="pro-3"></a>
++### PRO-GETOFF: A faster get-off does not buy pressure (evidence to check against)
++
++Source (the user, 2026-11-17): a public chart, Doug Analytics on X, "Pass-Rush Get-Off vs Pressure Rate": about +1.25
++pressure points per 0.1 s faster for edges and +1.15 for defensive tackles; mean get-off 0.87 s (edge) and 1.06 s (DT);
++one dot per player-game with 10+ rushes. Its definition of get-off is not given in the post; NGS's is the time from the
++snap to crossing the line of scrimmage. It is an association across player-games, not a causal slope: faster rushers
++are also better rushers.
++
++Checked on BDB 2025 player_play (NGS `getOffTimeAsPassRusher`, `causedPressure`; initial pass rushers on dropbacks,
++weeks 1-9; `scripts/diag/pass-operators/nfl_getoff.py`):
++
++| | edge (DE / OLB) | interior (DT / NT) |
++|---|---|---|
++| NGS get-off mean (p10 / p50 / p90), s | 0.91 (0.63 / 0.86 / 1.26) | 1.06 (0.76 / 1.01 / 1.43) |
++| pressure per 0.1 s faster, player-games 10+ rushes | +1.59 pts (corr -0.22, n 932) | +1.33 pts (corr -0.22, n 580) |
++| sd of player-game means / within one player across snaps, s | 0.12 / 0.25 | 0.12 / 0.26 |
++
++So the chart's numbers are NGS get-off. NGS is not the body crossing the ball's x: that operator on the tracking reads
++0.14 s (edge) / 0.20 s (interior) earlier than NGS on the same rushes (corr 0.67 / 0.52; week 1), p50 0.80 s for both.
++
++Ours (develop engine-77, eight export games, seeds 101-108, the crossing operator `sim-getoff.mts`; pressure is the
++geometric 2-yd one, a different definition from `causedPressure`): edges cross at p50 0.69 s (NFL 0.80), interior 0.80
++(0.80); first movement p50 0.40 s (NFL 0.30, both on a 0.1 s grid). The spread exists but is narrow across players
++(sd of player-game means 0.07 / 0.09 s, NFL NGS 0.12), near the NFL within a player (0.19 / 0.23 s). No slope: edges
+++0.37 pts per 0.1 s faster (corr -0.06, 53 player-games), interior -0.35 (corr +0.09, 47). A faster start does not
++convert to pressure. What sets ours: `snap-count.ts` planSnap (an on-line defender times the count with chance
++0.55 + 0.5 x anticipation, +0.15 on passing downs, error sd 0.03 + 0.05 x (1 - anticipation); otherwise he goes at
++`snapResponse`, 0.10 + 0.3 x reactionTime x (1 - 0.3 x anticipation), reactionTime from playRecognition and awareness),
++then his burst from the 10-yd split, forty and weight (`inPadsSprint`). No stance term. Player-game get-off correlates
++with the 10-yd split (+0.34 / +0.37), weakly with recognition and anticipation.
++
+ ### PRO-3: Interior pairs move as one block
+ 
+ - **Measure** (#191, `rg3`): at 1.0 s, the rusher moves toward the QB at 0.00 yd/s
+-- 
+2.43.0
+
