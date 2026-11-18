@@ -75,6 +75,10 @@ const ZONE_SETTLE = process.env.ZONE_SETTLE !== '0';
  * settles as before. His own position against his landmark is his to know. Margins: stated choices, enter and exit on
  * opposite sides. */
 export const SETTLE_DEPTH = process.env.SETTLE_DEPTH !== '0';
+/** ZONE_COMMIT (experimental, off; ZONE_COMMIT=1; Coverage, C14 zone relation): the underneath zone defender's technique
+ * on the receiver he plays (carried across, read on his stem) is held until the observed velocity clears the far side
+ * of its switch, and against a crosser he holds the window on its path (the lane to its pictured future). */
+export const ZONE_COMMIT = process.env.ZONE_COMMIT === '1';
 const SINK_ENTER = 2, SINK_EXIT = 1;
 /** SEEN_EYES (default on; SEEN_EYES=0 restores the QB's internal read target): a zone defender
  * reads the QB's look from what he sees of him, not from the QB's internal
@@ -1703,6 +1707,10 @@ function safetyOver(a: Agent, r: number): number {
   return Math.max(2, (13.4 - 0.5 * Math.max(0, r)) * scale);
 }
 export class ZoneCoverage implements Behavior {
+  /** ZONE_COMMIT: the receiver whose technique is held, and the held switches. */
+  private commitR: Agent | null = null;
+  private heldAcross = false;
+  private heldStem = false;
   readonly kind = 'zone';
   private readonly landmark: Vec2;
   /** Inspect the exact adjusted landmark used by this technique. */
@@ -2285,23 +2293,34 @@ export class ZoneCoverage implements Behavior {
       } else if (qbEyes) tgt = lerp(lm, infoHonest(8) ? sim.see(a, qbEyes).pos : qbEyes.pos, 0.25 * a.r('anticipation'));
       return withFacingTechnique(goTo(a, this.fromMotion(a, settle(tgt), true), { facing: facingQB, speed: zs }), { label: this.settledAt >= 0 ? 'zone-settle' : 'zone-landmark' });
     }
-    const lane = lerp(qbAt, best.pos, 0.82);
-    let tgt = { x: Math.min(lane.x, best.pos.x - 0.5), y: lane.y };
+    // ZONE_COMMIT: what he plays (this receiver, carried across or read on his stem) is held until his observed velocity
+    // clears the far side of the switch: across enters at |vy| > 3 and over |vx|, leaves under 2 or under 0.75 |vx|;
+    // the stem read enters at vx > 0.5 and over |vy|, leaves under 0 or under 0.75 |vy|. A new receiver starts fresh.
+    if (ZONE_COMMIT && this.commitR !== best.r) { this.commitR = best.r; this.heldAcross = false; this.heldStem = false; }
+    const vxA = Math.abs(best.vel.x), vyA = Math.abs(best.vel.y);
+    if (ZONE_COMMIT) this.heldAcross = this.heldAcross ? !(vyA < 2 || vyA < 0.75 * vxA) : vyA > 3 && vyA > vxA;
+    const carryingAcross = ZONE_COMMIT ? this.heldAcross : vyA > 3 && vyA > vxA;
+    // ZONE_COMMIT: against a crosser he holds the throwing window on its path (the lane to its pictured future), not on
+    // its current spot, whose pull back cancelled the feed-forward and planted him while the crosser ran into him; the
+    // radius cap still passes it at his area's edge.
+    const toward = ZONE_COMMIT && carryingAcross ? best.fut : best.pos;
+    const lane = lerp(qbAt, toward, 0.82);
+    let tgt = { x: Math.min(lane.x, toward.x - 0.5), y: lane.y };
     const off = sub(tgt, lm);
     const l = Math.hypot(off.x, off.y);
     if (l > this.radius) tgt = { x: lm.x + (off.x / l) * this.radius, y: lm.y + (off.y / l) * this.radius };
     // A match defender can run with a crosser while looking back toward the
     // QB. Treating gaze as hip orientation forced him to shuffle at ~60% of
     // top speed forever, even after accepting the route into his zone.
-    const carryingAcross = Math.abs(best.vel.y) > 3 && Math.abs(best.vel.y) > Math.abs(best.vel.x);
     // An advancing stem underneath the hook has not declared a short route.
     // Squeeze its lane without driving down through it before carry admission.
     // Holding depth means no depth feedforward: following half the receiver's
     // speed here would keep retreating from a hitch. A plant already read by
     // RouteObservation, a stop or a crossing release restores the lane drive.
-    const stemRead = this.zone.startsWith('hook') && best.pos.x < a.pos.x
-      && best.vel.x > 0.5 && best.vel.x > Math.abs(best.vel.y)
+    const stemNow = best.vel.x > 0.5 && best.vel.x > Math.abs(best.vel.y)
       && Math.hypot(best.vel.x, best.vel.y) + 1e-6 >= Math.hypot(best.cue.vel.x, best.cue.vel.y);
+    if (ZONE_COMMIT) this.heldStem = this.heldStem ? !(best.vel.x < 0 || best.vel.x < 0.75 * Math.abs(best.vel.y)) : stemNow;
+    const stemRead = this.zone.startsWith('hook') && best.pos.x < a.pos.x && (ZONE_COMMIT ? this.heldStem : stemNow);
     // A read step must not retain depth already outside his installed drop.
     if (stemRead) tgt = { ...tgt, x: Math.min(a.pos.x, lm.x) };
     // A receiver still behind the line in front of him (a back, a swing, a
