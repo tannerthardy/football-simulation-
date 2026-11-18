@@ -2,7 +2,7 @@
 
 One combination of experimental flags that Run Game, Defense, Flex and Coverage all measure against. Before this, each agent tested on its own mix (the FLAT_PRESS / ZONE_RUN back-and-forth on 2026-11-09 came from two different flag sets), and no list of anyone's stack existed in the repository.
 
-- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-87`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
+- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-93`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
 - **The code:** `run/G3-oz-backfield` a749beb7 + `defense/G2-stance-tell` a0cb0789 (#411) + `defense/G2-lb-start` (#416, with #409) + `claude/quirky-franklin-9lbwbp` (#417, with #415) + develop 6676dfc2.
 - **Since 2026-11-09 the stack is the engine's default.** The flags listed `on` are read as on unless set to `0`; a bare command in a clean shell and `npm run ref -- <command>` run the same engine. `npm run ref -- --off -- <command>` runs the legacy engine (every listed flag off). `test/reference-stack.test.ts` fails if the file and the code defaults ever disagree. See "Promotion" below.
 
@@ -608,6 +608,33 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
 
+
+## engine-93: the Cover 2 flat corner takes the #2 flat when #1 cancels (2026-11-18)
+
+On: `FLAT_CARRY` (Rules + Coaching's rule HNFL-099/-334; Coverage built). The flat corner reads #1 himself:
+
+- **#1 cancels:** seen 3+ yd deep moving more across than up (a slant or an in), or slowed under 1 yd/s. Held until
+  #1 climbs again (a double move).
+  - The #2 flat in his area is then his. He squeezes it from on top and outside, which carries it if it turns up.
+  - He keeps it until another defender he sees caps it, it leaves his area, or it reaches 20 yd.
+- **#1 goes vertical:** he sinks with #1 (FLAT_SINK, engine-85) and the half safety takes what's left.
+
+Three ungated attempts took him off a vertical #1: 20+ completions rose 67 -> 86 (COV-12 in KNOWN_PROBLEMS).
+
+Cover 2, Cover 2 match and Tampa 2 staged dropbacks, every concept, 3 seeds, develop 6c7d09b1:
+
+| | off | on |
+|---|---|---|
+| never-touched 20+ completions (`scripts/diag/coverage/flat-carry.mts`) | 26 | 22 |
+| 20+ completions | 82 | 77 |
+| Cover 2 YAC | 6.32 | 5.55 |
+
+- **Throws to #1** (`corner-sink.mts`): unchanged, 6 at 50%, 6.5 yd/att; corner to #1 at arrival 4.7 -> 4.5 yd.
+- **Other rows:** the corner's downfield speed and depth under #1 are unchanged within 0.1. Cover 1, 3 and 4 YAC are
+  identical.
+
+**Open:** on the traced slant_flat from trips his read of #1's slant lands at about 2.8 s (a slant at 45 degrees shows
+"more across than up" late), so that rep is still late. An earlier read of #1's inside release is the next lever.
 
 ## engine-87: the Cover 2 half safety keys #1 to #2 (2026-11-18)
 

@@ -84,10 +84,10 @@ export const SETTLE_DEPTH = process.env.SETTLE_DEPTH !== '0';
  * first (Rules, hole-shot, Cover 2 throws to #1 at 15+ air yards): NFL corner downfield 3.6 yd/s at the throw, ours
  * 0.5 (planted on the set); corner to #1 at arrival 6.4 vs 11.8 yd. */
 export const FLAT_SINK = process.env.FLAT_SINK !== '0';
-/** FLAT_CARRY (experimental, off; FLAT_CARRY=1; Coverage, Rules + Coaching's rule HNFL-099/-334): with #1 cancelled
+/** FLAT_CARRY (on since engine-93; FLAT_CARRY=0 restores; Coverage, Rules + Coaching's rule HNFL-099/-334): with #1 cancelled
  * (not vertical, his own read with a margin) the Cover 2 flat corner carries the #2 flat that turns up until it is
  * capped (ZoneCoverage.flatCarry); with #1 vertical he sinks with #1 as before. */
-export const FLAT_CARRY = process.env.FLAT_CARRY === '1';
+export const FLAT_CARRY = process.env.FLAT_CARRY !== '0';
 const FLAT_SINK_DEPTH = 18;
 const SINK_ENTER = 2, SINK_EXIT = 1;
 /** SEEN_EYES (default on; SEEN_EYES=0 restores the QB's internal read target): a zone defender
