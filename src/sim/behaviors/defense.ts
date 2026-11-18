@@ -2963,11 +2963,9 @@ function flightApproach(a: Agent, sim: PlaySim, path: PlaySim['ballPath'], acqui
         const top = !atBall && late > DRIVE_SECURE - (was ? DEEP_ARRIVE_MARGIN : 0) && down >= (was ? DEEP_ARRIVE_RUN - 0.5 : DEEP_ARRIVE_RUN);
         deepArriveTop.set(a, top);
         if (top) {
-          // Attempt 4: the receiver's run ends where the ball comes down (the window point is the earliest catch, which
-          // on a deep ball sits short of the ball's end); he stays on the ball's line instead of overrunning it.
-          const bodies = a.profile.radius + window.receiver.profile.radius + a.profile.reach;
-          const end = arrivalPoint(sim, path), toEnd = end ? Math.max(0, (end.x - land.x) * dir) : 0;
-          const upfield = bodies + Math.min(down * late, toEnd);
+          // Attempt 5: no cap at the ball's end (attempt 4): a receiver who catches it keeps running, and a deep man
+          // arriving after the catch aims where the receiver will be; a man at the ball's end plays it (atBall above).
+          const upfield = a.profile.radius + window.receiver.profile.radius + a.profile.reach + down * late;
           const across = window.seen.vel.y * late * (0.6 + 0.4 * a.r('pursuit'));
           tgt = { x: land.x + dir * upfield, y: clamp(land.y + across, 0.5, FIELD_WIDTH - 0.5) };
         }
