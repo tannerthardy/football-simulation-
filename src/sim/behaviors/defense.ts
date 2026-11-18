@@ -3020,8 +3020,10 @@ export function toward(a: Vec2, b: Vec2): Vec2 {
  *     1.5 outside), scored by distance to his landmark with an arriving / sitting receiver ahead of a leaving one; the
  *     one he is playing keeps him until another beats it by LADDER_PICK_BEAT, and of threats within that margin the
  *     deeper wins (the ball brings him down: he does not leave a deeper threat for a shallow one). Underneath an
- *     intermediate route he takes the point on the QB's line to it at his own depth; against a short one he gets in front
- *     of it (LADDER_FRONT yd in front, on the QB's line). A vertical in his area is carried to his zone's carry depth, then passed.
+ *     intermediate route he takes the point on the QB's line to it at his own depth; against a short route that has sat
+ *     down he gets in front of it (LADDER_FRONT yd, on the QB's line); against a short one still moving he takes the
+ *     lane halfway down to it, a yard above it at least (v2's in-front on every short route put him in front 76% vs
+ *     the NFL's 57% and behind the catcher at the catch). A vertical in his area is carried to his zone's carry depth, then passed.
  *  3. Break on the throw (his release belief; playBall, unchanged), with the ladder as his coverage until he sees it.
  * Coverage-specific rules enter only as the landmark (zoneLandmark), his area (zoneBand) and the carry depth. Ported:
  * the Cover 2 flat (squat) corner sinks with #1 until the flat is threatened in front of him (Rules + Coaching). Left out
@@ -3094,7 +3096,11 @@ export class UnderneathLadder implements Behavior {
         // Under an intermediate route: the point on the QB's line to it at his depth. Under a short one: widen to it.
         // Under an intermediate route: the point on the QB's line to it at his depth. In front of a short one: a yard in
         // front of it on the QB's line (between the passer and the route), not held above it.
-        const want = fd > holdDepth + 0.5 ? holdDepth : clamp(fd - LADDER_FRONT, 0.5, holdDepth);
+        // A settled (sitting) short route: in front of it. A moving one: the throwing lane between his depth and the route,
+        // a yard above it at least (he is not passed by it, and does not leave the deeper part of his area).
+        const sitting = Math.hypot(s.vel.x, s.vel.y) < 2.5;
+        const want = fd > holdDepth + 0.5 ? holdDepth
+          : sitting ? clamp(fd - LADDER_FRONT, 0.5, holdDepth) : clamp(Math.max(fd + 1, (fd + holdDepth) / 2), 0.5, holdDepth);
         const y = fd - qd > 0.5 ? q.pos.y + (fut.y - q.pos.y) * clamp((want - qd) / (fd - qd), 0, 1) : fut.y;
         const tgt = { x: atDepth(want), y: clamp(y, 0.5, FIELD_WIDTH - 0.5) };
         return withFacingTechnique(track(a, tgt, { x: 0, y: s.vel.y * 0.8 }, { facing: facingQB, speed: 0.95, gain: 1.6 }), { label: 'ladder-relate', key: s.vel });
