@@ -65,3 +65,24 @@ All lanes stopped. Develop at engine-91. Open, uncarded or half-carded: #859 (re
 stopped partway), #850 (DIR_START), #855 (open-field pair), QB's READ_WINDOW flip, #861 (TAUGHT_ORDER),
 #793 (joint honest-tracking + defender catch landing; dither row over budget), Defense's deep-safety pair,
 #860 (JAM_SQUARE) with Coverage's MAN_TURN, #862 (YAW_CAP, hold), #863, #864.
+
+## Priorities set by the user after the film (2026-11-18)
+
+The two biggest fixes, in this order of weight:
+
+1. **Coverage assignments and how defenders relate to the receivers in their zones.** "We're just leaving
+   dudes way too wide open too often." Includes pass-offs and match rules, and, as part of the same work,
+   **run fits and play action**: defenders look drawn too far out of their zones by play action; it looks
+   "a bit too effective" (F61, F68). Check against the NFL before assuming it is wrong.
+2. **Pursuit.** To the eye, a corner takes an angle that is not "safe" enough and the receiver runs by him.
+   The user's hypothesis, to test first: it happens **when the receiver catches the ball without much speed
+   and then accelerates**: the defender's angle is right for the speed he sees at the catch and wrong for
+   the speed the runner reaches. (Check what speed the pursuit planner and the open-field approach assume
+   for the carrier: his current seen speed, or what he can reach.) They may also be broken tackles the
+   viewer cannot see; the film room should show contact and broken-tackle events so that can be told apart.
+   The user allows that it might be normal; measure same-situation NFL plays (catch speed low, defender
+   3-6 yd away and deeper) before and after.
+
+Also: the passing numbers "should be worse": the QB **turns down a lot of wide-open throws** (F13). His
+pricing still hides how open receivers are; fixing coverage will show less than it should until he throws
+to open men.
