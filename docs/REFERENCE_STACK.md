@@ -2,7 +2,7 @@
 
 One combination of experimental flags that Run Game, Defense, Flex and Coverage all measure against. Before this, each agent tested on its own mix (the FLAT_PRESS / ZONE_RUN back-and-forth on 2026-11-09 came from two different flag sets), and no list of anyone's stack existed in the repository.
 
-- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-85`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
+- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-86`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
 - **The code:** `run/G3-oz-backfield` a749beb7 + `defense/G2-stance-tell` a0cb0789 (#411) + `defense/G2-lb-start` (#416, with #409) + `claude/quirky-franklin-9lbwbp` (#417, with #415) + develop 6676dfc2.
 - **Since 2026-11-09 the stack is the engine's default.** The flags listed `on` are read as on unless set to `0`; a bare command in a clean shell and `npm run ref -- <command>` run the same engine. `npm run ref -- --off -- <command>` runs the legacy engine (every listed flag off). `test/reference-stack.test.ts` fails if the file and the code defaults ever disagree. See "Promotion" below.
 
@@ -609,6 +609,41 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
 
 
+## engine-86: the Book / Stubbie nickel matches #2's flat (2026-11-18)
+
+On: `MUSH_MATCH` (Rules + Coaching; a repair of the `mush` seat rule against its own source). The Book / Stubbie nickel
+("Soft Squat / MUSH") is taught "#3 up/in: match #2; #2 fast flat: match it; #3 out/flat: trap it" (HNFL-050,
+image-checked; Ross; SAB-TD). Off, a #2 released to the flat sent him to zone the curl-flat, which related him to #3's
+hook beside the read-hook Mike walling #3: two on #3, none on the flat, and #2 turned up the sideline untouched. And a #3
+who drifted outside at the line before turning into his hook was trapped and held. On: with #2 read flat or out and #3
+up or in, man on #2 from outside leverage, carried if he turns up; a trapped #3 who turns up hands on and the nickel
+takes #2; #3 out or flat is trapped and #2 in or under zoned as before.
+
+Defense's never-touched 20+ yd YAC count (zone-yac2.mts, defense/zone-yac-tools a38b130b: slant_flat, four_verts,
+comebacks vs Cover 2/3/4/6, doubles and trips, seeds 1-6 x flip, completions of 10+ air yards): 15 -> 10 of 62, YAC
+per catch 17.27 -> 13.79. All five Cover 6 slant_flat runs gone; the rest are Cover 2 slant_flat (the flat corner,
+FLAT_SINK) and the deep men's pursuit (Defense).
+
+Measured on develop fe150600 (engine-83, before FLAT_SINK; the Cover 2 corner is not in these calls). Staged, trips vs
+Cover 6 / Cover 6 Book / Stubbie / Book Read (they play identically against trips), all concepts,
+3 seeds x flip, 715 attempts per arm:
+
+| | off | on |
+|---|---|---|
+| completion | .713 | .697 |
+| yards per attempt | 9.76 | 7.83 |
+| 20+ / 40+ yd plays | 63 / 26 | 35 / 13 |
+| interceptions | 11 | 11 |
+| slant_flat yd/att | 50.6 | 27.2 |
+| fade_flat yd/att | 19.9 | 1.8 |
+| corner_flat yd/att | 18.9 | 7.3 |
+
+The fall in yards per attempt against trips is large because the hole was large: the flat in Book was simply
+uncovered, and slant_flat's flat went for 60 yd a throw. Controls: the slant behind the nickel. slant_flat's front-side
+slant is not thrown in either arm; the QB moves to the backside slant (10 throws at 15 yd/att, from none), the
+concept's conflict going the other way. Book's taught weakness, #2 from outside leverage with no help, still wins
+(sail_corner's #2 15 -> 16 yd/att, 23 throws). Open: about three distinct plays still go 70 because the nickel falls
+turning out of his open-carry posture at 2.5 s and stays down until the catch (handed to Tools/Physics).
 ## engine-85: the Cover 2 corner sinks with #1 until the flat is threatened (2026-11-18)
 
 On: `FLAT_SINK` (Rules + Coaching's rule, HNFL-099/-334; Coverage built). The flat seat (squat / cloud corner) carries

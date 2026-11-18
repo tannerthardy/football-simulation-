@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "engine-85",
+  "id": "engine-86",
   "runSet": {
     "commit": "1b5415de99b5b7194eff045f3c37a07a4c54c1a9",
     "seeds": [
@@ -383,6 +383,7 @@
     "Q_APEX": "on",
     "TAMPA_PIPE": "on",
     "MUSH_TRAP": "on",
+    "MUSH_MATCH": "on",
     "QUARTERS_CHECK": "on",
     "SCREW": "on",
     "BOX_IN": "on",
