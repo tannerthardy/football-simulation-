@@ -1,0 +1,92 @@
+diff --git a/scripts/diag/eyes/airgames.ts b/scripts/diag/eyes/airgames.ts
+new file mode 100644
+index 000000000..78022f0ad
+--- /dev/null
++++ b/scripts/diag/eyes/airgames.ts
+@@ -0,0 +1,16 @@
++// QB lane 2026-11-18: league games; per thrown pass the air yards (intended), completion, interception.
++import { Rng } from '../../../src/core/rng.js';
++import { simulateGame } from '../../../src/game/game.js';
++import { generateTeam, leagueSample } from '../../../src/league/team.js';
++import { PlaySim } from '../../../src/sim/playsim.js';
++const seed = Number(process.argv[2] ?? 11), games = Number(process.argv[3] ?? 4);
++const orig = PlaySim.prototype.run;
++PlaySim.prototype.run = function (this: any) { const sim: any = this; if (!sim.isPass) return orig.apply(this);
++  let thr: any = null; const tb = sim.throwBall.bind(sim);
++  sim.throwBall = (p: any, target: any, v0: any, intended: any, arrivalT: number, away = false, ...rest: any[]) => { if (p === sim.qb && !thr) thr = away || !target ? { away: true } : { air: +((intended.x - sim.los) * sim.attackDir(sim.qb.team)).toFixed(1), P: p.behavior?.throwRec?.P ?? null, iR: p.behavior?.throwRec?.intRisk ?? null, t: +sim.t.toFixed(2) }; return tb(p, target, v0, intended, arrivalT, away, ...rest); };
++  const res = orig.apply(this);
++  console.log(JSON.stringify({ cov: sim.defCall?.coverage?.id, shell: sim.defCall?.coverage?.shell, thr, cmp: !!sim.stats.completed, int: sim.events.some((e: any) => e.type === 'interception'), sack: sim.events.some((e: any) => e.type === 'sack'), yards: res.yards }));
++  return res; };
++const rng = new Rng(seed);
++const home = generateTeam(rng, 'Ironmen', 'IRN', { strength: 0.55 }), away = generateTeam(rng, 'Comets', 'COM', { strength: 0.55 });
++for (let g = 0; g < games; g++) simulateGame(leagueSample(home, seed + g), leagueSample(away, seed + g), { seed: seed + g });
+diff --git a/src/sim/behaviors/qb.ts b/src/sim/behaviors/qb.ts
+index d72fe0575..355667241 100644
+--- a/src/sim/behaviors/qb.ts
++++ b/src/sim/behaviors/qb.ts
+@@ -14,6 +14,7 @@
+  * can get a hand on the ball's path. Decision-making adds noise to those
+  * margins; accuracy turns into a miss distance on the actual throw.
+  */
++import { DEF_CATCH, defenderCatchChance, catchContact } from '../catching.js';
+ import { FIELD_WIDTH } from '../../core/field.js';
+ import { clamp, logistic, wrapAngle, type Vec2, type Vec3 } from '../../core/vec.js';
+ import { arcPoint, dragFreeLaunch, minFlightTime, qbArmSpeed, solveLaunch, DRAG_SPIRAL } from '../../physics/ball.js';
+@@ -3020,7 +3021,15 @@ export class QBPass implements Behavior {
+         pClear *= 1 - touch * 0.75;
+         const iPath = touch * (0.08 + 0.3 * dBall);
+         // At the catch point: jumped routes are picks; contested balls sometimes.
+-        const iJump = first * (0.15 + 0.35 * dBall), iContest = Math.max(0, contest - first) * 0.08 * dBall;
++        // DEF_CATCH (the joint catch landing): a defender at the ball holds it by the catch law (catching.ts), not by the
++        // batted-ball priors (a breakup about seven times the pick). First there (the route jumped): the ball to his chest
++        // in stride (handsCatch's diff for a stretch of about 0.2) and no receiver's arms at it. Contested: at the edge of
++        // his reach (stretch about 0.6) with the receiver's arms on it. His hands and contested-catch strength and the
++        // receiver's are ratings, as his ball skills are (film study).
++        const iJump = DEF_CATCH ? first * defenderCatchChance(0.1, 0, d.r('hands'))
++          : first * (0.15 + 0.35 * dBall);
++        const iContest = DEF_CATCH ? Math.max(0, contest - first) * defenderCatchChance(0.3, catchContact(1, r.r('contestedCatch'), r.r('strength'), d.r('contestedCatch')), d.r('hands'))
++          : Math.max(0, contest - first) * 0.08 * dBall;
+         intRisk += iPath + iJump + iContest;
+         intPath += iPath; intJump += iJump; intContest += iContest;
+         if (marginTrace && pt === point && (contest > 0.05 || iPath + iJump + iContest > 0.001)) marginTrace.push({ slot: d.slot, m: +m.toFixed(3), first: +first.toFixed(3),
+diff --git a/src/sim/catching.ts b/src/sim/catching.ts
+index 8ac13d5b3..00f68868e 100644
+--- a/src/sim/catching.ts
++++ b/src/sim/catching.ts
+@@ -302,6 +302,18 @@ function handsCatch(R: Agent, o: Opp, bv: Vec3, ballSpeed: number, airTime: numb
+ /** DEF_CATCH: a defender's catch attempt on a ball he sees, through handsCatch with his own ratings, against the
+  * receiver's arms at his hands (`R`, when they reach them). 'int' (he caught it), 'pbu' (a hand on it he did not hold:
+  * it comes off him), 'miss' (his hands did not get it; the flight goes on), 'over' (he caught it out of bounds). */
++/** DEF_CATCH: a defender's chance to hold a ball he has the time to get his hands to, from its difficulty (handsCatch's
++ * diff) and the receiver's arms at it (contact), by his hands. No receiver's floor. Shared with the passer's window, which
++ * prices a defender at the ball through the same law (qb.ts). */
++export function defenderCatchChance(diff: number, contact: number, hands: number): number {
++  return clamp(0.985 - (diff + contact) * (1.3 - hands) - 0.06 * (1 - hands), 0, 0.99);
++}
++/** DEF_CATCH: the receiver's arms at the ball against a defender's hands there, at overlap `toward` (0 none, 1 his hands
++ * on the ball): the contact term of defenderCatch. */
++export function catchContact(toward: number, rContested: number, rStrength: number, dContested: number): number {
++  return toward <= 0 ? 0 : Math.pow(toward, 0.7) * (0.45 + 0.35 * rContested + 0.2 * rStrength) * (1.15 - 0.55 * dContested);
++}
++
+ function defenderCatch(sim: PlaySim, D: Agent, o: Opp, R: Agent | null): 'int' | 'pbu' | 'miss' | 'over' {
+   const ball = sim.ball;
+   if (ball.kind !== 'air') return 'over';
+@@ -315,7 +327,7 @@ function defenderCatch(sim: PlaySim, D: Agent, o: Opp, R: Agent | null): 'int' |
+   let contact = 0;
+   if (R && !R.isDown(sim.t) && !R.engagement) {
+     const toHands = Math.hypot(R.pos.x - o.b.x, R.pos.y - o.b.y), armLen = R.profile.reach + 0.15;
+-    if (toHands <= armLen) contact = Math.pow(1 - toHands / armLen, 0.7) * (0.45 + 0.35 * R.r('contestedCatch') + 0.2 * R.r('strength')) * (1.15 - 0.55 * D.r('contestedCatch'));
++    if (toHands <= armLen) contact = catchContact(1 - toHands / armLen, R.r('contestedCatch'), R.r('strength'), D.r('contestedCatch'));
+   }
+   // A catch takes time (attempt 3): from his first sight of this flight, the ball must reach his hands no sooner than his
+   // reaction plus his hands' travel to it (from his chest, at HAND_SPEED). With less, a hand gets into its path at best,
+@@ -328,7 +340,7 @@ function defenderCatch(sim: PlaySim, D: Agent, o: Opp, R: Agent | null): 'int' |
+   const reached = Math.min(1, had / Math.max(1e-6, travel));
+   // No receiver's floor: a defender who is not the target catches by his hands, and poor hands drop most of it (an LB
+   // with hands 27). The receiver keeps his floor (receiverContest).
+-  const pCatch = reached < 1 ? 0 : clamp(0.985 - (diff + contact) * (1.3 - hands) - 0.06 * (1 - hands), 0, 0.99);
++  const pCatch = reached < 1 ? 0 : defenderCatchChance(diff, contact, hands);
+   if (rng.chance(pCatch)) {
+     if (inBounds(D)) { sim.possess(D, 'interception'); return 'int'; }
+     sim.event('incomplete', D, null, 'out of bounds');
