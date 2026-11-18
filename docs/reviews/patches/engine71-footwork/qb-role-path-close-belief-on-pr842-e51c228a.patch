@@ -1,0 +1,371 @@
+diff --git a/config/baseline.json b/config/baseline.json
+index f3192c826..b0e704922 100644
+--- a/config/baseline.json
++++ b/config/baseline.json
+@@ -269,6 +269,8 @@
+     "QB_MOF_READ": "0",
+     "QB_DEEP_WAIT": "0",
+     "QB_STANCE": "0",
++    "QB_CLOSE_BELIEF": "0",
++    "QB_ROLE_PATH": "0",
+     "TACKLE_SET": "0",
+     "EDGE_ARC": "0",
+     "POWER_AIM": "0",
+diff --git a/config/reference-stack.json b/config/reference-stack.json
+index 0cd48ef75..2f3534260 100644
+--- a/config/reference-stack.json
++++ b/config/reference-stack.json
+@@ -219,6 +219,8 @@
+     "QB_MOF_READ": "off",
+     "QB_DEEP_WAIT": "off",
+     "QB_STANCE": "off",
++    "QB_CLOSE_BELIEF": "off",
++    "QB_ROLE_PATH": "off",
+     "TACKLE_SET": "off",
+     "EDGE_ARC": "off",
+     "POWER_AIM": "on",
+diff --git a/docs/FLAGS.md b/docs/FLAGS.md
+index c880efd8b..aac4e2a86 100644
+--- a/docs/FLAGS.md
++++ b/docs/FLAGS.md
+@@ -2,7 +2,7 @@
+ 
+ Every engine switch read from the environment, recounted from `src` at `57f50fc3` on 2026-10-22. This includes #210's promotion and #205's two additional default-on switches. Flags that are not on develop (parked, removed from a PR, or only on a side branch) are kept in [PARKED.md](PARKED.md) so the ideas are not lost. Registration rules are in [PLAN.md](PLAN.md): at most 10 experimental flags, and each expires two reviews after it lands.
+ 
+-There are 486 flags read from the environment in `src` (recounted 2026-11-18, engine-83: engine-82 plus QB_DRIVE, QB_RHYTHM_THROW, QB_ALIGN, QB_BODY_FOLLOW, QB_WINDOW_ARRIVE, QB_KEY_PLANT, QB_STICK, QB_PEEK_CLOCK, QB_MOF_READ, QB_DEEP_WAIT and QB_STANCE; QB_DRIVE, QB_RHYTHM_THROW, QB_WINDOW_ARRIVE, QB_KEY_PLANT and QB_STICK on): 369 are on unless set to `0`, 89 are off unless set to `1`, and 28 are numeric scales or modes (identity value unless listed in the stack's numeric section). The rows below carry each flag's history.
++There are 488 flags read from the environment in `src` (recounted 2026-11-18, engine-83: engine-82 plus QB_DRIVE, QB_RHYTHM_THROW, QB_ALIGN, QB_BODY_FOLLOW, QB_WINDOW_ARRIVE, QB_KEY_PLANT, QB_STICK, QB_PEEK_CLOCK, QB_MOF_READ, QB_DEEP_WAIT and QB_STANCE; QB_DRIVE, QB_RHYTHM_THROW, QB_WINDOW_ARRIVE, QB_KEY_PLANT and QB_STICK on, plus QB_CLOSE_BELIEF and QB_ROLE_PATH): 369 are on unless set to `0`, 91 are off unless set to `1`, and 28 are numeric scales or modes (identity value unless listed in the stack's numeric section). The rows below carry each flag's history.
+ 
+ **Promotion (2026-11-09):** the reference stack `run-ref-4` is now the engine's default. The 90 flags it lists `on` are read as on unless set to `0` (rows marked "promoted" below); the rest are unchanged. Decisions and evidence for each flag are in [REFERENCE_STACK.md](REFERENCE_STACK.md); `npm run ref -- --list` is the current inventory, and `npm run ref -- --off -- <command>` runs the engine as it was before. The test suites still run on the pre-promotion engine (pinned in `vitest.config.ts`) until their recorded cases are re-recorded. The counts in the paragraph above predate all of this.
+ 
+@@ -399,6 +399,8 @@ There are 486 flags read from the environment in `src` (recounted 2026-11-18, en
+ | `QB_MOF_READ` | off | experimental (QB lane, 2026-11-18; Integration, after item v) | quarterback | `src/sim/behaviors/qb.ts` (`readShell`, `applyKey`) | A vertical peek read off the middle of the field: the shell from his pre-snap picture; two-high, the safety on his side keyed between the seam and the outside vertical; one-high, the middle safety keyed between the near and far seams; read at the first hitch on QB_KEY_READ's displacement read, the answer thrown at the second, then the back. Off, his side's verticals were looked at inside-out whatever the shell. |
+ | `QB_DEEP_WAIT` | off | experimental (QB lane, 2026-11-18) | quarterback | `src/sim/behaviors/qb.ts` (`readShell`, `window`) | His belief of when a deep zone defender starts toward a throw, by the seat he saw pre-snap: a man 12 yd or deeper, or against one-high the widest off corner (5 yd+), waits for the ball (goes at the release, then his reaction); quarters safeties and everyone underneath key the motion. Wrong when the coverage is disguised. Off, every defender facing him keyed the motion. Depths chosen. |
+ | `QB_STANCE` | off | experimental (QB lane, 2026-11-18; Integration with Defense's base-side finding) | quarterback | `src/sim/behaviors/qb.ts` (`bodyFacing`, `motionFacing`) | His throwing stance: while he reads and loads, his chest is open 51.5 deg to his throwing-arm side of the man he is set to (front shoulder at him), rotating square into the throw only in the delivery's last ~0.27 s. NFL shoulders 0.3-0.6 s before the release: chest right of the throw line 91%, median 51.5 deg (BDB 2025 wk 1-2, n 1,998). Off, his chest was squared to the read and the target. Right-handed for everyone (no roster handedness). |
++| `QB_CLOSE_BELIEF` | off | experimental (QB lane, 2026-11-18; Integration) | quarterback | `src/sim/behaviors/qb.ts` (`window`, `bodyArrive`) | For a defender he sees moving away from the catch point or occupied with another receiver, the window's arrival is the engine's own body step from the state he sees: his velocity kept through his start, then brake, turn and run (an occupied man starts from the ball seen in the air). Off, a reaction spent standing then timeToReach. Held-ball truth: away priced 0.53 to contest, never within 1.5 yd; occupied 0.41 vs 0.14. |
++| `QB_ROLE_PATH` | off | experimental (QB lane, 2026-11-18; Integration's deep-mix item) | quarterback | `src/sim/behaviors/qb.ts` (`window`) | The window prices a deep defender through his role's real path, from what he sees: a roof carrier over the target (deeper, within 5 yd, moving with him) contests only a ball thrown at or beyond him, else plays the catch from behind (late dislodge only); a deep man bailing away keeps going through the catch window. Off, every counted man was priced as a ball-chaser from his start. |
+ | `BRACE_EVIDENCE` | off | experimental (CARRIER_BRACE trigger, 2026-11-10) | ball carrier | `src/sim/behaviors/carrier.ts` (`BRACE_EVIDENCE`) | needs `CARRIER_BRACE`. He braces and lunges only at a man he sees free of blocks (no blocker he sees touching him) and squared up to him (seen facing within 45 deg of the line to the carrier). Trace on the fixed run set without it: 1.39 firings a run, 50% at engaged men, 30% at a free squared oncoming man, 33% followed by no contact; added breaks side +28, front +7 |
+ | `INFO_HONEST` | 63 | promoted 2026-11-14 (engine-61; all bits on; `=0` restores); was experimental (C14 coverage, 2026-11-13; information audit, intended on) | coverage | `src/sim/behaviors/defense.ts` (`infoHonest`; ManCoverage re-square, ZoneCoverage lanes / facing / eyes lean, `readsHandsAt`), `src/sim/coverage/judgment.ts`, `src/sim/coverage/techniques.ts` (Wall, Rob) | Coverage decisions read the defender's own picture, not true state. A bit mask: `INFO_HONEST=63` turns every item on; single items by bit (3 = 1, 6 = 2, 7 = 4, 8 = 8, 9 = 16, H = 32) for a per-item read. 3: deep help decisions freeze when he has seen the throw, not at the true release (was the default path with `JUDGE_SEEN_BALL` off). 6: a man carry stops re-squaring when he has seen the throw. 7: the judgment's protect-vertical carry starts its cushion from the receiver he saw. 8: the zone lean toward the QB's look goes to where he sees that receiver. 9: zone lanes and facing use where he sees the QB. H: the hands cue needs the receiver within 100 deg of his facing. From the coverage audit (items 1, 4, 5 and the loose ball are Defense's `HONEST_READS`; the ball path is the ball-in-air spec; the QB's motion and gaze move onto `QB_BODY_SEEN`). |
+ | `MAN_PHASE` | off | experimental (G3 coverage, 2026-11-10; measured with `WR_SNAP`, `QB_RHYTHM`, `PRESS_MIRROR`, `PRESS_RELEASE`) | man coverage | `src/sim/behaviors/defense.ts` (`ManCoverage.trackReceiver`, the leverage offset) | set at first review. Once his hips are open and the receiver is past 2 yd and running his stem (over 3 yd/s, mostly upfield), a man defender's leverage offset is an arm's length off the receiver's hip (their two body radii plus 0.7 of his arm) instead of 0.7 yd; on a plant or break he closes on the body as before. Pressed outside pairs (same operator on BDB 2025 weeks 1-3): CB-WR distance at 2.0 s 0.96 -> 1.09 yd (NFL 1.20), within 1.2 yd 79 -> 74% (NFL 51%); at 2.5 s 0.95 -> 1.22 (NFL 1.18). 732 dropbacks paired: +0.39 +/- 0.25 yd a pass play, completions 400 -> 407; to pressed receivers comp 18/45 -> 23/48 (NFL 44%), 7.31 -> 8.97 yd a throw (NFL 5.05); 17 plays moved by > 20 yd net +319 (catch and run). Second attempt (the first held the offset through a plant: +0.48 +/- 0.31, pressed hitches turned into 60-80 yd runs); stopped per the two-attempt rule. Test `test/man-phase.test.ts`. |
+diff --git a/scripts/diag/eyes/def-path.ts b/scripts/diag/eyes/def-path.ts
+new file mode 100644
+index 000000000..9b66645c3
+--- /dev/null
++++ b/scripts/diag/eyes/def-path.ts
+@@ -0,0 +1,54 @@
++// SEAM_PICK=key|other node --import tsx scripts/diag/eyes/seam-staged.ts > rows.jsonl   (QB lane, 2026-11-18)
++// The vertical peek's seam thrown at his second hitch (staged: his own motion, aim and accuracy; nothing else thrown):
++// the key's seam (QB_MOF_READ) or the other one. Per throw: his price and its factors (pOpen, pClear, pAcc, hands) at the
++// decision, the window's margin for each defender it counted, and the truth: the ball's fate (caught, defended, picked,
++// dropped, missed), the ball's miss from the aimed point, and each counted defender's distance to the ball at its arrival.
++import { PlaySim } from '../../../src/sim/playsim.js';
++import { releaseBelief } from '../../../src/sim/release-belief.js';
++import { nativeTraceSetup } from '../command-trace.js';
++import { PASS_BY_ID } from '../../../src/playbook/concepts.js';
++import { installedPlan } from '../../../src/playbook/read-compiler/runtime.js';
++const COVS = (process.env.DP_COVS ?? 'cover1 cover2man cover2 cover2_match tampa2 cover3 cover3_match cover4 cover6').split(' ');
++const PICK = process.env.SEAM_PICK ?? 'key';
++for (const formation of ['gun_doubles_11', 'gun_trips_11']) for (const [id, c] of Object.entries(PASS_BY_ID) as [string, any][]) {
++  let plan: any = null; try { plan = installedPlan(c, formation); } catch { plan = null; }
++  if (plan?.style !== 'vertical_peek') continue;
++  for (const coverage of COVS) for (const roster of [3, 7, 11]) for (const seed of [1, 2, 3, 4]) {
++    let sim: any; try { sim = new PlaySim(nativeTraceSetup({ coverage, concept: id, seed, roster, formation, flip: false })); } catch { continue; }
++    sim.stagedThrow = { at: 99, slot: 'Y' };
++    let pick: any = null, rec: any = null, arr: any = null; const tr = new Map<string, any[]>(); let relT = -1; const seenAt = new Map<string, number>();
++    const tick0 = sim.tick.bind(sim);
++    sim.tick = () => { tick0(); const b: any = sim.qb.behavior;
++      if (!pick && b?.kind === 'qb-pass' && b.setAt >= 0 && sim.t >= b.setAt + 2 * b.stride() - 1e-9 && b.keyRead && b.plan?.key) {
++        const k = b.plan.key, keyT = b.keyRead.throwTo === 'low' ? k.low : k.high, other = keyT === k.low ? k.high : k.low;
++        const t = PICK === 'key' ? keyT : other;
++        pick = { slot: t.slot, role: k.role, at: +sim.t.toFixed(2) }; sim.stagedThrow = { at: sim.t, slot: t.slot }; }
++      if (rec && !arr && sim.ball.kind === 'air') { for (const d of sim.defense) { if (seenAt.has(d.slot)) continue; let rb: any = null; try { rb = releaseBelief(sim, d); } catch {} if (rb && rb.ballAt !== undefined) seenAt.set(d.slot, +(sim.t - relT).toFixed(2)); }
++        const bp = sim.ball.flight.pos; for (const sl of rec.slots) { const d = sim.defense.find((x: any) => x.slot === sl); const toP = Math.hypot(rec.aim.x - d.pos.x, rec.aim.y - d.pos.y);
++          const ux = (rec.aim.x - d.pos.x) / (toP || 1), uy = (rec.aim.y - d.pos.y) / (toP || 1);
++          (tr.get(sl) ?? tr.set(sl, []).get(sl)!).push([+(sim.t - relT).toFixed(2), +toP.toFixed(2), +(d.vel.x * ux + d.vel.y * uy).toFixed(2), +Math.hypot(d.pos.x - bp.x, d.pos.y - bp.y).toFixed(1), +bp.z.toFixed(1)]); } }
++      if (rec && !arr && sim.ball.kind === 'air' && sim.t >= sim.ball.arrivalT - 1e-9) {
++        const bp = sim.ball.flight.pos; arr = { miss: +Math.hypot(bp.x - rec.aim.x, bp.y - rec.aim.y).toFixed(2),
++          defs: rec.slots.map((s: string) => { const d = sim.defense.find((x: any) => x.slot === s); return [s, +Math.hypot(d.pos.x - bp.x, d.pos.y - bp.y).toFixed(1)]; }) }; } };
++    const tb = sim.throwBall.bind(sim);
++    sim.throwBall = (p: any, target: any, v0: any, intended: any, ...rest: any[]) => { if (p === sim.qb && !rec && intended) { const b: any = p.behavior, r = b.throwRec;
++      b.marginProbe = true; try { b.evaluate(p, sim, target, 0); } catch {} b.marginProbe = false;
++      relT = sim.t; rec = { t: +sim.t.toFixed(2), slot: target?.slot, aim: { x: intended.x, y: intended.y }, P: r ? +r.P.toFixed(3) : null, parts: r?.parts ? Object.fromEntries(Object.entries(r.parts).map(([k2, v]) => [k2, +(+(v as number)).toFixed(3)])) : null, iR: r ? +r.intRisk.toFixed(3) : null,
++        margins: (b.marginLast ?? []).map((m: any) => {
++          // His picture of the man at the decision: moving away from the catch point, occupied with another receiver
++          // (within 2.5 yd of one and moving with him), or set (neither), facing him or not.
++          const d = sim.defense.find((x: any) => x.slot === m.slot), e = b.mind.estimate(d), sp = Math.hypot(e.vel.x, e.vel.y);
++          const tx = intended.x - e.pos.x, ty = intended.y - e.pos.y, tl = Math.hypot(tx, ty) || 1, toward = sp > 1e-6 ? (e.vel.x * tx + e.vel.y * ty) / (sp * tl) : 0;
++          const others = sim.offense.filter((o: any) => o !== target && o.behavior?.route).map((o: any) => { const so = sim.see(p, o); const ds = Math.hypot(so.pos.x - e.pos.x, so.pos.y - e.pos.y); const vs = Math.hypot(so.vel.x, so.vel.y);
++            return { ds, with: sp > 1 && vs > 1 ? (so.vel.x * e.vel.x + so.vel.y * e.vel.y) / (sp * vs) : 0 }; });
++          const occupied = others.some((o: any) => o.ds < 2.5 && o.with > 0.7);
++          const state = occupied ? 'occupied' : sp > 1 && toward < -0.2 ? 'away' : m.facingQB ? 'set-eyes' : 'set-not-facing';
++          return { s: m.slot, m: m.m, c: m.contest, first: m.first, touch: m.touch, blind: m.blind, react: m.react, facing: m.facingQB, state, sp: +sp.toFixed(1), toward: +toward.toFixed(2) }; }), slots: (b.marginLast ?? []).map((m: any) => m.slot) }; }
++      return tb(p, target, v0, intended, ...rest); };
++    let res: any; try { res = sim.run(); } catch { continue; }
++    const ev = sim.events.map((e: any) => e.type), has = (k: string) => ev.includes(k);
++    const fate = !rec ? 'none' : has('interception') ? 'int' : res.stats?.completed ? 'catch' : has('pbu') || has('deflection') ? 'defended' : has('drop') ? 'drop' : 'miss';
++    const roles: any = {}; for (const sl of rec?.slots ?? []) { const d = sim.defense.find((x: any) => x.slot === sl); roles[sl] = { kind: d.behavior?.kind ?? null, zone: d.behavior?.zone ?? null, react: +d.profile.reactionTime.toFixed(3), seenAt: seenAt.get(sl) ?? null, tags: [...d.tags].filter((t: string) => !/^onBall$/.test(t)) }; }
++    console.log(JSON.stringify({ concept: id, formation, coverage, roster, seed, pick, rec: rec ? { ...rec, slots: undefined } : null, arr, fate, roles, tr: Object.fromEntries(tr) }));
++  }
++}
+diff --git a/scripts/diag/eyes/release-square.ts b/scripts/diag/eyes/release-square.ts
+new file mode 100644
+index 000000000..905b46d70
+--- /dev/null
++++ b/scripts/diag/eyes/release-square.ts
+@@ -0,0 +1,19 @@
++// node --import tsx scripts/diag/eyes/release-square.ts > rows.jsonl   (QB lane, 2026-11-18: QB_STANCE's cross-body cost)
++// At each staged release: the angle his trunk is still short of the line to the aimed point (signed, + = chest left of
++// the line), the throw's side (lateral from him, + = to his left), whether the turn was charged (QB_ALIGN's sigma and
++// speed factors, when on), and the result. Passive.
++import { PlaySim } from '../../../src/sim/playsim.js';
++import { nativeTraceSetup } from '../command-trace.js';
++import { PASS_BY_ID } from '../../../src/playbook/concepts.js';
++const wrap = (x: number) => Math.atan2(Math.sin(x), Math.cos(x));
++for (const coverage of ['cover1', 'cover2', 'cover3', 'cover4']) for (const concept of Object.keys(PASS_BY_ID).filter((id) => !/screen/.test(id))) for (const seed of [1, 2]) for (const flip of [false, true]) {
++  let sim: any; try { sim = new PlaySim(nativeTraceSetup({ coverage, concept, seed, roster: seed, formation: 'gun_doubles_11', flip })); } catch { continue; }
++  const dir = sim.attackDir(sim.offense[0].team); let row: any = null;
++  const tb = sim.throwBall.bind(sim);
++  sim.throwBall = (p: any, target: any, v0: any, intended: any, ...rest: any[]) => { if (p === sim.qb && !row && intended && !rest[1]) {
++    const b = Math.atan2(intended.y - p.pos.y, intended.x - p.pos.x), resid = wrap(p.body.facing - b);
++    row = { resid: +(resid * 180 / Math.PI).toFixed(1), lat: +(((intended.y - p.pos.y) * dir)).toFixed(1), align: (p.behavior as any)?.alignRec ?? null }; }
++    return tb(p, target, v0, intended, ...rest); };
++  let res: any; try { res = sim.run(); } catch { continue; }
++  if (row) console.log(JSON.stringify({ concept, coverage, seed, flip, ...row, cmp: !!res.stats.completed }));
++}
+diff --git a/scripts/diag/eyes/seam-staged.ts b/scripts/diag/eyes/seam-staged.ts
+index 5a477a780..030d1182b 100644
+--- a/scripts/diag/eyes/seam-staged.ts
++++ b/scripts/diag/eyes/seam-staged.ts
+@@ -38,7 +38,7 @@ for (const formation of ['gun_doubles_11', 'gun_trips_11']) for (const [id, c] o
+             return { ds, with: sp > 1 && vs > 1 ? (so.vel.x * e.vel.x + so.vel.y * e.vel.y) / (sp * vs) : 0 }; });
+           const occupied = others.some((o: any) => o.ds < 2.5 && o.with > 0.7);
+           const state = occupied ? 'occupied' : sp > 1 && toward < -0.2 ? 'away' : m.facingQB ? 'set-eyes' : 'set-not-facing';
+-          return { s: m.slot, m: m.m, c: m.contest, first: m.first, touch: m.touch, blind: m.blind, react: m.react, facing: m.facingQB, state, sp: +sp.toFixed(1), toward: +toward.toFixed(2) }; }), slots: (b.marginLast ?? []).map((m: any) => m.slot) }; }
++          return { roof: m.roof, deepBail: m.deepBail, under: m.under, dDepth: m.dDepth, tDepth: m.tDepth, dTgt: m.dTgt, s: m.slot, m: m.m, c: m.contest, first: m.first, touch: m.touch, blind: m.blind, react: m.react, facing: m.facingQB, state, sp: +sp.toFixed(1), toward: +toward.toFixed(2) }; }), slots: (b.marginLast ?? []).map((m: any) => m.slot) }; }
+       return tb(p, target, v0, intended, ...rest); };
+     let res: any; try { res = sim.run(); } catch { continue; }
+     const ev = sim.events.map((e: any) => e.type), has = (k: string) => ev.includes(k);
+diff --git a/src/sim/behaviors/defense.ts b/src/sim/behaviors/defense.ts
+index 97f772e0d..d49f430cf 100644
+--- a/src/sim/behaviors/defense.ts
++++ b/src/sim/behaviors/defense.ts
+@@ -84,6 +84,10 @@ const SINK_ENTER = 2, SINK_EXIT = 1;
+  * is the one, in his own delayed picture, nearest the QB's perceived facing,
+  * within 20 deg (12 deg when he is 20+ yd from the QB). Otherwise no read. */
+ const SEEN_EYES = process.env.SEEN_EYES !== '0';
++/** QB_STANCE (behaviors/qb.ts; read here too): with the passer in his throwing stance his chest is open to his
++ * throwing-arm side of the man he is on until the throw rotates him, so a reader of where he is looking or aiming takes
++ * his head (the gaze he shows), not his chest: SEEN_EYES's look and the arm read's pick. */
++const QB_STANCE_SEEN = process.env.QB_STANCE === '1';
+ /** HONEST_READS (experimental, off; HONEST_READS=1 turns it on): removes
+  * true-state reads found by the 2026-11-13 defense audit. A blitzer peels to
+  * the ball only once he has seen the throw, on his acquired flight; the ball
+@@ -168,7 +172,7 @@ export function seenQbEyes(a: Agent, sim: PlaySim): Agent | null {
+   if (Math.cos(a.body.facing - toQB) > Math.cos(100 * Math.PI / 180)) {
+     const cone = (dist > 20 ? 12 : 20) * Math.PI / 180, tol = Math.cos(cone);
+     let best = tol;
+-    const look = QB_BODY_SEEN ? q.head ?? q.facing : q.facing;
++    const look = QB_BODY_SEEN || QB_STANCE_SEEN ? q.head ?? q.facing : q.facing;
+     const off = new Map<Agent, number>();
+     for (const o of sim.offense) {
+       if (o === sim.qb || ['LT', 'LG', 'C', 'RG', 'RT'].includes(o.slot)) continue;
+@@ -2809,7 +2813,8 @@ function shoulderTarget(a: Agent, sim: PlaySim, key: number): { R: Agent | null;
+   // The passer he is watching, through the tracking channel (his gaze is on him: the arm key requires it).
+   const q = sim.track(a, sim.qb, 1, true);
+   const err = sim.dice('shoulder', a).normal(0, (SHOULDER_READ_SD_MIN + SHOULDER_READ_SD_SPAN * (1 - a.r('anticipation'))) * Math.PI / 180);
+-  const read = q.facing === undefined ? null : q.facing + err;
++  const aim = QB_STANCE_SEEN ? q.head ?? q.facing : q.facing;
++  const read = aim === undefined || aim === null ? null : aim + err;
+   let best: Agent | null = null, bestOff = SHOULDER_CONE, seenBearing: number | null = null;
+   if (read !== null) for (const r of sim.offense) {
+     if (r === sim.qb || isOL(r)) continue;
+diff --git a/src/sim/behaviors/qb.ts b/src/sim/behaviors/qb.ts
+index e383832ad..e01480f2e 100644
+--- a/src/sim/behaviors/qb.ts
++++ b/src/sim/behaviors/qb.ts
+@@ -17,7 +17,7 @@
+ import { FIELD_WIDTH } from '../../core/field.js';
+ import { clamp, logistic, wrapAngle, type Vec2, type Vec3 } from '../../core/vec.js';
+ import { arcPoint, dragFreeLaunch, minFlightTime, qbArmSpeed, solveLaunch, DRAG_SPIRAL } from '../../physics/ball.js';
+-import type { MoveCommand } from '../../physics/kinematics.js';
++import { stepBody, type Body, type MoveCommand } from '../../physics/kinematics.js';
+ import { timeToReach } from '../../physics/reach.js';
+ import { supportParams } from '../../physics/support.js';
+ import type { PassConcept, ReceiverRef } from '../../playbook/types.js';
+@@ -792,6 +792,45 @@ const HOT_LOOK = process.env.HOT_LOOK !== '0';
+  * still reacts in full to reach the ball's path), carrying his seen velocity through it before he redirects. A man he
+  * sees tied up in a block is priced as before: his velocity is the block's, not a course of his own. */
+ const QB_WINDOW_ARRIVE = process.env.QB_WINDOW_ARRIVE !== '0';
++/** QB_CLOSE_BELIEF (experimental, off; QB_CLOSE_BELIEF=1 turns it on): Integration, 2026-11-18. For a defender he sees
++ * moving away from the catch point (seen speed over 1 yd/s, heading more than about 100 deg off it) or occupied (within
++ * 2.5 yd of another receiver he sees and moving with him), the window's arrival is the engine's own movement from the
++ * state he sees: the man keeps his velocity through his start time, then brakes, turns and runs at the point under the
++ * same body step the engine moves him with (stepBody: his acceleration, braking, lateral and turn limits), not the
++ * timeToReach approximation from a reaction spent standing still. An occupied man's eyes are on his man, not the
++ * passer, so his start is the ball seen in the air (the release, then a not-facing reaction); so is one moving away with
++ * his back to the passer (attempt 2: from his own start he was still priced to contest 0.44 against 0.00 real). Everyone else is priced as
++ * before. Staged held-ball truth, the seam at the second hitch (docs/reviews/2026-11-18-peek-clock.md): a man seen moving
++ * away was priced to contest 0.53 and was never within 1.5 yd of the ball (median 6.4 yd off); occupied 0.41 against
++ * 0.14. No NFL constant: the movement is the engine's. */
++const QB_CLOSE_BELIEF = process.env.QB_CLOSE_BELIEF === '1';
++/** QB_ROLE_PATH (experimental, off; QB_ROLE_PATH=1 turns it on): Integration's deep-mix item, 2026-11-18. The window
++ * prices a deep defender through the path his role really takes, from what the passer sees of him
++ * (docs/reviews/2026-11-18-defender-path.md: our deep men see the ball 0.25-0.30 s after the release, but the eyes-on
++ * ones are match carriers keeping a roof over a receiver and playing the catch, a median 2.7 yd from the aim; the
++ * bailing ones reverse after 0.8 s and never get back).
++ * - The roof carrier: a man deeper than the target by half a yard or more, within 5 yd of him and moving with him. He
++ *   contests the ball only if it is thrown at or beyond him (his depth at the arrival, carried with the target, less his
++ *   reach). A ball under him arrives as the catch he plays from behind: no contest in flight or at the catch, only the
++ *   securing window's dislodge at his arrival.
++ * - A deep man (10+ yd) bailing away from the point keeps his velocity through the catch window (his start is the
++ *   arrival).
++ * Everyone else is priced as before. The roof and the depths are the coverage's own rule (CoverageDefender's over-the-top
++ * roof) and the passer's picture; no fitted share. */
++const QB_ROLE_PATH = process.env.QB_ROLE_PATH === '1';
++/** QB_CLOSE_BELIEF: his time (s) to play `pt` within `radius`: his seen velocity kept for `start` s, then the body's run at it. */
++function bodyArrive(seen: { pos: { x: number; y: number }; vel: { x: number; y: number }; facing: number }, profile: any, speedScale: number,
++  pt: { x: number; y: number }, radius: number, start: number): number {
++  const body: Body = { pos: { ...seen.pos }, vel: { ...seen.vel }, facing: seen.facing, energy: 1, sprintLoad: 0, profile };
++  const dt = 0.05, vmax = profile.vmax * speedScale;
++  for (let t = 0; t < 4; t += dt) {
++    const dx = pt.x - body.pos.x, dy = pt.y - body.pos.y, d = Math.hypot(dx, dy);
++    if (d <= radius) return t;
++    const cmd: MoveCommand = t < start ? { vel: { ...body.vel } } : { vel: { x: dx / d * vmax, y: dy / d * vmax }, facing: Math.atan2(dy, dx) };
++    stepBody(body, cmd, dt);
++  }
++  return 4;
++}
+ /** QB_WINDOW_ARRIVE: when a defender can play `pt` (within `radius`): his reaction, less the share his seen course already
+  * serves, carrying his velocity through it; the moment that carry passes within reach, else then his redirect from there. */
+ function arriveTime(mover: { pos: { x: number; y: number }; vel: { x: number; y: number }; profile: any; speedScale?: number }, pt: { x: number; y: number }, radius: number, react: number, goal: { x: number; y: number } = pt): number {
+@@ -2788,6 +2827,42 @@ export class QBPass implements Behavior {
+       // start; one on the target follows the stem until the break; anyone
+       // else keeps his course until the ball is out.
+       const onTarget = Math.hypot(seen.pos.x - target.x, seen.pos.y - target.y) < 3;
++      // QB_CLOSE_BELIEF: moving away from where the ball is going, or occupied with another receiver, as he sees him.
++      let closeState: 'away' | 'occupied' | null = null;
++      if (QB_CLOSE_BELIEF) {
++        const sp = Math.hypot(seen.vel.x, seen.vel.y), gx = point.x - seen.pos.x, gy = point.y - seen.pos.y, gl = Math.hypot(gx, gy) || 1;
++        // Occupied means eyes on his man, not the passer: a zone man by a receiver but facing him reads the throw (attempt 3:
++        // without this, Cover 3 corners carrying #1 were priced late and picked the hitch inside them in games).
++        const occupied = sp > 1 && !facingQB && sim.offense.some((o) => {
++          if (o === r || o === a || !this.receiverForecasts.has(o)) return false;
++          const so = this.has(sim, o), sv = this.receiverForecasts.get(o)!.predict(sim.t, 0.1) ?? so;
++          const ovx = (sv.x - so.x) / 0.1, ovy = (sv.y - so.y) / 0.1, os = Math.hypot(ovx, ovy);
++          return Math.hypot(so.x - seen.pos.x, so.y - seen.pos.y) < 2.5 && os > 1 && (ovx * seen.vel.x + ovy * seen.vel.y) / (os * sp) > 0.7;
++        });
++        closeState = occupied ? 'occupied' : sp > 1 && (gx * seen.vel.x + gy * seen.vel.y) / (gl * sp) < -0.2 ? 'away' : null;
++      }
++      // QB_ROLE_PATH: the roof carrier over the target, and a deep man bailing away, as he sees them.
++      let roof = false, deepBail = false, carryAt: { x: number; y: number } | null = null;
++      if (QB_ROLE_PATH) {
++        const dirX = sim.attackDir(a.team), sp = Math.hypot(seen.vel.x, seen.vel.y);
++        // The receiver he carries, as the passer sees it: one he is deeper than (by half a yard), within 7 yd of, moving
++        // with him. His path to the arrival is that receiver's route with his offset kept (the carry's roof).
++        let carried: Agent | null = null, best = 7;
++        if (sp > 1 && (seen.pos.x - sim.los) * dirX >= 8) for (const o of sim.offense) {
++          const f = this.receiverForecasts.get(o); if (!f || o === a) continue;
++          const now = o === r ? target : this.has(sim, o), nx = f.predict(sim.t, 0.1) ?? now, vx = (nx.x - now.x) / 0.1, vy = (nx.y - now.y) / 0.1, vs = Math.hypot(vx, vy);
++          const dd = Math.hypot(seen.pos.x - now.x, seen.pos.y - now.y);
++          if (vs > 1 && dd < best && (seen.pos.x - now.x) * dirX >= 0.5 && (seen.vel.x * vx + seen.vel.y * vy) / (sp * vs) > 0.7) {
++            best = dd; carried = o;
++            const at = f.predict(sim.t, total) ?? now; carryAt = { x: at.x + seen.pos.x - now.x, y: at.y + seen.pos.y - now.y };
++          }
++        }
++        roof = carried === r;
++        if (carried && carried !== r) roof = false; else carryAt = roof ? carryAt : null;
++        if (carried && carried !== r) closeState = closeState ?? null;
++        const gx = point.x - seen.pos.x, gy = point.y - seen.pos.y, gl = Math.hypot(gx, gy) || 1;
++        deepBail = (seen.pos.x - sim.los) * dirX >= 10 && sp > 1 && (gx * seen.vel.x + gy * seen.vel.y) / (gl * sp) < -0.2;
++      }
+       // THROW_REACT: no defender breaks on the ball before it is in the air.
+       // One facing him in zone keys the motion, so he goes at the release or
+       // a reaction after the motion starts, whichever is later; one in man
+@@ -2813,7 +2888,7 @@ export class QBPass implements Behavior {
+         const age = this.mind.pictureAge(d), A = dp.vmax / Math.max(dp.tau, 1e-3);
+         spreadD = Math.min(0.5 * A * age * age, dp.vmax * age) / Math.max(dp.vmax, 1e-3);
+       }
+-      return { d, dp, dBall, blind, mover, react, leap, spreadD, facingQB, tied, estimateError: a.mind.judgment(`reach:${d.slot}`) * noise };
++      return { d, dp, dBall, blind, mover, react, leap, spreadD, facingQB, tied, closeState, roof, deepBail, carryAt, seen, speedScale: mover.speedScale, estimateError: a.mind.judgment(`reach:${d.slot}`) * noise };
+     });
+     // A ball that arrives at `pt`: who contests it at the catch, who can get a
+     // hand on it on the way, and how many of those become picks.
+@@ -2834,29 +2909,40 @@ export class QBPass implements Behavior {
+     const at = (pt: Vec3) => {
+       let pOpen = 1, pClear = 1, intRisk = 0, pSecure = 1, intPath = 0, intJump = 0, intContest = 0, noPathPick = 1, noCatchPick = 1;
+       const v0 = dragFreeLaunch(from, pt, T);
+-      for (const { d, dp, dBall, blind, mover, react, leap, spreadD, facingQB, tied, estimateError } of defenders) {
+-        const tt = blind + (QB_WINDOW_ARRIVE && !tied ? arriveTime(mover, pt, dp.reach + 0.3, react) : timeToReach(mover, pt, dp.reach + 0.3) + react);
++      for (const { d, dp, dBall, blind, mover, react, leap, spreadD, facingQB, tied, closeState, roof, deepBail, carryAt, seen, speedScale, estimateError } of defenders) {
++        // QB_CLOSE_BELIEF: an occupied man starts from the ball seen in the air (the release, a not-facing reaction); one
++        // moving away from his own start time; both run the engine's body from what he sees.
++        const cbStart = closeState === 'occupied' || (closeState === 'away' && !facingQB) ? wind + dp.reactionTime * 1.8 : blind + react;
++        const cbArrive = (q: { x: number; y: number }, rad: number) => bodyArrive(seen, dp, speedScale ?? 1, q, rad, cbStart);
++        // QB_ROLE_PATH: a deep man bailing away keeps going through the catch window; the roof carrier, for a ball thrown
++        // under him, plays the catch from behind (no contest in flight or at the catch; only the late dislodge).
++        const dirX = sim.attackDir(a.team);
++        const under = QB_ROLE_PATH && roof && !tied && (pt.x - sim.los) * dirX < (seen.pos.x + seen.vel.x * total - sim.los) * dirX - dp.reach;
++        // QB_ROLE_PATH: a deep man carrying another receiver stays with him: where that route takes him at the arrival, then
++        // only from there (he does not leave his man for the ball in flight).
++        const carryTt = QB_ROLE_PATH && carryAt && !roof && !tied ? total + timeToReach({ pos: carryAt, vel: { x: 0, y: 0 }, profile: dp, speedScale: speedScale ?? 1 }, pt, dp.reach + 0.3) : null;
++        const tt = carryTt !== null ? carryTt : QB_ROLE_PATH && deepBail && !tied ? Math.max(total, bodyArrive(seen, dp, speedScale ?? 1, pt, dp.reach + 0.3, total)) : closeState && !tied ? cbArrive(pt, dp.reach + 0.3) : blind + (QB_WINDOW_ARRIVE && !tied ? arriveTime(mover, pt, dp.reach + 0.3, react) : timeToReach(mover, pt, dp.reach + 0.3) + react);
+         // BLITZ_READ: a defender he believes is rushing is going elsewhere, not to this point.
+         const m = tt - total + estimateError + (BLITZ_READ ? 3 * this.rushOf(d) : 0);
+         const sCatch = PICTURE_AGE ? Math.hypot(0.13, spreadD, spreadR / Math.max(dp.vmax, 1e-3)) : 0.13;
+         const sPath = PICTURE_AGE ? Math.hypot(0.1, spreadD) : 0.1;
+-        const contest = 1 - logistic((m - 0.05) / sCatch);
++        const contest = under ? 0 : 1 - logistic((m - 0.05) / sCatch);
+         // A defender who gets there well before the ball is sitting on the route.
+-        const first = 1 - logistic((m + 0.3) / sCatch);
++        const first = under ? 0 : 1 - logistic((m + 0.3) / sCatch);
+         pOpen *= 1 - contest * (0.55 + 0.3 * dBall);
+         // DEF_BELIEF: arriving after the ball but inside the securing window, he can still get it out.
+         if (DEF_BELIEF) {
+-          const late = Math.max(0, (1 - logistic((m - 0.05 - SECURE_T) / Math.max(sCatch, 0.1))) - contest);
++          const late = Math.max(0, (1 - logistic((Math.max(m, under ? 0.06 : -Infinity) - 0.05 - SECURE_T) / Math.max(sCatch, 0.1))) - contest);
+           pSecure *= 1 - late * dislodge;
+         }
+         // Undercut risk along the flight path: a hand on the ball kills the
+         // completion, and some of those become picks.
+         let touch = 0;
+-        for (const f of [0.3, 0.45, 0.6, 0.75, 0.88]) {
++        for (const f of (under || carryTt !== null ? [] : [0.3, 0.45, 0.6, 0.75, 0.88])) {
+           const tau = T * f;
+           const b = arcPoint(from, v0, tau);
+           if (b.z > leap + 0.1) continue;
+-          const tb = blind + (QB_WINDOW_ARRIVE && !tied ? arriveTime(mover, b, dp.reach, react, pt) : timeToReach(mover, b, dp.reach) + react);
++          const tb = closeState && !tied ? cbArrive(b, dp.reach) : blind + (QB_WINDOW_ARRIVE && !tied ? arriveTime(mover, b, dp.reach, react, pt) : timeToReach(mover, b, dp.reach) + react);
+           const mb = tb - (wind + tau) + estimateError;
+           touch = Math.max(touch, logistic(-(mb - 0.05) / sPath));
+         }
+@@ -2867,7 +2953,7 @@ export class QBPass implements Behavior {
+         intRisk += iPath + iJump + iContest;
+         intPath += iPath; intJump += iJump; intContest += iContest;
+         if (marginTrace && pt === point && (contest > 0.05 || iPath + iJump + iContest > 0.001)) marginTrace.push({ slot: d.slot, m: +m.toFixed(3), first: +first.toFixed(3),
+-          contest: +contest.toFixed(3), blind: +blind.toFixed(3), react: +react.toFixed(3), wind: +wind.toFixed(3), total: +total.toFixed(3), touch: +touch.toFixed(4),
++          contest: +contest.toFixed(3), roof, deepBail, under, dDepth: +((seen.pos.x - sim.los) * sim.attackDir(a.team)).toFixed(1), tDepth: +((target.x - sim.los) * sim.attackDir(a.team)).toFixed(1), dTgt: +Math.hypot(seen.pos.x - target.x, seen.pos.y - target.y).toFixed(1), blind: +blind.toFixed(3), react: +react.toFixed(3), wind: +wind.toFixed(3), total: +total.toFixed(3), touch: +touch.toFixed(4),
+           iPath: +iPath.toFixed(4), iJump: +iJump.toFixed(4), iContest: +iContest.toFixed(4), facingQB, ballSkills: +dBall.toFixed(2) });
+         if (INT_BELIEF) {
+           noPathPick *= 1 - clamp(iPath * PATH_PICK * intBelief, 0, 0.95);
+diff --git a/src/sim/coverage/judgment.ts b/src/sim/coverage/judgment.ts
+index 886e12c13..8d58f4c29 100644
+--- a/src/sim/coverage/judgment.ts
++++ b/src/sim/coverage/judgment.ts
+@@ -12,6 +12,8 @@ import { hasObservedFlight, observedHolder } from '../possession-read.js';
+ import { infoHonest, playsThrow } from '../behaviors/defense.js';
+ import type { ReceiverRead, ReleaseReader } from './reads.js';
+ import type { Directive } from './rules.js';
++/** QB_STANCE (behaviors/qb.ts; read here too): the passer's gaze is his head while his chest is open in his stance. */
++const QB_STANCE_SEEN = process.env.QB_STANCE === '1';
+ 
+ /** JUDGE_SEEN_BALL (experimental, off; JUDGE_SEEN_BALL=1 turns it on): a deep
+  * defender's help decisions freeze when he sees the throw (sawThrow, his own
+@@ -73,7 +75,8 @@ export class CoverageJudgment {
+       if (short && short.depth > 2 && short.vel.x < 2.5 && ['stop', 'in', 'out', 'under'].includes(short.release)) {
+         const qb = sim.see(a, sim.qb);
+         const direction = Math.atan2(short.pos.y - qb.pos.y, short.pos.x - qb.pos.x);
+-        const eyes = Math.cos(qb.facing - direction);
++        // QB_STANCE: his chest is open to his throwing-arm side in his stance; his gaze is his head.
++        const eyes = Math.cos((QB_STANCE_SEEN ? qb.head ?? qb.facing : qb.facing) - direction);
+         const confidence = a.mind.focus * (0.5 + 0.5 * a.r('playRecognition')) + 0.08 * eyes + 0.08 * a.mind.judgment(`break:${short.r.slot}`);
+         if (confidence > 0.55 && Math.hypot(short.pos.x - a.pos.x, short.pos.y - a.pos.y) < 10) {
+           this.override = { t: 'rob', r: short.r };

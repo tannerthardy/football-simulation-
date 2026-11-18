@@ -34,3 +34,23 @@ beyond the defenders' own:
   through the securing / dislodge term at his arrival behind the catch.
 - **A deep man bailing away:** carries his velocity until after the catch window.
 - **The rest** as now.
+
+## QB_ROLE_PATH (off): two attempts
+
+Patch: `qb-role-path-close-belief-on-pr842-e51c228a.patch` on #842 (it also carries QB_CLOSE_BELIEF, held, and QB_STANCE's
+readers).
+
+1. **Roof over the target only.** No effect: the eyes-on deep men are rarely over the target. In the trace they sit
+   about 20 yd deep and 10 yd from the seam receiver, carrying another man with a cushion.
+2. **Any deep man (8+ yd) carrying a receiver** (deeper by half a yard, within 7 yd, moving with him) is priced through
+   that receiver's route with his offset kept: no flight contest, and only from where the carry takes him at the
+   arrival. A ball under his own carried target arrives as the catch from behind.
+
+Results, attempt 2:
+- **Games** (8, seeds 11 and 31): 15+ air-yd share 2.2% → 3.6% (14 → 22 throws, NFL 13.4%). Their completion 0.50 →
+  0.45. Ints 9 → 7. Completion 0.694 → 0.676. Air yards 5.3 → 5.6.
+- **Held-ball rows:** eyes-on still believed 0.60 against 0.19 real. The carriers the rule finds leave the counted set
+  (277 → 265). The rest are deep men it does not class as carrying.
+
+Stopped at two attempts. Next is to trace the remaining eyes-on deep men's real role (tags and the man or zone they play)
+before a third form. Scan, guard and reference-stack pass.
