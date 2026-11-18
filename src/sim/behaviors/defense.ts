@@ -79,6 +79,9 @@ export const SETTLE_DEPTH = process.env.SETTLE_DEPTH !== '0';
  * on the receiver he plays (carried across, read on his stem) is held until the observed velocity clears the far side
  * of its switch, and against a crosser he holds the window on its path (the lane to its pictured future). */
 export const ZONE_COMMIT = process.env.ZONE_COMMIT === '1';
+/** ZONE_GOAL (experimental, off; ZONE_GOAL=1; Coverage, C14 zone relation, attempt 2): the underneath zone defender holds
+ * one goal on a crosser in his area until it leaves his band or the ball is out, playing the window ahead on its path. */
+export const ZONE_GOAL = process.env.ZONE_GOAL === '1';
 const SINK_ENTER = 2, SINK_EXIT = 1;
 /** SEEN_EYES (default on; SEEN_EYES=0 restores the QB's internal read target): a zone defender
  * reads the QB's look from what he sees of him, not from the QB's internal
@@ -1711,6 +1714,8 @@ export class ZoneCoverage implements Behavior {
   private commitR: Agent | null = null;
   private heldAcross = false;
   private heldStem = false;
+  /** ZONE_GOAL: the crosser he has committed to. */
+  private goalR: Agent | null = null;
   readonly kind = 'zone';
   private readonly landmark: Vec2;
   /** Inspect the exact adjusted landmark used by this technique. */
@@ -2199,6 +2204,37 @@ export class ZoneCoverage implements Behavior {
         return withFacingTechnique({ ...carry, facing: openCarryFacing(a, sim, th.r, carry, true) }, { label: 'open-carry-seam', key: th.vel });
       }
       return withFacingTechnique(carry, { label: runPast ? 'carry-run-past' : 'carry-wall', key: th.vel });
+    }
+    // ZONE_GOAL: one held goal on a crosser in his area. He commits to a receiver crossing his band (seen moving across
+    // faster than 3 yd/s and more across than up; released under 2 yd/s or more up than across) and keeps him until
+    // that receiver leaves his band or the ball is out: he holds the window ahead on the crosser's path (its pictured
+    // future, inside his area, so he passes it at his edge); under a shallow crosser he stays at his own depth, under a
+    // deeper one he gets under its path on the throwing lane. Eyes and shoulders stay on the QB. Vertical carries above
+    // are unchanged.
+    if (ZONE_GOAL && !this.deep && knowsPass(sim, a)) {
+      const across = (th: (typeof threats)[number], held: boolean) => {
+        const vx = Math.abs(th.vel.x), vy = Math.abs(th.vel.y);
+        return held ? !(vy < 2 || vy < 0.75 * vx) : vy > 3 && vy > vx;
+      };
+      let g = this.goalR ? threats.find(th => th.r === this.goalR) : undefined;
+      if (g && !across(g, true)) g = undefined;
+      if (!g) {
+        const cands = threats.filter(th => across(th, false) && th.fut.x - sim.los < 16);
+        cands.sort((p, q) => Math.hypot(p.fut.x - lm.x, p.fut.y - lm.y) - Math.hypot(q.fut.x - lm.x, q.fut.y - lm.y));
+        g = cands[0];
+      }
+      this.goalR = g?.r ?? null;
+      if (g) {
+        this.selectTarget(a, g.r);
+        const up = sim.attackDir('O');
+        const y = clamp(g.fut.y, lm.y - this.radius, lm.y + this.radius);
+        const lane = lerp(qbAt, g.fut, 0.82);
+        const deeper = (g.pos.x - a.pos.x) * up > -2;
+        const own = up > 0 ? Math.min(a.pos.x, lm.x) : Math.max(a.pos.x, lm.x);
+        const x = deeper ? (up > 0 ? Math.min(lane.x, g.pos.x - 1) : Math.max(lane.x, g.pos.x + 1)) : own;
+        return withFacingTechnique(goTo(a, { x, y: clamp(y, 0.5, FIELD_WIDTH - 0.5) }, { facing: facingQB, speed: zs * 1.05 }),
+          { label: deeper ? 'goal-under-cross' : 'goal-over-cross', key: g.vel });
+      }
     }
     // CURL_FLAT_BACK: with No. 2 not (or no longer) carried vertically, the
     // curl-flat defender who sees the back or No. 3 showing to the flat on his
