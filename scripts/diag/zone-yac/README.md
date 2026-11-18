@@ -15,3 +15,13 @@ BDB 2025 raw files (path at the top of each script) and take weeks then the outp
   `zy-an.py FILE...` tables.
 - `tail-trace.mts COV CONCEPT FORMATION SEED FLIP(0|1)`, `tail-tags.mts ROWS.json`: one play, and per-play tags for
   never-touched 20+ rows.
+- `flat-def.mts SEEDS OUT` (env `COVS`): every completion to a flat route (route id captured before the catch). At the
+  catch: the flat defender by rule (nearest zone whose name has "flat"), with distance, depth relative to the catcher
+  (+ = deeper), speed toward him and match target; the nearest defender; the first defender within 1.0 yd after the
+  catch, with time; YAC.
+- `zone-yac2.mts` env additions: `CONCEPTS`, `SCREENS=1`, `MINAIR`/`MAXAIR`; rows also carry `missed`/`broken`, `thrT`,
+  `flight`, sideline distances and `lastTouch`.
+- `deep-close.mts` rows carry `pbu`. `dc-one.mts COV CONCEPT FORMATION SEED SLOT T` runs one staged throw.
+- `ontop-req.mts`, `flight-belief.mts`: per-tick request vs body and release belief for one defender or one throw.
+- `topangle.mts` / `topangle-nfl.py`: deeper-than-catcher defenders 3-10 yd away at the catch, heading at +0.5 s vs the
+  carrier now and at +1.5 s.

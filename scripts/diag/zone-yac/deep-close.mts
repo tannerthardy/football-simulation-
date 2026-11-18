@@ -41,7 +41,7 @@ for (const coverage of COVS) for (const concept of Object.keys(PASS_BY_ID).filte
       out.push({ coverage, concept, formation, seed, slot, T, flight: +flight.toFixed(2), air: +cp.x.toFixed(1), d0: +Math.hypot(dm.p.x - cp.x, dm.p.y - cp.y).toFixed(1),
         depth: +dm.p.x.toFixed(1), back: +dm.v.x.toFixed(2), speed: +Math.hypot(dm.v.x, dm.v.y).toFixed(2), faceLOS: +(Math.acos(Math.max(-1, Math.min(1, -fx))) * 180 / Math.PI).toFixed(0),
         v: [0, 0.4, 0.8, 1.2].map((tt) => tt <= flight + 1e-6 ? at(tt) : null), dArr: +Math.hypot(dA.p.x - cp.x, dA.p.y - cp.y).toFixed(1),
-        kind: dm.kind, tags: dm.tags, kindArr: dA.kind, tagsArr: dA.tags, caught: !!sim.stats.completed, int: sim.events.some((e: any) => e.type === 'interception') });
+        kind: dm.kind, tags: dm.tags, kindArr: dA.kind, tagsArr: dA.tags, caught: !!sim.stats.completed, int: sim.events.some((e: any) => e.type === 'interception'), pbu: sim.events.some((e: any) => /pbu|deflect|breakup/.test(e.type)) });
     }
   }
 writeFileSync(process.argv[3], JSON.stringify(out)); console.log('rows', out.length);
