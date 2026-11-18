@@ -364,6 +364,7 @@
     "PLAN_KEYS_3": "on",
     "ROUTE_EFFORT": "off",
     "ROUTE_END": "on",
+    "SIT_WORK": "off",
     "CROSS_OVER": "off",
     "PLANT_REACH": "on",
     "COMPILE_PICTURE": "on",

@@ -128,6 +128,25 @@ const ROUTE_CRAFT = process.env.ROUTE_CRAFT !== '0';
 const ROUTE_END = process.env.ROUTE_END !== '0';
 /** ROUTE_END: how far a settled receiver slides from his settle point, against man and in a zone window (yd; a choice). */
 const SETTLE_SHIELD = 1.5, SETTLE_WINDOW = 3;
+/** SIT_WORK (experimental, off): the settled receiver keeps working to the window, as taught ("find the hole and sit
+ * in it; if the defender moves, move with the window"), from his own picture every tick. Off (ROUTE_END), he picks a
+ * window once from the defenders within 4 yd of his depth and stops in it: NFL sitting routes near the underneath men
+ * move 1.30 yd/s laterally 0.5 s before the release, ours 0.54 (0.24 one band outside; scripts/diag/routes/flow_mix.py).
+ * On, against zone: along his settle line, within SIT_RANGE of his settle point (bounded so the QB's forecast still
+ * holds), he aims at the spot that keeps the most room from every underneath defender he sees between the line and 4 yd
+ * past his depth: room counted both to him and to the QB's throwing lane to that spot (a defender under the lane closes
+ * the window). Ties keep the spot nearest where he stands. Against man (a defender within 2.5 yd) he shields as before.
+ * Parked (Integration, 2026-11-18): flow_mix's key, 0.5 s before the release, catches sitters still on their stems (NFL 69%
+ * climbing), so it cannot see this; measure it after the settle (lateral movement in the 0.5 s after he settles, NFL vs
+ * ours) before it is judged. */
+const SIT_WORK = process.env.SIT_WORK === '1';
+const SIT_RANGE = 4;
+/** The distance from p to the segment a-b. */
+function segDist(p: Vec2, a: Vec2, b: Vec2): number {
+  const dx = b.x - a.x, dy = b.y - a.y, L = dx * dx + dy * dy || 1e-9;
+  const t = clamp(((p.x - a.x) * dx + (p.y - a.y) * dy) / L, 0, 1);
+  return Math.hypot(p.x - (a.x + t * dx), p.y - (a.y + t * dy));
+}
 
 
 /** BREAK_LOOK (experimental, off; BREAK_LOOK=1; with BALL_EST): a deep-family route the plan throws on its break (its
@@ -650,6 +669,21 @@ export class RouteRunner implements Behavior {
     if (near && nd < 2.5) {
       const side = Math.sign(last.y - near.pos.y) || 1;
       return goTo(a, { x: last.x, y: clamp(last.y + side * SETTLE_SHIELD, 1.5, FIELD_WIDTH - 1.5) }, { speed: 0.8, facing });
+    }
+    if (SIT_WORK) {
+      // SIT_WORK: the spot on his settle line with the most room from the underneath defenders he sees, to him and to
+      // the QB's lane to that spot, within SIT_RANGE of his settle point.
+      const los = sim.los, dirn = Math.sign(last.x - los) || 1;
+      const under = seen.filter((d) => (d.pos.x - los) * dirn > -1 && (d.pos.x - last.x) * dirn < 4 && Math.abs(d.pos.y - last.y) < SIT_RANGE + 8);
+      let bestY = clamp(a.pos.y, last.y - SIT_RANGE, last.y + SIT_RANGE), bestRoom = -1;
+      for (let k = -SIT_RANGE * 2; k <= SIT_RANGE * 2; k++) {
+        const y = clamp(last.y + k * 0.5, 1.5, FIELD_WIDTH - 1.5), spot = { x: last.x, y };
+        let room = 8;
+        for (const d of under) room = Math.min(room, Math.hypot(d.pos.x - spot.x, d.pos.y - spot.y), segDist(d.pos, qb, spot) + 1);
+        const better = room > bestRoom + 0.05 || (Math.abs(room - bestRoom) <= 0.05 && Math.abs(y - a.pos.y) < Math.abs(bestY - a.pos.y));
+        if (better) { bestRoom = room; bestY = y; }
+      }
+      return goTo(a, { x: last.x, y: bestY }, { speed: 0.8, facing });
     }
     // Zone: the window between the underneath defenders either side of him, near his depth.
     const under = seen.filter((d) => Math.abs(d.pos.x - last.x) < 4 && Math.abs(d.pos.y - a.pos.y) < 8);
