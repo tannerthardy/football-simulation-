@@ -15,6 +15,7 @@ import { ownRoutes } from '../src/sim/ball-estimate.js';
 import { gapY, zoneLandmark } from '../src/playbook/alignment.js';
 import { PlaySim } from '../src/sim/playsim.js';
 import { FIELD_WIDTH } from '../src/core/field.js';
+import { compilingPlan, installedPlan } from '../src/playbook/read-compiler/runtime.js';
 import type { PlayLog } from '../src/game/game.js';
 import type { MatchRule, ZoneId } from '../src/playbook/types.js';
 
@@ -58,8 +59,10 @@ export interface ArtSheet {
     /** The QB's coached key as a role on his own picture (a defender is picked from it live, not fixed by the call). */
     key?: { role: string; low?: string; high?: string };
     fake?: boolean;
+    /** The QB's installed reads in order, each with the footwork step it is thrown on (the plan's rhythm: the set, the first hitch, the second hitch). */
+    steps?: Array<{ n: number; ref: string; slot?: string; route?: string; step: 'set' | 'hitch' | 'hitch2'; text: string }>;
   };
-  defense: { coverage: string; family?: string; shell: string; front: string; personnel: string; pressure: string | null; note?: string; zoneStyle: string };
+  defense: { check?: string; man?: boolean; coverage: string; family?: string; shell: string; front: string; personnel: string; pressure: string | null; note?: string; zoneStyle: string };
   players: Array<{ team: 'O' | 'D'; slot: string; pos: XY; job: Job | null }>;
 }
 
@@ -141,7 +144,7 @@ export function installPlayArtTap(): void {
   const proto = PlaySim.prototype as unknown as { tick: () => void };
   const tick = proto.tick;
   proto.tick = function (this: any) {
-    if (!seen.has(this)) { seen.add(this); try { const s = sheetOf(this); if (s) sheets.push(s); } catch (e) { sheets.push(null as never); } }
+    if (!seen.has(this)) { seen.add(this); if (!compilingPlan()) try { const s = sheetOf(this); if (s) sheets.push(s); } catch (e) { sheets.push(null as never); } }
     return tick.call(this);
   };
 }
@@ -164,11 +167,27 @@ function sheetOf(sim: any): ArtSheet | null {
     const start = off.spots[m.slot]?.pos;
     if (start) offense.motionPath = { slot: m.slot, path: [xy(start), ...m.legs.map((l: any) => xy(l.to))] };
   }
+  if (call.kind === 'pass' && !call.pass?.screen) {
+    const plan = installedPlan(call.pass, call.formation.id);
+    if (plan) {
+      const STEP_WORDS = { set: 'on the last step of the drop (the set)', hitch: 'on the first hitch', hitch2: 'on the second hitch' } as const;
+      const routeOf = (ref: string) => { const id = ref === 'B' ? call.pass.back : ref[0] === 'S' ? call.pass.strong?.[Number(ref.slice(1))] : call.pass.weak?.[Number(ref.slice(1))]; return typeof id === 'string' ? id : undefined; };
+      const refs: string[] = []; const push = (r: string | null | undefined) => { if (r && !refs.includes(r)) refs.push(r); };
+      push(plan.alert); for (const r of plan.order) push(r); push(plan.outlet);
+      offense.steps = refs.map((ref, i) => {
+        const rh = plan.rhythm.find((x) => x.ref === ref || x.group?.includes(ref as never));
+        const step = (rh?.step ?? 'hitch2') as 'set' | 'hitch' | 'hitch2'; const slot = slotOf(ref); const route = routeOf(ref);
+        const asOutlet = ref === plan.outlet ? ' (the outlet: checks down to him when the rest are covered)' : ref === plan.alert ? ' (alert: looked at first)' : '';
+        return { n: i + 1, ref, slot, route, step, text: `Read ${i + 1}: ${ref}${slot ? ` (${slot})` : ''}${route ? ` · ${route.replace(/_/g, ' ')}` : ''} — ${STEP_WORDS[step]}${asOutlet}` };
+      });
+    }
+  }
   const qk = sim.qb?.behavior?.plan?.key;
   if (qk) offense.key = { role: String(qk.role), low: qk.low?.slot, high: qk.high?.slot };
   const defense: ArtSheet['defense'] = {
     coverage: dcall.coverage.name, family: dcall.coverage.family, shell: dcall.coverage.shell, front: dcall.front.name, personnel: dcall.personnel,
-    pressure: dcall.pressure?.name ?? null, note: dcall.coverage.note, zoneStyle: dcall.zoneStyle ?? 'match',
+    pressure: dcall.pressure?.name ?? null, note: dcall.coverage.note, zoneStyle: dcall.zoneStyle ?? 'match', man: !!dcall.coverage.man,
+    check: /→/.test(dcall.coverage.name) ? dcall.coverage.name.split('→').slice(1).join('→').trim() : undefined,
   };
   const players: ArtSheet['players'] = [];
   for (const a of sim.agents) {

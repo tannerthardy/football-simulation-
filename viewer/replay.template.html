@@ -162,6 +162,19 @@ select, input[type="search"] { width: 100%; min-width: 0; border: 1px solid var(
 .play .txt { font-size: 13px; margin-top: 2px; overflow-wrap: anywhere; }
 .badge { font-family: var(--mono); font-size: 10px; padding: 0 5px; border-radius: 3px; border: 1px solid currentColor; }
 .foot { font-size: 12px; color: var(--muted); }
+.film-label { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px 14px; padding: 10px 14px; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; }
+.film-label .fl-result { grid-column: 1 / -1; font-size: 14px; font-weight: 600; }
+.film-label div { min-width: 0; }
+.film-label small { display: block; font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.film-label b { font-weight: 600; overflow-wrap: anywhere; }
+.film-label .fl-set { font-family: var(--mono); font-size: 11px; color: var(--accent); }
+.art-steps { display: grid; gap: 2px; margin: 0; padding: 0; list-style: none; font-size: 13px; }
+.art-steps li { display: grid; grid-template-columns: 74px minmax(0, 1fr); gap: 0 8px; }
+.art-steps .stp { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+.issues { padding: 12px 14px; border: 1px solid var(--line); border-radius: 10px; background: var(--panel); display: grid; gap: 8px; }
+.issues summary { cursor: pointer; font-family: var(--display); font-size: 21px; font-weight: 800; }
+.issues textarea { width: 100%; min-height: 130px; resize: vertical; font: inherit; font-size: 13px; color: var(--ink); background: var(--panel-2); border: 1px solid var(--line); border-radius: 6px; padding: 8px; }
+.issues .row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
 .foot kbd { font-family: var(--mono); font-size: 11px; border: 1px solid var(--line); border-radius: 3px; padding: 0 4px; }
 @media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
 </style>
@@ -205,6 +218,7 @@ select, input[type="search"] { width: 100%; min-width: 0; border: 1px solid var(
           <dt>Defense</dt><dd id="defcall">—</dd>
         </dl>
       </div>
+      <div class="film-label" id="film-label" hidden></div>
       <div class="field-wrap">
         <canvas id="field" width="1200" height="720" aria-label="Top-down view of the play"></canvas>
         <div class="caption" id="caption">0.00s</div>
@@ -245,6 +259,7 @@ select, input[type="search"] { width: 100%; min-width: 0; border: 1px solid var(
           <div id="export-status" class="status-note" role="status" aria-live="polite">Exports the selected time range at 1×, with your visible layers and the play reference.</div>
         </div>
       </div>
+      <details class="issues" id="issues" hidden open><summary>Known issues on this engine</summary><small class="status-note" id="issues-note">Write what is known to be wrong in this engine, as you watch. It is saved in this browser.</small><textarea id="issues-text" aria-label="Known issues on this engine" placeholder="One issue per line…"></textarea><div class="row"><button id="issues-save">Save</button><small id="issues-status" role="status"></small></div></details>
       <details class="art-panel" id="art-panel" open aria-label="Play art: the call as called"><summary>Play art · the call</summary><div id="art-body"><small class="status-note">No call data recorded for this play.</small></div></details>
       <section class="inspector" aria-label="Selected player detail"><h2 id="inspector-title">Player detail</h2><small class="status-note">Click a player on the field or select one above. Body-facing ticks are not eye tracking.</small><dl id="inspector-state" class="inspector-grid"></dl><div id="inspector-links" class="detail-list"></div><div id="inspector-decisions" class="detail-list"></div><details><summary>Recorded player ratings</summary><dl id="inspector-ratings" class="inspector-grid"></dl></details></section>
       <details class="inspector"><summary>Recorded event notes</summary><div id="event-details" class="detail-list"></div></details>
@@ -283,7 +298,8 @@ window.TELEMETRY_READY = Promise.resolve(true);
   const ctx = canvas.getContext('2d');
   const plays = REPLAY.plays;
   const meta = REPLAY.meta;
-  const games = REPLAY.games || [meta];
+  const FILM = meta.film || null;
+  const games = FILM ? [{ seed: meta.seed, final: { home: 0, away: 0 }, quarters: [] }] : (REPLAY.games || [meta]);
   const catalog = REPLAY.catalog || {};
   const esc = (v) => String(v ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const familyNames = { zone: 'Zone runs', gap: 'Gap runs', 'other-run': 'Other runs', quick: 'Quick game', dropback: 'Dropback passes', playaction: 'Play action', screen: 'Screens', other: 'Other plays' };
@@ -308,10 +324,15 @@ window.TELEMETRY_READY = Promise.resolve(true);
   const clk = (s) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
   const gain = (y) => `${y > 0 ? '+' : ''}${Number(y.toFixed(1))} yd`;
   const replaySeed = (p) => p.fixtureSeed ?? games[p.game].seed;
-  const label = (key, value) => key === 'concept' ? plays.find((p) => p.concept.id === value)?.concept.name ?? value
+  const label = (key, value) => key === 'set' ? (value === 'random' ? 'Random pass plays' : 'Zone plays with big YAC') : key === 'concept' ? plays.find((p) => p.concept.id === value)?.concept.name ?? value
     : key === 'game' ? `Game ${Number(value) + 1} · seed ${games[value].seed}`
     : key === 'team' ? teams[value]?.name ?? value : catalog[key]?.[value] ?? (value === 'unknown' ? 'Unlabelled' : value);
   function renderHeader(game) {
+    if (FILM) {
+      $('game-label').textContent = `Pass game · engine ${String(FILM.source || '').slice(0, 8)} · ${plays.length} plays: ${FILM.random} random, ${FILM.zone} zone with ${FILM.minYac}+ YAC`;
+      $('teams').hidden = $('linescore').hidden = true;
+      return;
+    }
     const g = games[game];
     $('game-label').textContent = meta.cohort ? 'All-22 · controlled inspection fixtures' : `All-22 · Game ${game + 1} · seed ${g.seed} · final score`;
     $('teams').hidden = $('linescore').hidden = !!meta.cohort;
@@ -349,7 +370,7 @@ window.TELEMETRY_READY = Promise.resolve(true);
   const layerNames = ['assignments', 'movement', 'contact', 'perception'];
   const videoMime = typeof MediaRecorder !== 'undefined' ? ['video/webm;codecs=vp9', 'video/webm;codecs=vp8', 'video/webm'].find((mime) => MediaRecorder.isTypeSupported(mime)) : null;
   const canExportVideo = typeof canvas.captureStream === 'function' && !!videoMime;
-  const valueOf = (p, key) => String(key === 'concept' ? p.concept.id : key === 'game' ? p.game : key === 'team' ? p.off : p.plan?.[key] ?? 'unknown');
+  const valueOf = (p, key) => String(key === 'set' ? p.film?.set : key === 'concept' ? p.concept.id : key === 'game' ? p.game : key === 'team' ? p.off : p.plan?.[key] ?? 'unknown');
   const searchText = plays.map((p) => [p.id, p.call, p.def, p.text, p.concept.name, ...(p.roster || []).map((r) => r[2])].join(' ').toLowerCase());
   function hasFlag(p, key) {
     if (key === 'nullified') return !!p.nullified;
@@ -391,7 +412,7 @@ window.TELEMETRY_READY = Promise.resolve(true);
       if (!groups.has(value)) groups.set(value, { value, name: label(key, value), family: plays[i].concept.family, items: [] });
       groups.get(value).items.push(i);
     }
-    return [...groups.values()].sort((a, b) => key === 'game' ? Number(a.value) - Number(b.value)
+    return [...groups.values()].sort((a, b) => key === 'set' ? (a.value === 'random' ? -1 : 1) : key === 'game' ? Number(a.value) - Number(b.value)
       : key === 'concept' ? familyOrder.indexOf(a.family) - familyOrder.indexOf(b.family) || a.name.localeCompare(b.name)
       : a.name.localeCompare(b.name));
   }
@@ -483,6 +504,18 @@ window.TELEMETRY_READY = Promise.resolve(true);
     refreshSelection();
   };
   $('search').oninput = () => { selection.search = $('search').value; refreshSelection(); };
+  if (FILM) {
+    $('group-by').insertAdjacentHTML('afterbegin', '<option value="set">Film set</option>');
+    $('group-by').value = 'set';
+    document.querySelector('.library-title h1').textContent = 'Pass game film room';
+    $('issues').hidden = false;
+    if ($('toggle-filters').getAttribute('aria-expanded') === 'true') $('toggle-filters').click();
+    const KEY = 'film-room-known-issues', ta = $('issues-text');
+    try { ta.value = localStorage.getItem(KEY) || ''; } catch (e) { /* storage may be blocked */ }
+    $('issues-save').onclick = () => {
+      try { localStorage.setItem(KEY, ta.value); $('issues-status').textContent = 'Saved in this browser.'; } catch (e) { $('issues-status').textContent = 'This browser blocked saving; the text stays on the page until you leave.'; }
+    };
+  }
   $('group-by').onchange = refreshSelection;
   $('list').addEventListener('click', (e) => {
     const watch = e.target.closest('[data-watch]');
@@ -532,6 +565,7 @@ window.TELEMETRY_READY = Promise.resolve(true);
     $('copy-status').textContent = '';
     $('dd').textContent = `${ord[p.down] || p.down + 'th'} & ${100 - p.yl <= p.dist ? 'Goal' : p.dist} · ${yl(p.yl)}`;
     $('clock').textContent = meta.cohort ? `Controlled setup · seed ${replaySeed(p)} · ${p.off} ball` : `Game ${p.game + 1} · ${p.q <= 4 ? 'Q' + p.q : 'OT'} ${clk(p.clk)} · ${p.off} ball · ${meta.away.abbr} ${p.score.away} – ${meta.home.abbr} ${p.score.home}`;
+    if (FILM) { $('clock').textContent = `${p.q <= 4 ? 'Q' + p.q : 'OT'} ${clk(p.clk)} · ${p.off} ball · game seed ${replaySeed(p)}`; renderFilm(p); }
     $('offcall').textContent = p.call || '—';
     $('defcall').textContent = p.def || '—';
     $('result').textContent = p.text;
@@ -1008,17 +1042,30 @@ window.TELEMETRY_READY = Promise.resolve(true);
       + L(`<line x1="2" y1="7" x2="26" y2="7" stroke="#ff9f43" stroke-width="2.2"/><path d="M26 3 L33 7 L26 11z" fill="#ff9f43"/>`, 'rush path (thick = blitz) to the gap; dashed = run fit')
       + '</ul><small class="status-note">Zones are drawn as the textbook area around the landmark the engine gives the defender; the engine plays a landmark, not a box. Click a player row to isolate his job.</small>';
   }
+  function renderFilm(p) {
+    const f = p.film, s = p.stats || {}, box = $('film-label');
+    if (!f) { box.hidden = true; return; }
+    const cell = (k, v) => `<div><small>${esc(k)}</small><b>${esc(v ?? '—')}</b></div>`;
+    box.hidden = false;
+    box.innerHTML = `<div class="fl-set fl-result">${esc(f.set === 'random' ? 'RANDOM PASS PLAY' : 'ZONE PLAY, 10+ YAC')} · clip ${f.n} of ${plays.length}</div>`
+      + cell('Concept', f.concept) + cell('Formation', f.formation) + cell('Coverage', f.coverage) + cell('Down & distance', `${f.down} · ${yl(p.yl)}`)
+      + cell('Air yards', f.air === null ? '—' : f.air.toFixed(1)) + cell('YAC', f.yac === null ? '—' : f.yac.toFixed(1)) + cell('Time to throw', f.ttt === null ? '—' : `${f.ttt.toFixed(2)} s`)
+      + `<div class="fl-result"><small>Result</small>${esc(f.result)}</div>`;
+  }
   function renderArt(p) {
     const body = $('art-body'); if (!body) return;
     const a = p?.art;
     if (!a) { body.innerHTML = '<small class="status-note">No call data recorded for this play (it was recorded before play art existed, or is not a scrimmage play).</small>'; return; }
     const o = a.offense, d = a.defense;
     const sum = [`<div><b>Offense</b> · ${esc(o.name)} · ${esc(o.formation)} · ${esc(o.personnel)} personnel${o.motion ? ' · ' + esc(o.motion) : ''}</div>`];
-    if (o.kind === 'pass') sum.push(`<div><b>QB</b> · ${esc(o.drop ?? '')} drop${o.fake ? ' off a play-action fake' : ''} · read order ${esc((o.progression ?? []).join(' → '))}</div>`);
+    if (o.kind === 'pass') sum.push(o.steps?.length
+      ? `<div><b>QB</b> · ${esc(o.drop ?? '')} drop${o.fake ? ' off a play-action fake' : ''} · installed read order ${esc(o.steps.map((r) => r.ref).join(' → '))}${(o.progression ?? []).length ? `<br><small>the call lists ${esc(o.progression.join(' → '))}; the engine runs the installed order</small>` : ''}</div>`
+      : `<div><b>QB</b> · ${esc(o.drop ?? '')} drop${o.fake ? ' off a play-action fake' : ''} · read order ${esc((o.progression ?? []).join(' → '))}</div>`);
+    if (o.steps?.length) sum.push(`<div><b>Reads on his feet</b></div><ul class="art-steps">${o.steps.map((r) => `<li><span class="stp">${r.step === 'set' ? 'the set' : r.step === 'hitch' ? 'hitch 1' : 'hitch 2'}</span><span>${esc(r.text)}</span></li>`).join('')}</ul>`);
     if (o.read) sum.push(`<div><b>Key</b> · ${esc(o.read)}</div>`);
     if (o.key) sum.push(`<div><b>QB key</b> · the ${esc(o.key.role)}${o.key.low && o.key.high ? ` between ${esc(o.key.low)} (low) and ${esc(o.key.high)} (high)` : ''}; the defender is picked from that role on the QB’s own picture at the read, so no one player is marked</div>`);
     if (o.screen) sum.push(`<div><b>Screen</b> · ${esc(o.screen)}</div>`);
-    sum.push(`<div><b>Defense</b> · ${esc(d.coverage)} (${esc(d.family ?? '')}, ${esc(d.shell)}) · ${esc(d.front)} front · ${esc(d.personnel)}${d.pressure ? ' · pressure: ' + esc(d.pressure) : ''} · ${d.zoneStyle === 'spot' ? 'spot-drop zones' : 'pattern-match zones'}</div>`);
+    sum.push(`<div><b>Defense</b> · ${esc(d.coverage)} (${esc(d.family ?? '')}, ${esc(d.shell)}) · ${esc(d.front)} front · ${esc(d.personnel)}${d.check ? ' · checked at the line to ' + esc(d.check) : ''}${d.pressure ? ' · pressure: ' + esc(d.pressure) : ''} · ${d.zoneStyle === 'spot' ? 'spot-drop zones' : 'pattern-match zones'}</div>`);
     if (d.note) sum.push(`<div><small>${esc(d.note)}</small></div>`);
     const rowsFor = (team) => p.roster.map((r, i) => [r, i]).filter(([r]) => r[0] === team).map(([r, i]) => {
       const j = a.jobs[i]; const live = j && (j.live || j.rule || j.t === 'zone' && j.rule);
