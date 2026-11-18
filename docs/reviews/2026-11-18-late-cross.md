@@ -39,3 +39,49 @@ FORECAST_FINISH, and as taught: the flat is thrown to the numbers.
 
 Separately, a quick concept's read that is not thrown by its window ends in the checkdown or the throwaway, not a late
 cross-field flat. A ruling for Rules / Integration if wanted.
+
+## READ_WINDOW (off): a passed quick read is dead (Integration's go)
+
+**How he got back to the flat** (single-play traces): his reads run out at 2.6–3.1 s, and QB_RELOOK resets him to
+read 0, the flat. Or a late flip of the key read (2.0–2.8 s) reapplies the pair and resets him to its first route.
+Either way he is on a read he passed, and throws it at 3.1–3.5 s.
+
+**Built (READ_WINDOW=1).** On a quick concept, a read he has moved off is dead for the play.
+- The progression still advances on its own clock (the dwell and the plan's beats).
+- Neither the relook nor a key flip reopens a dead read.
+- Out of live reads, the plan's checkdown gets one more look. Then the best live option, else the existing pocket break
+  or throwaway.
+- The window per step is the existing dwell / beat; no compiler data is needed.
+
+**Late-cross probe** (176 slant_flat-from-trips plays):
+
+| | off | on |
+|---|---|---|
+| late (3.1 s+) and long (1.3 s+ flight) throws | 49 | **0** |
+| throws | 176 | 100 (the rest thrown away, scrambled or sacked) |
+| completions | 120 | 62 |
+| 20+ yd YAC | 21 | 1 |
+
+**Games** (8: seeds 11 and 31):
+
+| arm | throws | completion | ints | time to throw p25 / 50 / 75 / 90 |
+|---|---|---|---|---|
+| off | 640 | 0.694 | 9 | 2.35 / 2.70 / 3.20 / 3.70 |
+| on | 607 | 0.694 | 14 | 2.30 / 2.70 / 3.10 / 3.60 |
+
+Completion by band (off → on): 0–5 yd 0.743 → 0.735; 5–10 yd 0.703 → 0.705; 10–15 yd 0.527 → 0.556; 15+ yd 0.50 → 0.47.
+
+Pass plays (`pumps.ts`, same seeds), off → on:
+- sacks 4.6% → 5.8%;
+- throwaways 5.1% → 6.2%;
+- no throw 7.2% → 9.5%;
+- touchdowns 41 → 31.
+
+**Interceptions 9 → 14 are not explained.** Only quick concepts change, and the games diverge. To trace with the
+picker probe before landing.
+
+**The second part** (the lead stopping at the route's last installed point) is the same code path as FORECAST_FINISH.
+It folds into that flag when FORECAST_FINISH is rebased for its landing.
+
+Patch: `read-window-on-fe150600.patch` (develop fe150600, engine-83). Scan, guard, registry, provenance and read-plan
+pass.
