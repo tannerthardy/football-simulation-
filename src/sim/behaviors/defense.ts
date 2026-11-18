@@ -2471,12 +2471,12 @@ const SHOULDER_READ = process.env.SHOULDER_READ !== '0';
  * playBelievedBall had no deep check: those seats planted on the load and broke on the shoulders on 59-88% of staged
  * plays, pumps included (release-belief.ts: a pump counts as a delivery). */
 const DEEP_GATE = process.env.DEEP_GATE !== '0';
-/** OWNED_FIX (experimental, off; Rules' table gap 2/7): the deep ownership filter (quarter seats keep their numbered man,
- * deep-third corners #1) cut the deep player's picture to one receiver. Under the flag the deep-third corner keeps #2
+/** OWNED_FIX (on since engine-79, 2026-11-18, `=0` restores; Rules' table gap 2/7): the deep ownership filter (quarter seats keep their numbered man,
+ * deep-third corners #1) cut the deep player's picture to one receiver. With it the deep-third corner keeps #2
  * with #1 when #2 works into his outside third (he owns both deep: the split and the squeeze run), and the deep-drive
  * guard (another receiver climbing behind a stopped route) reads the verticals in his area before the ownership filter,
  * so a climbing #2 stops a quarter or third player driving down on a stopped #1. */
-const OWNED_FIX = process.env.OWNED_FIX === '1';
+const OWNED_FIX = process.env.OWNED_FIX !== '0';
 const HELD_DEEP = new Set(['deep_third_s', 'deep_third_w', 'deep_mid', 'deep_half_s', 'deep_half_w', 'tampa_mid']);
 function heldDeepSeat(a: Agent): boolean {
   const b = a.behavior as { zone?: string; recordedZone?: () => string | undefined } | undefined;

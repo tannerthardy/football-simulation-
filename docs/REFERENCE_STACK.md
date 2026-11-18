@@ -2,7 +2,7 @@
 
 One combination of experimental flags that Run Game, Defense, Flex and Coverage all measure against. Before this, each agent tested on its own mix (the FLAT_PRESS / ZONE_RUN back-and-forth on 2026-11-09 came from two different flag sets), and no list of anyone's stack existed in the repository.
 
-- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-78`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
+- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-79`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
 - **The code:** `run/G3-oz-backfield` a749beb7 + `defense/G2-stance-tell` a0cb0789 (#411) + `defense/G2-lb-start` (#416, with #409) + `claude/quirky-franklin-9lbwbp` (#417, with #415) + develop 6676dfc2.
 - **Since 2026-11-09 the stack is the engine's default.** The flags listed `on` are read as on unless set to `0`; a bare command in a clean shell and `npm run ref -- <command>` run the same engine. `npm run ref -- --off -- <command>` runs the legacy engine (every listed flag off). `test/reference-stack.test.ts` fails if the file and the code defaults ever disagree. See "Promotion" below.
 
@@ -608,6 +608,21 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
 
+
+## engine-79: the deep player's picture keeps the receivers in his area (2026-11-18)
+
+On: `OWNED_FIX` (Defense, B4/B5 gap 2 of Rules' coverage-position table; a coached-rule repair). The deep ownership filter cut a deep player's picture to his numbered man (quarter seats their #, the deep-third corner #1). Two repairs:
+- The deep-third (Sky) corner keeps #2 together with #1 when #2 works into his outside third: he owns both deep (the split and the squeeze run).
+- The deep-drive guard (another receiver climbing behind a stopped route stops him driving down on it) reads every vertical in his area before the ownership filter. The filter had emptied the guard's own input: after it, the only vertical left was the one he was driving on. Nothing in quarters exercised the guard on this set (Cover 4 and Cover 6 are identical below), so "no change in quarters" here means the case did not occur, not that the repair does nothing.
+
+Staged set on develop 5b49bb93 (engine-78), off -> on:
+
+| set | yards an attempt | 15+ air yd comp | 10-20 yd YAC | short YAC | look-off yards |
+|---|---|---|---|---|---|
+| 10 vertical-heavy concepts, 8 seeds | 8.30 -> 8.23 | 80.5 -> 78.6% (n 41/42) | 5.65 -> 5.49 | 4.39 -> 4.25 | 7.12 -> 7.17 |
+| all concepts, 3 seeds | 8.75 -> 8.64 | 71.4 -> 66.7% (n 21/18) | 6.51 -> 5.59 | 4.45 -> 4.53 | 8.49 -> 8.09 |
+
+By coverage (zone-man-after, 3 seeds): only Cover 3 moves, YAC 5.48 -> 5.00 (n 275/269); Cover 2, 4 and 6 identical. Run set 3.85 yards a carry unchanged. `dither-budget`, `decision-information-scan` and `decision-information-guard` pass with it on.
 
 ## engine-78: deep thirds and halves wait for the ball (2026-11-18)
 
