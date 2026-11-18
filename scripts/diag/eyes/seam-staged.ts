@@ -38,7 +38,7 @@ for (const formation of ['gun_doubles_11', 'gun_trips_11']) for (const [id, c] o
             return { ds, with: sp > 1 && vs > 1 ? (so.vel.x * e.vel.x + so.vel.y * e.vel.y) / (sp * vs) : 0 }; });
           const occupied = others.some((o: any) => o.ds < 2.5 && o.with > 0.7);
           const state = occupied ? 'occupied' : sp > 1 && toward < -0.2 ? 'away' : m.facingQB ? 'set-eyes' : 'set-not-facing';
-          return { s: m.slot, m: m.m, c: m.contest, first: m.first, touch: m.touch, blind: m.blind, react: m.react, facing: m.facingQB, state, sp: +sp.toFixed(1), toward: +toward.toFixed(2) }; }), slots: (b.marginLast ?? []).map((m: any) => m.slot) }; }
+          return { roof: m.roof, deepBail: m.deepBail, under: m.under, dDepth: m.dDepth, tDepth: m.tDepth, dTgt: m.dTgt, s: m.slot, m: m.m, c: m.contest, first: m.first, touch: m.touch, blind: m.blind, react: m.react, facing: m.facingQB, state, sp: +sp.toFixed(1), toward: +toward.toFixed(2) }; }), slots: (b.marginLast ?? []).map((m: any) => m.slot) }; }
       return tb(p, target, v0, intended, ...rest); };
     let res: any; try { res = sim.run(); } catch { continue; }
     const ev = sim.events.map((e: any) => e.type), has = (k: string) => ev.includes(k);

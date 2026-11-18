@@ -12,6 +12,8 @@ import { hasObservedFlight, observedHolder } from '../possession-read.js';
 import { infoHonest, playsThrow } from '../behaviors/defense.js';
 import type { ReceiverRead, ReleaseReader } from './reads.js';
 import type { Directive } from './rules.js';
+/** QB_STANCE (behaviors/qb.ts; read here too): the passer's gaze is his head while his chest is open in his stance. */
+const QB_STANCE_SEEN = process.env.QB_STANCE === '1';
 
 /** JUDGE_SEEN_BALL (experimental, off; JUDGE_SEEN_BALL=1 turns it on): a deep
  * defender's help decisions freeze when he sees the throw (sawThrow, his own
@@ -73,7 +75,8 @@ export class CoverageJudgment {
       if (short && short.depth > 2 && short.vel.x < 2.5 && ['stop', 'in', 'out', 'under'].includes(short.release)) {
         const qb = sim.see(a, sim.qb);
         const direction = Math.atan2(short.pos.y - qb.pos.y, short.pos.x - qb.pos.x);
-        const eyes = Math.cos(qb.facing - direction);
+        // QB_STANCE: his chest is open to his throwing-arm side in his stance; his gaze is his head.
+        const eyes = Math.cos((QB_STANCE_SEEN ? qb.head ?? qb.facing : qb.facing) - direction);
         const confidence = a.mind.focus * (0.5 + 0.5 * a.r('playRecognition')) + 0.08 * eyes + 0.08 * a.mind.judgment(`break:${short.r.slot}`);
         if (confidence > 0.55 && Math.hypot(short.pos.x - a.pos.x, short.pos.y - a.pos.y) < 10) {
           this.override = { t: 'rob', r: short.r };

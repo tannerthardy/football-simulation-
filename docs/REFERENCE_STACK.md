@@ -634,6 +634,110 @@ stem as the break; the post reaches every depth at the same time either way), di
 8.56-8.77 over three runs; the slant's separation 3.27 -> 2.92 yd comes from the other receivers' stems, not its own
 (it runs straight); interceptions on hitches and slants lean up within run spread. Controls (stem-press.mts): press man
 unchanged (the press release runs the stem), off zone straight. Dither budget passes with it on.
+## engine-88: deep men priced through their role; the forecast stops an out at its finish (2026-11-18)
+
+On: `QB_ROLE_PATH` (third form, 3b) and `FORECAST_FINISH`. Registered off: `READ_WINDOW` (not yet a finished repair,
+below) and `QB_CLOSE_BELIEF` (held).
+QB lane; records docs/reviews/2026-11-18-late-cross.md, 2026-11-18-forecast-finish.md and 2026-11-18-defender-path.md on
+claude/exciting-cori-hc8l4u. On develop cebd890b (engine-87).
+
+### READ_WINDOW (off): a quick read his eyes have moved off is dead for the play; not yet a repair
+
+**What it is for.** engine-83's never-touched long runs (Defense, via Integration): slant_flat from trips threw H's flat
+at 3.1 s or later, led 8-10 yd up the sideline, caught 12-16 yd deep with the nearest defender 4-7 yd away. Taught
+slant-flat throws the flat on the plant to its landmark, or not at all.
+
+**What it does, on.** On a quick concept (`concept.family === 'quick'`):
+- A read his eyes have moved off is dead; neither QB_RELOOK, a reset nor a key reorder reopens it. Kept on the read he
+  ends each tick on, so a move a key reorder undoes within the tick still counts.
+- Out of live reads: the plan's checkdown once, then the best live option, else the ball comes out now (the pocket
+  break, a scramble, or thrown away). Without this he stood in the pocket after his reads ran out at about 2.8 s.
+- A read thrown on a footwork step is not passed on the 0.35 s dwell before that step has let him throw it (bounded by
+  one stride). Without this an open read (X's slant at P 0.82, cover2 roster 7 seed 1) went by unthrown while his
+  hitch step (0.75 s stride) was still in the air: the read clock outran the feet. This is older than READ_WINDOW;
+  READ_WINDOW turned it into lost plays.
+
+**Why it is off** (`scripts/diag/eyes/snap-fate.ts`, staged and paired: slant_flat x doubles / trips x 7 zone shells x 3
+rosters x 3 seeds x flip, 252 snaps, measured on 097e3b13 with this patch; four_verts and comebacks are identical, not quick concepts):
+
+| arm | throwaways | sacks | completions | 20+ yd plays | ints | throw time p50 / p90 | late (3.1 s+) flats, led 10+ yd | yards a play |
+|---|---|---|---|---|---|---|---|---|
+| off | 7 | 1 | 186 | 46 | 2 | 3.10 / 3.75 s | 56, 37 | 14.1 |
+| on, dead reads + ball out | 96 | 0 | 120 | 11 | 4 | 2.50 / 3.15 s | 6, 5 | 6.9 |
+| on, + the step gate (this patch) | 51 | 0 | 156 | 37 | 6 | 3.05 / 3.20 s | 30, 18 | 11.1 |
+
+- Without the step gate the late flat is gone, but by throwing away 38% of the snaps.
+- With it, half the late led flats come back. 21 of the 30 late flats are read 0 at 3.1 s: the key's read (QB_KEY_PLANT's
+  re-read, after his hitch) puts the flat, never looked at, first after 2 s, and the step gate holds him on it to its
+  step. Not the late rekey (gating it changed nothing).
+- The off arm's late completions (61 of 89 on the snaps the first on arm threw away, 18.7 yd a catch) are the balls
+  the defenders do not break on (Defense's half), so the off arm is not a target either.
+- What is left is the quick concept's clock: when a quick read is live (its window from the plan's break and the drop),
+  so that the key's answer, a late key read and a held step all end with it. Next QB item; not tuned here.
+
+**Defense's count** (fe150600 + the first READ_WINDOW, zone 10+ air-yard completions): never-touched 20+ YAC catches 24
+(7.0%) -> 13 (4.2%), YAC mean 7.82 -> 6.00; all of the change on slant_flat. That arm had no ball-out step, so it held
+the snaps that became sacks.
+
+### FORECAST_FINISH: an out that finishes is forecast to stop at its finish
+
+- Under ROUTE_FINISH an outward route that runs out of field stops at its margin, in bounds. The forecast kept his
+  velocity past it, so the speed out was led 2-3 yd from the sideline instead of to the numbers.
+- On, a route whose last point is its finish ends there in the forecast, as the receiver does. Rules' out-trace with
+  ROUTE_SHAPE: quick-out completions 42 -> 44 of 56, miss on completions 0.91 -> 0.78 yd.
+- Not in it: the flat's extension hold proposed in the late-cross record. Under ROUTE_END a flat past his declared
+  points runs on up the sideline, so holding him at his landmark would be a false belief that steers the aim; the
+  defenders' ball estimate shares the forecast, and the hold moved three other lanes' fixtures. The late flat is a
+  decision, READ_WINDOW's.
+
+### QB_ROLE_PATH (3b): the window prices a deep defender through his role's real path
+
+Our deep men see the ball 0.25-0.30 s after the release, like the NFL's, but the eyes-on ones are match carriers keeping
+a roof over a receiver, and the window priced every counted man as a ball-chaser from rest after a standing reaction.
+- A carrier (deep 8+ yd, deeper than a receiver by half a yard, within 7 yd, moving with him, not closing on him faster
+  than 1.5 yd/s): over the target he contests only a ball thrown at or beyond him, else plays it from behind (only the
+  securing dislodge); over another receiver he is priced from where that route takes him.
+- A deep man (10+ yd) bailing away keeps going through the catch window.
+- Any other deep zone man (10+ yd), for a ball thrown at or beyond him (within 2 yd short of his depth, chosen), runs
+  the engine's body from his seen velocity and facing, held until his belief of the ball.
+
+**Integration's six-seed card** (fe150600, off vs on; seeds 23, 37, 11, 5, 61, 88): completion -0.7 / -1.9 / +0.1 / -0.3 /
++0.3 / -1.3 (mean -0.6 pt); Y/A mean +0.34; INT mean +0.15 pt (within noise); YAC +0.03; sacks +0.25 pt; 20+ plays +0.7 pt;
+aDOT 5.04 -> 5.66 (seed 23). Yards come through depth of target, not after the catch.
+
+**The deep share, by shell** (8 games, seeds 11 and 31, engine-83 with QB_ROLE_PATH off vs on; 15+ air yards, share of
+throws):
+
+| shell | off | on | NFL |
+|---|---|---|---|
+| one-high | 2.1% | 7.9% | |
+| two-high | 2.6% | 4.9% | |
+| zero | 0% | 13% (n 30) | |
+| all | 2.2% | **7.0%** | **13.4%** |
+
+It is 7% against the NFL's 13.4%: half the gap is closed. The remaining over-pricing, named:
+- the eyes-on deep man on a held ball: believed 0.36 against 0.17 real (0.59 before);
+- the staged deep seam: his believed pick risk 0.19 against 0.03 real, and his believed completion 0.19 against 0.31
+  real. He still prices the deep ball too dangerous and too hard;
+- the not-facing deep man is now right (0.36 / 0.36).
+
+**Fixtures.** `test/read-window.test.ts` is new (listed in `test/engine-pin.json`); it sets its flags itself:
+- READ_WINDOW on slant_flat: off, 21 of 32 throws go to a read he had moved off; on, none. (Late flats: 10 off, 4 on;
+  not asserted.)
+- FORECAST_FINISH on quick_outs: off, 152 of 208 of the QB's 4 s forecasts put the out more than 3 yd past its finish;
+  on, none.
+
+Full `npm test` (core and core-defaults) on 097e3b13 with this patch against clean 097e3b13: five tests newly fail, four of
+them moved by QB_ROLE_PATH alone (each passes with it off), and rush-lean-bound passes on rerun (a search under load).
+Pinned test-only, with owner notes:
+- `acc-radius` (QB lane): the panel waited for the deep man's price to settle, and QB_ROLE_PATH settles it. With it on,
+  ACC_RADIUS off already throws the vertical on 7 of 10 (median 2.3 s; 2 check-downs), and on throws it on 10 of 10
+  (all by 3.2 s), so the off arm's check-down premise is gone. Pinned off to keep ACC_RADIUS's own contrast.
+- `corner-one-release` (Coverage): #1's go is now thrown and the corner plays the ball (rob:X, not man:X) at the sample.
+- `screw` (Coverage / Rules): the pa_shot is thrown earlier; the safety plays the ball, a behavior with no recordedRule.
+- `rush-arm-balance` (Flex): the searched bull fall moves with the throw's timing.
+Rebased onto cebd890b (engine-87, HALF_KEY): the pinned and new tests, guard, scan, provenance, reference-stack,
+engine-pin, dither-budget, read-plan and half-key pass.
 
 ## engine-87: the Cover 2 half safety keys #1 to #2 (2026-11-18)
 
