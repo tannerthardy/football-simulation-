@@ -76,3 +76,21 @@ to an outcome.
 - Coaching's "front shoulder to the target" is nearer 90° of the chest.
 - The tracking operator reads about 52° because the window starts the shoulders' rotation into the throw, and because
   passers set partly open.
+
+## Traces (follow-up)
+
+**QB_CLOSE_BELIEF's game interceptions** (`int-margin.ts`, seeds 11 and 31):
+- **The picks with it on** were short throws (hitches, flats, a dig). Several were by Cover 3 deep-third corners: a man
+  by #1 but facing the passer in zone was classed occupied, given a late start, and picked the hitch inside him.
+- **Attempt 3:** occupied requires his eyes off the passer (not facing him), as Integration defined it.
+  - Held-ball rows: occupied and not facing 0.11 / 0.33 (n 12). Occupied but facing is now priced as before (0.46 /
+    0.18).
+  - Games: completion 0.720, ints 16 / 625, against off's 9 / 640. Attempt 1 had 13 / 649.
+- The flag now touches 12 of 1,158 counted defenders, so the game interception swing is divergence in small counts,
+  not this mechanism. But it is not shown clean.
+- **Held, not for a card.** Three attempts. The occupied row is repaired where it applies. The away and eyes-on rows
+  are our defenders' behavior (Coverage). Re-measure after Coverage's closing repair.
+
+**QB_STANCE's staged completion drop** (`release-square.ts` pairs, 436 plays): 24 completions lost and 15 gained,
+spread over concepts and coverages, most with a different target chosen. Net −9 (sign test p ≈ 0.2). No single
+mechanism; divergence size.

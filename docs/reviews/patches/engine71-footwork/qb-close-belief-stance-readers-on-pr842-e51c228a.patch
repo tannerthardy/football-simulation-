@@ -103,7 +103,7 @@ index 97f772e0d..d49f430cf 100644
    if (read !== null) for (const r of sim.offense) {
      if (r === sim.qb || isOL(r)) continue;
 diff --git a/src/sim/behaviors/qb.ts b/src/sim/behaviors/qb.ts
-index e383832ad..34c89ff82 100644
+index e383832ad..0fc98016f 100644
 --- a/src/sim/behaviors/qb.ts
 +++ b/src/sim/behaviors/qb.ts
 @@ -17,7 +17,7 @@
@@ -147,7 +147,7 @@ index e383832ad..34c89ff82 100644
  /** QB_WINDOW_ARRIVE: when a defender can play `pt` (within `radius`): his reaction, less the share his seen course already
   * serves, carrying his velocity through it; the moment that carry passes within reach, else then his redirect from there. */
  function arriveTime(mover: { pos: { x: number; y: number }; vel: { x: number; y: number }; profile: any; speedScale?: number }, pt: { x: number; y: number }, radius: number, react: number, goal: { x: number; y: number } = pt): number {
-@@ -2788,6 +2813,18 @@ export class QBPass implements Behavior {
+@@ -2788,6 +2813,20 @@ export class QBPass implements Behavior {
        // start; one on the target follows the stem until the break; anyone
        // else keeps his course until the ball is out.
        const onTarget = Math.hypot(seen.pos.x - target.x, seen.pos.y - target.y) < 3;
@@ -155,7 +155,9 @@ index e383832ad..34c89ff82 100644
 +      let closeState: 'away' | 'occupied' | null = null;
 +      if (QB_CLOSE_BELIEF) {
 +        const sp = Math.hypot(seen.vel.x, seen.vel.y), gx = point.x - seen.pos.x, gy = point.y - seen.pos.y, gl = Math.hypot(gx, gy) || 1;
-+        const occupied = sp > 1 && sim.offense.some((o) => {
++        // Occupied means eyes on his man, not the passer: a zone man by a receiver but facing him reads the throw (attempt 3:
++        // without this, Cover 3 corners carrying #1 were priced late and picked the hitch inside them in games).
++        const occupied = sp > 1 && !facingQB && sim.offense.some((o) => {
 +          if (o === r || o === a || !this.receiverForecasts.has(o)) return false;
 +          const so = this.has(sim, o), sv = this.receiverForecasts.get(o)!.predict(sim.t, 0.1) ?? so;
 +          const ovx = (sv.x - so.x) / 0.1, ovy = (sv.y - so.y) / 0.1, os = Math.hypot(ovx, ovy);
@@ -166,7 +168,7 @@ index e383832ad..34c89ff82 100644
        // THROW_REACT: no defender breaks on the ball before it is in the air.
        // One facing him in zone keys the motion, so he goes at the release or
        // a reaction after the motion starts, whichever is later; one in man
-@@ -2813,7 +2850,7 @@ export class QBPass implements Behavior {
+@@ -2813,7 +2852,7 @@ export class QBPass implements Behavior {
          const age = this.mind.pictureAge(d), A = dp.vmax / Math.max(dp.tau, 1e-3);
          spreadD = Math.min(0.5 * A * age * age, dp.vmax * age) / Math.max(dp.vmax, 1e-3);
        }
@@ -175,7 +177,7 @@ index e383832ad..34c89ff82 100644
      });
      // A ball that arrives at `pt`: who contests it at the catch, who can get a
      // hand on it on the way, and how many of those become picks.
-@@ -2834,8 +2871,12 @@ export class QBPass implements Behavior {
+@@ -2834,8 +2873,12 @@ export class QBPass implements Behavior {
      const at = (pt: Vec3) => {
        let pOpen = 1, pClear = 1, intRisk = 0, pSecure = 1, intPath = 0, intJump = 0, intContest = 0, noPathPick = 1, noCatchPick = 1;
        const v0 = dragFreeLaunch(from, pt, T);
@@ -190,7 +192,7 @@ index e383832ad..34c89ff82 100644
          // BLITZ_READ: a defender he believes is rushing is going elsewhere, not to this point.
          const m = tt - total + estimateError + (BLITZ_READ ? 3 * this.rushOf(d) : 0);
          const sCatch = PICTURE_AGE ? Math.hypot(0.13, spreadD, spreadR / Math.max(dp.vmax, 1e-3)) : 0.13;
-@@ -2856,7 +2897,7 @@ export class QBPass implements Behavior {
+@@ -2856,7 +2899,7 @@ export class QBPass implements Behavior {
            const tau = T * f;
            const b = arcPoint(from, v0, tau);
            if (b.z > leap + 0.1) continue;
