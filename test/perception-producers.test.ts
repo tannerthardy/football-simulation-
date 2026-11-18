@@ -21,7 +21,10 @@ describe('ball-estimate.ts is a perception producer', () => {
     // Reviewed 2026-11-16 at the engine-71 refresh: the new exports are flags and constants (BALL_EST_DEEP_LOOK, _DEF_ONLY, _GLANCE, _INCIDENTAL, _MAN_LOOK, _RCV, _RCV_ONLY, _SERVO, _TRUNK; DEEP_LOOK_DEPTH/HOLD,
     // GAZE_SEARCH, GLANCE_DEPTH/DWELL_TARGET/HOLD_REF, PHASE_BEHIND) and four functions whose inputs are a team, ratings or numbers (estimatesFor, glanceSd, lookAnyway, phaseJudgeSd): none takes or returns the true ball.
     // Reviewed 2026-11-16 at the engine-72 refresh: SEEN_EMPTY is a flag constant (`process.env.SEEN_EMPTY !== '0'`); it takes and returns no ball.
+    // Reviewed 2026-11-18 (Coverage, #793): ARM_LOOK, BALL_EST_DEF_PICTURE, BALL_EST_FLIGHT_SETTLE and HEAD_RIDE are flag
+    // constants and FLIGHT_SETTLE_SPAN a number; none takes or returns the ball.
     expect(names).toEqual([
+      'ARM_LOOK', 'BALL_EST_DEF_PICTURE', 'BALL_EST_FLIGHT_SETTLE', 'FLIGHT_SETTLE_SPAN', 'HEAD_RIDE',
       'BALL_EST', 'BALL_EST_DEEP_LOOK', 'BALL_EST_DEF_ONLY', 'BALL_EST_GLANCE', 'BALL_EST_INCIDENTAL', 'BALL_EST_LOOMING',
       'BALL_EST_MAN_LOOK', 'BALL_EST_MOVING_CHOICE', 'BALL_EST_NO_TRACKPEN', 'BALL_EST_RCV', 'BALL_EST_RCV_ONLY', 'BALL_EST_SERVO',
       'BALL_EST_TRUNK', 'BallEstimates', 'DEEP_LOOK_DEPTH', 'DEEP_LOOK_HOLD', 'GAZE_SEARCH', 'GLANCE_DEPTH',

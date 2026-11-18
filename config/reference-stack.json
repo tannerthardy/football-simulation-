@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "engine-76",
+  "id": "engine-78",
   "runSet": {
     "commit": "1b5415de99b5b7194eff045f3c37a07a4c54c1a9",
     "seeds": [
@@ -52,7 +52,8 @@
     "OFF_PEDAL": { "default": 3, "legacy": 0 },
     "QB_FOOTWORK": { "default": 3, "legacy": 0 },
     "QCORNER": { "default": 0, "legacy": 0 },
-    "ARM_BREAK": { "default": 1, "legacy": 0 }
+    "ARM_BREAK": { "default": 1, "legacy": 0 },
+    "ZONE_EYES_KEY": { "default": 9, "legacy": 0 }
   },
   "flags": {
     "ALIGN_HABIT": "on",
@@ -135,7 +136,6 @@
     "RUSH_ARM": "off",
     "BALL_CALL": "off",
     "NECK_FULL": "off",
-    "ZONE_EYES": "off",
     "FLIGHT_MAN": "off",
     "CATCH_WINDOW_SEEN": "on",
     "FLIGHT_LANE": "off",
@@ -311,6 +311,8 @@
     "BLITZ_SECOND": "on",
     "QB_LOOKOFF_RHYTHM": "off",
     "TECH_CONT": "on",
+    "DEEP_GATE": "on",
+    "ZONE_EYES": "on",
     "QB_HONEST_FEEL": "on",
     "THROW_PLATFORM": "off",
     "QB_BELIEVED_DEF": "on",

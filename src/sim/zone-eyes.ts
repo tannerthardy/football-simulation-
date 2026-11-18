@@ -1,13 +1,13 @@
-/** ZONE_EYES (off; ZONE_EYES=1; C14 zone coached rules item 13, 2026-11-17): a zone defender's eyes follow the sequence
+/** ZONE_EYES (on by default, engine-77; ZONE_EYES=0 turns it off; C14 zone coached rules item 13, 2026-11-17): a zone defender's eyes follow the sequence
  * coaches teach, on one head, and he sees through that head. Off, with GAZE and HEAD off, SIGHT_COVER gives a zone
  * defender occlusion-only sight with no view bound: facing the QB he had every receiver at once, a bailing corner the
  * whole field behind him. On, his head (`Agent.head`, head.ts's turn rate and neck range) is wanted on his key for the
  * declare phase, then on the passer; what is inside the head's view cone (HEAD_CONE, about 90 deg a side: central and
  * peripheral vision) he sees with the existing delays, what is outside it he does not see and his picture of it ages
  * (SIGHT_COVER's head view, release-evidence's head cone). What his controller watches (the carrier he chases, via
- * PlaySim.lookAt) takes the head first. Under BALL_EST with defenders estimating, the ball estimate keeps its own head
- * (as with HEAD off): sharing it with this one raised staged zone YAC unexplained on the honest arm (cover 3 19.0 to
- * 26.2; two repairs did not move it), so unifying them is an open item, not part of this flag.
+ * PlaySim.lookAt) takes the head first. Under BALL_EST with defenders estimating (not the default), the ball estimate
+ * keeps its own head (as with HEAD off): sharing it with this one raised staged zone YAC unexplained on the honest arm
+ * (cover 3 19.0 to 26.2; two repairs did not move it), so unifying them is an open item, not part of this flag.
  *
  * The sequence, as taught (sources in docs/reviews/2026-11-17-zone-coached-rules.md):
  *  - underneath (flat, curl-flat): his side's #2 ("key #2", "eyes on #2 first"), then the QB at his landmark;
@@ -15,15 +15,16 @@
  *  - deep thirds, halves, quarter-outside: #1's release ("read #1 to #2"), then the QB through #2;
  *  - quarter-inside, deep middle, Tampa middle: #2 ("read #2"; the post reads both #2s), then the QB.
  * The declare phase is EYES_KEY_SPAN after the snap (a stated choice: the 3-step / 5-yard declare most sources give,
- * read at 0.6 and 1.2 s via ZONE_EYES_KEY). Before the snap his head is on the passer. No outcome is decided here. */
+ * ZONE_EYES_KEY in tenths, default 9). Before the snap his head is on the passer. No outcome is decided here. */
 import type { ZoneId } from '../playbook/types.js';
 import type { Agent } from './agent.js';
 import type { PlaySim } from './playsim.js';
 import { lastReleaseBelief } from './release-belief.js';
 import { shoulderPickOf } from './behaviors/defense.js';
 
-export const ZONE_EYES = process.env.ZONE_EYES === '1';
-export const EYES_KEY_SPAN = Number(process.env.ZONE_EYES_KEY ?? 0.9);
+export const ZONE_EYES = process.env.ZONE_EYES !== '0';
+/** In tenths of a second (an integer read, for the provenance reader): 9 = 0.9 s. */
+export const EYES_KEY_SPAN = Number(process.env.ZONE_EYES_KEY ?? 9) / 10;
 
 /** The zone each defender was given at the snap (his own assignment, not the offense's). */
 const zones = new WeakMap<Agent, ZoneId>();
