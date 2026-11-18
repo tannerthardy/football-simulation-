@@ -31,6 +31,7 @@ wing side); a stricter split needs the wideout's alignment, not the outermost bo
 | 4 | Trips with #3 on the over (Y-cross / drive from 3x1) | concept (#1 clear, #2 seam or dig, #3 over at 12-14); read: high-low on the hook and robber | Rules+Coaching; QB lane |
 | 5 | Trips flood/sail with #3 flat under a vertical #2 (#1 dig or post, #2 go, #3 flat) | concept; read: #2 go to #3 flat off the curl-flat; protection unchanged | Rules+Coaching; QB lane |
 | 6 | #2 out at 6 and the wheel (out-and-up, a #2 or back wheel off a flat) | routes (`out6`, `wheel` for a slot); a concept pairing them; read: the wheel as a shot off the squat/Palms corner | Rules+Coaching; QB lane |
-Also: shallow series under each hook rule (mesh and drive variants with the shallow at each hook), when the CUT_WALL
+| 7 | Launch points: throws after the QB moves 2+ yd (boot, sprint-out, half-roll, movement in the pocket). NFL: 13% of throws against zone (Coverage's slide table); ours: none | QB drop/launch types and throwing on the move (accuracy and velocity by body motion); boot / sprint protection; concepts built for them (boot flood, sprint-out sail, half-roll smash); read plans from the moved launch point. Listed, not built (Integration, 2026-11-18) | QB lane (launch, throw on the move); protection owner; Rules+Coaching (concepts) |
+Built since: items 1-3 (OFF_VARIETY, #836), double moves (sluggo_flat, out_up, stutter_go; Coverage's control). Also: shallow series under each hook rule (mesh and drive variants with the shallow at each hook), when the CUT_WALL
 exemptions are revisited. Every install needs its read plan in the read compiler (KEYS/ROLE_KEYS, `installedPlan`)
 before it is called in games; protection changes for none of the six.
