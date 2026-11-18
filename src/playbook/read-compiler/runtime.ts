@@ -238,7 +238,7 @@ function grassOf(r: { routeId: string; trajectory: Array<{ t: number; x: number;
   // Half of a key (smash's corner, dagger's and VERTS_KEYS' seam) is thrown off the key defender, never into grass.
   if (!r || keyed) return null;
   const vertical = BREAK_DECL[r.routeId]?.at === 'vertical';
-  if (!vertical && !(r.routeId === 'corner' && first)) return null;
+  if (!vertical && !((r.routeId === 'corner' || r.routeId === 'smash_corner') && first)) return null;
   const depth = GRASS_DEPTH[r.routeId] ?? 20, P = r.trajectory;
   if (P.length < 2) return null;
   const i = P.findIndex((p) => p.x >= depth);

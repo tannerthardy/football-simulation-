@@ -5,6 +5,7 @@
  * route run the side's default (#1 go, #2+ seam) as clear-outs.
  */
 import type { PassConcept, RunConcept } from './types.js';
+import { OFF_VARIETY } from './formations.js';
 
 const BASE_PASS_CONCEPTS: PassConcept[] = [
   // ------------------------------------------------------------ quick game
@@ -31,7 +32,8 @@ const BASE_PASS_CONCEPTS: PassConcept[] = [
   // ------------------------------------------------------------ dropback
   {
     id: 'smash', name: 'Smash', family: 'dropback', drop: 'gun5',
-    strong: { 1: 'hitch', 2: 'corner', 3: 'hook' }, weak: { 1: 'hitch', 2: 'corner' }, back: 'check',
+    // OFF_VARIETY: smash's corner is the smash corner (8-9 yd), not the deep corner.
+    strong: { 1: 'hitch', 2: OFF_VARIETY ? 'smash_corner' : 'corner', 3: 'hook' }, weak: { 1: 'hitch', 2: OFF_VARIETY ? 'smash_corner' : 'corner' }, back: 'check',
     progression: ['S2', 'S1', 'W2', 'W1', 'B'], needs: ['S1', 'S2'], beats: ['cover2', 'cover4'],
   },
   {
