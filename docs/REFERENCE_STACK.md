@@ -629,7 +629,7 @@ Staged set, off -> on: complete 405 -> 411 of 589 (68.8 -> 69.8%), drops 39 -> 3
 PBU 92 -> 94, INT 10 -> 11; YAC p50 2.82 -> 2.48 (p75 5.43 -> 5.66). Paired by play: 59 outcomes change. 5 are plays
 where he had the ball in view more than 0.1 s before knowing it (0 -> 3 complete); the other 54 change through the
 normal dwell (every target spends about 0.1 s seen-not-known; he now runs his route through it): 14 -> 17 complete, both
-directions (flats 65 -> 74%, outs 62 -> 77%, hitches 83 -> 78%, hooks 60 -> 52%; small groups). Guard, scan, dither,
+directions (flats 65 -> 74%, outs 62 -> 77%, hitches 83 -> 78%, hooks 60 -> 52%; small groups). Open item, on record: the step touches nearly every throw's first tenth of a second, moves outcomes both ways (flats and outs up, hitches and hooks down), and the YAC p50 dip is unexplained; for hitches and hooks (a settled receiver who should already be looking), whether running the route through that tenth drifts him off his spot is the first look after the merge. Guard, scan, dither,
 reference-stack and provenance pass. `test/stalk-close.test.ts` re-recorded (the legacy stalk engages on one more now
 screen, 5 -> 6 of 12, with the catch a tick or two later; STALK_CLOSE's own 9 of 12 unchanged; margin 0.3 -> 0.25).
 Not in this step: the ball crossing behind his back still turns his head to the wrong side (the ball-behind head item).
