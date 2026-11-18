@@ -269,3 +269,35 @@ snap):
 **Not built.** A read on a cue the defense does not present reads noise. The cue appears when the half safety plays
 HNFL-334 by #1 / #2 (the Defense / Coverage lane; HALF_OWN, as Rules suspected). The read is then the his-side safety
 key as sourced, keyed post-snap at the first hitch, with QB_MOF_READ's middle-hole two-high form dropped.
+
+## The window's closing belief by the defender's state (Integration's split), engine-83 tree
+
+`seam-staged.ts` on 021a42a7 + the landing, with QB_PEEK_CLOCK and QB_MOF_READ on. The key's seam and the other seam
+are thrown at the second hitch, 648 plays, 1,158 counted defenders.
+
+His picture of each man at the decision:
+- **away:** seen velocity pointing away from the catch point (cosine below −0.2, faster than 1 yd/s);
+- **occupied:** within 2.5 yd of another receiver and moving with him (cosine above 0.7);
+- otherwise **eyes-on** (facing him) or **not facing**.
+
+| state | n | believed contest | real: within 1.5 yd of the ball at its arrival | priced as sitting on it (n): real within 1.5 yd, median distance |
+|---|---|---|---|---|
+| away | 75 | 0.53 | **0.00** | 27: 0.00, 6.4 yd |
+| occupied | 114 | 0.41 | 0.14 | 26: 0.42, 1.7 yd |
+| eyes-on | 681 | 0.63 | 0.18 | 289: 0.22, 2.7 yd |
+| not facing | 288 | 0.63 | 0.28 | 78: 0.37, 2.0 yd |
+
+- **Over-priced in every state.** The mass is the eyes-on men (681).
+- By Integration's rule, eyes-on men priced 0.63 against 0.18 real is our defenders closing slower than the NFL's
+  (Coverage's table: underneath 0.0 / 0.9 yd/s against 0.9 / 1.6). That is Coverage's repair, and his belief is left
+  for it.
+- **A man he sees moving away is a belief defect.** Priced to contest 53%, he is never within 1.5 yd (median 6.4 yd
+  off).
+  - With QB_WINDOW_ARRIVE's attempt 4 he stands still for his reaction, then pays timeToReach's brake-and-turn
+    estimate.
+  - In truth he keeps going while he reacts, then has to stop and turn.
+  - Attempt 3 carried him away and tripled game picks. Those picks were men on other receivers or turning back for a
+    comeback: occupied and away mixed.
+  - So the repair is the engine's own movement cost for his seen state (keeping going through the reaction, braking,
+    turning his hips), not a constant.
+- **Occupied men** are priced 0.41 against 0.14: plausibly the eyes-not-on-QB reaction, a ball seen late.

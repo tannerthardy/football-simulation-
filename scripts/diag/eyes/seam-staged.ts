@@ -29,7 +29,16 @@ for (const formation of ['gun_doubles_11', 'gun_trips_11']) for (const [id, c] o
     sim.throwBall = (p: any, target: any, v0: any, intended: any, ...rest: any[]) => { if (p === sim.qb && !rec && intended) { const b: any = p.behavior, r = b.throwRec;
       b.marginProbe = true; try { b.evaluate(p, sim, target, 0); } catch {} b.marginProbe = false;
       rec = { t: +sim.t.toFixed(2), slot: target?.slot, aim: { x: intended.x, y: intended.y }, P: r ? +r.P.toFixed(3) : null, parts: r?.parts ? Object.fromEntries(Object.entries(r.parts).map(([k2, v]) => [k2, +(+(v as number)).toFixed(3)])) : null, iR: r ? +r.intRisk.toFixed(3) : null,
-        margins: (b.marginLast ?? []).map((m: any) => ({ s: m.slot, m: m.m, c: m.contest, first: m.first, touch: m.touch, blind: m.blind, react: m.react, facing: m.facingQB })), slots: (b.marginLast ?? []).map((m: any) => m.slot) }; }
+        margins: (b.marginLast ?? []).map((m: any) => {
+          // His picture of the man at the decision: moving away from the catch point, occupied with another receiver
+          // (within 2.5 yd of one and moving with him), or set (neither), facing him or not.
+          const d = sim.defense.find((x: any) => x.slot === m.slot), e = b.mind.estimate(d), sp = Math.hypot(e.vel.x, e.vel.y);
+          const tx = intended.x - e.pos.x, ty = intended.y - e.pos.y, tl = Math.hypot(tx, ty) || 1, toward = sp > 1e-6 ? (e.vel.x * tx + e.vel.y * ty) / (sp * tl) : 0;
+          const others = sim.offense.filter((o: any) => o !== target && o.behavior?.route).map((o: any) => { const so = sim.see(p, o); const ds = Math.hypot(so.pos.x - e.pos.x, so.pos.y - e.pos.y); const vs = Math.hypot(so.vel.x, so.vel.y);
+            return { ds, with: sp > 1 && vs > 1 ? (so.vel.x * e.vel.x + so.vel.y * e.vel.y) / (sp * vs) : 0 }; });
+          const occupied = others.some((o: any) => o.ds < 2.5 && o.with > 0.7);
+          const state = occupied ? 'occupied' : sp > 1 && toward < -0.2 ? 'away' : m.facingQB ? 'set-eyes' : 'set-not-facing';
+          return { s: m.slot, m: m.m, c: m.contest, first: m.first, touch: m.touch, blind: m.blind, react: m.react, facing: m.facingQB, state, sp: +sp.toFixed(1), toward: +toward.toFixed(2) }; }), slots: (b.marginLast ?? []).map((m: any) => m.slot) }; }
       return tb(p, target, v0, intended, ...rest); };
     let res: any; try { res = sim.run(); } catch { continue; }
     const ev = sim.events.map((e: any) => e.type), has = (k: string) => ev.includes(k);
