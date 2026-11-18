@@ -678,7 +678,7 @@ export function resolveZeus(call: DefensivePlayCall, ref: string | undefined, we
  * resolved call (Cover 8 vs trips is Trix; Stuff vs trips is Book;
  * MatchQuarters Zeus/HNFL-261).
  */
-/** QUARTERS_CHECK (experimental, off; QUARTERS_CHECK=1 turns it on): two split-field choices a staff makes from the
+/** QUARTERS_CHECK (default on, engine-79; QUARTERS_CHECK=0 turns it off): two split-field choices a staff makes from the
  * formation the defense sees before the snap, instead of a draw (quarters tree, step 2a; HNFL-085/229/260 field and
  * boundary direction; HNFL-051/195 Palms vs a detached #2):
  * - Cover 6 vs Cover 8 against two-by-two: the half goes to the boundary and quarters to the field (the call sheet's
@@ -686,7 +686,7 @@ export function resolveZeus(call: DefensivePlayCall, ref: string | undefined, we
  * - Quarters vs two-by-two with both #2s detached (two-removed, no attached end): Palms; with an attached #2 (a tight
  *   end): MOD. MEG, a man call, stays as called.
  * The inputs are the alignment the defense sees (formationStructure) and the hash; never the offense's play. */
-export const QUARTERS_CHECK = process.env.QUARTERS_CHECK === '1';
+export const QUARTERS_CHECK = process.env.QUARTERS_CHECK !== '0';
 
 function quartersCheck(call: DefensivePlayCall, st: FormationStructure): DefensivePlayCall {
   const id = call.coverage.id;
