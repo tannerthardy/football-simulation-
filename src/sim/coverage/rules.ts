@@ -981,6 +981,11 @@ function settle(c: RuleCtx, pick: ReceiverRead | null, lock: boolean, opts: ManO
  * the safety the innermost (one vertical gets both: "1 vertical route =
  * 2-on-1"). Every pool member is read every tick so the order is honest.
  */
+/** BOX_IN (experimental, off; BOX_IN=1 turns it on): the Box low inside defender keeps the first in-breaker from the
+ * bunch (HNFL-053 "hook takes the first in") instead of CUT_WALL walling and passing him: in a bunch pickup the exchange
+ * has already been made, and the shallow from the bunch has no one else to go to. */
+export const BOX_IN = process.env.BOX_IN === '1';
+
 function box(c: RuleCtx, job: 'out_low' | 'in_low' | 'out_deep' | 'in_deep'): Directive {
   const pool = ([1, 2, 3] as const).map(n => ref(c, n)).filter((rd): rd is ReceiverRead => !!rd);
   if (!pool.length) return zoneOf(c);

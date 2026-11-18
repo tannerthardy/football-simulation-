@@ -16,7 +16,7 @@ const COVS = (process.env.COVS ?? 'cover3_match,cover3_seam,cover3_buzz,cover9')
 const RULES = new Set((process.env.RULES ?? 'c3_curl_flat,c3_seam').split(','));
 const rows: any[] = [];
 for (const concept of (process.env.CONCEPTS?.split(',') ?? Object.keys(PASS_BY_ID).filter((id) => !/screen/.test(id))))
-  for (const coverage of COVS) for (const formation of ['gun_doubles_11', 'gun_trips_11'])
+  for (const coverage of COVS) for (const formation of (process.env.FORMS?.split(',') ?? ['gun_doubles_11', 'gun_trips_11']))
     for (let seed = 1; seed <= seeds; seed++) for (const flip of [false, true]) {
       let sim: any; try { sim = new PlaySim(nativeTraceSetup({ coverage, concept, seed, roster: seed, formation, flip })); } catch { continue; }
       let at: any[] | null = null;

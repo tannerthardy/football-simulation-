@@ -693,3 +693,11 @@ L1 = deep man comes downhill and gets passed. L2 = nobody deeper after a pass-by
   HNFL-050, 077, 114, 139, 194, 195 (in docs/reviews/2026-11-18-quarters-tree.md). The Book/Stubbie MUSH row is
   corrected by HNFL-050's image: the nickel (Soft Squat) traps #3's out or flat; "get width to #2 w/ depth" is the
   safety's line. Stubbie (HNFL-270) zones it (7-seam-flat). Built as MUSH_TRAP.
+- Zone It / Zorro (quarters vs a stack or a reduced #1): held, like C3_HOOK. The check would be one line in
+  QUARTERS_CHECKS, `{ when: ['stack_strong'], to: ['cover4_box'] }` (cover4_box already plays the Zone It pickups:
+  corner outermost upfield, safety innermost, nickel first out, hook first in). No installed formation makes it fire as
+  meant: gun_wing_12's stack_strong is a wing behind the Y (closed trips, Poach); heavy_13 has a weak stack and a
+  reduced #1. A 2x2 or 3x1 set with a receiver stack or a reduced #1 would.
+- PALMS_FIX (Palms trap on #2's out declared inside 5 yd, the wheel before the throw): written, held. It changed no
+  staged play: no installed concept runs #2's out between 6 and 7.5 yd or a pre-throw wheel. Measured MOD vs Palms
+  (gun_doubles_11, gun_spread_10, 70 plays each) differ by two or three single breakaway plays, within noise.

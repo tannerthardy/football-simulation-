@@ -13,7 +13,7 @@ const who = (sim: any, d: any, t: any) => {
   return `${d.slot}:${b?.rule ?? b?.zone ?? '-'}/${b?.sub?.constructor?.name ?? b?.constructor?.name}/${st?.mode ?? '-'}@${Math.hypot(d.pos.x - t.pos.x, d.pos.y - t.pos.y).toFixed(1)}`;
 };
 const near = (sim: any, t: any) => sim.defense.slice().sort((p: any, q: any) => Math.hypot(p.pos.x - t.pos.x, p.pos.y - t.pos.y) - Math.hypot(q.pos.x - t.pos.x, q.pos.y - t.pos.y)).slice(0, 2).map((d: any) => who(sim, d, t)).join(' ');
-for (const coverage of COVS) for (const formation of ['gun_doubles_11', 'gun_trips_11']) for (let seed = 1; seed <= seeds; seed++) for (const flip of [false, true]) {
+for (const coverage of COVS) for (const formation of (process.env.FORMS?.split(',') ?? ['gun_doubles_11', 'gun_trips_11'])) for (let seed = 1; seed <= seeds; seed++) for (const flip of [false, true]) {
   let sim: any; try { sim = new PlaySim(nativeTraceSetup({ coverage, concept, seed, roster: seed, formation, flip })); } catch { continue; }
   const dir = sim.attackDir(sim.offense[0].team);
   const slot = sim.offAlign.numbering[NUM] ?? (NUM === 'B' ? 'RB' : NUM);
