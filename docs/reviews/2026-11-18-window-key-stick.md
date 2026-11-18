@@ -88,7 +88,8 @@ part his seen course does not already serve:
     - four_verts' checkdown pick (rules/tampa-mike): honest margin 0.36 → 0.06 s with the attempt-2 form. The
       toward-point course credit and carry it used are unchanged in attempt 4.
 
-**Not repaired by this term: the anticipation half.** Pricing a hitch before the break as open against a cushion
+**Not repaired by this term: the anticipation half** (noted and left, per Integration: it moves when the DROP work
+and the defenders' lean land). Pricing a hitch before the break as open against a cushion
 needs where the receiver will be when he stops. In our quick game the hitch's nearest man is usually the underneath
 dropper already standing in the window (stick and hitches against cover 3), not the bailing corner. Rhythm throws
 stay rare until the key read below.
@@ -124,8 +125,17 @@ coverages × 2 rosters × 2 seeds; QB_DRIVE and QB_RHYTHM_THROW on; window off):
   - double_slants 4.5 → 5.7;
   - curl_flat 8.9 → 9.2;
   - the rest unchanged.
-- **No re-read fired**: every undeclared key had a lean he trusted. The read noise (sd 0.15–0.7 of a 1.0 margin)
-  clears the lean threshold on most draws.
+- **No re-read fired, so that branch is untested in practice.** The cause is not read noise: every undeclared key had
+  already moved 0.37–0.98 yd along the low–high stretch by the plant (perceived, noise included), past the lean bar.
+  - **What triggers it:** a key whose perceived displacement at the plant is under KEY_LEAN × the commit margin. That
+    is 0.25 yd for the best reader and 0.75 yd for the worst: a man standing still or mirroring across the stretch at
+    the plant.
+  - **MATCH_DECLARE's late declare** (rules/coverage-gaps-36 36547e00, the case the branch was built for; same 192
+    plays, QB_KEY_PLANT on): it does not trigger it either. The modes are move 75, on-high 31, lean 15, on-low 4,
+    role 2, sits 1, and re-read 0. Rhythm throws 29 → 28, completions 135 → 132, ints 2 → 3.
+  - By a gun quick-game plant, the curl-flat player has already shown a lean even while he waits for #2 to declare.
+  - The branch would act on a slower plant (a five-step) or a defender who truly holds his spot. It is kept,
+    untested in play.
 - **Lean reads:** 15, caught 15.
 - Test: `test/qb-key-plant.test.ts`.
 
@@ -181,3 +191,15 @@ chosen.
 - **Dither budget:** passes.
 - **Typecheck:** passes.
 - **Tests:** qb-key-plant, qb-stick, qb-key-read and read-plan pass.
+
+## Consolidated patch for the card
+
+`docs/reviews/patches/engine71-footwork/qb-stack-consolidated-on-develop-5b49bb93.patch`, on develop 5b49bb93
+(engine-78, DEEP_GATE on). It carries QB_DRIVE, QB_RHYTHM_THROW, QB_ALIGN, QB_BODY_FOLLOW (in, off, not carded),
+QB_WINDOW_ARRIVE, QB_KEY_PLANT and QB_STICK, each registered off, with probes and tests.
+
+On that tree:
+- Typecheck passes, as do reference-stack (registry), provenance, guard, scan and dither.
+- qb-key-plant, qb-stick, qb-key-read, read-plan and qb-footwork-drop pass.
+- baseline-runner fails only on the Node pin (it refuses Node other than 22.23.3), as it does on this container
+  without the patch.
