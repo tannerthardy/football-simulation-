@@ -3023,12 +3023,13 @@ export function toward(a: Vec2, b: Vec2): Vec2 {
  *     intermediate route he takes the point on the QB's line to it at his own depth; against a short one he gets in front
  *     of it (LADDER_FRONT yd in front, on the QB's line). A vertical in his area is carried to his zone's carry depth, then passed.
  *  3. Break on the throw (his release belief; playBall, unchanged), with the ladder as his coverage until he sees it.
- * Coverage-specific rules enter only as the landmark (zoneLandmark), his area (zoneBand) and the carry depth. Left out
+ * Coverage-specific rules enter only as the landmark (zoneLandmark), his area (zoneBand) and the carry depth. Ported:
+ * the Cover 2 flat (squat) corner sinks with #1 until the flat is threatened in front of him (Rules + Coaching). Left out
  * (old modes not ported): match-after-declare man conversions, wall / cross-wall, trap / rob, the quarters apex and C2
- * apex rules, squat, curl-flat-back widening, open-carry facing, stem-read and flat-hold depth holds, SETTLE_DEPTH's
+ * apex rules, curl-flat-back widening, open-carry facing, stem-read and flat-hold depth holds, SETTLE_DEPTH's
  * sink, ZONE_HOLD's lean (replaced by the look-held slide), the box backer's guard step. */
 export const ZONE_LADDER = process.env.ZONE_LADDER === '1';
-const LADDER_CARRY: Partial<Record<ZoneId, number>> = { hook_s: 14, hook_w: 14, hook_mid: 14, hole: 14, robber: 14, curl_flat_s: 12, curl_flat_w: 12, flat_s: 9, flat_w: 9 };
+const LADDER_CARRY: Partial<Record<ZoneId, number>> = { hook_s: 14, hook_w: 14, hook_mid: 14, hole: 14, robber: 14, curl_flat_s: 12, curl_flat_w: 12, flat_s: 18, flat_w: 18 };
 const LADDER_FRONT = 1, LADDER_PICK_BEAT = 1.5, LADDER_IN = 0.5, LADDER_OUT = 1.5, LADDER_TAU = 0.3, LADDER_STEADY = 0.6;
 export class UnderneathLadder implements Behavior {
   readonly kind = 'zone';
@@ -3074,6 +3075,12 @@ export class UnderneathLadder implements Behavior {
     if (th) {
       const s = sim.see(a, th), down = s.vel.x * dir, rd = depthOf(s.pos);
       const carryTo = LADDER_CARRY[this.zone] ?? 12;
+      // The flat (squat) corner sinks with #1's vertical until the flat is threatened in front of him (Rules + Coaching,
+      // HNFL-099/-334: "sink with #1 until the ball brings you down; top-down the flat"): a receiver in his band, shallower
+      // than him by a yard or more, ends the carry and becomes his threat.
+      const flatSeat = this.zone === 'flat_s' || this.zone === 'flat_w';
+      const flatThreat = flatSeat && (this.carrying === th || down > 4) ? this.flatInFront(a, sim, th, myDepth) : null;
+      if (flatThreat) { this.passed.add(th); this.carrying = null; this.threat = flatThreat; return this.ladder(a, sim); }
       if (this.carrying === th || (down > 4 && rd >= myDepth - 1.5 && !this.passed.has(th))) {
         if (rd < carryTo) {
           this.carrying = th;
@@ -3105,6 +3112,16 @@ export class UnderneathLadder implements Behavior {
     }
     const tgt = { x: atDepth(holdDepth), y };
     return withFacingTechnique(goTo(a, tgt, { facing: facingQB, speed: 0.95 }), { label: this.settledAt >= 0 ? 'ladder-set' : 'ladder-drop' });
+  }
+  /** The flat seat: a receiver in his band at least a yard shallower than him (the flat threatened in front of him). */
+  private flatInFront(a: Agent, sim: PlaySim, carried: Agent, myDepth: number): Agent | null {
+    const [ylo, yhi] = this.band, dir = sim.attackDir(sim.offense[0].team);
+    for (const r of sim.offense) {
+      if (r === carried || r === sim.qb || ['LT', 'LG', 'C', 'RG', 'RT'].includes(r.slot) || this.passed.has(r)) continue;
+      const s = sim.see(a, r), fy = s.pos.y + s.vel.y * 0.7, d = (s.pos.x - sim.los) * dir;
+      if (fy >= ylo && fy <= yhi && d <= myDepth - 1 && d > -3) return r;
+    }
+    return null;
   }
   /** The nearest threat in his area: projected spot in his band (with margins), arriving / sitting ahead of leaving. */
   private pick(a: Agent, sim: PlaySim): Agent | null {
