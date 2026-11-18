@@ -1,4 +1,4 @@
-// QB lane 2026-11-18: the window's arrival, calibrated. League games; at each throw decision, every defender as the
+// QB lane 2026-11-18 (the chosen throw re-evaluated at the decision, so the trace is its own: marginLast holds the last evaluate()): the window's arrival, calibrated. League games; at each throw decision, every defender as the
 // window priced him at the aimed point (marginProbe + marginProbeAll: margin m, first, contest, his state); at the ball's
 // arrival (its catch, pick, breakup or planned arrival), each defender's true distance to the ball. Rows to stdout.
 //   node --import tsx scripts/diag/eyes/arrive-cal.ts <seed> <games> > rows.jsonl
@@ -12,7 +12,7 @@ PlaySim.prototype.run = function (this: any) { const sim: any = this; if (!sim.i
   let dec: any = null, hooked = false, arr: any = null, released = false; const tick0 = sim.tick.bind(sim);
   sim.tick = () => { const b: any = sim.qb.behavior;
     if (!hooked && b?.kind === 'qb-pass') { hooked = true; b.marginProbe = true; b.marginProbeAll = true; const st = b.startThrow.bind(b);
-      b.startThrow = (a: any, s: any, ev: any) => { if (!dec) dec = { t: +s.t.toFixed(2), target: ev.target.slot, P: +ev.P.toFixed(3), iR: +ev.intRisk.toFixed(3), T: ev.T, rows: (b.marginLast ?? []).map((m: any) => ({ ...m })) }; return st(a, s, ev); }; }
+      b.startThrow = (a: any, s: any, ev: any) => { if (!dec) { try { b.evaluate(a, s, ev.target, b.barNow?.u ?? 0); } catch { /* the trace below falls back */ } } if (!dec) dec = { t: +s.t.toFixed(2), target: ev.target.slot, P: +ev.P.toFixed(3), iR: +ev.intRisk.toFixed(3), T: ev.T, rows: (b.marginLast ?? []).map((m: any) => ({ ...m })) }; return st(a, s, ev); }; }
     const wasAir = sim.ball.kind === 'air';
     tick0();
     if (sim.ball.kind === 'air') released = true;

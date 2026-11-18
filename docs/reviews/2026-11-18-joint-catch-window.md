@@ -44,3 +44,19 @@ Patch: `docs/reviews/patches/engine71-footwork/window-catch-law-on-joint-7a15705
 
 Next: classify each pick (re-aim moved the aim, accuracy miss, tip or deflection, path) to find the belief that misses
 them. Proposed for the joint landing: Flex's cut + the catch-law window.
+
+## Where the picks happen (`pick-class.ts`, catch-law window, 8 games, 28 picks)
+
+Each pick against the decision's aim, the release's intended point (the re-aim), the drawn aim (his accuracy), the pick
+spot and time, and the events between release and pick:
+- arrival (at the ball's arrival, no tip, no large re-aim or miss): 13;
+- path (picked more than 0.15 s before the planned arrival): 7;
+- miss (pick spot over 1.5 yd from the intended point and within 1.5 yd of the drawn aim): 4;
+- re-aim (the release moved the aim more than 1.5 yd from the decision's): 4;
+- tips first: 0.
+
+The 14 by defenders he believed more than a second late at the catch point: path 5, arrival 5, miss 3, re-aim 1. The
+"arrival" ones were picked 2-4 yd from the intended point as the ball came down through the defender's reach. So the picks
+he does not believe are mostly along the late flight path, not at the catch point. The window's path term (pClear's touch
+and iPath, sampled along the flight) uses a still narrower spread (sPath 0.1 s) than the catch term (sCatch 0.13 s, itself
+about half of what the arrival calibration supports). That is where the next fix belongs, not in the catch-point arrival.
