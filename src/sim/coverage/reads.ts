@@ -17,6 +17,10 @@ import { RouteObservation } from '../coverage-read.js';
 import { observedBlocking, showsBlock } from '../coverage-cues.js';
 import type { PlaySim } from '../playsim.js';
 
+/** READ_VERTICAL_LOS (on since the Coverage re-record landing; READ_VERTICAL_LOS=0 restores): a release is read as
+ * vertical only past the line of scrimmage in the reader's picture (a protecting back stepping up behind it is not). */
+export const READ_VERTICAL_LOS = process.env.READ_VERTICAL_LOS !== '0';
+
 export type Release = 'none' | 'block' | 'vertical' | 'out' | 'flat' | 'under' | 'in' | 'stop';
 
 export interface ReceiverRead {
@@ -110,7 +114,9 @@ export class ReleaseReader {
     // in-breaker from its first step inside, not when it flattens.
     else if (vOut > 1.8 && vOut > Math.abs(vx) * 0.6) now = depth < 3.5 && !m.climbed ? 'flat' : 'out';
     else if (-vOut > 1.8 && -vOut > Math.abs(vx) * 0.6) now = depth < 6.5 ? 'under' : 'in';
-    else if (vx > 2.5 && vx > Math.abs(seen.vel.y)) now = 'vertical';
+    // READ_VERTICAL_LOS: a vertical release is upfield motion past the line of scrimmage as he sees it; a back stepping
+    // up in his protection set behind the line (and latching 'vertical') is not one.
+    else if (vx > 2.5 && vx > Math.abs(seen.vel.y) && (!READ_VERTICAL_LOS || depth > 0)) now = 'vertical';
     else if (speed < 2.2 && depth > 2.5) now = 'stop';
     // Believe a new declaration only after it persists (focus shortens it).
     if (now !== 'none' && now !== m.release) {

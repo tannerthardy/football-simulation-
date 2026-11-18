@@ -113,6 +113,9 @@ describe('Cover 2 match', () => {
           strong: { 1: 'go', 2: 'lab_in9' }, weak: { 1: 'go', 2: 'seam' }, until, seed: SEED }), states, draws, endAt: () => endAt };
       } finally { tick.mockRestore(); draw.mockRestore(); }
     };
+    // READ_PLAN compiles the concept's read plan on its first use by running its own route-sampling sims, then caches
+    // it; a warm-up rep keeps those ticks and draws out of the compared records (the observer is the question).
+    runDig(false);
     const plain = runDig(false), observed = runDig(true), dig = observed.film;
     expect(observed.states).toEqual(plain.states);
     expect(observed.draws).toEqual(plain.draws); // Main and named RNG draws, in order.
@@ -124,8 +127,10 @@ describe('Cover 2 match', () => {
     // Pending #336 c7d4d0e2 wraps at 2.75; with #328 at 2.80. Both read in at
     // 2.85, before the composition's 3.05 sack. Coverage plays to the whistle.
     const decisionAt = (records: string[], job: string) => Number(records.find(r => r.split('@')[0] === job)?.split('@')[1]);
-    const inAt = decisionAt(dig.defenders[curl].modes, 'in');
+    // C2_APEX (engine-80): the taught vertical curl (verticalCurlTaught) matches #2's in-break as a man job without the
+    // legacy 'in' mode marker, so the decision is timed by the man job.
     const manAt = decisionAt(dig.defenders[curl].jobs, `man:${dig.numbering.S2}`);
+    const inAt = manAt;
     const wallAt = decisionAt(dig.defenders[curl].jobs, `wall:${dig.numbering.S2}`);
     const cutoff = observed.endAt();
     expect(wallAt).toBeLessThan(inAt);
@@ -138,7 +143,6 @@ describe('Cover 2 match', () => {
     expect(cue?.release).toBe('in');
     expect(cue?.climbed).toBe(true);
     expect(cue?.since).toBeLessThanOrEqual(manAt);
-    expect(modeOf(dig, curl)).toBe('in');
     expect(jobsOf(dig, curl).at(-1)).toBe(`man:${dig.numbering.S2}`);
     // The SAME native input, stopped during its vertical stem, must not earn
     // the later in-match from installed route knowledge or the final outcome.
