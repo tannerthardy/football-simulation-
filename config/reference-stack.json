@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "engine-84",
+  "id": "engine-85",
   "runSet": {
     "commit": "1b5415de99b5b7194eff045f3c37a07a4c54c1a9",
     "seeds": [
@@ -315,6 +315,7 @@
     "DEEP_GATE": "on",
     "OWNED_FIX": "on",
     "RCV_KNOWS": "on",
+    "FLAT_SINK": "on",
     "ZONE_EYES": "on",
     "QB_HONEST_FEEL": "on",
     "THROW_PLATFORM": "off",
