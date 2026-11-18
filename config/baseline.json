@@ -74,6 +74,7 @@
     "ARM_BREAK": "0",
     "SAFETY_DEPTH": "0",
     "ARRIVE_LEAD": "0",
+    "DEEP_ARRIVE": "0",
     "PEDAL_CAP": "0",
     "CUSHION_NEED": "0",
     "EDGE_REACH": "0",

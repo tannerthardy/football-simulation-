@@ -60,6 +60,7 @@
     "ALIGN_HABIT": "on",
     "ANCHOR_GRADE": "on",
     "ARRIVE_LEAD": "on",
+    "DEEP_ARRIVE": "off",
     "ATTACK_LANDMARK": "off",
     "LOOSE_SEEN": "on",
     "LOOSE_OWN": "on",

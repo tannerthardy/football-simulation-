@@ -209,6 +209,22 @@ export function knowsPass(_sim: PlaySim, a: Agent): boolean {
  * away); ours 0.3-0.6 (BDB 2025 dropbacks vs engine-34; aimside.py). Leading
  * along the route instead (attempt 1) aimed behind settling catchers. */
 const ARRIVE_LEAD = process.env.ARRIVE_LEAD !== '0';
+/** DEEP_ARRIVE (experimental, off; DEEP_ARRIVE=1 turns it on): ARRIVE_LEAD's rule for a deep man. A deep zone defender
+ * on top of a catch he cannot beat the ball to breaks to the receiver's upfield hip, as taught ("stay on top"), instead
+ * of the catch point: the catch point carried upfield by both bodies and his reach plus the receiver's seen downfield
+ * speed over the time he will be late (a vertical receiver keeps running after the catch), and across by the
+ * receiver's seen lateral run over that time. Underneath men keep ARRIVE_LEAD, which does not carry the route's
+ * downfield component. The ball is still his to play when he can get to its path in time, with a margin: once on top
+ * he goes back to the ball only when he would beat it by DEEP_ARRIVE_MARGIN, so the choice is a decision, not a
+ * flicker. Why: on the never-touched 20+ yd catch-and-runs (zone, 10+ air yards, develop fe150600) the deep half drove
+ * flat onto the catch point for the whole flight while the receiver ran on upfield, then carved a 70 deg/s turn at
+ * 5.5 yd/s and was passed. */
+const DEEP_ARRIVE = process.env.DEEP_ARRIVE === '1';
+/** Below this many yd under the catch point he is not on top of it and keeps the catch-point drive. */
+const DEEP_ARRIVE_BELOW = 0.5;
+/** Once on top, he goes back to playing the ball only when he would beat it by this much (s). */
+const DEEP_ARRIVE_MARGIN = 0.1;
+const deepArriveTop = new WeakMap<Agent, boolean>();
 /** An underneath zone player: a zone seat or zone-eyed match defender without deep responsibility. */
 function underneathZone(a: Agent): boolean {
   const b = a.behavior as { plastersScramble?: boolean; zoneEyes?: boolean } | undefined;
@@ -2899,7 +2915,12 @@ function flightApproach(a: Agent, sim: PlaySim, path: PlaySim['ballPath'], acqui
     // A receiver may get to the ball before this later point on its flight.
     // Reaching where an already-caught pass would have hit the ground is not
     // an interception opportunity. Close the actual visible catch window.
-    if (tt <= spot.t - sim.t + 0.05 && (!window || spot.t <= window.t + 0.05)) return goTo(a, spot.p);
+    // DEEP_ARRIVE: once on top of the catch he needs a clear beat on the ball to go back to it.
+    const ballMargin = DEEP_ARRIVE && deepArriveTop.get(a) ? -DEEP_ARRIVE_MARGIN : 0.05;
+    if (tt <= spot.t - sim.t + ballMargin && (!window || spot.t <= window.t + 0.05)) {
+      if (DEEP_ARRIVE) deepArriveTop.set(a, false);
+      return goTo(a, spot.p);
+    }
   }
   // Can't beat the ball to its path: drive on the catch point to arrive with
   // the ball — on the receiver's near side, ready to play through the hands
@@ -2922,6 +2943,17 @@ function flightApproach(a: Agent, sim: PlaySim, path: PlaySim['ballPath'], acqui
       const upfield = a.profile.radius + window.receiver.profile.radius + a.profile.reach;
       const across = window.seen.vel.y * late * (0.6 + 0.4 * a.r('pursuit'));
       tgt = { x: land.x + upfield, y: clamp(land.y + across, 0.5, FIELD_WIDTH - 0.5) };
+    } else if (DEEP_ARRIVE && window && !underneathZone(a)) {
+      const dir = sim.attackDir(window.receiver.team);
+      if ((a.pos.x - land.x) * dir > -DEEP_ARRIVE_BELOW) {
+        const late = Math.max(0, timeToReach({ pos: a.pos, vel: a.vel, profile: a.profile, speedScale: a.speedScale }, land, a.profile.reach)
+          - (window.t - sim.t));
+        const down = Math.max(0, window.seen.vel.x * dir);
+        const upfield = a.profile.radius + window.receiver.profile.radius + a.profile.reach + down * late;
+        const across = window.seen.vel.y * late * (0.6 + 0.4 * a.r('pursuit'));
+        tgt = { x: land.x + dir * upfield, y: clamp(land.y + across, 0.5, FIELD_WIDTH - 0.5) };
+        deepArriveTop.set(a, true);
+      }
     }
     const dx = tgt.x - a.pos.x;
     const dy = tgt.y - a.pos.y;
