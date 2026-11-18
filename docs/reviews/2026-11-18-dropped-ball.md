@@ -18,3 +18,17 @@ So z "1.6 to 1.4 over 0.45 s" is a ball thrown at shoulder height falling with a
 **Not a defect in the ball's state.** If the staged picks are judged too easy, the knobs are the pop (`0.1 + 1.6 solid²`), the horizontal keep (0.15-0.55) and the lockout, which are calibration choices for the receiver lane, not a physics fault. A real NFL check would be the share of dropped passes that are intercepted (here 2 of 35); I have no tracking-side number for it.
 
 Tool: `scripts/diag/ball/drop-tracks.mts SEED...` writes every drop's ball track and what followed.
+
+## Reproduced on the QB lane's staged play (added after their repro arrived)
+
+develop 021a42a7 + `qb-stack-all-on-develop-021a42a7.patch`, `QB_WINDOW_ARRIVE=1 QB_PEEK_CLOCK=1 QB_MOF_READ=1`, `four_verts` / `gun_doubles_11` / roster 3 / seed 2 / cover2: the back drops it at t = 3.55 s. Ball per 0.1 s after the drop: `kind` air, `deflected` true, `securing` false throughout.
+
+| +t (s) | ball z (yd) | ball vz (yd/s) | ball horizontal (yd/s) | back's velocity (yd/s) |
+|---|---|---|---|---|
+| 0.0 | 1.39 | +2.01 | (1.69, 2.99) | (2.85, 4.27) |
+| 0.1 | 1.53 | +0.93 | (1.69, 2.98) | (2.85, 4.28) |
+| 0.2 | 1.56 | -0.14 | (1.68, 2.98) | (2.86, 4.29) |
+| 0.3 | 1.49 | -1.21 | (1.68, 2.97) | (2.87, 4.30) |
+| 0.4 | 1.31 | -2.28 | (1.68, 2.96) | (2.87, 4.31) |
+
+vz falls by 10.7 yd/s every second, which is gravity. The pop is 2.01 yd/s (a draw about one standard deviation above the 1.7 mean for a squarely held ball), so the ball stays near 1.4-1.6 yd for 0.3 s before it falls; the horizontal 3.4 yd/s is the 0.2 keep of the incoming velocity, alongside a back running 5.1 yd/s. The corner picks it at +0.45 s at about 1.2 yd. This is the same mechanism as the ordinary-game drops above.
