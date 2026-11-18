@@ -1,0 +1,14 @@
+import { Rng } from '../../../src/core/rng.js';
+import { simulateGame } from '../../../src/game/game.js';
+import { generateTeam, leagueSample } from '../../../src/league/team.js';
+import { PlaySim } from '../../../src/sim/playsim.js';
+const seed = Number(process.env.SEED ?? 101);
+let n = 0; const orig = PlaySim.prototype.run;
+PlaySim.prototype.run = function (this: any) { n++; const sim: any = this; const res = orig.apply(this);
+  const int = sim.events.find((e: any) => e.type === 'interception');
+  if (int) console.log('play', n, sim.offCall?.pass?.id, sim.defCall?.coverage?.id, 'pick by', sim.agents[int.a]?.slot ?? int.by ?? JSON.stringify(Object.keys(int)), 'at', int.t.toFixed(2), 'release', sim.throwAt?.toFixed?.(2));
+  return res; };
+const rng = new Rng(seed);
+const home = generateTeam(rng, 'Ironmen', 'IRN', { strength: 0.55 }), away = generateTeam(rng, 'Comets', 'COM', { strength: 0.55 });
+simulateGame(leagueSample(home, seed), leagueSample(away, seed), { seed });
+console.log('plays', n);
