@@ -12,6 +12,7 @@ import { CoverageDefender } from '../src/sim/coverage/defender.js';
 import { playBall, sawThrow } from '../src/sim/behaviors/defense.js';
 import type { Perceived } from '../src/sim/perception.js';
 import { PlaySim } from '../src/sim/playsim.js';
+import { releaseBelief } from '../src/sim/release-belief.js';
 
 const offense=generateTeam(new Rng(401),'Flat offense','FWO',{strength:.6});
 const defense=generateTeam(new Rng(402),'Flat defense','FWD',{strength:.6});
@@ -108,12 +109,17 @@ describe('Quarters owns the acquired #2 flat and its possible wheel',()=>{
     expect(b.update(.8)).toEqual(a.update(.8));expect(b.b.job.startsWith('zone:')).toBe(true);
   });
   it('retains recognized reachable ball priority after the flat match',()=>{
-    const f=stage();f.flat();f.sim.throwAt=.01;
+    // Recognition is earned as in play (RELEASE_BELIEF, re-recorded 2026-11-18): the ball is in the air in front of him
+    // and his own record of it, a perception delay old, is what tells him it is thrown; asked on the tick it was
+    // staged, he had seen nothing and rightly did not believe a throw.
+    const f=stage();f.flat();const t0=f.sim.t;f.sim.throwAt=t0;
     f.sim.ball={kind:'air',flight:{pos:{x:43,y:f.a.pos.y,z:2},vel:{x:20,y:0,z:-1},drag:0},
-      thrower:f.sim.qb,target:f.r,releaseT:.01,releaseX:35,intended:{x:f.a.pos.x-.2,y:f.a.pos.y,z:1.2},
-      arrivalT:f.sim.t+.1,deflected:false,throwaway:false}; f.sim.throwSight.stageRelease(f.sim, f.sim.throwAt);
-    f.sim.ballPath=[{t:f.sim.t+.1,x:f.a.pos.x-.2,y:f.a.pos.y,z:1.2}];
+      thrower:f.sim.qb,target:f.r,releaseT:t0,releaseX:35,intended:{x:f.a.pos.x-.2,y:f.a.pos.y,z:1.2},
+      arrivalT:t0+.6,deflected:false,throwaway:false}; f.sim.throwSight.stageRelease(f.sim, f.sim.throwAt);
+    expect(sawThrow(f.a,f.sim,f.r)).toBe(false);
+    for(let k=0;k<10;k++){f.sim.t=+(t0+k*f.sim.dt).toFixed(2);f.sim.recordPerception();releaseBelief(f.sim,f.a);}
+    const t=f.sim.t;f.sim.ballPath=[{t:t+.1,x:f.a.pos.x-.2,y:f.a.pos.y,z:1.2}];
     expect(sawThrow(f.a,f.sim,f.r)).toBe(true);
-    const expected=playBall(f.a,f.sim,f.r);expect(f.update(.65)).toEqual(expected);expect(f.a.tags.has('onBall')).toBe(true);
+    const expected=playBall(f.a,f.sim,f.r);expect(f.update(t)).toEqual(expected);expect(f.a.tags.has('onBall')).toBe(true);
   });
 });

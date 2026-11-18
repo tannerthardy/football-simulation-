@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "engine-80",
+  "id": "engine-82",
   "runSet": {
     "commit": "1b5415de99b5b7194eff045f3c37a07a4c54c1a9",
     "seeds": [
@@ -52,6 +52,7 @@
     "OFF_PEDAL": { "default": 3, "legacy": 0 },
     "QB_FOOTWORK": { "default": 3, "legacy": 0 },
     "QCORNER": { "default": 0, "legacy": 0 },
+    "ROB_COMMIT": { "default": 7, "legacy": 0 },
     "ARM_BREAK": { "default": 1, "legacy": 0 },
     "ZONE_EYES_KEY": { "default": 9, "legacy": 0 }
   },
@@ -301,6 +302,7 @@
     "QB_LOOKOFF_RHYTHM": "off",
     "TECH_CONT": "on",
     "DEEP_GATE": "on",
+    "OWNED_FIX": "on",
     "RCV_KNOWS": "on",
     "ZONE_EYES": "on",
     "QB_HONEST_FEEL": "on",
@@ -376,7 +378,7 @@
     "ZONE_IT": "off",
     "RELEASE_SIDE": "on",
     "SCREEN_DECLARE": "on",
-    "ROUTE_SHAPE": "off",
+    "ROUTE_SHAPE": "on",
     "READ_RISK_TRACE": "off",
     "RECEIVER_DEPTH": "on",
     "RELEASE_INTERCEPT": "on",
