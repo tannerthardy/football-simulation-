@@ -54,3 +54,38 @@ Results, attempt 2:
 
 Stopped at two attempts. Next is to trace the remaining eyes-on deep men's real role (tags and the man or zone they play)
 before a third form. Scan, guard and reference-stack pass.
+
+## Integration's two conditions (attempt 2 plus a downhill margin)
+
+**1. The role is what he sees.** A carrier must be:
+- deeper than the receiver by half a yard;
+- within 7 yd of him;
+- moving with him (velocity cosine above 0.7);
+- **not closing on him** faster than 1.5 yd/s (chosen margin).
+
+A safety driving downhill on the receiver (a robber, a quarters safety on a declared in-break, DEEP_DECLARE's break on a
+corner or out cut) is closing on him, so it stays a ball-chaser. So does one sitting flat-footed, who is not moving with
+him.
+
+**2. The man behind the catch still costs something.** For a ball under his own carried target, the securing window's
+dislodge at his arrival stays.
+
+**Staged seams thrown into them** (forced at the second hitch, so outcomes do not depend on the price), n 295: defended
+53 (18%), ints 7 (2.4%), drops 9, misses 133 (45%), caught 93 (32%).
+
+**Games** (8: seeds 11 and 31, 4 each; engine-83):
+
+| arm | throws | 15+ air yd share | 15+ completion | 15+ ints | completion | ints | PBU |
+|---|---|---|---|---|---|---|---|
+| off | 640 | 2.2% (14) | 0.50 | 1 | 0.694 | 9 | 66 |
+| on | 680 | 4.0% (27) | 0.56 | 0 | 0.697 | 12 | 55 |
+
+**15+ share by shell** (NFL 13.4% overall; a place to look):
+
+| shell | off | on |
+|---|---|---|
+| one-high | 2.1% (8 / 379) | 3.3% (13 / 394) |
+| two-high | 2.6% (6 / 230) | 4.7% (12 / 256) |
+| zero | 0% (0 / 31) | 6.7% (2 / 30) |
+
+All interceptions rise 9 → 12, none of them on the deep balls.

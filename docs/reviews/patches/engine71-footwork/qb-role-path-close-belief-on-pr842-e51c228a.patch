@@ -106,6 +106,19 @@ index 000000000..9b66645c3
 +    console.log(JSON.stringify({ concept: id, formation, coverage, roster, seed, pick, rec: rec ? { ...rec, slots: undefined } : null, arr, fate, roles, tr: Object.fromEntries(tr) }));
 +  }
 +}
+diff --git a/scripts/diag/eyes/drop-timing.ts b/scripts/diag/eyes/drop-timing.ts
+index ae1b00ea1..aa8078ff2 100644
+--- a/scripts/diag/eyes/drop-timing.ts
++++ b/scripts/diag/eyes/drop-timing.ts
+@@ -28,7 +28,7 @@ PlaySim.prototype.run = function (this: PlaySim) {
+   const res: any = orig.apply(this);
+   if (rel) {
+     const call = sim.offCall, flight = arrive !== null ? arrive - rel.t : null, dist = Math.hypot(rel.to.x - rel.from.x, rel.to.y - rel.from.y);
+-    console.log(JSON.stringify({ drop: call.pass?.drop ?? null, family: call.pass?.family ?? null, gun: call.formation.qb !== 'under', setT, setDepth: setDepth === null ? null : +setDepth.toFixed(2),
++    console.log(JSON.stringify({ cov: sim.defCall?.coverage?.id ?? null, shell: sim.defCall?.coverage?.shell ?? null, drop: call.pass?.drop ?? null, family: call.pass?.family ?? null, gun: call.formation.qb !== 'under', setT, setDepth: setDepth === null ? null : +setDepth.toFixed(2),
+       rel: +rel.t.toFixed(2), rhythm: rel.rhythm, planT: +rel.planT.toFixed(2), natT: rel.natT === null ? null : +rel.natT.toFixed(2), flight: flight === null ? null : +flight.toFixed(2), air: +rel.air.toFixed(1), dist: +dist.toFixed(1), speed: flight ? +(dist / flight).toFixed(1) : null, cmp: !!res.stats?.completed, dec: rel.dec,
+       fate: (() => { const ev = sim.events.map((e: any) => e.type); return ev.includes('interception') ? 'int' : res.stats?.completed ? 'catch' : ev.includes('pbu') || ev.includes('deflection') ? 'pbu' : ev.includes('drop') ? 'drop' : 'miss'; })() }));
+   }
 diff --git a/scripts/diag/eyes/release-square.ts b/scripts/diag/eyes/release-square.ts
 new file mode 100644
 index 000000000..905b46d70
@@ -179,7 +192,7 @@ index 97f772e0d..d49f430cf 100644
    if (read !== null) for (const r of sim.offense) {
      if (r === sim.qb || isOL(r)) continue;
 diff --git a/src/sim/behaviors/qb.ts b/src/sim/behaviors/qb.ts
-index e383832ad..e01480f2e 100644
+index e383832ad..e4f24118c 100644
 --- a/src/sim/behaviors/qb.ts
 +++ b/src/sim/behaviors/qb.ts
 @@ -17,7 +17,7 @@
@@ -237,7 +250,7 @@ index e383832ad..e01480f2e 100644
  /** QB_WINDOW_ARRIVE: when a defender can play `pt` (within `radius`): his reaction, less the share his seen course already
   * serves, carrying his velocity through it; the moment that carry passes within reach, else then his redirect from there. */
  function arriveTime(mover: { pos: { x: number; y: number }; vel: { x: number; y: number }; profile: any; speedScale?: number }, pt: { x: number; y: number }, radius: number, react: number, goal: { x: number; y: number } = pt): number {
-@@ -2788,6 +2827,42 @@ export class QBPass implements Behavior {
+@@ -2788,6 +2827,45 @@ export class QBPass implements Behavior {
        // start; one on the target follows the stem until the break; anyone
        // else keeps his course until the ball is out.
        const onTarget = Math.hypot(seen.pos.x - target.x, seen.pos.y - target.y) < 3;
@@ -266,7 +279,10 @@ index e383832ad..e01480f2e 100644
 +          const f = this.receiverForecasts.get(o); if (!f || o === a) continue;
 +          const now = o === r ? target : this.has(sim, o), nx = f.predict(sim.t, 0.1) ?? now, vx = (nx.x - now.x) / 0.1, vy = (nx.y - now.y) / 0.1, vs = Math.hypot(vx, vy);
 +          const dd = Math.hypot(seen.pos.x - now.x, seen.pos.y - now.y);
-+          if (vs > 1 && dd < best && (seen.pos.x - now.x) * dirX >= 0.5 && (seen.vel.x * vx + seen.vel.y * vy) / (sp * vs) > 0.7) {
++          // Breaking downhill on him (a robber, a quarters safety on a declared in-break, a deep break on a corner/out cut) is
++          // not a carry: the gap to him closing faster than 1.5 yd/s in his picture (chosen margin) keeps him a ball-chaser.
++          const closingOn = dd > 1e-6 ? ((seen.vel.x - vx) * (now.x - seen.pos.x) + (seen.vel.y - vy) * (now.y - seen.pos.y)) / dd : 0;
++          if (vs > 1 && dd < best && closingOn < 1.5 && (seen.pos.x - now.x) * dirX >= 0.5 && (seen.vel.x * vx + seen.vel.y * vy) / (sp * vs) > 0.7) {
 +            best = dd; carried = o;
 +            const at = f.predict(sim.t, total) ?? now; carryAt = { x: at.x + seen.pos.x - now.x, y: at.y + seen.pos.y - now.y };
 +          }
@@ -280,7 +296,7 @@ index e383832ad..e01480f2e 100644
        // THROW_REACT: no defender breaks on the ball before it is in the air.
        // One facing him in zone keys the motion, so he goes at the release or
        // a reaction after the motion starts, whichever is later; one in man
-@@ -2813,7 +2888,7 @@ export class QBPass implements Behavior {
+@@ -2813,7 +2891,7 @@ export class QBPass implements Behavior {
          const age = this.mind.pictureAge(d), A = dp.vmax / Math.max(dp.tau, 1e-3);
          spreadD = Math.min(0.5 * A * age * age, dp.vmax * age) / Math.max(dp.vmax, 1e-3);
        }
@@ -289,7 +305,7 @@ index e383832ad..e01480f2e 100644
      });
      // A ball that arrives at `pt`: who contests it at the catch, who can get a
      // hand on it on the way, and how many of those become picks.
-@@ -2834,29 +2909,40 @@ export class QBPass implements Behavior {
+@@ -2834,29 +2912,40 @@ export class QBPass implements Behavior {
      const at = (pt: Vec3) => {
        let pOpen = 1, pClear = 1, intRisk = 0, pSecure = 1, intPath = 0, intJump = 0, intContest = 0, noPathPick = 1, noCatchPick = 1;
        const v0 = dragFreeLaunch(from, pt, T);
@@ -337,7 +353,7 @@ index e383832ad..e01480f2e 100644
            const mb = tb - (wind + tau) + estimateError;
            touch = Math.max(touch, logistic(-(mb - 0.05) / sPath));
          }
-@@ -2867,7 +2953,7 @@ export class QBPass implements Behavior {
+@@ -2867,7 +2956,7 @@ export class QBPass implements Behavior {
          intRisk += iPath + iJump + iContest;
          intPath += iPath; intJump += iJump; intContest += iContest;
          if (marginTrace && pt === point && (contest > 0.05 || iPath + iJump + iContest > 0.001)) marginTrace.push({ slot: d.slot, m: +m.toFixed(3), first: +first.toFixed(3),
