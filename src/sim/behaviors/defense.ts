@@ -75,6 +75,16 @@ const ZONE_SETTLE = process.env.ZONE_SETTLE !== '0';
  * settles as before. His own position against his landmark is his to know. Margins: stated choices, enter and exit on
  * opposite sides. */
 export const SETTLE_DEPTH = process.env.SETTLE_DEPTH !== '0';
+/** FLAT_SINK (on since engine-85; FLAT_SINK=0 restores; Rules + Coaching's rule, HNFL-099/-334, Coverage built): the
+ * flat (squat / cloud) corner sinks with #1's vertical until the flat is threatened in front of him ("sink with #1 until
+ * the ball brings you down; top-down the flat"). While a receiver in his area runs vertically over him (seen downfield
+ * over 4 yd/s, at or past his depth less 1.5 yd; held while over 2 yd/s and short of FLAT_SINK_DEPTH) and no other
+ * receiver in his area is a yard or more shallower than him, he carries under #1 with his eyes on the QB and does not
+ * plant on the QB's set; a receiver into the flat in front of him ends it and his zone play takes the flat. Measured
+ * first (Rules, hole-shot, Cover 2 throws to #1 at 15+ air yards): NFL corner downfield 3.6 yd/s at the throw, ours
+ * 0.5 (planted on the set); corner to #1 at arrival 6.4 vs 11.8 yd. */
+export const FLAT_SINK = process.env.FLAT_SINK !== '0';
+const FLAT_SINK_DEPTH = 18;
 const SINK_ENTER = 2, SINK_EXIT = 1;
 /** SEEN_EYES (default on; SEEN_EYES=0 restores the QB's internal read target): a zone defender
  * reads the QB's look from what he sees of him, not from the QB's internal
@@ -1843,10 +1853,37 @@ export class ZoneCoverage implements Behavior {
     if (live) return live;
     // Until he sees the throw, a zone defender keeps playing his zone.
     if (playsThrow(a, sim, null)) return playBall(a, sim, null, RELEASE_BELIEF ? () => this.zonePlay(a, sim) : undefined);
+    if (FLAT_SINK && !this.deep && (this.zone === 'flat_s' || this.zone === 'flat_w') && knowsPass(sim, a) && !believesRun(sim, a)) {
+      const sink = this.flatSink(a, sim);
+      if (sink) return sink;
+    }
     // SHOULDER_READ: an underneath defender reading the QB stops his drop on
     // the throwing motion he has seen; the rest of his zone play goes on.
     if (SHOULDER_READ && !this.deep && underneathPlant(a, sim)) return stopDrop(sim, this.zonePlay(a, sim));
     return this.zonePlay(a, sim);
+  }
+
+  /** FLAT_SINK: the vertical over him he is sinking with, if any. */
+  private sinkWith: Agent | null = null;
+  private flatSink(a: Agent, sim: PlaySim): MoveCommand | null {
+    const dir = sim.attackDir(sim.offense[0].team), [ylo, yhi] = this.band, myDepth = (a.pos.x - sim.los) * dir;
+    const seen = sim.offense.filter((r) => r !== sim.qb && !isOL(r)).map((r) => ({ r, s: sim.see(a, r) }));
+    const inArea = (p: Vec2) => p.y >= ylo && p.y <= yhi;
+    let v = this.sinkWith ? seen.find((x) => x.r === this.sinkWith) ?? null : null;
+    if (v) {
+      const d = (v.s.pos.x - sim.los) * dir;
+      if (v.s.vel.x * dir < 2 || d >= FLAT_SINK_DEPTH) { this.sinkWith = null; v = null; }
+    }
+    if (!v) {
+      v = seen.find((x) => inArea(x.s.pos) && x.s.vel.x * dir > 4 && (x.s.pos.x - sim.los) * dir >= myDepth - 1.5 && (x.s.pos.x - sim.los) * dir < FLAT_SINK_DEPTH) ?? null;
+      this.sinkWith = v?.r ?? null;
+    }
+    if (!v) return null;
+    // The flat threatened in front of him ends the sink: his zone play takes it.
+    if (seen.some((x) => x.r !== v!.r && inArea(x.s.pos) && (x.s.pos.x - sim.los) * dir <= myDepth - 1 && (x.s.pos.x - sim.los) * dir > -3)) { this.sinkWith = null; return null; }
+    const q = sim.see(a, sim.qb), inside = Math.sign(sim.ballY - v.s.pos.y) || 1;
+    a.tags.add('flat-sink');
+    return withFacingTechnique(track(a, { x: v.s.pos.x - dir * 1, y: v.s.pos.y + inside * 0.7 }, { x: v.s.vel.x, y: v.s.vel.y }, { facing: angleTo(a.pos, q.pos), speed: 1, gain: 1.8 }), { label: 'flat-sink', key: v.s.vel });
   }
 
   /** His zone play with the ball in the QB's hands (no throw seen). */
