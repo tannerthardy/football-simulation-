@@ -628,6 +628,11 @@ scripts/diag/coverage/corner-sink.mts, 2 seeds, 498 / 495 sides):
 | short, flat side | off | 190 | 0.6 (41%) | | 55% | 5.9 |
 | short, flat side | on | 182 | 2.6 (58%) | | 55% | 6.3 |
 
+On engine-84 (after QB_DRIVE's flight and the rest of engine-83, and DOWN_RISE_PLANT), same script: all 479 / 481 sides,
+corner downfield at the release p50 1.9 -> 3.3 yd/s (>= 2 yd/s 49 -> 70%), corner to #1 at arrival 16.3 -> 15.1, comp 61 -> 61%,
+yd/att 9.0 -> 8.5; throws to #1 8 at 100% / 15.7 -> 6 at 50% / 6.2 (small n); short flat side 51% / 6.2 -> 53% / 6.3.
+The rows below were measured on engine-82.
+
 Staged pass set (490 throws): completion 70.6 -> 71.2%, PBU plays 64 -> 62, INT 11 -> 11; dig window (10-16 yd air
 into the hook/curl, Defense's control) 62.6% / 9.55 -> 61.0% / 9.38 yd/att; crossers 82.3 -> 81.3%, YAC p50 5.1 -> 6.1.
 YAC by coverage (zma): Cover 2 5.65 -> 6.49 at catch depth 8.3 -> 7.4; Cover 1/3/4/6 unchanged. Explained: with the
