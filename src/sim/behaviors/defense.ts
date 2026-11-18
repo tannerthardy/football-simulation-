@@ -84,6 +84,10 @@ export const SETTLE_DEPTH = process.env.SETTLE_DEPTH !== '0';
  * first (Rules, hole-shot, Cover 2 throws to #1 at 15+ air yards): NFL corner downfield 3.6 yd/s at the throw, ours
  * 0.5 (planted on the set); corner to #1 at arrival 6.4 vs 11.8 yd. */
 export const FLAT_SINK = process.env.FLAT_SINK !== '0';
+/** FLAT_CARRY (on since engine-89; FLAT_CARRY=0 restores; Coverage, Rules + Coaching's rule HNFL-099/-334): with #1 cancelled
+ * (not vertical, his own read with a margin) the Cover 2 flat corner carries the #2 flat that turns up until it is
+ * capped (ZoneCoverage.flatCarry); with #1 vertical he sinks with #1 as before. */
+export const FLAT_CARRY = process.env.FLAT_CARRY !== '0';
 const FLAT_SINK_DEPTH = 18;
 const SINK_ENTER = 2, SINK_EXIT = 1;
 /** SEEN_EYES (default on; SEEN_EYES=0 restores the QB's internal read target): a zone defender
@@ -1919,6 +1923,9 @@ export class ZoneCoverage implements Behavior {
     if (live) return live;
     // Until he sees the throw, a zone defender keeps playing his zone.
     if (playsThrow(a, sim, null)) return playBall(a, sim, null, RELEASE_BELIEF ? () => this.zonePlay(a, sim) : undefined);
+    if (FLAT_CARRY && !this.deep && (this.zone === 'flat_s' || this.zone === 'flat_w') && knowsPass(sim, a) && !believesRun(sim, a)) {
+      const carry = this.flatCarry(a, sim); if (carry) return carry;
+    }
     if (FLAT_SINK && !this.deep && (this.zone === 'flat_s' || this.zone === 'flat_w') && knowsPass(sim, a) && !believesRun(sim, a)) {
       const sink = this.flatSink(a, sim);
       if (sink) return sink;
@@ -1931,6 +1938,56 @@ export class ZoneCoverage implements Behavior {
 
   /** FLAT_SINK: the vertical over him he is sinking with, if any. */
   private sinkWith: Agent | null = null;
+  /**
+   * FLAT_CARRY: the Cover 2 flat corner carries a #2 flat that turns up when #1 is not vertical (Rules + Coaching,
+   * HNFL-099/-334: with #1 vertical he sinks with #1 and the half takes what is left; with #1 cancelled, a slant, hitch
+   * or in, the flat that turns up is his). Both reads are his own picture:
+   * - #1 cancelled: seen 3+ yd deep moving more across than up (a slant, an in), or slowed under 1 yd/s. Held until #1
+   *   is seen climbing again (over 3.5 yd/s and more up than across: the double move), which returns him to the sink.
+   * - The flat route: a receiver in his area, 5 yd deep or less, moving across toward the sideline (over 2 yd/s).
+   * - Once #1 has cancelled, the flat route is his: he squeezes it from on top (half a yard deeper) and outside, which
+   *   carries it if it turns up, until another defender he sees is over it (0.4-6 yd deeper, within 2.3 yd laterally:
+   *   the cap), it leaves his area, or it is 20 yd deep.
+   */
+  private flatCarry(a: Agent, sim: PlaySim): MoveCommand | null {
+    const dir = sim.attackDir(sim.offense[0].team), [ylo, yhi] = this.band, myDepth = (a.pos.x - sim.los) * dir;
+    const inArea = (p: Vec2) => p.y >= ylo && p.y <= yhi;
+    const side = this.zone === 'flat_s' ? 'S' : 'W';
+    const oneSlot = sim.offAlign.numbering[`${side}1` as 'S1' | 'W1'];
+    const one = oneSlot ? sim.offense.find((r) => r.slot === oneSlot) : undefined;
+    if (!one) return null;
+    const o = sim.see(a, one), oDepth = (o.pos.x - sim.los) * dir, oUp = o.vel.x * dir, oAcross = Math.abs(o.vel.y);
+    if (!this.oneCancelled) this.oneCancelled = oDepth >= 3 && (oAcross > Math.max(oUp, 0) || Math.hypot(o.vel.x, o.vel.y) < 1);
+    else if (oUp > 3.5 && oUp > oAcross) { this.oneCancelled = false; this.flatCarrying = false; }
+    if (!this.oneCancelled) return null;
+    if (!this.flatRoute) {
+      this.flatRoute = sim.offense.find((r) => {
+        if (r === sim.qb || r === one || isOL(r)) return false;
+        const c = sim.see(a, r), d = (c.pos.x - sim.los) * dir, out = Math.sign(c.pos.y - sim.ballY) || 1;
+        return inArea(c.pos) && d <= 5 && d > -3 && Math.abs(c.vel.y) > Math.abs(c.vel.x) && c.vel.y * out > 2;
+      }) ?? null;
+      return null;
+    }
+    const s = sim.see(a, this.flatRoute);
+    const depth = (s.pos.x - sim.los) * dir;
+    // With #1 cancelled, #2 in the flat is his: he squeezes it from on top and outside, which carries it if it turns up.
+    if (depth > 20 || !inArea(s.pos)) { this.flatRoute = null; return null; }
+    this.flatCarrying = true;
+    const capped = sim.defense.some((d) => {
+      if (d === a) return false;
+      const c = sim.see(a, d), over = (c.pos.x - s.pos.x) * dir;
+      return over > 0.4 && over < 6 && Math.abs(c.pos.y - s.pos.y) < 2.3 && c.vel.x * dir > -1;
+    });
+    if (capped) { this.flatCarrying = false; this.flatRoute = null; return null; }
+    const outside = Math.sign(s.pos.y - sim.ballY) || 1;
+    a.tags.add('flat-carry');
+    return withFacingTechnique(track(a, { x: s.pos.x + dir * 0.5, y: s.pos.y + outside * 0.7 }, { x: s.vel.x, y: s.vel.y }, { speed: 1, gain: 1.8 }),
+      { label: 'flat-carry', key: s.vel });
+  }
+  private flatRoute: Agent | null = null;
+  private flatCarrying = false;
+  private oneCancelled = false;
+
   private flatSink(a: Agent, sim: PlaySim): MoveCommand | null {
     const dir = sim.attackDir(sim.offense[0].team), [ylo, yhi] = this.band, myDepth = (a.pos.x - sim.los) * dir;
     const seen = sim.offense.filter((r) => r !== sim.qb && !isOL(r)).map((r) => ({ r, s: sim.see(a, r) }));
