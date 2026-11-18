@@ -636,6 +636,29 @@ Open, not the route: of the 11 paired out / quick_out plays caught off and misse
 short of it (handed to the QB lane: the speed out is thrown to the numbers); 2 a defender at the catch; 2 the receiver
 off the ball's line at arrival.
 
+## engine-81: the deep player's picture keeps the receivers in his area; the safety's help on #1 waits for #1 and commits (2026-11-18)
+
+On: `OWNED_FIX` and `ROB_COMMIT=7` (two flags, one engine step). Measured on develop 021a42a7 (engine-80, Rules' coverage rules on, including HALF_OWN) with each flag switched off in turn from the candidate.
+
+`OWNED_FIX` (Defense, B4/B5 gap 2 of Rules' coverage-position table; a coached-rule repair). The deep ownership filter cut a deep player's picture to his numbered man (quarter seats their #, the deep-third corner #1). Two repairs:
+- The deep-third (Sky) corner keeps #2 together with #1 when #2 works into his outside third: he owns both deep (the split and the squeeze run).
+- The deep-drive guard (another receiver climbing behind a stopped route stops him driving down on it) reads every vertical in his area before the ownership filter. The filter had emptied the guard's own input: after it, the only vertical left was the one he was driving on. HALF_OWN's midpoint hold (two verticals in a halves or middle player's area) is unchanged and still reads the filtered list. Nothing in quarters exercised the guard on these sets (Cover 4 and Cover 6 identical below), so "no change in quarters" means the case did not occur, not that the repair does nothing.
+
+| set, `OWNED_FIX` off -> on | yards an attempt | 15+ air yd comp | 10-20 yd YAC | short YAC | look-off yards |
+|---|---|---|---|---|---|
+| 10 vertical-heavy concepts, 8 seeds | 8.72 -> 8.64 | 85.4 -> 81.3% (n 48) | 5.82 -> 5.66 | 4.69 -> 4.58 | 7.15 -> 7.20 |
+| all concepts, 3 seeds | 8.96 -> 8.83 | 69.0 -> 66.7% (n 29/27) | 4.86 -> 4.42 | 4.99 -> 4.92 | 8.66 -> 8.37 |
+
+By coverage (zone-man-after, 3 seeds): only Cover 3 moves, YAC 5.10 -> 4.62 (n 283/278); Cover 1, 2, 4 and 6 identical. Run set 3.85 yards a carry unchanged.
+
+`ROB_COMMIT=7` (Defense, B4/B5 gap 5 of Rules' table; a coached-rule repair; bits 1+2+4). A safety helping #1 (the quarters safety once #2 goes out or under, the palms safety on #2 under, the 3x1 weak safety) re-scored his help every tick: over the top while #1 read vertical or had ever climbed past 7 yd, else rob. He flipped rob / top / rob as an under or a dig crossed 7 yd, robbed a #1 who had not declared, and drove down from 14-15 yd toward a 5 yd window on a short #1. Now: bit 1, an undeclared #1 leaves him in his quarter; bit 2, help changes only on a new declaration by #1 believed after his last change (vertical -> over the top, in-breaker -> rob; a past climb alone does not move him); bit 4, a short #1 (inside 7 yd) is not his to rob, he plays his quarter.
+
+Quarters safeties, Cover 4 and Cover 6, 2 seeds (qrob.mts, about 484 safety-plays), off -> on: rob taken before the throw 94 -> 69; on a short #1 (under/stop at about 5 yd) 68 -> 16; on an undeclared #1 4 -> 0; under -> over-the-top flips 64% -> 50% of 33 -> 2; 3+ job changes before the throw 37 -> 17 (those left are new declarations by #1, such as vertical -> in -> vertical on a double move, or a change of receiver).
+
+Staged set, all concepts, 3 seeds, off -> on: yards an attempt 8.84 -> 8.83, 10-20 yd YAC 4.45 -> 4.42, short YAC 4.98 -> 4.92. By coverage: Cover 4 YAC 5.29 -> 5.17, Cover 6 4.23 -> 4.19, the rest identical. Run set unchanged. (On engine-78, 6 seeds: 8.79 -> 8.81, Cover 4 YAC 4.99 -> 4.75.)
+
+Both flags: `dither-budget`, `decision-information-scan` and `decision-information-guard` passed on engine-78 with each on.
+
 ## engine-80: coverage rules by position, as taught (2026-11-18)
 
 On: ten coverage rules from Rules + Coaching's coverage-position spec (docs/reviews/2026-11-17-coverage-position-spec.md,
