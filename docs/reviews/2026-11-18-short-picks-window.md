@@ -44,3 +44,22 @@ ball within a counted defender's reach. Flex's v2 rows: miss > 1.5 yd from the r
 `open-vs-eyes.ts`, develop e27824e8 + the quick clock, 56 zone plays per concept: reads that cleared his bar only after
 his eyes had left them: curl_flat 15, dagger 20, flood 31, smash 26. Time to throw p50 2.85 / 3.55 / 3.15 / 3.25 s. The
 dwell moves him off drop-back reads before they open too. That is the next timing item after the quick game lands.
+
+## The two ROLE_PATH fixes, measured: not landed
+
+Eight games each (seeds 11 and 31), b6658fef + the READ_WINDOW flip, without → with the two fixes (carry of another
+receiver only for a ball at or beyond the deep man; a carry needs a receiver running downfield):
+
+| | without | with |
+|---|---|---|
+| interceptions | 9 | 13 |
+| interceptions by air band (<5 / 5-15 / 15+) | 4 / 4 / 1 | 4 / 9 / 0 |
+| completion | 0.703 | 0.671 |
+| yards per attempt | 8.05 | 7.30 |
+| 15+ air share | 6.4% | 8.2% |
+| 15+ air share, one-high / two-high | 7.2% / 4.7% | 8.1% / 8.9% |
+| sacks | 31 | 34 |
+
+The fixes were meant to price a downhill deep man in. More 5-15 yd picks is the opposite of that, so they are not
+landed. To trace with int-margin in the fixed arm: which path each 5-15 picker was priced on (3b's body path, or the
+plain path with a reaction charged from rest). Part of the joint DEF_CATCH landing's window work.
