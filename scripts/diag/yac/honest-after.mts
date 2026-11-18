@@ -38,7 +38,8 @@ for (const concept of Object.keys(PASS_BY_ID).filter((id) => !/screen/.test(id))
               const E = sim.ballEstimates; let err: number | null = null;
               if (E?.peek && (E.samplesOf?.(d) ?? 0) > 0) { const p = E.peek(d, sim); if (p.length) { const q = p.reduce((m: any, s: any) => (Math.hypot(s.x - a.pos.x, s.y - a.pos.y) < Math.hypot(m.x - a.pos.x, m.y - a.pos.y) ? s : m)); err = Math.hypot(q.x - a.pos.x, q.y - a.pos.y); } }
               const rb = releaseBelief(sim, d);
-              W2.push({ fm: DEF.flightManBranch?.get(d)?.branch ?? '-', pickC: DEF.flightManPickOf ? DEF.flightManPickOf(d) === a : null, d, deep, dist: Math.hypot(d.pos.x - a.pos.x, d.pos.y - a.pos.y), rbAt: rb.releasedAt, src: rb.source, ballAt: rb.ballAt, err, at: {} as any });
+              const relX = (d.pos.x - a.pos.x) * sim.attackDir(sim.offense[0].team);
+              W2.push({ rel: relX > 0.5 ? 'front' : relX < -0.5 ? 'behind' : 'level', fm: DEF.flightManBranch?.get(d)?.branch ?? '-', pickC: DEF.flightManPickOf ? DEF.flightManPickOf(d) === a : null, d, deep, dist: Math.hypot(d.pos.x - a.pos.x, d.pos.y - a.pos.y), rbAt: rb.releasedAt, src: rb.source, ballAt: rb.ballAt, err, at: {} as any });
             }
           }
           return ev0(type, a, ...r);
@@ -68,7 +69,7 @@ for (const concept of Object.keys(PASS_BY_ID).filter((id) => !/screen/.test(id))
         const dir = sim.attackDir(sim.offense[0].team);
         const res = sim.result ?? null;
         const yac = ((C.pos.x - cx0) * dir);
-        for (const w of W2) rows.push({ fm: w.fm, pickC: w.pickC, coverage, deep: w.deep, yac, dist: w.dist, rbAt: w.rbAt === undefined ? null : w.rbAt - rel, src: w.src ?? 'none', ball: w.ballAt === undefined ? null : w.ballAt - rel, err: w.err, known: w.known ?? null, move: w.move ?? null, at: w.at, flight: tc - rel });
+        for (const w of W2) rows.push({ rel: w.rel, fm: w.fm, pickC: w.pickC, coverage, deep: w.deep, yac, dist: w.dist, rbAt: w.rbAt === undefined ? null : w.rbAt - rel, src: w.src ?? 'none', ball: w.ballAt === undefined ? null : w.ballAt - rel, err: w.err, known: w.known ?? null, move: w.move ?? null, at: w.at, flight: tc - rel });
       }
 const q = (v: any[], k = 2) => { const w = v.filter((x) => x !== null && Number.isFinite(x)).sort((a: number, b: number) => a - b); return w.length ? [0.25, 0.5, 0.75].map(f => w[Math.floor(f * (w.length - 1))].toFixed(k)).join('/') : '-'; };
 const cnt = (V: any[], m: number) => { const c: Record<string, number> = {}; for (const r of V) c[r.at[m] ?? '-'] = (c[r.at[m] ?? '-'] ?? 0) + 1; return Object.entries(c).sort((a, b) => b[1] - a[1]).map(([k, v]) => `${k} ${v}`).join(', '); };
@@ -79,6 +80,7 @@ for (const deep of [false, true]) {
   console.log(`${deep ? 'DEEP' : 'UNDER'} n ${V.length} | dist at catch ${q(V.map(r => r.dist), 1)} | flight ${q(V.map(r => r.flight))} | throw believed (s after release) ${q(V.map(r => r.rbAt))} [${Object.entries(V.reduce((m: any, r) => (m[r.src] = (m[r.src] ?? 0) + 1, m), {})).map(([k, v]) => k + ' ' + v).join(', ')}] | flight seen ${q(V.map(r => r.ball))} (never ${V.filter(r => r.ball === null).length}) | landing err ${q(V.map(r => r.err), 1)} yd`);
   console.log(`      catch known (s after catch) ${q(V.map(r => r.known))} (never ${V.filter(r => r.known === null).length}) | moves to carrier ${q(V.map(r => r.move))} (never ${V.filter(r => r.move === null).length}) | YAC ${q(V.map(r => r.yac), 1)}`);
   for (const m of [0, 0.3, 0.6, 1.0]) console.log(`      +${m.toFixed(1)} s: ${cnt(V, m)}`);
+  for (const rel of ['front', 'level', 'behind']) { const P = V.filter((r) => r.rel === rel); if (P.length) console.log(`      at the catch ${rel} of the catcher: ${P.length} | YAC ${q(P.map(r => r.yac), 1)} | moves to carrier ${q(P.map(r => r.move))}`); }
   const N = V.filter((r) => r.move === null), c: Record<string, number> = {};
   for (const r of N) { const k = `${r.fm}${r.pickC === null ? '' : r.pickC ? '/picked catcher' : '/picked other'}`; c[k] = (c[k] ?? 0) + 1; }
   console.log(`      never moving (${N.length}): ${Object.entries(c).map(([k, v]) => k + ' ' + v).join(', ')} | dist ${q(N.map(r => r.dist), 1)} | catch known ${q(N.map(r => r.known))} | YAC on those plays ${q(N.map(r => r.yac), 1)}`);

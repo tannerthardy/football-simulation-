@@ -282,8 +282,35 @@ function flightInPhase(a: Agent, sim: PlaySim, R: Agent): boolean {
   st.inPhase = behind <= PHASE_BEHIND + m && side <= PHASE_SIDE + m && dist <= FLIGHT_PHASE_REACH + m;
   return st.inPhase;
 }
+/** FLIGHT_LANE (off; C14 honest defender, 2026-11-17; with FLIGHT_MAN): breakups are lost to position, not hands (the
+ * ball came within a zone defender's reach on 67 of 3270 staged zone defender-plays with FLIGHT_MAN, 101 on the
+ * default; inview-err.mts). An underneath defender with the ball in view plays the throwing lane: early, the point on the
+ * line from the passer (as he sees him) to the picked receiver's upfield shoulder nearest to him ("get in the throwing
+ * lane"); as the ball comes on, his own estimate of its line (about 1 yd off in the last 0.3 s, 0.5 yd in the last 0.1 s)
+ * takes over, a continuous blend by the time left to the ball's nearest pass (what he can know of his estimate's
+ * error: it tightens as the ball nears). He does not vacate a receiver he is the only man on: with no teammate he sees
+ * over the top of that receiver (deeper than him, within 6 yd across and 10 yd), he keeps the man. The contest itself
+ * acts when the ball comes within his reach, as before. */
+const FLIGHT_LANE = process.env.FLIGHT_LANE === '1';
+const LANE_BLEND_START = 0.6, LANE_BLEND_FULL = 0.15;
+function laneAim(a: Agent, sim: PlaySim, R: Agent, path: PlaySim['ballPath'], shoulder: Vec2): Vec2 | null {
+  const dir = sim.attackDir(sim.offense[0].team), q = sim.see(a, R);
+  // Help over the top, as he sees it.
+  const help = sim.defense.some((o) => o !== a && (() => { const p = sim.see(a, o).pos; return (p.x - q.pos.x) * dir > 0 && Math.abs(p.y - q.pos.y) <= 6 && Math.hypot(p.x - q.pos.x, p.y - q.pos.y) <= 10; })());
+  if (!help) return null;
+  const qb = sim.see(a, sim.qb).pos, ux = shoulder.x - qb.x, uy = shoulder.y - qb.y, L2 = ux * ux + uy * uy || 1;
+  const k = clamp(((a.pos.x - qb.x) * ux + (a.pos.y - qb.y) * uy) / L2, 0, 1);
+  const lane = { x: qb.x + ux * k, y: qb.y + uy * k };
+  // His estimate's line: its nearest point to him ahead in time, and the time left until it is there.
+  let best: { x: number; y: number; t: number } | null = null, bd = Infinity;
+  for (const p of path) { if (p.t < sim.t) continue; const d2 = Math.hypot(p.x - a.pos.x, p.y - a.pos.y); if (d2 < bd) { bd = d2; best = p; } }
+  if (!best) return lane;
+  const w = clamp((LANE_BLEND_START - (best.t - sim.t)) / (LANE_BLEND_START - LANE_BLEND_FULL), 0, 1);
+  return { x: lane.x + (best.x - lane.x) * w, y: lane.y + (best.y - lane.y) * w };
+}
+
 /** Diagnostic: his FLIGHT_MAN branch this play ('in' looks for the ball, 'out' plays the man, 'split' between two). */
-export const flightManBranch = new WeakMap<Agent, { branch: 'in' | 'out' | 'split' | 'view'; R: Agent | null; t: number }>();
+export const flightManBranch = new WeakMap<Agent, { branch: 'in' | 'out' | 'split' | 'view' | 'lane'; R: Agent | null; t: number }>();
 export function flightManPickOf(a: Agent): Agent | null { return flightPick.get(a)?.R ?? null; }
 
 function underneathZone(a: Agent): boolean {
@@ -2866,6 +2893,12 @@ function playBelievedBall(a: Agent, sim: PlaySim, man: Agent | null, continueCov
         flightManBranch.set(a, { branch: 'view', R: fm.R, t: sim.t });
         a.tags.add('flight-in-view');
         const flight = acquireFlight(a, sim);
+        // FLIGHT_LANE: an underneath man with the ball in view plays the throwing lane (his feet in the ball's way).
+        const deepMan = (a.behavior as { plastersScramble?: boolean } | undefined)?.plastersScramble === true;
+        if (FLIGHT_LANE && !deepMan && fm.R && flight.length) {
+          const aim = laneAim(a, sim, fm.R, flight, fm.p);
+          if (aim) { a.tags.add('flight-lane'); flightManBranch.set(a, { branch: 'lane', R: fm.R, t: sim.t }); return arriveUnderControl(a, aim); }
+        }
         return flight.length && (!BALL_EST_FLIGHT_SETTLE || settledFlight(a, sim, flight)) ? playObservedFlight(a, sim, flight, true) : arriveUnderControl(a, fm.p);
       }
       flightManBranch.set(a, { branch: fm.R ? 'out' : 'split', R: fm.R, t: sim.t });

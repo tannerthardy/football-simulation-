@@ -46,6 +46,7 @@
     "ZONE_EYES": "0",
     "FLIGHT_MAN": "0",
     "CATCH_WINDOW_SEEN": "0",
+    "FLIGHT_LANE": "0",
     "ZONE_EYES_KEY": "0.9",
     "CATCH_CLOSE": "0",
     "CLOSE_HAND_SPEED": "6",
