@@ -1,5 +1,5 @@
 import { describe, expect, it, vi, afterAll } from 'vitest';
-// engine-79 (pinned test-only, Rules + Coaching's coverage landing): the scenes stage Palms against an attached #2; QUARTERS_CHECK installs MOD there. The file's owner to re-record with the rule on.
+// engine-80 (pinned test-only, Rules + Coaching's coverage landing): the scenes stage Palms against an attached #2; QUARTERS_CHECK installs MOD there. The file's owner to re-record with the rule on.
 vi.hoisted(() => { process.env.QUARTERS_CHECK = '0'; });
 afterAll(() => { delete process.env.QUARTERS_CHECK; });
 import { Rng } from '../src/core/rng.js';

@@ -1,0 +1,20 @@
+// Receiver ball-estimate probe (Coverage, 2026-11-18): every 0.1 s after the release, the target's track.
+const W = process.cwd();
+const { PlaySim } = await import(`${W}/src/sim/playsim.ts`);
+const { nativeTraceSetup } = await import(`${W}/scripts/diag/command-trace.ts`);
+const [concept, coverage, formation, seedS, flipS] = process.argv.slice(2);
+const seed = Number(seedS);
+const sim: any = new PlaySim(nativeTraceSetup({ coverage, concept, seed, roster: seed, formation, flip: flipS === '1' }));
+const dir = sim.attackDir(sim.offense[0].team), X = (p: any) => +((p.x - sim.los) * dir).toFixed(1), Y = (p: any) => +(p.y - sim.ballY).toFixed(1);
+let T: any = null, t0 = 0, aim: any = null;
+const tb = sim.throwBall.bind(sim);
+sim.throwBall = (p: any, target: any, v0: any, intended: any, arrivalT: number, ...r: any[]) => { if (p === sim.qb && !T && target) { T = target; t0 = sim.t; aim = [X(intended), Y(intended), +arrivalT.toFixed(2)]; } return tb(p, target, v0, intended, arrivalT, ...r); };
+const tick = sim.tick.bind(sim);
+sim.tick = () => { tick(); if (!T || sim.ball.kind !== 'air') return; const k = sim.t - t0; if (Math.abs(k * 10 - Math.round(k * 10)) > 1e-6) return;
+  const E = sim.ballEstimates, tr = E?.tracks?.get(T); const pk = E?.peek?.(T, sim) ?? [];
+  const b = sim.ball.flight.pos, brg = Math.atan2(b.y - T.pos.y, b.x - T.pos.x) * 180 / Math.PI, head = tr ? tr.head * 180 / Math.PI : NaN;
+  let off = ((brg - head + 540) % 360) - 180;
+  const ch = T.behavior?.choice;
+  console.log(`+${k.toFixed(1)} rx(${X(T.pos)},${Y(T.pos)}) v${Math.hypot(T.vel.x, T.vel.y).toFixed(1)} ${T.behavior?.kind} ball(${X(b)},${Y(b)},${b.z.toFixed(1)}) headOff ${off.toFixed(0)} ballVsShoulders ${(((brg - (T.body.facing + (T.body.trunk ?? 0)) * 180 / Math.PI) + 540) % 360 - 180).toFixed(0)} want ${(() => { const w = E?.gazeAt?.(T, sim); return w ? (((Math.atan2(w.y - T.pos.y, w.x - T.pos.x) * 180 / Math.PI - brg) + 540) % 360 - 180).toFixed(0) : '-'; })()} | samples ${tr?.samples?.length ?? '-'} pseudo ${tr?.pseudo?.length ?? '-'} looks ${tr?.looks ?? 0} held ${(tr?.held ?? 0).toFixed(2)} knows ${E?.glanceKnows?.(T, sim)} fit ${!!tr?.fit} lastSample ${tr?.lastSampleT > -1e9 ? (tr.lastSampleT - t0).toFixed(2) : '-'} | est end ${pk.length ? `(${X(pk[pk.length - 1])},${Y(pk[pk.length - 1])}) t+${(pk[pk.length - 1].t - t0).toFixed(2)}` : '-'} | choice ${ch ? `(${X(ch.p)},${Y(ch.p)}) t+${(ch.t - t0).toFixed(2)}` : '-'}`);
+};
+const res = sim.run(); console.log('aim', aim, 'arrival t+', aim && (aim[2] - t0).toFixed(2), 'comp', !!res.stats.completed);

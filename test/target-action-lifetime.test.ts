@@ -2,7 +2,7 @@
  * run assignment or already-acquired receiver pictures supply target changes;
  * the production controllers emit the commands. No capacity/physics tuning. */
 import { afterEach, describe, expect, it, vi, afterAll } from 'vitest';
-// engine-79 (pinned test-only, Rules + Coaching's coverage landing): the zone target scenes stage a half safety re-picking his deepest vertical each tick, which HALF_OWN replaces with held membership. The file's owner to re-record with the rule on.
+// engine-80 (pinned test-only, Rules + Coaching's coverage landing): the zone target scenes stage a half safety re-picking his deepest vertical each tick, which HALF_OWN replaces with held membership. The file's owner to re-record with the rule on.
 vi.hoisted(() => { process.env.HALF_OWN = '0'; });
 afterAll(() => { delete process.env.HALF_OWN; });
 import { Rng } from '../src/core/rng.js';

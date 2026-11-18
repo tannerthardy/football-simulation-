@@ -1,5 +1,5 @@
 import { describe, expect, it, vi, afterAll } from 'vitest';
-// engine-79 (pinned test-only, Rules + Coaching's coverage landing): the seam delivery and zone-off contracts are the pre-engine-79 rules (MATCH_DECLARE delivers by its own re-read; C2_APEX hands off on a seen cap). The file's owner to re-record with the rule on.
+// engine-80 (pinned test-only, Rules + Coaching's coverage landing): the seam delivery and zone-off contracts are the pre-engine-79 rules (MATCH_DECLARE delivers by its own re-read; C2_APEX hands off on a seen cap). The file's owner to re-record with the rule on.
 vi.hoisted(() => { process.env.MATCH_DECLARE = '0'; process.env.C2_APEX = '0'; });
 afterAll(() => { delete process.env.MATCH_DECLARE; delete process.env.C2_APEX; });
 import { Rng } from '../src/core/rng.js';

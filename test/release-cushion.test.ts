@@ -1,5 +1,5 @@
 import { describe, expect, it, vi, afterAll } from 'vitest';
-// engine-79 (pinned test-only, Rules + Coaching's coverage landing): c3_curl_flat / c3_seam / c2_hook read-release contracts are the pre-engine-79 rules (MATCH_DECLARE's declare phase and re-read; C2_APEX's taught vertical-curl apex). The file's owner to re-record with the rule on.
+// engine-80 (pinned test-only, Rules + Coaching's coverage landing): c3_curl_flat / c3_seam / c2_hook read-release contracts are the pre-engine-79 rules (MATCH_DECLARE's declare phase and re-read; C2_APEX's taught vertical-curl apex). The file's owner to re-record with the rule on.
 vi.hoisted(() => { process.env.MATCH_DECLARE = '0'; process.env.C2_APEX = '0'; });
 afterAll(() => { delete process.env.MATCH_DECLARE; delete process.env.C2_APEX; });
 import { Rng } from '../src/core/rng.js';

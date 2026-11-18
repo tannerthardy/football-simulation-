@@ -18,7 +18,7 @@ import { angleTo, goTo, runThrough, stand } from './common.js';
 import { seenDown, seenTaken } from '../seen-contact.js';
 import { HANDS_CUE, noteHands } from '../hands-cue.js';
 import { CATCH_CHOICE, chooseCatchPoint, type CatchChoice } from '../catch-choice.js';
-import { BALL_EST_RCV as BALL_EST, SEEN_EMPTY, BALL_EST_DEEP_LOOK, BALL_EST_SERVO, BALL_EST_TRUNK, lookJoints, BALL_EST_MOVING_CHOICE, DEEP_LOOK_DEPTH, DEEP_LOOK_HOLD, LOOK_NECK, neckOf, PRE_LOOK_EARLY, PRE_LOOK_LATE, bodyTurnLead, sideOf } from '../ball-estimate.js';
+import { BALL_EST_RCV as BALL_EST, BALL_EST_GLANCE, SEEN_EMPTY, BALL_EST_DEEP_LOOK, BALL_EST_SERVO, BALL_EST_TRUNK, lookJoints, BALL_EST_MOVING_CHOICE, DEEP_LOOK_DEPTH, DEEP_LOOK_HOLD, LOOK_NECK, neckOf, PRE_LOOK_EARLY, PRE_LOOK_LATE, bodyTurnLead, sideOf } from '../ball-estimate.js';
 
 import { firstBreakDepth, getOffDrive, getOffLoss, inGetOff, LINE_START, routeEffort, routePath, steerRoute, type PathPoint, type RouteCursor, type FilletTurn, type FilletPlan, ROUTE_LANDMARK, breaksInside } from '../route-motion.js';
 import { installedRead, readRoute, type RouteChoice, type RouteKeyPicture } from '../route-read.js';
@@ -827,6 +827,8 @@ export const routeOfAgent = new WeakMap<Agent, string>();
  * Track the ball in flight: run to the earliest point on its path that can be
  * reached in time (ball tracking adds delay and error).
  */
+/** RCV_KNOWS (on since 2026-11-18; `=0` restores): see TrackBall.update. */
+export const RCV_KNOWS = process.env.RCV_KNOWS !== '0';
 export class TrackBall implements Behavior {
   readonly kind = 'track';
   private readonly reactAt: number;
@@ -866,12 +868,18 @@ export class TrackBall implements Behavior {
     if (BALL_EST && !path.length) return lookFor(a, sim, this.fallback.update(a, sim));
     // Design 3 attempt 2: he runs his route until he has found the ball himself (his first sample); his prior and the
     // QB's shoulder line shape his estimate and his head, but his route is the better plan until he has seen it.
-    if (BALL_EST && !sim.ballEstimates.lastSeen(a)) {
+    // RCV_KNOWS (on; `=0` restores): under the glance rule he knows the flight only once he has held it for his dwell.
+    // A first glimpse (one tick in his eyes) gives no knowledge, only a fit of a sample or two on his route prior, yards
+    // off: leaving the route for it braked him to a spot the ball was never coming to, and turned his body so the ball
+    // went behind his shoulders and out of his neck's reach (a rounded out: first glimpse 0.25 s after the release,
+    // estimate 5 yd short, unsampled for 1.2 s). Until he knows it, he runs his route and keeps looking.
+    if (BALL_EST && (!sim.ballEstimates.lastSeen(a) || (RCV_KNOWS && BALL_EST_GLANCE && !sim.ballEstimates.glanceKnows(a, sim)))) {
       // Still on his route; late in the flight (by his estimate) he turns his body to find a ball behind him.
       const due = catchSpot(a, { t: sim.t, ballPath: path });
       const route = this.fallback.update(a, sim);
       // Design 4: if he was already looking for the ball when it left, he keeps looking until he finds it.
-      return (due && due.t - sim.t <= bodyTurnLead(a)) || sim.ballEstimates.lookedAtRelease(a, sim) ? lookFor(a, sim, route) : route;
+      // RCV_KNOWS: once he has had it in his eyes he keeps it there (his look and its body cost) until he knows it.
+      return (due && due.t - sim.t <= bodyTurnLead(a)) || sim.ballEstimates.lookedAtRelease(a, sim) || sim.ballEstimates.lastSeen(a) ? lookFor(a, sim, route) : route;
     }
     if (CATCH_CHOICE) {
       // Re-read every 0.1 s until the last 0.3 s, then he is committed to the point he chose.

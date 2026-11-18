@@ -27,7 +27,7 @@ describe('OFF_VARIETY', () => {
 
 describe('ZONE_IT', () => {
   it('quarters vs the stack to the strength checks to Box only with the flag', async () => {
-    // Off, QUARTERS_CHECK (on by default since engine-79) installs Palms against the two detached #2s.
+    // Off, QUARTERS_CHECK (on by default since engine-80) installs Palms against the two detached #2s.
     for (const zoneIt of [false, true]) {
       const m = await load(true, zoneIt);
       const sim = new m.PlaySim(m.nativeTraceSetup({ coverage: 'cover4', concept: 'smash', seed: 1, roster: 1, formation: 'gun_stack_11', flip: true }));
