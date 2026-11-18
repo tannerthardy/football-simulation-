@@ -339,24 +339,7 @@ function cutWall(c: RuleCtx): Directive | null {
 
 /** Match hook: carry #3 (or the back to his side) vertical to 15; cut a shallow crosser into him; otherwise play the hook and robot.
  * On a Push (fast #3 to the flat while #2 climbs) he takes #2, the new #3, up the seam. */
-/** C3_HOOK (experimental, off; C3_HOOK=1 turns it on): the Cover 3 match hook (`c3_hook`) adds his taught #3 rules
- * (coverage-position spec item 3; HNFL-292 "match the final #3 up/over", HNFL-335/204 "#2 vertical: take #3 to the
- * flat"), from his own read, before the existing ones:
- * - #3 breaking in past 6.5 yd (an over or dig) inside 15 yd: match him up and over, inside leverage;
- * - #3 (or the back to his side) to the flat, not fast (no Push), while #2 climbs: take him through to the flat. */
-export const C3_HOOK = process.env.C3_HOOK === '1';
-
-function c3HookTaught(c: RuleCtx): Directive | null {
-  const three = ref(c, 3) ?? backTo(c);
-  const two = ref(c, 2);
-  if (!three || c.state.mode === 'push' || c.state.mode === 'zoned') return null;
-  if (three.release === 'in' && three.depth < 15) return man(three, { lev: 'inside' });
-  if (three.release === 'flat' && !fastFlat(three) && two && two.release === 'vertical') return man(three, { lev: 'inside', overTop: true });
-  return null;
-}
-
 function c3Hook(c: RuleCtx): Directive {
-  if (C3_HOOK) { const d = c3HookTaught(c); if (d) return d; }
   const three = ref(c, 3) ?? backTo(c);
   const two = ref(c, 2);
   if (c.state.mode === 'push' && two) {
