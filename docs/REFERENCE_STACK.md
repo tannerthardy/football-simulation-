@@ -627,7 +627,7 @@ The deep man at the catch (deep-flight, Cover 2 / Cover 3): depth 9.7 / 9.8 -> 1
 
 Staged set (engine-76 base): zone YAC 5.27 -> 5.24, 20+ 4.7 -> 4.9%; man YAC 3.17 -> 3.07; throws of 10-20 air yards 67.0 -> 67.3% complete, YAC 7.1 -> 7.0; short completion 75.6 -> 75.8%; yards per attempt 8.87 -> 8.88; run set 3.87 yards per carry unchanged; head-on control 2.5 -> 2.8%. Throws of 15+ air yards: 21 in the staged set, no signal.
 
-Dither: the carrier spacing row moves to the budget line on the suite's panel. Attributed (dither-panel and carrier-dither, off -> on): carrier spacing reversals 44 -> 43, moving 288 -> 287 s, run plays identical; the gate reorders which pass plays carry a reversal (curl_flat 1 and 3: 2 -> 0; rb_slip_screen 9: 1 -> 3; wide_now_screen 9: 0 -> 1). Re-recorded.
+Dither: measured on the engine-76 base, the carrier spacing row moved to its budget line on the suite's panel. Attributed (dither-panel and carrier-dither, off -> on): carrier spacing reversals 44 -> 43, moving 288 -> 287 s, run plays identical; the gate reorders which pass plays carry a reversal (curl_flat 1 and 3: 2 -> 0; rb_slip_screen 9: 1 -> 3; wide_now_screen 9: 0 -> 1). On engine-77 (develop 69277a00, the carrier spacing row recorded at 0.1230 with ZONE_EYES) `dither-budget` passes with the gate on, so the row is not re-recorded.
 
 ## engine-77: zone defenders see through one head that follows the taught eye sequence (2026-11-17)
 
