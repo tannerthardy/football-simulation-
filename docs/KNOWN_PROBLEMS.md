@@ -331,6 +331,7 @@ problem), resolved.
 | [COV-10](#cov-10) | Sim route releases are too fast and too vertical, so release-keyed reads get no hard negatives | G3 | medium | open (needs an owner: offense route runner) |
 | [COV-11](#cov-11) | Quarters apex with a flat back: level with No. 2 rather than outside him; the seam is roomier | C14 | medium | flag (`APEX_LEVERAGE`, #702) |
 | [COV-12](#cov-12) | Underneath zone defenders switch technique 1.6 times a second and barely drift with the routes | C14 | medium | open (ZONE_LADDER recorded, not landed) |
+| [COV-13](#cov-13) | A man defender meets bodies that are not his man (traffic) without passing over or under them | C14 | low | open (`MAN_TRAFFIC` parked off, two attempts) |
 | [BALL-1](#ball-1) | Too many interceptions | G4 | high | flag (partial) |
 | [BALL-2](#ball-2) | Throws always leave from standing height | — | low | open |
 | [QB-1](#qb-1) | Throws come out early and deep | G3, G7 | medium | open |
@@ -3325,6 +3326,28 @@ From the issue register:
   - Script: `scripts/diag/coverage/flat-carry.mts`.
 - **Open:** re-measure the slopes after Rules' STEM_WORK and the QB's pocket item land. The dither needs a held technique
   in the old classes that keeps the lane's undercut; hysteresis on two switches alone only moves the flips.
+
+### COV-13: A man defender meets bodies that are not his man (traffic) without passing over or under them
+
+- **Symptom:** before the throw a man defender runs his path to his man and meets other receivers and backs in the way.
+  Coached form is to see the traffic and go over the top or under it; a rub that reaches him too soon should still pick him.
+- **Measure** (`scripts/diag/body/man-collide.mts`, Tools, run from `scripts/diag/body/`; 16 games, two seeds, develop
+  6c7d09b1; touches with a non-target offensive body, per game):
+
+  | | off | v1 (side by leverage) | v2 (his man's seen side) |
+  |---|---|---|---|
+  | non-target touches | 8.75 | 8.62 | 7.50 |
+  | hard (closing 3+ yd/s), defender the faster: should fall | 0.44 | 0.56 | 0.69 |
+  | hard, receiver the faster (the rub): should stay | 0.81 | 1.19 | 0.88 |
+  | defender falls | 1.69 | 1.19 | 1.81 |
+
+- **Tried:** `MAN_TRAFFIC` (branch `coverage/C14-man-traffic`, off). From his own picture, a body his requested path meets
+  within 0.8 s (closest approach inside both radii plus 0.4 yd, not sooner than his reaction time) is passed at unchanged
+  speed. v1 chose the side by leverage, and its "trailing" test read his man's true position (removed in v2); it sent
+  linebackers on the back over the top into the tight end's release (Y-on-LB hard touches 1 -> 6). v2 passes on his man's
+  seen side: that fixed the linebackers (6 -> 2) and the rubs, but the defender-fast hard touches did not fall.
+- **Open question before any third design:** are the defender-fast touches bodies he cannot avoid (not in his picture,
+  or reaching him inside his reaction time) or paths he chose? Counts are small (7-11 events in 16 games).
 
 ### ALN-1: Defensive pre-snap picture unlike tracking
 

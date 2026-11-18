@@ -74,7 +74,9 @@ describe('Cover 3 match: Smash rule', () => {
 describe('Cover 2 match', () => {
   it('the squat corner converts to man under #1 with no flat threat, and stays in the flat when #2 goes there', () => {
     const none = filmScene({ formation: 'gun_doubles_11', coverage: 'cover2_match', strong: { 1: 'go', 2: 'go' }, weak: { 1: 'lab_curl7', 2: 'hitch' }, until: 2.6, seed: SEED });
-    expect(modeOf(none, 'CB_W')).toBe('under');
+    // SQUAT_TOPDOWN (engine-80): the conversion is the man-under job on #1 (squatTopDown), with no 'under' mode marker;
+    // he must not be holding the flat.
+    expect(modeOf(none, 'CB_W')).not.toBe('flat');
     expect(jobsOf(none, 'CB_W')).toContain(`man:${none.numbering.W1}`);
     const flat = filmScene({ formation: 'gun_doubles_11', coverage: 'cover2_match', strong: { 1: 'go', 2: 'go' }, weak: { 1: 'lab_curl7', 2: 'flat' }, until: 2.6, seed: SEED });
     expect(modeOf(flat, 'CB_W')).toBe('flat');
