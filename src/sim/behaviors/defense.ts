@@ -1855,6 +1855,7 @@ export class ZoneCoverage implements Behavior {
     const up = sim.attackDir('O');
     const q = sim.see(a, sim.qb).pos;
     let wsum = 0, flow = 0, deepest = -Infinity;
+    let deepPos: Vec2 | null = null;
     for (const r of sim.offense) {
       if (r === sim.qb || ['LT', 'LG', 'C', 'RG', 'RT'].includes(r.slot)) continue;
       const c = sim.see(a, r);
@@ -1864,12 +1865,22 @@ export class ZoneCoverage implements Behavior {
       const w = Math.max(0, 1 - out / width);
       if (w <= 0) continue;
       wsum += w; flow += w * c.vel.y;
-      if (out === 0) deepest = Math.max(deepest, depth);
+      if (out === 0 && depth > deepest) { deepest = depth; deepPos = c.pos; }
     }
     const vcap = Math.sqrt(2 * a.profile.brake * LADDER_STEP);
     // His feet move with the flow (its weighted lateral velocity), no faster than his stopping cap, and stop at his
     // band's edges (a drift that would leave his area is held at the edge).
     let vy = clamp(wsum > 0 ? flow / wsum : 0, -vcap, vcap);
+    // Over the deepest threat: a route in his band at or deeper than him is his to stay over. He drifts with the flow
+    // only while he stays within a step of that route's throwing lane (the QB-to-route line at his depth); past it the
+    // flow cannot carry him further off it.
+    const myDepth = (a.pos.x - sim.los) * up;
+    if (deepPos && deepest >= myDepth - 1) {
+      const k = clamp((a.pos.x - q.x) / ((deepPos.x - q.x) || 1e-6), 0, 1);
+      const laneY = q.y + (deepPos.y - q.y) * k;
+      const off = a.pos.y - laneY;
+      if (Math.abs(off) > LADDER_STEP * 2 && Math.sign(vy) === Math.sign(off)) vy = 0;
+    }
     if ((a.pos.y <= ylo && vy < 0) || (a.pos.y >= yhi && vy > 0)) vy = 0;
     const lmDepth = (lm.x - sim.los) * up;
     const depth = clamp(Number.isFinite(deepest) ? Math.max(lmDepth, deepest - 1) : lmDepth, 0, lmDepth + 1);
