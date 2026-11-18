@@ -1681,6 +1681,13 @@ export const CURL_SINK = process.env.CURL_SINK !== '0';
  * A call that sends a safety down gives him an underneath zone and is
  * unchanged. */
 const SAFETY_DEPTH = process.env.SAFETY_DEPTH !== '0';
+/** HALF_OWN (default on, engine-80; HALF_OWN=0 turns it off): a half-field or middle-third safety (an unruled `deep_half_*`
+ * or `deep_mid` zone) owns his area as taught (coverage-position spec gap 3; HNFL-334/-097, Bowen: "split & squeeze",
+ * midpoint, deeper than the deepest). Which receivers are vertical in his half or third comes from his own picture with
+ * held membership (in and out of his area, and vertical or not, with ZONE_HOLD's band margins), not re-picked each tick.
+ * Two verticals there: he holds their midpoint, with no lean to the QB's look, and does not drive down on either before
+ * the throw. One vertical, or none, is unchanged (the pre-throw drive on a single stopped route is gap 2). */
+const HALF_OWN = process.env.HALF_OWN !== '0';
 /** SAFETY_DEPTH: a deep safety's depth over the deepest route in his zone, as he sees it, with that route `r` yd past
  * the line: NFL deep safeties' median depth over it is 13.0 / 11.7 / 8.5 yd with the route at 1.2 / 3.7 / 9.7 yd
  * (BDB 2025, safety_cushion.py), i.e. 13.4 - 0.5 r. A slower safety keeps more and a better reader less (scale
@@ -1800,6 +1807,11 @@ export class ZoneCoverage implements Behavior {
       a.tags.add('safety-depth');
     }
     this.style = style;
+  }
+
+  /** HALF_OWN: an unruled half-field or middle-third safety. */
+  private ownsArea(): boolean {
+    return HALF_OWN && (this.zone === 'deep_half_s' || this.zone === 'deep_half_w' || this.zone === 'deep_mid');
   }
 
   /** SAFETY_DEPTH: the depth he held over a route when he first saw it stop climbing (cleared if it climbs again). */
@@ -1937,7 +1949,7 @@ export class ZoneCoverage implements Behavior {
       const seen = observation.read(cue, sim.t, r.profile, a.profile.reactionTime,
         a.r('anticipation') * a.r('zoneCoverage') * a.mind.focus);
       const fut = { x: seen.pos.x + seen.vel.x * 0.7, y: seen.pos.y + seen.vel.y * 0.7 };
-      if (ZONE_HOLD_BAND) {
+      if (ZONE_HOLD_BAND || this.ownsArea()) {
         // Held membership: in by ZONE_HOLD_IN inside the band, out only by ZONE_HOLD_OUT outside it.
         const held = this.bandHeld.has(r);
         const inBand = held ? fut.y >= ylo - ZONE_HOLD_OUT && fut.y <= yhi + ZONE_HOLD_OUT : fut.y >= ylo + ZONE_HOLD_IN && fut.y <= yhi - ZONE_HOLD_IN;
@@ -1965,7 +1977,7 @@ export class ZoneCoverage implements Behavior {
 
     if (this.deep) {
       // Deep zones: never let a vertical get on top. Split two verticals.
-      let vert = ZONE_HOLD_BAND
+      let vert = ZONE_HOLD_BAND || this.ownsArea()
         ? threats.filter((th) => {
           const held = this.vertHeld.has(th.r);
           const v = held ? th.fut.x - sim.los > 6.5 || (th.vel.x > 0.5 && th.pos.x > sim.los)
@@ -2020,7 +2032,10 @@ export class ZoneCoverage implements Behavior {
       // under the deep defender, he drives downhill on it.
       // Never while another receiver is climbing into the zone behind it.
       // (Only verticals near him; a seam on the far hash belongs to the middle safety.)
-      const climbing = (OWNED_FIX ? inArea : vert).some((th) => th !== deepest && th.vel.x > 3.5 && th.pos.x - sim.los > 2 && Math.abs(th.pos.y - a.pos.y) < 8);
+      const climbing = (OWNED_FIX ? inArea : vert).some((th) => th !== deepest && th.vel.x > 3.5 && th.pos.x - sim.los > 2 && Math.abs(th.pos.y - a.pos.y) < 8)
+        // HALF_OWN: with two verticals in his area he holds their midpoint until the throw.
+        || (this.ownsArea() && vert.length >= 2);
+      if (this.ownsArea() && vert.length >= 2) a.tags.add('half-own');
       // (Pattern reads are match technique; a spot dropper waits for the QB's arm.)
       if ((!spot || OPP_GOAL_X - sim.los <= 10) && !climbing && deepest.vel.x < 3.0 && deepest.pos.x < lm.x + 1
         && deepest.pos.x - sim.los > Math.min(6, Math.max(1, (OPP_GOAL_X - sim.los) * 0.5))) {
@@ -2038,7 +2053,8 @@ export class ZoneCoverage implements Behavior {
       let ty: number;
       if (vert.length >= 2) {
         // Split them, leaning toward where the QB is looking.
-        const w = qbEyes === vert[1].r ? 0.65 : qbEyes === vert[0].r ? 0.35 : 0.5;
+        // HALF_OWN: the taught midpoint (split & squeeze), no lean to the QB's look.
+        const w = this.ownsArea() ? 0.5 : qbEyes === vert[1].r ? 0.65 : qbEyes === vert[0].r ? 0.35 : 0.5;
         ty = vert[0].fut.y * (1 - w) + vert[1].fut.y * w;
       } else ty = deepest.fut.y + inside(deepest.fut.y) * (CUSHION_BREAK
         // CUSHION_BREAK: a deep-zone carry plays a shoulder off the receiver's line (bodies plus a reach).
@@ -2471,7 +2487,7 @@ const SHOULDER_READ = process.env.SHOULDER_READ !== '0';
  * playBelievedBall had no deep check: those seats planted on the load and broke on the shoulders on 59-88% of staged
  * plays, pumps included (release-belief.ts: a pump counts as a delivery). */
 const DEEP_GATE = process.env.DEEP_GATE !== '0';
-/** OWNED_FIX (on since engine-80, 2026-11-18, `=0` restores; Rules' table gap 2/7): the deep ownership filter (quarter seats keep their numbered man,
+/** OWNED_FIX (on since engine-81, 2026-11-18, `=0` restores; Rules' table gap 2/7): the deep ownership filter (quarter seats keep their numbered man,
  * deep-third corners #1) cut the deep player's picture to one receiver. With it the deep-third corner keeps #2
  * with #1 when #2 works into his outside third (he owns both deep: the split and the squeeze run), and the deep-drive
  * guard (another receiver climbing behind a stopped route) reads the verticals in his area before the ownership filter,

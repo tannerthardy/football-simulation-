@@ -9,6 +9,7 @@ afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 async function stalks(flag: string) {
   vi.resetModules();
   vi.stubEnv('STALK_CLOSE', flag); vi.stubEnv('SCREEN_QB', '1');
+  vi.stubEnv('MATCH_DECLARE', '0'); // engine-80 (pinned test-only, Rules + Coaching's coverage landing): the now screen's stalk scenes were recorded against the latched seam/flat man; the file's owner to re-record with MATCH_DECLARE on
   const { CENTER_Y } = await import('../src/core/field.js');
   const { Rng } = await import('../src/core/rng.js');
   const { generateTeam, pickDefense, pickOffense } = await import('../src/league/team.js');
