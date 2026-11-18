@@ -165,3 +165,36 @@ What the attempts narrowed:
 
 Not tweaked a third time. The next piece is the window's under-pricing of an open seam: P = pOpen × pClear × pAcc ×
 hands at 15–20 yd. Then the two-high cue.
+
+## The seam's price split against the truth (Integration's step 1)
+
+Probe: `scripts/diag/eyes/seam-staged.ts`. The seam is thrown at his second hitch through the staging hook (his own
+motion, aim and accuracy; nothing else thrown), either the key's seam or the other one, with QB_WINDOW_ARRIVE,
+QB_PEEK_CLOCK and QB_MOF_READ on. Each factor of his price at the decision is set against the ball's real fate.
+
+| throw | n | P / real completion | pOpen·pClear / real not defended | pAcc / real not missed | hands / real no drop | intRisk / real int |
+|---|---|---|---|---|---|---|
+| key's seam, one-high | 43 | 0.18 / **0.49** | 0.41·0.86 / **0.81** | 0.53 / 0.67 | 0.94 / 1.00 | **0.33 / 0.00** |
+| key's seam, two-high | 74 | 0.18 / 0.35 | 0.47·0.72 / 0.72 | 0.57 / 0.68 | 0.94 / 0.90 | 0.23 / 0.04 |
+| other seam, one-high | 56 | 0.09 / 0.25 | 0.26·0.50 / 0.59 | 0.71 / 0.70 | 0.94 / 0.88 | 0.35 / 0.05 |
+| other seam, two-high | 83 | 0.10 / 0.31 | 0.28·0.68 / 0.76 | 0.53 / 0.57 | 0.94 / 0.96 | 0.39 / 0.01 |
+
+- **The gap is the defenders' share (pOpen with pClear) and the pick risk**, not his accuracy or the hands.
+  - Believed not-defended runs 0.30–0.35 against 0.72–0.81 real on the seam he should throw.
+  - Believed pick risk runs 0.23–0.39 against 0.00–0.05 real.
+- **What the window assumes the deep man does in flight, against what he does.** Each defender the window counted
+  (1,184), set against his true distance to the ball when it arrived:
+  - **Priced as sitting on the route** (arriving 0.3 s+ before the ball, 84% of them facing him): 33% within 1.5 yd,
+    median 2.3 yd away.
+  - **Priced as contesting:** 27% within 1.5 yd, median 2.8 yd.
+  - **Priced 0.5 s early:** median 2.1 yd away. Priced 0.5 s late: 5.3 yd.
+  - The window's timeToReach after his reaction (full capacity, toward the point, within reach + 0.3) closes defenders
+    on a ball in flight faster than our defenders do.
+- **Which side is wrong** (his belief, or our defenders' in-flight closing against the NFL) is Coverage's measurement
+  (in-flight closing, honest against default against NFL). The QB's belief should follow it, not lead it. Asked.
+- **The back_flat picks** (step 3; peek-staged, with the picker recorded):
+  - Every one is CB_W in his flat zone (Cover 2 family), the squat corner sitting 3 yd deep and 16 yd wide, 6.4–8 yd
+    from the back at the release.
+  - He breaks on a floated checkdown thrown at 2.8–3.15 s and picks it about 1.1 s later.
+  - These are not late throws after waiting on the seam. They are more balls to the back into the flat defender, and
+    with the read on they spread from one seed to rosters 3, 7 and 11 and to verts_hitch.
