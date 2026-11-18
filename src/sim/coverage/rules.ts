@@ -16,7 +16,7 @@ import type { Agent } from '../agent.js';
 import type { Vec2 } from '../../core/vec.js';
 import { zoneLandmark } from '../../playbook/alignment.js';
 import type { ManOptions } from '../behaviors/defense.js';
-import { knowsPass } from '../behaviors/defense.js';
+import { believesRun, knowsPass } from '../behaviors/defense.js';
 import type { PlaySim } from '../playsim.js';
 import { isQuickOut, type ReceiverRead, type ReleaseReader } from './reads.js';
 import { hasVisibleCap } from './judgment.js';
@@ -395,9 +395,30 @@ function qCorner(c: RuleCtx, meg: boolean): Directive {
 }
 
 /** Quarters safety: #2 decides. Vertical → carry #2 over the top; out/flat/under/stop (or pass-blocking) → help #1 (cap a vertical, rob an in-breaker). */
+/** SCREW (experimental, off; SCREW=1 turns it on): Screw, the quarters answer to play action (HNFL-114, image-checked:
+ * "plays as MOD unless there is any sort of play fake between the QB and back; then the apex triggers and the strong
+ * safety takes #2 up and out; nickel reroutes, but no carry"; USA Football 7422 "Mix"). When the quarters safety reads
+ * run, he takes #2 man while #2 goes up or out, over the top from outside, instead of easing down into his alley (#2
+ * breaking in or short returns him to his #2-to-1 key and his help on #1); the
+ * apex's force is unchanged. A real handoff he sees still pulls him into his fit (the coverage defender's keyed run
+ * support fires on the carrier he sees), so play action costs him nothing while a run costs him a beat. A game-plan
+ * call in the sources (played when #2's split makes Read useless); here a switch for every q_safety call. */
+export const SCREW = process.env.SCREW === '1';
+
 function qSafety(c: RuleCtx): Directive {
   const one = ref(c, 1);
   const two = ref(c, 2);
+  // Screw: #2 up (or not yet declared) or out is his; #2 breaking in or short hands him back to his #2-to-1 key.
+  const upOrOut = (rd: ReceiverRead) => rd.release === 'none' || rd.release === 'vertical' || rd.release === 'out' || rd.release === 'flat';
+  if (SCREW && two && two.release !== 'block') {
+    if (c.state.mode === 'screw') {
+      if (upOrOut(two)) return man(two, { overTop: true, lev: 'outside' });
+      c.state.mode = undefined;
+    } else if (c.state.mode === undefined && believesRun(c.sim, c.a) && upOrOut(two)) {
+      c.state.mode = 'screw';
+      return man(two, { overTop: true, lev: 'outside' });
+    }
+  }
   if (c.state.mode === 'two' && two) return man(two, { overTop: true, lev: 'inside' });
   if (c.state.mode === 'one') return helpOne(c, one);
   if (!two) return one && climbing(one) ? man(one, { overTop: true, lev: 'inside' }) : zoneOf(c);

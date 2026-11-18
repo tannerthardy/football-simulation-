@@ -514,6 +514,7 @@
   "test/screen-declare.test.ts",
   "test/screen-install.test.ts",
   "test/screen-qb.test.ts",
+  "test/screw.test.ts",
   "test/seal-hold.test.ts",
   "test/seam-delivery.test.ts",
   "test/seen-contact.test.ts",
