@@ -2,7 +2,7 @@
 
 One combination of experimental flags that Run Game, Defense, Flex and Coverage all measure against. Before this, each agent tested on its own mix (the FLAT_PRESS / ZONE_RUN back-and-forth on 2026-11-09 came from two different flag sets), and no list of anyone's stack existed in the repository.
 
-- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-85`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
+- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-86`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
 - **The code:** `run/G3-oz-backfield` a749beb7 + `defense/G2-stance-tell` a0cb0789 (#411) + `defense/G2-lb-start` (#416, with #409) + `claude/quirky-franklin-9lbwbp` (#417, with #415) + develop 6676dfc2.
 - **Since 2026-11-09 the stack is the engine's default.** The flags listed `on` are read as on unless set to `0`; a bare command in a clean shell and `npm run ref -- <command>` run the same engine. `npm run ref -- --off -- <command>` runs the legacy engine (every listed flag off). `test/reference-stack.test.ts` fails if the file and the code defaults ever disagree. See "Promotion" below.
 
@@ -609,7 +609,7 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
 
 
-## engine-85: the Book / Stubbie nickel matches #2's flat (2026-11-18)
+## engine-86: the Book / Stubbie nickel matches #2's flat (2026-11-18)
 
 On: `MUSH_MATCH` (Rules + Coaching; a repair of the `mush` seat rule against its own source). The Book / Stubbie nickel
 ("Soft Squat / MUSH") is taught "#3 up/in: match #2; #2 fast flat: match it; #3 out/flat: trap it" (HNFL-050,
@@ -624,7 +624,8 @@ comebacks vs Cover 2/3/4/6, doubles and trips, seeds 1-6 x flip, completions of 
 per catch 17.27 -> 13.79. All five Cover 6 slant_flat runs gone; the rest are Cover 2 slant_flat (the flat corner,
 FLAT_SINK) and the deep men's pursuit (Defense).
 
-Staged, trips vs Cover 6 / Cover 6 Book / Stubbie / Book Read (they play identically against trips), all concepts,
+Measured on develop fe150600 (engine-83, before FLAT_SINK; the Cover 2 corner is not in these calls). Staged, trips vs
+Cover 6 / Cover 6 Book / Stubbie / Book Read (they play identically against trips), all concepts,
 3 seeds x flip, 715 attempts per arm:
 
 | | off | on |
@@ -643,6 +644,40 @@ slant is not thrown in either arm; the QB moves to the backside slant (10 throws
 concept's conflict going the other way. Book's taught weakness, #2 from outside leverage with no help, still wins
 (sail_corner's #2 15 -> 16 yd/att, 23 throws). Open: about three distinct plays still go 70 because the nickel falls
 turning out of his open-carry posture at 2.5 s and stays down until the catch (handed to Tools/Physics).
+## engine-85: the Cover 2 corner sinks with #1 until the flat is threatened (2026-11-18)
+
+On: `FLAT_SINK` (Rules + Coaching's rule, HNFL-099/-334; Coverage built). The flat seat (squat / cloud corner) carries
+under #1's vertical with his eyes on the QB and does not plant on the QB's set, until a receiver in his area is a yard
+or more shallower than him (the flat threatened in front of him). Rules' hole-shot measure (NFL Cover 2 throws to #1 at
+15+ air yards): NFL corner downfield 3.6 yd/s at the throw, ours 0.5 (planted on the set).
+
+Corner on every Cover 2 / Cover 2 match / Tampa 2 dropback with #1 12+ yd past the line at the release (staged,
+scripts/diag/coverage/corner-sink.mts, 2 seeds, 498 / 495 sides):
+
+| throw | arm | n | corner downfield at release p50 (>= 2 yd/s) | corner to #1 at arrival | comp | yd/att |
+|---|---|---|---|---|---|---|
+| all | off | 498 | 2.1 (50%) | 17.4 | 60% | 7.9 |
+| all | on | 495 | 3.3 (69%) | 15.8 | 59% | 7.5 |
+| to #1 | off | 15 | 1.3 (33%) | 3.7 | 15/15 | 17.1 |
+| to #1 | on | 12 | 2.5 (58%) | 5.5 | 8/12 | 12.9 |
+| short, flat side | off | 190 | 0.6 (41%) | | 55% | 5.9 |
+| short, flat side | on | 182 | 2.6 (58%) | | 55% | 6.3 |
+
+On engine-84 (after QB_DRIVE's flight and the rest of engine-83, and DOWN_RISE_PLANT), same script: all 479 / 481 sides,
+corner downfield at the release p50 1.9 -> 3.3 yd/s (>= 2 yd/s 49 -> 70%), corner to #1 at arrival 16.3 -> 15.1, comp 61 -> 61%,
+yd/att 9.0 -> 8.5; throws to #1 8 at 100% / 15.7 -> 6 at 50% / 6.2 (small n); short flat side 51% / 6.2 -> 53% / 6.3.
+The rows below were measured on engine-82.
+
+Staged pass set (490 throws): completion 70.6 -> 71.2%, PBU plays 64 -> 62, INT 11 -> 11; dig window (10-16 yd air
+into the hook/curl, Defense's control) 62.6% / 9.55 -> 61.0% / 9.38 yd/att; crossers 82.3 -> 81.3%, YAC p50 5.1 -> 6.1.
+YAC by coverage (zma): Cover 2 5.65 -> 6.49 at catch depth 8.3 -> 7.4; Cover 1/3/4/6 unchanged. Explained: with the
+corner carrying #1, the Cover 2 catches move shorter and underneath, where a corner coming down from depth arrives late
+for the tackle. Logged as the gap it exposes (the sinking corner's break down on the flat throw), not a reason to hold.
+
+Not landed: `SETTLE_DEPTH` retired to off was measured with it and stays on. Off, the dig window went 62.6% / 9.55 ->
+65.2% / 10.94 yd/att (FLAT_SINK alone 61.0% / 9.38); the men who settled in front of a sitting receiver lost their depth
+over him (p50 1.8 -> 0.2 yd), though the post-set sink came nearer the NFL's (0.5-1.0 s after the set 0.90 -> 1.17 yd/s
+deeper at the release; NFL 1.3-1.4). The conflict with "stop when the QB sets" stays open for the zone-relation work.
 
 ## engine-83: the quarterback's ball, window, key and committed throw (2026-11-18)
 
