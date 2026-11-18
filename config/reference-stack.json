@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "engine-86",
+  "id": "engine-87",
   "runSet": {
     "commit": "1b5415de99b5b7194eff045f3c37a07a4c54c1a9",
     "seeds": [
@@ -377,6 +377,7 @@
     "PA_TABLES": "on",
     "QUICK_HITCH": "on",
     "HALF_OWN": "on",
+    "HALF_KEY": "on",
     "MATCH_DECLARE": "on",
     "C2_APEX": "on",
     "SQUAT_TOPDOWN": "on",
