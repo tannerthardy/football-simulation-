@@ -1681,7 +1681,7 @@ export const CURL_SINK = process.env.CURL_SINK !== '0';
  * A call that sends a safety down gives him an underneath zone and is
  * unchanged. */
 const SAFETY_DEPTH = process.env.SAFETY_DEPTH !== '0';
-/** HALF_OWN (default on, engine-79; HALF_OWN=0 turns it off): a half-field or middle-third safety (an unruled `deep_half_*`
+/** HALF_OWN (default on, engine-80; HALF_OWN=0 turns it off): a half-field or middle-third safety (an unruled `deep_half_*`
  * or `deep_mid` zone) owns his area as taught (coverage-position spec gap 3; HNFL-334/-097, Bowen: "split & squeeze",
  * midpoint, deeper than the deepest). Which receivers are vertical in his half or third comes from his own picture with
  * held membership (in and out of his area, and vertical or not, with ZONE_HOLD's band margins), not re-picked each tick.
