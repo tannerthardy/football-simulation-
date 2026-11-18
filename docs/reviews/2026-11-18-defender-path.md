@@ -89,3 +89,42 @@ dislodge at his arrival stays.
 | zero | 0% (0 / 31) | 6.7% (2 / 30) |
 
 All interceptions rise 9 → 12, none of them on the deep balls.
+
+## Third form: deep zone men through the engine's body from what he sees (Integration, after Defense's NFL table)
+
+Defense, NFL week 1 (n 126): deep men close at 2.7 / 3.6 / 4.8 / 5.3 yd/s at 0 / 0.4 / 0.8 / 1.2 s and end a median
+4.5 yd from the catch point. Ours close at 3.9 / 4.2 / 5.2 and end 2.7 yd from it. The defenders are NFL-like; the
+price was not.
+
+**Built (in QB_ROLE_PATH).** Any other deep zone man (10+ yd in his picture, not carrying, not bailing):
+- he holds his seen velocity and facing until his belief of the ball (the release, then his reaction);
+- then he turns and runs, through `stepBody`;
+- this replaces timeToReach from rest after a standing reaction;
+- the flight path uses the same.
+
+**Unrestricted** (3a):
+
+| | before | 3a | real |
+|---|---|---|---|
+| eyes-on held-ball row | 0.59 | 0.36 | 0.17 |
+| not-facing held-ball row | 0.61 | 0.36 | 0.36 |
+| staged price P | 0.13 | 0.19 | 0.31 completion |
+| staged pick risk | 0.29 | 0.19 | 0.03 |
+
+Games: 15+ share 2.2% → 6.3%, but ints 9 → 19. The rise is on 5–15 yd throws (2 → 11), most against one-high: a safety
+driving downhill on a ball in front of him was priced as carrying his backpedal.
+
+**Restricted to a ball thrown at or beyond him** (3b, within 2 yd short of his depth, a chosen margin):
+- Held-ball rows as 3a.
+- **Games:**
+
+| arm | throws | 15+ share | 15+ completion | 15+ ints | completion | ints (<5 / 5–15 / 15+) | PBU | air yd |
+|---|---|---|---|---|---|---|---|---|
+| off | 640 | 2.2% | 0.50 | 1 | 0.694 | 9 (6 / 2 / 1) | 66 | 5.3 |
+| 3b | 682 | 7.0% | 0.60 | 2 | 0.660 | 13 (3 / 8 / 2) | 69 | 6.0 |
+
+- **By shell:** one-high 2.1% → 7.9%, two-high 2.6% → 4.9%, zero 0% → 13% (n 30). The NFL is 13.4% overall.
+- **Not explained:** completion −3.4 pt, of which the shift toward deep balls accounts for about 0.4. The 5–15 yd picks
+  are 8 against 2. These are likely intermediate balls within 2 yd of a safety's depth still on the deep path.
+- To trace (the picker, his role, the ball's depth against his) before a fourth form. The margin is not to be tightened
+  by hand.

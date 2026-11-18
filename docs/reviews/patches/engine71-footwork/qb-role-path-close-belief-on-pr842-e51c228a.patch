@@ -192,7 +192,7 @@ index 97f772e0d..d49f430cf 100644
    if (read !== null) for (const r of sim.offense) {
      if (r === sim.qb || isOL(r)) continue;
 diff --git a/src/sim/behaviors/qb.ts b/src/sim/behaviors/qb.ts
-index e383832ad..e4f24118c 100644
+index e383832ad..7ebe7cb0d 100644
 --- a/src/sim/behaviors/qb.ts
 +++ b/src/sim/behaviors/qb.ts
 @@ -17,7 +17,7 @@
@@ -305,7 +305,7 @@ index e383832ad..e4f24118c 100644
      });
      // A ball that arrives at `pt`: who contests it at the catch, who can get a
      // hand on it on the way, and how many of those become picks.
-@@ -2834,29 +2912,40 @@ export class QBPass implements Behavior {
+@@ -2834,29 +2912,50 @@ export class QBPass implements Behavior {
      const at = (pt: Vec3) => {
        let pOpen = 1, pClear = 1, intRisk = 0, pSecure = 1, intPath = 0, intJump = 0, intContest = 0, noPathPick = 1, noCatchPick = 1;
        const v0 = dragFreeLaunch(from, pt, T);
@@ -323,7 +323,17 @@ index e383832ad..e4f24118c 100644
 +        // QB_ROLE_PATH: a deep man carrying another receiver stays with him: where that route takes him at the arrival, then
 +        // only from there (he does not leave his man for the ball in flight).
 +        const carryTt = QB_ROLE_PATH && carryAt && !roof && !tied ? total + timeToReach({ pos: carryAt, vel: { x: 0, y: 0 }, profile: dp, speedScale: speedScale ?? 1 }, pt, dp.reach + 0.3) : null;
-+        const tt = carryTt !== null ? carryTt : QB_ROLE_PATH && deepBail && !tied ? Math.max(total, bodyArrive(seen, dp, speedScale ?? 1, pt, dp.reach + 0.3, total)) : closeState && !tied ? cbArrive(pt, dp.reach + 0.3) : blind + (QB_WINDOW_ARRIVE && !tied ? arriveTime(mover, pt, dp.reach + 0.3, react) : timeToReach(mover, pt, dp.reach + 0.3) + react);
++        // QB_ROLE_PATH (third form): any other deep zone man (10+ yd in his picture) runs the engine's own body from what he
++        // sees: his velocity and facing held until his belief of the ball (the release, then his reaction), then the turn
++        // and the run, not timeToReach from rest after a standing reaction. (Defense, NFL week 1: deep men close 2.7 / 3.6 /
++        // 4.8 / 5.3 yd/s at 0 / 0.4 / 0.8 / 1.2 s; ours 3.9 / 4.2 / 5.2: the defenders are NFL-like, the price was not.)
++        // Only for a ball thrown at or beyond him (within 2 yd short of his depth, chosen): a deep man driving downhill on a
++        // ball in front of him (a curl or dig under a safety) keys it as before (games, attempt 3 unrestricted: ints 9 -> 19,
++        // the rise on 5-15 yd throws).
++        const deepZone = QB_ROLE_PATH && !tied && carryTt === null && !roof && !deepBail && (seen.pos.x - sim.los) * dirX >= 10
++          && (pt.x - sim.los) * dirX >= (seen.pos.x - sim.los) * dirX - 2;
++        const dzStart = wind + dp.reactionTime;
++        const tt = carryTt !== null ? carryTt : deepZone ? bodyArrive(seen, dp, speedScale ?? 1, pt, dp.reach + 0.3, dzStart) : QB_ROLE_PATH && deepBail && !tied ? Math.max(total, bodyArrive(seen, dp, speedScale ?? 1, pt, dp.reach + 0.3, total)) : closeState && !tied ? cbArrive(pt, dp.reach + 0.3) : blind + (QB_WINDOW_ARRIVE && !tied ? arriveTime(mover, pt, dp.reach + 0.3, react) : timeToReach(mover, pt, dp.reach + 0.3) + react);
          // BLITZ_READ: a defender he believes is rushing is going elsewhere, not to this point.
          const m = tt - total + estimateError + (BLITZ_READ ? 3 * this.rushOf(d) : 0);
          const sCatch = PICTURE_AGE ? Math.hypot(0.13, spreadD, spreadR / Math.max(dp.vmax, 1e-3)) : 0.13;
@@ -349,11 +359,11 @@ index e383832ad..e4f24118c 100644
            const b = arcPoint(from, v0, tau);
            if (b.z > leap + 0.1) continue;
 -          const tb = blind + (QB_WINDOW_ARRIVE && !tied ? arriveTime(mover, b, dp.reach, react, pt) : timeToReach(mover, b, dp.reach) + react);
-+          const tb = closeState && !tied ? cbArrive(b, dp.reach) : blind + (QB_WINDOW_ARRIVE && !tied ? arriveTime(mover, b, dp.reach, react, pt) : timeToReach(mover, b, dp.reach) + react);
++          const tb = deepZone ? bodyArrive(seen, dp, speedScale ?? 1, b, dp.reach, dzStart) : closeState && !tied ? cbArrive(b, dp.reach) : blind + (QB_WINDOW_ARRIVE && !tied ? arriveTime(mover, b, dp.reach, react, pt) : timeToReach(mover, b, dp.reach) + react);
            const mb = tb - (wind + tau) + estimateError;
            touch = Math.max(touch, logistic(-(mb - 0.05) / sPath));
          }
-@@ -2867,7 +2956,7 @@ export class QBPass implements Behavior {
+@@ -2867,7 +2966,7 @@ export class QBPass implements Behavior {
          intRisk += iPath + iJump + iContest;
          intPath += iPath; intJump += iJump; intContest += iContest;
          if (marginTrace && pt === point && (contest > 0.05 || iPath + iJump + iContest > 0.001)) marginTrace.push({ slot: d.slot, m: +m.toFixed(3), first: +first.toFixed(3),
