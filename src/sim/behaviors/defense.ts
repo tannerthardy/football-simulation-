@@ -1900,7 +1900,12 @@ export class ZoneCoverage implements Behavior {
     let cmd = this.updateCore(a, sim);
     // ZONE_LADDER: the underneath relation layer (lane, lane carry, crosser carry, stem read, settle, landmark) is one
     // technique, the pattern drift; seat rules, vertical carries and the break on the throw keep their own branches.
-    if (ZONE_LADDER && !this.deep && LADDER_REPLACES.has(facingTechnique(cmd)?.label ?? '') && knowsPass(sim, a)
+    // A route sitting in his area (the lane branch on a receiver he sees settled, under 2.5 yd/s) keeps the lane: he
+    // steps to the receiver who sits in his window; the drift is for a pattern that is moving.
+    const lab = facingTechnique(cmd)?.label ?? '';
+    const sitting = (lab === 'lane' || lab === 'lane-hold') && !!this.target
+      && Math.hypot(sim.see(a, this.target).vel.x, sim.see(a, this.target).vel.y) < 2.5;
+    if (ZONE_LADDER && !this.deep && LADDER_REPLACES.has(lab) && !sitting && knowsPass(sim, a)
       && !believesRun(sim, a) && !playsThrow(a, sim, null)) cmd = this.patternDrift(a, sim);
     if (ZONE_HOLD_HANDOFF) {
       this.lastLabel = facingTechnique(cmd)?.label ?? '';
