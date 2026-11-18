@@ -83,6 +83,8 @@ export const ZONE_LADDER = process.env.ZONE_LADDER === '1';
 const LADDER_REPLACES = new Set(['lane', 'lane-carry', 'open-carry-cross', 'hook-stem-read', 'lane-hold', 'zone-settle', 'zone-landmark']);
 /** ZONE_LADDER: one plant step (yd): the drift is no faster than he can stop in it (stated choice). */
 const LADDER_STEP = 0.5;
+/** ZONE_LADDER: seconds by which a new arriving route must arrive sooner to replace the held one (stated choice). */
+const LADDER_BEAT = 0.3;
 /** FLAT_SINK (on since engine-85; FLAT_SINK=0 restores; Rules + Coaching's rule, HNFL-099/-334, Coverage built): the
  * flat (squat / cloud) corner sinks with #1's vertical until the flat is threatened in front of him ("sink with #1 until
  * the ball brings you down; top-down the flat"). While a receiver in his area runs vertically over him (seen downfield
@@ -1855,7 +1857,6 @@ export class ZoneCoverage implements Behavior {
     const up = sim.attackDir('O');
     const q = sim.see(a, sim.qb).pos;
     let wsum = 0, flow = 0, deepest = -Infinity;
-    let deepPos: Vec2 | null = null;
     for (const r of sim.offense) {
       if (r === sim.qb || ['LT', 'LG', 'C', 'RG', 'RT'].includes(r.slot)) continue;
       const c = sim.see(a, r);
@@ -1865,22 +1866,33 @@ export class ZoneCoverage implements Behavior {
       const w = Math.max(0, 1 - out / width);
       if (w <= 0) continue;
       wsum += w; flow += w * c.vel.y;
-      if (out === 0 && depth > deepest) { deepest = depth; deepPos = c.pos; }
+      if (out === 0) deepest = Math.max(deepest, depth);
     }
     const vcap = Math.sqrt(2 * a.profile.brake * LADDER_STEP);
     // His feet move with the flow (its weighted lateral velocity), no faster than his stopping cap, and stop at his
     // band's edges (a drift that would leave his area is held at the edge).
-    let vy = clamp(wsum > 0 ? flow / wsum : 0, -vcap, vcap);
-    // Over the deepest threat: a route in his band at or deeper than him is his to stay over. He drifts with the flow
-    // only while he stays within a step of that route's throwing lane (the QB-to-route line at his depth); past it the
-    // flow cannot carry him further off it.
-    const myDepth = (a.pos.x - sim.los) * up;
-    if (deepPos && deepest >= myDepth - 1) {
-      const k = clamp((a.pos.x - q.x) / ((deepPos.x - q.x) || 1e-6), 0, 1);
-      const laneY = q.y + (deepPos.y - q.y) * k;
-      const off = a.pos.y - laneY;
-      if (Math.abs(off) > LADDER_STEP * 2 && Math.sign(vy) === Math.sign(off)) vy = 0;
+    // One ordering (the sitting route in his window is handled before this, by the lane): a route that will reach his
+    // band within a ball's flight time from the QB (to his landmark) is the threat about to be his: he leans with it, its
+    // lateral velocity, the soonest arrival first, held until it is in his band or no longer coming, and replaced only by
+    // one arriving LADDER_BEAT sooner. With none coming, his feet go with the in-band flow.
+    const dq = Math.hypot(lm.x - q.x, lm.y - q.y);
+    const flight = 0.0731 + 0.03945 * dq + 0.00022 * dq * dq;
+    const arriving: Array<{ r: Agent; t: number; vy: number }> = [];
+    for (const r of sim.offense) {
+      if (r === sim.qb || ['LT', 'LG', 'C', 'RG', 'RT'].includes(r.slot)) continue;
+      const c = sim.see(a, r);
+      const dep = (c.pos.x - sim.los) * up;
+      if (dep < -2 || dep > 20 || (c.pos.y >= ylo && c.pos.y <= yhi)) continue;
+      const toward = c.pos.y < ylo ? c.vel.y : -c.vel.y;
+      if (toward <= 1) continue;
+      const t = (c.pos.y < ylo ? ylo - c.pos.y : c.pos.y - yhi) / toward;
+      if (t <= flight) arriving.push({ r, t, vy: c.vel.y });
     }
+    arriving.sort((p1, p2) => p1.t - p2.t);
+    const held = this.ladderR ? arriving.find(x => x.r === this.ladderR) : undefined;
+    const lean = held && !(arriving[0] && arriving[0].t + LADDER_BEAT < held.t) ? held : arriving[0];
+    this.ladderR = lean?.r ?? null;
+    let vy = clamp(lean ? lean.vy : wsum > 0 ? flow / wsum : 0, -vcap, vcap);
     if ((a.pos.y <= ylo && vy < 0) || (a.pos.y >= yhi && vy > 0)) vy = 0;
     const lmDepth = (lm.x - sim.los) * up;
     const depth = clamp(Number.isFinite(deepest) ? Math.max(lmDepth, deepest - 1) : lmDepth, 0, lmDepth + 1);
@@ -1889,6 +1901,9 @@ export class ZoneCoverage implements Behavior {
     const sp = Math.hypot(vx, vy), k = sp > vcap ? vcap / sp : 1;
     return withFacingTechnique({ vel: { x: vx * k, y: vy * k }, facing: angleTo(a.pos, q) }, { label: 'ladder-drift', key: { x: 0, y: vy } });
   }
+
+  /** ZONE_LADDER: the arriving route he leans with (held). */
+  private ladderR: Agent | null = null;
 
   private selectTarget(a: Agent, target: Agent | null): void {
     // Retire only the held action. Per-receiver observation/depth memory stays.
