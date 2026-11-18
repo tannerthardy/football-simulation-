@@ -232,6 +232,20 @@ index d72fe0575..c26db4c60 100644
        // QB_FOOTWORK bit 2: a step that lands sets his shoulders to the read he is on.
        if (FW_HIPS && _read) this.shoulderOn = _read;
      }
+diff --git a/test/qb-stick.test.ts b/test/qb-stick.test.ts
+index c912fc29c..66c2a724f 100644
+--- a/test/qb-stick.test.ts
++++ b/test/qb-stick.test.ts
+@@ -18,7 +18,8 @@ async function pumps(flag: string) {
+   for (const concept of ['four_verts', 'dagger', 'smash', 'flood']) for (const coverage of ['cover2', 'cover3']) for (const roster of [3, 7]) for (const seed of [1, 2, 3]) {
+     const sim: any = new PlaySim(nativeTraceSetup({ coverage, concept, seed, roster, formation: 'gun_doubles_11', flip: false }));
+     let b: any = null; const tick0 = sim.tick.bind(sim);
+-    sim.tick = () => { tick0(); if (sim.qb.behavior?.kind === 'qb-pass') b = sim.qb.behavior; };
++    // The passer's QBPass (its stickPumps): after the ball is out a ConvoyCue also reports kind 'qb-pass' without them.
++    sim.tick = () => { tick0(); if (sim.qb.behavior?.kind === 'qb-pass' && sim.qb.behavior.stickPumps) b = sim.qb.behavior; };
+     try { sim.run(); } catch { /* a play that cannot finish staging */ }
+     n += sim.events.filter((e: any) => e.type === 'pump').length;
+     if (b) caused += Object.values((b.stickPumps ?? {}) as Record<string, number>).reduce((s, x) => s + x, 0);
 diff --git a/test/read-window.test.ts b/test/read-window.test.ts
 index 9217b823a..2283829a0 100644
 --- a/test/read-window.test.ts

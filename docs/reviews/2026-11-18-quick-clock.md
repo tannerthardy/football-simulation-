@@ -122,5 +122,8 @@ formation, cover3): every read has a footwork step, and what moves his eyes off 
 So most of the drop-back game is moved by the dwell. Its strides are 0.28-0.36 s, so the step gate rarely blocks there.
 Whether the dwell mistimes drop-back reads as it did slant-flat needs `quick-open.ts` on drop-back concepts. Not done.
 
-**Found on the way.** `test/qb-stick.test.ts` (QB lane) fails on clean develop cebd890b and on engine-88: one pump with
-no recorded perceived change. That breaks the commit rule, and it is the QB lane's to fix.
+**Found on the way, and fixed: not a commit-rule breach.** `test/qb-stick.test.ts` failed on clean develop cebd890b and on
+engine-88 with a pump whose cause looked unrecorded (smash, cover2, roster 3, seed 2, at 2.70 s). The cause was recorded
+("in-lane": DE_S in the throw's lane). But after the ball is out the passer's behavior becomes a ConvoyCue, which also
+reports kind 'qb-pass' without QBPass's fields, and the test read its counts from that. The test now keeps the QBPass
+that holds them; it passes. The fix is in the patch.
