@@ -2,7 +2,7 @@
 
 One combination of experimental flags that Run Game, Defense, Flex and Coverage all measure against. Before this, each agent tested on its own mix (the FLAT_PRESS / ZONE_RUN back-and-forth on 2026-11-09 came from two different flag sets), and no list of anyone's stack existed in the repository.
 
-- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-78`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
+- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-79`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
 - **The code:** `run/G3-oz-backfield` a749beb7 + `defense/G2-stance-tell` a0cb0789 (#411) + `defense/G2-lb-start` (#416, with #409) + `claude/quirky-franklin-9lbwbp` (#417, with #415) + develop 6676dfc2.
 - **Since 2026-11-09 the stack is the engine's default.** The flags listed `on` are read as on unless set to `0`; a bare command in a clean shell and `npm run ref -- <command>` run the same engine. `npm run ref -- --off -- <command>` runs the legacy engine (every listed flag off). `test/reference-stack.test.ts` fails if the file and the code defaults ever disagree. See "Promotion" below.
 
@@ -608,6 +608,32 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
 
+
+## engine-79: a receiver leaves his route only once he knows the ball (2026-11-18)
+
+On: `RCV_KNOWS` (Coverage; a repair of the default receiver's ball tracking, found by the QB lane's route-shape trace,
+docs/reviews/2026-11-18-route-shape-forecast.md on claude/exciting-cori-hc8l4u). Under the glance rule (BALL_EST 2048)
+he knows the flight once he has held it for his dwell (0.10 s x (1.5 - skill) for the target). TrackBall left the
+route on his first sample instead, steering to a fit of a sample or two on his route prior. Trace (double_outs, Cover 2,
+doubles, seed 1, ROUTE_SHAPE): two one-tick glimpses at 0.25 and 0.35 s; the estimate 5 yd short; he braked 5.1 to 2.1
+yd/s and turned his body until the ball was behind his shoulders (135 to -160 deg), beyond neck and trunk; not sampled
+again for 1.2 s; incomplete. On: he runs his route at 5-6 yd/s, keeps looking (lookFor's trunk and hips), finds it
+again at 1.05 s, knows it at 1.25 s, catches it.
+
+Receiver estimate's error at the arrival, staged set (scripts/diag/receiver/rx-staged.mts; 589 throws), by time
+since his first sight, p50: 4.4 yd in the first 0.05 s, 1.7 at 0.05-0.15 s, 0.5 at 0.15-0.25, 0.3-0.4 to 0.6 s. The
+estimator is good once he has held the ball; the defect was acting on the glimpse. (Defenders' late estimates, 0.4-0.5 yd
+in the last 0.3 s, come from long held looks.) Not a frozen estimate: no new samples arrived while the ball was behind him.
+
+Staged set, off -> on: complete 405 -> 411 of 589 (68.8 -> 69.8%), drops 39 -> 34, misses 28 -> 22, incomplete 25 -> 30,
+PBU 92 -> 94, INT 10 -> 11; YAC p50 2.82 -> 2.48 (p75 5.43 -> 5.66). Paired by play: 59 outcomes change. 5 are plays
+where he had the ball in view more than 0.1 s before knowing it (0 -> 3 complete); the other 54 change through the
+normal dwell (every target spends about 0.1 s seen-not-known; he now runs his route through it): 14 -> 17 complete, both
+directions (flats 65 -> 74%, outs 62 -> 77%, hitches 83 -> 78%, hooks 60 -> 52%; small groups). Open item, on record: the step touches nearly every throw's first tenth of a second, moves outcomes both ways (flats and outs up, hitches and hooks down), and the YAC p50 dip is unexplained; for hitches and hooks (a settled receiver who should already be looking), whether running the route through that tenth drifts him off his spot is the first look after the merge. Guard, scan, dither,
+reference-stack and provenance pass. `test/stalk-close.test.ts` re-recorded (the legacy stalk engages on one more now
+screen, 5 -> 6 of 12, with the catch a tick or two later; STALK_CLOSE's own 9 of 12 unchanged; margin 0.3 -> 0.25).
+Not in this step: the ball crossing behind his back still turns his head to the wrong side (the ball-behind head item).
+Tried and dropped: pursuing the samples' bearing instead of their positions before he knows (no staged change).
 
 ## engine-78: deep thirds and halves wait for the ball (2026-11-18)
 
