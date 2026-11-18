@@ -25,20 +25,21 @@ def load_sim(path):
 BACK = '--instant' not in sys.argv
 BANDS = [(3.5, 4.5), (4.5, 5.5), (5.5, 99)]
 CLASSES = [('forward', 0, 45), ('lateral', 45, 135), ('backpedal', 135, 181)]
-def events(plays):
+def events(plays, side='D', groups=None, minpeak=3.5, minv6=2.0):
+    groups = groups or GROUP
     ev = []
     for pl in plays:
         n, F = pl['s'].shape
         for i in range(n):
-            if pl['side'][i] != 'D' or pl['pos'][i] not in GROUP: continue
+            if pl['side'][i] != side or pl['pos'][i] not in groups: continue
             s, d, o = pl['s'][i], pl['d'][i], pl['o'][i]; last = -99
             for k in range(3, min(pl['throw'], F) - 10):
                 if k - last < 10 or np.isnan(s[k - 2:k + 11]).any(): continue
                 if s[k] >= 1.0 or s[k - 1] >= 1.0 or s[k - 2] >= 1.0: continue
                 peak = np.nanmax(s[k:k + 11])
-                if peak < BANDS[0][0] or s[k + 6] < 2.0 or np.isnan(d[k + 6]) or np.isnan(o[k]): continue
+                if peak < minpeak or s[k + 6] < minv6 or np.isnan(d[k + 6]) or np.isnan(o[k]): continue
                 last = k
-                ev.append(dict(group=GROUP[pl['pos'][i]], peak=peak, ang=abs(float(wrap(o[k] - d[k + 6]))), ang4=abs(float(wrap(o[k + 4] - d[k + 6]))) if not np.isnan(o[k + 4]) else np.nan, turn=abs(float(wrap(o[k + 4] - o[k]))) if not np.isnan(o[k + 4]) else np.nan, v=(s[k + 2], s[k + 4], s[k + 8])))
+                ev.append(dict(group=groups[pl['pos'][i]], peak=peak, ang=abs(float(wrap(o[k] - d[k + 6]))), ang4=abs(float(wrap(o[k + 4] - d[k + 6]))) if not np.isnan(o[k + 4]) else np.nan, turn=abs(float(wrap(o[k + 4] - o[k]))) if not np.isnan(o[k + 4]) else np.nan, v=(s[k + 2], s[k + 4], s[k + 8])))
     return ev
 def table(name, ev):
     q = lambda v: round(float(np.median(v)), 2)
@@ -60,5 +61,13 @@ def table(name, ev):
     row('  still 45+ deg off at +0.4 s', [e for e in L if e['ang4'] >= 45]); row('  turned to within 45 deg by +0.4 s', [e for e in L if e['ang4'] < 45])
     row('  still off, peak 3.5-4.5', [e for e in L if e['ang4'] >= 45 and e['peak'] < 4.5]); row('  turned, peak 3.5-4.5', [e for e in L if e['ang4'] < 45 and e['peak'] < 4.5])
     row('  forward at start (0-45)', [e for e in ev if e['ang'] < 45]); row('  forward at start, peak 3.5-4.5', [e for e in ev if e['ang'] < 45 and e['peak'] < 4.5])
-table('NFL', events(load_nfl(sys.argv[1])))
-for f in [a for a in sys.argv[2:] if not a.startswith('--')]: table('sim ' + f.split('/')[-1], events(load_sim(f)))
+OLG = {'T': 'OL', 'G': 'OL', 'C': 'OL', 'OT': 'OL', 'OG': 'OL'}
+def ol_table(name, plays):
+    ev = events(plays, 'O', OLG, 2.0, 1.2)
+    print(f'-- {name} OL pass-set starts: {len(ev)} (under 1 yd/s for 0.2 s, ball not thrown, peak >= 2.0 yd/s within 1 s); speed at 0.2 / 0.4 / 0.8 s')
+    q = lambda v: round(float(np.median(v)), 2)
+    for lab, S in (('all', ev), ('forward (0-45)', [e for e in ev if e['ang'] < 45]), ('lateral (45-135)', [e for e in ev if 45 <= e['ang'] < 135]), ('backpedal (135+)', [e for e in ev if e['ang'] >= 135])):
+        if len(S) >= 8: V = np.array([e['v'] for e in S]); print(f'   {lab:22s} {q(V[:,0]):5.2f} {q(V[:,1]):5.2f} {q(V[:,2]):5.2f}  [{len(S)}]')
+nfl = load_nfl(sys.argv[1]); table('NFL', events(nfl)); ol_table('NFL', nfl)
+for f in [a for a in sys.argv[2:] if not a.startswith('--')]:
+    sim = load_sim(f); table('sim ' + f.split('/')[-1], events(sim)); ol_table('sim ' + f.split('/')[-1], sim)
