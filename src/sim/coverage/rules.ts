@@ -165,7 +165,7 @@ function helpOne(c: RuleCtx, one: ReceiverRead | null, lev: 'inside' | 'outside'
   return { t: 'rob', r: one.r };
 }
 
-/** ROB_COMMIT (numeric bitmask; 7 since engine-79, 2026-11-18, `=0` restores; gap 5 of Rules' deep table): how a safety helping #1 reads him.
+/** ROB_COMMIT (numeric bitmask; 7 since engine-80, 2026-11-18, `=0` restores; gap 5 of Rules' deep table): how a safety helping #1 reads him.
  * Legacy re-scores every tick (over the top while #1 is "vertical" or has ever climbed past 7, else rob), so he flips
  * rob/top/rob as an under or a dig crosses 7 yd, and robs a #1 who has not declared yet.
  * bit 1: #1 has not declared (no release believed): he keeps his quarter, eyes on #1, until #1 shows his stem.
