@@ -24,5 +24,5 @@ for lab, rows in (('NFL', nfl), ('sim', sim)):
     print(lab)
     for pn, pos in (('WR', {'WR'}), ('TE', {'TE'}), ('RB/FB', {'RB', 'FB'}), ('all', None)):
         for pr, prn in ((None, 'any'), (True, 'press'), (False, 'off')):
-            sub = sel(rows, R if lab == 'NFL' else R.lower(), pos, pr)
+            sub = sel(rows, R, pos, pr)
             if len(sub) >= 15: row(f'{pn} {prn}', sub)
