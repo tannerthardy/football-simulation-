@@ -75,6 +75,14 @@ const ZONE_SETTLE = process.env.ZONE_SETTLE !== '0';
  * settles as before. His own position against his landmark is his to know. Margins: stated choices, enter and exit on
  * opposite sides. */
 export const SETTLE_DEPTH = process.env.SETTLE_DEPTH !== '0';
+/** ZONE_LADDER (experimental, off; ZONE_LADDER=1; Coverage, C14 underneath rebuild, docs/reviews/2026-11-18-zone-ladder-2.md):
+ * the underneath zone defender's relation layer before the throw is one technique, the pattern drift
+ * (ZoneCoverage.patternDrift); seat rules, vertical carries and the break keep their branches. */
+export const ZONE_LADDER = process.env.ZONE_LADDER === '1';
+/** ZONE_LADDER: the old relation branches the drift replaces (their labels). */
+const LADDER_REPLACES = new Set(['lane', 'lane-carry', 'open-carry-cross', 'hook-stem-read', 'lane-hold', 'zone-settle', 'zone-landmark']);
+/** ZONE_LADDER: one plant step (yd): the drift is no faster than he can stop in it (stated choice). */
+const LADDER_STEP = 0.5;
 /** FLAT_SINK (on since engine-85; FLAT_SINK=0 restores; Rules + Coaching's rule, HNFL-099/-334, Coverage built): the
  * flat (squat / cloud) corner sinks with #1's vertical until the flat is threatened in front of him ("sink with #1 until
  * the ball brings you down; top-down the flat"). While a receiver in his area runs vertically over him (seen downfield
@@ -1833,6 +1841,44 @@ export class ZoneCoverage implements Behavior {
     return x;
   }
 
+  /**
+   * ZONE_LADDER: pattern-read drift, the underneath zone defender's one relation before the throw. Eyes on the QB; his
+   * feet shade the unit toward the flow of the pattern: the seen lateral momentum of the routes in his band and the
+   * next one out, each weighted by nearness to his band (1 inside it, falling to 0 a band's width outside). His feet
+   * move with that flow, held at his band's edges, at a depth never shallower than the deepest route in his band less a
+   * yard (over the deepest threat), nor deeper than his landmark plus the same. He drifts under control: no faster than
+   * he can stop in one plant step (v^2 / 2 brake <= LADDER_STEP), so the break on the throw (the existing playBall) and
+   * the rally start from a base. No receiver is his goal; the throw decides.
+   */
+  private patternDrift(a: Agent, sim: PlaySim): MoveCommand {
+    const lm = this.landmark, [ylo, yhi] = this.band, width = Math.max(1, yhi - ylo);
+    const up = sim.attackDir('O');
+    const q = sim.see(a, sim.qb).pos;
+    let wsum = 0, flow = 0, deepest = -Infinity;
+    for (const r of sim.offense) {
+      if (r === sim.qb || ['LT', 'LG', 'C', 'RG', 'RT'].includes(r.slot)) continue;
+      const c = sim.see(a, r);
+      const depth = (c.pos.x - sim.los) * up;
+      if (depth < -2 || depth > 20) continue;
+      const out = c.pos.y < ylo ? ylo - c.pos.y : c.pos.y > yhi ? c.pos.y - yhi : 0;
+      const w = Math.max(0, 1 - out / width);
+      if (w <= 0) continue;
+      wsum += w; flow += w * c.vel.y;
+      if (out === 0) deepest = Math.max(deepest, depth);
+    }
+    const vcap = Math.sqrt(2 * a.profile.brake * LADDER_STEP);
+    // His feet move with the flow (its weighted lateral velocity), no faster than his stopping cap, and stop at his
+    // band's edges (a drift that would leave his area is held at the edge).
+    let vy = clamp(wsum > 0 ? flow / wsum : 0, -vcap, vcap);
+    if ((a.pos.y <= ylo && vy < 0) || (a.pos.y >= yhi && vy > 0)) vy = 0;
+    const lmDepth = (lm.x - sim.los) * up;
+    const depth = clamp(Number.isFinite(deepest) ? Math.max(lmDepth, deepest - 1) : lmDepth, 0, lmDepth + 1);
+    // Depth: toward his depth line at the same controlled pace (a servo on his own position, gain 1.5 /s).
+    const vx = clamp((sim.los + up * depth - a.pos.x) * 1.5, -vcap, vcap);
+    const sp = Math.hypot(vx, vy), k = sp > vcap ? vcap / sp : 1;
+    return withFacingTechnique({ vel: { x: vx * k, y: vy * k }, facing: angleTo(a.pos, q) }, { label: 'ladder-drift', key: { x: 0, y: vy } });
+  }
+
   private selectTarget(a: Agent, target: Agent | null): void {
     // Retire only the held action. Per-receiver observation/depth memory stays.
     a.mind.setAimTarget('zone-drive', target?.idx ?? null);
@@ -1840,7 +1886,11 @@ export class ZoneCoverage implements Behavior {
   }
 
   update(a: Agent, sim: PlaySim): MoveCommand {
-    const cmd = this.updateCore(a, sim);
+    let cmd = this.updateCore(a, sim);
+    // ZONE_LADDER: the underneath relation layer (lane, lane carry, crosser carry, stem read, settle, landmark) is one
+    // technique, the pattern drift; seat rules, vertical carries and the break on the throw keep their own branches.
+    if (ZONE_LADDER && !this.deep && LADDER_REPLACES.has(facingTechnique(cmd)?.label ?? '') && knowsPass(sim, a)
+      && !believesRun(sim, a) && !playsThrow(a, sim, null)) cmd = this.patternDrift(a, sim);
     if (ZONE_HOLD_HANDOFF) {
       this.lastLabel = facingTechnique(cmd)?.label ?? '';
       if (CARRY_LABEL.test(this.lastLabel)) this.handoffDir = null;
