@@ -4,9 +4,11 @@
  * while he reads, before he has decided on anyone. On: he holds his set point until his eyes are finishing on the man
  * he has decided on, and his step from there is toward that man and no longer than a hitch. */
 import { afterEach, describe, expect, it, vi } from 'vitest';
-vi.hoisted(() => { process.env.QB_FOOTWORK = '0'; process.env.QB_KEY_READ = '0'; process.env.QB_EDGE_THREAT = '0'; process.env.QB_HEAD = '0'; process.env.QB_CALL_ROUTES = '0'; process.env.CONCEPT_DROPS = '0'; process.env.CONCEPT_FIT = '0'; process.env.BACK_AS_THREE = '0'; process.env.PA_TABLES = '0'; process.env.QB_RHYTHM_THROW = '0'; process.env.OWNED_FIX = '0'; }); // engine-73: fixture recorded before the QB group of the engine-73 landing; QB to re-record with it on. engine-83: QB_RHYTHM_THROW off too (on a rhythm concept his last drop step is not braked by design, so this scene's set point is the old drop's); QB to re-record on a non-rhythm concept
-// engine-81 (Defense): OWNED_FIX pinned off here. The deep-third corner now keeps #2 with #1, which moves the Cover 3 scene
-// around the pocket; on one of these plays his single step after the gate becomes 1.28 yd (limit 1.1). QB lane to re-record with it on.
+vi.hoisted(() => { process.env.QB_FOOTWORK = '0'; process.env.QB_KEY_READ = '0'; process.env.QB_EDGE_THREAT = '0'; process.env.QB_HEAD = '0'; process.env.QB_CALL_ROUTES = '0'; process.env.CONCEPT_DROPS = '0'; process.env.CONCEPT_FIT = '0'; process.env.BACK_AS_THREE = '0'; process.env.PA_TABLES = '0'; }); // engine-73: fixture recorded before the QB group of the engine-73 landing; QB to re-record with it on
+// Re-recorded 2026-11-18 on engine-83 (QB lane) with OWNED_FIX and QB_RHYTHM_THROW on: no pin. Every gated step is 0.23-0.66
+// yd, inside the hitch limit (engine-81's 1.28 yd step was with QB_RHYTHM_THROW off), so the limit stands and the gather is
+// right. stick (cover3, seed 3) leaves the list: it is a rhythm concept, whose last drop step is not braked by design
+// (QB_RHYTHM_THROW), so with no throw on the plant he slides 0.84 yd into his set; this test is the gather on a set.
 
 afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 
@@ -14,7 +16,7 @@ afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 // the legacy engine's, and of the original six plays only two now reach the gate (the tick his eyes finish on the man he has decided on) before the windup, short of
 // the three the test needs. Six plays that gate on the defaults, with the original seam_hitch (cover1) which gates without a step toward his man, kept for variety.
 // The assertions are unchanged.
-const PLAYS: [string, string, number][] = [['dagger', 'cover3', 3], ['dagger', 'cover3', 2], ['drive', 'cover3', 3], ['smash', 'cover3', 3], ['seam_hitch', 'cover3', 4], ['stick', 'cover3', 3], ['seam_hitch', 'cover1', 4]];
+const PLAYS: [string, string, number][] = [['dagger', 'cover3', 3], ['dagger', 'cover3', 2], ['drive', 'cover3', 3], ['smash', 'cover3', 3], ['seam_hitch', 'cover3', 4], ['seam_hitch', 'cover1', 4]];
 
 interface Row { readCreep: number; upBeforeGate: number; step: number; toward: number | null; gated: boolean }
 

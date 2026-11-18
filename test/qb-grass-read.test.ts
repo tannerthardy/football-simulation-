@@ -20,7 +20,7 @@ async function run(fw: string) {
   // The reference stack's numeric settings too (the suite pins them to their legacy values).
   for (const [k, v] of Object.entries(stack.numeric ?? {}) as [string, { default: number }][]) vi.stubEnv(k, String(v.default));
   vi.stubEnv('CONCEPT_DROPS', '1'); vi.stubEnv('QB_FOOTWORK', fw);
-  vi.stubEnv('QB_WINDOW_ARRIVE', '0'); // engine-83 (QB landing, pinned test-only): with arrival momentum the deep defender bailing to the corner's landing prices the corner off the plant in these scenes. QB to re-record with it on
+  vi.stubEnv('QB_WINDOW_ARRIVE', '0'); // engine-83 (QB landing, pinned test-only): kept after re-check 2026-11-18. With arrival momentum the deep defender running to the corner's landing prices the corner off the plant (P 0.40 -> 0.29), yet thrown there it is caught 18 of 18 in these scenes (scripts/diag/eyes/grass-staged.ts): the window over-prices a deep man's closing (docs/reviews/2026-11-18-peek-clock.md, by state). Re-record once that price is settled (after Coverage's closing repair), not by weakening this contract
   const { PlaySim } = await import('../src/sim/playsim.js');
   const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');
   const out: { dwell: number; corner: number | null; setAt: number | null }[] = [];
