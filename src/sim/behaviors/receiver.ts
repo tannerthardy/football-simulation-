@@ -127,14 +127,16 @@ const STEM_MIN = 5;
  * and his route's break side, decided once at the snap from what he sees. Off, the release is the drawn line: every go
  * leaves 7.2 deg outside and every slant runs dead straight to its plant, so a corner could tell them apart from 0.3 s
  * (NFL: not before about 1.1 s; Coverage's slant_go_sep.py, BDB 2025). On:
- * - an inside-breaker (slant, dig, post, cross) wins inside, or, against a man with inside leverage, takes an outside
- *   release first as a set-up (it costs him the path);
+ * - an inside-breaker (slant, dig, post, cross) wins inside;
  * - an outside-breaker (out, corner, flat) takes the outside, or sets up inside against outside leverage;
- * - a vertical (go, fade, seam) wins outside, keeping his landmark and the sideline space the ball is thrown to,
- *   except against a pressed man head-up or outside of him (2.5 yd or less in front), where the jam decides the side and
- *   he plans none (NFL go at 1.0 s: path 9.8 deg outside, Coverage's slant_go_sep.py; Integration 2026-11-18);
- * so a slant and a go against the same leverage leave the line alike. The man over him: the nearest defender in front
- * within 9 yd deep and 4 yd across; leverage is 0.5 yd or more inside or outside his line. The release leans up to 1 yd
+ * - a vertical (go, fade, seam) wins outside, keeping his landmark and the sideline space the ball is thrown to;
+ *   with no man over him he runs his line.
+ * NFL (BDB 2025 weeks 1-3, wide #1, path at 1.0 s more than 5 deg off upfield, by the man over him at the snap):
+ * slants release inside against every leverage (off: head-up .53, inside .69, outside .64; press: head-up .60, inside
+ * .75), outside .03-.15 (press head-up .33); gos release outside against every leverage (off .47-.68, press .67-.81),
+ * inside .09-.19; with no man over him the go runs straight (.53). The coached set-up against inside leverage (an
+ * outside release before a slant) is the minority release, not the rule: the mix of releases is the receiver's own
+ * (ROUTE_VARY), not this rule's. The man over him: the nearest defender in front within 9 yd deep and 4 yd across; leverage is 0.5 yd or more inside or outside his line. The release leans up to 1 yd
  * off the route's first leg by 3 yd past the line (about 10-15 deg), at unchanged speed, then the route takes him on; a
  * go's drawn outside lean is replaced by the plan. The press release (a man on him) is the press fight's, not this. */
 const RELEASE_PLAN = process.env.RELEASE_PLAN === '1';
@@ -589,9 +591,9 @@ export class RouteRunner implements Behavior {
       const lev = best ? (best.pos.y - a.pos.y) * this.outside : 0;
       const levSide = lev >= 0.5 ? 1 : lev <= -0.5 ? -1 : 0;
       let side: number;
-      if (breakSide < 0) side = levSide < 0 ? 1 : -1;          // inside-breaker: inside, or set up outside vs inside leverage
+      if (breakSide < 0) side = -1;                           // inside-breaker: inside
       else if (breakSide > 0) side = levSide > 0 ? -1 : 1;     // outside-breaker: outside, or set up inside vs outside leverage
-      else side = best && bd <= 2.5 && levSide >= 0 ? 0 : 1;  // vertical: outside, unless a pressed man over or outside him
+      else side = best ? 1 : 0;                                // vertical: outside, straight with no man over him
       this.releasePlan = side * this.outside;
     }
     // The route's first leg, minus a go's drawn lean (the plan replaces it), plus the planned lean, growing to 1 yd by `end`.
