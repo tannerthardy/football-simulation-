@@ -31,6 +31,9 @@ import type { Perceived } from './perception.js';
 import type { PlaySim } from './playsim.js';
 
 export const OPEN_FIELD = process.env.OPEN_FIELD !== '0';
+/** OPEN_FIELD_GAIN (off; OPEN_FIELD_GAIN=1): the short-yardage exception counts a runner short of the line to gain, not
+ * one already past it (see onTopPoint). */
+export const OPEN_FIELD_GAIN = process.env.OPEN_FIELD_GAIN === '1';
 /** Depth (yd upfield of the runner) at which he takes the on-top approach, and below which he leaves it. */
 const ENTER_DEPTH = -0.3, EXIT_DEPTH = -0.8;
 /** Beyond this he is not yet in the open-field approach (yd). */
@@ -71,7 +74,10 @@ export function onTopPoint(sim: PlaySim, a: Agent, target: Agent, seen: Perceive
   const depth = (a.pos.x - seen.pos.x) * dir;
   const was = onTop.get(a) ?? false;
   const goal = dir > 0 ? OPP_GOAL_X : OWN_GOAL_X;
-  const shortYardage = (sim.firstDownX - seen.pos.x) * dir <= SHORT || (goal - seen.pos.x) * dir <= SHORT;
+  // OPEN_FIELD_GAIN: short of the line to gain only. A runner already past it has made the first down; without the
+  // lower bound every catch past the sticks counted as short yardage and the open-field approach never applied.
+  const toGain = (sim.firstDownX - seen.pos.x) * dir;
+  const shortYardage = (OPEN_FIELD_GAIN ? toGain > 0 && toGain <= SHORT : toGain <= SHORT) || (goal - seen.pos.x) * dir <= SHORT;
   let ok = !shortYardage && dist <= RANGE && (was ? depth > EXIT_DEPTH : depth > ENTER_DEPTH);
   if (ok) {
     // Nobody between them, from his own picture of the offence.
