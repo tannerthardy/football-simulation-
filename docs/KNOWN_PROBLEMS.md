@@ -330,7 +330,8 @@ problem), resolved.
 | [REC-1](#rec-1) | Receiver options and continuation can contradict available information or route intent | G3, G10 | medium | candidate: acquired route reads; catch/release limits remain |
 | [COV-10](#cov-10) | Sim route releases are too fast and too vertical, so release-keyed reads get no hard negatives | G3 | medium | open (needs an owner: offense route runner) |
 | [COV-11](#cov-11) | Quarters apex with a flat back: level with No. 2 rather than outside him; the seam is roomier | C14 | medium | flag (`APEX_LEVERAGE`, #702) |
-| [COV-12](#cov-12) | A man defender runs through an offensive player who is not his man (the spacing stage skips opposing bodies) | C14 | low | open (parked, not assigned) |
+| [COV-12](#cov-12) | Underneath zone defenders switch technique 1.6 times a second and barely drift with the routes | C14 | medium | open (ZONE_LADDER recorded, not landed) |
+| [COV-13](#cov-13) | A man defender runs through an offensive player who is not his man (the spacing stage skips opposing bodies) | C14 | low | open (parked, not assigned) |
 | [BALL-1](#ball-1) | Too many interceptions | G4 | high | flag (partial) |
 | [BALL-2](#ball-2) | Throws always leave from standing height | — | low | open |
 | [QB-1](#qb-1) | Throws come out early and deep | G3, G7 | medium | open |
@@ -3272,7 +3273,7 @@ From the issue register:
 - **Open:** whether the width comes with the anticipation commit; whether
   the seam row moves when the QB reads the apex.
 
-### COV-12: A man defender runs through an offensive player who is not his man
+### COV-13: A man defender runs through an offensive player who is not his man
 
 - **Symptom:** a man defender at full request hits a crosser, a bunch release or a rub who is not his man, and goes down; taught: over the top or under the trash on his man's hip, never through it.
 - **Measure:** 8 games, seed 101, develop 097e3b13 (scripts/diag/body/man-collide.mts): 71 touches before the throw in 2,812 man-defender plays (2.5%, about 9 a game); 14 at 3+ yd/s closing (1.75 a game), 6 at 5+; the defender is down or falling within 1 s in 11 (about 1.4 a game; 3 of the 4 at 6+ yd/s). His man's separation 1.0 s after contact (or at the throw) against same-concept same-slot no-collision man defenders: +0.44 yd on all touches (median -0.10), +1.19 yd at 3+ yd/s (n 12), +3.3 yd when the defender goes down (n 7). Per man-defender play by concept: slant family .066, bunch .046, Y-Cross .039, drive and four verticals .033, hitch-cross .029, mesh .030 (2 touches), corner .021, smash .013. Staged slant_flat is the high-rate case (Rules' nickel: roster 1 seed 1, cover6_book, NB into Z at 11 yd/s closing, both down, H runs 70 yd).
@@ -3284,6 +3285,57 @@ From the issue register:
 ## Pre-snap
 
 <a id="aln-1"></a>
+
+### COV-12: Underneath zone defenders switch technique 1.6 times a second and barely drift with the routes
+
+- **Symptom:** in the second before the throw, an underneath zone defender flips between techniques and moves little.
+  The routes run into him; NFL zone men drift with the pattern.
+- **Measure** (develop 097e3b13, staged set and 8-game exports, Coverage, 2026-11-18; one operator against BDB 2025 weeks 1-3):
+
+  | per underneath zone man, 1.0 s before the release | sim |
+  |---|---|
+  | technique changes per second | 1.56 (p90 3) |
+  | picked-receiver changes per second | 0.48 |
+  | lateral request reversals per second | 0.54 |
+  | facing-target jumps over 90 degrees per second | 0.46 |
+  | body lateral reversals per second | 0.13 |
+
+  | his lateral velocity against the keys 0.5 s earlier | NFL slope (r) | sim slope (r) |
+  |---|---|---|
+  | receivers in his band | 0.66 (0.59) | 0.48 (0.46) |
+  | receivers arriving from the next band | 0.37 (0.33) | -0.10 |
+
+- **Cause (confirmed):** `ZoneCoverage`'s relation layer is about 13 branches, each choosing on its own threshold with
+  no hysteresis.
+  - The top flips are `hook-stem-read` <-> `lane` (stem test vx > 0.5 and > |vy|), `lane` -> `open-carry-cross`
+    (|vy| > 3 and > |vx|), `open-carry-seam` -> `lane`, `zone-landmark` -> `zone-settle`, and `man-pedal` -> `wall` in
+    `CoverageDefender`.
+  - The lane point sits on the receiver's current spot, so for a crosser in his area the gain back toward it cancels
+    the feed-forward and the request is about 0.
+  - No coverage stage bounds the request (`tick-trace.mts`).
+- **Cause (likely), the outside-band gap:** largely the offense's. Our receivers' lateral flow is half the NFL's (median
+  0.8-1.0 vs 1.8-1.9 yd/s), and the QB has no launch drift (0.00 vs 0.42 yd/s).
+- **Tried:**
+  - `CROSS_RUN`, `CROSS_EDGE`, `ZONE_WINDOW`, `ZONE_COMMIT` (hysteresis on two switches: the flips moved to the next
+    boundary), `ZONE_GOAL`, `ZONE_FLOW`.
+  - `ZONE_LADDER` 2, a single pattern drift: steadier (request reversals 0.54 -> 0.37) and lower YAC, but no
+    outside-band slope. It fails the shallow-under-dig and flood-flat controls and gives up the lane's undercut picks.
+  - All off. Record in `docs/reviews/2026-11-18-zone-ladder-2.md`.
+- **Where:** `src/sim/behaviors/defense.ts` (`ZoneCoverage.updateCore`); `scripts/diag/coverage/zone-dither.mts`,
+  `cross-trace.mts`, `ladder-controls.mts`; `scripts/mechanics/flow_drift.py` (on #793's branch).
+- **Related, the Cover 2 flat that turns up** (2026-11-18, `FLAT_CARRY` tried, not landed):
+  - In slant_flat and fade_flat from trips vs Cover 2, Cover 2 match and Tampa 2, H is caught 11-13 yd deep untouched
+    (24-70 yd).
+  - FLAT_SINK sinks the squat corner (1-2 yd deep) with the trips vertical. Its "flat threatened" test needs a route a
+    yard shallower than him, so a flat at his depth never ends the sink.
+  - A flat-area test (0-5 yd) puts him on the flat, about 5 yd closer at the release. But the flat turns up about 0.2 s
+    before the throw, and taking him off #1 earlier raised 20+ completions 67 -> 86 and never-touched 34 -> 40 on the
+    Cover 2 family set.
+  - The cap on the turned-up flat is the half safety's: Rules' HALF_KEY.
+  - Script: `scripts/diag/coverage/flat-carry.mts`.
+- **Open:** re-measure the slopes after Rules' STEM_WORK and the QB's pocket item land. The dither needs a held technique
+  in the old classes that keeps the lane's undercut; hysteresis on two switches alone only moves the flips.
+
 ### ALN-1: Defensive pre-snap picture unlike tracking
 
 #190 and #194 measured many parts of the picture and added flags for them:

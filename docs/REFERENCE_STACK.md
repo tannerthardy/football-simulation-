@@ -619,6 +619,35 @@ On: `DIR_START` (Tools/Physics; `DIR_START_PCT` = 67) and `READ_COMMIT_TICK` (a 
 
 Lone body (LB profiles, 12 bodies, hips held, ask 5, speed at 0.2 / 0.4 / 0.8 s): forward 1.30 / 2.27 / 3.51 either arm, lateral reaction 0.91 / 1.65 / 2.75 (NFL matched band 0.92 / 1.61 / 3.20), loaded lateral = forward, hips opened to travel converge on forward. 16 games: reaction starts of defenders move toward the NFL (lateral 1.57 / 2.50 / 3.63 to 1.41 / 2.20 / 3.35; NFL 0.95 / 1.67 / 3.28); the sim shuffle opens its hips to travel faster than the NFL's, so the law decays early (the next body question).
 
+## engine-87: the Cover 2 half safety keys #1 to #2 (2026-11-18)
+
+On: `HALF_KEY` (Rules + Coaching; Integration, after QB's peek-clock probe found our Cover 2 / Match / Tampa half
+widening the same whatever #1 and #2 did). The unruled half safety keys #1 to #2 on his side as taught (HNFL-334 SAFETY,
+HNFL-097: "drop to the deep-half landmark while seeing the release of #1; if #1 is vertical, widen and see #2; if both
+vertical, vision & squeeze; if either cancels, cap the remaining vertical threat"). He aims laterally, continuously, at
+the point from which he can still get on top of both, from his own delayed picture: each receiver weighted by how much
+of a deep threat he still is (his projected depth as a share of the safety's own, times his upfield speed as a share
+of the top he has shown), #2 with a floor, any other vertical in his half by depth; a cancel committed after his
+confirm time with margins removes that receiver. HALF_OWN's midpoint is the both-vertical case.
+
+His place between #2 (0) and #1 (1), same operator on NFL tracking (scripts/diag/coverage/half_key.py; BDB 2025 weeks
+1-3, PFF Cover-2, the 2L / 2R halves, 586 rows) and staged Cover 2:
+
+| #1 / #2 at the time | NFL 2.5 s / 2.9 s | off 2.5 s | on 2.5 s / 2.9 s |
+|---|---|---|---|
+| both vertical | .39 / .46 | .44 | .27 / .44 |
+| #1 cancels, #2 vertical | .07 / .15 | .43 | .05 / .19 |
+| #1 vertical, #2 cancels | .40 / .50 | .53 | .50 / .63 |
+| both cancel | .30 / .40 | .49 | .36 / .36 |
+
+His speed budget matches the NFL half's (both-vertical plays: 4.0-4.7 yd/s total, 1.0-1.7 lateral). The over-early split
+it replaces (HALF_OWN's midpoint of two climbing stems from about 1.2 s) protected #1's hole shot; with the Cover 2
+corner sinking (FLAT_SINK, engine-85) the key does not reopen it: staged Cover 2 / Match / Tampa (all concepts, 2 seeds,
+both formations, flip, 726 attempts), with FLAT_SINK: yd/att 8.14 -> 8.71, of which two distinct plays carry the rise
+(the half's missed dive and stop, since repaired by DOWN_RISE_PLANT, engine-84; a loose ball after a wrap); without them
+8.17 -> 8.23, 40+ yd 15 -> 15, completion flat; throws to #1 12.9 -> 8.8 yd/att. Hole shots against the NFL (78 Cover 2
+throws to #1 beyond 15 air yards, scripts/diag/coverage/hole_shot.py): the half's distance at arrival 6.9 vs 6.7 yd.
+
 ## engine-86: the Book / Stubbie nickel matches #2's flat (2026-11-18)
 
 On: `MUSH_MATCH` (Rules + Coaching; a repair of the `mush` seat rule against its own source). The Book / Stubbie nickel
