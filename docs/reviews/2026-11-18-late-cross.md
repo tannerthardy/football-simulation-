@@ -85,3 +85,9 @@ It folds into that flag when FORECAST_FINISH is rebased for its landing.
 
 Patch: `read-window-on-fe150600.patch` (develop fe150600, engine-83). Scan, guard, registry, provenance and read-plan
 pass.
+
+**The 9 → 14 interceptions traced** (`int-margin.ts`, same games):
+- With READ_WINDOW on, 4 of the 14 picks are on quick concepts, the only plays the flag can change.
+- One is the same play as off (quick_outs, cover6_rev, thrown at 1.95 s).
+- The new ones are thrown early (quick_outs at 1.9 s; double_slants at 2.5 s), not on a reopened read.
+- The other 10 are on concepts the flag does not touch: game divergence, not the mechanism.
