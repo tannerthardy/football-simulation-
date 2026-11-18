@@ -114,3 +114,20 @@ Manes 2-Read (throwdeeppublishing); footballnationusa (Palms, MOD vs MEG, Cover 
 zone; AFQ fire zone; vIQtory apex; SI on Seattle's zone errors and Kam Chancellor; Seahawks Hawk tackling handout;
 Fajen and Warren 2007 (Exp Brain Res); Brault et al. 2012 (PLoS ONE e37494). MatchQuarters and X&O Labs were
 paywalled or blocked.
+
+## Future deep dive: the quarters / Cover 7 call tree (user, 2026-11-18)
+
+"Quarters" is a family, not a coverage: what makes it work is when and why each check, tag and call is made. Saban's
+Cover 7 is the reference (e.g. https://footballadvantage.com/cover-7/: MOD, MEG, Bracket with Push / Fast 3, Mix, Clip,
+Smash / Under, split field). Today the engine has the pieces as separate calls (Quarters MOD, MEG, Palms, Box,
+Book/Read, Poach/Trix, Stubbie, Cover 6/Stuff, Cover 8, Pounder/Finger/Rolex, Quarters / 2-Man split; Rip/Liz and Mable
+on the Cover 3 side) but not Bracket, Mix or Clip; the calls are silent (each defender reads releases himself, so a call
+cannot be late, missed or misheard: backlog item 12); and nothing chooses a check the way a staff does.
+
+The work, in order:
+1. Inventory the Cover 7 / quarters tree from coaching sources: every check, tag and call, the formation, route
+   distribution, down-and-distance and opponent tendency that triggers it, and what it gives up.
+2. Map it against `src/playbook/coverages.ts` and `src/sim/coverage/rules.ts`; build the missing variants.
+3. Calls as heard cues (who makes each, when, and what a late or missed call costs).
+4. A defensive game-plan layer: which checks a staff carries into a game against an opponent, and the in-game
+   adjustments, so the playcaller chooses within the family for reasons a coach would recognise.
