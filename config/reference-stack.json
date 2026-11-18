@@ -413,6 +413,7 @@
     "CURL_SINK": "on",
     "SETTLE_DEPTH": "on",
     "DOWN_RISE_PLANT": "on",
+    "DIR_START": "off",
     "HANG_LOAD": "on",
     "SAFETY_DEPTH": "on",
     "SINK_LEAD": "off",
