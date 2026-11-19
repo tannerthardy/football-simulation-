@@ -361,6 +361,7 @@
   "test/native-penalty-game.test.ts",
   "test/native-rules-composition.test.ts",
   "test/nickel-fronts.test.ts",
+  "test/off-variety.test.ts",
   "test/offensive-motion.test.ts",
   "test/official-play-stats.test.ts",
   "test/officiate.test.ts",

@@ -13,7 +13,7 @@ import { CENTER_Y, END_LINE_X, FIELD_WIDTH, OPP_GOAL_X } from '../core/field.js'
 import { clamp, type Vec2 } from '../core/vec.js';
 import type { Coverage, CoverageRole, DefSlot, DefensivePlayCall, Formation, Gap, OffSlot, PassConcept, ReceiverRef, Side, SkillSlot, Technique, ZoneId, UnderSeat, FormationKey } from './types.js';
 import { sideSign } from './types.js';
-import { GUN_QB_DEPTH, PISTOL_QB_DEPTH, UNDER_TAILBACK_EXTRA } from './formations.js';
+import { GUN_QB_DEPTH, OFF_VARIETY, PISTOL_QB_DEPTH, UNDER_TAILBACK_EXTRA } from './formations.js';
 
 /** Default on (OL_SPLITS=0 turns it off): the line splits as tracked. 2022
  * tracking at the snap (body centres, scripts/diag/align/snap.py): 1.54 yd
@@ -1337,6 +1337,27 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
       : shade * 0.7;
     spots[d]!.pos = { x: los + depth, y: clamp(tp.y + offset, 1, FIELD_WIDTH - 1) };
     spots[d]!.press = press && isCorner && !off.spots[t].backfield;
+  }
+  // OFF_VARIETY: man against a receiver stack is one press and one off ("press the point, off the stack"): the defender
+  // on the stacked (deeper) man aligns off, at the off-man cushion over him, so the two do not stand on one spot.
+  if (OFF_VARIETY) {
+    const men = present.filter((d) => spots[d]?.manTarget && !off.spots[spots[d]!.manTarget!].backfield);
+    for (const a of men) for (const b of men) {
+      if (a === b) continue;
+      const pa = off.spots[spots[a]!.manTarget!].pos, pb = off.spots[spots[b]!.manTarget!].pos;
+      if (Math.abs(pa.y - pb.y) <= 1.6 && Math.abs(pb.x - los) >= Math.abs(pa.x - los) + 0.8) {
+        // A bunch (a third receiver within 4.5 yd of the pair) has its own banjo and box rules.
+        const third = Object.values(off.spots).some((s) => !s.backfield && s.pos !== pa && s.pos !== pb
+          && Math.sign(s.pos.y - off.ballY) === Math.sign(pb.y - off.ballY) && Math.abs(s.pos.y - pb.y) <= 4.5);
+        if (third) continue;
+        // b's man is the stacked (deeper) receiver: off, with the off-man shade of his leverage.
+        const mr = roles[b] as Extract<CoverageRole, { kind: 'man' }>;
+        const inside = Math.sign(off.ballY - pb.y) || 1;
+        const shade = mr.lev === 'outside' ? -inside : mr.lev === 'head' ? 0 : inside;
+        spots[b]!.pos = { x: los + 6, y: clamp(pb.y + shade * (mr.lev === 'outside' ? 0.5 : 0.2), 1, FIELD_WIDTH - 1) };
+        spots[b]!.press = false;
+      }
+    }
   }
 
   // Calls that set a pre-snap depth for a seat (a rotating safety cheated
