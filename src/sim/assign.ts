@@ -189,7 +189,8 @@ export function assignBehaviors(sim: PlaySim): void {
       if (a === qb || isOL(a)) continue;
       const ref = off.refOf[a.slot as keyof typeof off.refOf];
       const spot = off.spots[a.slot];
-      const outside = Math.sign(a.pos.y - sim.ballY) || off.strongSign;
+      // BACK_AS_THREE: the back who is #3 runs #3's flat, on the strong side.
+      const outside = ref === 'B' && concept.backIsThree ? off.strongSign : Math.sign(a.pos.y - sim.ballY) || off.strongSign;
       const blockLook = call.receiverBlockLook?.[a.slot as SkillSlot];
       const mkRoute = (id: string, delay = 0, conditional = false) => {
         const route = getRoute(id);
@@ -204,6 +205,11 @@ export function assignBehaviors(sim: PlaySim): void {
         return () => installBlockLook(a, sim, () => new RouteRunner(a, sim, route, outside,
           blockLook ? sim.t + delay : delay), true);
       };
+      // BACK_AS_THREE: the back is #3 in the route: on the snap to the flat on the strong side, out of the protection.
+      if (ref === 'B' && concept.backIsThree) {
+        a.behavior = mkRoute(concept.back, 0.1)();
+        continue;
+      }
       if (ref === 'B' || ref === 'B2' || !ref) {
         const assign = ref === 'B' ? concept.back : 'check';
         if (BACK_RELEASE && (assign === 'check' || (CONCEPT_MENU && BACK_ROUTES.has(assign)))) {

@@ -62,6 +62,11 @@ const ONE_LOOK: Record<string, ReceiverRef[]> = { mesh: ['S2', 'W2'] };
  * check's named man; he limits where and how high the ball goes, he does not reopen the key's decision: "if the
  * cornerback sinks... throw the hitch; if he comes up... throw the corner", Brown; the corner thrown "as high as the
  * safety will allow"). Key and danger sources are in docs/reviews/2026-11-14-read-plan-table.md. */
+/** BACK_AS_THREE: the keys a concept's compiled plan carries from trips, declared for the call with the back as #3
+ * (flood from trips compiles to a key on the playside curl-flat defender: the out high, the #3 flat low). */
+const BACK_THREE_KEYS: Record<string, { low: ReceiverRef; high: ReceiverRef; role: string; deep: boolean; danger: string; onSet?: boolean }> = {
+  flood: { low: 'B', high: 'S2', role: 'playside_curl_flat', deep: false, danger: 'the corner over the out' },
+};
 const KEYS: Record<string, { low: ReceiverRef; high: ReceiverRef; role: string; deep: boolean; danger: string; onSet?: boolean }> = {
   // The four the compiler keyed on another defender.
   drive: { low: 'W2', high: 'S2', role: 'hook', deep: false, danger: 'the safety over the dig' },
@@ -164,12 +169,14 @@ export function installedPlan(concept: PassConcept, formationId: string): Instal
   // A formation built for one play (a lab or stress scene) is not in the registry the on-air rep is run from: nothing
   // was installed for it, so he runs the play without a plan.
   if (!FORMATION_BY_ID[formationId]) return null;
-  const key = `${OUTLET_LAST ? 1 : 0}${PLAN_KEYS ? 1 : 0}${PLAN_ROLES ? 1 : 0}${PLAN_KEYS_2 ? 1 : 0}${PLAN_KEYS_3 ? 1 : 0}${DECLARED_BREAK ? 1 : 0}|${formationId}|${concept.id}|${concept.drop}|${JSON.stringify(concept.strong)}|${JSON.stringify(concept.weak)}|${concept.back}|${concept.teBlock ? 1 : 0}`;
+  const key = `${OUTLET_LAST ? 1 : 0}${PLAN_KEYS ? 1 : 0}${PLAN_ROLES ? 1 : 0}${PLAN_KEYS_2 ? 1 : 0}${PLAN_KEYS_3 ? 1 : 0}${DECLARED_BREAK ? 1 : 0}|${formationId}|${concept.id}|${concept.drop}|${JSON.stringify(concept.strong)}|${JSON.stringify(concept.weak)}|${concept.back}|${concept.teBlock ? 1 : 0}|${concept.backIsThree ? 1 : 0}`;
   if (cache.has(key)) return cache.get(key)!;
   teams ??= { off: generateTeam(new Rng(41), 'O', 'O', { strength: 0.6 }), def: generateTeam(new Rng(42), 'D', 'D', { strength: 0.6 }) };
   compiling++;
   let plan: InstalledPlan | null = null;
   try {
+    // BACK_AS_THREE: a call with the back as #3 is installed from its concept's tables (its key, order and looks).
+    const tableId = concept.backIsThree ? concept.id.replace(/\+b3$/, '') : concept.id;
     const compiled = compile(concept, formationId, false, teams.off, teams.def), c = compiled.chosen;
     if (c) {
       plan = {
@@ -180,7 +187,7 @@ export function installedPlan(concept: PassConcept, formationId: string): Instal
       const routes = new Map(compiled.routes.map((r) => [r.ref, r]));
       // PLAN_KEYS: the coached key, its cue at the top of the drop when the low route is first a throw (the
       // compiler's own rule: at the set, or 0.2 s before the low route is ready); the pair leads the order.
-      let k = PLAN_KEYS && (PLAN_KEYS_2 || !SECOND_KEYS.has(concept.id)) && (PLAN_KEYS_3 || !THIRD_KEYS.has(concept.id)) ? KEYS[concept.id] ?? (PLAN_ROLES ? ROLE_KEYS[concept.id] : undefined) : undefined;
+      let k = PLAN_KEYS && (PLAN_KEYS_2 || !SECOND_KEYS.has(tableId)) && (PLAN_KEYS_3 || !THIRD_KEYS.has(tableId)) ? KEYS[tableId] ?? (PLAN_ROLES ? ROLE_KEYS[tableId] : undefined) : undefined;
       // PLAN_ROLES: a key is the coached pair of routes, so it holds in every formation: its refs are resolved by the
       // routes the concept installs at them (S1 -> strong 1, W2 -> weak 2, B -> the back), preferring the same side.
       if (k && PLAN_ROLES) {
@@ -190,21 +197,35 @@ export function installedPlan(concept: PassConcept, formationId: string): Instal
         const low = find(k.low), high = find(k.high);
         if (low && high && low !== high) k = { ...k, low: low as ReceiverRef, high: high as ReceiverRef };
       }
+      // BACK_AS_THREE: the back is #3 on this call: #3's place in the key is his, and he is a read, not the outlet. A
+      // concept whose key the compiler finds from trips' geometry (flood: the curl-flat defender, the out high, the flat
+      // low) keeps it when the back is the flat: from 2x2 his flat starts in the backfield and the geometry no longer
+      // finds the pair, so it is declared.
+      if (concept.backIsThree && PLAN_KEYS && !k && !plan.key) k = BACK_THREE_KEYS[tableId];
+      if (concept.backIsThree) {
+        if (k) k = { ...k, low: k.low === 'S3' ? 'B' : k.low, high: k.high === 'S3' ? 'B' : k.high };
+        if (plan.outlet === 'B') plan = { ...plan, outlet: null };
+        if (!plan.order.includes('B')) {
+          const before = concept.progression.slice(0, concept.progression.indexOf('B')).filter((r) => plan!.order.includes(r)).pop();
+          const at = before ? plan.order.indexOf(before) + 1 : 0;
+          plan = { ...plan, order: [...plan.order.slice(0, at), 'B', ...plan.order.slice(at)] };
+        }
+      }
       const lo = k && routes.get(k.low), hi = k && routes.get(k.high);
       if (k && lo && hi) {
         const cueBy = +(k.onSet ? compiled.qbSetAt : k.deep ? Math.max(compiled.qbSetAt, lo.window.ready - 0.2) : Math.max(compiled.qbSetAt - 0.3, lo.window.ready - 0.2)).toFixed(2);
         plan = { ...plan, style: 'defender_key', key: { low: k.low, high: k.high, role: k.role, cueBy, danger: k.danger }, triangle: null,
           order: [k.high, k.low, ...plan.order.filter((r) => r !== k.high && r !== k.low)] };
       }
-      if (PLAN_KEYS && plan.key && !plan.key.danger && DANGER[concept.id]) plan = { ...plan, key: { ...plan.key, danger: DANGER[concept.id] } };
+      if (PLAN_KEYS && plan.key && !plan.key.danger && DANGER[tableId]) plan = { ...plan, key: { ...plan.key, danger: DANGER[tableId] } };
       // PLAN_KEYS: one named install where the sources disagree (a pure order: his eyes go in this order).
-      const io = PLAN_KEYS ? (INSTALL_ORDER[concept.id] ?? (PLAN_ROLES ? ROLE_ORDER[concept.id] : undefined))?.filter((r) => routes.has(r)) : undefined;
+      const io = PLAN_KEYS ? (INSTALL_ORDER[tableId] ?? (PLAN_ROLES ? ROLE_ORDER[tableId] : undefined))?.map((r) => (concept.backIsThree && r === 'S3' ? 'B' : r)).filter((r) => routes.has(r)) : undefined;
       if (io?.length) plan = { ...plan, style: 'pure', key: null, triangle: null, alert: null,
         order: [...io, ...plan.order.filter((r) => !io.includes(r))] };
       // OUTLET_LAST: the outlet leaves the field order; initPlan reads him after everyone else.
       if (OUTLET_LAST && plan.outlet) plan = { ...plan, order: plan.order.filter((r) => r !== plan!.outlet) };
       // PLAN_ROLES: a half-field read's back comes after the key pair, ahead of the backside.
-      if (PLAN_ROLES && plan.outlet && plan.key && BACK_AFTER_KEY.has(concept.id)) {
+      if (PLAN_ROLES && plan.outlet && plan.key && BACK_AFTER_KEY.has(tableId)) {
         const front = plan.order.filter((r) => r === plan!.key!.low || r === plan!.key!.high);
         plan = { ...plan, order: [...front, plan.outlet, ...plan.order.filter((r) => !front.includes(r) && r !== plan!.outlet)] };
       }
@@ -226,7 +247,7 @@ export function installedPlan(concept: PassConcept, formationId: string): Instal
       const key = plan.key;
       const groups: ReceiverRef[][] = [];
       if (CONCEPT_DROPS_RHYTHM && key && seq.includes(key.low) && seq.includes(key.high)) groups.push([key.low, key.high]);
-      const look = CONCEPT_DROPS_RHYTHM ? ONE_LOOK[concept.id] : undefined;
+      const look = CONCEPT_DROPS_RHYTHM ? ONE_LOOK[tableId] : undefined;
       if (look && look.every((r) => seq.includes(r))) groups.push(look);
       const groupOf = (r: ReceiverRef) => groups.find((g) => g.includes(r));
       let place = -1;

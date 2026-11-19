@@ -320,6 +320,7 @@
     "COMPILE_PICTURE": "on",
     "CRAFT_HOLD": "off",
     "CONCEPT_FIT": "off",
+    "BACK_AS_THREE": "off",
     "RELEASE_SIDE": "on",
     "SCREEN_DECLARE": "on",
     "ROUTE_SHAPE": "off",

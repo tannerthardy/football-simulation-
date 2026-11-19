@@ -17,6 +17,17 @@ import { planMotion, realignOffense } from '../sim/motion.js';
 
 export const CONCEPT_FIT = process.env.CONCEPT_FIT === '1';
 
+/**
+ * BACK_AS_THREE (experimental, off; with CONCEPT_FIT; Integration's ruling 2026-11-16): stick, flood and pa_flood from a
+ * field with no #3 send the back to the flat as #3, as they are taught from 2x2, instead of leaving the menu. Sources:
+ * Y-stick "Out of 2x2": "The running back runs one of two routes: a flare ... or a shoot route"; "The running back's shoot
+ * or flare route is the outside route" (Emory Wilhite, Learning to teach Y-Stick); flood's "flat route who is normally a
+ * Tight End or Running Back" (Youth Football Online, Flood Passing Concept); our pa_flood already sends the back to the
+ * flat (`back: 'back_flat'`). A back who is #3 in the route is not in the protection: the call says so (`backIsThree`),
+ * and the protection is the line (and a blocking inline end) alone; one more rusher than that is the quarterback's hot.
+ */
+export const BACK_AS_THREE = process.env.BACK_AS_THREE === '1';
+
 type Body = Pick<PhysicalProfile, 'vmax' | 'tau' | 'brake' | 'lateral' | 'radius'>;
 /** A nominal body for a slot the caller has no player for. */
 const NOMINAL: Body = { vmax: 9.4, tau: 0.75, brake: 6, lateral: 6, radius: 0.35 };
@@ -39,5 +50,18 @@ export function fieldRefs(f: Formation, flip: boolean, ballY: number, motion: Mo
 
 /** Whether the field has every receiver the concept's read names (an inner list: any one of them). */
 export function conceptFits(c: PassConcept, refs: Set<ReceiverRef>): boolean {
-  return (c.needs ?? []).every((n) => (typeof n === 'string' ? refs.has(n) : n.some((r) => refs.has(r))));
+  const has = (r: ReceiverRef) => refs.has(r) || (r === 'S3' && backIsThree(c, refs));
+  return (c.needs ?? []).every((n) => (typeof n === 'string' ? has(n) : n.some(has)));
+}
+
+/** BACK_AS_THREE: the back is #3 on this field (the concept installs it, there is no #3, and there is a back). */
+export function backIsThree(c: PassConcept, refs: Set<ReceiverRef>): boolean {
+  return BACK_AS_THREE && !!c.backThree && !refs.has('S3') && refs.has('B');
+}
+
+/** The call with the back as #3: he runs #3's role on the flat (the plan resolves #3's route to him), he is read where
+ * #3 is read, and he is out of the protection. */
+export function asBackThree(c: PassConcept): PassConcept {
+  const progression = [...new Set(c.progression.map((r) => (r === 'S3' ? 'B' : r)))] as ReceiverRef[];
+  return { ...c, id: `${c.id}+b3`, back: c.backThree!, strong: { ...c.strong, 3: c.backThree! }, progression, backIsThree: true };
 }
