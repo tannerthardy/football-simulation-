@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "engine-57",
+  "id": "engine-59",
   "runSet": {
     "commit": "1b5415de99b5b7194eff045f3c37a07a4c54c1a9",
     "seeds": [
@@ -118,7 +118,8 @@
     "GAP_CLIMB": "on",
     "GAZE": "off",
     "PERCEIVE_TRACK": "off",
-    "QB_BODY_SEEN": "off",
+    "QB_BODY_SEEN": "on",
+    "RCV_SEEN": "off",
     "GRAB_CONNECT": "off",
     "GRASP_ARM_MOMENT": "on",
     "GRASP_JEOPARDY": "on",
@@ -175,6 +176,12 @@
     "TACKLE_RESET": "off",
     "RUSH_HANDS": "off",
     "PASS_RIDE": "on",
+    "RUSH_ONE_HAND": "off",
+    "HAND_SITE": "off",
+    "PUNCH_STRIKE": "on",
+    "ANCHOR_BASE": "on",
+    "RUSH_ARM_BALANCE": "off",
+    "PASS_SET_SEEN": "on",
     "TACKLE_ANCHOR": "off",
     "RUSH_INTENT": "off",
     "LEG_ALLOMETRY": "on",
@@ -202,7 +209,9 @@
     "PULL_CUE": "off",
     "PULL_PLAN": "off",
     "QB_FEEL": "off",
+    "WAIT_REACHED": "on",
     "QB_RHYTHM": "on",
+    "RUSH_PROMISE": "on",
     "RACE_LEAN": "off",
     "RB_COMMIT": "on",
     "RB_FLOW": "on",
@@ -269,6 +278,7 @@
     "ZONE_RUN": "on",
     "ZONE_SCOOP": "on",
     "ZONE_WINGS": "on",
-    "PURSUIT_FIELD": "on"
+    "PURSUIT_FIELD": "on",
+    "PURSUIT_COMMIT": "on"
   }
 }

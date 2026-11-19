@@ -33,7 +33,7 @@ import { KEY_REACT, keyScale } from './key-read.js';
 import { clamp, logistic, norm, sub, type Vec2 } from '../core/vec.js';
 import { G } from '../core/units.js';
 import { directionalSpeedFactor, gaitLag, fatigueFactor, movingArrivalVelocity } from '../physics/kinematics.js';
-import { availability, baseRadiusAt, omega0, recoverySpeed, supportParams } from '../physics/support.js';
+import { availability, baseRadiusAt, criticalDeviation, omega0, recoverySpeed, supportParams } from '../physics/support.js';
 import { gapY } from '../playbook/alignment.js';
 import { CF_FLOW } from './counterfactual.js';
 import { connectionGap, contactMotion } from './contact-motion.js';
@@ -417,7 +417,18 @@ export const PUNCH = process.env.PUNCH !== '0';
 const LOCKOUT = 0.9;
 /** How far the punch drives the hands into the man (yd): a press, not a touch. */
 const PRESS_INTO = 0.1;
-const punchState = new WeakMap<HandJoint, { ext: number; over: number }>();
+const punchState = new WeakMap<HandJoint, { ext: number; over: number; striking?: boolean }>();
+/** PUNCH_STRIKE (experimental, off; with PUNCH): the punch's press into the man (PRESS_INTO) is a strike, not a
+ * standing request. On a new fit his hands drive into the man as before, until he feels the man on them (the joint's
+ * press at UNLOADED of his own press, last step's): the strike has landed. From then he holds the fit: his hands stay
+ * at the man (the touch), giving and following at arm speed, so they press only as the man closes on them faster than
+ * his arms give: his press, not a drive of his own. (Attempt 1 kept the arms' length against him, never shorter: a man
+ * closing compressed the joint deeper than the drive had, and falls rose to 41% of dropbacks.) A new fit (the man off his hands, beyond his arms by 0.05 yd, or a
+ * hand knocked off) is a new strike. A standing 0.1-yd drive into the man kept the joint at its push limit; his lean
+ * (sized by PASS_ANCHOR to the load he feels, his own drive's reaction included) grew to about a body weight, and when
+ * a swim, club or pull took the load away he fell forward: OL falls before the throw on 24.6% of dropbacks against
+ * 10.7% with PUNCH off (fall-rate.mts; NFL about 1-5 falls per 100 dropbacks, fall-proxy.py). */
+export const PUNCH_STRIKE = PUNCH && process.env.PUNCH_STRIKE !== '0';
 
 /** PUNCH is pass-set technique, the blocker's choice from what his job is
  * showing: pressing a man at arm's length is how a pass blocker keeps him off
@@ -446,9 +457,68 @@ function punch(sim: PlaySim, joint: HandJoint, b: Agent, d: Agent): void {
   // A punch presses: the hands go a little into the man (PRESS_INTO), so the joint compresses against him -- across
   // his path when he comes across the blocker's face -- rather than resting at the touch (attempt 1 aimed at the
   // gap less 0.02 yd: as the man crossed, N p50 stayed 0).
-  const want = clamp(gap + PRESS_INTO, base, lock), step = ARM_SPEED * sim.dt;
+  if (PUNCH_STRIKE) {
+    // A new fit: the man off his hands (beyond his arms), or a hand knocked off (RUSH_HANDS).
+    if (st.striking === undefined || gap > st.ext + 0.05 || joint.off || (joint.handsOn ?? 2) < 2) st.striking = true;
+    // Landed: he feels the man on his hands.
+    else if (st.striking && Math.max(0, joint.normalForce ?? 0) >= UNLOADED * pressForce(b)) st.striking = false;
+  }
+  const holding = PUNCH_STRIKE && !st.striking;
+  // Holding the fit: his hands stay at the man (the touch), giving and following at arm speed; they press only as the man
+  // closes on them faster than his arms give (his press, not a drive of his own).
+  const want = holding ? clamp(gap, base, lock) : clamp(gap + PRESS_INTO, base, lock), step = ARM_SPEED * sim.dt;
   st.ext = clamp(want, st.ext - step, st.ext + step);
   joint.extension = bodies + Math.max(base, st.ext);
+}
+
+/** HAND_SITE (experimental, off): a hand's working length follows where it is on the man (Integration, 2026-11-13,
+ * torso-contact diagnosis). The hands joint is a strut from the holder's chest to the man's centre; its length so far
+ * was the arm's extension to a man's chest in front of him, wherever the man was. Beside him, the hand still on is on
+ * the man's side or back plate with the elbow bent: its working length is a forearm, so the bodies can meet and the
+ * torso contact (normal across his path, friction along it, his balance carrying the side load) carries the ride.
+ *
+ * Continuous in the man's bearing off the holder's chest, beta (0 = square in front):
+ *   - |beta| <= SITE_FRONT (45 deg): nothing changes (every joint force identical to off);
+ *   - to SITE_ABREAST (100 deg): the length goes smoothly (smoothstep) from the arm's to bodies + FOREARM;
+ *   - the length moves at ARM_SPEED (the arm bends and straightens no faster than arms move).
+ * What the hand can do there, also continuous, with w the same smoothstep (1 in front, 0 abreast):
+ *   - push (press along the joint, holder to man): the arm's press scaled by the man's own bearing, gamma (0 = the
+ *     holder at his chest, 90 = at his side, 180 = at his back): full to gamma 90 deg (a hand on his side presses
+ *     him across his path), to 0 at gamma 150 deg (a hand on his back cannot push him away from the QB: it would push
+ *     him on toward him). push *= w + (1 - w) * pressAt(gamma);
+ *   - steer (along the man's chest): a bent arm on his side steers a little: steer *= w + (1 - w) * 0.5 * pressAt(gamma);
+ *   - hold: unchanged (a grab from behind stays the holding detector's).
+ * No threshold switches anything: length, push and steer are smooth functions of the two bearings. */
+export const HAND_SITE = process.env.HAND_SITE === '1';
+const SITE_FRONT = 45 * Math.PI / 180, SITE_ABREAST = 100 * Math.PI / 180;
+const siteState = new WeakMap<HandJoint, { len: number }>();
+const smooth01 = (x: number) => { const u = clamp(x, 0, 1); return u * u * (3 - 2 * u); };
+/** The hand's place on the man, by bearing: 1 on the holder's chest frame, 0 abreast or behind. */
+function siteWeight(holder: Agent, man: Agent): number {
+  const beta = Math.abs(Math.atan2(Math.sin(Math.atan2(man.pos.y - holder.pos.y, man.pos.x - holder.pos.x) - holder.body.facing),
+    Math.cos(Math.atan2(man.pos.y - holder.pos.y, man.pos.x - holder.pos.x) - holder.body.facing)));
+  return 1 - smooth01((beta - SITE_FRONT) / (SITE_ABREAST - SITE_FRONT));
+}
+/** The press a hand can put on the man at his own bearing gamma (the holder's direction off his facing). */
+function pressAt(holder: Agent, man: Agent): number {
+  const a = Math.atan2(holder.pos.y - man.pos.y, holder.pos.x - man.pos.x) - man.body.facing;
+  const gamma = Math.abs(Math.atan2(Math.sin(a), Math.cos(a)));
+  return 1 - smooth01((gamma - Math.PI / 2) / (Math.PI * 60 / 180));
+}
+export function handSite(sim: Pick<PlaySim, "dt">, joint: HandJoint, b: Agent, d: Agent): void {
+  const holder = joint.actor === d.body ? d : b, man = holder === b ? d : b;
+  const w = siteWeight(holder, man);
+  let st = siteState.get(joint);
+  if (w >= 1 && !st) return;
+  const full = joint.extension, bent = Math.min(full, holder.profile.radius + man.profile.radius + FOREARM);
+  const target = bent + (full - bent) * w, step = ARM_SPEED * sim.dt;
+  if (!st) { st = { len: full }; siteState.set(joint, st); }
+  st.len = clamp(target, st.len - step, st.len + step);
+  if (w >= 1 && Math.abs(st.len - full) < 1e-9) { siteState.delete(joint); return; }
+  joint.extension = st.len;
+  const p = pressAt(holder, man);
+  joint.push *= w + (1 - w) * p;
+  joint.steer *= w + (1 - w) * 0.5 * p;
 }
 
 /** OPEN_HANDS: the rep's leverage at which the man has left the blocker's
@@ -534,6 +604,7 @@ function setRunHelperHands(sim: PlaySim, e: Engagement, h: Agent, joint: HandJoi
   }
   setContactHands(joint, h, e.defender, 'run', state.control, false);
   if (PUNCH && state.control >= 0 && passSetTechnique(sim, h, e)) punch(sim, joint, h, e.defender);
+  if (HAND_SITE) handSite(sim, joint, h, e.defender);
   if (OPEN_HANDS) joint.grip = gripFor(sim, joint, h, e.defender, e, false);
 }
 
@@ -581,6 +652,7 @@ function setHands(sim: PlaySim, e: Engagement): void {
   setContactHands(hands, b, d, e.type, e.control, e.holding);
   // PUNCH: the blocker's hands go to the man, out to lockout.
   if (PUNCH && e.control >= 0 && passSetTechnique(sim, b, e)) punch(sim, hands, b, d);
+  if (HAND_SITE) handSite(sim, hands, b, d);
   // OPEN_HANDS: the controlling player's fingers on the other man's cloth.
   if (OPEN_HANDS) hands.grip = e.control >= 0 ? gripFor(sim, hands, b, d, e, e.holding) : gripFor(sim, hands, d, b, null, false);
   // RUSH_HANDS: a hand knocked off re-fits by reach and touch: after his reaction to the loss (felt), it travels
@@ -594,7 +666,9 @@ function setHands(sim: PlaySim, e: Engagement): void {
   if (RUSH_HANDS && (hands.off || (hands.handsOn ?? 2) < 2)) {
     // He feels the hands gone (both, or the last one not pressing him): he is free of them until one re-fits (his
     // request works past, as a landed move).
-    if (hands.off || Math.max(0, hands.normalForce ?? 0) < UNLOADED * pressForce(b)) { e.moveOk = true; e.moveUntil = Math.max(e.moveUntil, t + sim.dt); }
+    // RUSH_ONE_HAND: one hand gone is not a landed move: only both gone frees him (the side it guarded is open, the
+    // body and the other hand are still in front; workToCleared aims him there).
+    if (hands.off || (!RUSH_ONE_HAND && Math.max(0, hands.normalForce ?? 0) < UNLOADED * pressForce(b))) { e.moveOk = true; e.moveUntil = Math.max(e.moveUntil, t + sim.dt); }
     refit(sim, hands, b, d);
   }
   // A landed finesse move has the hands off for its window.
@@ -611,6 +685,7 @@ function setHands(sim: PlaySim, e: Engagement): void {
     j.push = pressForce(h) * 0.8 * support;
     j.steer = armForce(h) * 0.4 * support;
     j.hold = 0;
+    if (HAND_SITE) handSite(sim, j, h, d);
     if (OPEN_HANDS) j.grip = gripFor(sim, j, h, d, e, false);
   }
   if (RUSH_HANDS && e.rusherHand) stepLongArm(sim, e);
@@ -706,6 +781,16 @@ function planMove(sim: PlaySim, e: Engagement, d: Agent, b: Agent): RushMove {
  * with probability 0.5 + 0.5 x his recognition (finesse and awareness); a misread commits him to the wrong move,
  * which costs what that move costs. */
 const UNLOADED = 0.2;
+/** RUSH_ONE_HAND: the side (along `lat`, +-1) a cleared hand vacated, 0 with both hands on or both off. The
+ * hands joint runs blocker -> rusher; its tangent is (-n.y, n.x) and `offSide` is the vacated side's sign along it. */
+function clearedSide(e: Engagement, lat: Vec2): number {
+  const j = e.hands;
+  if (!j || j.off || (j.handsOn ?? 2) !== 1 || !j.offSide) return 0;
+  const dx = e.defender.pos.x - e.blocker.pos.x, dy = e.defender.pos.y - e.blocker.pos.y, n = Math.hypot(dx, dy) || 1;
+  const along = j.offSide * (-dy / n * lat.x + dx / n * lat.y);
+  return Math.abs(along) < 1e-6 ? 0 : Math.sign(along);
+}
+
 export function handUnloaded(e: Engagement): boolean {
   const h = e.hands;
   return !!h && !h.off && Math.max(0, h.normalForce ?? 0) < UNLOADED * pressForce(e.blocker);
@@ -1028,6 +1113,48 @@ export const TACKLE_BRAKE = process.env.TACKLE_BRAKE === '1';
 export const TACKLE_RESET = process.env.TACKLE_RESET === '1';
 const SINK_POSTURE = 0.95;
 
+/** ANCHOR_BASE (experimental, off): how much of himself a pass protector commits into the man is bounded by what
+ * his base could recover from if the load vanished. The World releases a lean that loses its load into his capture
+ * point (lean / (m w0^2), less what his gait absorbs) and he falls past criticalDeviation (base radius + stepping speed
+ * / w0); in games, unloads topple him 1-4% of the time with a lean under 0.6 of m w0^2 x critical deviation, 21-30% at
+ * 0.9 and above, where the lean has grown to the whole press (unload-outcomes.mts). So:
+ *  - the commit bound: leanCap = k m w0^2 critDev at his present posture, k = 1.05 - 0.55 x technique (pass blocking
+ *    and balance): a poor technician commits up to all of what he can recover from and is swum and pulled; a good one
+ *    keeps a margin;
+ *  - the anchor: under a heavy press he sinks (posture 0.6 + 0.35 x technique), a lower centre of mass and a wider base
+ *    (w0^2 x critDev both grow), so the base itself stops more press for the same margin; his strength (the World's
+ *    leg drive and traction) decides how much of it the legs can hold;
+ *  - the rest of the press, beyond what he commits, walks him back: ground given is the rusher's power against his base
+ *    and strength.
+ * PASS_SINK sank him under load and TACKLE_RESET re-set his feet, both acting on the retreat with the lean unbounded
+ * (it grew to the press); this bounds the commitment itself. No capacity added. */
+export const ANCHOR_BASE = process.env.ANCHOR_BASE !== '0';
+function anchorBase(b: Agent, tb: TrenchTraits, heavy: boolean, intent: Intent): void {
+  const sup = b.body.support; if (!sup) return;
+  const technique = clamp(0.5 * b.r('passBlock') + 0.5 * tb.balance, 0, 1);
+  if (heavy) intent.posture = Math.max(intent.posture ?? 0.6, 0.6 + 0.35 * technique);
+  const sp = supportParams(b.profile), w0 = omega0(sp, sup.posture);
+  intent.leanCap = (1.05 - 0.55 * technique) * b.profile.massKg * w0 * w0 * criticalDeviation(sp, sup.posture, sup.feetLock, 1);
+}
+
+/** RUSH_ARM_BALANCE (experimental, off; with RUSH_HANDS): while a rusher holds a long-arm, his own locked arm is the
+ * strut between him and the blocker, and he can lose it in one tick (the blocker gives, slips the arm, or the arm comes
+ * off). A lean against his own strut buys no movement the arm's push does not already give, so he commits behind it as
+ * a protector does: no lean past the load he feels (growth 0) and no more than his base could recover from if the strut
+ * went (k m w0^2 critDev, k = 1.05 - 0.55 x technique: balance and power rush). A bull, his chest on the man, keeps its
+ * commitment, and a bull who over-commits and is dropped still falls. Diagnosis: under RUSH_HANDS, 37 of 44 rusher
+ * falls were long-arm releases; the press he leaned against was two joints summed (the guard's hands and his own arm,
+ * 1600-1900) and his lean grew to it plus the legs' 25% growth, then dumped forward when the arm ended
+ * (fall-trace.mts FALL_ROLE=DL, longarm-release.mts). */
+export const RUSH_ARM_BALANCE = process.env.RUSH_ARM_BALANCE === '1';
+function armBalance(d: Agent, td: TrenchTraits, intent: Intent): void {
+  const sup = d.body.support; if (!sup) return;
+  const technique = clamp(0.5 * td.balance + 0.5 * d.r('passRushPower'), 0, 1);
+  const sp = supportParams(d.profile), w0 = omega0(sp, sup.posture);
+  intent.growth = 0;
+  intent.leanCap = (1.05 - 0.55 * technique) * d.profile.massKg * w0 * w0 * criticalDeviation(sp, sup.posture, sup.feetLock, 1);
+}
+
 /** TACKLE_RESET: the blocker's base re-set (see the flag). Edits his intent in place. */
 function baseReset(sim: PlaySim, e: Engagement, intent: Intent): void {
   const b = e.blocker, sup = b.body.support;
@@ -1179,6 +1306,9 @@ const RIDE_PUSH = 1.0;
  * front (along his path by more than PAST_MARGIN), so the two do not flicker. A grip from behind stays the holding
  * detector's. */
 export const PASS_RIDE = process.env.PASS_RIDE !== '0';
+/** RUSH_ONE_HAND (with RUSH_HANDS; off): one cleared hand opens the side it guarded instead of freeing him; only
+ * both hands gone is a landed move, and PAST (geometry) declares the win. */
+export const RUSH_ONE_HAND = RUSH_HANDS && process.env.RUSH_ONE_HAND === '1';
 const RIDE_GAIN = 2.5;
 function rideIntent(b: Agent, d: Agent, qb: Vec2, growth: number | undefined, feet: number): Intent {
   const sp = Math.hypot(d.vel.x, d.vel.y);
@@ -1571,6 +1701,10 @@ function stepPassRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
     // Work the edge: at the blocker's hip on his working side, a step past it toward the QB.
     aim = { x: b.pos.x + lat.x * e.side * (sep + 0.2) + axis.x * 0.5, y: b.pos.y + lat.y * e.side * (sep + 0.2) + axis.y * 0.5 };
   } else if (between === 'stall') aim = { x: b.pos.x, y: b.pos.y };
+  // RUSH_ONE_HAND: a cleared hand opens the side it guarded. He works to it, at the blocker's hip a step past toward
+  // the QB, through the body and the remaining hand at whatever speed that contact allows; PAST (geometry) wins it.
+  const cleared = RUSH_ONE_HAND && !turned && !inMove ? clearedSide(e, lat) : 0;
+  if (cleared) aim = { x: b.pos.x + lat.x * cleared * (sep + 0.2) + axis.x * 0.5, y: b.pos.y + lat.y * cleared * (sep + 0.2) + axis.y * 0.5 };
   // EDGE_ARC: working the outside of a tackle, the corner is his landmark at
   // the QB's depth outside the tackle's shoulder; past the hips he turns.
   const arcOut = b.passSet?.outside ?? 0;
@@ -1579,15 +1713,16 @@ function stepPassRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
     aim = d.pos.x < b.pos.x - ARC_PAST ? qbSeen : { x: Math.min(qbSeen.x, b.pos.x - ARC_PAST - 0.2), y: arcLandmark(sim, b, d).y };
   }
   const toAim = norm(sub(aim, d.pos));
-  const rush = between === 'stall' ? RUSH_STALL_PACE : between === 'edge' ? d.profile.vmax * (0.6 + 0.25 * td.bend)
+  const rush = cleared ? d.profile.vmax * (0.8 + 0.15 * td.bend) : between === 'stall' ? RUSH_STALL_PACE : between === 'edge' ? d.profile.vmax * (0.6 + 0.25 * td.bend)
     : d.profile.vmax * (power ? 0.55 : 0.8 + 0.15 * td.bend) * (stalled ? 0.6 : 1);
   intents[d.idx] = {
     vel: { x: toAim.x * rush, y: toAim.y * rush },
     facing: Math.atan2(qb.y - d.pos.y, qb.x - d.pos.x),
-    push: between === 'stall' ? 0.6 : between === 'edge' ? 0.5 : between === 'power' ? 0.75 + 0.25 * (0.5 * d.r('passRushPower') + 0.5 * clamp((d.profile.massKg - 110) / 40, 0, 1)) : power ? 1 : inMove ? 0.35 : 0.75,
+    push: cleared ? 0.75 : between === 'stall' ? 0.6 : between === 'edge' ? 0.5 : between === 'power' ? 0.75 + 0.25 * (0.5 * d.r('passRushPower') + 0.5 * clamp((d.profile.massKg - 110) / 40, 0, 1)) : power ? 1 : inMove ? 0.35 : 0.75,
     posture: bend ? 0.95 : 0.75,
     cutSkill: 0.8 + 0.5 * td.bend,
   };
+  if (RUSH_ARM_BALANCE && e.rusherHand) armBalance(d, td, intents[d.idx]);
 
   // ---- the blocker: stay between him and the QB, give ground to set depth,
   // then anchor. Mirror with the feet; the hands steer what they control.
@@ -1679,6 +1814,7 @@ function stepPassRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
     cutSkill: 0.85 + 0.3 * tb.feet,
   };
   if (TACKLE_RESET && TACKLE_BRAKE && floor !== null && !riding) baseReset(sim, e, intents[b.idx]);
+  if (ANCHOR_BASE) anchorBase(b, tb, heavy, intents[b.idx]);
   e.lastReqX = intents[b.idx].vel.x;
   if (PASS_RIDE) e.riding = riding;
   if (riding) {
@@ -1689,6 +1825,7 @@ function stepPassRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
     if (PASS_RIDE) intents[b.idx] = rideIntent(b, d, qb, growth, tb.feet);
     else intents[b.idx] = { vel: { x: d.vel.x + away.x * RIDE_PUSH, y: d.vel.y + away.y * RIDE_PUSH },
       facing: Math.atan2(d.pos.y - b.pos.y, d.pos.x - b.pos.x), push: 1, growth, posture: 0.6, cutSkill: 0.85 + 0.3 * tb.feet };
+    if (ANCHOR_BASE) anchorBase(b, tb, heavy, intents[b.idx]);
   }
   helperIntents(sim, e, intents, axis);
 }
