@@ -103,6 +103,33 @@ function clearLane(a: Agent, sim: PlaySim, cmd: MoveCommand): MoveCommand {
  * 11%) (lane.py, engine-31 vs BDB 2025 weeks 1-3). */
 const ROUTE_CRAFT = process.env.ROUTE_CRAFT !== '0';
 
+/** MESH_TIME (experimental, off; with CROSS_FLAT, whose mesh_under it adjusts): mesh as coordinated. Y (shallow_high)
+ * sets the depth at the linebackers' toes and does not adjust; X (mesh_under) runs "just underneath the Y as tightly
+ * as they can" (Air Raid / Holgorsen). From his own picture of Y (seen position and velocity, his delay), while they
+ * close laterally and within 2.0 s of meeting, X steers his depth to pass under Y's depth at the meeting by a margin
+ * his route running sets, the hand-slap geometry: 0.8 yd centre to centre at the best, 1.4 at the worst. His lateral speed is kept and his
+ * speed never rises. A trailing defender who is picked is the physics of the two bodies, not a scripted rub. Off, X
+ * runs his points (staged against Cover 1: closest approach 2.2 yd, no defender contact with the other crosser). */
+const MESH_TIME = process.env.MESH_TIME === '1';
+/** How far out he starts setting up under Y (s to the meeting): as taught he gets under Y on the way, not at the mesh.
+ * Attempt 1 started at 1.5 s and missed his own margin by 0.24 yd (p50; 0.73 at p75) against a still-climbing Y. */
+const MESH_LEAD = 2.0;
+export function meshTime(a: Agent, sim: Pick<PlaySim, 'offense' | 'see' | 'los' | 'attackDir'>, cmd: MoveCommand, rr: number): MoveCommand {
+  const y = sim.offense.find((o) => o !== a && (o.behavior as unknown as { route?: RouteDef })?.route?.id === 'shallow_high');
+  if (!y) return cmd;
+  const seen = sim.see(a, y), dir = sim.attackDir(a.team);
+  const gap = seen.pos.y - a.pos.y, closing = (a.vel.y - seen.vel.y) * Math.sign(gap);
+  if (closing < 0.5 || Math.abs(gap) < 0.3) return cmd;
+  const tm = Math.abs(gap) / closing;
+  if (tm > MESH_LEAD) return cmd;
+  const yDepth = (seen.pos.x + seen.vel.x * tm - sim.los) * dir, myDepth = (a.pos.x - sim.los) * dir;
+  const want = yDepth - (0.8 + 0.6 * (1 - rr));
+  const speed = Math.hypot(cmd.vel.x, cmd.vel.y);
+  const vx = Math.max(-3, Math.min(3, (want - myDepth) / Math.max(tm, 0.3))) * dir;
+  const vy = Math.sign(cmd.vel.y) * Math.sqrt(Math.max(0, speed * speed - vx * vx));
+  return { ...cmd, vel: { x: vx, y: Math.abs(vy) > 0.5 ? vy : cmd.vel.y } };
+}
+
 /** ROUTE_CRAFT: the route command, bent around a defender seen in the lane. */
 export function routeCraft(a: Agent, sim: Pick<PlaySim, 'defense' | 'see' | 't'>, cmd: MoveCommand, rr: number, breakSide: number): MoveCommand {
   const speed = Math.hypot(cmd.vel.x, cmd.vel.y);
@@ -313,8 +340,10 @@ export class RouteRunner implements Behavior {
       return this.settle(a, sim);
     }
     if (ROUTE_CLEAR && this.fromBackfield) return clearLane(a, sim, cmd);
-    if (ROUTE_CRAFT) return routeCraft(a, sim, cmd, rr, this.breakSide(a));
-    return cmd;
+    // MESH_TIME: X times his depth under Y at the mesh, then his route craft as before.
+    const meshed = MESH_TIME && this.route.id === 'mesh_under' ? meshTime(a, sim, cmd, rr) : cmd;
+    if (ROUTE_CRAFT) return routeCraft(a, sim, meshed, rr, this.breakSide(a));
+    return meshed;
   }
 
   /** ROUTE_CRAFT: which way his next break turns relative to his current
