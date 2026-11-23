@@ -486,3 +486,41 @@ Second implementation: 54 receiver rows, max |d1|, |d2| difference 0.0000 yd, re
 - 303-2-79 cover6 rel frame 34 QB (-6.7, 23.7): Y d1 4.5 d2 7.3 behind/head-up/steady; X d1 4.6 d2 14.7 behind/inside/closing; Z d1 3.3 d2 10.7 front/inside/steady; H d1 2.2 d2 2.2 level/outside/opening
 
 Second implementation: 57 receiver rows, max |d1|, |d2| difference 0.0000 yd, relation / side mismatches 0.
+
+## Corner cushion on #1 (added)
+
+Operator in `scripts/diag/census/corner_cushion.py`. #1 = the widest route runner on a side (at least 7 yd from the center), his corner = the defender nearest to him at the snap. Break = the largest heading turn (at least 35 degrees) in the sampled track, which ends at the release, so only breaks with 0.4 s of track after them count (6% of NFL sides, 10% of ours) and they skew late. Cushion = the corner's depth past #1 (plus: downfield of him).
+
+Readings: at the snap ours sits about 1 yd deeper in zone (median cushion 4.2 vs 3.0; Quarters 4.7 vs 3.5, Cover-6 4.9 vs 2.9, Cover-2 4.0 vs 3.0, Cover-3 3.8 vs 2.9); in man the median is equal (2.5 vs 2.5). At #1's break the corner is more often trailing him in ours in Cover-2 (.73 trailing against .36 NFL; on top .10 against .40; n 115 vs 124) and Cover-6 (.64 vs .40; n 45 vs 87), about the same in Cover-3 (.48 vs .39) and Cover-1 (.12 vs .15), where ours is more often level (.49 vs .26). Distance at the break in Cover-2: ours median 3.0 yd (p25 2.0, p75 6.8), NFL 4.2 (1.6, 9.2): closer, but behind him more often.
+
+## Corner cushion on #1, at the snap and at #1's break
+
+### NFL (BDB 2025)
+
+| group | #1 sides | snap cushion (depth past #1) p25 / 50 / 75 | snap dist p50 | snap on top / level / trailing | with a break | break dist p25 / 50 / 75 | break nearest defender p50 | break on top / level / trailing | break time p50 |
+|---|---|---|---|---|---|---|---|---|---|
+| all | 16666 | 2.0 / 2.8 / 5.5 | 4.2 | 0.99 / 0.01 / 0.00 | 1041 | 1.5 / 4.0 / 9.1 | 2.2 | 0.49 / 0.19 / 0.31 | 2.40 |
+| man | 4427 | 2.0 / 2.5 / 3.6 | 3.0 | 0.99 / 0.01 / 0.00 | 351 | 1.2 / 1.7 / 4.0 | 1.5 | 0.56 / 0.27 / 0.16 | 2.10 |
+| zone | 12239 | 2.0 / 3.0 / 6.0 | 4.7 | 0.99 / 0.01 / 0.00 | 690 | 2.3 / 5.8 / 11.4 | 2.8 | 0.46 / 0.15 / 0.39 | 2.60 |
+| Cover-3 | 5287 | 1.9 / 2.9 / 6.3 | 5.0 | 0.98 / 0.02 / 0.00 | 282 | 3.1 / 6.1 / 11.5 | 3.2 | 0.51 / 0.09 / 0.39 | 2.60 |
+| Cover-1 | 3532 | 2.0 / 2.5 / 3.4 | 2.9 | 0.99 / 0.01 / 0.00 | 292 | 1.2 / 1.7 / 4.0 | 1.5 | 0.59 / 0.26 / 0.15 | 2.10 |
+| Cover-2 | 2384 | 2.1 / 3.0 / 5.3 | 4.0 | 0.99 / 0.01 / 0.00 | 124 | 1.6 / 4.2 / 9.2 | 2.8 | 0.40 / 0.23 / 0.36 | 2.50 |
+| Quarters | 2158 | 2.0 / 3.5 / 7.1 | 5.7 | 0.99 / 0.01 / 0.00 | 121 | 3.3 / 6.2 / 15.8 | 2.5 | 0.53 / 0.12 / 0.35 | 2.70 |
+| Cover-6 | 1609 | 2.0 / 2.9 / 5.5 | 4.5 | 0.98 / 0.02 / 0.00 | 87 | 1.9 / 5.3 / 12.0 | 2.7 | 0.40 / 0.20 / 0.40 | 2.70 |
+| Cover-0 | 593 | 2.0 / 2.7 / 5.3 | 3.8 | 0.99 / 0.01 / 0.00 | 37 | 1.1 / 1.7 / 2.9 | 1.4 | 0.41 / 0.32 / 0.27 | 2.10 |
+| 2-Man | 302 | 2.1 / 2.5 / 3.6 | 2.7 | 0.99 / 0.01 / 0.00 | 22 | 1.2 / 1.5 / 7.7 | 1.4 | 0.50 / 0.36 / 0.14 | 2.45 |
+
+### Ours: sim-all24.jsonl.gz
+
+| group | #1 sides | snap cushion (depth past #1) p25 / 50 / 75 | snap dist p50 | snap on top / level / trailing | with a break | break dist p25 / 50 / 75 | break nearest defender p50 | break on top / level / trailing | break time p50 |
+|---|---|---|---|---|---|---|---|---|---|
+| all | 4042 | 2.3 / 3.7 / 6.5 | 5.5 | 1.00 / 0.00 / 0.00 | 416 | 1.4 / 2.7 / 7.8 | 2.2 | 0.30 / 0.25 / 0.45 | 2.45 |
+| man | 1021 | 2.3 / 2.5 / 6.0 | 3.4 | 1.00 / 0.00 / 0.00 | 109 | 0.9 / 1.0 / 2.3 | 1.0 | 0.32 / 0.58 / 0.10 | 2.80 |
+| zone | 3021 | 2.1 / 4.2 / 6.7 | 5.9 | 1.00 / 0.00 / 0.00 | 307 | 2.1 / 3.1 / 10.4 | 2.4 | 0.29 / 0.13 / 0.58 | 2.40 |
+| Cover-3 | 1388 | 2.1 / 3.8 / 6.8 | 6.3 | 1.00 / 0.00 / 0.00 | 109 | 2.5 / 3.8 / 11.4 | 2.5 | 0.41 / 0.11 / 0.48 | 2.40 |
+| Cover-1 | 824 | 2.3 / 2.5 / 6.2 | 4.1 | 1.00 / 0.00 / 0.00 | 90 | 0.9 / 1.1 / 2.8 | 1.0 | 0.39 / 0.49 / 0.12 | 2.70 |
+| Cover-2 | 514 | 2.5 / 4.0 / 5.1 | 4.4 | 1.00 / 0.00 / 0.00 | 115 | 2.0 / 3.0 / 6.8 | 2.4 | 0.10 / 0.17 / 0.73 | 2.40 |
+| Quarters | 648 | 2.1 / 4.7 / 7.2 | 6.7 | 1.00 / 0.00 / 0.00 | 29 | 1.5 / 2.5 / 11.2 | 2.1 | 0.59 / 0.07 / 0.34 | 2.40 |
+| Cover-6 | 410 | 2.5 / 4.9 / 6.8 | 5.8 | 1.00 / 0.00 / 0.00 | 45 | 1.5 / 2.9 / 9.4 | 2.3 | 0.20 / 0.16 / 0.64 | 2.30 |
+| Cover-0 | 204 | 2.3 / 2.3 / 2.6 | 2.5 | 1.00 / 0.00 / 0.00 | 24 | 0.8 / 0.9 / 1.1 | 0.9 | 0.21 / 0.79 / 0.00 | 2.90 |
+| 2-Man | 54 | 2.3 / 2.5 / 6.0 | 3.2 | 1.00 / 0.00 / 0.00 | 4 | 2.8 / 6.4 / 9.7 | 3.1 | 0.25 / 0.25 / 0.50 | 2.40 |
