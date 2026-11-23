@@ -13,7 +13,7 @@ for pi, p in enumerate(J['plays']):
     car = {i: ((F[i]['c'][0], F[i]['c'][1]), (F[i]['c'][2], F[i]['c'][3])) for i in frames}
     defs = {k: {i: F[i]['d'][k] for i in frames if k in F[i]['d']} for k in F[0]['d']}
     for n, kind in p['lab'].items():
-        if n not in defs: continue
+        if n not in defs or kind not in ('tackle', 'assist', 'missed'): continue  # 'broken' (held earlier, escaped) is kept apart
         dist = {f: math.dist(defs[n][f][:2], car[f][0]) for f in frames if f in defs[n]}
         fs = sorted(dist); closest = min(dist.values())
         row = dict(key=[J['firstSeed'], pi], id=n, kind=kind, ptype=p['ptype'], pos=p['pos'].get(n, '?'), closest=round(closest, 2))
