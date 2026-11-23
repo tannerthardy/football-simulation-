@@ -27,7 +27,7 @@ import { TRACK_TACKLE } from './behaviors/common.js';
 import { OPP_GOAL_X, OWN_GOAL_X } from '../core/field.js';
 import { G } from '../core/units.js';
 import { clamp, type Vec2 } from '../core/vec.js';
-import { availability, comHeightAt, supportParams, TURF_MU } from '../physics/support.js';
+import { availability, comHeightAt, fallTime, supportParams, TURF_MU } from '../physics/support.js';
 import { fatigueFactor, shouldersOf } from '../physics/kinematics.js';
 import { CONTACT_SCALE, GROUND_STRETCH, type GraspJoint, type Intent } from '../physics/world.js';
 import type { Agent } from './agent.js';
@@ -155,7 +155,10 @@ function handHold(d: Agent, q: number, hands = 2): number {
  * grab is made only if, in that flight, the carrier comes inside his standing reach (`reachTo`, share 1): the attempt is
  * then the ordinary one at the distance the bodies actually reached. If he lands without that, it is a miss
  * ('lunge short'). What the lunge buys is closing his body can produce; what it costs is his feet, his steering and the
- * hold's footing. Stated choices: the hands in flight reach his standing reach (no extra reach for the trunk pitching
+ * hold's footing. He takes it only when, by his picture and that push-off, the flight reaches (`lungeReaches`); a first
+ * build launched whenever the 0.3 s forecast said he would get no closer, and 92% of its launches never closed at all
+ * (lunge-flight.mts: median 0.27 yd beyond reach, the runner separating at 0.5 yd/s, the tackler at 4.4 yd/s asking
+ * for 9.2): a dive's one plant adds at most 0.59 yd/s, his legs keep accelerating. Stated choices: the hands in flight reach his standing reach (no extra reach for the trunk pitching
  * forward); a grab can be made from the launch until he is down on the ground (FLIGHT_MAX bounds it). */
 export const LUNGE_FLIGHT = process.env.LUNGE_FLIGHT === '1';
 /** Longest a lunge's flight is followed, s (a bound, not a law: a dive is on the ground well inside it). */
@@ -188,6 +191,26 @@ function flightStep(sim: PlaySim, d: Agent, c: Agent): boolean {
     flights.delete(d);
   }
   return true;
+}
+
+/** LUNGE_FLIGHT: whether a launch now gets his hands to the carrier, by his picture of the carrier (`cp`, `cv`) and his
+ * own body: the World's dive push-off (one plant at the turf's traction, at most 1.5 yd/s and his speed headroom; world.ts
+ * `plan.dive`) along the launch line, then a coasting flight until he is down (`fallTime`). He launches only if that
+ * flight comes inside his standing reach; otherwise a dive cannot get there and he keeps his feet (his legs keep
+ * accelerating; a falling body cannot). A controller read of his own capability, not a cap: whenever the launch
+ * reaches, he may take it. */
+function lungeReaches(sim: PlaySim, d: Agent, c: Agent, cp: Vec2, cv: Vec2): boolean {
+  const ax = cp.x + cv.x * DIVE_WINDOW - d.pos.x, ay = cp.y + cv.y * DIVE_WINDOW - d.pos.y, al = Math.hypot(ax, ay) || 1;
+  const speed = Math.hypot(d.vel.x, d.vel.y);
+  const dv = Math.min(1.5, Math.max(0, d.profile.vmax - speed), TURF_MU * G * sim.dt);
+  const vx = d.vel.x + ax / al * dv, vy = d.vel.y + ay / al * dv;
+  const flight = sim.dt + fallTime(supportParams(d.profile), d.body.support?.posture ?? 0);
+  const arms = reachTo(d, c, 1);
+  for (let t = sim.dt; t <= flight + 1e-9; t += sim.dt) {
+    const gx = cp.x + cv.x * t - (d.pos.x + vx * t), gy = cp.y + cv.y * t - (d.pos.y + vy * t);
+    if (Math.hypot(gx, gy) <= arms) return true;
+  }
+  return false;
 }
 
 /** LUNGE_FLIGHT: launch toward where he sees the carrier going over the layout's window. */
@@ -283,7 +306,10 @@ export function tryTackles(sim: PlaySim): void {
       }
       if (needsLastReach && !lastReach) continue;
       if (waitForBetter && !acquireAtReach) continue;
-      if (LUNGE_FLIGHT && dd > arms && !engaged) { launch(sim, d, c, cp, cv, 'lunge'); continue; }
+      if (LUNGE_FLIGHT && dd > arms && !engaged) {
+        if (lungeReaches(sim, d, c, cp, cv)) launch(sim, d, c, cp, cv, 'lunge');
+        continue;
+      }
       attempt(sim, d, c, q, engaged, dd > arms, dd > arms ? range : arms);
       if (sim.ball.kind !== 'held' || sim.phase !== 'live') return;
       continue;
@@ -294,7 +320,7 @@ export function tryTackles(sim: PlaySim): void {
     const separating = ((cv.x - d.vel.x) * rx + (cv.y - d.vel.y) * ry) / rd;
     const behind = (d.pos.x - cp.x) * cv.x + (d.pos.y - cp.y) * cv.y < 0;
     if (!engaged && dd <= dive && separating > 1.6 && behind && !sim.bond && !occluded(sim, d, c)) {
-      if (LUNGE_FLIGHT) { launch(sim, d, c, cp, cv, 'dive'); continue; }
+      if (LUNGE_FLIGHT) { if (lungeReaches(sim, d, c, cp, cv)) launch(sim, d, c, cp, cv, 'dive'); continue; }
       d.nextTackleAt = t + 1;
       sim.diveAt(d, { x: dx, y: dy });
       const p = 0.22 + 0.3 * d.r('tackling') - 0.15 * c.r('elusiveness') - 0.1 * c.r('balance');

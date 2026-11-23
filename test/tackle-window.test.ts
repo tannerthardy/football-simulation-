@@ -90,10 +90,10 @@ describe('attainable tackle opportunity', () => {
     const rolls = vi.spyOn(sim.rng, 'chance').mockReturnValue(false);
     try {
       tryTackles(sim);
-      expect(dive).toHaveBeenCalledOnce();
       expect(sim.trace.data!.decisions.find(row => row.a === d.idx)?.chose).toBe('take last reach');
-      // LUNGE_FLIGHT: the lunge is a launch; no hold exists until his hands reach the carrier in flight.
+      // LUNGE_FLIGHT: the lunge is a launch, taken only if it reaches (covered below); no hold is made at a distance.
       if (LUNGE_FLIGHT) { expect(sim.bond).toBeNull(); return; }
+      expect(dive).toHaveBeenCalledOnce();
       expect(sim.bond?.tacklers).toContain(d);
       const hold = sim.bond!.holds!.get(d)!;
       expect(hold.origin).toContain('lunge');
@@ -106,21 +106,45 @@ describe('attainable tackle opportunity', () => {
     } finally { dive.mockRestore(); rolls.mockRestore(); }
   });
 
-  it.runIf(LUNGE_FLIGHT).each([-1, 1])('LUNGE_FLIGHT: a launched lunge holds only from standing reach, else misses, side %s', side => {
+  it.runIf(LUNGE_FLIGHT).each([-1, 1])('LUNGE_FLIGHT: no launch at a passing runner the dive cannot reach, side %s', side => {
     const { sim, c, d } = passingStage(side, true, true);
+    const dive = vi.spyOn(sim, 'diveAt');
+    try {
+      tryTackles(sim);
+      // His legs keep him in the chase: no launch, no hold, no charted miss.
+      expect(dive).not.toHaveBeenCalled();
+      expect(sim.bond).toBeNull();
+      expect(sim.events.some(e => e.type === 'missed_tackle')).toBe(false);
+      expect(d.body.support?.state).toBe('up');
+      expect(Math.hypot(c.pos.x - d.pos.x, c.pos.y - d.pos.y)).toBeGreaterThan(reachTo(d, c, 1));
+    } finally { dive.mockRestore(); }
+  });
+
+  it.runIf(LUNGE_FLIGHT).each([-1, 1])('LUNGE_FLIGHT: a lunge that reaches launches, and holds only from standing reach, side %s', side => {
+    const { sim, c, d } = passingStage(side, true, true);
+    // Level with him and just beyond reach: his held command keeps the gap, a launch closes it.
+    c.body.vel = { ...d.vel };
+    const ux = (c.pos.x - d.pos.x), uy = (c.pos.y - d.pos.y), ul = Math.hypot(ux, uy);
+    const gap = reachTo(d, c, 1) + 0.08;
+    c.body.pos = { x: d.pos.x + ux / ul * gap, y: d.pos.y + uy / ul * gap };
+    for (let k = 0; k < 24; k++) {
+      const lag = (23 - k) * sim.dt;
+      sim.perception.record(sim.agents.map(a => ({ pos: { x: a.pos.x - a.vel.x * lag, y: a.pos.y - a.vel.y * lag },
+        vel: a.vel, facing: a.facing, pose: a.pose })), c.idx);
+    }
     const dive = vi.spyOn(sim, 'diveAt');
     tryTackles(sim);
     expect(dive).toHaveBeenCalledOnce();
     dive.mockRestore();
-    // Only these two bodies are in play; the world flies the tackler, the carrier runs on.
+    expect(sim.bond).toBeNull();
     let grabbedAt: number | null = null;
-    for (let k = 0; k < 30 && sim.phase === 'live' && !sim.bond; k++) {
+    for (let k = 0; k < 30 && sim.phase === 'live' && grabbedAt === null; k++) {
       const before = Math.hypot(c.pos.x - d.pos.x, c.pos.y - d.pos.y);
       sim.tick();
-      const bond = (sim as { bond: PlaySim["bond"] }).bond;
+      const bond = (sim as { bond: PlaySim['bond'] }).bond;
       if (bond?.tacklers.includes(d)) grabbedAt = bond.holds!.get(d)!.hold ?? before;
     }
-    const short = sim.events.some(e => e.type === 'missed_tackle' && e.note === 'lunge short' && e.a !== undefined && sim.agents[e.a] === d);
+    const short = sim.events.some(e => e.type === 'missed_tackle' && e.a !== undefined && sim.agents[e.a] === d);
     expect(grabbedAt !== null || short).toBe(true);
     if (grabbedAt !== null) expect(grabbedAt).toBeLessThanOrEqual(reachTo(d, c, 1) + 0.15);
     // He left his feet: the cost of the reach is his base.
