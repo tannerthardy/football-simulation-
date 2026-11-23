@@ -1,0 +1,260 @@
+
+## outside catches (within 12 yd of the sideline)
+
+### all (n 2094)
+YAC p50 2.8 mean 4.49 | catch speed p50 5.3, +0.5 s 5.0, +1.0 s 4.9, play max 6.1 yd/s
+defenders within 3 / 5 / 8 yd at the catch (mean): 0.54 / 0.88 / 1.39; none within 5: 26.0%
+nearest defender: dist p50 3.0; ahead 19.6% level 39.7% behind 40.7%; outside him 19.4%; closing p50 2.5 yd/s; CV closest approach p50 0.8 yd at 0.66 s
+first-defender outcome: stopped (tackle or held for help) 58.1%; trailing from the catch (never level) 13.7%; missed (contact range, then beaten) 10.9%; never reached (play ended: oob)  6.3%; beaten without contact  5.3%; never reached (play ended: tackle)  3.0%; contact, then play ended elsewhere  2.2%; never reached (play ended: td)  0.3%; never reached (play ended: other)  0.1%
+failure class (of 341 beaten or missed): reached contact range, then beaten (lunge/miss/broken) 60.7%; engaged by a blocker before the beat 19.4%; other / outrun on a fair angle 12.0%; old angle (aimed at or behind the carrier)  5.3%; overrun (moving against the carrier at the beat)  1.8%; flat-footed / late start  0.9%
+  carrier speed catch -> at the beat: p50 3.9 -> play max 6.0; D1 start speed (first 0.5 s) p50 5.4
+first defender in front (nearest not behind at the catch, n 1731, dist p50 4.1): stopped (tackle or held for help) 56.5%; never reached (play ended: oob) 13.2%; missed (contact range, then beaten) 12.7%; beaten without contact  7.5%; never reached (play ended: tackle)  6.0%; contact, then play ended elsewhere  2.8%; never reached (play ended: td)  1.1%; never reached (play ended: other)  0.2%
+  its failure class (of 349): reached contact range, then beaten (lunge/miss/broken) 55.9%; engaged by a blocker before the beat 22.3%; other / outrun on a fair angle 14.6%; old angle (aimed at or behind the carrier)  4.0%; overrun (moving against the carrier at the beat)  2.0%; flat-footed / late start  1.1%
+two nearest defenders together: catch n 2094: bracketed 32.7%, angle between p50 60 deg (p25 35 p75 89), 2nd man p50 9.0 yd | p05 n 1834: bracketed 31.8%, angle between p50 59 deg (p25 34 p75 90), 2nd man p50 7.6 yd | p10 n 1411: bracketed 39.3%, angle between p50 69 deg (p25 39 p75 109), 2nd man p50 5.6 yd | contact n 1752: bracketed 34.9%, angle between p50 62 deg (p25 33 p75 100), 2nd man p50 5.8 yd
+first defender to contact range (carrier moving > 1 yd/s, n 1711): from behind his hips (> 90 deg off his travel) 64.5%; bearing off his travel p50 109 deg; contact at +0.6 s p50
+first man stops him (n 1217): from level 50.8%, behind 32.1%, ahead 17.1% at the catch; contact from behind 54.3%, side 30.1%, front 15.6%
+  next defender into contact range after the beat: 74.8% of beats; time p50 0.6 s (p75 1.2); carrier's gain until then p50 1.4 yd (p75 4.2)
+  second defender at the beat: dist p50 3.4 yd; level 37.2%, ahead 32.6%, behind 30.2%; closing (> 1 yd/s) 73.0%, opening (< -1) 10.3%; his speed p50 5.6; slow (< 2 yd/s) 10.6%
+after a beat (n 341): others within 3/5/8 yd 0.64/1.10/1.83, ahead within 8 0.93; nobody within 5 32.0%; yards after the beat p50 3.3 p75 6.7; ends tackle 60.1%, oob 32.0%, td  6.5%, other  1.5%
+
+### slow catch (< 3 yd/s) (n 382)
+YAC p50 2.9 mean 3.99 | catch speed p50 2.0, +0.5 s 2.6, +1.0 s 3.4, play max 4.0 yd/s
+defenders within 3 / 5 / 8 yd at the catch (mean): 0.58 / 0.96 / 1.51; none within 5: 21.7%
+nearest defender: dist p50 2.8; ahead 35.9% level 36.4% behind 27.7%; outside him 36.9%; closing p50 3.4 yd/s; CV closest approach p50 0.8 yd at 0.58 s
+first-defender outcome: stopped (tackle or held for help) 57.9%; missed (contact range, then beaten) 16.2%; beaten without contact 13.9%; trailing from the catch (never level)  4.7%; never reached (play ended: tackle)  3.7%; never reached (play ended: oob)  2.4%; contact, then play ended elsewhere  1.3%
+failure class (of 115 beaten or missed): reached contact range, then beaten (lunge/miss/broken) 47.0%; engaged by a blocker before the beat 27.0%; other / outrun on a fair angle 11.3%; old angle (aimed at or behind the carrier)  9.6%; overrun (moving against the carrier at the beat)  3.5%; flat-footed / late start  1.7%
+  carrier speed catch -> at the beat: p50 2.0 -> play max 5.4; D1 start speed (first 0.5 s) p50 4.0
+first defender in front (nearest not behind at the catch, n 346, dist p50 3.4): stopped (tackle or held for help) 55.5%; missed (contact range, then beaten) 15.9%; beaten without contact 14.7%; never reached (play ended: tackle)  7.5%; never reached (play ended: oob)  4.6%; contact, then play ended elsewhere  1.4%; never reached (play ended: other)  0.3%
+  its failure class (of 106): reached contact range, then beaten (lunge/miss/broken) 44.3%; engaged by a blocker before the beat 33.0%; other / outrun on a fair angle 14.2%; old angle (aimed at or behind the carrier)  3.8%; overrun (moving against the carrier at the beat)  2.8%; flat-footed / late start  1.9%
+two nearest defenders together: catch n 382: bracketed 39.3%, angle between p50 73 deg (p25 41 p75 101), 2nd man p50 8.5 yd | p05 n 358: bracketed 43.6%, angle between p50 74 deg (p25 44 p75 113), 2nd man p50 6.2 yd | p10 n 315: bracketed 47.3%, angle between p50 86 deg (p25 53 p75 126), 2nd man p50 4.1 yd | contact n 356: bracketed 48.3%, angle between p50 82 deg (p25 48 p75 123), 2nd man p50 4.6 yd
+first defender to contact range (carrier moving > 1 yd/s, n 326): from behind his hips (> 90 deg off his travel) 53.1%; bearing off his travel p50 94 deg; contact at +0.7 s p50
+first man stops him (n 221): from level 45.7%, ahead 31.7%, behind 22.6% at the catch; contact from behind 37.1%, side 34.4%, front 28.5%
+  next defender into contact range after the beat: 83.5% of beats; time p50 0.5 s (p75 1.3); carrier's gain until then p50 1.2 yd (p75 3.6)
+  second defender at the beat: dist p50 2.8 yd; ahead 39.1%, level 38.3%, behind 22.6%; closing (> 1 yd/s) 68.7%, opening (< -1) 12.2%; his speed p50 4.7; slow (< 2 yd/s) 13.9%
+after a beat (n 115): others within 3/5/8 yd 0.87/1.41/2.32, ahead within 8 1.20; nobody within 5 27.8%; yards after the beat p50 3.2 p75 7.3; ends tackle 70.4%, oob 20.0%, td  6.1%, other  3.5%
+
+### catch 3-6 yd/s (n 930)
+YAC p50 2.5 mean 4.22 | catch speed p50 4.8, +0.5 s 4.6, +1.0 s 4.5, play max 5.4 yd/s
+defenders within 3 / 5 / 8 yd at the catch (mean): 0.49 / 0.82 / 1.34; none within 5: 30.5%
+nearest defender: dist p50 3.4; ahead 21.6% level 42.2% behind 36.2%; outside him 22.2%; closing p50 3.0 yd/s; CV closest approach p50 0.7 yd at 0.69 s
+first-defender outcome: stopped (tackle or held for help) 59.1%; missed (contact range, then beaten) 12.6%; trailing from the catch (never level) 11.1%; never reached (play ended: oob)  7.2%; beaten without contact  4.3%; never reached (play ended: tackle)  3.1%; contact, then play ended elsewhere  2.3%; never reached (play ended: td)  0.2%; never reached (play ended: other)  0.1%
+failure class (of 157 beaten or missed): reached contact range, then beaten (lunge/miss/broken) 66.9%; engaged by a blocker before the beat 15.9%; other / outrun on a fair angle 11.5%; old angle (aimed at or behind the carrier)  4.5%; overrun (moving against the carrier at the beat)  1.3%
+  carrier speed catch -> at the beat: p50 4.4 -> play max 5.7; D1 start speed (first 0.5 s) p50 5.7
+first defender in front (nearest not behind at the catch, n 794, dist p50 4.2): stopped (tackle or held for help) 59.1%; missed (contact range, then beaten) 14.1%; never reached (play ended: oob) 11.5%; beaten without contact  6.2%; never reached (play ended: tackle)  5.5%; contact, then play ended elsewhere  2.8%; never reached (play ended: td)  0.6%; never reached (play ended: other)  0.3%
+  its failure class (of 161): reached contact range, then beaten (lunge/miss/broken) 62.7%; engaged by a blocker before the beat 16.8%; other / outrun on a fair angle 12.4%; old angle (aimed at or behind the carrier)  5.0%; overrun (moving against the carrier at the beat)  2.5%; flat-footed / late start  0.6%
+two nearest defenders together: catch n 930: bracketed 28.3%, angle between p50 62 deg (p25 39 p75 90), 2nd man p50 9.2 yd | p05 n 811: bracketed 30.1%, angle between p50 62 deg (p25 37 p75 91), 2nd man p50 7.6 yd | p10 n 634: bracketed 42.4%, angle between p50 72 deg (p25 45 p75 112), 2nd man p50 5.6 yd | contact n 797: bracketed 34.9%, angle between p50 64 deg (p25 35 p75 100), 2nd man p50 5.8 yd
+first defender to contact range (carrier moving > 1 yd/s, n 788): from behind his hips (> 90 deg off his travel) 58.9%; bearing off his travel p50 100 deg; contact at +0.7 s p50
+first man stops him (n 550): from level 52.5%, behind 28.5%, ahead 18.9% at the catch; contact from behind 48.7%, side 32.4%, front 18.9%
+  next defender into contact range after the beat: 75.8% of beats; time p50 0.5 s (p75 1.1); carrier's gain until then p50 1.4 yd (p75 4.2)
+  second defender at the beat: dist p50 3.4 yd; level 38.2%, behind 31.2%, ahead 30.6%; closing (> 1 yd/s) 77.1%, opening (< -1)  8.3%; his speed p50 5.8; slow (< 2 yd/s) 10.2%
+after a beat (n 157): others within 3/5/8 yd 0.59/1.02/1.68, ahead within 8 0.89; nobody within 5 31.2%; yards after the beat p50 3.5 p75 6.4; ends tackle 62.4%, oob 33.1%, td  3.8%, other  0.6%
+
+### catch 6+ yd/s (n 782)
+YAC p50 3.1 mean 5.07 | catch speed p50 6.9, +0.5 s 6.7, +1.0 s 6.6, play max 7.2 yd/s
+defenders within 3 / 5 / 8 yd at the catch (mean): 0.58 / 0.92 / 1.39; none within 5: 22.6%
+nearest defender: dist p50 2.7; ahead  9.2% level 38.4% behind 52.4%; outside him  7.7%; closing p50 1.6 yd/s; CV closest approach p50 1.0 yd at 0.66 s
+first-defender outcome: stopped (tackle or held for help) 57.0%; trailing from the catch (never level) 21.1%; never reached (play ended: oob)  7.2%; missed (contact range, then beaten)  6.4%; contact, then play ended elsewhere  2.7%; beaten without contact  2.4%; never reached (play ended: tackle)  2.4%; never reached (play ended: td)  0.6%; never reached (play ended: other)  0.1%
+failure class (of 69 beaten or missed): reached contact range, then beaten (lunge/miss/broken) 69.6%; other / outrun on a fair angle 14.5%; engaged by a blocker before the beat 14.5%; flat-footed / late start  1.4%
+  carrier speed catch -> at the beat: p50 6.7 -> play max 7.3; D1 start speed (first 0.5 s) p50 7.1
+first defender in front (nearest not behind at the catch, n 591, dist p50 4.4): stopped (tackle or held for help) 53.6%; never reached (play ended: oob) 20.5%; missed (contact range, then beaten)  9.0%; never reached (play ended: tackle)  5.8%; beaten without contact  4.9%; contact, then play ended elsewhere  3.7%; never reached (play ended: td)  2.4%; never reached (play ended: other)  0.2%
+  its failure class (of 82): reached contact range, then beaten (lunge/miss/broken) 57.3%; other / outrun on a fair angle 19.5%; engaged by a blocker before the beat 19.5%; old angle (aimed at or behind the carrier)  2.4%; flat-footed / late start  1.2%
+two nearest defenders together: catch n 782: bracketed 34.7%, angle between p50 53 deg (p25 29 p75 81), 2nd man p50 9.1 yd | p05 n 665: bracketed 27.5%, angle between p50 50 deg (p25 25 p75 77), 2nd man p50 8.3 yd | p10 n 462: bracketed 29.4%, angle between p50 57 deg (p25 29 p75 88), 2nd man p50 6.8 yd | contact n 599: bracketed 26.9%, angle between p50 49 deg (p25 27 p75 85), 2nd man p50 6.7 yd
+first defender to contact range (carrier moving > 1 yd/s, n 597): from behind his hips (> 90 deg off his travel) 78.1%; bearing off his travel p50 124 deg; contact at +0.6 s p50
+first man stops him (n 446): from level 51.1%, behind 41.3%, ahead  7.6% at the catch; contact from behind 69.7%, side 25.1%, front  5.2%
+  next defender into contact range after the beat: 58.0% of beats; time p50 0.7 s (p75 1.4); carrier's gain until then p50 3.2 yd (p75 8.3)
+  second defender at the beat: dist p50 4.5 yd; behind 40.6%, level 33.3%, ahead 26.1%; closing (> 1 yd/s) 71.0%, opening (< -1) 11.6%; his speed p50 6.5; slow (< 2 yd/s)  5.8%
+after a beat (n 69): others within 3/5/8 yd 0.38/0.78/1.33, ahead within 8 0.59; nobody within 5 40.6%; yards after the beat p50 3.1 p75 5.8; ends oob 49.3%, tackle 37.7%, td 13.0%
+
+### zone (n 1603)
+YAC p50 3.0 mean 4.44 | catch speed p50 5.1, +0.5 s 4.9, +1.0 s 4.8, play max 5.9 yd/s
+defenders within 3 / 5 / 8 yd at the catch (mean): 0.49 / 0.85 / 1.39; none within 5: 29.6%
+nearest defender: dist p50 3.3; ahead 22.9% level 37.7% behind 39.4%; outside him 21.5%; closing p50 2.9 yd/s; CV closest approach p50 0.8 yd at 0.69 s
+first-defender outcome: stopped (tackle or held for help) 56.5%; trailing from the catch (never level) 13.7%; missed (contact range, then beaten) 11.6%; never reached (play ended: oob)  7.0%; beaten without contact  5.5%; never reached (play ended: tackle)  2.9%; contact, then play ended elsewhere  2.4%; never reached (play ended: td)  0.3%; never reached (play ended: other)  0.1%
+failure class (of 274 beaten or missed): reached contact range, then beaten (lunge/miss/broken) 59.9%; engaged by a blocker before the beat 20.8%; other / outrun on a fair angle 11.7%; old angle (aimed at or behind the carrier)  5.1%; overrun (moving against the carrier at the beat)  1.8%; flat-footed / late start  0.7%
+  carrier speed catch -> at the beat: p50 3.9 -> play max 5.9; D1 start speed (first 0.5 s) p50 5.3
+first defender in front (nearest not behind at the catch, n 1359, dist p50 4.5): stopped (tackle or held for help) 54.7%; never reached (play ended: oob) 13.9%; missed (contact range, then beaten) 13.5%; beaten without contact  7.7%; never reached (play ended: tackle)  6.1%; contact, then play ended elsewhere  3.1%; never reached (play ended: td)  0.9%; never reached (play ended: other)  0.1%
+  its failure class (of 288): reached contact range, then beaten (lunge/miss/broken) 56.6%; engaged by a blocker before the beat 21.9%; other / outrun on a fair angle 13.9%; old angle (aimed at or behind the carrier)  4.5%; overrun (moving against the carrier at the beat)  2.1%; flat-footed / late start  1.0%
+two nearest defenders together: catch n 1603: bracketed 31.1%, angle between p50 63 deg (p25 38 p75 91), 2nd man p50 8.8 yd | p05 n 1425: bracketed 30.7%, angle between p50 60 deg (p25 36 p75 91), 2nd man p50 7.4 yd | p10 n 1112: bracketed 38.4%, angle between p50 69 deg (p25 39 p75 108), 2nd man p50 5.2 yd | contact n 1331: bracketed 34.7%, angle between p50 64 deg (p25 34 p75 102), 2nd man p50 5.3 yd
+first defender to contact range (carrier moving > 1 yd/s, n 1296): from behind his hips (> 90 deg off his travel) 61.8%; bearing off his travel p50 104 deg; contact at +0.7 s p50
+first man stops him (n 905): from level 47.6%, behind 31.4%, ahead 21.0% at the catch; contact from behind 51.7%, side 30.4%, front 17.9%
+  next defender into contact range after the beat: 75.9% of beats; time p50 0.5 s (p75 1.2); carrier's gain until then p50 1.3 yd (p75 3.7)
+  second defender at the beat: dist p50 3.1 yd; level 39.4%, ahead 31.0%, behind 29.6%; closing (> 1 yd/s) 71.2%, opening (< -1) 11.3%; his speed p50 5.6; slow (< 2 yd/s) 10.6%
+after a beat (n 274): others within 3/5/8 yd 0.70/1.17/1.89, ahead within 8 0.95; nobody within 5 29.2%; yards after the beat p50 3.1 p75 6.3; ends tackle 62.8%, oob 32.1%, td  3.6%, other  1.5%
+
+### man (n 491)
+YAC p50 2.2 mean 4.66 | catch speed p50 6.1, +0.5 s 5.7, +1.0 s 5.3, play max 6.5 yd/s
+defenders within 3 / 5 / 8 yd at the catch (mean): 0.69 / 0.99 / 1.39; none within 5: 14.3%
+nearest defender: dist p50 2.1; ahead  8.8% level 46.0% behind 45.2%; outside him 12.8%; closing p50 1.5 yd/s; CV closest approach p50 0.7 yd at 0.55 s
+first-defender outcome: stopped (tackle or held for help) 63.5%; trailing from the catch (never level) 13.6%; missed (contact range, then beaten)  8.8%; beaten without contact  4.9%; never reached (play ended: oob)  3.9%; never reached (play ended: tackle)  3.3%; contact, then play ended elsewhere  1.6%; never reached (play ended: td)  0.4%
+failure class (of 67 beaten or missed): reached contact range, then beaten (lunge/miss/broken) 64.2%; engaged by a blocker before the beat 13.4%; other / outrun on a fair angle 13.4%; old angle (aimed at or behind the carrier)  6.0%; flat-footed / late start  1.5%; overrun (moving against the carrier at the beat)  1.5%
+  carrier speed catch -> at the beat: p50 4.0 -> play max 6.8; D1 start speed (first 0.5 s) p50 6.3
+first defender in front (nearest not behind at the catch, n 372, dist p50 2.1): stopped (tackle or held for help) 63.2%; never reached (play ended: oob) 10.5%; missed (contact range, then beaten)  9.7%; beaten without contact  6.7%; never reached (play ended: tackle)  5.6%; never reached (play ended: td)  1.9%; contact, then play ended elsewhere  1.9%; never reached (play ended: other)  0.5%
+  its failure class (of 61): reached contact range, then beaten (lunge/miss/broken) 52.5%; engaged by a blocker before the beat 24.6%; other / outrun on a fair angle 18.0%; flat-footed / late start  1.6%; overrun (moving against the carrier at the beat)  1.6%; old angle (aimed at or behind the carrier)  1.6%
+two nearest defenders together: catch n 491: bracketed 37.9%, angle between p50 53 deg (p25 29 p75 83), 2nd man p50 9.8 yd | p05 n 409: bracketed 35.5%, angle between p50 55 deg (p25 28 p75 85), 2nd man p50 9.0 yd | p10 n 299: bracketed 42.5%, angle between p50 74 deg (p25 42 p75 113), 2nd man p50 7.0 yd | contact n 421: bracketed 35.4%, angle between p50 55 deg (p25 29 p75 90), 2nd man p50 7.5 yd
+first defender to contact range (carrier moving > 1 yd/s, n 415): from behind his hips (> 90 deg off his travel) 72.8%; bearing off his travel p50 120 deg; contact at +0.4 s p50
+first man stops him (n 312): from level 59.9%, behind 34.3%, ahead  5.8% at the catch; contact from behind 61.9%, side 29.2%, front  9.0%
+  next defender into contact range after the beat: 70.1% of beats; time p50 0.8 s (p75 1.4); carrier's gain until then p50 3.0 yd (p75 5.9)
+  second defender at the beat: dist p50 4.5 yd; ahead 38.8%, behind 32.8%, level 28.4%; closing (> 1 yd/s) 80.6%, opening (< -1)  6.0%; his speed p50 5.9; slow (< 2 yd/s) 10.4%
+after a beat (n 67): others within 3/5/8 yd 0.39/0.84/1.58, ahead within 8 0.88; nobody within 5 43.3%; yards after the beat p50 4.4 p75 7.8; ends tackle 49.3%, oob 31.3%, td 17.9%, other  1.5%
+
+### within 6 yd of the sideline (n 943)
+YAC p50 1.4 mean 2.98 | catch speed p50 5.2, +0.5 s 4.6, +1.0 s 4.1, play max 5.8 yd/s
+defenders within 3 / 5 / 8 yd at the catch (mean): 0.65 / 0.96 / 1.36; none within 5: 16.5%
+nearest defender: dist p50 2.3; ahead 11.7% level 45.1% behind 43.3%; outside him 11.7%; closing p50 2.1 yd/s; CV closest approach p50 0.7 yd at 0.57 s
+first-defender outcome: stopped (tackle or held for help) 58.7%; trailing from the catch (never level) 17.3%; never reached (play ended: oob) 10.2%; missed (contact range, then beaten)  6.9%; beaten without contact  2.4%; never reached (play ended: tackle)  2.0%; contact, then play ended elsewhere  2.0%; never reached (play ended: td)  0.3%; never reached (play ended: other)  0.1%
+failure class (of 88 beaten or missed): reached contact range, then beaten (lunge/miss/broken) 72.7%; other / outrun on a fair angle 12.5%; old angle (aimed at or behind the carrier)  9.1%; engaged by a blocker before the beat  4.5%; flat-footed / late start  1.1%
+  carrier speed catch -> at the beat: p50 3.5 -> play max 6.0; D1 start speed (first 0.5 s) p50 5.6
+first defender in front (nearest not behind at the catch, n 709, dist p50 2.5): stopped (tackle or held for help) 60.6%; never reached (play ended: oob) 19.7%; missed (contact range, then beaten)  7.1%; beaten without contact  4.1%; never reached (play ended: tackle)  3.9%; contact, then play ended elsewhere  2.7%; never reached (play ended: td)  1.6%; never reached (play ended: other)  0.3%
+  its failure class (of 79): reached contact range, then beaten (lunge/miss/broken) 63.3%; other / outrun on a fair angle 21.5%; old angle (aimed at or behind the carrier)  7.6%; engaged by a blocker before the beat  5.1%; flat-footed / late start  2.5%
+two nearest defenders together: catch n 943: bracketed 37.1%, angle between p50 58 deg (p25 33 p75 85), 2nd man p50 9.4 yd | p05 n 718: bracketed 34.1%, angle between p50 59 deg (p25 34 p75 86), 2nd man p50 8.1 yd | p10 n 424: bracketed 39.6%, angle between p50 72 deg (p25 39 p75 114), 2nd man p50 5.5 yd | contact n 693: bracketed 36.5%, angle between p50 59 deg (p25 33 p75 90), 2nd man p50 7.0 yd
+first defender to contact range (carrier moving > 1 yd/s, n 678): from behind his hips (> 90 deg off his travel) 70.6%; bearing off his travel p50 120 deg; contact at +0.4 s p50
+first man stops him (n 554): from level 58.8%, behind 30.1%, ahead 11.0% at the catch; contact from behind 59.7%, side 27.8%, front 12.5%
+  next defender into contact range after the beat: 65.9% of beats; time p50 0.6 s (p75 1.3); carrier's gain until then p50 2.1 yd (p75 5.0)
+  second defender at the beat: dist p50 3.6 yd; level 40.9%, behind 29.5%, ahead 29.5%; closing (> 1 yd/s) 75.0%, opening (< -1)  8.0%; his speed p50 5.9; slow (< 2 yd/s)  9.1%
+after a beat (n 88): others within 3/5/8 yd 0.66/1.07/1.67, ahead within 8 0.84; nobody within 5 30.7%; yards after the beat p50 3.2 p75 7.0; ends tackle 50.0%, oob 39.8%, td 10.2%
+
+### 6-12 yd from the sideline (n 1151)
+YAC p50 4.5 mean 5.73 | catch speed p50 5.5, +0.5 s 5.4, +1.0 s 5.3, play max 6.3 yd/s
+defenders within 3 / 5 / 8 yd at the catch (mean): 0.45 / 0.82 / 1.42; none within 5: 33.7%
+nearest defender: dist p50 3.7; ahead 26.1% level 35.3% behind 38.7%; outside him 25.8%; closing p50 2.9 yd/s; CV closest approach p50 0.9 yd at 0.75 s
+first-defender outcome: stopped (tackle or held for help) 57.6%; missed (contact range, then beaten) 14.2%; trailing from the catch (never level) 10.7%; beaten without contact  7.7%; never reached (play ended: tackle)  3.7%; never reached (play ended: oob)  3.1%; contact, then play ended elsewhere  2.4%; never reached (play ended: td)  0.3%; never reached (play ended: other)  0.1%
+failure class (of 253 beaten or missed): reached contact range, then beaten (lunge/miss/broken) 56.5%; engaged by a blocker before the beat 24.5%; other / outrun on a fair angle 11.9%; old angle (aimed at or behind the carrier)  4.0%; overrun (moving against the carrier at the beat)  2.4%; flat-footed / late start  0.8%
+  carrier speed catch -> at the beat: p50 4.1 -> play max 6.1; D1 start speed (first 0.5 s) p50 5.3
+first defender in front (nearest not behind at the catch, n 1022, dist p50 4.8): stopped (tackle or held for help) 53.6%; missed (contact range, then beaten) 16.6%; beaten without contact  9.8%; never reached (play ended: oob)  8.6%; never reached (play ended: tackle)  7.4%; contact, then play ended elsewhere  2.9%; never reached (play ended: td)  0.8%; never reached (play ended: other)  0.2%
+  its failure class (of 270): reached contact range, then beaten (lunge/miss/broken) 53.7%; engaged by a blocker before the beat 27.4%; other / outrun on a fair angle 12.6%; old angle (aimed at or behind the carrier)  3.0%; overrun (moving against the carrier at the beat)  2.6%; flat-footed / late start  0.7%
+two nearest defenders together: catch n 1151: bracketed 29.0%, angle between p50 63 deg (p25 36 p75 93), 2nd man p50 8.7 yd | p05 n 1116: bracketed 30.3%, angle between p50 59 deg (p25 34 p75 93), 2nd man p50 7.4 yd | p10 n 987: bracketed 39.1%, angle between p50 69 deg (p25 40 p75 108), 2nd man p50 5.6 yd | contact n 1059: bracketed 33.8%, angle between p50 64 deg (p25 33 p75 106), 2nd man p50 5.0 yd
+first defender to contact range (carrier moving > 1 yd/s, n 1033): from behind his hips (> 90 deg off his travel) 60.4%; bearing off his travel p50 102 deg; contact at +0.9 s p50
+first man stops him (n 663): from level 44.0%, behind 33.8%, ahead 22.2% at the catch; contact from behind 49.8%, side 32.0%, front 18.3%
+  next defender into contact range after the beat: 77.9% of beats; time p50 0.6 s (p75 1.2); carrier's gain until then p50 1.4 yd (p75 3.9)
+  second defender at the beat: dist p50 3.4 yd; level 36.0%, ahead 33.6%, behind 30.4%; closing (> 1 yd/s) 72.3%, opening (< -1) 11.1%; his speed p50 5.4; slow (< 2 yd/s) 11.1%
+after a beat (n 253): others within 3/5/8 yd 0.64/1.11/1.88, ahead within 8 0.96; nobody within 5 32.4%; yards after the beat p50 3.4 p75 6.7; ends tackle 63.6%, oob 29.2%, td  5.1%, other  2.0%
+
+## all completions
+
+### all (n 5214)
+YAC p50 3.3 mean 5.08 | catch speed p50 4.8, +0.5 s 4.7, +1.0 s 4.7, play max 5.8 yd/s
+defenders within 3 / 5 / 8 yd at the catch (mean): 0.59 / 1.08 / 1.94; none within 5: 23.7%
+nearest defender: dist p50 2.9; ahead 23.4% level 39.7% behind 37.0%; outside him 35.1%; closing p50 2.3 yd/s; CV closest approach p50 0.8 yd at 0.53 s
+first-defender outcome: stopped (tackle or held for help) 56.2%; trailing from the catch (never level) 13.2%; missed (contact range, then beaten) 11.4%; beaten without contact  8.3%; never reached (play ended: tackle)  5.5%; never reached (play ended: oob)  3.0%; contact, then play ended elsewhere  2.1%; never reached (play ended: td)  0.2%; never reached (play ended: other)  0.2%
+failure class (of 1025 beaten or missed): reached contact range, then beaten (lunge/miss/broken) 49.6%; engaged by a blocker before the beat 29.5%; other / outrun on a fair angle 12.5%; old angle (aimed at or behind the carrier)  3.9%; overrun (moving against the carrier at the beat)  2.8%; flat-footed / late start  1.8%
+  carrier speed catch -> at the beat: p50 4.1 -> play max 6.2; D1 start speed (first 0.5 s) p50 4.8
+first defender in front (nearest not behind at the catch, n 4805, dist p50 3.9): stopped (tackle or held for help) 55.4%; missed (contact range, then beaten) 13.5%; beaten without contact 12.9%; never reached (play ended: tackle)  9.0%; never reached (play ended: oob)  5.6%; contact, then play ended elsewhere  2.6%; never reached (play ended: td)  0.8%; never reached (play ended: other)  0.3%
+  its failure class (of 1268): reached contact range, then beaten (lunge/miss/broken) 41.6%; engaged by a blocker before the beat 33.3%; other / outrun on a fair angle 16.9%; overrun (moving against the carrier at the beat)  3.2%; old angle (aimed at or behind the carrier)  2.6%; flat-footed / late start  2.4%
+two nearest defenders together: catch n 5214: bracketed 42.8%, angle between p50 77 deg (p25 46 p75 116), 2nd man p50 7.2 yd | p05 n 4765: bracketed 40.7%, angle between p50 74 deg (p25 43 p75 116), 2nd man p50 5.6 yd | p10 n 3883: bracketed 45.5%, angle between p50 80 deg (p25 46 p75 123), 2nd man p50 4.0 yd | contact n 4721: bracketed 46.0%, angle between p50 85 deg (p25 48 p75 127), 2nd man p50 3.8 yd
+first defender to contact range (carrier moving > 1 yd/s, n 4574): from behind his hips (> 90 deg off his travel) 58.2%; bearing off his travel p50 101 deg; contact at +0.7 s p50
+first man stops him (n 2930): from level 50.6%, behind 26.9%, ahead 22.5% at the catch; contact from behind 51.0%, side 30.0%, front 19.0%
+  next defender into contact range after the beat: 82.2% of beats; time p50 0.6 s (p75 1.2); carrier's gain until then p50 1.4 yd (p75 4.2)
+  second defender at the beat: dist p50 2.9 yd; level 39.8%, ahead 32.7%, behind 27.5%; closing (> 1 yd/s) 68.0%, opening (< -1) 12.5%; his speed p50 4.7; slow (< 2 yd/s) 12.9%
+after a beat (n 1025): others within 3/5/8 yd 0.77/1.45/2.56, ahead within 8 1.26; nobody within 5 22.5%; yards after the beat p50 3.6 p75 7.3; ends tackle 74.2%, oob 19.4%, td  4.4%, other  2.0%
+
+### slow catch (< 3 yd/s) (n 1280)
+YAC p50 2.3 mean 3.86 | catch speed p50 2.0, +0.5 s 2.6, +1.0 s 3.3, play max 3.6 yd/s
+defenders within 3 / 5 / 8 yd at the catch (mean): 0.65 / 1.21 / 2.18; none within 5: 19.1%
+nearest defender: dist p50 2.7; ahead 37.6% level 40.1% behind 22.3%; outside him 43.8%; closing p50 3.2 yd/s; CV closest approach p50 0.7 yd at 0.49 s
+first-defender outcome: stopped (tackle or held for help) 59.5%; missed (contact range, then beaten) 13.4%; beaten without contact 12.7%; trailing from the catch (never level)  5.9%; never reached (play ended: tackle)  5.7%; contact, then play ended elsewhere  1.6%; never reached (play ended: oob)  0.8%; never reached (play ended: other)  0.2%; never reached (play ended: td)  0.1%
+failure class (of 334 beaten or missed): reached contact range, then beaten (lunge/miss/broken) 42.5%; engaged by a blocker before the beat 35.9%; other / outrun on a fair angle  8.4%; old angle (aimed at or behind the carrier)  7.2%; overrun (moving against the carrier at the beat)  3.9%; flat-footed / late start  2.1%
+  carrier speed catch -> at the beat: p50 2.0 -> play max 5.3; D1 start speed (first 0.5 s) p50 3.8
+first defender in front (nearest not behind at the catch, n 1237, dist p50 3.2): stopped (tackle or held for help) 58.9%; beaten without contact 14.9%; missed (contact range, then beaten) 13.7%; never reached (play ended: tackle)  9.1%; never reached (play ended: oob)  1.5%; contact, then play ended elsewhere  1.5%; never reached (play ended: other)  0.3%; never reached (play ended: td)  0.2%
+  its failure class (of 353): engaged by a blocker before the beat 41.1%; reached contact range, then beaten (lunge/miss/broken) 38.0%; other / outrun on a fair angle 10.8%; old angle (aimed at or behind the carrier)  4.5%; overrun (moving against the carrier at the beat)  3.4%; flat-footed / late start  2.3%
+two nearest defenders together: catch n 1280: bracketed 50.5%, angle between p50 85 deg (p25 58 p75 126), 2nd man p50 6.3 yd | p05 n 1197: bracketed 49.5%, angle between p50 87 deg (p25 56 p75 127), 2nd man p50 4.6 yd | p10 n 1035: bracketed 53.3%, angle between p50 93 deg (p25 57 p75 130), 2nd man p50 3.2 yd | contact n 1227: bracketed 55.1%, angle between p50 97 deg (p25 63 p75 135), 2nd man p50 3.3 yd
+first defender to contact range (carrier moving > 1 yd/s, n 1109): from behind his hips (> 90 deg off his travel) 50.9%; bearing off his travel p50 91 deg; contact at +0.6 s p50
+first man stops him (n 762): from level 47.5%, ahead 37.1%, behind 15.4% at the catch; contact from behind 35.8%, side 33.2%, front 31.0%
+  next defender into contact range after the beat: 88.3% of beats; time p50 0.6 s (p75 1.2); carrier's gain until then p50 1.3 yd (p75 3.5)
+  second defender at the beat: dist p50 2.7 yd; level 41.0%, ahead 36.2%, behind 22.8%; closing (> 1 yd/s) 66.5%, opening (< -1) 13.2%; his speed p50 4.3; slow (< 2 yd/s) 13.5%
+after a beat (n 334): others within 3/5/8 yd 0.88/1.66/2.93, ahead within 8 1.45; nobody within 5 20.1%; yards after the beat p50 3.6 p75 7.0; ends tackle 81.4%, oob 12.6%, td  3.6%, other  2.4%
+
+### catch 3-6 yd/s (n 2316)
+YAC p50 3.3 mean 4.99 | catch speed p50 4.6, +0.5 s 4.5, +1.0 s 4.5, play max 5.3 yd/s
+defenders within 3 / 5 / 8 yd at the catch (mean): 0.57 / 1.05 / 1.96; none within 5: 27.1%
+nearest defender: dist p50 3.1; ahead 24.1% level 39.8% behind 36.1%; outside him 37.7%; closing p50 2.5 yd/s; CV closest approach p50 0.8 yd at 0.54 s
+first-defender outcome: stopped (tackle or held for help) 55.8%; trailing from the catch (never level) 12.6%; missed (contact range, then beaten) 12.3%; beaten without contact  7.3%; never reached (play ended: tackle)  6.3%; never reached (play ended: oob)  3.2%; contact, then play ended elsewhere  2.1%; never reached (play ended: td)  0.2%; never reached (play ended: other)  0.2%
+failure class (of 454 beaten or missed): reached contact range, then beaten (lunge/miss/broken) 51.8%; engaged by a blocker before the beat 29.5%; other / outrun on a fair angle 11.7%; old angle (aimed at or behind the carrier)  3.1%; overrun (moving against the carrier at the beat)  2.2%; flat-footed / late start  1.8%
+  carrier speed catch -> at the beat: p50 4.5 -> play max 5.8; D1 start speed (first 0.5 s) p50 5.0
+first defender in front (nearest not behind at the catch, n 2168, dist p50 4.1): stopped (tackle or held for help) 56.8%; missed (contact range, then beaten) 14.5%; beaten without contact 11.1%; never reached (play ended: tackle)  9.4%; never reached (play ended: oob)  4.9%; contact, then play ended elsewhere  2.6%; never reached (play ended: td)  0.5%; never reached (play ended: other)  0.2%
+  its failure class (of 556): reached contact range, then beaten (lunge/miss/broken) 44.2%; engaged by a blocker before the beat 34.7%; other / outrun on a fair angle 12.6%; overrun (moving against the carrier at the beat)  3.1%; flat-footed / late start  3.1%; old angle (aimed at or behind the carrier)  2.3%
+two nearest defenders together: catch n 2316: bracketed 38.9%, angle between p50 77 deg (p25 47 p75 115), 2nd man p50 7.1 yd | p05 n 2111: bracketed 40.0%, angle between p50 76 deg (p25 45 p75 117), 2nd man p50 5.6 yd | p10 n 1715: bracketed 46.2%, angle between p50 83 deg (p25 49 p75 127), 2nd man p50 4.0 yd | contact n 2123: bracketed 46.3%, angle between p50 89 deg (p25 50 p75 128), 2nd man p50 3.7 yd
+first defender to contact range (carrier moving > 1 yd/s, n 2099): from behind his hips (> 90 deg off his travel) 54.3%; bearing off his travel p50 95 deg; contact at +0.7 s p50
+first man stops him (n 1292): from level 51.5%, behind 25.7%, ahead 22.8% at the catch; contact from behind 48.1%, side 31.5%, front 20.4%
+  next defender into contact range after the beat: 82.4% of beats; time p50 0.5 s (p75 1.1); carrier's gain until then p50 1.4 yd (p75 3.9)
+  second defender at the beat: dist p50 2.7 yd; level 41.9%, ahead 30.8%, behind 27.3%; closing (> 1 yd/s) 70.0%, opening (< -1) 10.6%; his speed p50 4.6; slow (< 2 yd/s) 14.1%
+after a beat (n 454): others within 3/5/8 yd 0.81/1.48/2.56, ahead within 8 1.32; nobody within 5 19.2%; yards after the beat p50 3.6 p75 7.0; ends tackle 75.1%, oob 19.4%, td  3.7%, other  1.8%
+
+### catch 6+ yd/s (n 1618)
+YAC p50 4.0 mean 6.17 | catch speed p50 6.9, +0.5 s 6.8, +1.0 s 6.6, play max 7.3 yd/s
+defenders within 3 / 5 / 8 yd at the catch (mean): 0.59 / 1.01 / 1.72; none within 5: 22.4%
+nearest defender: dist p50 2.8; ahead 11.1% level 39.1% behind 49.8%; outside him 24.7%; closing p50 1.4 yd/s; CV closest approach p50 1.1 yd at 0.55 s
+first-defender outcome: stopped (tackle or held for help) 54.1%; trailing from the catch (never level) 19.8%; missed (contact range, then beaten)  8.5%; beaten without contact  6.1%; never reached (play ended: oob)  4.3%; never reached (play ended: tackle)  4.1%; contact, then play ended elsewhere  2.4%; never reached (play ended: td)  0.4%; never reached (play ended: other)  0.1%
+failure class (of 237 beaten or missed): reached contact range, then beaten (lunge/miss/broken) 55.3%; engaged by a blocker before the beat 20.3%; other / outrun on a fair angle 19.8%; overrun (moving against the carrier at the beat)  2.5%; flat-footed / late start  1.3%; old angle (aimed at or behind the carrier)  0.8%
+  carrier speed catch -> at the beat: p50 6.9 -> play max 7.6; D1 start speed (first 0.5 s) p50 6.4
+first defender in front (nearest not behind at the catch, n 1400, dist p50 4.5): stopped (tackle or held for help) 50.1%; beaten without contact 13.8%; missed (contact range, then beaten) 11.9%; never reached (play ended: oob) 10.3%; never reached (play ended: tackle)  8.4%; contact, then play ended elsewhere  3.4%; never reached (play ended: td)  1.8%; never reached (play ended: other)  0.4%
+  its failure class (of 359): reached contact range, then beaten (lunge/miss/broken) 41.2%; other / outrun on a fair angle 29.5%; engaged by a blocker before the beat 23.4%; overrun (moving against the carrier at the beat)  3.1%; flat-footed / late start  1.7%; old angle (aimed at or behind the carrier)  1.1%
+two nearest defenders together: catch n 1618: bracketed 42.2%, angle between p50 69 deg (p25 36 p75 109), 2nd man p50 8.0 yd | p05 n 1457: bracketed 34.7%, angle between p50 63 deg (p25 33 p75 102), 2nd man p50 7.0 yd | p10 n 1133: bracketed 37.2%, angle between p50 66 deg (p25 35 p75 107), 2nd man p50 5.6 yd | contact n 1371: bracketed 37.2%, angle between p50 69 deg (p25 36 p75 113), 2nd man p50 4.7 yd
+first defender to contact range (carrier moving > 1 yd/s, n 1366): from behind his hips (> 90 deg off his travel) 70.3%; bearing off his travel p50 115 deg; contact at +0.7 s p50
+first man stops him (n 876): from level 52.1%, behind 38.6%, ahead  9.4% at the catch; contact from behind 68.5%, side 25.0%, front  6.5%
+  next defender into contact range after the beat: 73.4% of beats; time p50 0.7 s (p75 1.5); carrier's gain until then p50 2.4 yd (p75 6.3)
+  second defender at the beat: dist p50 3.5 yd; behind 34.6%, level 34.2%, ahead 31.2%; closing (> 1 yd/s) 66.2%, opening (< -1) 15.2%; his speed p50 5.5; slow (< 2 yd/s)  9.7%
+after a beat (n 237): others within 3/5/8 yd 0.57/1.08/2.05, ahead within 8 0.89; nobody within 5 32.5%; yards after the beat p50 3.8 p75 8.3; ends tackle 62.4%, oob 29.1%, td  6.8%, other  1.7%
+
+### zone (n 4086)
+YAC p50 3.4 mean 4.91 | catch speed p50 4.5, +0.5 s 4.5, +1.0 s 4.6, play max 5.6 yd/s
+defenders within 3 / 5 / 8 yd at the catch (mean): 0.55 / 1.05 / 1.95; none within 5: 26.5%
+nearest defender: dist p50 3.2; ahead 26.7% level 37.4% behind 35.9%; outside him 36.8%; closing p50 2.7 yd/s; CV closest approach p50 0.9 yd at 0.54 s
+first-defender outcome: stopped (tackle or held for help) 55.0%; trailing from the catch (never level) 13.3%; missed (contact range, then beaten) 11.8%; beaten without contact  8.5%; never reached (play ended: tackle)  5.6%; never reached (play ended: oob)  3.1%; contact, then play ended elsewhere  2.2%; never reached (play ended: td)  0.2%; never reached (play ended: other)  0.2%
+failure class (of 830 beaten or missed): reached contact range, then beaten (lunge/miss/broken) 49.0%; engaged by a blocker before the beat 30.1%; other / outrun on a fair angle 12.7%; old angle (aimed at or behind the carrier)  3.4%; overrun (moving against the carrier at the beat)  2.9%; flat-footed / late start  1.9%
+  carrier speed catch -> at the beat: p50 4.1 -> play max 6.1; D1 start speed (first 0.5 s) p50 4.7
+first defender in front (nearest not behind at the catch, n 3813, dist p50 4.1): stopped (tackle or held for help) 55.0%; missed (contact range, then beaten) 14.3%; beaten without contact 12.7%; never reached (play ended: tackle)  8.8%; never reached (play ended: oob)  5.7%; contact, then play ended elsewhere  2.6%; never reached (play ended: td)  0.6%; never reached (play ended: other)  0.3%
+  its failure class (of 1032): reached contact range, then beaten (lunge/miss/broken) 42.9%; engaged by a blocker before the beat 33.2%; other / outrun on a fair angle 16.0%; overrun (moving against the carrier at the beat)  2.7%; old angle (aimed at or behind the carrier)  2.6%; flat-footed / late start  2.5%
+two nearest defenders together: catch n 4086: bracketed 42.7%, angle between p50 79 deg (p25 49 p75 117), 2nd man p50 7.1 yd | p05 n 3775: bracketed 40.8%, angle between p50 76 deg (p25 44 p75 117), 2nd man p50 5.5 yd | p10 n 3118: bracketed 45.6%, angle between p50 82 deg (p25 47 p75 124), 2nd man p50 3.9 yd | contact n 3710: bracketed 46.5%, angle between p50 88 deg (p25 51 p75 128), 2nd man p50 3.6 yd
+first defender to contact range (carrier moving > 1 yd/s, n 3576): from behind his hips (> 90 deg off his travel) 55.1%; bearing off his travel p50 96 deg; contact at +0.7 s p50
+first man stops him (n 2248): from level 47.3%, ahead 27.1%, behind 25.6% at the catch; contact from behind 47.6%, side 30.9%, front 21.4%
+  next defender into contact range after the beat: 83.5% of beats; time p50 0.6 s (p75 1.2); carrier's gain until then p50 1.4 yd (p75 3.8)
+  second defender at the beat: dist p50 2.8 yd; level 40.5%, ahead 32.4%, behind 27.1%; closing (> 1 yd/s) 68.1%, opening (< -1) 12.7%; his speed p50 4.6; slow (< 2 yd/s) 12.8%
+after a beat (n 830): others within 3/5/8 yd 0.81/1.49/2.62, ahead within 8 1.29; nobody within 5 20.8%; yards after the beat p50 3.4 p75 6.8; ends tackle 76.3%, oob 18.8%, td  3.1%, other  1.8%
+
+### man (n 1128)
+YAC p50 2.9 mean 5.69 | catch speed p50 6.0, +0.5 s 5.5, +1.0 s 5.4, play max 6.6 yd/s
+defenders within 3 / 5 / 8 yd at the catch (mean): 0.76 / 1.18 / 1.92; none within 5: 13.3%
+nearest defender: dist p50 2.1; ahead 11.3% level 47.7% behind 41.0%; outside him 29.2%; closing p50 1.4 yd/s; CV closest approach p50 0.8 yd at 0.47 s
+first-defender outcome: stopped (tackle or held for help) 60.5%; trailing from the catch (never level) 12.9%; missed (contact range, then beaten)  9.8%; beaten without contact  7.5%; never reached (play ended: tackle)  5.1%; never reached (play ended: oob)  2.3%; contact, then play ended elsewhere  1.6%; never reached (play ended: td)  0.4%
+failure class (of 195 beaten or missed): reached contact range, then beaten (lunge/miss/broken) 51.8%; engaged by a blocker before the beat 26.7%; other / outrun on a fair angle 11.8%; old angle (aimed at or behind the carrier)  6.2%; overrun (moving against the carrier at the beat)  2.6%; flat-footed / late start  1.0%
+  carrier speed catch -> at the beat: p50 4.9 -> play max 6.8; D1 start speed (first 0.5 s) p50 5.2
+first defender in front (nearest not behind at the catch, n 992, dist p50 2.7): stopped (tackle or held for help) 57.0%; beaten without contact 13.3%; missed (contact range, then beaten) 10.5%; never reached (play ended: tackle)  9.9%; never reached (play ended: oob)  5.2%; contact, then play ended elsewhere  2.3%; never reached (play ended: td)  1.5%; never reached (play ended: other)  0.3%
+  its failure class (of 236): reached contact range, then beaten (lunge/miss/broken) 36.0%; engaged by a blocker before the beat 33.5%; other / outrun on a fair angle 20.8%; overrun (moving against the carrier at the beat)  5.1%; old angle (aimed at or behind the carrier)  2.5%; flat-footed / late start  2.1%
+two nearest defenders together: catch n 1128: bracketed 42.9%, angle between p50 70 deg (p25 36 p75 109), 2nd man p50 7.5 yd | p05 n 990: bracketed 40.4%, angle between p50 68 deg (p25 35 p75 113), 2nd man p50 6.2 yd | p10 n 765: bracketed 45.1%, angle between p50 75 deg (p25 43 p75 117), 2nd man p50 4.8 yd | contact n 1011: bracketed 43.8%, angle between p50 73 deg (p25 40 p75 122), 2nd man p50 5.0 yd
+first defender to contact range (carrier moving > 1 yd/s, n 998): from behind his hips (> 90 deg off his travel) 69.2%; bearing off his travel p50 116 deg; contact at +0.5 s p50
+first man stops him (n 682): from level 61.7%, behind 30.9%, ahead  7.3% at the catch; contact from behind 62.0%, side 27.0%, front 11.0%
+  next defender into contact range after the beat: 76.9% of beats; time p50 0.7 s (p75 1.5); carrier's gain until then p50 1.9 yd (p75 5.6)
+  second defender at the beat: dist p50 3.3 yd; level 36.9%, ahead 33.8%, behind 29.2%; closing (> 1 yd/s) 67.7%, opening (< -1) 11.8%; his speed p50 5.0; slow (< 2 yd/s) 13.3%
+after a beat (n 195): others within 3/5/8 yd 0.64/1.27/2.34, ahead within 8 1.14; nobody within 5 29.7%; yards after the beat p50 4.4 p75 9.0; ends tackle 65.6%, oob 22.1%, td  9.7%, other  2.6%
+
+### within 6 yd of the sideline (n 943)
+YAC p50 1.4 mean 2.98 | catch speed p50 5.2, +0.5 s 4.6, +1.0 s 4.1, play max 5.8 yd/s
+defenders within 3 / 5 / 8 yd at the catch (mean): 0.65 / 0.96 / 1.36; none within 5: 16.5%
+nearest defender: dist p50 2.3; ahead 11.7% level 45.1% behind 43.3%; outside him 11.7%; closing p50 2.1 yd/s; CV closest approach p50 0.7 yd at 0.57 s
+first-defender outcome: stopped (tackle or held for help) 58.7%; trailing from the catch (never level) 17.3%; never reached (play ended: oob) 10.2%; missed (contact range, then beaten)  6.9%; beaten without contact  2.4%; never reached (play ended: tackle)  2.0%; contact, then play ended elsewhere  2.0%; never reached (play ended: td)  0.3%; never reached (play ended: other)  0.1%
+failure class (of 88 beaten or missed): reached contact range, then beaten (lunge/miss/broken) 72.7%; other / outrun on a fair angle 12.5%; old angle (aimed at or behind the carrier)  9.1%; engaged by a blocker before the beat  4.5%; flat-footed / late start  1.1%
+  carrier speed catch -> at the beat: p50 3.5 -> play max 6.0; D1 start speed (first 0.5 s) p50 5.6
+first defender in front (nearest not behind at the catch, n 709, dist p50 2.5): stopped (tackle or held for help) 60.6%; never reached (play ended: oob) 19.7%; missed (contact range, then beaten)  7.1%; beaten without contact  4.1%; never reached (play ended: tackle)  3.9%; contact, then play ended elsewhere  2.7%; never reached (play ended: td)  1.6%; never reached (play ended: other)  0.3%
+  its failure class (of 79): reached contact range, then beaten (lunge/miss/broken) 63.3%; other / outrun on a fair angle 21.5%; old angle (aimed at or behind the carrier)  7.6%; engaged by a blocker before the beat  5.1%; flat-footed / late start  2.5%
+two nearest defenders together: catch n 943: bracketed 37.1%, angle between p50 58 deg (p25 33 p75 85), 2nd man p50 9.4 yd | p05 n 718: bracketed 34.1%, angle between p50 59 deg (p25 34 p75 86), 2nd man p50 8.1 yd | p10 n 424: bracketed 39.6%, angle between p50 72 deg (p25 39 p75 114), 2nd man p50 5.5 yd | contact n 693: bracketed 36.5%, angle between p50 59 deg (p25 33 p75 90), 2nd man p50 7.0 yd
+first defender to contact range (carrier moving > 1 yd/s, n 678): from behind his hips (> 90 deg off his travel) 70.6%; bearing off his travel p50 120 deg; contact at +0.4 s p50
+first man stops him (n 554): from level 58.8%, behind 30.1%, ahead 11.0% at the catch; contact from behind 59.7%, side 27.8%, front 12.5%
+  next defender into contact range after the beat: 65.9% of beats; time p50 0.6 s (p75 1.3); carrier's gain until then p50 2.1 yd (p75 5.0)
+  second defender at the beat: dist p50 3.6 yd; level 40.9%, behind 29.5%, ahead 29.5%; closing (> 1 yd/s) 75.0%, opening (< -1)  8.0%; his speed p50 5.9; slow (< 2 yd/s)  9.1%
+after a beat (n 88): others within 3/5/8 yd 0.66/1.07/1.67, ahead within 8 0.84; nobody within 5 30.7%; yards after the beat p50 3.2 p75 7.0; ends tackle 50.0%, oob 39.8%, td 10.2%
+
+### 6-12 yd from the sideline (n 1151)
+YAC p50 4.5 mean 5.73 | catch speed p50 5.5, +0.5 s 5.4, +1.0 s 5.3, play max 6.3 yd/s
+defenders within 3 / 5 / 8 yd at the catch (mean): 0.45 / 0.82 / 1.42; none within 5: 33.7%
+nearest defender: dist p50 3.7; ahead 26.1% level 35.3% behind 38.7%; outside him 25.8%; closing p50 2.9 yd/s; CV closest approach p50 0.9 yd at 0.75 s
+first-defender outcome: stopped (tackle or held for help) 57.6%; missed (contact range, then beaten) 14.2%; trailing from the catch (never level) 10.7%; beaten without contact  7.7%; never reached (play ended: tackle)  3.7%; never reached (play ended: oob)  3.1%; contact, then play ended elsewhere  2.4%; never reached (play ended: td)  0.3%; never reached (play ended: other)  0.1%
+failure class (of 253 beaten or missed): reached contact range, then beaten (lunge/miss/broken) 56.5%; engaged by a blocker before the beat 24.5%; other / outrun on a fair angle 11.9%; old angle (aimed at or behind the carrier)  4.0%; overrun (moving against the carrier at the beat)  2.4%; flat-footed / late start  0.8%
+  carrier speed catch -> at the beat: p50 4.1 -> play max 6.1; D1 start speed (first 0.5 s) p50 5.3
+first defender in front (nearest not behind at the catch, n 1022, dist p50 4.8): stopped (tackle or held for help) 53.6%; missed (contact range, then beaten) 16.6%; beaten without contact  9.8%; never reached (play ended: oob)  8.6%; never reached (play ended: tackle)  7.4%; contact, then play ended elsewhere  2.9%; never reached (play ended: td)  0.8%; never reached (play ended: other)  0.2%
+  its failure class (of 270): reached contact range, then beaten (lunge/miss/broken) 53.7%; engaged by a blocker before the beat 27.4%; other / outrun on a fair angle 12.6%; old angle (aimed at or behind the carrier)  3.0%; overrun (moving against the carrier at the beat)  2.6%; flat-footed / late start  0.7%
+two nearest defenders together: catch n 1151: bracketed 29.0%, angle between p50 63 deg (p25 36 p75 93), 2nd man p50 8.7 yd | p05 n 1116: bracketed 30.3%, angle between p50 59 deg (p25 34 p75 93), 2nd man p50 7.4 yd | p10 n 987: bracketed 39.1%, angle between p50 69 deg (p25 40 p75 108), 2nd man p50 5.6 yd | contact n 1059: bracketed 33.8%, angle between p50 64 deg (p25 33 p75 106), 2nd man p50 5.0 yd
+first defender to contact range (carrier moving > 1 yd/s, n 1033): from behind his hips (> 90 deg off his travel) 60.4%; bearing off his travel p50 102 deg; contact at +0.9 s p50
+first man stops him (n 663): from level 44.0%, behind 33.8%, ahead 22.2% at the catch; contact from behind 49.8%, side 32.0%, front 18.3%
+  next defender into contact range after the beat: 77.9% of beats; time p50 0.6 s (p75 1.2); carrier's gain until then p50 1.4 yd (p75 3.9)
+  second defender at the beat: dist p50 3.4 yd; level 36.0%, ahead 33.6%, behind 30.4%; closing (> 1 yd/s) 72.3%, opening (< -1) 11.1%; his speed p50 5.4; slow (< 2 yd/s) 11.1%
+after a beat (n 253): others within 3/5/8 yd 0.64/1.11/1.88, ahead within 8 0.96; nobody within 5 32.4%; yards after the beat p50 3.4 p75 6.7; ends tackle 63.6%, oob 29.2%, td  5.1%, other  2.0%
