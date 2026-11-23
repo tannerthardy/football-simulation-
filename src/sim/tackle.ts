@@ -160,7 +160,10 @@ function handHold(d: Agent, q: number, hands = 2): number {
 export const LUNGE_FLIGHT = process.env.LUNGE_FLIGHT === '1';
 /** Longest a lunge's flight is followed, s (a bound, not a law: a dive is on the ground well inside it). */
 const FLIGHT_MAX = 1;
-const flights = new WeakMap<Agent, { sim: PlaySim; t0: number; carrier: Agent; from: 'lunge' | 'dive' }>();
+type Flight = { sim: PlaySim; t0: number; carrier: Agent; from: 'lunge' | 'dive'; launchDist: number; closest: number; closestArms: number };
+const flights = new WeakMap<Agent, Flight>();
+/** Diagnostics: tackler `d`'s lunge flight in progress (LUNGE_FLIGHT), read-only. */
+export function flightOf(d: Agent): Readonly<Flight> | undefined { return flights.get(d); }
 
 /** LUNGE_FLIGHT: one tick of a launched tackler's flight. True while he is in it (the caller skips him). */
 function flightStep(sim: PlaySim, d: Agent, c: Agent): boolean {
@@ -171,17 +174,18 @@ function flightStep(sim: PlaySim, d: Agent, c: Agent): boolean {
   if (sim.bond && sim.bond.tacklers.includes(d)) { flights.delete(d); return true; }
   const dd = Math.hypot(c.pos.x - d.pos.x, c.pos.y - d.pos.y);
   const arms = reachTo(d, c, 1);
+  if (dd - arms < f.closest - f.closestArms) { f.closest = dd; f.closestArms = arms; }
   if (state !== 'down' && sim.t - f.t0 <= FLIGHT_MAX && dd <= arms && !occluded(sim, d, c)) {
     flights.delete(d);
     attempt(sim, d, c, contactQuality(dd, c.profile.radius + d.profile.radius, arms), false, true, arms);
     return true;
   }
   if (state === 'down' || sim.t - f.t0 > FLIGHT_MAX) {
-    flights.delete(d);
     d.nextTackleAt = Math.max(d.nextTackleAt, sim.t + 0.5);
     d.missedTackles++;
     sim.stats.missedTackles++;
     sim.event('missed_tackle', d, c, f.from === 'dive' ? 'dive short' : 'lunge short');
+    flights.delete(d);
   }
   return true;
 }
@@ -190,7 +194,8 @@ function flightStep(sim: PlaySim, d: Agent, c: Agent): boolean {
 function launch(sim: PlaySim, d: Agent, c: Agent, cp: Vec2, cv: Vec2, from: 'lunge' | 'dive'): void {
   const ax = cp.x + cv.x * DIVE_WINDOW - d.pos.x, ay = cp.y + cv.y * DIVE_WINDOW - d.pos.y, al = Math.hypot(ax, ay) || 1;
   sim.diveAt(d, { x: ax / al, y: ay / al });
-  flights.set(d, { sim, t0: sim.t, carrier: c, from });
+  const dd = Math.hypot(c.pos.x - d.pos.x, c.pos.y - d.pos.y);
+  flights.set(d, { sim, t0: sim.t, carrier: c, from, launchDist: dd, closest: dd, closestArms: reachTo(d, c, 1) });
 }
 
 export function tryTackles(sim: PlaySim): void {

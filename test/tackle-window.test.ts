@@ -117,9 +117,10 @@ describe('attainable tackle opportunity', () => {
     for (let k = 0; k < 30 && sim.phase === 'live' && !sim.bond; k++) {
       const before = Math.hypot(c.pos.x - d.pos.x, c.pos.y - d.pos.y);
       sim.tick();
-      if (sim.bond?.tacklers.includes(d)) grabbedAt = sim.bond.holds!.get(d)!.hold ?? before;
+      const bond = (sim as { bond: PlaySim["bond"] }).bond;
+      if (bond?.tacklers.includes(d)) grabbedAt = bond.holds!.get(d)!.hold ?? before;
     }
-    const short = sim.events.some(e => e.type === 'missed_tackle' && e.note === 'lunge short' && sim.agents[e.a] === d);
+    const short = sim.events.some(e => e.type === 'missed_tackle' && e.note === 'lunge short' && e.a !== undefined && sim.agents[e.a] === d);
     expect(grabbedAt !== null || short).toBe(true);
     if (grabbedAt !== null) expect(grabbedAt).toBeLessThanOrEqual(reachTo(d, c, 1) + 0.15);
     // He left his feet: the cost of the reach is his base.
