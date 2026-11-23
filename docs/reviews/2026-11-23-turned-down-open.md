@@ -242,3 +242,61 @@ re-recorded, or the panel's small-sample carrier row pooled further, before the 
   That is environmental; the same cases fail without the patch.
 
 Flag registered off: baseline "0", reference-stack "off", a FLAGS.md row, count 499 (92 off).
+
+### Follow-ups (Integration, 2026-11-23)
+
+**1. Throws decided with the target over 60° off his head (17% of decisions, 75% completion): no leak.** What he prices:
+- **Receiver:** the installed-route forecast (receiver-forecast.ts). It reads only the huddle's install (path, answers,
+  declared break), his receiver pictures and his route-key pictures from memory. It never reads the receiver's live
+  behaviour or path. His last picture of the target is 0.60–0.65 s old (p50). On 58–72 of these decisions the target
+  was never in his clear cone during the play; the last look came from the periphery, now degraded under the flag.
+- **Defenders:** `mind.estimate`, his gaze-gated memory, aged 0.65–0.70 s (p50) and 1.9–2.2 s (p90). Beyond 0.2 s it
+  blends toward where his coverage belief puts the man; the belief is fitted from his own looks. `estimate` falls back
+  to a fresh `sim.see` for a defender he has never seen, but in practice that never fired: 0 of 156 near defenders at
+  these decisions, and 0 of 1232 at in-cone ones. Under the flag the picture spread and PICTURE_AGE's age spread are
+  priced.
+- **Why 75%:** selection. Targets that far off his head have half as many defenders within 6 yd (0.9 vs 1.9 per
+  decision). With the flag on, 70 of 95 such throws had the receiver 4+ yd from the nearest defender at release. Within
+  each separation band they complete no better than throws he looks at:
+
+| at release, flag on | 0-15° | over 60° |
+|---|---|---|
+| nearest defender 4+ yd | 81% | 81% |
+| 2-4 yd | 64% | 62% |
+| under 2 yd | 60% | 44% |
+
+  He throws off-gaze to men he has seen come open, and an open man is caught.
+- **Side note:** the window still reads a few true-state facts:
+  - whether a defender is down (`isDown`);
+  - his `speedScale` when QB_BELIEVED_DEF is off;
+  - `engagement` when QB_BELIEVED_DEF is off.
+
+  These are listed in the information scan. They are not what sets these throws.
+
+**2. "Eyes never within 15° before release", 13% → 18%: a measurement artifact.** It joins two counts:
+
+| | off | on |
+|---|---|---|
+| head over 15° off the receiver at release | 11.8% | 14.5% |
+| head reaching 15° on the release tick | 1.6% | 3.8% |
+
+- The release runs on the throw clock (`releaseAt`), not on his head, so the second row is coincidence of tick timing.
+- In the windup his gaze is the aim point (`pending.point`): the catch spot, which leads a moving receiver.
+  `open-turned-down.ts` now records the head and receiver bearings to the aim at release.
+- Of throws with his head over 15° off the receiver, it was within 5° of the aim on 60 of 77 (off) and 71 of 87 (on).
+  The receiver sat 17° (p50) from the aim.
+- He is looking where the ball will be caught, as coached. The rise 12.2% → 14.8% (aim-probe rerun, same games) is
+  about 1.4 SE, by the same mechanism. Receiver-to-aim p90 went 15.5° → 16.6°, slightly longer leads.
+- The eyes-to-release tables above measure eyes on the receiver's current position, which undercounts eyes on the
+  spot. Read them with that in mind.
+
+**3. Dither carrier row: proposed re-record, for Integration's review; not applied.** Flag on, pooled panel
+(DITHER_PRINT=1):
+- `carrier: [0.3897, 785, 306]` replaces `[0.2963, 854, 253]`.
+- Its stage `carrier / spacing` is 0.1312 (785 s, 103 events), inside its budget (0.1230 recorded). No other row is
+  over.
+- Proposed comment: "re-recorded with PERIPH_ACUITY on: the QB's re-priced options move his head (curl_flat seed 5:
+  0.003 rad at 1.90 s, same throw and catch), defenders reading his eyes break on other lines, and the run after the
+  catch meets them elsewhere; 148 of 285 pass plays change course; no stage flips (carrier / spacing 27 → 33, mode
+  switch 0 → 3 on the pass plays); as ZONE_EYES on engine-75."
+- To apply only with the flag's promotion.

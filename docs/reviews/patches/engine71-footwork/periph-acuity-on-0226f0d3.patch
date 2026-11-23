@@ -94,10 +94,10 @@ index 000000000..c54de5a73
 +  simulateGame(leagueSample(home, s), leagueSample(away, s), { seed: s }); }
 diff --git a/scripts/diag/eyes/open-turned-down.ts b/scripts/diag/eyes/open-turned-down.ts
 new file mode 100644
-index 000000000..677040445
+index 000000000..157bb5354
 --- /dev/null
 +++ b/scripts/diag/eyes/open-turned-down.ts
-@@ -0,0 +1,92 @@
+@@ -0,0 +1,94 @@
 +// QB lane 2026-11-23 (the user's film: "turned down a LOT of wide open throws"; measurement only).
 +// League games; every dropback. Every 0.25 s (and on each read change) while he holds the ball after the snap, for every
 +// receiver: wide open by geometry (truth: nearest defender 4+ yd and no defender within 2 yd of the throwing lane), his
@@ -132,7 +132,9 @@ index 000000000..677040445
 +      b0.startThrow = (a: any, s: any, ev: any) => { if (!decision) decision = { t: +s.t.toFixed(2), slot: ev.target.slot, P: +ev.P.toFixed(3), iR: +ev.intRisk.toFixed(3) }; return st(a, s, ev); };
 +      const tb = sim.throwBall.bind(sim);
 +      sim.throwBall = (p: any, target: any, v0: any, intended: any, arrivalT: number, away = false, ...rest: any[]) => {
-+        if (p === sim.qb && !release) release = { t: +sim.t.toFixed(2), slot: target?.slot ?? null, away: !!away || !target }; return tb(p, target, v0, intended, arrivalT, away, ...rest); };
++        if (p === sim.qb && !release) { const hd = sim.qb.head ?? sim.qb.body.facing, deg = (x: number) => +(Math.abs(wrap(x)) * 180 / Math.PI).toFixed(1);
++          const bA = intended ? Math.atan2(intended.y - p.pos.y, intended.x - p.pos.x) : null, bR = target ? Math.atan2(target.pos.y - p.pos.y, target.pos.x - p.pos.x) : null;
++          release = { t: +sim.t.toFixed(2), slot: target?.slot ?? null, away: !!away || !target, headAim: bA === null ? null : deg(hd - bA), recvAim: bA === null || bR === null ? null : deg(bR - bA), headRecv: bR === null ? null : deg(hd - bR), air: +(arrivalT - sim.t).toFixed(2) }; } return tb(p, target, v0, intended, arrivalT, away, ...rest); };
 +    }
 +    tick0();
 +    const b: any = sim.qb.behavior, qb = sim.qb;
