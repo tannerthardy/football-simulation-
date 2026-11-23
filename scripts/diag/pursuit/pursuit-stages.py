@@ -10,6 +10,8 @@ spec = importlib.util.spec_from_file_location('pa', os.path.join(os.path.dirname
 pa = importlib.util.module_from_spec(spec); spec.loader.exec_module(pa)
 def q(v, p):
     v = sorted(x for x in v if x is not None); return v[min(len(v) - 1, int(p * len(v)))] if v else float('nan')
+def sang(a, b):
+    return math.degrees(math.atan2(a[0] * b[1] - a[1] * b[0], a[0] * b[0] + a[1] * b[1]))
 def angd(v, b):
     return abs(math.degrees(math.atan2(v[0] * b[1] - v[1] * b[0], v[0] * b[0] + v[1] * b[1])))
 R = json.load(open(sys.argv[1]))
@@ -41,7 +43,14 @@ for r in R:
         ic = pa.cv_intercept(d['pos'][0], d['pos'][1], max(1.0, math.hypot(d['pos'][2], d['pos'][3])), c[0], c[1], c[2], c[3])
         along = -(b[0] * u[0] + b[1] * u[1])
         stage = d['stage'] or ('none: ' + (d.get('kind') or '?') + ('[' + ','.join(sorted(d.get('tags') or [])) + ']' if d.get('tags') is not None else ''))
-        acc[(grp, stage)].append(dict(at_man=angd(req, b), at_ic=angd(req, ic[0]) if ic else None, req_along=req[0] * u[0] + req[1] * u[1],
+        # Lead (Rules' tackle_geometry.py convention): angle off his line of sight, + toward the carrier's travel; against
+        # the lead a constant-velocity intercept at his current speed needs. For his request and for his achieved velocity.
+        sgn = 1 if (b[0] * c[3] - b[1] * c[2]) >= 0 else -1
+        need = sgn * sang(b, ic[0]) if ic else None
+        vel = (d['pos'][2], d['pos'][3])
+        lead_req = sgn * sang(b, req); lead_ach = sgn * sang(b, vel) if math.hypot(*vel) > 1 else None
+        acc[(grp, stage)].append(dict(need=need, dreq=(lead_req - need) if need is not None else None, dach=(lead_ach - need) if need is not None and lead_ach is not None else None,
+                                      at_man=angd(req, b), at_ic=angd(req, ic[0]) if ic else None, req_along=req[0] * u[0] + req[1] * u[1],
                                       vel_along=d['pos'][2] * u[0] + d['pos'][3] * u[1], cs=cs, along=along, dist=dist))
 print('plays by first-defender group:', dict(plays))
 for grp in ('old angle / overrun', 'other failure', 'stopped'):
@@ -51,4 +60,5 @@ for grp in ('old angle / overrun', 'other failure', 'stopped'):
     print(f'\n{grp}: {tot} ticks')
     for s, v in sorted(G.items(), key=lambda kv: -len(kv[1])):
         print(f"  {s:<26} {100 * len(v) / tot:4.0f}% | request at the man (< 10 deg) {100 * sum(x['at_man'] < 10 for x in v) / len(v):3.0f}%, angle to the man p50 {q([x['at_man'] for x in v], .5):3.0f}, to the intercept p50 {q([x['at_ic'] for x in v], .5):3.0f}"
+              f" | lead vs needed: request under by >30 deg {100 * sum(1 for x in v if x['dreq'] is not None and x['dreq'] < -30) / max(1, sum(1 for x in v if x['dreq'] is not None)):3.0f}%, achieved {100 * sum(1 for x in v if x['dach'] is not None and x['dach'] < -30) / max(1, sum(1 for x in v if x['dach'] is not None)):3.0f}% (needed p50 {q([x['need'] for x in v], .5):+.0f}, request-minus-needed p50 {q([x['dreq'] for x in v], .5):+.0f}, achieved-minus-needed p50 {q([x['dach'] for x in v], .5):+.0f})"
               f" | along his path: request p50 {q([x['req_along'] for x in v], .5):+.1f}, achieved {q([x['vel_along'] for x in v], .5):+.1f}, carrier {q([x['cs'] for x in v], .5):.1f} yd/s | position along p50 {q([x['along'] for x in v], .5):+.1f}, distance {q([x['dist'] for x in v], .5):.1f}")
