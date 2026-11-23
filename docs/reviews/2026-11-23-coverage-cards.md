@@ -2426,3 +2426,124 @@ Counts (quoted phrases): CHECKED 46, PARAPHRASE 13, NOT FOUND 4, UNREACHABLE 5. 
 5. **cover1 × CB_S r6.** The FS getting over the 9 route at the bottom of the numbers comes from Bowen ManP, not the cited Bowen C1. The rule itself is sourced.
 6. **Cover 3 F64 note, "find work".** Neither cited page has it or a close equivalent.
 7. **Unverifiable.** Every cover6 × CB_W corner-sink rule (the F16 half-side corner) and the XOL key/timing claims rest on 403 pages (Weekly Spiral, X&O Labs). The F16 sink rule is still backed by Bowen C2, which says the Cover 2 corners "sink hard at a 45-degree angle" while reacting to the flat.
+
+# Corner technique: breaking on #1's stop and out at 4-8 yd (2026-11-23)
+
+Coverage's census found that about 3/4 of wide-open receivers have an owner who loses the break on #1's stop or out
+at 4-8 yd. These cards are the taught technique for that moment: alignment and cushion, movement, key and eyes, the
+break-point read, plant and drive, what real corners get wrong, and the skill difference. Every cue is something the
+corner can observe. Cushion and timing measurements are Tools' (not computed here).
+
+Weakest points:
+- No source states how many steps of warning the break cue gives; "about a step" is low-confidence reasoning.
+- The press corner's read of the stop after he turns to run is low / medium.
+- The Cover 3 corner's "zone eyes on #2" squeeze is not found. The sourced drive triggers are the QB's three-step
+  set or the throw, no vertical threat left in his third, and a teammate's under call.
+- MOD is defined two ways, and sources differ on the out route.
+- The strongest NFL cue (Bowen: the off-man corner stays flat-footed and reads through the QB on three-step) conflicts
+  with high-school "pedal and read the hips from the snap". The common NFL version is given first.
+
+
+Research notes only. Paraphrased; short quoted phrases are ones returned from the fetched page.
+"Search snippet" means the claim was seen only in a search-result summary, not on a fetched page.
+Level tags: NFL / college / HS / general (level not stated).
+
+## Sources
+
+| id | source | level |
+|---|---|---|
+| S1 | Mike Kuchar (XandO Labs), "Reading the wide receiver's hips to teach man coverage", USA Football blog 1047 — https://blogs.usafootball.com/blog/1047/reading-the-wide-receiver-s-hips-to-teach-man-coverage | HS |
+| S2 | Mike Kuchar, "Training the eyes of a defensive back in press coverage", USA Football blog 952 (2016) — https://blogs.usafootball.com/blog/952/training-the-eyes-of-a-defensive-back-in-press-coverage | HS |
+| S3 | D.K. McDonald (secondary coach, Indiana Univ. of Pennsylvania), "Off man free techniques" — https://gridironstrategies.com/article/off-man-free-techniques | college (D-II) |
+| S4 | Matt Bowen, "NFL 101: Basics of Cover 1", Bleacher Report — https://bleacherreport.com/articles/2032934-nfl-101-introducing-the-basics-of-cover-1 | NFL (former NFL DB, analyst) |
+| S5 | Matt Bowen, "NFL 101: Basics of Cover 3" — https://bleacherreport.com/articles/2047445-nfl-101-introducing-the-basics-of-cover-3 | NFL |
+| S6 | Matt Bowen, "NFL 101: Basics of Cover 4" — https://bleacherreport.com/articles/2094989-nfl-101-introducing-the-basics-of-cover-4 | NFL |
+| S7 | Matt Bowen, "NFL 101: Basics of Cover 2" — https://bleacherreport.com/articles/2039934-nfl-101-introducing-the-basics-of-cover-2 | NFL |
+| S8 | Matt Bowen, "Tale of the tape, NFL preseason week 3" (Evans double move vs Bills) — https://bleacherreport.com/articles/2174465-tale-of-the-tape-from-nfl-preseason-week-3 | NFL film |
+| S9 | Bucky Brooks, "Aqib Talib among DBs using potent technique to generate picks", NFL.com — https://www.nfl.com/news/aqib-talib-among-dbs-using-potent-technique-to-generate-picks-0ap3000000562963 | NFL film |
+| S10 | "The high-wire life of an NFL cornerback", NFL.com (scouts, Brooks, Hayward, Coe, Saban quoted) — https://www.nfl.com/news/the-high-wire-life-of-an-nfl-cornerback | NFL |
+| S11 | Richard Sherman, "What you don't know about playing cornerback", The Players' Tribune — https://www.theplayerstribune.com/articles/richard-sherman-seahawks-what-you-dont-know-about-cornerback | NFL player |
+| S12 | Throw Deep Publishing, "What is Cover 3" glossary — https://throwdeeppublishing.com/blogs/football-glossary/what-is-cover-3-in-football | general (HS/college coaching publisher) |
+| S13 | Aire Athletics, "Cover 3 rules for corners and safeties" (private DB trainer) — https://aire-athletics.com/blog/cover-3-rules-for-corners-and-safeties-explained | general (trainer) |
+| S14 | "MOD vs MEG coverage explained", footballnationusa.com — https://www.footballnationusa.com/post/mod-vs-meg-coverage-explained | general, unverified authorship |
+| S15 | Chad Wilson, All Eyes DB Camp, "What is MOD" — https://alleyesdbcamp.beehiiv.com/p/db-news-technique-clip-what-is-mod-why-aren-t-you-great-yet | general (camp) |
+| S16 | "What is quarters coverage", Pro Football Network — https://www.profootballnetwork.com/what-is-quarters-coverage-the-basic-xs-and-os-behind-the-nfls-two-high-revolution/ | NFL analysis |
+| S17 | Mark Bullock, "Washington coverages part 2: quarters" — https://markbullock.substack.com/p/washington-coverages-part-2-quarters | NFL film (Washington 2021) |
+| S18 | Ted Nguyen, "How to understand Nick Saban's pattern match cover-3", USA Football blog 5615 (2018) — https://blogs.usafootball.com/blog/5615/blank | college/NFL scheme, written for HS coaches |
+| S19 | Ron Vanderlinden, *Football's Eagle & Stack Defenses*, "Zone coverage techniques" excerpt, Human Kinetics — https://us.humankinetics.com/blogs/excerpt/zone-coverage-techniques | college coach's book (excerpt mixes HS references) |
+| S20 | Chris Haddad, "How to play in-phase & out of phase", vIQtory Sports — https://www.viqtorysports.com/how-to-play-in-phase-out-of-phase/ | HS |
+| S21 | Romison Saint-Louis, "DB Manual" (drill manual, PDF) — https://romisonsaintlouis.yolasite.com/resources/DB%20Manual%20%28Romison%20Saint-Louis%29.pdf | level not stated |
+| S22 | USA Football "Coaching the wide receiver" series (drop-pop / tight break / square break), blogs 7021, 7066, 7037 — **search snippet only; pages timed out** | HS |
+| S23 | DICK'S Sporting Goods ProTips, DB pass coverage — **search snippet only** | general/youth |
+| S24 | Xando Labs (Mark Theophel, Cover 2 vs smash; Doug Langley, read steps) — **paywalled (403); search snippet only** | HS/college |
+
+---
+
+### Off-man corner (Cover 1 Off, 2-Man off) vs #1 stop/hitch or out at 4-8 yd
+| # | field | rule | source | conf |
+|---|---|---|---|---|
+| 1 | alignment and cushion | 7-8 yd off with outside shade (Cover 1 with post safety; inside shade only vs a reduced/"plus" split) (S4); 6-7 yd off (S3); 5-7 yd, tighter if he can match the receiver's speed, outside eye with post help / inside eye with no help (S1). Cushion kept through the stem about 2-3 yd; the coaching cue is not letting the receiver "step on our toes" (S1). S3 adds keeping both vertical and horizontal cushion, using a weave to hold leverage. | S1, S3, S4 | high |
+| 2 | movement | NFL version (Bowen): stay flat-footed and square at the snap and do not pedal until #1 is past the three-step depth, then resume the pedal and gain depth (S4). Coaching version: controlled pedal (~75% speed) while cushion holds, speed pedal when cushion is threatened, open and run ("man turn") once cushion is broken (S1, S3: turn when the receiver is within 3-4 yd). "Pedal until the break": S3 says the DB's feet throttle/chop with the receiver's and never stop until the receiver's foot plants. Pad level low, chest over toes (S3). Pedal, do not slide or turn early (S1). | S1, S3, S4 | high |
+| 3 | key and eyes | Pre-snap and early: eyes on #1 (S3); Bowen's NFL off-man reads "through the quarterback" during the flat-foot phase to cover the 3-step, then eyes back to the receiver (S4). After the release: eyes on the receiver's hips (S1, S3 "eyes on hip"), then S3 moves the eyes to the receiver's feet to read pace, chop and plant. S23 (snippet) warns against keying shoulders or head. So the observable order is: QB drop (3-step or not) -> #1's hips -> #1's feet at the top of the stem. | S1, S3, S4, S23 | high (order) / med (exact switch timing) |
+| 4 | break point read | Observable cues: speed loss / throttle ("chop") of the receiver's feet, hips sinking, then the plant foot. S3: chop + plant = out, hook or dig; sprint + plant = post or dig; he breaks opposite the plant foot. S21: when the receiver stutters, the DB stutters and gets ready to break. S8 (NFL): double moves (stutter-go, sluggo, out-and-up) break around 8 yd with a foot chop, while non-quick-game routes break at 12-15 yd — so a chop at 5-8 yd is itself ambiguous between hitch/out and a double move. Receiver coaching (S22 snippet): hitch = weight drop on the 2nd inside step (~6 yd), stop = 3rd inside step (~9 yd), curl = "tight break" on the 3rd inside step. Lead time: no source states yards/steps of warning; from the receiver mechanics the hip sink shows ~1 step (the drop step) before the plant, and the throttle 1-2 steps before. | S3, S8, S21, S22 | high (cues) / low (lead time in steps) |
+| 5 | plant and drive | Plant foot stays under the body ("in the tube"), turned sideways (T-step, not a "bicycle" plant), chest over toes, point step within about a foot of the plant foot (S1, S3). Drive: non-plant toes and eyes at the receiver's upfield shoulder; do not play the ball until in a good relationship (S3). On hitch/out: break and secure the back arm, swat through the front arm (S21). Hitch/stop break comes down the line of scrimmage (S1 throttle-and-break drill). Do not drive: when cushion is broken or the stem is a full sprint (open and run) (S3); and Bowen's point that the break at ~8 yd may be a double move — stay square with cushion so he can play through it (S8). | S1, S3, S8, S21 | high |
+| 6 | what real corners get wrong | Letting cushion go ("step on our toes") (S1); feet stopping before the receiver plants (S3); plant foot outside the body -> slip, round break (S3); toes not pointed at target -> rounded break (S3); bicycle plant instead of T-plant (S1); opening hips early on a weave/zig (S1); biting on the stutter: sinking hips and stepping up for a hitch that was a stop-and-go, ending in trail and grabbing (S8, NFL film); eyes in the backfield too long — Bowen's checklist names a man corner looking back at the QB (search snippet of his NFP piece; the fetched NFL 101 piece shows the eyes must return to #1 after the 3-step) (S4). | S1, S3, S4, S8 | high |
+| 7 | skill difference | NFL scouts: quick, smooth hip opening, no wasted steps, short-area change of direction, and the eye cycle receiver -> QB -> ball; "quick and fast isn't enough" (S10). Sherman: do not move until the receiver's first movement; the first step matters most because guessing wrong leaves him far behind (S11). Reading and film study (tendencies) let elite corners anticipate (S11, S10). | S10, S11 | high (stated) |
+
+### Press-man corner (Cover 1 press) on a stop or out after the release
+| # | field | rule | source | conf |
+|---|---|---|---|---|
+| 1 | alignment and cushion | About 1.5 yd off (ability-dependent), feet under armpits, hands ready, inside leverage with outside foot splitting the receiver (HS, no-help version) (S2). Cover 1 with post safety: press with outside leverage, kept by opening the hips rather than pedaling (S4). Sherman (Seattle): square, read-step/kick-step, no step until the receiver's first movement (S11). | S2, S4, S11 | high |
+| 2 | movement | Patient at the line; off-hand jam (not two-hand) once the release declares; ride/wedge with a hand on the hip (inside release: outside hand on hip; outside release: inside hand on hip) (S2). Once hips are open he plays the same technique as off-man (S2). Stay in the receiver's "pocket" the whole route (S11). In phase = running even, able to touch; drill cue "hands on hip, lean and look up for ball" (S21); out of phase = run to the hip and play the hands (S20, S21). | S2, S11, S20, S21 | high |
+| 3 | key and eyes | At the line: eyes on the bottom of the jersey numbers (S2). After release and hip turn: eyes to the receiver's hip to read the break (S2). In phase he may look back for the ball; out of phase he should not look back but close to the hip and then look for the receiver's eyes and hands (S20). | S2, S20 | high |
+| 4 | break point read | On the hip, the stop shows as the receiver's speed loss/hip sink felt and seen at close range (S2 hip key; S21 "stutter" drill). No source specifically describes a hand-on-hip feel for the stop route; the "hand on the hip" cue is taught for the release and the in-phase run (S2, S21). For a press corner running with a vertical stem, the stop comes after the corner has turned to run, so he sees it with his eyes on the near hip ~1 step before plant (inferred). | S2, S21 | med (cue) / low (feel & timing) |
+| 5 | plant and drive | Transition out of the break by cutting off the receiver's angle "preferably at a 45-degree angle" to reconnect at the hip; avoid a 90-degree half-turn (S20). When the receiver's hands go up, punch through the middle of the hands (S20, S21 "hand clap"). Stay inside and on top in Cover 0 (no help) (S2). Vertical respect: in Cover 1 the corner can sit lower because of the post safety; in Cover 0 he cannot trail (S2, S4). | S2, S4, S20, S21 | high (technique) / med (help-dependent drive) |
+| 6 | what real corners get wrong | Two-hand jam -> overextension, loses patience (S2); losing inside leverage (S2); trailing without help (S2); half-turning 90 degrees lets WR stack (S20); hands up/tomahawk at the catch, drawing flags (S20); grabbing when beaten (S10, S8 Brooks example); guessing at the line — Sherman: wrong first step leaves him far behind (S11). | S2, S8, S10, S11, S20 | high |
+| 7 | skill difference | Hand-fighting that "has to look natural" (S11); hip fluidity and patience (S10, S11); Brooks: aging press corners need flawless technique (S10). Weaker/slower corners are coached a "catch" technique using strength over speed (Wes Coomes, Chadron State clinic outline — titles only). | S10, S11 | high / med |
+
+### Cover 3 corner (deep third, off or press-bail) vs #1 out / curl / hitch
+| # | field | rule | source | conf |
+|---|---|---|---|---|
+| 1 | alignment and cushion | Off 7-8 yd, or press-bail (align in press, open and sink) to the deep outside third (S5). Outside shade, first steps back, gain to 10-12 yd while reading #1's release (S13). Throw Deep: traditionally no press in Cover 3; bail or pedal for depth (S12). | S5, S12, S13 | high |
+| 2 | movement | Bail = open hips and sink at the snap (S5); in Saban's pattern-match Cover 3 the corners shuffle, not pedal, emphasise not getting beaten deep (S18). Open-side corner in Bowen's NFL description makes a flat-foot read through the three-step game first (S5). | S5, S18 | high |
+| 3 | key and eyes | Bowen: flat-foot read through the 3-step (QB drop) (S5). Zone principle: zone DBs read QB eyes/shoulders; underneath zone break when the QB's off hand leaves the ball; deep zone break only when the ball is thrown (S19). In S18 the corner reads #1 and #2 within the first 5 yd (for an "under" call). S13: "peeking at the backfield too early" is an error. So: QB drop (3-step?) -> #1's release/stem (and #2 if visible) -> QB's shoulders/off hand once #1 is short. | S5, S13, S18, S19 | high (elements) / med (order) |
+| 4 | break point read | First rule is "deeper than the deepest": stay on top of the deepest threat in his third even if a route opens underneath (S12). He may drive when (a) the QB has taken a 3-step drop and sets/hitches to throw — the break is on the throw/QB release, not the route stem (S5, S9, S19); (b) no vertical threat remains in his third (S12, S19); (c) a teammate's call: an "under" call (made within the first 5 yd when #1 or #2 runs a route shorter than 5 yd) converts responsibilities (S18). Squeeze/zone-eyes read on #2 for the Cover 3 corner: no fetched source describes it; S5 says corners "squeeze/funnel" curl routes in a Buzz example. | S5, S9, S12, S18, S19 | high (a,b) / med (c) / low (squeeze rule) |
+| 5 | plant and drive | Two receivers in one deep zone: cover the deeper, break to the short one when the ball is thrown (S19). Smash: the corner must honor the corner route and cannot squat the hitch (S13, S18; Saban lets the hitch go and rallies to tackle) (S18). Curl: corner "has to rally up" (S18). Do not chase an out into the flat — stay in the third, break on any ball into the third (S13). Drive angle: no Cover 3-specific source; a forum coach (snippet) aims 6 yd in front of the receiver on slants/outs on a 3-step read. | S13, S18, S19 | high (rules) / low (angle) |
+| 6 | what real corners get wrong | Bailing too slowly or too shallow ("no-man's land") (S13; sportologyx snippet); eyes in backfield too early (S13); squatting the hitch on smash and giving up the corner route (S13, S18); drifting inside and opening the sideline seam (snippet only). The defensive weakness (S12): hitch/out/arrow in front of a bailing corner is the expected completion — it is not by itself a corner error. | S12, S13, S18 | high |
+| 7 | skill difference | Read speed on the QB's drop (Talib, S9) and depth discipline; sources do not separate good/poor Cover 3 corners beyond these. | S9, S13 | med |
+
+### Quarters corner (MOD / MEG, "Under" / "Smash" calls) vs #1 short
+| # | field | rule | source | conf |
+|---|---|---|---|---|
+| 1 | alignment and cushion | 7-8 yd off with outside shade, or press with safety help inside (S6); press or off, usually outside leverage on #1 (S16); off or press with inside leverage in Washington's version (S17). | S6, S16, S17 | high |
+| 2 | movement | Pattern-match vertical #1 in the outside quarter with man technique (S6); MOD can be played from press or off/bail (S14). | S6, S14 | high |
+| 3 | key and eyes | Eyes on #1 from the snap (S14). When #1 does not go vertical, gain vision on the next threat (inside vertical/corner route from #2) (S14, S6). | S6, S14 | med |
+| 4 | break point read | The decision is the declaration of #1's route: vertical -> man; immediate short/inside, hitch or shallow -> call and pass off (S14, S16, S17). S16: "under" call on an immediate underneath route, "smash" call if #1 runs an underneath stop, then drop to the deep quarter for #2's corner route. S17 (Washington, NFL): on hitch or shallow the corner alerts inside and sinks to the quarter; on an out (anything but shallow or hitch) he stays man. MEG: the corner drives on the hitch himself immediately (S14). | S14, S16, S17 | high |
+| 5 | plant and drive | MOD: he does not drive on #1's stop/hitch; he first confirms the route "enters a teammate's rule" then sinks for the 7 route (S14). MEG / lock: drive downhill on the hitch and stay with #1 everywhere (S14; S6 lock call). Out: Washington keeps the corner on #1 (S17). | S6, S14, S17 | high |
+| 6 | what real corners get wrong | Hesitation during handoffs; Coe: corners must learn "what you don't have to cover", and QBs target the hesitation (S10). Driving on a stop/hitch while #2 runs the corner route behind him (S6 smash description). | S6, S10 | med |
+| 7 | skill difference | Communication and quick declaration of #1 (S10, S14); not found as an explicit ranking. | S10, S14 | low |
+
+Note: "MOD" is defined inconsistently — "Man On Deep" / "Man On Demand" (S15, S17) vs "man other than drag" (S16). Depth thresholds vary by staff (S14).
+
+### Cover 2 corner (hard flat corner) vs #1 out / flat
+| # | field | rule | source | conf |
+|---|---|---|---|---|
+| 1 | alignment and cushion | Press on #1 (S7); "rolled up", responsible for the flat (S19); hard Cover 2 corners 1-3 yd off (S24 snippet). | S7, S19 | high |
+| 2 | movement | Jam #1 to force an inside release (an outside release widens the safeties), then "sink hard at a 45-degree angle" to cushion the safety (S7). | S7 | high |
+| 3 | key and eyes | Defense designed with eyes on the QB (S7); underneath zone: vision on the throwing arm, break when the QB's off hand leaves the ball (S19). | S7, S19 | high |
+| 4 | break point read | Play "deep to short": react to the flat only after the 7 (corner) route is eliminated; failed example: corner squats the flat and leaves the 7 open (S7). Cloud drill: be between the short and deep receivers (S21). | S7, S21 | high |
+| 5 | plant and drive | Drive on the flat throw / hitch once the deeper route is gone (S7). Bait the corner route then drive on the hitch; over-aggressive on the hitch opens the hole (S24 snippet). Variants: "Green 2" near trail, late to the flat; "Red 2" soft squat, carry the fade, react to flat (S7). | S7, S24 | high / med |
+| 6 | what real corners get wrong | Squatting on the flat vs flat-7 (S7); allowing an outside release (S7). | S7 | high |
+| 7 | skill difference | Coverage suits "athletic and aggressive" corners (Harvey, Cibolo Steele HS, USA Football blog 7073). | blog 7073 (HS) | med |
+
+### Zone eyes vs man eyes (when to break on a short route)
+| # | field | rule | source | conf |
+|---|---|---|---|---|
+| 1 | alignment and cushion | Not distinct by itself; see cards above. | — | — |
+| 2 | movement | Zone deep: pedal/bail and stay deep until the throw (S19). Man: pedal/turn on the receiver's cushion (S1, S3). | S1, S3, S19 | high |
+| 3 | key and eyes | Zone: QB's eyes, shoulders, throwing arm; QB throws toward his off shoulder (S19). Man: receiver's hips, then feet (S1, S3), not the QB (Bowen's error list, snippet). Hybrid NFL off-man: flat-foot read through the QB for the 3-step, then to the receiver (S4). Scouts: cycle receiver -> QB -> ball (S10). Sherman reads "through" the receiver to the QB (snippet). | S1, S3, S4, S10, S19 | high |
+| 4 | break point read | Zone/3-step: slow first step to separate a quick set from a long drop; on the third step set (or catch-and-throw in gun) eyes go to the receiver and he takes a direct angle to the break point (S9, Talib breaking before the ball is out). Underneath zone: break when the QB's off hand leaves the ball (S19); drill cue "front hand comes off ball" (S21). Deep zone: only on the throw; do not break on a pump (S19). Man: receiver's chop/plant (S3). | S3, S9, S19, S21 | high |
+| 5 | plant and drive | See cards above. Zone break target: snippet coach aims 6 yd in front of the receiver on slant/out. | snippet | low |
+| 6 | what real corners get wrong | Zone: peeking into the backfield too early (S13); breaking on a pump (S19). Man: eyes back to the QB (Bowen, snippet). Jumping quick routes on the QB read invites double moves (stop-and-go, out-and-up) (S9). | S9, S13, S19 | high |
+| 7 | skill difference | Anticipation and eye discipline to avoid "sucker moves" (S9); eye cycle breaking down beats even elite athletes (S10). | S9, S10 | high |
+
