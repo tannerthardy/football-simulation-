@@ -854,6 +854,31 @@ export function coverageDepth(los: number, normalDepth: number): number {
 }
 
 const DEEP_ZONES = new Set<ZoneId>(['deep_third_s', 'deep_third_w', 'deep_mid', 'deep_half_s', 'deep_half_w', 'quarter_s_out', 'quarter_s_in', 'quarter_w_in', 'quarter_w_out', 'tampa_mid']);
+/** SEAT_FILL (off; SEAT_FILL=1 turns it on; Coverage C14 build 3, 2026-11-23): the underneath seats go to the free
+ * defenders as taught, not by distance alone. The Mike plays the hooks and the hole (Rules' cards: cover3 / cover2 x LB_M
+ * row 1, the middle or weak hook; cover1 hole); the curl-flat and flat seats go to the Sam, Will, safeties and nickel /
+ * dime first (cover3 x SS / NB / LB_W, cover2 x LB_S row 5): a Mike costs SEAT_ROLE_COST yd extra for a curl-flat or
+ * flat seat, so he takes one only when no one else is free. Among the fills left, the least total distance from his spot
+ * to his landmark, and no two defenders' straight paths to their landmarks cross (a pair that would cross swaps).
+ * Measured before (Tools' 24 games, seat-travel.mts): 15% of underneath seats more than 8 yd from their landmark or
+ * crossing a teammate's; 313 crossings, mostly the Mike and the Will crossing to the weak curl-flat / hook. */
+export const SEAT_FILL = process.env.SEAT_FILL === '1';
+/** Read per fill, so a diagnostic replay can switch SEAT_FILL for one play. */
+const seatFillOn = () => process.env.SEAT_FILL === '1';
+const SEAT_FILL_STATE = { on: true };
+const SEAT_ROLE_COST = 6;
+function seatRolePenalty(slot: DefSlot, zone: ZoneId): number {
+  if (!SEAT_FILL_STATE.on) return 0;
+  // The Mike off the curl-flats and flats; the Sam, nickel, dime, safeties and Will are the curl-flat players.
+  return slot === 'LB_M' && (zone.startsWith('curl_flat') || zone.startsWith('flat')) ? SEAT_ROLE_COST : 0;
+}
+/** Do the open segments a1-a2 and b1-b2 cross (proper intersection; shared endpoints do not count)? */
+function segmentsCross(a1: Vec2, a2: Vec2, b1: Vec2, b2: Vec2): boolean {
+  if (!SEAT_FILL_STATE.on) return false;
+  const o = (p: Vec2, q: Vec2, r: Vec2) => (q.x - p.x) * (r.y - p.y) - (q.y - p.y) * (r.x - p.x);
+  const d1 = o(a1, a2, b1), d2 = o(a1, a2, b2), d3 = o(b1, b2, a1), d4 = o(b1, b2, a2);
+  return d1 * d2 < 0 && d3 * d4 < 0;
+}
 export const isDeepZone = (z: ZoneId): boolean => DEEP_ZONES.has(z);
 
 export interface ManPreference {
@@ -1196,7 +1221,14 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
     const pool = [...free];
     const seats = zones.slice(0, pool.length);
     const lms = seats.map(seat => zoneLandmark(seatZone(seat), off));
-    const dist = (slot: DefSlot, i: number) => Math.hypot(spots[slot]!.pos.x - lms[i].x, spots[slot]!.pos.y - lms[i].y);
+    const dist = (slot: DefSlot, i: number) => Math.hypot(spots[slot]!.pos.x - lms[i].x, spots[slot]!.pos.y - lms[i].y)
+      + (seatFillOn() ? seatRolePenalty(slot, seatZone(seats[i])) : 0);
+    // SEAT_FILL: no two defenders' straight paths from their spots to their landmarks cross, the call's named
+    // underneath seats included (Buzz's SS to his hook: the Mike must not be sent to the strong curl-flat across him).
+    const named = seatFillOn() ? present.filter((sl) => { const r = roles[sl]; return r?.kind === 'zone' && !isDeepZone(r.zone) && spots[sl]; })
+      .map((sl) => ({ from: spots[sl]!.pos, to: zoneLandmark((roles[sl] as { zone: ZoneId }).zone, off) })) : [];
+    const crossesChosen = (slot: DefSlot, i: number) => seatFillOn() && (pick.some((other, j) =>
+      segmentsCross(spots[other]!.pos, lms[j], spots[slot]!.pos, lms[i])) || named.some((n) => segmentsCross(n.from, n.to, spots[slot]!.pos, lms[i])));
     let best: { cost: number; pick: DefSlot[] } | null = null;
     const pick: DefSlot[] = [];
     const used = new Set<DefSlot>();
@@ -1204,13 +1236,15 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
       if (best && cost >= best.cost) return;
       if (i === seats.length) { best = { cost, pick: [...pick] }; return; }
       for (const slot of pool) {
-        if (used.has(slot)) continue;
+        if (used.has(slot) || crossesChosen(slot, i)) continue;
         used.add(slot); pick.push(slot);
         search(i + 1, cost + dist(slot, i));
         pick.pop(); used.delete(slot);
       }
     };
     search(0, 0);
+    // SEAT_FILL: no non-crossing fill exists (rare): fall back to the least total distance.
+    if (!best && seatFillOn()) { const save = SEAT_FILL_STATE.on; SEAT_FILL_STATE.on = false; search(0, 0); SEAT_FILL_STATE.on = save; }
     (best as { cost: number; pick: DefSlot[] } | null)?.pick.forEach((slot, i) => { roles[slot] = seatRole(seats[i]); free.delete(slot); });
     for (const slot of free) roles[slot] = { kind: 'zone', zone: 'hook_mid' };
   } else {
