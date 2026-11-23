@@ -1,0 +1,28 @@
+nfl-drop-proxy.py, BDB 2025 weeks 1-9 (corrected: the dropped_pass tracking tag)
+NFL targeted passes, ball within 1.0 yd at arrival: 3059
+  uncontested (no defender within 1.5 yd): n 2367, not caught 9.6%
+    speed 0-2: n  307, not caught 6.8%
+    speed 2-4: n  505, not caught 6.3%
+    speed 4-6: n  705, not caught 9.9%
+    speed 6-8: n  706, not caught 11.8%
+    speed 8-99: n  144, not caught 14.6%
+    ball from behind (cos > 0.5): n 1764, not caught 8.8%
+    across: n 408, not caught 12.3%
+    he runs at it (cos < -0.5): n 110, not caught 11.8%
+  contested (a defender within 1.5 yd): n 692, not caught 37.7%
+    speed 0-2: n   49, not caught 24.5%
+    speed 2-4: n  100, not caught 36.0%
+    speed 4-6: n  162, not caught 40.1%
+    speed 6-8: n  286, not caught 36.7%
+    speed 8-99: n   95, not caught 45.3%
+    ball from behind (cos > 0.5): n 457, not caught 39.2%
+    across: n 169, not caught 34.3%
+    he runs at it (cos < -0.5): n 49, not caught 42.9%
+
+NFL dropped_pass tag: targeted passes caught or dropped: 5676, dropped 283 (5.0%)
+  uncontested (no defender within 1.5 yd): drop 4.9% (n 4821)
+    by speed 0-2: 3.8% (n 714) | 2-4: 4.7% (n 1044) | 4-6: 4.7% (n 1418) | 6-8: 5.7% (n 1392) | 8-99: 5.5% (n 253)
+    by ball  from behind: 4.4% (n 3386) | across: 5.7% (n 963) | runs at it: 7.0% (n 257) | standing: 6.0% (n 215)
+  contested (a defender within 1.5 yd): drop 5.5% (n 855)
+    by speed 0-2: 3.2% (n 62) | 2-4: 3.9% (n 128) | 4-6: 7.6% (n 249) | 6-8: 3.7% (n 323) | 8-99: 9.7% (n 93)
+    by ball  from behind: 6.1% (n 495) | across: 5.7% (n 261) | runs at it: 2.7% (n 75) | standing: 0.0% (n 24)
