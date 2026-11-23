@@ -30,6 +30,7 @@ import { clamp, type Vec2 } from '../core/vec.js';
 import { availability, comHeightAt, fallTime, supportParams, TURF_MU } from '../physics/support.js';
 import { fatigueFactor, shouldersOf } from '../physics/kinematics.js';
 import { CONTACT_SCALE, GROUND_STRETCH, type GraspJoint, type Intent } from '../physics/world.js';
+import { DIVE_STANCE, DIVE_STANCE_S, diveSpeedGain } from '../physics/dive.js';
 import type { Agent } from './agent.js';
 import type { PlaySim } from './playsim.js';
 import { contactQuality, previewTackleWindow, type TackleWindow } from './tackle-window.js';
@@ -195,8 +196,8 @@ function flightStep(sim: PlaySim, d: Agent, c: Agent): boolean {
 }
 
 /** LUNGE_FLIGHT: whether a launch now gets his hands to the carrier, by his picture of the carrier (`cp`, `cv`) and his
- * own body: the World's dive push-off (one plant at the turf's traction, at most 1.5 yd/s and his speed headroom; world.ts
- * `plan.dive`) along the launch line, then a coasting flight until he is down (`fallTime`). He launches only if that
+ * own body: the World's dive push-off along the launch line (`diveSpeedGain`, dive.ts: one plant at the turf's traction,
+ * or with DIVE_STANCE the stride's force over its stance), then a coasting flight until he is down (`fallTime`). He launches only if that
  * flight comes inside his standing reach; otherwise a dive cannot get there and he keeps his feet (his legs keep
  * accelerating; a falling body cannot). A controller read of his own capability, not a cap: whenever the launch
  * reaches, he may take it. */
@@ -206,14 +207,19 @@ function lungeReaches(sim: PlaySim, d: Agent, c: Agent, cp: Vec2, cv: Vec2): boo
 /** The flight `lungeReaches` forecasts: its closest approach beyond his standing reach (yd, <= 0 reaches) and when. */
 export function lungeForecast(sim: PlaySim, d: Agent, c: Agent, cp: Vec2, cv: Vec2): { gap: number; at: number } {
   const ax = cp.x + cv.x * DIVE_WINDOW - d.pos.x, ay = cp.y + cv.y * DIVE_WINDOW - d.pos.y, al = Math.hypot(ax, ay) || 1;
-  const speed = Math.hypot(d.vel.x, d.vel.y);
-  const dv = Math.min(1.5, Math.max(0, d.profile.vmax - speed), TURF_MU * G * sim.dt);
-  const vx = d.vel.x + ax / al * dv, vy = d.vel.y + ay / al * dv;
-  const flight = sim.dt + fallTime(supportParams(d.profile), d.body.support?.posture ?? 0);
+  const speed = Math.hypot(d.vel.x, d.vel.y), ux = ax / al, uy = ay / al;
+  // The World's push-off, one law (dive.ts): off, one plant's traction-limited gain; DIVE_STANCE, the stride's force
+  // over a 0.12 s stance, his feet going at the end of the tick it ends in.
+  const dv = diveSpeedGain(d.profile, speed, d.vel.x * ux + d.vel.y * uy, 1, sim.dt);
+  const push = DIVE_STANCE ? DIVE_STANCE_S : 0;
+  const feet = DIVE_STANCE ? Math.ceil(DIVE_STANCE_S / sim.dt - 1e-9) * sim.dt : sim.dt;
+  const flight = feet + fallTime(supportParams(d.profile), d.body.support?.posture ?? 0);
+  // Along the launch line the gain ramps in over the push (at once for the one-tick plant), then he coasts.
+  const gained = (t: number) => dv * (push > 0 && t < push ? t * t / (2 * push) : t - push / 2);
   const arms = reachTo(d, c, 1);
   let gap = Infinity, at = 0;
   for (let t = sim.dt; t <= flight + 1e-9; t += sim.dt) {
-    const gx = cp.x + cv.x * t - (d.pos.x + vx * t), gy = cp.y + cv.y * t - (d.pos.y + vy * t);
+    const gx = cp.x + cv.x * t - (d.pos.x + d.vel.x * t + ux * gained(t)), gy = cp.y + cv.y * t - (d.pos.y + d.vel.y * t + uy * gained(t));
     const g = Math.hypot(gx, gy) - arms;
     if (g < gap) { gap = g; at = t; }
     if (g <= 0) break;
