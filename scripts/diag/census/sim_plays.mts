@@ -57,6 +57,7 @@ proto.tick = function (this: any) {
         for (let g = have; g <= k; g++) this.agents.forEach((a: any, i: number) => { rec.x[i].push(r2(a.pos.x - this.los)); rec.y[i].push(r2(a.pos.y)); if (a.behavior?.kind === 'route') rec.route[i] = true; });
         const air = this.ball?.kind === 'air';
         if (FULL) {
+          if (have === 0 || rec.def.snap === undefined) rec.def.snap = seats(this); // each defender's assignment as the engine holds it on the first tick: the call as installed
           if (air && rec.rel === null) { rec.rel = k; rec.def.rel = seats(this); const tg = this.ball?.target; if (tg) rec.target = this.agents.indexOf(tg); }
           if (rec.rel !== null && rec.catchK === null && this.ball?.kind === 'held') {
             if (this.ball.carrier?.team === 'O') { rec.catchK = k; rec.recv = this.agents.indexOf(this.ball.carrier); rec.def.catch = seats(this); }
