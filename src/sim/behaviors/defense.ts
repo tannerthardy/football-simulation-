@@ -3090,6 +3090,18 @@ function playBelievedBall(a: Agent, sim: PlaySim, man: Agent | null, continueCov
     // Bit 256: a man defender who has not found the ball judges his phase and, in phase (or undisciplined), looks.
     if (man && BALL_EST_MAN_LOOK && estimatesFor(a) && !hasObservedFlight(a) && manLooks(a, sim, man, rb.releasedAt)) return manLook(a, sim, fallback());
     a.tags.add('arm-bite');
+    // FLIGHT_BREAK: a man or match carrier whose read of the passer's shoulders puts the ball on his own receiver breaks
+    // on that receiver's catch window (the shared break) instead of carrying him: a carry runs with a receiver coming
+    // back toward the passer, downhill through the catch (Defense's stage table: -5 yd/s along the carrier's line).
+    if (!continueCoverage && man && FLIGHT_BREAK_ON() && rb.releasedAt !== undefined) {
+      const pick = shoulderTarget(a, sim, rb.releasedAt);
+      const react = a.profile.reactionTime * (1 - 0.4 * a.r('anticipation'));
+      if (pick.R === man && sim.t - rb.releasedAt >= react - 1e-9) {
+        const r = sim.see(a, man), left = Math.max(0, Math.min(SHOULDER_FLIGHT_MAX,
+          Math.hypot(r.pos.x - pick.from.x, r.pos.y - pick.from.y) / SHOULDER_BALL_SPEED - (sim.t - rb.releasedAt)));
+        return flightBreakMove(a, sim, man, r, sim.t + left, { x: r.pos.x + r.vel.x * left, y: r.pos.y + r.vel.y * left });
+      }
+    }
     if (!continueCoverage) return fallback();
     // DEEP_GATE: a deep-third, deep-middle, deep-half or Tampa-middle player holds his coverage on the arm alone (a pump
     // moves him nothing); he breaks once he has seen the ball out. Quarter seats keep their route triggers.
@@ -3244,6 +3256,8 @@ function flightApproach(a: Agent, sim: PlaySim, path: PlaySim['ballPath'], acqui
     if (sim.trace.data) sim.trace.decide({ t: sim.t, a: a.idx, kind: 'catch-approach',
       chose: 'carry observed receiver', cue: 'nearby running catcher and visible ball window',
       detail: `${window.receiver.slot} at ${window.t.toFixed(2)} s; no earlier reachable ball opportunity.` });
+    // FLIGHT_BREAK: the same break, not a carry that runs with a receiver coming back toward the passer.
+    if (FLIGHT_BREAK_ON()) return flightBreakMove(a, sim, window.receiver, window.seen, window.t, window.p);
     return track(a, window.seen.pos, window.seen.vel);
   }
   if (spot) {
