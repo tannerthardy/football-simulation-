@@ -242,6 +242,7 @@
   "test/deuce.test.ts",
   "test/dir-cap.test.ts",
   "test/dither-budget.test.ts",
+  "test/dive-stance.test.ts",
   "test/dive-yaw.test.ts",
   "test/dl-acquired-flow.test.ts",
   "test/dl-anchor.test.ts",
