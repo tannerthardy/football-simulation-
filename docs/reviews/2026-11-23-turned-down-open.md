@@ -344,3 +344,11 @@ Other checks:
 - dither budget passes on the new default;
 - reference-stack, information scan and engine-pin manifest pass;
 - typecheck clean.
+
+**Patch revised (same path):** it now also repairs `qb-receiver-forecast`'s "anticipatory throw before the installed
+break" fixture, per Tools/Physics' diagnosis.
+- The failure dates from SIGHT_PURE's promotion (engine-72). The fixture parked every defender 25 yd behind the QB,
+  out of his view, so SIGHT_PURE held them at their alignment and the window read as blocked.
+- Parked in view and off the path (x = los + 25, y = 50), all 9 tests in the file pass, with the flag on and off.
+  No engine change.
+- So the anticipatory throw itself works; this fixture is not evidence about his live release timing.
