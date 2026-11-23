@@ -73,6 +73,57 @@ rated low throughout:
 "Deuce" and "DOT" are also not found under those names. Their cards rest on college two-deep zone-pressure sources
 (Kent State's 2-under / 4-deep, Ohio State's "2-steal") and are low or medium.
 
+## Standard now, scheme options later
+
+Where coaches differ, each row now names one STANDARD version (the common NFL one, or the one most sources teach).
+The others are listed as later scheme options a coach or player will choose; per the user, standardise and simplify first.
+
+| seat (card) | row | standard | later scheme option |
+|---|---|---|---|
+| LB_S, LB_M (day-one Cover 3) | pass rule | 10-12 yd outside the hash | Saban: 10 yd, 2 inside the hash |
+| LB_S / LB_W (day-one man) | pass rule | back blocks: green dog | back blocks: zone up |
+| cover4 × CB_S | 1 | outside leverage, 7-8 yd off | college Box: inside leverage, count steps |
+| cover4 × NB | 8 | carry #2 unless a Push call | PFN: zone the in-breaker off to the hook |
+| cover4_box × CB | 5 | outside vertical cap | college Box: inside leverage, count 3 steps |
+| cover4_book_read × SS / FS | 5 | quarters to both sides | 2-receiver side reads Cover 2 |
+| split_quarters_2man × LB_W | 5 | man on weak #2 or the back | dedicated to the box; LB_M mans the back |
+| cover3 × CB_S | 7 | #1, then the QB | HS Rip/Liz: vision #2 after the under call |
+| cover3 × CB_W | 10a | 3x1 X side: zone third | press X and carry ("1/3 Read") |
+| cover3 × SS | 1 | two-high shown, spin down at the snap | Seattle: walked down pre-snap |
+| cover3 × SS | 3 | primary strong-side force | Seattle: A-gap fit when in the box |
+| cover3 × SS | 7 | #2 through his release, then the QB | classic spot-drop: QB throughout |
+| cover3_buzz × SS | 2 | OL hats / TE | Seattle "Tuff": OL high hat |
+| cover2 × CB_S | 2 | base: #2's release | trap: EMLOS/OT hat → QB → #2 → #1 |
+| cover2 × CB_S | 7 | #1 through the jam, then #2/QB | trap: QB's eyes |
+| cover1 × CB_S | 1 | Bowen press/off shade; inside only vs plus split | Saban numbers-line leverage rule |
+| cover1 × CB_S | 10b | lock on motion across | pre-set switch/bump |
+| cover1 × CB_W | 1 | as CB_S | Saban numbers-line leverage rule |
+| cover1 × NB | 10b | lock on slot motion | switch per call |
+| cover1 × SS | 5 | TE blocks: green dog | zone up underneath |
+| cover1 × SS | 10b | lock on TE motion | switch with the weak-side defender |
+| cover1 × LB_W | 10c | back blocks: green dog | zone up / Belichick no-blitz-engage hole player |
+| cover1_robber × SS | 1 | drops to the hole (Bowen) | Sumer: robber from away from strength |
+| cover1_robber × SS | 1 | drops to the hole (Bowen) | Saban 1 Cross: at the sticks, safety opposite RB |
+| cover2man × LB on the back | 10c | back blocks: green dog | Belichick no-blitz-engage hole player |
+| firezone × DE_W | 1 | open-side end drops to the seam-flat | closed-side end drops to the middle hook |
+| firezone × LB_W | 5 | #3 to both sides (Bowen) | Saban 2x2 / 3x1 hook rules |
+| firezone × CB_S / CB_W | 10a | fire-zone deep third | Saban: man on #1 |
+| deuce × CB_S | 11 | corner owns the flat | invert / 2-steal: corner deep half, DE flat |
+| deuce × CB_W | 1-10c | as CB_S | 2-steal boundary: CB deep half, DE flat |
+| deuce × FS / SS | 11 | both safeties deep halves | 2-steal: boundary safety down as seam player |
+| deuce × SS or NB | 11 | strong seam / hook | 2-steal: nickel rushes, Will plays field seam |
+| deuce × DE_W | 5 | seam/hook, corners hard | 2-steal: boundary flat |
+| off-man corner | 1 | 7-8 yd off (Bowen) | college: 6-7 yd off |
+| off-man corner | 1 | 7-8 yd off (Bowen) | high school: 5-7 yd, tighter if he matches speed |
+| off-man corner | 2 | flat-footed, read the QB's three-step, then pedal | pedal and read the hips from the snap |
+| off-man corner | 3 | QB drop → #1's hips → feet | eyes on #1 from the snap, then hips |
+| Cover 3 corner | 1 | off 7-8 yd or press-bail | Throw Deep: no press in Cover 3 |
+| Cover 3 corner | 2 | bail: open hips and sink | Saban: shuffle, not pedal |
+| Cover 3 corner | 5 | stay in his third, call "under"; drive the hitch on the throw once no vertical threat remains | Saban: concede the hitch, rally to tackle after the catch |
+| quarters corner | 1 | outside leverage | Washington: inside leverage |
+| Cover 2 corner | 5 | drive on the flat once the deep route is gone | Red 2 soft squat / Green 2 near trail |
+| zone vs man eyes | 3 | man: QB's three-step, then hips, feet | hips from the snap, never the QB |
+
 # Day-one installs (first-week versions)
 
 What a first-week install teaches each seat: alignment, key, one pass rule and one run fit. This is the simplified
@@ -100,7 +151,7 @@ every Deuce row. Those are reasoning (low confidence); the seat cards are the so
 | CB_S, CB_W | 7-8 yd or press-bail | #1 | outside third: "deeper than the deepest" | secondary contain after the pass threat clears |
 | FS | 12+ yd, middle | QB, #2s | deep middle third; keep a downhill angle on the post / dig | alley player last |
 | SS / Will (curl-flat) | over the TE or the open-side tackle | TE / tackle | drop to 12 yd at the top of the numbers, sink the curl lane, widen; break to the flat when the QB's shoulders cross his face; carry a #2 wheel | force: outside #2 |
-| LB_S, LB_M (hooks) | 4-5 yd | guard-center-guard triangle | sink 10-12 yd outside the hash (Saban: 10 yd, 2 inside the hash), cushion seam and dig | his gap per front |
+| LB_S, LB_M (hooks) | 4-5 yd | guard-center-guard triangle | STANDARD: sink 10-12 yd outside the hash, cushion seam and dig (standard because the common NFL version (Bowen, NFL)). Later scheme option (not built now): Saban: 10 yd, 2 inside the hash | his gap per front |
 
 ## Cover 2 (spot-drop: five under, two deep) [TD Cover 2], [Bowen C2], [Viqtory T2]
 
@@ -117,7 +168,7 @@ every Deuce row. Those are reasoning (low confidence); the seat cards are the so
 |---|---|---|---|---|
 | CB_S, CB_W | on #1, outside shade (press or off) | #1 | man on #1, funnel inside to the help; stay on top of a flat-then-up | late contain on runs to him |
 | NB / SS | outside leverage on #2 | #2 | man on #2 | run support once #2 blocks |
-| LB_S / LB_W | per front | first back strong / weak | his back; back blocks: green dog (rush) or zone up | his gap per front |
+| LB_S / LB_W | per front | first back strong / weak | STANDARD: his back; back blocks: green dog (rush) (standard because the common NFL version (Bowen, NFL)). Later scheme option (not built now): back blocks: zone up | his gap per front |
 | LB_M (hole) | per front | QB, crossers | free: wall the first crosser, help low | gap per front |
 | FS | 12-14 yd, middle | QB | deep middle; break on the throw | alley last |
 Cover 0: everyone manned with **inside** leverage; no deep player ("Where's the help? The sideline"). 2-Man: five man
@@ -297,7 +348,7 @@ Seat mapping used throughout:
 ### cover4 × CB_S
 | # | field | rule | source | conf |
 |---|---|---|---|---|
-| 1 | alignment & shell shown | 7-8 yd off ("seven to eight yards off the ball"), outside shade/leverage on #1 (~1 yd outside); may press-bail. Shell shown: two-high. No rotation. alt (college Box): inside leverage, counting his own steps | [Bowen]; [PFN]; [USAF-7] | high |
+| 1 | alignment & shell shown | STANDARD: 7-8 yd off ("seven to eight yards off the ball"), outside shade/leverage on #1 (~1 yd outside); may press-bail. Shell shown: two-high. No rotation (standard because the common NFL version (Bowen, NFL)). Later scheme option (not built now): college Box: inside leverage, counting his own steps | [Bowen]; [PFN]; [USAF-7] | high |
 | 2 | run/pass key | #1's release (block/stalk = run, release = pass) through to the near tackle and back. Pass-first: commits to run only after #1 blocks *and* the ball shows outside | [Bowen] ("pattern-matches the vertical release of No. 1"); run timing is reasoning | med |
 | 3 | run fit | Secondary/deep contain outside the apex (force) and safety (alley); last man outside, slow-play downhill, keep the ball inside | [Bowen] (flat defenders "cannot be outleveraged"; safeties fill); corner role inferred | med |
 | 4 | play-action rule | Pass-first: never bites on backfield action; PA is aimed at the safety, so expect a vertical #1 with no safety help on PA and stay on top | [Bowen] (PA "baits safeties, leaving cornerbacks exposed") | high |
@@ -321,7 +372,7 @@ Seat mapping used throughout:
 ### cover4 × SS (strong quarter safety)
 | # | field | rule | source | conf |
 |---|---|---|---|---|
-| 1 | alignment & shell shown | 10-12 yd, on the inside eye of #2 (~2 yd inside). Two-high shown, played two-high. alt: 8-9 yd vs a 2-back run look ("Aggressor", Lock call at 6-8 vs a TE in the core) | [Bowen]; [TDP-2R] | high |
+| 1 | alignment & shell shown | 10-12 yd, on the inside eye of #2 (~2 yd inside). Two-high shown, played two-high. Adjustment: 8-9 yd vs a 2-back run look ("Aggressor", Lock call at 6-8 vs a TE in the core) | [Bowen]; [TDP-2R] | high |
 | 2 | run/pass key | Flat-foot read through #2 to the near OL/TE ("pane of glass": tackle crosses the line = run, sets = pass). #2 releasing past the vertical point = pass, overriding any backfield action. Commits on the 1st-2nd step | [Bowen]; [XOL-key] | high (key), med (timing) |
 | 3 | run fit | Alley player: fits downhill inside the force (apex) and outside the LBs; flat-foot, no backpedal; aggressive once #2 blocks | [Bowen] ("fill downhill"); [CI-425] (SS "alley runner") | high |
 | 4 | play-action rule | May trigger on run only when #2 blocks or is low. If #2 releases vertical, stay on #2 regardless of the mesh or OL. Recover: open and run to #2's inside hip; the corner has no help on #1 in the meantime. Never picks up a back on a fake; the back belongs to the hook (F61/F68) | [Bowen] (PA "baits safeties"); [PFN] (hook takes the back); #2-override rule from [Viq-C4]/[PFN] | high (rule), med (recovery) |
@@ -352,7 +403,7 @@ Seat mapping used throughout:
 | 5 | pass job by #1/#2/#3 release | #2 vertical → wall inside release, carry to the safety's vertical point, then flat. #2 out/flat → man him (first to flat). #2 in/under → wall, pass to hook, look for #3/#1 to the flat. #1 under (Under call) → carry #1. #1 stop (Smash) → cover #1. Nothing → gain depth, read QB (curl-flat) | [PFN]; [USAF-7] | high |
 | 6 | relation to threats in window | Inside leverage on #2 (wall); outside-in on flat routes; sinks under #1's curl when no flat threat | [PFN]; [TDP-2R] (stay under #1 to help the corner) | high |
 | 7 | eyes | #2 → flat threat → QB | [PFN] | high |
-| 8 | pass-off | Carries #2, across the field if he goes there ("will take two back across field" with no Fast 3). On the Mike's Push call (fast #3 to the flat) he hands #2 inside and takes #3 to the flat (F09). alt (PFN, loosely): zone the in-breaker off to the hook | [USAF-7]; [PFN] alt | med |
+| 8 | pass-off | STANDARD: Carries #2, across the field if he goes there ("will take two back across field" with no Fast 3). On the Mike's Push call (fast #3 to the flat) he hands #2 inside and takes #3 to the flat (F09) (standard because the only version a cited page states as a rule, [USAF-7]). Later scheme option (not built now): PFN, loosely: zone the in-breaker off to the hook | [USAF-7]; [PFN] alt | med |
 | 9 | break trigger | QB's front shoulder in zone; receiver's break in man | reasoning | low |
 | 10a | formation adj. | Trips: per check (poach: man #2; stubbie: share #2/#3). Bunch: Box. Attached #2: plays 5/7-tech-like tight alignment | [TDP-2R]; [MQ-Stub] | med |
 | 10b | motion adj. | Bump with #2 on motion across, or a "lock" call to stay; if #2 leaves, he re-apexes the new #2 | reasoning | low |
@@ -461,7 +512,7 @@ Shell shown → played: two-high → bunch side four over three (CB and S as ver
 | # | field | rule | source | conf |
 |---|---|---|---|---|
 | 1 | alignment & shell shown | Off, outside of the bunch (point-man aware) | box excerpt; reasoning | low |
-| 5 | pass job by #1/#2/#3 release | Outside vertical cap: first receiver outside and vertical. alt (college Box): inside leverage, counts 3 steps, then mans #1 or gives Under | Box-bunch excerpt; [USAF-7] | med |
+| 5 | pass job by #1/#2/#3 release | STANDARD: Outside vertical cap: first receiver outside and vertical (standard because the generic 4-over-3 Box rule; neither version is NFL-sourced). Later scheme option (not built now): college Box: inside leverage, counts 3 steps, then mans #1 or gives Under | Box-bunch excerpt; [USAF-7] | med |
 
 ### cover4_box × SS (bunch side)
 | # | field | rule | source | conf |
@@ -483,7 +534,7 @@ Backside seats: as cover4 (2x? or solo/Lock call on X). Overall low/med: no full
 ---
 
 ## cover4_book_read — Quarters Book/Read (vs empty)
-Shell shown → played: two-high → quarters to both sides of empty, with LB_M carrying #3 vertical. alt: quarters to the 3 side and read Cover 2 to the 2 side. The engine term "Book/Read" was not found in any source.
+Shell shown → played: two-high → quarters to both sides of empty, with LB_M carrying #3 vertical. alt: quarters to the 3 side and read Cover 2 to the 2 side (later scheme option). The engine term "Book/Read" was not found in any source.
 
 ### cover4_book_read × LB_M
 | # | field | rule | source | conf |
@@ -495,7 +546,7 @@ Shell shown → played: two-high → quarters to both sides of empty, with LB_M 
 ### cover4_book_read × SS / FS (2 side safety in alt)
 | # | field | rule | source | conf |
 |---|---|---|---|---|
-| 5 | pass job by #1/#2/#3 release | alt (2-receiver side): read Cover 2: half over #1 / #2 vertical, corner squats on #1 or #2 out | [XOL-empty] (search excerpt) | low |
+| 5 | pass job by #1/#2/#3 release | STANDARD: quarters to both sides, as cover4 SS / FS (standard because it is this coverage's base call, [XOL-empty]). Later scheme option (not built now): 2-receiver side reads Cover 2: half over #1 / #2 vertical, corner squats on #1 or #2 out | [XOL-empty] (search excerpt) | low |
 | 4 | play-action rule | No back → no PA by a back; a QB run/draw: #2-key rule unchanged | reasoning | low |
 
 ### cover4_book_read × NB, LB_W (or DB)
@@ -689,7 +740,7 @@ Shell shown → played: two-high → quarters to the strength or field; the weak
 ### split_quarters_2man × LB_W (or DB)
 | # | field | rule | source | conf |
 |---|---|---|---|---|
-| 5 | pass job by #1/#2/#3 release | Man on weak #2 (or the back if no weak #2). alt: dedicated to the box, with the back man-handled by LB_M | [Viq-SF]; [Kou] | med |
+| 5 | pass job by #1/#2/#3 release | STANDARD: Man on weak #2 (or the back if no weak #2) (standard because the install source's split-field rule, [Viq-SF]; neither version is NFL-sourced). Later scheme option (not built now): box backer: dedicated to the box, with the back man-handled by LB_M | [Viq-SF]; [Kou] | med |
 | 10c | back release | Weak-side back release = his if he is on #2/back | reasoning | low |
 
 Strong-side seats: as cover4.
@@ -814,7 +865,7 @@ Several fetched pages were paywalled or teasers (MatchQuarters Cover 9 and weak 
   * Weak rotation (Cover 9 / "3 weak"): the weak safety drops, and the strong safety spins to the post ([Kou Michigan][kou]).
   * Timing is "as the ball is snapped" ([TD Saban][tdsaban]). Some teams creep on the cadence. Michigan checks from Cover 4 to Cover 3 on motion to the boundary ([Kou Michigan][kou]).
   * Engine rule: hold the two-high shell until the snap (or until the snap count's last movement). The rotating player moves at the snap, and the post safety takes a 45° angle to the MOF and squares up ([HS Rip/Liz][hsripliz], "From a 2-high look ... 45-degree").
-* **Seattle (2013-era) alt:** single-high shown, with the SS walked down and the FS 60/40 toward one seam ([SI Kam][sikam]).
+* **Seattle (2013-era) alt:** single-high shown, with the SS walked down and the FS 60/40 toward one seam ([SI Kam][sikam]) (later scheme option).
 
 ## Cover 3 family notes on the user's film items
 
@@ -851,7 +902,7 @@ Base occupant per seat: CB_S/CB_W deep thirds; FS middle third; SS strong C/F (s
 | 4 | play-action rule | Ignores the backfield. #1's release overrides any run key: if #1 releases he plays pass. Recovery is not needed if he never steps up. If he bites, the FS cannot cover the outside third, so the cost is a vertical touchdown. | [TD Cover 3][td3] ("deeper than the deepest"); rest reasoning | med |
 | 5 | pass job by release | #1 vertical: carry in phase, outside-third man ("1/3 Read"). #1 out/comeback: stay deeper, break on the throw. #1 in (dig/post): funnel inside to the FS and stay over the top. #1 under or hitch (<5 yd): zone his third, call "under". #1 blocks: see run. Two verticals in the third: "split two verticals" / Zebra zone. | [Bowen C3][b3]; [SI Buzz/Sky][sibz]; under call [Saban USAF][sabanusaf] | high |
 | 6 | relation to threats in window | Sinks under nothing: he stays *over* the deepest threat in his third. Cushion 2-3 yd over the top. Walls #1 from the outside-in; works to the "bottom of the numbers" vs a 9. | [Bowen C3][b3]; cushion reasoning | med |
-| 7 | eyes | #1 ("chin on the shoulder looking at #1") through about 3 steps. Then, if #1 is not vertical, the QB. Alt (HS Rip/Liz): vision #2 after the under call. | [HS Rip/Liz][hsripliz] | high |
+| 7 | eyes | STANDARD: #1 ("chin on the shoulder looking at #1") through about 3 steps. Then, if #1 is not vertical, the QB (standard because the common deep-third version). Later scheme option (not built now): HS Rip/Liz: vision #2 after the under call. | [HS Rip/Liz][hsripliz] | high |
 | 8 | pass-off | Inside breakers (dig/post) to the FS. Under routes to the C/F/hook. He takes the next vertical entering his third (#2 wheel/seam that widens). | [Bowen C3][b3] | high |
 | 9 | break trigger | Ball out / QB front shoulder for throws in front of him. On a vertical he plays the man's hands. | reasoning (deep-third norm) | low |
 | 10a | formation adj. | Trips: same third. #1 may be manned "1/3 read", but with two outside threats he plays zone ("Zebra"). Nub/tight split: align tighter, inside-shade fade. Back out wide: treat the back as #1. | [SI Buzz/Sky][sibz]; nub reasoning | med |
@@ -871,7 +922,7 @@ Base occupant per seat: CB_S/CB_W deep thirds; FS middle third; SS strong C/F (s
 | 7 | eyes | As CB_S. | | high |
 | 8 | pass-off | As CB_S. A weak #1 dig crosses toward the strong hook/FS. | | high |
 | 9 | break trigger | As CB_S. | | low |
-| 10a | formation adj. | 3x1 single X side: zone third. Some teams press X and carry ("1/3 Read"). | [SI Buzz/Sky][sibz] | med |
+| 10a | formation adj. | STANDARD: 3x1 single X side: zone third (standard because it is the base Cover 3 corner rule). Later scheme option (not built now): some teams: press X and carry ("1/3 Read"). | [SI Buzz/Sky][sibz] | med |
 | 10b | motion adj. | If motion empties his side (no #1), he aligns at the third's landmark at about 12 yd on the numbers and helps vs the #2 seam from the other side (reasoning). | reasoning | low |
 | 10c | back release | Wheel from the weak-side back into the third: carry it. | reasoning | med |
 | 11 | notes | | | |
@@ -896,13 +947,13 @@ Base occupant per seat: CB_S/CB_W deep thirds; FS middle third; SS strong C/F (s
 ### cover3 × SS
 | # | field | rule | source | conf |
 |---|---|---|---|---|
-| 1 | alignment & shell shown | Shown: two-high (strong half). Played (Sky): spin down at the snap to the strong curl-flat, 10-12 yd at the top of the numbers, outside leverage on #2. Seattle alt: walked down pre-snap. | [TD Saban][tdsaban]; [SI Buzz/Sky][sibz]; [Bowen C3][b3] | high |
+| 1 | alignment & shell shown | STANDARD: Shown: two-high (strong half). Played (Sky): spin down at the snap to the strong curl-flat, 10-12 yd at the top of the numbers, outside leverage on #2 (standard because the common NFL two-high-then-rotate norm, family (iv)). Later scheme option (not built now): Seattle: walked down pre-snap. | [TD Saban][tdsaban]; [SI Buzz/Sky][sibz]; [Bowen C3][b3] | high |
 | 2 | run/pass key | TE / open-side tackle (high hat = pass). Seattle: OL hats and the TE's vertical release. | [Bowen C3][b3]; [SI Kam][sikam] | high |
-| 3 | run fit | Primary force on the strong side. "Hammer" the lead block with his inside shoulder; squeeze; keep everything inside. Seattle: SS has an A-gap fit when in the box (scheme-dependent). | [Bowen C3][b3]; [SI Kam][sikam]; [Cassity C/F][cassity] | high |
+| 3 | run fit | STANDARD: Primary force on the strong side. "Hammer" the lead block with his inside shoulder; squeeze; keep everything inside (standard because the common NFL version (Bowen, NFL)). Later scheme option (not built now): Seattle: SS has an A-gap fit when in the box (scheme-dependent). | [Bowen C3][b3]; [SI Kam][sikam]; [Cassity C/F][cassity] | high |
 | 4 | play-action rule | #2's release overrides the backfield. If the TE/#2 releases, he plays pass first. Depth and width to the curl before stepping up. He may only fill on low hats *plus* #2 blocking. Recovery: open, retreat to the curl window under #1, then react to the flat. If he bites, the curl throw behind him is open: the strong hook can widen but no one fully replaces him. | keys [Bowen C3][b3], [SI Kam][sikam]; rule reasoning | med |
 | 5 | pass job by release | #2 vertical: wall/collision, carry to 12-15 yd (seam alert), then release to the FS. #2 out/flat: sink under #1's curl, then break to the flat when the QB's shoulders cross his face. #2 in/under: wall, then take #1 curl ("rob #1"). #2 stop: sit inside him. #2 blocks: force. #2 wheel: run with it. | [Bowen C3][b3]; [Cassity C/F][cassity]; [Brophy][brophy]; [SI Kam][sikam] | high |
 | 6 | relation to threats in window | Squeezes the curl from the inside-under. Walls #2 from the outside. Must not be out-leveraged to the flat. | [Bowen C3][b3] | high |
-| 7 | eyes | #2 through his release (≈3 steps), then the QB. Classic spot-drop alt: the QB throughout. | [HS Rip/Liz][hsripliz] (3 scootch steps); [Cassity C/F][cassity] | med |
+| 7 | eyes | STANDARD: #2 through his release (≈3 steps), then the QB (standard because pattern-match is the common NFL Cover 3 form, family (ii)). Later scheme option (not built now): classic spot-drop: the QB throughout. | [HS Rip/Liz][hsripliz] (3 scootch steps); [Cassity C/F][cassity] | med |
 | 8 | pass-off | Seam #2 to the FS at about 12-15 yd. Inside #2 to the hooks. Takes the next threat to the flat (#3/back). | [Brophy][brophy]; [Saban USAF][sabanusaf] | high |
 | 9 | break trigger | QB's shoulders crossing his face for the flat. Ball out for the curl. | [Cassity C/F][cassity] | high |
 | 10a | formation adj. | Trips: see cover3_trips / cover3_mable. Nub TE: tighter alignment, still force. Back out wide: he relates to the widest inside receiver as #2. | reasoning | low |
@@ -1129,7 +1180,7 @@ Sources: [Bowen C3][b3] (the SS or FS drops inside the numbers as a middle hook,
 | # | field | rule | source | conf |
 |---|---|---|---|---|
 | 1 | alignment & shell shown | Shown two-high. At the snap, drops inside the numbers to the strong hook/low hole. Depth by situation: shallower on 3rd and short, deeper (≈12+ yd) on long. | [Bowen C3][b3] | high |
-| 2 | run/pass key | OL hats / TE; Seattle "Tuff" alt reads the OL high hat. | [SI Kam][sikam] | med |
+| 2 | run/pass key | STANDARD: OL hats / TE (standard because the first-listed buzz key; both versions are Seattle-sourced). Later scheme option (not built now): Seattle "Tuff": reads the OL high hat. | [SI Kam][sikam] | med |
 | 3 | run fit | Alley player inside the force, arriving from depth. Not force (the bumped LB/NB is force). | reasoning (Buzz SS inside) | low |
 | 4 | play-action rule | Stays at depth until the run is confirmed by OL break-through. His job vs PA *is* the intermediate crosser: never fill on flow alone. If he bites, the dig/over window is open (F07). | [SI Buzz/Sky][sibz] (Buzz handles PA crossers); reasoning | med |
 | 5 | pass job by release | Inside hook / "robber" for #1 and #2 digs crossing from the strong side. Dig crossing his face: wall it from underneath at the dig's depth; do not jump a shallow in front of him. #2 seam: match the second seam (Seattle), then release to the FS. | [Bowen C3][b3]; [SI Kam][sikam]; dig-behind-hook trap from search summary; [HS Rip/Liz][hsripliz] robot-to-dig | med |
@@ -1325,12 +1376,12 @@ Occupants: CB_S/CB_W flats; SS/FS deep halves. 4-3: LB_S strong hook/curl, LB_M 
 | # | field | rule | source | conf |
 |---|---|---|---|---|
 | 1 | alignment & shell shown | Hard corner: press or about 5 yd, outside leverage on #1, forcing an inside release. | [TD Cover 2][td2]; [Bowen C2][b2] | high |
-| 2 | run/pass key | EMLOS/OT hat → QB → #2 → #1 (trap form). Base: #2's release. | [TD Trap][tdtrap] | med |
+| 2 | run/pass key | STANDARD: Base: #2's release (standard because cover2 is the base card; trap is the cover2_match form). Later scheme option (not built now): trap form: EMLOS/OT hat → QB → #2 → #1. | [TD Trap][tdtrap] | med |
 | 3 | run fit | Force/contain: squeeze from the outside-in, spill. High aggression. | [TD Cover 2][td2]; [Bowen C2][b2] (closed-side edge support) | high |
 | 4 | play-action rule | Run key is the EMLOS. A #1 release with a vertical stem plus no #2 flat means sink (he has the hole). Pull hard only if #1 blocks. If he bites, the safety has the 9 but the hole/7 opens; no one replaces him. | reasoning; [Bowen C2][b2] | low |
 | 5 | pass job by release | #1 vertical and #2 not to the flat: jam, sink at 45° under #1 to cushion the 9/7. #2 out/flat: squat/break to the flat. #1 out (quick): break. #1 in: release inside to the hook, stay in the flat area. #2 vertical: shuffle, glance at #1, punch, sink (trap). | [Bowen C2][b2]; [TD Trap][tdtrap] | high |
 | 6 | relation to threats in window | Under #1 and inside the sideline. Wall the flat from the outside. Cushion the hole at 10-12 yd until the flat threat appears. | [TD Trap][tdtrap] | med |
-| 7 | eyes | #1 through the jam, then #2/QB. Trap form: QB ("strings on the QB's eyes"). | [TD Trap][tdtrap] | med |
+| 7 | eyes | STANDARD: #1 through the jam, then #2/QB (standard because the base hard-corner read; trap is the cover2_match form). Later scheme option (not built now): trap form: QB ("strings on the QB's eyes"). | [TD Trap][tdtrap] | med |
 | 8 | pass-off | #1 vertical to the safety at about 12-15 yd (the safety overlaps). Takes the next flat threat. | [Bowen C2][b2] | med |
 | 9 | break trigger | QB's eyes/shoulders to the flat; ball out. "Q flat you freeze" (hold for the safety on the hole shot). | [TD Trap][tdtrap] | med |
 | 10a | formation adj. | Trips: he stays on the closed side or with the passing strength. Nub: soft squat, edge. Back out wide: treat him as #1. | [Bowen C2][b2] (TE-side vs slot) | med |
@@ -1606,7 +1657,7 @@ staffs.
 ### cover1 × CB_S
 | # | field | rule | source | conf |
 |---|---|---|---|---|
-| 1 | alignment & shell shown | **Press:** on #1 with an outside shade (outside eye). **Off:** 7–8 yd. **"Plus" split** (#1 2–3 yd outside the numbers): align with an inside shade and use the sideline. Saban: #1 inside a line 1 yd inside the top of the numbers → outside leverage; #1 outside that line → inside leverage. Shows press or a 2-high look, then rotates | [Bowen C1], [Soran] ("one-yard inside the top of the numbers") | high |
+| 1 | alignment & shell shown | STANDARD: **Press:** on #1 with an outside shade (outside eye). **Off:** 7–8 yd. **"Plus" split** (#1 2–3 yd outside the numbers): align with an inside shade and use the sideline. Shows press or a 2-high look, then rotates (standard because the common NFL version (Bowen, NFL)). Later scheme option (not built now): Saban: #1 inside a line 1 yd inside the top of the numbers → outside leverage; #1 outside that line → inside leverage | [Bowen C1], [Soran] ("one-yard inside the top of the numbers") | high |
 | 2 | run/pass key | His man (#1). Stalk block or crack: run. Release: pass. He does not read the OL | [Bowen C1] (man coverage); key detail is reasoning | med |
 | 3 | run fit | Alley/force only after #1 blocks. He is the last outside support behind the force player; he leverages the ball back to the alley defenders. Low aggression until #1's block shows | reasoning | low |
 | 4 | play-action rule | He has no run responsibility while #1 is on a route. Eyes stay on #1, and the backfield fake is not his key, so play action should not move him. If #1 blocks then releases (a "block-and-release"), he stays on #1 | reasoning (consistent with [Svec PA] eye discipline) | low |
@@ -1616,14 +1667,14 @@ staffs.
 | 8 | pass-off | None by default. Exceptions: a **Jump** call (he replaces the FS deep middle when the FS cuts a short motion or shallow receiver), banjo / in-out calls vs stack or bunch | [Bowen C1], [BD C1 adj] | high |
 | 9 | break trigger | His man's break. Off-man: the QB's 3-step set and #1's break together (flat-foot read) | [Bowen C1], [Bowen ManP] | high |
 | 10a | formation adj. | **Trips (3x1):** stays on #1. **Stack or tight split:** in/out with the nickel or SS (see cover1_banjo). **Empty:** man on #1. **Back split wide:** whoever has the back follows him out; the corner stays on #1 | [Soran] 3x1 assignments, [BD C1 adj] | med |
-| 10b | motion adj. | **#1 motions across:** NFL common is **lock** (he travels with him) or a **switch/bump** with the safety or nickel; the choice is pre-set. Lock shows man; switch keeps leverage but needs communication ([Svec motion]: "LOCK or SWITCH"). **Jump** on short or jet motion ([Bowen C1]). Travelling path: see the F05 note | [Svec motion], [Bowen C1], [TDP C0] ("If your man moves, you move with him") | med |
+| 10b | motion adj. | STANDARD: **#1 motions across:** **lock** (he travels with him); lock shows man (standard because the first-listed common NFL answer, needing no exchange call). Later scheme option (not built now): a pre-set **switch/bump** with the safety or nickel: keeps leverage but needs communication ([Svec motion]: "LOCK or SWITCH"). Adjustment: **Jump** on short or jet motion ([Bowen C1]). Travelling path: see the F05 note | [Svec motion], [Bowen C1], [TDP C0] ("If your man moves, you move with him") | med |
 | 10c | back release | Not his | [Bowen C1] | high |
 | 11 | notes | **F17:** in Cover 1 the corner should not let X "run by" into trail; that is zone-looking play. Trail ("a step behind the receiver with his back to the line of scrimmage") is a 2-Man technique that relies on two-deep help ([ITP trail], [Svec 2M]). **F05:** see cover1 × NB 10b | — | med |
 
 ### cover1 × CB_W
 | # | field | rule | source | conf |
 |---|---|---|---|---|
-| 1 | alignment & shell shown | As CB_S. The weak-side #1 is often the X, with a wider split and more sideline. The Saban numbers-line rule decides inside or outside shade | [Bowen C1], [Soran] | high |
+| 1 | alignment & shell shown | STANDARD: As CB_S. The weak-side #1 is often the X, with a wider split and more sideline (standard because the common NFL version (Bowen, NFL)). Later scheme option (not built now): Saban: the numbers-line rule decides inside or outside shade | [Bowen C1], [Soran] | high |
 | 2 | run/pass key | #1 | as CB_S | med |
 | 3 | run fit | As CB_S. Against weak runs he is the last support outside a Will or nickel force | reasoning | low |
 | 4 | play-action rule | As CB_S. Boot or naked toward him does not change his man | reasoning | low |
@@ -1650,7 +1701,7 @@ staffs.
 | 8 | pass-off | Only on in/out (banjo), switch, or a pre-called exchange. Patriots: the Sam and safety exchange on a #2 crosser ([Kou Pats]) | [Kou Pats], [BD C1 adj] | high |
 | 9 | break trigger | #2's break | — | med |
 | 10a | formation adj. | **3x1:** man #2. **Bunch or stack:** in/out. **Tight split:** in/out or banjo; Saban "Tuff" is a man leverage technique against tight splits ([Repo] via [MQ gloss]). **Empty:** man #2 | [BD C1 adj], [Repo] | med |
-| 10b | motion adj. | **Slot across:** lock or switch per call. **Into the box as a blocker:** "blitz and engage", or fall off as a low-zone helper ([Svec motion]). **Traffic (F05):** see the note | [Svec motion] | med |
+| 10b | motion adj. | STANDARD: **Slot across:** lock (standard as cover1 × CB_S 10b). **Into the box as a blocker:** "blitz and engage", or fall off as a low-zone helper ([Svec motion]). **Traffic (F05):** see the note. Later scheme option (not built now): slot across: switch per call | [Svec motion] | med |
 | 10c | back release | Not his | — | high |
 | 11 | notes | **F05 (corner bumps a teammate following motion; nobody adjusts):** sources agree there must be a pre-set answer (lock, switch/bump, Jump, or banjo for tight splits); traffic is the cost of lock. The travelling defender's path is **reasoning**: go behind or over the top of stationary teammates at their depth rather than through them, and the stationary defender holds his leverage. A switch error leaves a man uncovered ([Svec motion]). No source gives an exact path | [Svec motion], [Bowen C1], reasoning | low |
 
@@ -1668,13 +1719,13 @@ staffs.
 | 2 | run/pass key | TE's release: a base or down block means run; a release means pass | [Bowen C1] (drives to the TE's hip) | med |
 | 3 | run fit | Strong-side force or alley player when the TE blocks. Fast, but he must clear the TE's release first | reasoning | low |
 | 4 | play-action rule | His key is the TE, not the mesh. A TE who blocks for a count then leaks (a PA leak) is still his. He holds until the TE commits past a block | reasoning (consistent with [Svec B&E] "keep their eyes on" the man) | low |
-| 5 | pass job by TE release | **Vertical:** outside-in, driving to the TE's hip; the FS helps on posts. **In / drag:** chase; the hole player helps. **Out / flat:** drive. **Block:** green dog or zone up underneath (team rule) | [Bowen C1], [Bowen ManP] | high |
+| 5 | pass job by TE release | STANDARD: **Vertical:** outside-in, driving to the TE's hip; the FS helps on posts. **In / drag:** chase; the hole player helps. **Out / flat:** drive. **Block:** green dog (standard because the common NFL version (Bowen, NFL)). Later scheme option (not built now): block: zone up underneath (team rule) | [Bowen C1], [Bowen ManP] | high |
 | 6 | relation to threats | His man. **F04:** in Cover 1 his help is inside and deep, so on a flat-then-up (wheel) he must stay **on top and outside**, never trailing underneath. Underneath trail is a 2-Man luxury | [Bowen C1], [ITP trail], reasoning | med |
 | 7 | eyes | TE's hips; the ball only when in phase | — | med |
 | 8 | pass-off | Only on exchange calls (Patriots Sam/safety on #2 crossers) | [Kou Pats] | high |
 | 9 | break trigger | TE's break | — | med |
 | 10a | formation adj. | **Robber call:** he is the hole player (see cover1_robber). **3x1:** man on #2 or #3 per the check | [Bowen C1], [Soran] | med |
-| 10b | motion adj. | **TE motion across:** lock or switch with the weak-side defender | [Svec motion] | med |
+| 10b | motion adj. | STANDARD: **TE motion across:** lock (standard as cover1 × CB_S 10b). Later scheme option (not built now): switch with the weak-side defender | [Svec motion] | med |
 | 10c | back release | Only on a "City/Alert/Key" call: the safeties combo the FB/H-back | [BD C1 adj] | med |
 | 11 | notes | **F68:** he must not take a back who is faking (not releasing) while a fullback leaks. Backs belong to the linebackers by "first back strong / weak" and to the safety only on Alert/City calls. Rule: cover the eligible player who actually **releases past the LOS** on his side; a faking back is no one's coverage until he releases | [Bowen C1], [BD C1 adj], [Svec B&E] | med |
 
@@ -1726,7 +1777,7 @@ staffs.
 | 9 | break trigger | The back's break | — | med |
 | 10a | formation adj. | **Empty:** no back, so he becomes a man defender on #3 or a rat (call dependent) | [Soran] | med |
 | 10b | motion adj. | **Back motions out:** Funnel or Read (the LB toward the release picks him up) | [BD C1 adj] | high |
-| 10c | back release | **Back blocks:** green dog (rush to the back) or zone up / no-blitz-engage hole player (Belichick) ([Bowen C1], [Kou Pats]). **Back leaves late after blocking:** break off the rush and go get him ([Svec B&E]) | [Bowen C1], [Kou Pats], [Svec B&E] | high |
+| 10c | back release | STANDARD: **Back blocks:** green dog (rush to the back) ([Bowen C1]). **Back leaves late after blocking:** break off the rush and go get him ([Svec B&E]) (standard because the common NFL version (Bowen, NFL)). Later scheme option (not built now): back blocks: zone up / no-blitz-engage hole player (Belichick) ([Bowen C1], [Kou Pats]) | [Bowen C1], [Kou Pats], [Svec B&E] | high |
 | 11 | notes | **F68:** each back belongs to a named LB by the release rule; a defender who is not keyed on that back must not take a faking back. FB release: "first back strong / weak" assigns the FB to the strong-side LB | [Bowen C1] | med |
 
 ### cover1 × LB_S (base)
@@ -1843,7 +1894,7 @@ staffs.
 ### cover1_robber × SS
 | # | field | rule | source | conf |
 |---|---|---|---|---|
-| 1 | alignment & shell shown | Deep (8–12 yd) or 2-high, then drops to the hole (Bowen), or away from strength (Sumer), or at the sticks (Saban 1 Cross: the safety opposite the RB) | [Bowen C1], [Sumer C1], [Soran] | high |
+| 1 | alignment & shell shown | STANDARD: Deep (8–12 yd) or 2-high, then drops to the hole (standard because the common NFL version (Bowen, NFL)). Later scheme option (not built now): Sumer: the robber comes from away from strength; Saban 1 Cross: at the sticks, the safety opposite the RB | [Bowen C1], [Sumer C1], [Soran] | high |
 | 4 | play-action rule | Reads "through" the QB; he must not trigger on the run fake before the ball crosses the LOS (reasoning). His robber depth gives him time to recover | [Bowen C1], reasoning | med |
 | 5 | pass job | Drops into the hole, reads through the QB, drives on the underneath crosser | [Bowen C1] | high |
 | 7 | eyes | QB | [Bowen C1] | high |
@@ -1884,7 +1935,7 @@ staffs.
 | # | field | rule | source | conf |
 |---|---|---|---|---|
 | 5 | pass job | Trail man on #2 (nickel: "the hardest man position", per [Viqtory C5]). LB: man on the back, keying him "the entire time" ([Viqtory C5]) | [Viqtory C5], [Svec 2M] | high |
-| 10c | back release | **Back blocks:** Belichick "no blitz engage", where the LB becomes a middle hole player instead of green-dogging ([Kou Pats]). With 3 DL: the LB to the release side takes the back and the other spies the QB ([Svec 2M]) | [Kou Pats], [Svec 2M] | high |
+| 10c | back release | STANDARD: **Back blocks:** green dog, as cover1 × LB_W 10c (standard because the common NFL version (Bowen, NFL)). Later scheme option (not built now): Belichick "no blitz engage", where the LB becomes a middle hole player instead of green-dogging ([Kou Pats]). Adjustment: with 3 DL, the LB to the release side takes the back and the other spies the QB ([Svec 2M]) | [Kou Pats], [Svec 2M] | high |
 | other | | As cover1 man rules | — | med |
 
 ### cover2man × FS / SS (deep halves)
@@ -1994,7 +2045,7 @@ The structure is "rush five, drop six" into "a three-deep, three-under zone shel
 ### firezone × DE_W (dropping end, seam-flat weak / open side)
 | # | field | rule | source | conf |
 |---|---|---|---|---|
-| 1 | alignment & shell shown | Base end alignment; drops at the snap ("open-side end can drop to the seam-flat"). Alternatively the closed-side end drops to the middle hook | [Bowen ZB] | high |
+| 1 | alignment & shell shown | STANDARD: Base end alignment; drops at the snap ("open-side end can drop to the seam-flat") (standard because it is this seat's drop in the common NFL version (Bowen, NFL)). Later scheme option (not built now): the closed-side end drops to the middle hook | [Bowen ZB] | high |
 | 2 | run/pass key | The tackle: a high hat means pass, so drop; a run block means play his gap first | reasoning | low |
 | 3 | run fit | Run: his edge or contain responsibility stays until he reads pass | reasoning | low |
 | 4 | play-action rule | He will often be late. His landmark is the curl/seam area under #2; a run fake that freezes him leaves the seam to the hook and deep (reasoning) | reasoning | low |
@@ -2015,7 +2066,7 @@ The structure is "rush five, drop six" into "a three-deep, three-under zone shel
 | 2 | run/pass key | Guards and back (flow) | [USA flow] | med |
 | 3 | run fit | His fit gap until the pass read | reasoning | low |
 | 4 | play-action rule | Pull the chute: get depth back to the middle hook. The dig and the seam behind him are the cost | [Svec PA] | med |
-| 5 | pass job | **#3:** play #3 to both sides ([Bowen ZB]). **#3 vertical:** carry, passing to the FS. **Three-level flood:** push to #2's inside vertical. **Flat release:** that receiver becomes the new #3. **Saban 2x2:** middle hook, deep to short; come up on crossers only if the deep hook is empty. **Saban 3x1:** drop to the trips side with all of #3 vertical, or #2 man if #3 goes out ([Soran]) | [Bowen ZB], [Soran] | high |
+| 5 | pass job | STANDARD: **#3:** play #3 to both sides ([Bowen ZB]). **#3 vertical:** carry, passing to the FS. **Three-level flood:** push to #2's inside vertical. **Flat release:** that receiver becomes the new #3 (standard because the common NFL version (Bowen, NFL)). Later scheme option (not built now): **Saban 2x2:** middle hook, deep to short; come up on crossers only if the deep hook is empty. **Saban 3x1:** drop to the trips side with all of #3 vertical, or #2 man if #3 goes out ([Soran]) | [Bowen ZB], [Soran] | high |
 | 6 | relation to threats | Cheat toward #3's release side, wall crossers, and call "in, in" / "out, out" to the seam players | [search summary: X&O / coaching page] | med |
 | 7 | eyes | #3 → QB | [Bowen ZB] | med |
 | 8 | pass-off | Takes #2 handed down by the seam-flat; hands #3 vertical to the FS | [Bowen ZB] | med |
@@ -2044,7 +2095,7 @@ The structure is "rush five, drop six" into "a three-deep, three-under zone shel
 | 7 | eyes | #1 → #2 | [Bowen ZB] | med |
 | 8 | pass-off | #1 short to the seam-flat player | [Bowen ZB] | high |
 | 9 | break trigger | QB's front shoulder or hitch; the ball | reasoning | low |
-| 10a | formation adj. | **Saban alt:** corners man on #1, aggressive on hot routes ([Soran]) | [Soran] | high |
+| 10a | formation adj. | STANDARD: fire-zone deep third, as row 5 (standard because the common NFL version (Bowen, NFL)). Later scheme option (not built now): Saban: corners man on #1, aggressive on hot routes ([Soran]) | [Soran] | high |
 | 10b | motion adj. | Zone: does not travel | reasoning | low |
 | 10c | back release | **Wheel** by the back: his if #1 is not vertical (reasoning: Bowen's zone-blitz article only says a corner with no #1 vertical looks inside to #2 / #3, with no wheel) | reasoning from [Bowen ZB] | low |
 | 11 | notes | — | — | — |
@@ -2105,7 +2156,7 @@ The common shape (reasoning, consistent with [BH 2-steal] and [Kou split FZ]):
 - **Two flat players:** the corners (hard or cloud) or a dropping DE.
 - **Two seam/hook players:** an LB and a safety, nickel or DE.
 - **Rush:** five.
-- **Alt (invert):** a corner takes the deep half and a safety comes down ([BH 2-steal]).
+- **Alt (invert):** a corner takes the deep half and a safety comes down ([BH 2-steal]) (later scheme option).
 
 ### (iii) Shell shown → played
 
@@ -2137,12 +2188,12 @@ the trips version.
 | 10a | formation adj. | **3x1 boundary single:** cloud the X with the safety (deuce_dot) | [AFCA Cox] | high |
 | 10b | motion adj. | Re-count (zone) | reasoning | low |
 | 10c | back release | **Back to the flat:** he is the first-out defender (inference from the Kent State cloud adjustment) | [AFCA Cox] (adapted) | low |
-| 11 | notes | **F13 / F15:** a cloud corner who holds his zone while the back runs to the flat is misplaying "first out". With the safety over the top, he closes on the flat. **Alt (invert / 2-steal boundary):** the corner is the deep half and the DE has the flat ([BH 2-steal]) | [AFCA Cox], [BH 2-steal] | med |
+| 11 | notes | **F13 / F15:** a cloud corner who holds his zone while the back runs to the flat is misplaying "first out". With the safety over the top, he closes on the flat. STANDARD: the corner owns the flat (standard because the family's common shape, (ii)). Later scheme option (not built now): invert / 2-steal boundary: the corner is the deep half and the DE has the flat ([BH 2-steal]) | [AFCA Cox], [BH 2-steal] | med |
 
 ### deuce × CB_W
 | # | field | rule | source | conf |
 |---|---|---|---|---|
-| 1–10c | | As CB_S on his side. **Alt (2-steal boundary):** the boundary CB plays the deep half and the DE drops to the flat ([BH 2-steal]) | [BH 2-steal] | med |
+| 1–10c | | STANDARD: As CB_S on his side (standard because the family's common shape, (ii)). Later scheme option (not built now): 2-steal boundary: the boundary CB plays the deep half and the DE drops to the flat ([BH 2-steal]) | [BH 2-steal] | med |
 | 11 | notes | — | — | — |
 
 ### deuce × FS / SS (deep halves)
@@ -2159,7 +2210,7 @@ the trips version.
 | 9 | break trigger | QB's hitch or front shoulder | reasoning | low |
 | 10a | formation adj. | **3x1:** the boundary safety is over X in the cloud 2-on-1 (deuce_dot) | [AFCA Cox] | high |
 | 10b–c | | Re-count | reasoning | low |
-| 11 | notes | **Alt (2-steal):** the boundary safety comes down as the seam player ([BH 2-steal]) | [BH 2-steal] | high |
+| 11 | notes | STANDARD: both safeties play the deep halves, rows 1-10 (standard because the family's common shape, (ii)). Later scheme option (not built now): 2-steal: the boundary safety comes down as the seam player ([BH 2-steal]) | [BH 2-steal] | high |
 
 ### deuce × LB_W (weak seam / hook)
 | # | field | rule | source | conf |
@@ -2180,13 +2231,13 @@ the trips version.
 | # | field | rule | source | conf |
 |---|---|---|---|---|
 | 1–10c | | As LB_W on the strong side; pushes to #2 vs 3x1 (Kent State rover). Not found on the page: a #3 rule vs 2x2 (the article has no defender relating to #3 in its 2x2 form) | [AFCA Cox] | low |
-| 11 | notes | **Alt:** in 2-steal the nickel rushes and the Will plays the field seam ([BH 2-steal]) | [BH 2-steal] | high |
+| 11 | notes | STANDARD: he drops to the strong seam / hook, rows 1-10c (standard because the family's common shape, (ii)). Later scheme option (not built now): 2-steal: the nickel rushes and the Will plays the field seam ([BH 2-steal]) | [BH 2-steal] | high |
 
 ### deuce × DE_W (dropping end)
 | # | field | rule | source | conf |
 |---|---|---|---|---|
 | 1 | alignment & shell shown | End; drops at the snap | [BH 2-steal], [Kou split FZ] | high |
-| 5 | pass job | Boundary flat (2-steal), or seam/hook (if the corners are hard) | [BH 2-steal] | high |
+| 5 | pass job | STANDARD: seam/hook, with the corners hard on the flats (standard because the family's common shape, (ii)). Later scheme option (not built now): 2-steal: boundary flat | [BH 2-steal] | high |
 | other | | As firezone × DE_W | — | low |
 
 ### deuce × LB_M (rusher)
@@ -2482,9 +2533,9 @@ Level tags: NFL / college / HS / general (level not stated).
 ### Off-man corner (Cover 1 Off, 2-Man off) vs #1 stop/hitch or out at 4-8 yd
 | # | field | rule | source | conf |
 |---|---|---|---|---|
-| 1 | alignment and cushion | 7-8 yd off with outside shade (Cover 1 with post safety; inside shade only vs a reduced/"plus" split) (S4); 6-7 yd off (S3); 5-7 yd, tighter if he can match the receiver's speed, outside eye with post help / inside eye with no help (S1). Cushion kept through the stem about 2-3 yd; the coaching cue is not letting the receiver "step on our toes" (S1). S3 adds keeping both vertical and horizontal cushion, using a weave to hold leverage. | S1, S3, S4 | high |
-| 2 | movement | NFL version (Bowen): stay flat-footed and square at the snap and do not pedal until #1 is past the three-step depth, then resume the pedal and gain depth (S4). Coaching version: controlled pedal (~75% speed) while cushion holds, speed pedal when cushion is threatened, open and run ("man turn") once cushion is broken (S1, S3: turn when the receiver is within 3-4 yd). "Pedal until the break": S3 says the DB's feet throttle/chop with the receiver's and never stop until the receiver's foot plants. Pad level low, chest over toes (S3). Pedal, do not slide or turn early (S1). | S1, S3, S4 | high |
-| 3 | key and eyes | Pre-snap and early: eyes on #1 (S3); Bowen's NFL off-man reads "through the quarterback" during the flat-foot phase to cover the 3-step, then eyes back to the receiver (S4). After the release: eyes on the receiver's hips (S1, S3 "eyes on hip"), then S3 moves the eyes to the receiver's feet to read pace, chop and plant. S23 (snippet) warns against keying shoulders or head. So the observable order is: QB drop (3-step or not) -> #1's hips -> #1's feet at the top of the stem. | S1, S3, S4, S23 | high (order) / med (exact switch timing) |
+| 1 | alignment and cushion | STANDARD: 7-8 yd off with outside shade (Cover 1 with post safety; inside shade only vs a reduced/"plus" split) (S4) (standard because the common NFL version (Bowen, NFL)). Cushion kept through the stem about 2-3 yd; the coaching cue is not letting the receiver "step on our toes" (S1). S3 adds keeping both vertical and horizontal cushion, using a weave to hold leverage. Adjustment: outside eye with post help / inside eye with no help (S1). Later scheme option (not built now): college: 6-7 yd off (S3); high school: 5-7 yd, tighter if he can match the receiver's speed (S1). | S1, S3, S4 | high |
+| 2 | movement | STANDARD: NFL version (Bowen): stay flat-footed and square at the snap and do not pedal until #1 is past the three-step depth, then resume the pedal and gain depth (S4) (standard because the common NFL version (Bowen, NFL)). Once pedalling: open and run ("man turn") once cushion is broken (S1, S3: turn when the receiver is within 3-4 yd). "Pedal until the break": S3 says the DB's feet throttle/chop with the receiver's and never stop until the receiver's foot plants. Pad level low, chest over toes (S3). Pedal, do not slide or turn early (S1). Later scheme option (not built now): high-school / college coaching version, pedal and read the hips from the snap: controlled pedal (~75% speed) while cushion holds, speed pedal when cushion is threatened (S1, S3). | S1, S3, S4 | high |
+| 3 | key and eyes | STANDARD: Pre-snap: eyes on #1 (S3); Bowen's NFL off-man reads "through the quarterback" during the flat-foot phase to cover the 3-step, then eyes back to the receiver (S4). After the release: eyes on the receiver's hips (S1, S3 "eyes on hip"), then S3 moves the eyes to the receiver's feet to read pace, chop and plant. S23 (snippet) warns against keying shoulders or head. So the observable order is: QB drop (3-step or not) -> #1's hips -> #1's feet at the top of the stem (standard because the common NFL version (Bowen, NFL)). Later scheme option (not built now): high-school / college: eyes on #1 from the snap, then his hips (S1, S3). | S1, S3, S4, S23 | high (order) / med (exact switch timing) |
 | 4 | break point read | Observable cues: speed loss / throttle ("chop") of the receiver's feet, hips sinking, then the plant foot. S3: chop + plant = out, hook or dig; sprint + plant = post or dig; he breaks opposite the plant foot. S21: when the receiver stutters, the DB stutters and gets ready to break. S8 (NFL): double moves (stutter-go, sluggo, out-and-up) break around 8 yd with a foot chop, while non-quick-game routes break at 12-15 yd — so a chop at 5-8 yd is itself ambiguous between hitch/out and a double move. Receiver coaching (S22 snippet): hitch = weight drop on the 2nd inside step (~6 yd), stop = 3rd inside step (~9 yd), curl = "tight break" on the 3rd inside step. Lead time: no source states yards/steps of warning; from the receiver mechanics the hip sink shows ~1 step (the drop step) before the plant, and the throttle 1-2 steps before. | S3, S8, S21, S22 | high (cues) / low (lead time in steps) |
 | 5 | plant and drive | Plant foot stays under the body ("in the tube"), turned sideways (T-step, not a "bicycle" plant), chest over toes, point step within about a foot of the plant foot (S1, S3). Drive: non-plant toes and eyes at the receiver's upfield shoulder; do not play the ball until in a good relationship (S3). On hitch/out: break and secure the back arm, swat through the front arm (S21). Hitch/stop break comes down the line of scrimmage (S1 throttle-and-break drill). Do not drive: when cushion is broken or the stem is a full sprint (open and run) (S3); and Bowen's point that the break at ~8 yd may be a double move — stay square with cushion so he can play through it (S8). | S1, S3, S8, S21 | high |
 | 6 | what real corners get wrong | Letting cushion go ("step on our toes") (S1); feet stopping before the receiver plants (S3); plant foot outside the body -> slip, round break (S3); toes not pointed at target -> rounded break (S3); bicycle plant instead of T-plant (S1); opening hips early on a weave/zig (S1); biting on the stutter: sinking hips and stepping up for a hitch that was a stop-and-go, ending in trail and grabbing (S8, NFL film); eyes in the backfield too long — Bowen's checklist names a man corner looking back at the QB (search snippet of his NFP piece; the fetched NFL 101 piece shows the eyes must return to #1 after the 3-step) (S4). | S1, S3, S4, S8 | high |
@@ -2493,7 +2544,7 @@ Level tags: NFL / college / HS / general (level not stated).
 ### Press-man corner (Cover 1 press) on a stop or out after the release
 | # | field | rule | source | conf |
 |---|---|---|---|---|
-| 1 | alignment and cushion | About 1.5 yd off (ability-dependent), feet under armpits, hands ready, inside leverage with outside foot splitting the receiver (HS, no-help version) (S2). Cover 1 with post safety: press with outside leverage, kept by opening the hips rather than pedaling (S4). Sherman (Seattle): square, read-step/kick-step, no step until the receiver's first movement (S11). | S2, S4, S11 | high |
+| 1 | alignment and cushion | Cover 1 with post safety: press with outside leverage, kept by opening the hips rather than pedaling (S4). About 1.5 yd off (ability-dependent), feet under armpits, hands ready (S2). Sherman (Seattle): square, read-step/kick-step, no step until the receiver's first movement (S11). Adjustment: with no help (Cover 0), inside leverage with outside foot splitting the receiver (HS, no-help version) (S2). | S2, S4, S11 | high |
 | 2 | movement | Patient at the line; off-hand jam (not two-hand) once the release declares; ride/wedge with a hand on the hip (inside release: outside hand on hip; outside release: inside hand on hip) (S2). Once hips are open he plays the same technique as off-man (S2). Stay in the receiver's "pocket" the whole route (S11). In phase = running even, able to touch; drill cue "hands on hip, lean and look up for ball" (S21); out of phase = run to the hip and play the hands (S20, S21). | S2, S11, S20, S21 | high |
 | 3 | key and eyes | At the line: eyes on the bottom of the jersey numbers (S2). After release and hip turn: eyes to the receiver's hip to read the break (S2). In phase he may look back for the ball; out of phase he should not look back but close to the hip and then look for the receiver's eyes and hands (S20). | S2, S20 | high |
 | 4 | break point read | On the hip, the stop shows as the receiver's speed loss/hip sink felt and seen at close range (S2 hip key; S21 "stutter" drill). No source specifically describes a hand-on-hip feel for the stop route; the "hand on the hip" cue is taught for the release and the in-phase run (S2, S21). For a press corner running with a vertical stem, the stop comes after the corner has turned to run, so he sees it with his eyes on the near hip ~1 step before plant (inferred). | S2, S21 | med (cue) / low (feel & timing) |
@@ -2504,18 +2555,18 @@ Level tags: NFL / college / HS / general (level not stated).
 ### Cover 3 corner (deep third, off or press-bail) vs #1 out / curl / hitch
 | # | field | rule | source | conf |
 |---|---|---|---|---|
-| 1 | alignment and cushion | Off 7-8 yd, or press-bail (align in press, open and sink) to the deep outside third (S5). Outside shade, first steps back, gain to 10-12 yd while reading #1's release (S13). Throw Deep: traditionally no press in Cover 3; bail or pedal for depth (S12). | S5, S12, S13 | high |
-| 2 | movement | Bail = open hips and sink at the snap (S5); in Saban's pattern-match Cover 3 the corners shuffle, not pedal, emphasise not getting beaten deep (S18). Open-side corner in Bowen's NFL description makes a flat-foot read through the three-step game first (S5). | S5, S18 | high |
+| 1 | alignment and cushion | STANDARD: Off 7-8 yd, or press-bail (align in press, open and sink) to the deep outside third (S5). Outside shade, first steps back, gain to 10-12 yd while reading #1's release (S13) (standard because the common NFL version (Bowen, NFL)). Later scheme option (not built now): Throw Deep: traditionally no press in Cover 3; bail or pedal for depth (S12). | S5, S12, S13 | high |
+| 2 | movement | STANDARD: Bail = open hips and sink at the snap (S5). Open-side corner in Bowen's NFL description makes a flat-foot read through the three-step game first (S5) (standard because the common NFL version (Bowen, NFL)). Later scheme option (not built now): Saban's pattern-match Cover 3: the corners shuffle, not pedal, emphasise not getting beaten deep (S18). | S5, S18 | high |
 | 3 | key and eyes | Bowen: flat-foot read through the 3-step (QB drop) (S5). Zone principle: zone DBs read QB eyes/shoulders; underneath zone break when the QB's off hand leaves the ball; deep zone break only when the ball is thrown (S19). In S18 the corner reads #1 and #2 within the first 5 yd (for an "under" call). S13: "peeking at the backfield too early" is an error. So: QB drop (3-step?) -> #1's release/stem (and #2 if visible) -> QB's shoulders/off hand once #1 is short. | S5, S13, S18, S19 | high (elements) / med (order) |
 | 4 | break point read | First rule is "deeper than the deepest": stay on top of the deepest threat in his third even if a route opens underneath (S12). He may drive when (a) the QB has taken a 3-step drop and sets/hitches to throw — the break is on the throw/QB release, not the route stem (S5, S9, S19); (b) no vertical threat remains in his third (S12, S19); (c) a teammate's call: an "under" call (made within the first 5 yd when #1 or #2 runs a route shorter than 5 yd) converts responsibilities (S18). Squeeze/zone-eyes read on #2 for the Cover 3 corner: no fetched source describes it; S5 says corners "squeeze/funnel" curl routes in a Buzz example. | S5, S9, S12, S18, S19 | high (a,b) / med (c) / low (squeeze rule) |
-| 5 | plant and drive | Two receivers in one deep zone: cover the deeper, break to the short one when the ball is thrown (S19). Smash: the corner must honor the corner route and cannot squat the hitch (S13, S18; Saban lets the hitch go and rallies to tackle) (S18). Curl: corner "has to rally up" (S18). Do not chase an out into the flat — stay in the third, break on any ball into the third (S13). Drive angle: no Cover 3-specific source; a forum coach (snippet) aims 6 yd in front of the receiver on slants/outs on a 3-step read. | S13, S18, S19 | high (rules) / low (angle) |
+| 5 | plant and drive | STANDARD: Two receivers in one deep zone: cover the deeper, break to the short one when the ball is thrown (S19). Smash: the corner must honor the corner route and cannot squat the hitch (S13, S18); once no vertical threat remains in his third he drives the hitch on the throw (row 4) (standard because the cover3 corner card's NFL version, [Bowen C3] / Seattle: break on the throw). Curl: corner "has to rally up" (S18). Do not chase an out into the flat — stay in the third, break on any ball into the third (S13). Drive angle: no Cover 3-specific source; a forum coach (snippet) aims 6 yd in front of the receiver on slants/outs on a 3-step read. Later scheme option (not built now): Saban: let the hitch go and rally to tackle (S18). | S13, S18, S19 | high (rules) / low (angle) |
 | 6 | what real corners get wrong | Bailing too slowly or too shallow ("no-man's land") (S13; sportologyx snippet); eyes in backfield too early (S13); squatting the hitch on smash and giving up the corner route (S13, S18); drifting inside and opening the sideline seam (snippet only). The defensive weakness (S12): hitch/out/arrow in front of a bailing corner is the expected completion — it is not by itself a corner error. | S12, S13, S18 | high |
 | 7 | skill difference | Read speed on the QB's drop (Talib, S9) and depth discipline; sources do not separate good/poor Cover 3 corners beyond these. | S9, S13 | med |
 
 ### Quarters corner (MOD / MEG, "Under" / "Smash" calls) vs #1 short
 | # | field | rule | source | conf |
 |---|---|---|---|---|
-| 1 | alignment and cushion | 7-8 yd off with outside shade, or press with safety help inside (S6); press or off, usually outside leverage on #1 (S16); off or press with inside leverage in Washington's version (S17). | S6, S16, S17 | high |
+| 1 | alignment and cushion | STANDARD: 7-8 yd off with outside shade, or press with safety help inside (S6); press or off, usually outside leverage on #1 (S16) (standard because the version most sources teach (Bowen, NFL; PFN)). Later scheme option (not built now): Washington: off or press with inside leverage (S17). | S6, S16, S17 | high |
 | 2 | movement | Pattern-match vertical #1 in the outside quarter with man technique (S6); MOD can be played from press or off/bail (S14). | S6, S14 | high |
 | 3 | key and eyes | Eyes on #1 from the snap (S14). When #1 does not go vertical, gain vision on the next threat (inside vertical/corner route from #2) (S14, S6). | S6, S14 | med |
 | 4 | break point read | The decision is the declaration of #1's route: vertical -> man; immediate short/inside, hitch or shallow -> call and pass off (S14, S16, S17). S16: "under" call on an immediate underneath route, "smash" call if #1 runs an underneath stop, then drop to the deep quarter for #2's corner route. S17 (Washington, NFL): on hitch or shallow the corner alerts inside and sinks to the quarter; on an out (anything but shallow or hitch) he stays man. MEG: the corner drives on the hitch himself immediately (S14). | S14, S16, S17 | high |
@@ -2532,7 +2583,7 @@ Note: "MOD" is defined inconsistently — "Man On Deep" / "Man On Demand" (S15, 
 | 2 | movement | Jam #1 to force an inside release (an outside release widens the safeties), then "sink hard at a 45-degree angle" to cushion the safety (S7). | S7 | high |
 | 3 | key and eyes | Defense designed with eyes on the QB (S7); underneath zone: vision on the throwing arm, break when the QB's off hand leaves the ball (S19). | S7, S19 | high |
 | 4 | break point read | Play "deep to short": react to the flat only after the 7 (corner) route is eliminated; failed example: corner squats the flat and leaves the 7 open (S7). Cloud drill: be between the short and deep receivers (S21). | S7, S21 | high |
-| 5 | plant and drive | Drive on the flat throw / hitch once the deeper route is gone (S7). Bait the corner route then drive on the hitch; over-aggressive on the hitch opens the hole (S24 snippet). Variants: "Green 2" near trail, late to the flat; "Red 2" soft squat, carry the fade, react to flat (S7). | S7, S24 | high / med |
+| 5 | plant and drive | STANDARD: Drive on the flat throw / hitch once the deeper route is gone (S7). Bait the corner route then drive on the hitch; over-aggressive on the hitch opens the hole (S24 snippet) (standard because the common NFL version (Bowen, NFL)). Later scheme option (not built now): "Green 2" near trail, late to the flat; "Red 2" soft squat, carry the fade, react to flat (S7). | S7, S24 | high / med |
 | 6 | what real corners get wrong | Squatting on the flat vs flat-7 (S7); allowing an outside release (S7). | S7 | high |
 | 7 | skill difference | Coverage suits "athletic and aggressive" corners (Harvey, Cibolo Steele HS, USA Football blog 7073). | blog 7073 (HS) | med |
 
@@ -2541,7 +2592,7 @@ Note: "MOD" is defined inconsistently — "Man On Deep" / "Man On Demand" (S15, 
 |---|---|---|---|---|
 | 1 | alignment and cushion | Not distinct by itself; see cards above. | — | — |
 | 2 | movement | Zone deep: pedal/bail and stay deep until the throw (S19). Man: pedal/turn on the receiver's cushion (S1, S3). | S1, S3, S19 | high |
-| 3 | key and eyes | Zone: QB's eyes, shoulders, throwing arm; QB throws toward his off shoulder (S19). Man: receiver's hips, then feet (S1, S3), not the QB (Bowen's error list, snippet). Hybrid NFL off-man: flat-foot read through the QB for the 3-step, then to the receiver (S4). Scouts: cycle receiver -> QB -> ball (S10). Sherman reads "through" the receiver to the QB (snippet). | S1, S3, S4, S10, S19 | high |
+| 3 | key and eyes | STANDARD: Zone: QB's eyes, shoulders, throwing arm; QB throws toward his off shoulder (S19). Man (off): NFL flat-foot read through the QB for the 3-step, then the receiver's hips, then feet (S4, S1, S3), not back to the QB (Bowen's error list, snippet). Scouts: cycle receiver -> QB -> ball (S10). Sherman reads "through" the receiver to the QB (snippet) (standard because the common NFL version (Bowen, NFL)). Later scheme option (not built now): high-school / college man eyes: the receiver's hips from the snap, then feet, not the QB (S1, S3). | S1, S3, S4, S10, S19 | high |
 | 4 | break point read | Zone/3-step: slow first step to separate a quick set from a long drop; on the third step set (or catch-and-throw in gun) eyes go to the receiver and he takes a direct angle to the break point (S9, Talib breaking before the ball is out). Underneath zone: break when the QB's off hand leaves the ball (S19); drill cue "front hand comes off ball" (S21). Deep zone: only on the throw; do not break on a pump (S19). Man: receiver's chop/plant (S3). | S3, S9, S19, S21 | high |
 | 5 | plant and drive | See cards above. Zone break target: snippet coach aims 6 yd in front of the receiver on slant/out. | snippet | low |
 | 6 | what real corners get wrong | Zone: peeking into the backfield too early (S13); breaking on a pump (S19). Man: eyes back to the QB (Bowen, snippet). Jumping quick routes on the QB read invites double moves (stop-and-go, out-and-up) (S9). | S9, S13, S19 | high |
