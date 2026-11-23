@@ -11,6 +11,7 @@ import type {Agent} from './agent.js';
 import type {Perceived} from './perception.js';
 import type {PlaySim} from './playsim.js';
 import {withMovementObjective} from './movement-objective.js';
+import {reachTo} from './tackle-reach.js';
 
 interface CatchWindow {p:Vec2;t:number;receiver:Agent;seen:Perceived}
 interface BallOpportunity {p:Vec2;t:number}
@@ -26,10 +27,10 @@ export function movingCatchApproach(a:Agent,sim:PlaySim,original:MoveCommand,
   earlierBall=!!(spot&&spot.t<t&&tt<=spot.t-sim.t+.05),
   reachableBall=!!(spot&&tt<=spot.t-sim.t+.05&&spot.t<=t+.05),
   nearCarry=!earlierBall&&Math.hypot(seen.vel.x,seen.vel.y)>.5
-   &&Math.hypot(seen.pos.x-a.pos.x,seen.pos.y-a.pos.y)<=a.profile.radius+receiver.profile.radius+a.profile.reach;
+   &&Math.hypot(seen.pos.x-a.pos.x,seen.pos.y-a.pos.y)<=reachTo(a,receiver);
  if(earlierBall||reachableBall||nearCarry)return original;
  const distance=Math.hypot(p.x-a.pos.x,p.y-a.pos.y)||1,
-  contact=a.profile.radius+receiver.profile.radius+a.profile.reach*.65,
+  contact=reachTo(a,receiver,.65),
   targetSpeed=Math.hypot(seen.vel.x,seen.vel.y),support=a.body.support;
  if(targetSpeed<=.5||t-sim.t>.6||distance>contact+(a.speed+targetSpeed)*.6
   ||a.engagement||a.isDown(sim.t)||support?.foot

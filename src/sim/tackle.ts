@@ -22,6 +22,7 @@
  * a quarterback in the grasp. Whiffed lunges and dives commit the body: a
  * defender who leaves his base to reach pays for it physically.
  */
+import { armSpan, reachTo } from './tackle-reach.js';
 import { TRACK_TACKLE } from './behaviors/common.js';
 import { OPP_GOAL_X, OWN_GOAL_X } from '../core/field.js';
 import { G } from '../core/units.js';
@@ -168,7 +169,8 @@ export function tryTackles(sim: PlaySim): void {
     if (engaged && !freeSide && d.engagement!.win < 0.6) continue;
     const body = c.profile.radius + d.profile.radius;
     const freeArm = freeSide ? 0.7 - 0.3 * clamp(d.engagement!.control, 0, 1) : 0.4;
-    const arms = body + d.profile.reach * (engaged ? freeArm : 1.0);
+    // TACKLE_REACH: from his centre, his reach to the carrier's surface (tackle-reach.ts); off, the legacy double count.
+    const arms = reachTo(d, c, engaged ? freeArm : 1.0);
     // A free tackler can lunge for the last half yard by committing his body;
     // a miss then leaves him off his base.
     const range = arms + (engaged ? 0 : 0.45);
@@ -511,7 +513,7 @@ function grasp(sim: PlaySim, d: Agent, c: Agent, quality: number, legs: number, 
   bond.tacklers.push(d);
   // A standing hold keeps the arms' length; a diving catch adds his body
   // stretched along the ground toward the legs.
-  const reach = c.profile.radius + d.profile.radius + d.profile.reach * 0.9 + (extended ? 0.9 : 0);
+  const reach = reachTo(d, c, 0.9) + (extended ? 0.9 : 0);
   // He pulls himself into the runner: a sure tackler's arms reel faster.
   const pull = extended ? 0.6 : 1.2 + 1.2 * d.r('tackling');
   const joint: GraspJoint = { kind: 'grasp', a: d.body, b: c.body, reach: Math.max(reach, dd + 0.15), capacity: oneArm ? gripForce(d, quality, 0, 1) : gripForce(d, quality), lock: oneArm ? 0 : clamp(quality, 0, 1), legs, pull, hold: dd, origin,
@@ -672,7 +674,7 @@ export function updateBond(sim: PlaySim, bond: TackleBond, intents: Intent[]): v
     // A holder on the ground is stretched out behind his arms; the arms
     // themselves are as close as they were.
     const stretched = d.body.support?.state !== 'up' ? GROUND_STRETCH : 0;
-    const quality = clamp(1 - (near - stretched - torso - 0.25) / Math.max(0.2, d.profile.reach - 0.25), 0, 1);
+    const quality = clamp(1 - (near - stretched - torso - 0.25) / Math.max(0.2, armSpan(d) - 0.25), 0, 1);
     const available = clamp(0.25 + 0.85 * quality, 0.1, 1) * (execution.get(d) ?? 1);
     const rate = Math.min(1, dt * (1 + 2.5 * d.r('tackling')));
     const g = grip.get(d) ?? available;
@@ -797,7 +799,7 @@ export function updateBond(sim: PlaySim, bond: TackleBond, intents: Intent[]): v
   if (c.body.support?.state === 'up') for (const d of bond.tacklers) {
     const torso = c.profile.radius + d.profile.radius;
     const distance = armDistance(holds.get(d), Math.hypot(d.pos.x - c.pos.x, d.pos.y - c.pos.y), torso);
-    const quality = clamp(1 - (distance - torso - 0.25) / Math.max(0.2, d.profile.reach - 0.25), 0, 1);
+    const quality = clamp(1 - (distance - torso - 0.25) / Math.max(0.2, armSpan(d) - 0.25), 0, 1);
     const secure = clamp(grip.get(d) ?? 0, 0, 1) * quality;
     if (d.body.support?.state !== 'up' || distance > torso + .15 || secure < .5) continue;
     const cs = Math.hypot(c.vel.x, c.vel.y);
