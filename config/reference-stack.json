@@ -323,6 +323,7 @@
     "FLAT_SINK": "on",
     "FLAT_CARRY": "on",
     "FLIGHT_BREAK": "off",
+    "FLIGHT_LEAD": "off",
     "OFF_DRIVE": "off",
     "SEAT_FILL": "off",
     "SQUAT_SINK": "off",
