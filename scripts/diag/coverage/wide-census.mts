@@ -164,8 +164,11 @@ function attribute(sim: any, log: any[], R: any, row: any, play: any): any {
     const lastL = log.at(-1), hows = nowOwners.map((o) => lastL.D.find((d: any) => d.s === o.s)?.how ?? log.findLast((L: any) => L.D.some((d: any) => d.s === o.s && d.rel === S))?.D.find((d: any) => d.s === o.s)?.how);
     const rank = ['man', 'match-man', 'match-wall', 'match-crossWall', 'match-trap', 'match-read', 'match-rob', 'zone-under', 'zone-deep'];
     const how = hows.filter(Boolean).sort((a: string, b: string) => rank.indexOf(a) - rank.indexOf(b))[0] ?? '?';
-    const od = Math.min(...nowOwners.map((o) => { const d = sim.defense.find((x: any) => x.slot === o.s); return Math.hypot(d.pos.x - R.pos.x, d.pos.y - R.pos.y); }));
-    return { ...base, path: 'owned', sub: how, owner: nowOwners[0].s, ownerDist: od };
+    const dir = sim.attackDir('O');
+    const ods = nowOwners.map((o) => { const d = sim.defense.find((x: any) => x.slot === o.s); return { s: o.s, dist: Math.hypot(d.pos.x - R.pos.x, d.pos.y - R.pos.y), over: (d.pos.x - R.pos.x) * dir }; })
+      .sort((p, q) => p.dist - q.dist);
+    // over: the owner's depth beyond the receiver (> 1 on top, -1..1 level, < -1 trailing); rcvUp: the receiver's downfield speed.
+    return { ...base, path: 'owned', sub: how, owner: ods[0].s, ownerDist: ods[0].dist, ownerOver: ods[0].over, rcvUp: R.vel.x * dir, route: R.behavior?.route?.id ?? null };
   }
   if (owners.length) {
     const o = owners[0], L = at(o.to), Lnext = log.find((x) => x.t > o.to + 0.01);
