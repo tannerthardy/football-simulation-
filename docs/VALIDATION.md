@@ -312,6 +312,14 @@ model only when the simpler shared mechanism cannot represent the observed need.
 Run from the repository root with Node 22. Output belongs in ignored `out/`.
 Focused checks during iteration precede shared checks on the combined candidate.
 
+**Which engine a command runs (2026-11-23).** `npm run baseline:run -- [--candidate] -- <command>` applies
+`config/baseline.json`, which is the historical 2026-10-13 profile (`run-game-2026-10-13`). Its flags are the
+pre-promotion values (LINE_START and the other promoted flags set off). `--candidate` only lets the source differ from
+the pin; it does not switch the flags to today's defaults. `npm run ref -- [--flag X=1] -- <command>` runs the engine's
+defaults (config/reference-stack.json, the current develop engine) with ambient flags reset. Behaviour comparisons on
+the current engine use `ref`. Rules' first tackle-geometry and route-start arms ran under `baseline:run --candidate`
+and had to be redone (docs/reviews/2026-11-23-release-pace.md).
+
 ```sh
 npm test
 npm run test:workflows

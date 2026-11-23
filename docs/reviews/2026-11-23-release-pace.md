@@ -122,3 +122,37 @@ By route, wide (slot in brackets), speed at 0.5 / 1.0 / 1.5 / 2.0 s:
 
 Test: `test/release-pace.test.ts`. Registered off in config/baseline.json, config/reference-stack.json and
 docs/FLAGS.md.
+
+## For the queue (proposals, not built)
+
+**1. The get-off share is still a stand-in.**
+- With no share, ours leave the line at 2.9 yd/s at 0.5 s against the NFL's 1.6.
+- The likely real causes are the receiver's reaction to the snap and his first step out of a two-point stance:
+  rising, loading the front foot, then the drive. Neither is modelled.
+- Ours start pushing at ~0.05 s (the mind's snapDelay), with a full start force from rest.
+- Tools cited sprint-start figures for this: stance about 0.10-0.15 s (Mero and Komi 1992, Rabita et al. 2015,
+  Hay 1993). They are being checked; see the citation check below.
+- Until they are checked, the share stays and no stance constant is added.
+
+**2. Back: the protection scan before he releases** (for the protection owner).
+- **Taught:** on a dropback, a back whose protection gives him a responsibility checks it before he releases. He
+  identifies his blitz key (scan inside-out), confirms there is no rusher, then leaves; if the key comes, he blocks
+  (Football Nation, Blitz pickup). The free release (no responsibility, as in a five-man protection) is the exception.
+- **What he observes:** his key's first steps (a downhill step by the backer or the walked-up safety he is assigned),
+  through his own perception and delay.
+- He does not see a timer, and he does not know the defender's call.
+- **Ours:** PRO_CALL keeps a back in as a check-release only when the box count exceeds the protectors. Otherwise a
+  back on a route releases at 0.1 s.
+- **Measured** (24 games, engine-91): onset at 0.4-0.5 s against the NFL's 0.6; speed at 0.5 s 1.7-1.9 against 1.1.
+- **Proposal:** a protection rule that gives the back a key on every dropback that is not a declared five-man
+  protection. He releases on seeing it not come (BACK_RELEASE / QB_SEEN_OUT already carry "seen out").
+- **Unsourced (L):** how often an NFL back has such a key.
+
+**3. TE: the chip or delayed release** (for the protection owner).
+- **Taught:** an attached TE in a three-point stance often releases through or around the end, stepping inside first
+  (Waldman, N.C. State TE George Bryan). On a chip, he strikes the edge rusher and then releases to the flat.
+- **What he observes:** the end's alignment and rush path; the chip is a contact, resolved by the physics.
+- **Measured:** the flexed TE's flat at 0.5 / 1.0 s: NFL 1.0 / 2.6; ours 1.5-1.8 / 3.3-3.6.
+- **Proposal:** a chip-release assignment for the TE in protection calls that keep him in, using the existing chip
+  mechanics (blocking.ts, the tackle and end chip).
+- **Unsourced (L):** how often NFL TE flats are chips.
