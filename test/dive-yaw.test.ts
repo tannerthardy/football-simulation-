@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import type { Body } from '../src/physics/kinematics.js';
 import type { PhysicalProfile } from '../src/players/physical.js';
 import { World, type Intent } from '../src/physics/world.js';
+import { DIVE_STANCE } from '../src/physics/dive.js';
 
 const profile: PhysicalProfile = { massKg: 100, radius: .3, reach: 1, heightYd: 2.05,
   vmax: 9, tau: 1.3, brake: 6, lateral: 6, turnRate: 8, backpedal: .6, shuffle: .55,
@@ -16,6 +17,7 @@ function run(speed: number, spin: number, angle: number, substeps: number, dive:
   // A zero-force joint selects real subdivision without applying a load.
   w.joints.push({ kind: 'hands', a: b, b: other, extension: 4, push: 0, hold: 0, steer: 0 });
   const cmd: Intent = { vel: { ...b.vel }, ...(dive ? { dive: axis } : { free: true }) };
+  (b as unknown as { __w: World }).__w = w;
   const report = w.step([cmd, { vel: { x: 0, y: 0 }, free: true }], .05);
   expect(report.contacts).toHaveLength(0);
   expect(report.substeps).toBe(substeps);
@@ -30,6 +32,12 @@ describe('planted dive yaw transport', () => {
       expect(b.spin).toBe(spin);
       expect(report.groundYawImpulse[0]).toBe(0);
       expect(report.groundYawWork[0]).toBe(0);
+      // DIVE_STANCE: the push-off is a stance of 0.12 s, so after the first tick he is still planted (the yaw, work and spin checks above are of that first tick); he is off his feet by the end of the third.
+      if (DIVE_STANCE) {
+        expect(b.support!.state).toBe('up');
+        const w = (b as unknown as { __w: World }).__w;
+        for (let k = 0; k < 2; k++) w.step([{ vel: { x: 0, y: 0 }, free: true }], .05);
+      }
       expect(b.support!.state).toBe('falling');
       if (speed === profile.vmax) {
         expect(report.groundImpulse[0]).toEqual({ x: 0, y: 0 });

@@ -7,6 +7,7 @@ import { describe, expect, it } from 'vitest';
 import type { PhysicalProfile } from '../src/players/physical.js';
 import type { Body } from '../src/physics/kinematics.js';
 import { supportParams } from '../src/physics/support.js';
+import { DIVE_STANCE, DIVE_STANCE_S } from '../src/physics/dive.js';
 import { GROUND_STRETCH, World, type GraspJoint, type Intent } from '../src/physics/world.js';
 
 function profile(mass: number): PhysicalProfile {
@@ -217,11 +218,13 @@ describe('strikes and drops', () => {
     const a = body(90, 0, 0, 4, 0), b = body(90, 0, 3, 4, 0);
     const w = new World([a, b]);
     w.step([{ vel: { x: 4, y: 0 }, dive: { x: 0.01, y: 0 } }, { vel: { x: 4, y: 0 }, dive: { x: 1, y: 0 } }], 0.05);
+    // DIVE_STANCE: the push-off is a stance of DIVE_STANCE_S; he is off his feet at the end of the third tick, not the first.
+    if (DIVE_STANCE) for (let k = 0; k < 2; k++) w.step([{ vel: { x: 4, y: 0 }, free: true }, { vel: { x: 4, y: 0 }, free: true }], 0.05);
     expect(a.support!.state).toBe('falling'); expect(b.support!.state).toBe('falling');
     expect(a.vel.x).toBeLessThan(4.1);
     // The former >1 yd/s expectation required an unbounded one-substep
     // impulse. Both launch and contact now obey finite ground traction.
     expect(b.vel.x).toBeGreaterThan(a.vel.x + .5);
-    expect(b.vel.x-4).toBeLessThanOrEqual(supportParams(b.profile).traction/b.profile.massKg*.05+1e-9);
+    expect(b.vel.x-4).toBeLessThanOrEqual(supportParams(b.profile).traction/b.profile.massKg*(DIVE_STANCE ? DIVE_STANCE_S : .05)+1e-9);
   });
 });

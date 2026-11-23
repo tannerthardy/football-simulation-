@@ -47,4 +47,18 @@ describe('DIVE_STANCE: the dive push-off is a stance phase on the stride\'s own 
     expect(strong).toBeGreaterThan(weak);
     expect((await dive(true, 3, 400)).gain).toBeCloseTo((await dive(true, 3, 200)).gain, 9); // traction caps it
   });
+  it('on, the stance does work that the ground delivers once: the work balance closes on every tick and the kinetic gain is the work', async () => {
+    vi.resetModules(); vi.stubEnv('DIVE_STANCE', '1');
+    const { World } = await import('../src/physics/world.js');
+    const b: Body = { pos: { x: 0, y: 0 }, vel: { x: 0, y: 0 }, facing: 0, spin: 0, energy: 1, profile: { ...profile } };
+    const w = new World([b], {});
+    let work = 0;
+    for (let k = 0; k < 3; k++) {
+      const r = w.step([k === 0 ? { vel: { x: 0, y: 0 }, dive: { x: 1, y: 0 } } : { vel: { x: 0, y: 0 }, free: true }], .05);
+      expect(Math.abs(r.work.residual)).toBeLessThan(1e-9);
+      work += r.groundWork[0];
+    }
+    vi.unstubAllEnvs();
+    expect(work / profile.massKg).toBeCloseTo(.5 * b.vel.x ** 2, 6);
+  });
 });
