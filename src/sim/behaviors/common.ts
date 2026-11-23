@@ -9,8 +9,8 @@ import type { Agent } from '../agent.js';
 import { chooseApproach } from '../approach-control.js';
 import { onTopCushion, onTopPoint } from '../open-field.js';
 import { withMovementObjective } from '../movement-objective.js';
-import { PASS_ROLES, passRoleShade } from '../pass-pursuit.js';
-import { CARRIER_ACCEL, carrierRun, runDistance, runSpeed, runTime, type CarrierRun } from '../carrier-forecast.js';
+import { PASS_ROLES, deepAngleSpeed, passRoleShade } from '../pass-pursuit.js';
+import { CARRIER_ACCEL, carrierRun, runDistance, runSpeed } from '../carrier-forecast.js';
 import type { PlaySim } from '../playsim.js';
 
 export const STAND: MoveCommand = { vel: { x: 0, y: 0 } };
@@ -162,7 +162,11 @@ export function pursuitPoint(sim: PlaySim, a: Agent, target: Agent, horizon = 3,
   const V = clamp(sp + acceleration * tau, 0, target.profile.vmax);
   // CARRIER_ACCEL: a ball carrier's run is the shared forecast (carrier-forecast.ts), anticipating his acceleration.
   const run = CARRIER_ACCEL && seen.carrying === true ? carrierRun(seen, a, target) : null;
-  const travelled = (t: number) => run ? runDistance(run, t) : V * t - (V - sp) * tau * (1 - Math.exp(-t / tau));
+  // PASS_ROLES: a farther pursuer takes a deeper angle (pass-pursuit.ts deepAngleSpeed): his forecast runs at least
+  // at the faster carrier speed he assumes.
+  const deep = seen.carrying === true ? deepAngleSpeed(sim, a, target, Math.hypot(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y), sp) : null;
+  const base = (t: number) => run ? runDistance(run, t) : V * t - (V - sp) * tau * (1 - Math.exp(-t / tau));
+  const travelled = (t: number) => deep !== null ? Math.max(base(t), deep * t) : base(t);
   const straight = (t: number): Vec2 => {
     const d = travelled(t);
     return { x: seen.pos.x + heading.x * d, y: clamp(seen.pos.y + heading.y * d, 0, FIELD_WIDTH) };
@@ -184,7 +188,7 @@ export function pursuitPoint(sim: PlaySim, a: Agent, target: Agent, horizon = 3,
     bias = sim.rng.fork(`pursuit:${a.idx}`).normal(0, 0.12 * (1.2 - a.r('pursuit')));
     angleBias.set(a, bias);
   }
-  const meetT = PURSUIT_COMMIT ? (PURSUIT_SPOT ? commitSpot(sim, a, target, ip, path, seen, heading, V, mover, reach, horizon, request, run) : commitMeeting(sim, a, target, ip, path, mover, reach, horizon, request)) : ip.t;
+  const meetT = PURSUIT_COMMIT ? (PURSUIT_SPOT ? commitSpot(sim, a, target, ip, path, seen, heading, V, mover, reach, horizon, request, run || deep !== null ? travelled : null) : commitMeeting(sim, a, target, ip, path, mover, reach, horizon, request)) : ip.t;
   const biasedTime = clamp(meetT - bias, 0, horizon);
   const p = path(biasedTime);
   // Keep the support contract while approaching, then close onto the near
@@ -236,15 +240,16 @@ const heldSpot = new WeakMap<Agent, { target: Agent; spot: Vec2; ok: boolean }>(
  * earlier by MEET_MARGIN, or it is under MEET_NEAR away. */
 function commitSpot(sim: PlaySim, a: Agent, target: Agent, ip: ReturnType<typeof interceptPoint>, path: (t: number) => Vec2,
   seen: { pos: Vec2 }, heading: Vec2, V: number, mover: Parameters<typeof timeToReach>[0], reach: number, horizon: number, request?: SprintRequest,
-  run?: CarrierRun | null): number {
+  travelled?: ((t: number) => number) | null): number {
   const freshOk = ip.estimate.status === 'estimated-feasible';
   const choose = (t: number, ok: boolean) => { heldSpot.set(a, { target, spot: path(t), ok }); return t; };
   const held = heldSpot.get(a);
   if (!held || held.target !== target || V < 0.5) return choose(ip.t, freshOk);
   const dx = held.spot.x - seen.pos.x, dy = held.spot.y - seen.pos.y;
   let along = dx * heading.x + dy * heading.y, miss = Math.abs(dx * heading.y - dy * heading.x);
-  // CARRIER_ACCEL: his time to the held spot on the shared forecast (his anticipated acceleration), not at his seen speed.
-  let t = run ? runTime(run, along, horizon) : along / V;
+  // CARRIER_ACCEL / PASS_ROLES: his time to the held spot on the same forecast that chose it (anticipated acceleration,
+  // or the deeper angle's assumed speed), not at his seen speed.
+  let t = travelled ? timeAlong(travelled, along, horizon) : along / V;
   if (BEND_FORECAST && curveOf.has(a)) {
     // BEND_FORECAST: the held spot is judged against the bending forecast, its nearest sample.
     const c = curveOf.get(a)!; let k = 0, best = Infinity;
@@ -258,6 +263,15 @@ function commitSpot(sim: PlaySim, a: Agent, target: Agent, ip: ReturnType<typeof
   if (freshOk && ip.t < t - MEET_MARGIN) return choose(ip.t, true);
   if (!held.ok && slack >= MEET_ENTER) held.ok = true;
   return t;
+}
+
+/** The time at which an increasing forecast distance reaches `d`, up to `horizon` (Infinity past it). */
+function timeAlong(travelled: (t: number) => number, d: number, horizon: number): number {
+  if (d <= 0) return 0;
+  if (travelled(horizon) < d) return Infinity;
+  let lo = 0, hi = horizon;
+  for (let i = 0; i < 30; i++) { const m = (lo + hi) / 2; if (travelled(m) < d) lo = m; else hi = m; }
+  return (lo + hi) / 2;
 }
 
 function commitMeeting(sim: PlaySim, a: Agent, target: Agent, ip: ReturnType<typeof interceptPoint>, path: (t: number) => Vec2,

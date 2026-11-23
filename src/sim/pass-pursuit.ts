@@ -21,7 +21,15 @@
  *    takes the cutback lane, inside by LANE more. Enter at LANE, leave past LANE_EXIT (commit rule).
  *    He reads the teammate's position and velocity he sees, never the teammate's role or aim.
  *
- * Stated choices (not fitted): FORCE_IN 5 yd (a corner within five yards inside a receiver on his side still has the
+ *  - Deeper angle (attempt 2, from F74: CB_S and FS 12 yd downfield and 16-19 yd inside aimed for the carrier's 5 yd/s,
+ *    ran downhill toward that spot, reached him level as he hit 7.8 yd/s, and CB_S slid behind and missed): a farther
+ *    pursuer assumes a faster carrier. His meeting-spot forecast runs at least at his seen speed raised toward
+ *    DEEP_SPEED, by a weight rising from 0 at DEEP_NEAR yd to 1 at DEEP_FAR yd of distance. The angle is deeper; if the
+ *    carrier does not reach that speed, the earlier meeting the pursuer then sees releases the held spot and he comes up
+ *    (adjust back upfield only). Continuous in distance: no mode switch.
+ *
+ * Stated choices (not fitted): DEEP_SPEED 7.3 yd/s (a carrier in the open: BDB 2025 completions caught at 6+ yd/s,
+ * p50 of the carrier's top speed over the play, pursuit operator); DEEP_NEAR 5 yd, DEEP_FAR 15 yd. FORCE_IN 5 yd (a corner within five yards inside a receiver on his side still has the
  * outside); LANE 1.5 yd (one body plus reach); LANE_EXIT 2.5 yd. */
 import { FIELD_WIDTH } from '../core/field.js';
 import type { Agent } from './agent.js';
@@ -30,6 +38,7 @@ import { hasObservedFlight } from './possession-read.js';
 
 export const PASS_ROLES = process.env.PASS_ROLES === '1';
 const FORCE_IN = 5, LANE = 1.5, LANE_EXIT = 2.5;
+const DEEP_SPEED = 7.3, DEEP_NEAR = 5, DEEP_FAR = 15;
 
 type Held = { target: Agent; force: boolean; lane: 0 | 1 | 2 };
 const held = new WeakMap<Agent, Held>();
@@ -76,4 +85,12 @@ export function passRoleShade(sim: PlaySim, a: Agent, target: Agent, seenPos: { 
   const force = h.lane === 1 ? !mine : mine;
   if (h.lane === 2) return -out * (magnitude + LANE);
   return (force ? out : -out) * magnitude;
+}
+
+/** Deeper angle: the speed this pursuer assumes for a carrier he sees at `seenSpeed`, `dist` yd away, or null when no
+ * pass role applies. */
+export function deepAngleSpeed(sim: PlaySim, a: Agent, target: Agent, dist: number, seenSpeed: number): number | null {
+  if (!PASS_ROLES || target === sim.qb || !hasObservedFlight(a)) return null;
+  const w = Math.min(1, Math.max(0, (dist - DEEP_NEAR) / (DEEP_FAR - DEEP_NEAR)));
+  return seenSpeed + w * Math.max(0, DEEP_SPEED - seenSpeed);
 }
