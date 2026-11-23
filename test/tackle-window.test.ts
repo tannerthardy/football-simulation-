@@ -106,8 +106,16 @@ describe('attainable tackle opportunity', () => {
     } finally { dive.mockRestore(); rolls.mockRestore(); }
   });
 
-  it.runIf(LUNGE_FLIGHT).each([-1, 1])('LUNGE_FLIGHT: no launch at a passing runner the dive cannot reach, side %s', side => {
+  it.runIf(LUNGE_FLIGHT).each([-1, 1])('LUNGE_FLIGHT: no launch at a runner pulling away faster than a dive can reach, side %s', side => {
     const { sim, c, d } = passingStage(side, true, true);
+    // Pulling straight away at 4 yd/s relative: even laid out, a flight's hands never get to him.
+    const ux = c.pos.x - d.pos.x, uy = c.pos.y - d.pos.y, ul = Math.hypot(ux, uy);
+    c.body.vel = { x: d.vel.x + ux / ul * 4, y: d.vel.y + uy / ul * 4 };
+    for (let k = 0; k < 24; k++) {
+      const lag = (23 - k) * sim.dt;
+      sim.perception.record(sim.agents.map(a => ({ pos: { x: a.pos.x - a.vel.x * lag, y: a.pos.y - a.vel.y * lag },
+        vel: a.vel, facing: a.facing, pose: a.pose })), c.idx);
+    }
     const dive = vi.spyOn(sim, 'diveAt');
     try {
       tryTackles(sim);

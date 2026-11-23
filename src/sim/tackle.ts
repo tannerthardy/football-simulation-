@@ -156,11 +156,12 @@ function handHold(d: Agent, q: number, hands = 2): number {
  * grab is made only if, in that flight, the carrier comes inside his standing reach (`reachTo`, share 1): the attempt is
  * then the ordinary one at the distance the bodies actually reached. If he lands without that, it is a miss
  * ('lunge short'). What the lunge buys is closing his body can produce; what it costs is his feet, his steering and the
- * hold's footing. He takes it only when, by his picture and that push-off, the flight reaches (`lungeReaches`); a first
+ * hold's footing, and the reach of his body laid out behind his arms (`flightReach`). He takes it only when, by his picture and that push-off, the flight reaches (`lungeReaches`); a first
  * build launched whenever the 0.3 s forecast said he would get no closer, and 92% of its launches never closed at all
  * (lunge-flight.mts: median 0.27 yd beyond reach, the runner separating at 0.5 yd/s, the tackler at 4.4 yd/s asking
- * for 9.2): a dive's one plant adds at most 0.59 yd/s, his legs keep accelerating. Stated choices: the hands in flight reach his standing reach (no extra reach for the trunk pitching
- * forward); a grab can be made from the launch until he is down on the ground (FLIGHT_MAX bounds it). */
+ * for 9.2): a dive's one plant adds at most 0.59 yd/s, his legs keep accelerating. Stated choices: in flight his hands reach his standing reach plus GROUND_STRETCH as the fall lays him
+ * out (`flightReach`; a first build gave the flight no layout at all); a grab can be made from the launch until he is
+ * down on the ground (FLIGHT_MAX bounds it). */
 export const LUNGE_FLIGHT = process.env.LUNGE_FLIGHT === '1';
 /** Longest a lunge's flight is followed, s (a bound, not a law: a dive is on the ground well inside it). */
 const FLIGHT_MAX = 1;
@@ -170,6 +171,14 @@ const flights = new WeakMap<Agent, Flight>();
 /** Diagnostics: tackler `d`'s lunge flight in progress (LUNGE_FLIGHT), read-only. */
 export function flightOf(d: Agent): Readonly<Flight> | undefined { return flights.get(d); }
 
+/** LUNGE_FLIGHT: his hands' reach in a dive, `progress` 0 (still on his feet) to 1 (laid out): his standing reach plus
+ * the body stretched out behind the arms, GROUND_STRETCH (the World's own allowance for a holder off his feet, which the
+ * extended hold's joint already uses), in proportion to how far the fall has laid him out. Stated choice: the layout is
+ * linear in fall time. */
+function flightReach(d: Agent, c: Agent, progress: number): number {
+  return reachTo(d, c, 1) + GROUND_STRETCH * clamp(progress, 0, 1);
+}
+
 /** LUNGE_FLIGHT: one tick of a launched tackler's flight. True while he is in it (the caller skips him). */
 function flightStep(sim: PlaySim, d: Agent, c: Agent): boolean {
   const f = flights.get(d);
@@ -178,7 +187,10 @@ function flightStep(sim: PlaySim, d: Agent, c: Agent): boolean {
   if (f.sim !== sim || f.carrier !== c) { flights.delete(d); return false; }
   if (sim.bond && sim.bond.tacklers.includes(d)) { flights.delete(d); return true; }
   const dd = Math.hypot(c.pos.x - d.pos.x, c.pos.y - d.pos.y);
-  const arms = reachTo(d, c, 1);
+  const sup = d.body.support;
+  const progress = sup && sup.state === 'falling'
+    ? clamp((sim.world.time - sup.since) / fallTime(supportParams(d.profile), sup.posture), 0, 1) : 0;
+  const arms = flightReach(d, c, progress);
   if (dd - arms < f.closest - f.closestArms) { f.closest = dd; f.closestArms = arms; }
   if (state !== 'down' && sim.t - f.t0 <= FLIGHT_MAX && dd <= arms && !occluded(sim, d, c)) {
     flights.delete(d);
@@ -213,14 +225,14 @@ export function lungeForecast(sim: PlaySim, d: Agent, c: Agent, cp: Vec2, cv: Ve
   const dv = diveSpeedGain(d.profile, speed, d.vel.x * ux + d.vel.y * uy, 1, sim.dt);
   const push = DIVE_STANCE ? DIVE_STANCE_S : 0;
   const feet = DIVE_STANCE ? Math.ceil(DIVE_STANCE_S / sim.dt - 1e-9) * sim.dt : sim.dt;
-  const flight = feet + fallTime(supportParams(d.profile), d.body.support?.posture ?? 0);
+  const fall = fallTime(supportParams(d.profile), d.body.support?.posture ?? 0);
+  const flight = feet + fall;
   // Along the launch line the gain ramps in over the push (at once for the one-tick plant), then he coasts.
   const gained = (t: number) => dv * (push > 0 && t < push ? t * t / (2 * push) : t - push / 2);
-  const arms = reachTo(d, c, 1);
   let gap = Infinity, at = 0;
   for (let t = sim.dt; t <= flight + 1e-9; t += sim.dt) {
     const gx = cp.x + cv.x * t - (d.pos.x + d.vel.x * t + ux * gained(t)), gy = cp.y + cv.y * t - (d.pos.y + d.vel.y * t + uy * gained(t));
-    const g = Math.hypot(gx, gy) - arms;
+    const g = Math.hypot(gx, gy) - flightReach(d, c, clamp((t - feet) / fall, 0, 1));
     if (g < gap) { gap = g; at = t; }
     if (g <= 0) break;
   }
