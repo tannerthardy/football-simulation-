@@ -15,7 +15,7 @@ def sang(a, b):
 def angd(v, b):
     return abs(math.degrees(math.atan2(v[0] * b[1] - v[1] * b[0], v[0] * b[0] + v[1] * b[1])))
 R = json.load(open(sys.argv[1]))
-acc = collections.defaultdict(list)
+acc = collections.defaultdict(list); handoff = collections.defaultdict(list)
 plays = collections.Counter()
 for r in R:
     F = r['frames']
@@ -31,6 +31,13 @@ for r in R:
     else: continue
     plays[grp] += 1
     k = a['d1']
+    # Hand-off: the first tick his request comes from a pursuit stage after one from coverage; the angle between the two.
+    prev = None
+    for f in F:
+        d = f['d'][k]; rq = d.get('cmd') or d.get('req')
+        if prev is not None and d['stage'] and not prev[0] and rq and prev[1] and math.hypot(*rq) > 1 and math.hypot(*prev[1]) > 1:
+            handoff[grp].append(angd(rq, prev[1])); break
+        if rq: prev = (d['stage'], rq)
     for f in F:
         if f['t'] > tend + 1e-9: break
         d = f['d'][k]; c = f['car']; cs = math.hypot(c[2], c[3])
@@ -53,6 +60,8 @@ for r in R:
                                       at_man=angd(req, b), at_ic=angd(req, ic[0]) if ic else None, req_along=req[0] * u[0] + req[1] * u[1],
                                       vel_along=d['pos'][2] * u[0] + d['pos'][3] * u[1], cs=cs, along=along, dist=dist))
 print('plays by first-defender group:', dict(plays))
+for g, v in handoff.items():
+    print(f"  hand-off re-aim (coverage request -> first pursuit request), {g}: n {len(v)}, p50 {q(v, .5):.0f} deg, p75 {q(v, .75):.0f}, > 45 deg {100 * sum(x > 45 for x in v) / len(v):.0f}%")
 for grp in ('old angle / overrun', 'other failure', 'stopped'):
     G = {s: v for (g, s), v in acc.items() if g == grp}
     tot = sum(len(v) for v in G.values())
