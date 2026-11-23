@@ -107,9 +107,151 @@ event (the play's first contact by anyone), not per defender.
   another defender.
 - **Assists:** they arrive after the first contact (+0.2 s) and are closest at the tackle (0.74 yd).
 
-**For Defense's recount on engine-91:** feed engine rows in the script's JSONL shape (kind, ptype, pos,
-attempt_dist, bearing, outside, closing, cs, ds, dlat, traffic, sideline, t, yds_after and the `_0.5` variants) and
-run `tables`. Compare the same rows before and after TACKLE_REACH.
+**For Defense's recount on engine-91:** superseded by the shared sim dump in the next section
+(`tackle-geometry-dump.mts`, then `tackle_geometry.py rows / compare`).
+
+## Tackle geometry, NFL and sim through one operator (computed 2026-11-23)
+
+Asked by the user: split the miss curves by open field against traffic, and use the labelled tackles as far as they
+go on the geometry of a tackle, for diagnosing the engine. Tool: `scripts/diag/tackles/tackle_geometry.py`, with the
+same attempt moment and carrier frame as above. The NFL dump (`dump-nfl`) and the sim dump
+(`tackle-geometry-dump.mts`) write one shared play format, so `rows`, `tables` and `compare` run identical code on
+both. Tables:
+- `docs/reviews/data/2026-11-23-tackle-miss-curves/geometry-nfl.md`;
+- `geometry-sim.md`;
+- `geometry-compare.md` (each bin's share of attempts and its miss rate, side by side).
+
+**Runs.**
+- NFL: 16,234 attempts, miss 0.119.
+- Sim: 16 default games (seeds 201-216, two 0.55-strength teams, as Defense's `tackle-rates.mts`), develop
+  engine-91 `0226f0d3`, `baseline:run --candidate`. 3,247 attempts, miss 0.223.
+- Each sim batch's receipt reads exit 1 only because a script under `scripts/` was edited while it ran. The command
+  exited 0 and the engine source is unchanged.
+- Sim runtime is about 3 min per 4 games.
+
+**Labels differ.** Sim labels are engine events, PFF-style, with a miss taking priority:
+- missed = a `missed_tackle` or a broken hold;
+- tackle = the initial wrap;
+- assist = any other wrap.
+
+PFF charts a miss only when a defender had a real chance at the tackle. The engine logs every failed reach, so some
+sim rows (a reach while blocked, a lunge from 2 yd) would not be charted. **Compare where attempts happen (the share
+columns) before comparing rates.**
+
+**Open field** means:
+- no other defender within 5 yd of the carrier;
+- no other defender in contact during the previous 0.5 s;
+- no blocker within 1.5 yd of the tackler;
+- carrier moving at 2 yd/s or more.
+
+### NFL findings (the open-field split the user asked for)
+
+- **The from-behind result was confounded, as the user suspected.**
+
+  | defenders within 5 yd | ahead | level | behind |
+  |---|---|---|---|
+  | none | 0.27 | 0.12 | 0.13 |
+  | 1-2 | 0.14 | 0.12 | 0.09 |
+  | 3+ | 0.10 | 0.10 | **0.05** |
+
+  - The low from-behind rate comes from piles and crowds.
+  - An open-field chase from behind misses about as often as an attempt from level (0.11-0.13).
+  - Open-field head-on attempts miss at 0.25-0.27, about twice the rate from level or behind.
+  - A defender who arrives while another is already in contact misses 0.04, against 0.15. With two or more other
+    defenders within 1.5 yd of the carrier, he misses 0.03.
+- **Open field, what predicts a miss** (n 2,422, miss 0.14). In the joint logistic model (section F of
+  geometry-nfl.md), the terms that survive are below.
+  - **Aim against the lead the intercept needs** (z +6.5, the largest):
+    - within ±10° of the required lead, 0.07;
+    - 10-30° under-led, 0.12;
+    - over-led by 10-30°, 0.32;
+    - under-led by more than 30°, 0.32.
+
+    Taking the right angle matters more than speed or facing.
+  - **Approach angle between the two velocities:** chasing within 45°, 0.09; 45-90°, 0.22; 90°+, 0.25-0.27.
+  - **Lateral speed difference:** 0.07 under 1 yd/s, up to 0.31 at 6 yd/s or more.
+  - **The carrier's cut over the last 0.5 s:** 0.10 under 10°, rising to 0.27 at 40-60°.
+  - **Sideline within 3 yd:** 0.04. The boundary helps the tackler.
+  - **The defender's own speed** raises the miss risk at a given geometry (z +4.7). The carrier's speed lowers it.
+    Marginally, the fastest defenders (8 yd/s or more) miss least, because they are chasing.
+  - **No effect:** slowing down over the last 1.0 s (breaking down; z +0.3); weight ratio; distance at the attempt.
+
+    Slowing down shows no effect once aim is accounted for. A defender who takes the right angle does not need it,
+    so it is not the mechanism.
+  - **The carrier's facing:** if he faces the tackler, 0.21; if the tackler comes from his blind side, 0.08.
+- **Made tackles, how much forward progress the carrier keeps:** forward yards in the 1.0 s after the attempt,
+  p25 / p50 / p75.
+  - When the tackler's momentum (listed weight × speed) exceeds the carrier's by 1.25×: −0.5 / 1.0 / 2.2. The carrier
+    is stopped or driven back.
+  - When it is below 0.8× the carrier's: 1.8 / 2.6 / 3.8.
+
+  Mass and speed carry across the contact, as the model rules require. This is the physics check the engine should
+  pass.
+- **A miss mostly involves contact:**
+  - the carrier keeps 0.93 of his speed over the next 0.5 s;
+  - he is 1.7 yd from the tackler 0.5 s later;
+  - he gains a median 7 yd to the end of the play.
+
+### Sim against NFL, the same operator (geometry-compare.md)
+
+Ranked by frequency × consequence:
+
+1. **Misses from out of range.**
+   - Open-field attempts at 1.5 yd or more: sim 32% of attempts, NFL 3%.
+   - At that distance the sim misses 0.65 and the NFL 0.05.
+   - All attempts: sim 12% at 1.5 yd or more, NFL 3%.
+   - NFL misses happen within a yard. Many sim misses are lunges that never get there.
+
+   This is Defense's distance finding (misses at p50 1.95 yd; TACKLE_REACH) measured by attempt.
+2. **A sim miss costs the carrier nothing** (open field, p50, sim against NFL):
+
+   | after a miss | sim | NFL |
+   |---|---|---|
+   | speed kept over the next 0.5 s | 1.07 | 0.93 |
+   | separation 0.5 s later | 3.2 yd | 1.7 yd |
+   | yards to the end of the play | 19.9 | 7.2 |
+
+   This follows from item 1, since no contact means no lost speed. Defense's pursuit after a beat (#868) also bears
+   on it.
+3. **Made tackles take too long to finish** (open field, p50, sim against NFL):
+
+   | after a made tackle | sim | NFL |
+   |---|---|---|
+   | time from the attempt to the whistle | 1.2 s | 0.7 s |
+   | carrier forward yards in 1.0 s | 3.5 | 2.0 |
+   | yards to the end of the play | 2.9 | 1.1 |
+
+   More defenders pile in as a result: in the sim 27% of labelled attempts are a third or later tackler, against 4%
+   in the NFL. The run is 74% of sim attempts and 60% of NFL ones. This is how a wrap stops the carrier's forward
+   momentum, a physics question; check it against the momentum gradient above before changing anything.
+4. **Pursuit aim under-leads** (open field):
+   - more than 30° under the required lead: sim 36% of attempts, NFL 6%;
+   - within ±10°: sim 16%, NFL 46%.
+
+   The sim's under-led attempts miss 0.64; its well-aimed ones miss 0 of 22. This is a controller angle (who to aim
+   at, with what lead), not tackle physics.
+5. **Attempts in bad body states miss far more in the sim:**
+
+   | attempt made | sim | NFL |
+   |---|---|---|
+   | with 2+ blockers within 1.5 yd of the tackler | 0.38 | 0.07 |
+   | standing (under 2 yd/s) | 0.32 | 0.08 |
+   | facing 90°+ away from the carrier | 0.44 | 0.10 |
+   | running 90°+ off his own facing | 0.39 | 0.08 |
+
+   Some of this is label asymmetry (PFF would not chart a blocked defender's reach). Read film before treating it as
+   a mechanism.
+6. **Sim DL miss 0.40** (NFL 0.11). Sim miss rate rises as the tackler's momentum falls: at 0-0.5× the carrier's,
+   0.33 (NFL 0.10).
+7. **Geography:** 2% of open-field sim attempts are within 3 yd of the sideline, against 18% in the NFL. Sim carriers
+   are rarely pinned to the boundary, and the boundary is where NFL tacklers miss least.
+
+**Not changed by this:** no engine code. The sim's open field has only 210 attempts, and its joint model has too few
+complete rows to fit. One roster pair and one engine pin were measured.
+
+**Next decision:** items 1-2 belong to Run Game's tackle-range repair. Re-run this comparison before and after
+TACKLE_REACH (16 games, about 12 min): the share at 1.5 yd or more and speed kept after a miss should move toward the
+NFL. Item 3 needs a film look at a few slow finishes. Item 4 goes to Defense's pursuit work.
 
 ## Definitions mapped onto our engine events
 
