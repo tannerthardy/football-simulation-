@@ -1,0 +1,16 @@
+nearest defender, all: n 176; first pursuit stage at +0.3 s p50 (on-top point 60%, meeting spot 40%)
+  carrier speed assumed at commitment p50 3.5; actual then 3.6, +0.5 s 4.2, +1.0 s 4.5 yd/s
+  actual minus assumed: at +0.5 s p50 +1.4 (p75 +2.3); at +1.0 s p50 +1.3; during pursuit (each tick vs that tick) p50 +0.28
+  pursuit ticks by stage before contact range: meeting spot 46%, close gather 34%, on-top point 15%, tackle bond 6%
+nearest defender, outside (<= 12 yd from the sideline): n 70; first pursuit stage at +0.3 s p50 (meeting spot 54%, on-top point 46%)
+  carrier speed assumed at commitment p50 2.2; actual then 2.5, +0.5 s 4.1, +1.0 s 4.8 yd/s
+  actual minus assumed: at +0.5 s p50 +1.8 (p75 +2.5); at +1.0 s p50 +1.6; during pursuit (each tick vs that tick) p50 +0.29
+  pursuit ticks by stage before contact range: meeting spot 57%, close gather 30%, on-top point 9%, tackle bond 4%
+front defender, all: n 181; first pursuit stage at +0.3 s p50 (on-top point 55%, meeting spot 45%)
+  carrier speed assumed at commitment p50 3.3; actual then 3.6, +0.5 s 4.1, +1.0 s 4.2 yd/s
+  actual minus assumed: at +0.5 s p50 +1.3 (p75 +2.3); at +1.0 s p50 +1.2; during pursuit (each tick vs that tick) p50 +0.31
+  pursuit ticks by stage before contact range: meeting spot 51%, close gather 30%, on-top point 14%, tackle bond 5%
+front defender, outside (<= 12 yd from the sideline): n 64; first pursuit stage at +0.3 s p50 (on-top point 52%, meeting spot 48%)
+  carrier speed assumed at commitment p50 1.9; actual then 2.2, +0.5 s 4.0, +1.0 s 4.4 yd/s
+  actual minus assumed: at +0.5 s p50 +1.9 (p75 +2.5); at +1.0 s p50 +1.6; during pursuit (each tick vs that tick) p50 +0.37
+  pursuit ticks by stage before contact range: meeting spot 60%, close gather 24%, on-top point 11%, tackle bond 4%

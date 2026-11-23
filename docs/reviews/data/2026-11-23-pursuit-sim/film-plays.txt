@@ -1,0 +1,6 @@
+F64 | nearest LB_W 11.8 yd behind -> beaten without contact / other / outrun on a fair angle | first in front ('DT_W', '11.8 yd', 'ahead', 'beaten without contact', 'old angle (aimed at or behind the carrier)') | yac 27.4 end td
+F65 | nearest LB_W 3.8 yd behind -> trailing from the catch (never level) / None | first in front ('SS', '4.5 yd', 'ahead', 'beaten without contact', 'other / outrun on a fair angle') | yac 26.3 end tackle
+F67 | nearest CB_S 3.7 yd behind -> trailing from the catch (never level) / None | first in front None | yac 39.2 end tackle
+F69 | nearest CB_S 4.8 yd ahead -> beaten without contact / other / outrun on a fair angle | first in front ('CB_S', '4.8 yd', 'ahead', 'beaten without contact', 'other / outrun on a fair angle') | yac 9.9 end tackle
+F62 | nearest LB_W 6.2 yd behind -> trailing from the catch (never level) / None | first in front ('CB_S', '9.5 yd', 'ahead', 'beaten without contact', 'other / outrun on a fair angle') | yac 10.9 end oob
+F66 | nearest SS 9.4 yd behind -> trailing from the catch (never level) / None | first in front ('NB', '9.6 yd', 'level', 'beaten without contact', 'engaged by a blocker before the beat') | yac 16.0 end tackle
