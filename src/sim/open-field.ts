@@ -87,7 +87,7 @@ export function onTopPoint(sim: PlaySim, a: Agent, target: Agent, seen: Perceive
   const tau = clamp(dist / Math.max(1, a.profile.vmax), 0, LEAD_MAX);
   const cushion = clamp(CUSHION_SHARE * dist, CUSHION_MIN, CUSHION_MAX);
   // CARRIER_ACCEL: the lead is the shared forecast's run over that time (his anticipated acceleration), not seen velocity x time.
-  const run = CARRIER_ACCEL && seen.carrying === true ? carrierRun(seen) : null;
+  const run = CARRIER_ACCEL && seen.carrying === true ? carrierRun(seen, a, target) : null;
   const lx = run ? run.heading.x * runDistance(run, tau) : seen.vel.x * tau, ly = run ? run.heading.y * runDistance(run, tau) : seen.vel.y * tau;
   return { x: seen.pos.x + lx + dir * cushion, y: clamp(seen.pos.y + ly + offset, 0.3, FIELD_WIDTH - 0.3) };
 }

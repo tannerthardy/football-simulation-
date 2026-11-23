@@ -160,7 +160,7 @@ export function pursuitPoint(sim: PlaySim, a: Agent, target: Agent, horizon = 3,
   const tau = 0.3 + 0.3 * a.r('anticipation');
   const V = clamp(sp + acceleration * tau, 0, target.profile.vmax);
   // CARRIER_ACCEL: a ball carrier's run is the shared forecast (carrier-forecast.ts), anticipating his acceleration.
-  const run = CARRIER_ACCEL && seen.carrying === true ? carrierRun(seen) : null;
+  const run = CARRIER_ACCEL && seen.carrying === true ? carrierRun(seen, a, target) : null;
   const travelled = (t: number) => run ? runDistance(run, t) : V * t - (V - sp) * tau * (1 - Math.exp(-t / tau));
   const straight = (t: number): Vec2 => {
     const d = travelled(t);
@@ -313,7 +313,7 @@ const CLOSE_LOOK = 1;
  * the same braking and achievable arrival request; no new observation,
  * decision, random draw or physical capability is introduced here. */
 export function gatheringApproach(a: Agent, seen: import('../perception.js').Perceived,
-  contact: number, offset: number, upfield = 0): { near: MoveCommand | null; gather: number } {
+  contact: number, offset: number, upfield = 0, target?: Agent): { near: MoveCommand | null; gather: number } {
   const dist = Math.hypot(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y);
   const tackle = a.r('tackling');
   let near: MoveCommand | null = null;
@@ -330,7 +330,7 @@ export function gatheringApproach(a: Agent, seen: import('../perception.js').Per
     // CARRIER_ACCEL: the shared forecast of his run. A carrier who has not chosen his line (standing, or not facing his
     // travel) can still go either way: he is met in balance, his arrival allowance halved at no commitment (a stated
     // choice: the breakdown is the taught answer to a runner who can cut both ways), the full allowance once committed.
-    const run = CARRIER_ACCEL && seen.carrying === true ? carrierRun(seen) : null;
+    const run = CARRIER_ACCEL && seen.carrying === true ? carrierRun(seen, a, target) : null;
     const through=(2.5+2*(1-tackle))*(run ? 0.5+0.5*run.commit : 1);
     const stopping=Math.max(0,(closing*closing-through*through)/(2*decel));
     // One arrival budget across incoming and crossing approaches. A small
@@ -347,12 +347,14 @@ export function gatheringApproach(a: Agent, seen: import('../perception.js').Per
     gather = Math.max(headOn, close);
     if (gather > 0) {
       // OPEN_FIELD: `upfield` (yd along x) keeps the arrival on top of the runner, shrinking to nothing at contact.
-      // CARRIER_ACCEL: the arrival is where his run takes him by the time this defender closes the gap (the remaining
-      // gap over the closing speed, at most CLOSE_LOOK s), moving at the forecast speed then: not his seen spot, which
-      // a defender arriving level at speed slides behind.
+      // CARRIER_ACCEL: the arrival matches the velocity his run will have by the time this defender closes the gap (the
+      // remaining gap over the closing speed, at most CLOSE_LOOK s), not his seen velocity, so a defender arriving level
+      // does not settle onto a carrier who is still speeding up and slide behind his hips. The goal stays his seen spot
+      // (attempt 1 also led the goal along his run: coverage reversed re-aims 0.395 -> 0.426/s on the dither panel, the
+      // cause of that rise not traced further).
       const look = run ? clamp((dist - contact) / Math.max(1, closing), 0, CLOSE_LOOK) : 0;
-      const lead = run ? runDistance(run, look) : 0, ahead = run ? runSpeed(run, look) : 0;
-      const goal = { x: seen.pos.x + upfield + (run ? run.heading.x * lead : 0), y: clamp(seen.pos.y + offset + (run ? run.heading.y * lead : 0), .3, FIELD_WIDTH - .3) };
+      const ahead = run ? runSpeed(run, look) : 0;
+      const goal = { x: seen.pos.x + upfield, y: clamp(seen.pos.y + offset, .3, FIELD_WIDTH - .3) };
       const vel=movingArrivalVelocity(a.body,goal,run ? { x: run.heading.x * ahead, y: run.heading.y * ahead } : seen.vel,a.profile.vmax*a.speedScale,
         contact,through,cutSkill,capacity);
       // A front tackler keeps driving through the near hip, rather than
@@ -406,7 +408,7 @@ export function chase(sim: PlaySim, a: Agent, target: Agent, horizon = 3, opts: 
   // and the gather's arrival stays on top of him (onTopCushion), so it mirrors him.
   const top = opts.onTop ? onTopPoint(sim, a, target, seen, offset) : null;
   const topShift = opts.onTop ? onTopCushion(sim, a, target, seen, dist, contact) : 0;
-  const { near, gather } = gatheringApproach(a, seen, contact, offset, topShift);
+  const { near, gather } = gatheringApproach(a, seen, contact, offset, topShift, target);
   const trace = sim.commandTraceFor?.(a);
   if (gather >= 1 && !sim.bond?.tacklers.includes(a)) {
     const command = ownApproach(near!);
