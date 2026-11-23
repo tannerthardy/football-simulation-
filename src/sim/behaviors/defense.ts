@@ -11,7 +11,7 @@ import { isOL } from './blocking.js';
 import { KEY_REACT, KEY_STEP_SEEN, STEP_SEEN, keyScale } from '../key-read.js';
 import { END_LINE_X, FIELD_WIDTH, OPP_GOAL_X } from '../../core/field.js';
 import { angleDiff, clamp, lerp, norm, sub, type Vec2 } from '../../core/vec.js';
-import { DIR_CAP, directionalSpeedFactor, TRUNK_PRICE, TRUNK_RANGE, TRUNK_TWIST, type MoveCommand } from '../../physics/kinematics.js';
+import { DIR_CAP, hipYawRate, directionalSpeedFactor, TRUNK_PRICE, TRUNK_RANGE, TRUNK_TWIST, type MoveCommand } from '../../physics/kinematics.js';
 import { timeToReach } from '../../physics/reach.js';
 import { coverageDepth, gapY, isDeepZone, zoneLandmark } from '../../playbook/alignment.js';
 import type { DefSlot, Gap, ZoneId, ZoneStyle } from '../../playbook/types.js';
@@ -1518,7 +1518,7 @@ export class ManCoverage implements Behavior {
     // That alone is not a release cue: opening immediately made the corner
     // step downhill and turn twice while the receiver accelerated past him.
     const closing = Math.max(0, vx - Math.max(0, a.vel.x));
-    const flipTime = Math.PI / a.profile.turnRate + 0.15 * (1 - a.r('anticipation') * a.mind.focus);
+    const flipTime = Math.PI / hipYawRate(a.profile) + 0.15 * (1 - a.r('anticipation') * a.mind.focus);
     const releaseBurst = Math.max(0, (R.profile.vmax - Math.hypot(seen.vel.x, seen.vel.y)) / R.profile.tau);
     // CUSHION_BREAK applies inside zone calls (match carries and deep zones);
     // pure man keeps its trigger. Help: a carry with no installed deep
@@ -2240,7 +2240,7 @@ export class ZoneCoverage implements Behavior {
       // Turn before the receiver consumes the cushion during the hip flip.
       // Pedaling has a physical speed cap; racing a vertical does not.
       const closing = Math.max(0, deepest.vel.x - Math.max(0, a.vel.x));
-      const flipTime = Math.PI / a.profile.turnRate + 0.15 * (1 - a.r('anticipation') * a.mind.focus);
+      const flipTime = Math.PI / hipYawRate(a.profile) + 0.15 * (1 - a.r('anticipation') * a.mind.focus);
       const deepBroken = () => cushionBroken(a, a.pos.x - deepest.pos.x, deepest.vel.x, false, deepest.r.profile.radius);
       if (CUSHION_BREAK && this.turnedWith === deepest.r && deepest.vel.x < Math.max(0, a.vel.x) - 1
         && !deepBroken()) { this.turnedWith = null; a.tags.add('re-square'); }
