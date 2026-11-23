@@ -60,6 +60,74 @@ A short second tier lists NFL coverages the engine lacks.
 
 Quotes are short and paraphrased; nothing downloaded is in the repository.
 
+# Day-one installs (first-week versions)
+
+What a first-week install teaches each seat: alignment, key, one pass rule and one run fit. This is the simplified
+reference the spot rung, and any rebuild, is measured against. Each line condenses the family's own "(i) Day-one
+install" section below, which carries the sources (the keys in brackets refer to that family's source list).
+Seats use the 4-3 / nickel names; where a nickel plays the seat, NB replaces LB_S.
+
+Most cells come from the family sections' sources. The exceptions are run-fit cells and depths those sections do not
+state: the corners' run fits, the linebackers' stack depths and "gap per front", the man-coverage FS depth, and
+every Deuce row. Those are reasoning (low confidence); the seat cards are the sourced reference for them.
+
+## Quarters (spot-drop Cover 4: four deep, three under) [PFN], [Bowen], [Viq-C4]
+
+| seat | alignment | key | pass rule | run fit |
+|---|---|---|---|---|
+| CB_S, CB_W | 7-8 yd, outside leverage on #1 | #1 | deep quarter: man on #1 vertical; #1 short or in: zone off to the quarter | contain / force on outside runs when #2 blocks (as taught to his side) |
+| SS, FS | 10-12 yd, inside eye of #2 | #2 (flat-foot read) | #2 vertical past the vertical point (5, 7 or 10 yd, a team setting): take him; else rob #1 | fill downhill in the alley when #2 blocks |
+| LB_S / NB (strong apex), LB_W (weak apex) | apex between the end man on the line and #2 | #2 | wall #2 off an inside vertical, then first to the flat | force / spill per front, outside the end |
+| LB_M | stack, 4-5 yd | backfield, OL | the back; back stays in: middle hole | his gap per front |
+
+## Cover 3 (spot-drop) [TD Cover 3], [Bowen C3], [Cassity C/F], [Saban USAF]
+
+| seat | alignment | key | pass rule | run fit |
+|---|---|---|---|---|
+| CB_S, CB_W | 7-8 yd or press-bail | #1 | outside third: "deeper than the deepest" | secondary contain after the pass threat clears |
+| FS | 12+ yd, middle | QB, #2s | deep middle third; keep a downhill angle on the post / dig | alley player last |
+| SS / Will (curl-flat) | over the TE or the open-side tackle | TE / tackle | drop to 12 yd at the top of the numbers, sink the curl lane, widen; break to the flat when the QB's shoulders cross his face; carry a #2 wheel | force: outside #2 |
+| LB_S, LB_M (hooks) | 4-5 yd | guard-center-guard triangle | sink 10-12 yd outside the hash (Saban: 10 yd, 2 inside the hash), cushion seam and dig | his gap per front |
+
+## Cover 2 (spot-drop: five under, two deep) [TD Cover 2], [Bowen C2], [Viqtory T2]
+
+| seat | alignment | key | pass rule | run fit |
+|---|---|---|---|---|
+| CB_S, CB_W | 5 yd, outside #1, hard (no bail) | #1, then #2 | flat: jam #1, sink under him until a flat threat | force: contain outside runs |
+| SS, FS | 15 yd working to 18, top of the numbers | #1's release | deep half, top-down: never let #1 or #2 behind | alley fill only after the pass threat clears |
+| LB_S, LB_W | 10-12 yd between numbers and hash on the drop | QB | hook / curl: wall #2, then QB | his gap per front |
+| LB_M | stack | QB | middle hole (Tampa 2: run the deep middle on #2 / #3 vertical) | his gap per front |
+
+## Man (Cover 1, man-free) [Bowen C1], [Bowen ManP], [Svec 2M], [ITP trail]
+
+| seat | alignment | key | pass rule | run fit |
+|---|---|---|---|---|
+| CB_S, CB_W | on #1, outside shade (press or off) | #1 | man on #1, funnel inside to the help; stay on top of a flat-then-up | late contain on runs to him |
+| NB / SS | outside leverage on #2 | #2 | man on #2 | run support once #2 blocks |
+| LB_S / LB_W | per front | first back strong / weak | his back; back blocks: green dog (rush) or zone up | his gap per front |
+| LB_M (hole) | per front | QB, crossers | free: wall the first crosser, help low | gap per front |
+| FS | 12-14 yd, middle | QB | deep middle; break on the throw | alley last |
+Cover 0: everyone manned with **inside** leverage; no deep player ("Where's the help? The sideline"). 2-Man: five man
+defenders trail a step behind with two deep halves over the top.
+
+## Fire zone (3 deep, 3 under, 5-man rush) [Bowen ZB]
+
+| seat | alignment | key | pass rule | run fit |
+|---|---|---|---|---|
+| seam-flat (SS or NB; often a dropping DE) | over #2 / the end | #2 | match #2 vertical, then drive on a flat throw | his gap / spill as called |
+| 3-hook (usually LB_W) | box | #3 | #3 to both sides | gap as called |
+| CB_S, CB_W | bail at the snap | #1 | fire-zone third, outside leverage: buy #1 vertical; none: look in to #2 / #3 | contain behind the pressure |
+| FS | rolls late to the middle | QB | deep middle third (inside verticals first) | alley last |
+
+## Deuce (2 deep, 4 under, 5-man rush) [BH 2-steal], [AFCA Cox] (low: no source names "Deuce")
+
+| seat | alignment | key | pass rule | run fit |
+|---|---|---|---|---|
+| CB_S, CB_W (or a dropping DE) | hard / cloud | #1, #2 | flat: first outside, the back included | force |
+| SS, FS (or an inverted corner) | two-high | #1 / #2 | deep half | alley last |
+| LB and a safety / nickel / DE | box / over #2 | #2, #3 | seam / hook: carry #2 vertical, wall the hook | gap as called |
+
+
 # Family 1: quarters and Cover 6
 
 
