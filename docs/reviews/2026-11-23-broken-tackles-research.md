@@ -87,6 +87,26 @@ Results:
 - **Play type:** run 0.125, catch 0.111.
 - **Yards after a miss:** median about 6 yd (5.5-8.4 by bearing), against about 1.5 after a made tackle.
 
+**Validation of the attempt moment against the tracking's own events** (BDB 2025 `first_contact` and `tackle` event
+frames; weeks 1-3; attempt minus event, in s; distance in yd at the event frame). `first_contact` is a play-level
+event (the play's first contact by anyone), not per defender.
+
+| label | event | n | attempt minus event p25 / p50 / p75 | distance at the event p25 / p50 / p75 | distance at the attempt p50 |
+|---|---|---|---|---|---|
+| tackle | first_contact | 2,842 | -0.1 / 0.0 / +0.2 | 0.73 / 1.03 / 1.63 | 0.88 |
+| tackle | tackle | 2,730 | -1.4 / -0.9 / -0.6 | 0.56 / 0.89 / 1.37 | 0.87 |
+| assist | first_contact | 1,680 | 0.0 / +0.2 / +0.7 | 1.01 / 1.61 / 3.08 | 0.89 |
+| assist | tackle | 1,678 | -1.7 / -1.1 / -0.7 | 0.48 / 0.74 / 1.15 | 0.89 |
+| missed | first_contact | 682 | -0.1 / 0.0 / +0.1 | 0.74 / 1.04 / 1.67 | 0.89 |
+
+- **Timing:** for the labelled tackler, the geometric attempt moment coincides with the play's first contact (median
+  0.0 s), and comes about 0.9 s before the tackle event, when the runner is down. It is neither early nor late
+  against first contact.
+- **Distance:** at the tackle event the tackler is at p50 0.89 yd, so the 0.88 yd distance-at-attempt median does not
+  change when read at the event. At `first_contact` the median is 1.03, wider only because that event can belong to
+  another defender.
+- **Assists:** they arrive after the first contact (+0.2 s) and are closest at the tackle (0.74 yd).
+
 **For Defense's recount on engine-91:** feed engine rows in the script's JSONL shape (kind, ptype, pos,
 attempt_dist, bearing, outside, closing, cs, ds, dlat, traffic, sideline, t, yds_after and the `_0.5` variants) and
 run `tables`. Compare the same rows before and after TACKLE_REACH.

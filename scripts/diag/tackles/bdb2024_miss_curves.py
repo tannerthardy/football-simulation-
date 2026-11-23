@@ -23,6 +23,8 @@ Rate: missed / (missed + tackle + assist), one per defender per play.
 
 Stage 1 (extract) streams the tracking once and writes one JSON row per labelled defender per play:
   python3 -I bdb2024_miss_curves.py extract TACKLES.csv BDB2025_DIR OUT.jsonl [weeks]
+Rows also carry, where the play has them, the offset of the attempt from the tracking's first_contact and tackle
+events (attempt minus event, s) and the defender's distance at each event, to validate the geometric attempt moment.
 Stage 2 (tables) prints markdown tables from those rows:
   python3 -I bdb2024_miss_curves.py tables ROWS.jsonl
 Raw inputs stay in git-ignored data/raw; only derived tables are committed."""
@@ -139,6 +141,13 @@ def extract(tackles_path, d, out_path, weeks):
                         fl = fs[0]
                     feats(row, lb, fl, fa)
                 row.update(dropped=False, t=round((fa - k0) / 10, 1), yds_after=round(car[frames[-1]][0][0] - car[fa][0][0], 1))
+                # Validation against the tracking's own events (made tackles carry first_contact / tackle frames).
+                for ev in ('first_contact', 'tackle'):
+                    fe = evs.get(ev)
+                    if fe is not None and fe >= k0:
+                        row[ev + '_dt'] = round((fa - fe) / 10, 1)
+                        if fe in dist:
+                            row[ev + '_dist'] = round(dist[fe], 2)
                 out.write(json.dumps(row) + '\n'); n_out += 1
                 continue
 
