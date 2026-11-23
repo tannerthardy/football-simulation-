@@ -26,7 +26,8 @@ HONEST_READS, SLOT_LEV and TIGHT_OFF are on. Off: MAN_PHASE, HEAD, HONEST_FLIGHT
 
 Each item is a path in our code that, by construction, leaves a receiver related to nobody. Ranked by how often the
 situation comes up in ordinary NFL passing. "One-sided" means a defender releases a receiver and no other defender's
-rule reads the same cue to take him.
+rule reads the same cue to take him. (This order is my reading of the code. F0 measures it in games and F1 re-ranks
+it: about three quarters of wide-open receivers do have an owner, who loses the break or stays too far off.)
 
 1. **No zone defender ever hands a receiver to anyone.** `ZoneCoverage` (defense.ts) has no pass-off: a defender stops
    relating to a receiver when the receiver's projected position leaves his band, when a carry threshold ends (seam
