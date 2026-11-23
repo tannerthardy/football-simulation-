@@ -1366,7 +1366,15 @@ window.TELEMETRY_READY = Promise.resolve(true);
     const bx = F.b[a * 3] + (F.b[b * 3] - F.b[a * 3]) * f;
     const by = F.b[a * 3 + 1] + (F.b[b * 3 + 1] - F.b[a * 3 + 1]) * f;
     const bz = F.b[a * 3 + 2] + (F.b[b * 3 + 2] - F.b[a * 3 + 2]) * f;
-    if (carrier < 0 || bz > 1.5) {
+    // A carried ball is drawn in the carrier's arms (it used to be hidden under his icon, so a catch read as the ball vanishing), and a touchdown keeps the ball with the scorer and says so.
+    const tdE = (p.eventDetails || []).find((e) => e.type === 'touchdown'), scored = !!tdE && t >= tdE.t - 1e-6;
+    const holder = scored && tdE.a != null ? tdE.a : carrier;
+    if (holder >= 0 && positions[holder] && (!(carrier < 0) || scored)) {
+      const dirx = p.fd >= p.los ? 1 : -1, hx = X(positions[holder][0] + dirx * 0.55), hy = Y(positions[holder][1]);
+      ctx.fillStyle = '#7a4a22'; ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.ellipse(hx, hy, sc * 0.34, sc * 0.2, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+    }
+    if (scored) { ctx.save(); ctx.font = '800 26px ' + css('--display'); ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillStyle = 'rgba(0,0,0,0.55)'; ctx.fillRect(W / 2 - 110, 22, 220, 40); ctx.fillStyle = '#ffd23f'; ctx.fillText('TOUCHDOWN', W / 2, 42); ctx.restore(); }
+    if ((carrier < 0 || bz > 1.5) && !scored) {
       ctx.fillStyle = 'rgba(0,0,0,0.35)';
       ctx.beginPath(); ctx.ellipse(X(bx), Y(by), sc * 0.35, sc * 0.2, 0, 0, Math.PI * 2); ctx.fill();
       const lift = bz * sc * 0.35;
