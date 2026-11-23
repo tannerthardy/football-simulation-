@@ -27,6 +27,13 @@ def block(name, R):
         cl = collections.Counter(r['cls'] for r in F)
         print(f'failure class (of {len(F)} beaten or missed): ' + '; '.join(f'{k} {pct(v, len(F))}' for k, v in cl.most_common()))
         print(f"  carrier speed catch -> at the beat: p50 {q([r['cs'] for r in F], .5):.1f} -> play max {q([r['cmax'] for r in F], .5):.1f}; D1 start speed (first 0.5 s) p50 {q([r['start'] for r in F], .5):.1f}")
+    if R and 'd1_valong' in R[0]:
+        parts = []
+        for lab, keep in (('stopped', lambda r: r['outcome'].startswith('stopped')), ('old angle / overrun', lambda r: r['cls'] and (r['cls'].startswith('old') or r['cls'].startswith('overrun'))),
+                          ('other beaten / missed', lambda r: r['cls'] and not (r['cls'].startswith('old') or r['cls'].startswith('overrun')))):
+            X = [r for r in R if keep(r)]
+            if X: parts.append(f"{lab} (n {len(X)}) along-velocity p50 {q([r['d1_valong'] for r in X], .5):+.1f} (p25 {q([r['d1_valong'] for r in X], .25):+.1f}), ahead {q([r['d1_ahead'] for r in X], .5):+.1f} yd, dist {q([r['d1dist'] for r in X], .5):.1f}")
+        print('first defender at the catch, on the carrier line (- = coming downhill): ' + ' | '.join(parts))
     Fr = [r['front'] for r in R if r.get('front')]
     if Fr:
         oc = collections.Counter(f['outcome'] for f in Fr); Ff = [f for f in Fr if f['cls']]

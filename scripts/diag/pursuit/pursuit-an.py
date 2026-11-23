@@ -185,9 +185,13 @@ def _an(row, front=False):
         a1, _, o1 = rel(d1[contact_t], car[contact_t], unit(car[contact_t][3], car[contact_t][4], u0))
         tackle_from = dict(at_catch=pos, outside_at_catch=outs, at_contact='front' if a1 > 0.3 else 'behind' if a1 < -0.3 else 'side')
     spd = lambda tt: math.hypot(car[tt][3], car[tt][4]) if tt in car else None
+    # D1's state at the catch on the carrier's line (his travel at +0.5 s): his velocity along it (- = downhill, against
+    # the carrier's travel), how far ahead of the carrier and how far away.
+    t5 = round(t0 + 0.5, 1); cl = car.get(t5, car[T[-1]]); ul = unit(cl[3], cl[4], u0)
+    d1_valong = d10[3] * ul[0] + d10[4] * ul[1]; d1_ahead = (d10[1] - c0[1]) * ul[0] + (d10[2] - c0[2]) * ul[1]
     return dict(src=row['src'], man=row['man'], side=side, outside=side <= 12, cs=cs, cmax=cmax, cs05=spd(round(t0 + 0.5, 1)), cs10=spd(round(t0 + 1.0, 1)), air=row.get('air'), end=end,
                 yac=round(car[tend][1] - cx, 1), bands=bands, d1=d1k, d1dist=dist(d10, c0), d1pos=pos, d1out=outs, d1clos=clos, cpa=cpa, cpa_t=ts,
-                outcome=outcome, cls=cls, blk=blk, contact_t=contact_t, beat_t=beat_t, start=start, after=after, tackle_from=tackle_from, geo=geo,
+                outcome=outcome, cls=cls, blk=blk, d1_valong=d1_valong, d1_ahead=d1_ahead, contact_t=contact_t, beat_t=beat_t, start=start, after=after, tackle_from=tackle_from, geo=geo,
                 key=row.get('key'), ev=row.get('ev'))
 
 if __name__ == '__main__':
