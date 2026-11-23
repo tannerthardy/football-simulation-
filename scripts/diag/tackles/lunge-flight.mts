@@ -28,7 +28,7 @@ proto.diveAt = function (this: any, a: any, dir: any) {
     const ux = cs > 1 ? c.vel.x / cs : 1, uy = cs > 1 ? c.vel.y / cs : 0;
     const bearing = Math.acos(Math.max(-1, Math.min(1, (-rx * ux + -ry * uy) / (dd || 1)))) * 180 / Math.PI;
     const r = { from: f.from, def: a.player.position, dd: r3(dd), arms: r3(reachTo(a, c, 1)), over: r3(dd - reachTo(a, c, 1)), cs: r3(cs), ds: r3(ds),
-      headroom: r3(a.profile.vmax - ds), sep: r3(sep), bearing: Math.round(bearing), aimOff: null as any, end: null as any, closestOver: null as any, t0: sim.t };
+      headroom: r3(a.profile.vmax - ds), sep: r3(sep), asked: r3(Math.hypot(sim.intents[a.idx]?.vel.x ?? 0, sim.intents[a.idx]?.vel.y ?? 0)), cmd: r3(Math.hypot(sim.cmds?.[a.idx]?.vel.x ?? 0, sim.cmds?.[a.idx]?.vel.y ?? 0)), effort: sim.intents[a.idx]?.effort ?? null, bearing: Math.round(bearing), aimOff: null as any, end: null as any, closestOver: null as any, t0: sim.t };
     open.set(a, r);
   }
   return out;
