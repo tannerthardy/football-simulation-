@@ -276,6 +276,7 @@
   "test/filtered-follow.test.ts",
   "test/first-threat-evidence.test.ts",
   "test/first-threat.test.ts",
+  "test/flat-shape.test.ts",
   "test/force-bounce.test.ts",
   "test/force-track.test.ts",
   "test/forecast-break.test.ts",

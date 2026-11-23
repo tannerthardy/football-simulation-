@@ -129,6 +129,7 @@
     "QB_RHYTHM_THROW": "on",
     "ROUTE_CRAFT": "on",
     "STEM_WORK": "on",
+    "FLAT_SHAPE": "off",
     "ROUTE_FILLET": "on",
     "SPACING_HOLD": "on",
     "BREAK_LOOK": "on",
