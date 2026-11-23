@@ -26,6 +26,10 @@ for lab, S, n in (('rush', rushE, rush), ('reception', recE, rec)):
 for lab, keep in (('rushes', lambda p: p['rush']), ('receptions', lambda p: p['reception']), ('all ball-carrier plays', lambda p: p['rush'] or p['reception'])):
     S = [p for p in P if keep(p)]
     print(f"share of {lab} with at least one missed: {pct(sum(p['missed'] > 0 for p in S), len(S))}; broken: {pct(sum(p['broken'] > 0 for p in S), len(S))}; either: {pct(sum(p['missed'] + p['broken'] > 0 for p in S), len(S))}")
+RU = [p for p in P if p['rush'] and p['type'] in ('inside run', 'outside run') and p['endX'] is not None]
+if RU:
+    A = [p['endX'] - p['contactX'] for p in RU if p.get('contactX') is not None]
+    print(f"designed runs (n {len(RU)}): yards p50 {q([p['endX'] for p in RU], .5):.1f} mean {sum(p['endX'] for p in RU) / len(RU):.2f}; stuffed (<= 0) {pct(sum(p['endX'] <= 0 for p in RU), len(RU))}; yards after first contact p50 {q(A, .5):.1f} mean {sum(A) / max(1, len(A)):.2f} (n {len(A)})")
 print(f"yards after the event p50 / mean: missed {q([e['yardsAfter'] for e in miss], .5):.1f} / {sum(e['yardsAfter'] or 0 for e in miss) / max(1, len(miss)):.1f}; broken {q([e['yardsAfter'] for e in brk], .5):.1f} / {sum(e['yardsAfter'] or 0 for e in brk) / max(1, len(brk)):.1f}; wrap {q([e['yardsAfter'] for e in wrap], .5):.1f}")
 for key, title in (('carrierPos', 'carrier position'), ('dgrp', 'defender group'), ('playType', 'play type'), ('field', 'open field vs traffic'),
                    ('approach', 'approach bearing (carrier frame)'), ('cband', 'carrier speed'), ('clband', 'closing speed')):

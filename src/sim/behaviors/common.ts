@@ -9,6 +9,7 @@ import type { Agent } from '../agent.js';
 import { chooseApproach } from '../approach-control.js';
 import { onTopCushion, onTopPoint } from '../open-field.js';
 import { withMovementObjective } from '../movement-objective.js';
+import { reachTo } from '../tackle-reach.js';
 import { PASS_ROLES, deepAngleSpeed, passRoleShade } from '../pass-pursuit.js';
 import { CARRIER_ACCEL, carrierRun, runDistance, runSpeed } from '../carrier-forecast.js';
 import type { PlaySim } from '../playsim.js';
@@ -176,7 +177,7 @@ export function pursuitPoint(sim: PlaySim, a: Agent, target: Agent, horizon = 3,
   const curve = bend ? bentPath(seen.pos, Math.atan2(seen.vel.y, seen.vel.x), bend.heading, bend.rate, travelled, horizon) : null;
   if (curve) curveOf.set(a, curve); else curveOf.delete(a);
   const path = curve ? (t: number): Vec2 => curve[Math.min(curve.length - 1, Math.max(0, Math.round(t / BEND_STEP)))] : straight;
-  const reach = a.profile.radius + target.profile.radius + a.profile.reach * 0.75;
+  const reach = reachTo(a, target, 0.75);
   const trace = sim.commandTraceFor?.(a);
   const mover = { pos: a.pos, vel: a.vel, profile: a.profile, speedScale: a.speedScale };
   const ip = interceptPoint(mover, path, { horizon, step: 0.1, radius: reach, request, recordSamples: !!trace });
@@ -413,7 +414,7 @@ export function chase(sim: PlaySim, a: Agent, target: Agent, horizon = 3, opts: 
   const seen = TRACK_TACKLE ? sim.track(a, target, 1, true) : sim.see(a, target, look);
   const dist = Math.hypot(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y);
   const tackle = a.r('tackling');
-  const contact = a.profile.radius + target.profile.radius + a.profile.reach * .65;
+  const contact = reachTo(a, target, .65);
   const offset = pursuitLeverage(a, seen.pos.y, sim, target, seen.carrying === true ? seen.pos : undefined)
     * clamp((dist - contact) / 6, 0, 1);
   // Teammate navigation needs the responsibility this request serves. This

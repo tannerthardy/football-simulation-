@@ -68,7 +68,8 @@ proto.run = function (this: any) {
     const reception = this.isPass && !!this.stats.completed && !this.scrambled;
     const rush = !this.isPass || !!this.scrambled;
     plays.push({ type: pt, reception, rush, n: s.recs.length, missed: s.recs.filter((x: any) => x.type === 'missed_tackle' && !x.pocket).length,
-      broken: s.recs.filter((x: any) => x.type === 'broken_tackle' && !x.pocket).length, endX: endX !== null ? r2(endX) : null });
+      broken: s.recs.filter((x: any) => x.type === 'broken_tackle' && !x.pocket).length, endX: endX !== null ? r2(endX) : null,
+      contactX: this.firstContactX != null ? r2((this.firstContactX - this.los) * dir) : null });
     for (const x of s.recs) events.push({ ...x, yardsAfter: endX !== null ? r2(endX - x.x) : null });
   }
   return r;

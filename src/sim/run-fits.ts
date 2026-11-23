@@ -1,4 +1,5 @@
 /** A support contract derived from the called front AND coverage, not the run call. */
+import { reachTo } from './tackle-reach.js';
 import { gaitLag } from '../physics/kinematics.js';
 import { clamp, type Vec2 } from '../core/vec.js';
 import { gapY, isDeepZone, lineDepth } from '../playbook/alignment.js';
@@ -628,7 +629,7 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
     // even before he crosses the old LOS pursuit gate. Keep the installed
     // shoulder and use the same short, force-limited approach preview as
     // ordinary pursuit; a distant/inside runner still leaves the edge intact.
-    const contact = a.profile.radius + c.profile.radius + a.profile.reach * .65;
+    const contact = reachTo(a, c, .65);
     const support = a.body.support;
     const free = !a.isDown(sim.t) && !sim.bond?.tacklers.includes(a) && (!support ||
       (support.state === 'up' && !support.foot && !support.strike &&
