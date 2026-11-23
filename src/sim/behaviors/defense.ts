@@ -29,7 +29,7 @@ import { executeRunFit, guardStep, lineRead, pullers, type RunFitRead } from '..
 import { linePicture } from '../live-gaps.js';
 import { RouteObservation } from '../coverage-read.js';
 import { movingCatchApproach } from '../catch-approach.js';
-import { RELEASE_BELIEF, releaseBelief } from '../release-belief.js';
+import { RELEASE_BELIEF, lastReleaseBelief, releaseBelief } from '../release-belief.js';
 import { withMovementObjective } from '../movement-objective.js';
 import { OPEN_FIELD, playsBall } from '../open-field.js';
 import { DeepCoverage, StemAcceleration, stemStopped } from '../coverage-leverage.js';
@@ -1983,8 +1983,9 @@ export class ZoneCoverage implements Behavior {
     const live = pursueIfLive(sim, a);
     if (live) return live;
     // Until he sees the throw, a zone defender keeps playing his zone.
-    if (playsThrow(a, sim, null)) return playBall(a, sim, null, RELEASE_BELIEF ? () => this.zonePlay(a, sim) : undefined);
     const squat = !this.deep && (this.zone === 'flat_s' || this.zone === 'flat_w') && squatSinkCall(sim);
+    if (squat) { const br = this.squatBreak(a, sim); if (br) return br; }
+    if (playsThrow(a, sim, null)) return playBall(a, sim, null, RELEASE_BELIEF ? () => this.zonePlay(a, sim) : undefined);
     if (squat) {
       const sq = this.squatCorner(a, sim);
       if (sq) return sq;
@@ -2054,6 +2055,34 @@ export class ZoneCoverage implements Behavior {
   private flatCarrying = false;
   private oneCancelled = false;
 
+  /**
+   * SQUAT_SINK, deep to short (Rules' hard-corner card row 5: off the sink on the throw, the QB's front shoulder / off hand
+   * leaving the ball; plant the upfield foot and drive downhill): once he believes the ball is out and his read of the
+   * passer's shoulders picks a receiver in his area in front of him, he drives at that receiver's upfield-outside
+   * shoulder, leading him by the time it takes to get there, after his reaction time. No ball flight is needed (the
+   * shoulder read is his cue); once he has the ball's flight the generic ball phase is no better a guide to a flat
+   * receiver he is already driving on, so the drive holds until the catch (pursuit takes over then).
+   */
+  private squatDriving: Agent | null = null;
+  private squatBreak(a: Agent, sim: PlaySim): MoveCommand | null {
+    const rb = lastReleaseBelief(sim, a);
+    if (rb?.releasedAt === undefined) { this.squatDriving = null; return null; }
+    const dir = sim.attackDir(sim.offense[0].team), myDepth = (a.pos.x - sim.los) * dir, [ylo, yhi] = this.band;
+    let R = this.squatDriving;
+    if (!R) {
+      if (sim.t - rb.releasedAt < a.profile.reactionTime) return null;
+      const pick = shoulderTarget(a, sim, rb.releasedAt);
+      if (!pick.R) return null;
+      const s = sim.see(a, pick.R), d = (s.pos.x - sim.los) * dir;
+      if (s.pos.y < ylo - 3 || s.pos.y > yhi + 3 || d > myDepth + 1) return null;
+      R = this.squatDriving = pick.R;
+    }
+    const s = sim.see(a, R), outside = Math.sign(s.pos.y - sim.ballY) || 1;
+    const gap = Math.hypot(s.pos.x - a.pos.x, s.pos.y - a.pos.y), lead = Math.min(1.2, gap / Math.max(1, a.profile.vmax * 0.9));
+    const to = { x: s.pos.x + s.vel.x * lead + dir * 0.7, y: s.pos.y + s.vel.y * lead + outside * 0.5 };
+    a.tags.add('squat-drive');
+    return withFacingTechnique(track(a, to, s.vel, { facing: angleTo(a.pos, to), speed: 1, gain: 2.2 }), { label: 'squat-drive', key: s.vel, sharp: true });
+  }
   /** SQUAT_SINK: sinking under #1 (entered on his vertical stem, left when he cancels). */
   private squatSinking = false;
   /**
@@ -2102,14 +2131,9 @@ export class ZoneCoverage implements Behavior {
       if (flat || this.oneCancelled || believesRun(sim, a) || oDepth >= 6) return null;
       return withFacingTechnique(stand(toQB), { label: 'squat-read' });
     }
-    if (flat) {
-      // Top-down: an early flat is his; a late one brings him down between the flat and #1.
-      const fDepth = (flat.pos.x - sim.los) * dir;
-      if (myDepth < 7) { this.squatSinking = false; return null; }
-      const tx = sim.los + dir * Math.max(fDepth + 3, 4), ty = (flat.pos.y + o.pos.y) / 2;
-      const to = { x: tx, y: ty };
-      return withFacingTechnique(track(a, to, { x: 0, y: 0 }, { facing: face(to), speed: 1, gain: 1.6 }), { label: 'squat-down', key: flat.vel });
-    }
+    // Deep to short (Rules' hard-corner card row 5b; Tools: the NFL corner is still 6.8 yd deep at 3.0 s with #2 in the
+    // flat): a flat threat does not bring him off the sink; the throw does (squatBreak).
+    void flat;
     // The sink: under #1 by a couple of yards, level-to-outside, to the hole-shot depth (Rules' card row 5b: 10-12 yd;
     // "a completed fade is the corner's fault for not getting deep enough"), where he holds until the throw.
     const want = Math.min(oDepth - SQUAT_UNDER, SQUAT_HOLE);
