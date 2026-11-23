@@ -146,11 +146,62 @@ function handHold(d: Agent, q: number, hands = 2): number {
   return hands * 0.75 * perHand * G * clamp(0.3 + 1.4 * q, 0, 1);
 }
 
+/** LUNGE_FLIGHT (experimental, off; LUNGE_FLIGHT=1 turns it on): a lunge is a launch, not range. Off, a free
+ * tackler out of standing reach but within it + 0.45 yd (and an escaping runner within + 0.75) gets a hold made at once,
+ * at that distance, and is then sent into a dive: the extra half yard is free, and the hold starts at its own break
+ * reach (hold-trace.mts, 10 games: lunge holds broke 47%, reaches 1.8%, form 0.3%; TACKLE_REACH's shorter, correct arms
+ * put more contacts in that band, 120 -> 164 lunge holds). On, he launches (the existing dive: a traction-limited
+ * push-off of at most 1.5 yd/s over one tick, then he is off his feet) toward where he sees the carrier going, and a
+ * grab is made only if, in that flight, the carrier comes inside his standing reach (`reachTo`, share 1): the attempt is
+ * then the ordinary one at the distance the bodies actually reached. If he lands without that, it is a miss
+ * ('lunge short'). What the lunge buys is closing his body can produce; what it costs is his feet, his steering and the
+ * hold's footing. Stated choices: the hands in flight reach his standing reach (no extra reach for the trunk pitching
+ * forward); a grab can be made from the launch until he is down on the ground (FLIGHT_MAX bounds it). */
+export const LUNGE_FLIGHT = process.env.LUNGE_FLIGHT === '1';
+/** Longest a lunge's flight is followed, s (a bound, not a law: a dive is on the ground well inside it). */
+const FLIGHT_MAX = 1;
+const flights = new WeakMap<Agent, { sim: PlaySim; t0: number; carrier: Agent; from: 'lunge' | 'dive' }>();
+
+/** LUNGE_FLIGHT: one tick of a launched tackler's flight. True while he is in it (the caller skips him). */
+function flightStep(sim: PlaySim, d: Agent, c: Agent): boolean {
+  const f = flights.get(d);
+  if (!f) return false;
+  const state = d.body.support?.state;
+  if (f.sim !== sim || f.carrier !== c) { flights.delete(d); return false; }
+  if (sim.bond && sim.bond.tacklers.includes(d)) { flights.delete(d); return true; }
+  const dd = Math.hypot(c.pos.x - d.pos.x, c.pos.y - d.pos.y);
+  const arms = reachTo(d, c, 1);
+  if (state !== 'down' && sim.t - f.t0 <= FLIGHT_MAX && dd <= arms && !occluded(sim, d, c)) {
+    flights.delete(d);
+    attempt(sim, d, c, contactQuality(dd, c.profile.radius + d.profile.radius, arms), false, true, arms);
+    return true;
+  }
+  if (state === 'down' || sim.t - f.t0 > FLIGHT_MAX) {
+    flights.delete(d);
+    d.nextTackleAt = Math.max(d.nextTackleAt, sim.t + 0.5);
+    d.missedTackles++;
+    sim.stats.missedTackles++;
+    sim.event('missed_tackle', d, c, f.from === 'dive' ? 'dive short' : 'lunge short');
+  }
+  return true;
+}
+
+/** LUNGE_FLIGHT: launch toward where he sees the carrier going over the layout's window. */
+function launch(sim: PlaySim, d: Agent, c: Agent, cp: Vec2, cv: Vec2, from: 'lunge' | 'dive'): void {
+  const ax = cp.x + cv.x * DIVE_WINDOW - d.pos.x, ay = cp.y + cv.y * DIVE_WINDOW - d.pos.y, al = Math.hypot(ax, ay) || 1;
+  sim.diveAt(d, { x: ax / al, y: ay / al });
+  flights.set(d, { sim, t0: sim.t, carrier: c, from });
+}
+
 export function tryTackles(sim: PlaySim): void {
   const c = sim.carrier;
   if (!c || sim.ball.kind !== 'held') return;
   const t = sim.t;
   for (const d of sim.opponents(c)) {
+    if (LUNGE_FLIGHT && flightStep(sim, d, c)) {
+      if (sim.ball.kind !== 'held' || sim.phase !== 'live') return;
+      continue;
+    }
     if (d.isDown(t) || t < d.nextTackleAt) continue;
     if (sim.bond && sim.bond.tacklers.includes(d)) continue;
     const pic = HONEST_TACKLE ? sim.see(d, c) : null;
@@ -227,6 +278,7 @@ export function tryTackles(sim: PlaySim): void {
       }
       if (needsLastReach && !lastReach) continue;
       if (waitForBetter && !acquireAtReach) continue;
+      if (LUNGE_FLIGHT && dd > arms && !engaged) { launch(sim, d, c, cp, cv, 'lunge'); continue; }
       attempt(sim, d, c, q, engaged, dd > arms, dd > arms ? range : arms);
       if (sim.ball.kind !== 'held' || sim.phase !== 'live') return;
       continue;
@@ -237,6 +289,7 @@ export function tryTackles(sim: PlaySim): void {
     const separating = ((cv.x - d.vel.x) * rx + (cv.y - d.vel.y) * ry) / rd;
     const behind = (d.pos.x - cp.x) * cv.x + (d.pos.y - cp.y) * cv.y < 0;
     if (!engaged && dd <= dive && separating > 1.6 && behind && !sim.bond && !occluded(sim, d, c)) {
+      if (LUNGE_FLIGHT) { launch(sim, d, c, cp, cv, 'dive'); continue; }
       d.nextTackleAt = t + 1;
       sim.diveAt(d, { x: dx, y: dy });
       const p = 0.22 + 0.3 * d.r('tackling') - 0.15 * c.r('elusiveness') - 0.1 * c.r('balance');

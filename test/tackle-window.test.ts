@@ -12,7 +12,8 @@ import { World, type GraspJoint, type Intent } from '../src/physics/world.js';
 import type { Engagement } from '../src/sim/agent.js';
 import type { Perceived } from '../src/sim/perception.js';
 import { PlaySim } from '../src/sim/playsim.js';
-import { tryTackles, waitsForBetter } from '../src/sim/tackle.js';
+import { LUNGE_FLIGHT, tryTackles, waitsForBetter } from '../src/sim/tackle.js';
+import { reachTo } from '../src/sim/tackle-reach.js';
 import { previewTackleWindow } from '../src/sim/tackle-window.js';
 
 function stage(side = 1, record = false) {
@@ -90,6 +91,9 @@ describe('attainable tackle opportunity', () => {
     try {
       tryTackles(sim);
       expect(dive).toHaveBeenCalledOnce();
+      expect(sim.trace.data!.decisions.find(row => row.a === d.idx)?.chose).toBe('take last reach');
+      // LUNGE_FLIGHT: the lunge is a launch; no hold exists until his hands reach the carrier in flight.
+      if (LUNGE_FLIGHT) { expect(sim.bond).toBeNull(); return; }
       expect(sim.bond?.tacklers).toContain(d);
       const hold = sim.bond!.holds!.get(d)!;
       expect(hold.origin).toContain('lunge');
@@ -100,6 +104,26 @@ describe('attainable tackle opportunity', () => {
       expect(sim.outcome).toBeNull();
       expect(sim.trace.data!.decisions.find(row => row.a === d.idx)?.chose).toBe('take last reach');
     } finally { dive.mockRestore(); rolls.mockRestore(); }
+  });
+
+  it.runIf(LUNGE_FLIGHT).each([-1, 1])('LUNGE_FLIGHT: a launched lunge holds only from standing reach, else misses, side %s', side => {
+    const { sim, c, d } = passingStage(side, true, true);
+    const dive = vi.spyOn(sim, 'diveAt');
+    tryTackles(sim);
+    expect(dive).toHaveBeenCalledOnce();
+    dive.mockRestore();
+    // Only these two bodies are in play; the world flies the tackler, the carrier runs on.
+    let grabbedAt: number | null = null;
+    for (let k = 0; k < 30 && sim.phase === 'live' && !sim.bond; k++) {
+      const before = Math.hypot(c.pos.x - d.pos.x, c.pos.y - d.pos.y);
+      sim.tick();
+      if (sim.bond?.tacklers.includes(d)) grabbedAt = sim.bond.holds!.get(d)!.hold ?? before;
+    }
+    const short = sim.events.some(e => e.type === 'missed_tackle' && e.note === 'lunge short' && sim.agents[e.a] === d);
+    expect(grabbedAt !== null || short).toBe(true);
+    if (grabbedAt !== null) expect(grabbedAt).toBeLessThanOrEqual(reachTo(d, c, 1) + 0.15);
+    // He left his feet: the cost of the reach is his base.
+    expect(d.body.support?.state).not.toBe('up');
   });
 
   it.each([false, undefined])('does not upgrade a last reach before acquiring possession: %s', carrying => {
