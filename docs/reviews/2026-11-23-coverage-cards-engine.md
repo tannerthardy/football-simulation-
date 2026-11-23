@@ -94,8 +94,8 @@ whose current job is man/wall/crossWall/trap/read/rob on that receiver.
   defender**. LB_W and NB both ended up near H: the user's "NB does not pass off H; LBW and NB both cover H".
 
 **F13: Deuce → Deuce DOT (vs trips), Comebacks; H caught for 5 (−1 YAC).** The user's open X:
-- X (W1) at the throw: 15.5 yd deep, **owner none**, CB_W 7.2 yd away. CB_W (palms_corner, flat_w) was man X from
-  2.35 s, back to flat zone at 3.60 s. FS (deep_half_w, a plain zone seat) never related to X.
+- X (W1) at the throw: 15.5 yd deep, **owner none**, CB_W 7.2 yd away. CB_W (sink_corner, flat_w: the DOT cloud corner) sat
+  in the flat from 0.85 s, trailed X (man) from 2.35 s and went back to flat zone at 3.60 s. FS (deep_half_w, a plain zone seat) never related to X.
 - RB at the throw: owner none, 11 yd from the nearest defender.
 - H (the catch): LB_W (bonus/three rule) on H from 2.80 s, 7.3 yd away at the throw; NB 4.6 yd.
 
