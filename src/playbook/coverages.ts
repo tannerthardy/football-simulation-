@@ -11,7 +11,7 @@
  * more receivers), `_w` = away. Field/boundary versions of split-field calls
  * are chosen by the coordinator (e.g. Cover 6 vs. Cover 6 reversed).
  */
-import { DEF_PERSONNEL, type Coverage, type CoverageRole, type DefensivePlayCall, type DefSlot, type FormationKey, type MatchRule, type ZoneId } from './types.js';
+import { DEF_PERSONNEL, type Coverage, type CoverageRole, type DefensivePlayCall, type DefSlot, type FormationKey, type MatchRule, type UnderSeat, type ZoneId } from './types.js';
 import type { OffenseAlignment } from './alignment.js';
 import { formationStructure, type FormationStructure } from './structure.js';
 
@@ -19,6 +19,8 @@ const z = (zone: ZoneId, rule?: MatchRule, depth?: number): CoverageRole => ({ k
 const seat = (zone: ZoneId, rule: MatchRule) => ({ zone, rule });
 
 /** Cover 9 shell: Tight 1/3 corners, the nickel-away safety rotates down to seam/flat, the other spins to the post. */
+/** SEAT_FILL (alignment.ts) also corrects Cover 9 Grab's rotator to his own side's hook. */
+const SEAT_FILL_GRAB = () => process.env.SEAT_FILL === '1';
 const NINE_DEEP = {
   CB_S: z('deep_third_s', 'c3_corner'),
   CB_W: z('deep_third_w', 'c3_corner'),
@@ -354,8 +356,12 @@ export const COVERAGES: Coverage[] = [
   {
     id: 'cover9_grab', name: 'Cover 9 Grab (vs empty)', family: 'cover3', shell: 'one-high', look: 'two-high', man: false, press: false,
     note: 'Empty 3x2 (HNFL-054/063 "Grab"): rotation becomes Buzz. The weak overhang is seam/flat on weak #2 and the rotating safety becomes the #3 receiver hook on the final #3 up or over.',
-    roles: { ...NINE_DEEP, FS: z('hook_s', 'three_rec_hook', 11) },
-    underneath: [seat('curl_flat_s', 'c3_seam'), seat('curl_flat_w', 'c3_seam'), seat('hook_mid', 'bonus_hook'), 'hook_w'],
+    // SEAT_FILL (Coverage C14 build 3): HNFL-063/054 "Grab converts the rotation from Sky to Buzz": in Buzz Weak the
+    // rotating weak safety is the #3 receiver hook from his own side (the weak hook), not the strong hook 13 yd across
+    // the field through the Mike's (F54). The strong hook becomes the fourth underneath seat.
+    // Read per use (getters), so a diagnostic replay can switch SEAT_FILL for one play.
+    get roles() { return { ...NINE_DEEP, FS: SEAT_FILL_GRAB() ? z('hook_w', 'three_rec_hook', 11) : z('hook_s', 'three_rec_hook', 11) }; },
+    get underneath(): UnderSeat[] { return [seat('curl_flat_s', 'c3_seam'), seat('curl_flat_w', 'c3_seam'), seat('hook_mid', 'bonus_hook'), SEAT_FILL_GRAB() ? 'hook_s' : 'hook_w']; },
   },
   // ------------------------------------------------------------ two-deep zone
   {

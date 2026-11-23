@@ -93,16 +93,17 @@ const FLAT_SINK_DEPTH = 18;
  * Cover 6 / Cover 8 half side and the cloud corner (Cover 3 Cloud, inverted Cover 2), in place of FLAT_SINK, FLAT_CARRY
  * and the sink_corner / cloud_corner rules (squatTopDown), which become this zone seat. Rules' standard card, cover2 x
  * CB_S rows 1, 4, 5, 6, 8 ([TD Cover 2], [Bowen C2], [TD Trap]): he reads #1 and #2 from his alignment; #1's vertical stem
- * with no flat threat means sink at 45 degrees under #1 (the key is #1's release as he sees it, not a run/pass read or
- * #2/#3 declaring; pull to the run only if #1 blocks); stay under and level-to-outside of #1, cushioning the hole, until
- * #1 is capped over the top; a flat threat in front of him brings him down top-down (early: the flat is his; late: he
+ * with no flat threat means sink at 45 degrees under #1 (on a pass read, the high hat, he zone-turns and sinks off #1's
+ * release within its first 5 yd, as Rules' hard-corner card rows 3 and 5b teach; not after #2/#3 declare); stay under and
+ * level-to-outside of #1, to the hole-shot depth (10-12 yd, card row 5b), where he holds until the throw; a flat threat in front of him brings him down top-down (early: the flat is his; late: he
  * squeezes down between the flat and #1); #1 in or stopping releases him to his flat area; a #2 flat that turns up is
  * carried until capped (FLAT_CARRY's rule). The sink is a side-on run with the hips open and the eyes on the QB (facing
  * at most 70 degrees off his line of travel, so the body model's speed cap for that angle applies, not the backpedal's).
  * Measured before (docs/reviews/2026-11-23-coverage-cards-engine.md F6): the match lane pick pulled him forward and inside
  * until 1.5 s, the sink waited for a pass read, and he sank facing the QB at 2.5-3.6 yd/s against #1's 6.7; NFL corner
  * at 3.0 s against a vertical #1 is 9.4 yd deep, 4.0 under #1 and 0.7 yd outside him (Tools' half_window.py). The depth
- * he reaches comes from the relation to #1, the flat threat and the cap, not from a number. No jam (a follow-up: zone
+ * is the taught hole depth (SQUAT_HOLE); before it, his relation to #1 and the flat threat. The zone turn is one quick
+ * hip turn (orientation.ts `sharp`). No jam (a follow-up: zone
  * corners have no press contact). */
 export const SQUAT_SINK = process.env.SQUAT_SINK === '1';
 /** Is this call's flat seat played by SQUAT_SINK (every Cover 2 form, Cover 6/8 half side, cloud; not Deuce's palms or DOT)?
@@ -112,7 +113,7 @@ export function squatSinkCall(sim: PlaySim): boolean {
   if (process.env.SQUAT_SINK !== '1' || c.id.startsWith('deuce')) return false;
   return c.family === 'cover2' || c.family === 'tampa2' || c.family === 'cover6' || c.id === 'cover3_cloud';
 }
-const SQUAT_UNDER = 2, SQUAT_FACE = (70 * Math.PI) / 180;
+const SQUAT_UNDER = 2, SQUAT_HOLE = 11, SQUAT_FACE = (70 * Math.PI) / 180;
 const SINK_ENTER = 2, SINK_EXIT = 1;
 /** SEEN_EYES (default on; SEEN_EYES=0 restores the QB's internal read target): a zone defender
  * reads the QB's look from what he sees of him, not from the QB's internal
@@ -2072,7 +2073,9 @@ export class ZoneCoverage implements Behavior {
     const q = sim.see(a, sim.qb), toQB = angleTo(a.pos, q.pos);
     // #1's stem, as he sees it: enter on a vertical release (past 1.5 yd, over 3.5 yd/s and clearly more up than across);
     // leave when #1 cancels (FLAT_CARRY's read) or stops climbing (under 1 yd/s upfield), far inside the entry.
-    if (!this.squatSinking) this.squatSinking = !this.oneCancelled && oDepth >= 1.5 && oUp > 3.5 && oUp > 1.5 * oAcross;
+    // Rules' hard-corner card (rows 3, 5b): on a pass read (the high hat) he zone-turns and sinks off #1's release, within
+    // the first 5 yd of it; not after #1 has passed him.
+    if (!this.squatSinking) this.squatSinking = !this.oneCancelled && !believesRun(sim, a) && oDepth >= 0.5 && oUp > 2.5 && oUp > 1.5 * oAcross;
     else if (this.oneCancelled || oUp < 1) this.squatSinking = false;
     // The flat threat: another receiver in or entering his area, 6 yd deep or less, moving toward the sideline.
     const inArea = (p: Vec2) => p.y >= ylo - 2 && p.y <= yhi + 2;
@@ -2107,17 +2110,14 @@ export class ZoneCoverage implements Behavior {
       const to = { x: tx, y: ty };
       return withFacingTechnique(track(a, to, { x: 0, y: 0 }, { facing: face(to), speed: 1, gain: 1.6 }), { label: 'squat-down', key: flat.vel });
     }
-    // The sink: under #1 by a couple of yards, level-to-outside, until a teammate he sees caps #1 over the top.
-    const capped = myDepth >= 10 && sim.defense.some((d) => {
-      if (d === a) return false;
-      const c = sim.see(a, d), over = (c.pos.x - o.pos.x) * dir;
-      return over > 0.5 && over < 8 && Math.abs(c.pos.y - o.pos.y) < 4;
-    });
-    const want = capped ? Math.min(myDepth, oDepth - SQUAT_UNDER) : oDepth - SQUAT_UNDER;
+    // The sink: under #1 by a couple of yards, level-to-outside, to the hole-shot depth (Rules' card row 5b: 10-12 yd;
+    // "a completed fade is the corner's fault for not getting deep enough"), where he holds until the throw.
+    const want = Math.min(oDepth - SQUAT_UNDER, SQUAT_HOLE);
+    const held = myDepth >= SQUAT_HOLE - 0.5;
     const to = { x: sim.los + dir * Math.max(want, myDepth - 0.5), y: o.pos.y + outside * 0.5 };
     a.tags.add('squat-sink');
-    return withFacingTechnique(track(a, to, capped ? { x: 0, y: o.vel.y } : { x: o.vel.x, y: o.vel.y }, { facing: face(to), speed: 1, gain: 1.8 }),
-      { label: capped ? 'squat-hold' : 'squat-sink', key: o.vel });
+    return withFacingTechnique(track(a, to, held ? { x: 0, y: o.vel.y } : { x: o.vel.x, y: o.vel.y }, { facing: face(to), speed: 1, gain: 1.8 }),
+      { label: held ? 'squat-hold' : 'squat-sink', key: o.vel, sharp: true });
   }
 
   private flatSink(a: Agent, sim: PlaySim): MoveCommand | null {

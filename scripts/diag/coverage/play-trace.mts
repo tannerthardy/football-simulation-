@@ -21,14 +21,24 @@ Z.update = function (a: any, sim: any) { const c = zu.call(this, a, sim); try { 
 M.update = function (a: any, sim: any) { const c = mu.call(this, a, sim); try { label.set(a, facingTechnique(c)?.label ?? 'other'); } catch { /* */ } return c; };
 const r2 = (v: number) => Math.round(v * 100) / 100;
 let found: any = null;
+// ARM_EARLY=1 (with ARM): the flag must be on before the play is built (alignment, catalog): a first pass finds the play's
+// ordinal; the second pass sets the flag from the end of the play before it.
+let ordinal = 0, targetOrdinal = -1, pass = 1;
 P.tick = function () {
+  if (this.__ord === undefined) {
+    this.__ord = ordinal++;
+    if (pass === 2 && process.env.ARM && this.__ord === targetOrdinal) { /* flag already on since the previous play's end */ }
+  }
   if (this.__pt === undefined) {
-    this.__pt = !found && this.offCall?.pass?.id?.startsWith(concept) && this.defCall?.coverage?.id === coverage && this.down === Number(down) ? { rows: [] } : null;
+    this.__pt = (pass === 1 ? !found : this.__ord === targetOrdinal) && this.offCall?.pass?.id?.startsWith(concept) && this.defCall?.coverage?.id === coverage && this.down === Number(down) ? { rows: [] } : null;
     // ARM=<FLAG>: switch that flag on for this play only (the game up to the snap is identical in both arms).
-    if (this.__pt && process.env.ARM) process.env[process.env.ARM] = '1';
+    if (this.__pt && process.env.ARM && !process.env.ARM_EARLY) process.env[process.env.ARM] = '1';
+    if (this.__pt && pass === 1) targetOrdinal = this.__ord;
     if (this.__pt) found = { concept: this.offCall.pass.id, coverage, down: this.down, label: this.defCall.label, numbering: { ...this.offAlign.numbering }, rows: this.__pt.rows };
   }
   const res = tick0.call(this);
+  // Arm after the play before the target has ended (it is built and aligned already; the target is built next).
+  if (pass === 2 && process.env.ARM && this.__ord === targetOrdinal - 1 && this.t > 0 && this.phase !== 'live' && !this.__armed) { this.__armed = true; process.env[process.env.ARM] = '1'; }
   const st = this.__pt;
   if (!st || st.done) return res;
   const k = Math.round(this.t * 10);
@@ -45,7 +55,15 @@ P.tick = function () {
 const rng = new Rng(Number(teamSeed));
 const home = generateTeam(rng, 'Ironmen', 'IRN', { strength: 0.55 }), away = generateTeam(rng, 'Comets', 'COM', { strength: 0.55 });
 const g = Number(gameSeed);
-if (ls === '1') simulateGame(leagueSample(home, g), leagueSample(away, g), { seed: g, record: true, recordLevel: 'light' });
-else simulateGame(home, away, { seed: g, record: true, recordLevel: 'light' });
+const play = () => ls === '1' ? simulateGame(leagueSample(home, g), leagueSample(away, g), { seed: g, record: true, recordLevel: 'light' })
+  : simulateGame(home, away, { seed: g, record: true, recordLevel: 'light' });
+if (process.env.ARM && process.env.ARM_EARLY) {
+  const saved = process.env[process.env.ARM]; delete process.env[process.env.ARM];
+  play();
+  if (targetOrdinal < 0) { console.log('not found'); process.exit(0); }
+  pass = 2; ordinal = 0; found = null;
+  play();
+  if (saved === undefined) delete process.env[process.env.ARM]; else process.env[process.env.ARM] = saved;
+} else play();
 writeFileSync(out, JSON.stringify(found));
-console.log(found ? `${found.label} ${found.concept} rows ${found.rows.length}` : 'not found');
+console.log(found ? `${found.label} ${found.concept} rows ${found.rows.length} (ordinal ${targetOrdinal})` : 'not found');
