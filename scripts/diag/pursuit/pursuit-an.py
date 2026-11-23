@@ -5,6 +5,7 @@ along u by > BEAT_LEAD yd and that lead grows over the next 0.2 s (and stays > B
 D1 = nearest defender at the catch."""
 import json, math, sys, collections
 CONTACT, BEAT_LEAD, W = 1.0, 1.0, 53.33
+BLOCK, BLOCK_FR = 1.2, 3   # D1 engaged: a non-carrier offensive player within BLOCK yd for >= BLOCK_FR frames before the beat
 def unit(vx, vy, fb=(1.0, 0.0)):
     s = math.hypot(vx, vy); return (vx / s, vy / s) if s > 1.0 else fb
 def ang(a, b):
@@ -90,6 +91,14 @@ def analyse(row):
         # sign: + = heading points ahead of the bearing (toward the carrier's travel), measured on the carrier's side
         sgn = 1 if (br[0] * uc[1] - br[1] * uc[0]) < 0 else -1
         geo.append((t, e_b * sgn, e_i * sgn if e_i is not None else None, e_m * sgn if e_m is not None else None, dsp, csp))
+    # engaged by a blocker before the beat/contact (needs offense tracks; None when the row has none)
+    blk = None
+    if row.get('offs'):
+        offs = [frames(v) for v in row['offs'].values()]; n = 0
+        for t in T:
+            if t > tk or t not in d1: break
+            if any(t in o and dist(o[t], d1[t]) <= BLOCK for o in offs): n += 1
+        blk = n >= BLOCK_FR
     early = [g for g in geo if g[0] <= t0 + 0.5]
     start = q([g[4] for g in early], .5) if early else None
     cls = None
@@ -98,7 +107,8 @@ def analyse(row):
         dB = q([g[1] for g in last], .5) if last else None; dI = q([g[2] for g in last if g[2] is not None], .5) if last else None
         dM = q([g[3] for g in last if g[3] is not None], .5) if last else None
         dc = d1[beat_t]; cc = car[beat_t]; ucb = unit(cc[3], cc[4], u0); vd_along = dc[3] * ucb[0] + dc[4] * ucb[1]
-        if contact_t is not None and contact_t <= beat_t: cls = 'reached contact range, then beaten (lunge/miss/broken)'
+        if blk: cls = 'engaged by a blocker before the beat'
+        elif contact_t is not None and contact_t <= beat_t: cls = 'reached contact range, then beaten (lunge/miss/broken)'
         elif start is not None and start < 2.0: cls = 'flat-footed / late start'
         elif vd_along < -1.0: cls = 'overrun (moving against the carrier at the beat)'
         elif dB is not None and dI is not None and abs(dB) < abs(dI) - 10: cls = 'old angle (aimed at or behind the carrier)'
@@ -118,7 +128,7 @@ def analyse(row):
     spd = lambda tt: math.hypot(car[tt][3], car[tt][4]) if tt in car else None
     return dict(src=row['src'], man=row['man'], side=side, outside=side <= 12, cs=cs, cmax=cmax, cs05=spd(round(t0 + 0.5, 1)), cs10=spd(round(t0 + 1.0, 1)), air=row.get('air'), end=end,
                 yac=round(car[tend][1] - cx, 1), bands=bands, d1=d1k, d1dist=dist(d10, c0), d1pos=pos, d1out=outs, d1clos=clos, cpa=cpa, cpa_t=ts,
-                outcome=outcome, cls=cls, contact_t=contact_t, beat_t=beat_t, start=start, after=after, tackle_from=tackle_from, geo=geo,
+                outcome=outcome, cls=cls, blk=blk, contact_t=contact_t, beat_t=beat_t, start=start, after=after, tackle_from=tackle_from, geo=geo,
                 key=row.get('key'), ev=row.get('ev'))
 
 if __name__ == '__main__':

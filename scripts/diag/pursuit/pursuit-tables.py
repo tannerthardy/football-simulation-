@@ -9,7 +9,7 @@ if len(sys.argv) > 2 and sys.argv[2] == 'check':
     import random; random.seed(7)
     pick = random.sample([r for r in D if r['outcome'].startswith('beaten')], 4) + random.sample([r for r in D if r['outcome'].startswith('missed')], 4) + random.sample([r for r in D if r['outcome'].startswith('stopped')], 4)
     for r in pick:
-        print('==', r['key'], 'D1', r['d1'], '%.1f yd' % r['d1dist'], r['d1pos'], 'out' if r['d1out'] else 'in', 'cs %.1f max %.1f' % (r['cs'], r['cmax']), '|', r['outcome'], '|', r['cls'], '| contact', r['contact_t'], 'beat', r['beat_t'], 'yac', r['yac'], '| tags', [e for e in (r['ev'] or []) if e[1] == 'missed_tag'])
+        print('==', r['key'], 'D1', r['d1'], '%.1f yd' % r['d1dist'], r['d1pos'], 'out' if r['d1out'] else 'in', 'cs %.1f max %.1f' % (r['cs'], r['cmax']), '|', r['outcome'], '|', r['cls'], '| blk', r.get('blk'), '| contact', r['contact_t'], 'beat', r['beat_t'], 'yac', r['yac'], '| tags', [e for e in (r['ev'] or []) if e[1] == 'missed_tag'])
         print('   ', ' '.join('t%.1f b%s i%s m%s d%.1f c%.1f' % (g[0], '%+.0f' % g[1] if g[1] is not None else '-', '%+.0f' % g[2] if g[2] is not None else '-', '%+.0f' % g[3] if g[3] is not None else '-', g[4], g[5]) for g in r['geo'][::2][:8]))
     sys.exit()
 def block(name, R):

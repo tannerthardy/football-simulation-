@@ -44,13 +44,16 @@ for w in weeks:
         def row(q, f, n):
             p, v = P(q), V(q); return [round((f - kc) / 10, 1), round(p[0] - los, 2), round(p[1], 2), round(v[0], 2), round(v[1], 2)]
         car = [row(F[c][f], f, c) for f in range(kc, ke + 1) if f in F[c]]
-        defs = {}
+        defs, offs = {}, {}
         for n in F:
-            if n == 'football' or club.get(n) == plays[cur]['poss']: continue
+            if n == 'football': continue
+            if club.get(n) == plays[cur]['poss']:
+                if n != c: offs[n] = [row(F[n][f], f, n) for f in range(kc, ke + 1) if f in F[n]]
+                continue
             defs[n] = [row(F[n][f], f, n) + [O(F[n][f])] for f in range(kc, ke + 1) if f in F[n]]
         endt = next((e for e in ('touchdown', 'out_of_bounds', 'tackle') if e in evs and evs[e] == ke), 'other')
         out.append(dict(src='nfl', key=list(cur), cov=plays[cur]['cov'], man=plays[cur]['man'], air=plays[cur]['air'],
-                        end={'touchdown': 'td', 'out_of_bounds': 'oob'}.get(endt, endt), car=car, defs=defs,
+                        end={'touchdown': 'td', 'out_of_bounds': 'oob'}.get(endt, endt), car=car, defs=defs, offs=offs,
                         ev=[[None, 'missed_tag', m, c] for m in missed.get(cur, [])], first_contact=(evs['first_contact'] - kc) / 10 if 'first_contact' in evs and evs['first_contact'] >= kc else None))
     with open(f'{D}/tracking_week_{w}.csv') as fh:
         for r in csv.DictReader(fh):
