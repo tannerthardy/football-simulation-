@@ -10,7 +10,7 @@ import { compilingPlan } from '../../../src/playbook/read-compiler/runtime.js';
 
 const seed = Number(process.argv[2] ?? 101), first = Number(process.argv[3] ?? 0), games = Number(process.argv[4] ?? 1);
 const P: any = PlaySim.prototype, res0 = P.buildResult;
-const out = { plays: 0, presnap: 0, collide: 0, motion: 0, motionCollide: 0, seats: 0, outOfPos: 0, pairs: new Map<string, number>() };
+const out = { closeSpots: 0, spotPairs: new Map<string, number>(), plays: 0, presnap: 0, collide: 0, motion: 0, motionCollide: 0, seats: 0, outOfPos: 0, pairs: new Map<string, number>() };
 P.buildResult = function () {
   const r = res0.call(this);
   if (!compilingPlan() && !this.__pc) {
@@ -32,6 +32,12 @@ P.buildResult = function () {
         if (hit) break;
       }
       if (hit) { out.collide++; if (motion) out.motionCollide++; out.pairs.set(hit, (out.pairs.get(hit) ?? 0) + 1); }
+      // Are two of the installed alignment spots themselves within 1.0 yd (a collision built into the alignment)?
+      const sp = Object.entries(this.defAlign?.spots ?? {}) as Array<[string, any]>;
+      let close: string | null = null;
+      for (let i = 0; i < sp.length && !close; i++) for (let j = i + 1; j < sp.length; j++)
+        if (Math.hypot(sp[i][1].pos.x - sp[j][1].pos.x, sp[i][1].pos.y - sp[j][1].pos.y) < 1.0) { close = [sp[i][0], sp[j][0]].sort().join('-'); break; }
+      if (close) { out.closeSpots++; out.spotPairs.set(close, (out.spotPairs.get(close) ?? 0) + 1); }
       // At the snap: each zone / man defender's distance from his installed alignment spot.
       const snap = frames.find((f: any) => f.t >= 0);
       if (snap) for (const { a, i } of D) {
@@ -47,4 +53,4 @@ P.buildResult = function () {
 const rng = new Rng(seed);
 const home = generateTeam(rng, 'Ironmen', 'IRN', { strength: 0.55 }), away = generateTeam(rng, 'Comets', 'COM', { strength: 0.55 });
 for (let i = 0; i < games; i++) simulateGame(home, away, { seed: seed + first + i, record: true, recordLevel: 'light' });
-console.log(JSON.stringify({ seed, flag: process.env.PRESNAP_GIVE ?? '0', ...out, pairs: [...out.pairs].sort((a, b) => b[1] - a[1]).slice(0, 6) }));
+console.log(JSON.stringify({ seed, flag: process.env.PRESNAP_GIVE ?? '0', ...out, pairs: [...out.pairs].sort((a, b) => b[1] - a[1]).slice(0, 6), spotPairs: [...out.spotPairs].sort((a, b) => b[1] - a[1]).slice(0, 6) }));

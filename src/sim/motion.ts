@@ -459,19 +459,17 @@ const CORNER = new Set<DefSlot>(['CB_S', 'CB_W']), SAFETY = new Set<DefSlot>(['F
  * study (docs/reviews/data/2026-11-23-presnap/ on claude/quirky-franklin-9lbwbp): defender centres within 0.6 yd before
  * the snap on 10.8% of our plays (89 of 827) against the NFL's 0.9%; 61% with both moving, 32% path crossings; this
  * exchange re-sorts by least summed squared distance and walks every man at up to 0.75 vmax with no path or body check.
- * - The exchange takes the cheapest assignment in which no two walks from where they stand to their new spots cross,
- *   when one exists (else the cheapest, as before).
  * - The walk gives way: a teammate standing in or moving across his path within reach ahead makes him go around him,
- *   behind (deeper) when he is the deeper of the two or his spot is deeper than the teammate, else in front, and slow
- *   to a walk until he is clear; he never runs into a set teammate. Read per tick (a replay can switch it). */
+ *   behind (deeper) when he is the deeper of the two or his spot is deeper than the teammate, else in front, at 0.6
+ *   vmax instead of 0.75 until he is clear (at 0.35 he arrived late: out of position at the snap 2.4% -> 3.1%). Measured (8 games, seed 101): a non-crossing exchange made it worse (collisions 9.4% -> 11.3% of plays with a
+ * pre-snap phase), so the exchange is unchanged; the give-way walk alone 9.4% -> 5.8%. The front's stem walks give way the
+ * same way (playsim.ts). Read per tick (a replay can switch it). */
 export const PRESNAP_GIVE = process.env.PRESNAP_GIVE === '1';
 const presnapGiveOn = () => process.env.PRESNAP_GIVE === '1';
-function walksCross(a1: Vec2, a2: Vec2, b1: Vec2, b2: Vec2): boolean {
-  const o = (p: Vec2, q: Vec2, r: Vec2) => (q.x - p.x) * (r.y - p.y) - (q.y - p.y) * (r.x - p.x);
-  return o(a1, a2, b1) * o(a1, a2, b2) < 0 && o(b1, b2, a1) * o(b1, b2, a2) < 0;
-}
-/** PRESNAP_GIVE: his walk this tick toward `target`, going around a teammate in his way. */
-function giveWay(d: Agent, target: Vec2, team: Agent[], los: number): Vec2 {
+const giveWalk = presnapGiveOn;
+/** PRESNAP_GIVE: his walk this tick toward `target`, going around a teammate in his way. Shared with the front's stem
+ * walks (playsim.ts). */
+export function giveWay(d: Agent, target: Vec2, team: Agent[], los: number): Vec2 {
   const dx = target.x - d.pos.x, dy = target.y - d.pos.y, len = Math.hypot(dx, dy);
   if (len < 0.3) return target;
   const ux = dx / len, uy = dy / len, depthSign = Math.sign(d.pos.x - los) || 1;
@@ -503,16 +501,12 @@ function exchange(align: DefenseAlignment, at: (slot: DefSlot) => Vec2 | undefin
   for (const kind of KINDS) {
     const members = kind.filter(s => s !== keep && spots[s] && at(s) && (spots[s]!.role.kind === 'zone' || spots[s]!.role.kind === 'man'));
     if (members.length < 2) continue;
-    let best = members, cost = Infinity, bestFree = members, costFree = Infinity;
+    let best = members, cost = Infinity;
     for (const perm of permutations(members)) {
       if (!members.every((s, i) => can(s, perm[i]))) continue;
       const c = members.reduce((sum, s, i) => { const p = at(s)!, q = align.spots[perm[i]]!.pos; return sum + (p.x - q.x) ** 2 + (p.y - q.y) ** 2; }, 0);
       if (c < cost - 1e-9) { cost = c; best = perm; }
-      // PRESNAP_GIVE: the cheapest assignment whose walks do not cross.
-      if (presnapGiveOn() && c < costFree - 1e-9 && !members.some((s, i) => members.some((s2, j) => j > i
-        && walksCross(at(s)!, align.spots[perm[i]]!.pos, at(s2)!, align.spots[perm[j]]!.pos)))) { costFree = c; bestFree = perm; }
     }
-    if (presnapGiveOn() && costFree < Infinity) best = bestFree;
     members.forEach((s, i) => { spots[s] = { ...align.spots[best[i]]!, slot: s }; });
   }
   return { ...align, spots };
@@ -600,11 +594,11 @@ export class MotionRuntime {
       }
     }
     for (const [d, spotTarget] of this.targets) {
-      // PRESNAP_GIVE: around a teammate in his way, at a walk until he is clear.
-      const target = presnapGiveOn() ? giveWay(d, spotTarget, sim.defense, sim.los) : spotTarget;
+      // PRESNAP_GIVE: around a teammate in his way, a little slower until he is clear.
+      const target = giveWalk() ? giveWay(d, spotTarget, sim.defense, sim.los) : spotTarget;
       const detour = target !== spotTarget;
       const dx = target.x - d.pos.x, dy = target.y - d.pos.y, len = Math.hypot(dx, dy);
-      const speed = Math.min(d.profile.vmax * (detour ? 0.35 : 0.75), len * 3);
+      const speed = Math.min(d.profile.vmax * (detour ? 0.6 : 0.75), len * 3);
       // Turn and run to a far spot; settle facing the offense.
       const facing = len > 2 ? Math.atan2(dy, dx) : Math.PI;
       intents[d.idx] = { vel: { x: len ? dx / len * speed : 0, y: len ? dy / len * speed : 0 }, facing };
