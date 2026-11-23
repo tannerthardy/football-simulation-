@@ -1,0 +1,10 @@
+
+## NFL
+  hook      n  1704: settle before the throw / 3 s 11.5%; time  2.60 ( 2.40- 2.80) s; depth  7.63 ( 6.74- 8.83); share of his depth by the throw  1.03 ( 1.00- 1.11); a route in his window then 61.2%, entering it  6.6%; the passer then: dropped  3.14 ( 2.36- 3.78) yd, speed  1.07 ( 0.62- 1.93) yd/s, under 1 yd/s 46.9%
+  curl_flat n  1601: settle before the throw / 3 s  6.6%; time  2.50 ( 2.30- 2.80) s; depth  7.03 ( 5.77- 8.87); share of his depth by the throw  1.02 ( 1.00- 1.08); a route in his window then 68.6%, entering it 11.4%; the passer then: dropped  3.02 ( 2.40- 4.03) yd, speed  1.24 ( 0.68- 2.50) yd/s, under 1 yd/s 41.9%
+  hole      n  1025: settle before the throw / 3 s  8.5%; time  2.50 ( 2.30- 2.80) s; depth  7.07 ( 5.58- 8.48); share of his depth by the throw  1.01 ( 1.00- 1.09); a route in his window then 55.2%, entering it 10.3%; the passer then: dropped  3.03 ( 2.41- 3.83) yd, speed  1.41 ( 0.77- 2.27) yd/s, under 1 yd/s 40.2%
+
+## sim
+  hook      n   466: settle before the throw / 3 s 24.7%; time  2.50 ( 2.10- 2.80) s; depth  9.11 ( 7.34-10.68); share of his depth by the throw  1.00 ( 0.99- 1.04); a route in his window then 30.4%, entering it  9.6%
+  curl_flat n   449: settle before the throw / 3 s 18.5%; time  2.50 ( 2.10- 2.70) s; depth  8.74 ( 6.83-10.90); share of his depth by the throw  1.04 ( 1.00- 1.17); a route in his window then 66.3%, entering it 18.1%
+  hole      n   275: settle before the throw / 3 s 30.2%; time  2.40 ( 2.00- 2.65) s; depth  8.21 ( 7.08- 9.29); share of his depth by the throw  1.00 ( 0.99- 1.08); a route in his window then 38.6%, entering it 19.3%
