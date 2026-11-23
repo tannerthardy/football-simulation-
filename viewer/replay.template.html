@@ -351,7 +351,7 @@ window.TELEMETRY_READY = Promise.resolve(true);
     : key === 'team' ? teams[value]?.name ?? value : catalog[key]?.[value] ?? (value === 'unknown' ? 'Unlabelled' : value);
   function renderHeader(game) {
     if (FILM) {
-      $('game-label').textContent = `Pass game · engine ${String(FILM.source || '').slice(0, 8)} · ${plays.length} plays: ${FILM.random + FILM.zone === 0 ? 'owner check' : `${FILM.random} random, ${FILM.zone} zone with ${FILM.minYac}+ YAC`}`;
+      $('game-label').textContent = `Pass game · engine ${String(FILM.source || '').slice(0, 8)} · ${plays.length} plays: ${FILM.random + FILM.zone === 0 ? 'owner check' : `${FILM.random} random, ${FILM.zone} zone with ${FILM.minYac}+ YAC`}` + ` · page ${FILM.pageVersion ? 'v' + FILM.pageVersion + ' · ' : ''}built ${FILM.builtAt || '?'}`;
       $('teams').hidden = $('linescore').hidden = true;
       return;
     }
@@ -1021,6 +1021,27 @@ window.TELEMETRY_READY = Promise.resolve(true);
       ctx.fillStyle = 'rgba(0,0,0,0.62)'; ctx.fillRect(10, 10, w, lines.length * 16 + 8); ctx.fillStyle = '#ffd23f'; lines.forEach((l, k) => { ctx.fillStyle = k === 0 ? '#ffd23f' : '#fff'; ctx.fillText(l, 16, 14 + k * 16); }); ctx.restore();
     }
   }
+  // The result, read from the recorded play (flags, events, text): shown from the last moment of the play and kept until the next play loads (a film clip holds its last frame for 3 s).
+  function resultOf(p) {
+    const f = p.flags || {}, ev = p.eventDetails || [], dur = p.frames.t[p.frames.t.length - 1], name = (i) => (i != null && p.roster[i] ? p.roster[i][2] : null);
+    const has = (ty) => ev.find((e) => e.type === ty);
+    if (f.td) return { head: f.to ? 'DEFENSIVE TOUCHDOWN' : 'TOUCHDOWN', sub: p.text, color: '#ffd23f', at: (has('touchdown') || { t: dur }).t };
+    if (has('interception')) return { head: 'INTERCEPTED', sub: p.text, color: '#ff6b5e', at: dur };
+    if (f.sack) return { head: 'SACK', sub: p.text, color: '#ff6b5e', at: dur };
+    if (f.complete) { const tk = has('tackle'); return { head: `COMPLETE · ${p.yds >= 0 ? '+' : ''}${Math.round(p.yds)} yd`, sub: tk && name(tk.a) ? `tackled by ${name(tk.a)}` : f.oob ? 'out of bounds' : p.text, color: '#7ee08a', at: dur }; }
+    const pbu = has('pbu') || has('deflection'), dr = has('drop');
+    return { head: 'INCOMPLETE', sub: pbu && name(pbu.a) ? `broken up by ${name(pbu.a)}` : dr ? 'dropped' : p.text, color: '#ffb86b', at: dur };
+  }
+  function drawResultBanner(p) {
+    const r = resultOf(p); if (t < r.at - 0.15) return;
+    ctx.save(); ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.font = '800 26px ' + css('--display'); const w1 = ctx.measureText(r.head).width;
+    ctx.font = '600 12px ' + css('--mono'); const w2 = ctx.measureText(r.sub || '').width, w = Math.max(w1, w2) + 40;
+    ctx.fillStyle = 'rgba(0,0,0,0.65)'; ctx.fillRect(W / 2 - w / 2, 14, w, r.sub ? 62 : 44);
+    ctx.fillStyle = r.color; ctx.font = '800 26px ' + css('--display'); ctx.fillText(r.head, W / 2, 34);
+    if (r.sub) { ctx.fillStyle = '#fff'; ctx.font = '600 12px ' + css('--mono'); ctx.fillText(r.sub, W / 2, 60); }
+    ctx.restore();
+  }
   // Film markers, all read from the recorded play (events with positions, the frames, and the read-only tap's defender labels and aimed receiver); nothing here is read by a player.
   function posAtTime(p, time) { const F = p.frames, n = p.roster.length, [a, b, f] = frameAt(p, time); return p.roster.map((_, i) => { const ia = (a * n + i) * 3, ib = (b * n + i) * 3; return [F.p[ia] + (F.p[ib] - F.p[ia]) * f, F.p[ia + 1] + (F.p[ib + 1] - F.p[ia + 1]) * f]; }); }
   function drawFilmMarks(p, positions, X, Y, sc) {
@@ -1366,15 +1387,17 @@ window.TELEMETRY_READY = Promise.resolve(true);
     const bx = F.b[a * 3] + (F.b[b * 3] - F.b[a * 3]) * f;
     const by = F.b[a * 3 + 1] + (F.b[b * 3 + 1] - F.b[a * 3 + 1]) * f;
     const bz = F.b[a * 3 + 2] + (F.b[b * 3 + 2] - F.b[a * 3 + 2]) * f;
-    // A carried ball is drawn in the carrier's arms (it used to be hidden under his icon, so a catch read as the ball vanishing), and a touchdown keeps the ball with the scorer and says so.
+    // A carried ball is drawn in the carrier's arms (it used to be hidden under his icon, so a catch read as the ball vanishing); the ball being secured (loose-ball height, within a yard of a man) is drawn in his hands too, and a touchdown keeps the ball with the scorer.
     const tdE = (p.eventDetails || []).find((e) => e.type === 'touchdown'), scored = !!tdE && t >= tdE.t - 1e-6;
-    const holder = scored && tdE.a != null ? tdE.a : carrier;
-    if (holder >= 0 && positions[holder] && (!(carrier < 0) || scored)) {
+    let holder = scored && tdE.a != null ? tdE.a : carrier;
+    if (holder < 0 && bz <= 1.5) { let bd = 0.9; positions.forEach((q, i) => { const d = Math.hypot(q[0] - bx, q[1] - by); if (d < bd) { bd = d; holder = i; } }); }
+    const inHands = holder >= 0 && !!positions[holder];
+    if (inHands) {
       const dirx = p.fd >= p.los ? 1 : -1, hx = X(positions[holder][0] + dirx * 0.55), hy = Y(positions[holder][1]);
       ctx.fillStyle = '#7a4a22'; ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.ellipse(hx, hy, sc * 0.34, sc * 0.2, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
     }
-    if (scored) { ctx.save(); ctx.font = '800 26px ' + css('--display'); ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillStyle = 'rgba(0,0,0,0.55)'; ctx.fillRect(W / 2 - 110, 22, 220, 40); ctx.fillStyle = '#ffd23f'; ctx.fillText('TOUCHDOWN', W / 2, 42); ctx.restore(); }
-    if ((carrier < 0 || bz > 1.5) && !scored) {
+    drawResultBanner(p);
+    if ((carrier < 0 || bz > 1.5) && !scored && !inHands) {
       ctx.fillStyle = 'rgba(0,0,0,0.35)';
       ctx.beginPath(); ctx.ellipse(X(bx), Y(by), sc * 0.35, sc * 0.2, 0, 0, Math.PI * 2); ctx.fill();
       const lift = bz * sc * 0.35;
@@ -1415,7 +1438,7 @@ window.TELEMETRY_READY = Promise.resolve(true);
         if (!(artHold && now < artHold && t < 0.05)) { artHold = 0; t += dt * speed; }
         if (t >= dur) {
           t = dur;
-          if (auto && !holdUntil) holdUntil = now + 750;
+          if (auto && !holdUntil) holdUntil = now + (FILM ? 3000 : 750); // a film clip holds its last frame, with the result banner, for 3 s before the next play
           else if (!auto) { playing = false; syncControls(); }
         }
       }

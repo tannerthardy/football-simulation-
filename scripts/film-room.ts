@@ -81,7 +81,7 @@ if (mode === 'collect') {
   const data = {
     meta: { seed: seeds[0], games: [], final: { home: 0, away: 0 }, quarters: [], sourceSha256: source,
       home: { name: 'Ironmen', abbr: 'IRN', color: '#a3302a', alt: '#f4efe6', text: '#ffffff' }, away: { name: 'Comets', abbr: 'COM', color: '#1d4f91', alt: '#f2c14e', text: '#ffffff' },
-      telemetryLevel: 'light', film: { issues: issuesText, seeds, pool: all.length, zonePool: zonePool.length, random: selFile ? 0 : random.length, zone: selFile ? 0 : zone.length, minYac, pickSeed, source } },
+      telemetryLevel: 'light', film: { pageVersion: opt('--page-version', ''), builtAt: new Date().toISOString().slice(0, 16).replace('T', ' ') + ' UTC', issues: issuesText, seeds, pool: all.length, zonePool: zonePool.length, random: selFile ? 0 : random.length, zone: selFile ? 0 : zone.length, minYac, pickSeed, source } },
     games: [], plays: compactReplayPlays(plays as never),
     catalog: { coverage: Object.fromEntries(COVERAGES.map((c) => [c.id, c.name])), front: Object.fromEntries(FRONTS.map((f) => [f.id, f.name])), formation: Object.fromEntries(FORMATIONS.map((f) => [f.id, `${f.name} · ${f.personnel}`])) },
   };
