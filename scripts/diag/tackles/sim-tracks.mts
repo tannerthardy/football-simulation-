@@ -39,10 +39,10 @@ proto.run = function (this: any) {
     const lab: Record<string, string> = {};
     const evs = sim.events.filter((e: any) => e.t >= s.k0 - 1e-6);
     const tackler = evs.filter((e: any) => e.type === 'tackle').map((e: any) => slotOf(e.a)).filter(Boolean);
-    const wrapped = new Set(evs.filter((e: any) => e.type === 'tackle_wrap').map((e: any) => slotOf(e.a)));
+    const wrapped = new Set<string>(evs.filter((e: any) => e.type === 'tackle_wrap').map((e: any) => slotOf(e.a)));
     for (const e of evs) if (e.type === 'missed_tackle') { const k = slotOf(e.a); if (k && !wrapped.has(k)) lab[k] = 'missed'; }
     for (const k of wrapped) if (k) lab[k] = 'assist';
-    for (const k of tackler) lab[k] = 'tackle';
+    for (const k of tackler) lab[k as string] = 'tackle';
     plays.push({ ptype: this.offCall.kind === 'run' ? 'run' : 'catch', carrierPos: s.C.player.position,
       pos: Object.fromEntries(sim.defense.map((d: any) => [d.slot, d.player.position])), lab, frames: s.frames,
       events: evs.filter((e: any) => /tackle|missed|broken|carrier_contact/.test(e.type)).map((e: any) => [r2(e.t - s.k0), e.type, slotOf(e.a), slotOf(e.b)]) });
