@@ -21,7 +21,9 @@ wrap = lambda a: (a + math.pi) % (2 * math.pi) - math.pi
 def rows_of(path, src):
     out = []
     for l in gzip.open(path, 'rt'):
-        p = json.loads(l); X = np.array(p['x']); Y = np.array(p['y']); pl = p['players']; qb = p['qb']; nf = X.shape[1]
+        p = json.loads(l); X = np.array(p['x']); Y = np.array(p['y']); pl = p['players']; qb = p['qb']
+        if src == 'sim' and p.get('rel') is not None: X, Y = X[:, :p['rel'] + 1], Y[:, :p['rel'] + 1]  # full-play records: the same window as the NFL's, snap to release
+        nf = X.shape[1]
         fam = pff_label(p['cov']) if src == 'nfl' else OURS.get(p.get('fam'), 'other')
         cs = [i for i, r in enumerate(pl) if r['side'] == 'O' and r['pos'] == 'C']; ol = [i for i, r in enumerate(pl) if r['side'] == 'O' and r['pos'] in OL]
         c = float(Y[cs[0], 0]) if cs else float(np.median(Y[ol, 0])) if ol else 26.67
