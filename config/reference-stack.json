@@ -134,6 +134,7 @@
     "BREAK_LOOK": "on",
     "SEEN_EMPTY": "on",
     "DIR_CAP": "on",
+    "DIVE_STANCE": "off",
     "CARRY_POSTURE": "on",
     "CORNER_DROP": "on",
     "CARRY_TURN": "on",
