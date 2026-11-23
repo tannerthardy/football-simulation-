@@ -40,7 +40,7 @@ for r in R:
         if dist < 1.0: continue
         ic = pa.cv_intercept(d['pos'][0], d['pos'][1], max(1.0, math.hypot(d['pos'][2], d['pos'][3])), c[0], c[1], c[2], c[3])
         along = -(b[0] * u[0] + b[1] * u[1])
-        stage = d['stage'] or 'none (coverage behaviour)'
+        stage = d['stage'] or ('none: ' + (d.get('kind') or '?') + ('[' + ','.join(sorted(d.get('tags') or [])) + ']' if d.get('tags') is not None else ''))
         acc[(grp, stage)].append(dict(at_man=angd(req, b), at_ic=angd(req, ic[0]) if ic else None, req_along=req[0] * u[0] + req[1] * u[1],
                                       vel_along=d['pos'][2] * u[0] + d['pos'][3] * u[1], cs=cs, along=along, dist=dist))
 print('plays by first-defender group:', dict(plays))
