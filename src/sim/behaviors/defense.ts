@@ -3052,6 +3052,15 @@ function seatOutsideIn(a: Agent): boolean {
   if (z) return /^(flat_|curl_flat_|deep_third_|deep_half_|quarter_._out)/.test(z);
   return a.slot.startsWith('CB');
 }
+/** FLIGHT_BREAK: after his estimated catch time, until the possession read hands him to pursuit: the same break on the
+ * same receiver, his window now (the receiver's seen spot), for up to FLIGHT_HOLD s after his last break request. */
+const FLIGHT_HOLD = 1.0;
+function continueFlightBreak(a: Agent, sim: PlaySim): MoveCommand | null {
+  const fb = flightBreaks.get(a);
+  if (!fb || sim.t - fb.t > FLIGHT_HOLD) return null;
+  const seen = sim.see(a, fb.receiver);
+  return flightBreakMove(a, sim, fb.receiver, seen, sim.t, seen.pos);
+}
 function flightBreakMove(a: Agent, sim: PlaySim, R: Agent, seen: Perceived, catchT: number, catchSpot: Vec2): MoveCommand {
   const left = Math.max(0, catchT - sim.t);
   const goal = { x: catchSpot.x - seen.vel.x * left, y: clamp(catchSpot.y - seen.vel.y * left, 0.3, FIELD_WIDTH - 0.3) };
@@ -3193,6 +3202,7 @@ function shoulderTarget(a: Agent, sim: PlaySim, key: number): { R: Agent | null;
  * A newer body-possession picture takes priority in pursueIfLive. */
 function playObservedFlight(a: Agent, sim: PlaySim, path: PlaySim['ballPath'], acquired = false): MoveCommand {
   const c = flightApproach(a, sim, path, acquired);
+  if (!c && FLIGHT_BREAK_ON()) { const cont = continueFlightBreak(a, sim); if (cont) return cont; }
   if (!PURSUIT_COMMIT) return c ?? stand();
   // PURSUIT_COMMIT: on the flight's last tick no sample of it is left ahead of
   // him; that is not a reason to stop. Hold the approach he last chose.
@@ -3275,6 +3285,9 @@ function flightApproach(a: Agent, sim: PlaySim, path: PlaySim['ballPath'], acqui
   // or make the tackle the moment it's caught.
   // FLIGHT_BREAK: he cannot beat the ball to its path: the shared break on the receiver's moving catch window.
   if (FLIGHT_BREAK_ON() && window) return flightBreakMove(a, sim, window.receiver, window.seen, window.t, window.p);
+  // FLIGHT_BREAK: the window has passed in his picture (the ball has arrived by his estimate) but he has not yet seen the
+  // catch: the break keeps its receiver until the possession read hands him to pursuit, rather than a stale spot.
+  if (FLIGHT_BREAK_ON()) { const cont = continueFlightBreak(a, sim); if (cont) return cont; }
   const land = window?.p ?? arrivalPoint(sim, path);
   if (land) {
     // Close to the catch itself. A fixed yard of standoff plus inside shade

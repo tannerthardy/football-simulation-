@@ -20,7 +20,11 @@ import { compilingPlan } from '../../../src/playbook/read-compiler/runtime.js';
 const seed = Number(process.argv[2] ?? 101), first = Number(process.argv[3] ?? 0), games = Number(process.argv[4] ?? 1);
 const out = process.argv[5] ?? 'out/diag/coverage/c26-window.jsonl';
 mkdirSync(dirname(out), { recursive: true });
-const FAM = new Set(['cover2', 'tampa2', 'cover6']);
+const FAM = new Set((process.env.FAMS ?? 'cover2,tampa2,cover6').split(','));
+// DEPTHS=lo,hi: the depth band (yd past the line) of route runners recorded (default the 10-15 yd window).
+const [DLO, DHI] = (process.env.DEPTHS ?? '10,15').split(',').map(Number);
+// Wide-open thresholds: the NFL p90 of d1 by band (Tools' census), fixed / release.
+const BANDS = [[-99, 0, 6.2, 8.6], [0, 5, 6.0, 6.8], [5, 10, 5.1, 5.2], [10, 15, 5.1, 5.2], [15, 20, 5.8, 6.0], [20, 99, 5.8, 6.1]];
 const THR = { fix: 5.1, rel: 5.2 };
 const Z: any = ZoneCoverage.prototype, P: any = PlaySim.prototype;
 const up0 = Z.update, tick0 = P.tick, res0 = P.buildResult;
@@ -82,11 +86,12 @@ P.tick = function () {
   for (const R of this.offense) {
     if (OL.has(R.slot) || R.behavior?.kind !== 'route') continue;
     const depth = (R.pos.x - this.los) * dir;
-    if (depth < 10 || depth >= 15) continue;
+    if (depth < DLO || depth >= DHI) continue;
     const ds = this.defense.map((d: any) => [d, Math.hypot(d.pos.x - R.pos.x, d.pos.y - R.pos.y)] as const).sort((a: any, b: any) => a[1] - b[1]);
     const d1 = ds[0][1];
     seats ??= this.defense.map((d: any) => seatOf(this, d, dir));
-    const wide = d1 > THR[kind];
+    const band = BANDS.find(([lo, hi]) => depth >= lo && depth < hi)!;
+    const wide = d1 > (kind === 'fix' ? band[2] : band[3]);
     const side = Math.sign(R.pos.y - this.ballY) || 1;
     appendFileSync(out, JSON.stringify({ seed, t: r1(this.t), kind, wide, cov: this.defCall.coverage.id, fam: this.defCall.coverage.family,
       concept: this.offCall.pass?.id, form: this.offCall.formation?.id, slot: R.slot, pos: R.player.position, ref: refOf[R.slot] ?? '?',
