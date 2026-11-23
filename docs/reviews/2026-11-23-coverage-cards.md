@@ -274,7 +274,7 @@ Seat mapping used throughout:
 ### Film-note answers (cross-referenced in the cards)
 
 - **F09: nobody takes the flat; NB and LB_W both on H; Y (#3) free to the flat.**
-  - The apex is "first to flat" (F2F). He expects #2, but when #2 goes inside or under and #3 releases to the flat, he releases #2 to the hook player and takes #3. With a "Fast 3", the Mike gives a "Push" call ([USAF-7]).
+  - The apex is "first to flat" (F2F). Without a call he carries #2: with no Fast 3 he "will take two back across field" ([USAF-7]). Only on the Mike's "Push" call (a fast #3 to the flat) does he hand #2 inside and take #3 ([USAF-7]). Checked against the page, 2026-11-23: an earlier draft said he hands an in-breaking #2 to the hook by default, which the page contradicts.
   - PFN: the apex walls #2, then "checks for flat threats" ([PFN]).
   - The hook player matches the in-breaking #2 or #3 crossing his face.
   - So the two defenders doubling H is an apex pass-off failure, and Y going free is a missing first-to-flat rule. See the cover4 NB/LB_W row 8 and the LB_M row 5.
@@ -352,7 +352,7 @@ Seat mapping used throughout:
 | 5 | pass job by #1/#2/#3 release | #2 vertical → wall inside release, carry to the safety's vertical point, then flat. #2 out/flat → man him (first to flat). #2 in/under → wall, pass to hook, look for #3/#1 to the flat. #1 under (Under call) → carry #1. #1 stop (Smash) → cover #1. Nothing → gain depth, read QB (curl-flat) | [PFN]; [USAF-7] | high |
 | 6 | relation to threats in window | Inside leverage on #2 (wall); outside-in on flat routes; sinks under #1's curl when no flat threat | [PFN]; [TDP-2R] (stay under #1 to help the corner) | high |
 | 7 | eyes | #2 → flat threat → QB | [PFN] | high |
-| 8 | pass-off | Passes an in-breaking #2 to the hook (LB_M); takes the first threat to the flat (#3 included: F09) | [USAF-7] (F2F, Push); [PFN] | high |
+| 8 | pass-off | Carries #2, across the field if he goes there ("will take two back across field" with no Fast 3). On the Mike's Push call (fast #3 to the flat) he hands #2 inside and takes #3 to the flat (F09). alt (PFN, loosely): zone the in-breaker off to the hook | [USAF-7]; [PFN] alt | med |
 | 9 | break trigger | QB's front shoulder in zone; receiver's break in man | reasoning | low |
 | 10a | formation adj. | Trips: per check (poach: man #2; stubbie: share #2/#3). Bunch: Box. Attached #2: plays 5/7-tech-like tight alignment | [TDP-2R]; [MQ-Stub] | med |
 | 10b | motion adj. | Bump with #2 on motion across, or a "lock" call to stay; if #2 leaves, he re-apexes the new #2 | reasoning | low |
@@ -385,7 +385,7 @@ Seat mapping used throughout:
 | # | field | rule | source | conf |
 |---|---|---|---|---|
 | 1-11 | all | Weak #2 detached: as NB on the weak side (apex, first to flat). Weak #2 attached / no weak #2: weak hook, B-gap, back to his side | [PFN]; [USAF-7b] (weak Money mans #2 unless Fast 3) | med |
-| 8 | pass-off | Passes an in-breaking weak #2 to the Mike; takes the flat (back's swing on his side). Must not follow #2 inside when the NB/Mike already have him (F09) | [USAF-7] | high |
+| 8 | pass-off | Carries weak #2 unless a call hands him on (as cover4 × NB: Push on a fast #3; [USAF-7]); takes the flat, including the back's swing on his side. F09's double on H is two defenders without a call between them | [USAF-7] | med |
 
 ### cover4 × DB (dime)
 | # | field | rule | source | conf |
@@ -580,7 +580,7 @@ Shell shown → played: two-high → quarters strong (CB_S, SS, NB/LB_S, LB_M) a
 | 10a | formation adj. | 3x1 with X solo → cloud/half side is the X side (Cover 6 to 3x1 is common) | [Viq-SF] | med |
 | 10b | motion adj. | Motion that flips strength flips the quarters/half sides (re-call at the line) | reasoning | low |
 | 10c | back release | Back to his flat → his | reasoning | low |
-| 11 | notes | Corner/flat and curl/flat combos are the documented weakness to the half side | [C6-snip] | med |
+| 11 | notes | Corner/flat and curl/flat combos are the documented weakness to the half side. The Weekly Spiral page (C6-snip) returned 403 on 2026-11-23, so this card's quotes are unverified; Bowen's Cover 2 article supports the general corner sink ("sink hard at a 45-degree angle") | [C6-snip] (unverified); [Bowen] | med |
 
 ### cover6 × FS (half safety)
 | # | field | rule | source | conf |
@@ -829,7 +829,7 @@ Several fetched pages were paywalled or teasers (MatchQuarters Cover 9 and weak 
   * See each C/F card, row 4.
 * **F64 (Will far from his zone; three defenders on one receiver).**
   * The weak hook drops straight back just outside the hash to about 10 yd ([Dunn C3 pressure][dunn]).
-  * One underneath matcher per receiver. Others "find work" after delivering ([Brophy][brophy], [HS Rip/Liz][hsripliz]).
+  * One underneath matcher per receiver. Others find work (the phrase is not on the cited page; paraphrase) after delivering ([Brophy][brophy], [HS Rip/Liz][hsripliz]).
   * The corner funnels dig/post to the FS and does not chase inside ([Bowen C3][b3]).
 * **Match pass-offs busting.**
   * The "under" call must come inside the first 5 yards ([Saban USAF][sabanusaf]).
@@ -1611,7 +1611,7 @@ staffs.
 | 3 | run fit | Alley/force only after #1 blocks. He is the last outside support behind the force player; he leverages the ball back to the alley defenders. Low aggression until #1's block shows | reasoning | low |
 | 4 | play-action rule | He has no run responsibility while #1 is on a route. Eyes stay on #1, and the backfield fake is not his key, so play action should not move him. If #1 blocks then releases (a "block-and-release"), he stays on #1 | reasoning (consistent with [Svec PA] eye discipline) | low |
 | 5 | pass job by #1 release | **Vertical:** stay on top and outside; help is inside and deep. **Out:** drive from outside leverage. **In / slant:** squeeze from outside, trusting the hole player and FS inside. **Stop:** flat-foot then drive. **Block:** play run. **Under / crosser:** stay on him across the field (pure man) | [Bowen C1] (funnel to the FS and hole) | high (funnel); med (route detail) |
-| 6 | relation to threats | Only #1 matters. He stays in phase on the outside hip. A **trail** position (behind and underneath) is wrong in Cover 1 on outside or vertical breaks because the deep help is in the middle, not outside. Bowen: the FS must "get over" the 9 route at the bottom of the numbers | [Bowen C1], [ITP trail] (trail fits 2-Man because of deep help), [Repo] | med |
+| 6 | relation to threats | Only #1 matters. He stays in phase on the outside hip. A **trail** position (behind and underneath) is wrong in Cover 1 on outside or vertical breaks because the deep help is in the middle, not outside. Bowen: the FS must "get over" the 9 route at the bottom of the numbers (from Bowen's man-pressure article, not the Cover 1 one) | [Bowen ManP], [Bowen C1], [ITP trail] (trail fits 2-Man because of deep help), [Repo] | med |
 | 7 | eyes | Press: hands and hips of #1. Off: flat-foot read through #1 to the 3-step QB, then man. He finds the ball only when in phase | [Bowen C1], [Bowen ManP] (flat-foot read) | med |
 | 8 | pass-off | None by default. Exceptions: a **Jump** call (he replaces the FS deep middle when the FS cuts a short motion or shallow receiver), banjo / in-out calls vs stack or bunch | [Bowen C1], [BD C1 adj] | high |
 | 9 | break trigger | His man's break. Off-man: the QB's 3-step set and #1's break together (flat-foot read) | [Bowen C1], [Bowen ManP] | high |
@@ -2039,14 +2039,14 @@ The structure is "rush five, drop six" into "a three-deep, three-under zone shel
 | 2 | run/pass key | #1 | reasoning | low |
 | 3 | run fit | Deep-third run support, late. He is not the force player | reasoning | low |
 | 4 | play-action rule | Deep third; he does not bite on play action (reasoning) | reasoning | low |
-| 5 | pass job by #1 / #2 | **#1 vertical:** buy him "no questions asked" (funnel to the FS). **#1 not vertical:** pass him to the seam-flat player and look inside for #2 or #3 vertical, or a #2 wheel | [Bowen ZB], [Repo] via [Bowen ZB, NFP] | high |
+| 5 | pass job by #1 / #2 | **#1 vertical:** buy him (funnel to the FS; the phrase "no questions asked" is not on the cited page). **#1 not vertical:** pass him to the seam-flat player and look inside for #2 or #3 vertical, or a #2 wheel | [Bowen ZB], [Repo] via [Bowen ZB, NFP] | high |
 | 6 | relation to threats | Outside leverage, funnelling inside to the FS. He takes the deepest outside threat | [Bowen ZB] | high |
 | 7 | eyes | #1 → #2 | [Bowen ZB] | med |
 | 8 | pass-off | #1 short to the seam-flat player | [Bowen ZB] | high |
 | 9 | break trigger | QB's front shoulder or hitch; the ball | reasoning | low |
 | 10a | formation adj. | **Saban alt:** corners man on #1, aggressive on hot routes ([Soran]) | [Soran] | high |
 | 10b | motion adj. | Zone: does not travel | reasoning | low |
-| 10c | back release | **Wheel** by the back: his if #1 is not vertical | [Bowen ZB] rule | med |
+| 10c | back release | **Wheel** by the back: his if #1 is not vertical (reasoning: Bowen's zone-blitz article only says a corner with no #1 vertical looks inside to #2 / #3, with no wheel) | reasoning from [Bowen ZB] | low |
 | 11 | notes | — | — | — |
 
 ### firezone × FS (deep middle)
@@ -2129,14 +2129,14 @@ the trips version.
 | 2 | run/pass key | #1 then #2 (Kent State: "keys #2 to #1") | [AFCA Cox] | high |
 | 3 | run fit | Force or contain on his side (Cover 2 corner) | reasoning | low |
 | 4 | play-action rule | Reroute #1 first; on a run fake he holds the flat and squeezes from outside (reasoning) | reasoning | low |
-| 5 | pass job by #1 / #2 | **Kent State cloud:** take the first out (#2 or the back to the flat), and the second vertical when no out comes. **#1 vertical:** reroute and pass him to the half safety. **#1 hitch:** squat it if no flat threat (reasoning) | [AFCA Cox] | high |
+| 5 | pass job by #1 / #2 | **Kent State cloud:** take the first out (#2 or the back to the flat), and the second vertical when no out comes. **#1 vertical:** reroute and pass him to the half safety. **#1 hitch:** squat it if no flat threat (reasoning). Checked: the Kent State form is four-deep, and its "first out" cloud corner is an adjustment vs a TE/wing; the 2-deep use here is inference | [AFCA Cox] (adapted) | low |
 | 6 | relation to threats | Flat; never out-leveraged. Close on a flat release | [AFCA Cox] | med |
 | 7 | eyes | #2 → #1, then QB | [AFCA Cox] | high |
 | 8 | pass-off | #1 vertical to the half safety | [AFCA Cox] | med |
 | 9 | break trigger | QB's front shoulder toward the flat | reasoning | low |
 | 10a | formation adj. | **3x1 boundary single:** cloud the X with the safety (deuce_dot) | [AFCA Cox] | high |
 | 10b | motion adj. | Re-count (zone) | reasoning | low |
-| 10c | back release | **Back to the flat:** he is the first-out defender | [AFCA Cox] | high |
+| 10c | back release | **Back to the flat:** he is the first-out defender (inference from the Kent State cloud adjustment) | [AFCA Cox] (adapted) | low |
 | 11 | notes | **F13 / F15:** a cloud corner who holds his zone while the back runs to the flat is misplaying "first out". With the safety over the top, he closes on the flat. **Alt (invert / 2-steal boundary):** the corner is the deep half and the DE has the flat ([BH 2-steal]) | [AFCA Cox], [BH 2-steal] | med |
 
 ### deuce × CB_W
@@ -2168,7 +2168,7 @@ the trips version.
 | 2 | run/pass key | Guards and the back | [USA flow] | med |
 | 3 | run fit | His gap | reasoning | low |
 | 4 | play-action rule | Pull the chute to the seam/hook | [Svec PA] | med |
-| 5 | pass job | Seam dropper: wall #2 vertical, sink under the curl, break on a #2 hitch in front of him. Kent State boundary backer: seam dropper with vision to the QB; vs 3x1 relate to #3 (carry #3 vertical) | [AFCA Cox], [BH 2-steal] | high |
+| 5 | pass job | Seam dropper: wall #2 vertical, sink under the curl, break on a #2 hitch in front of him. Vs 3x1 the boundary backer relates to #3 (carry #3 vertical: deuce_dot, supported). "Vision to the QB" is not on the page | [AFCA Cox], [BH 2-steal] | low |
 | 6 | relation to threats | Inside #2; underneath the half safety | [AFCA Cox] | med |
 | 7 | eyes | #2/#3 → QB | [AFCA Cox] | med |
 | 8 | pass-off | #2 vertical to the half safety | reasoning | low |
@@ -2179,7 +2179,7 @@ the trips version.
 ### deuce × SS or NB (strong seam / hook)
 | # | field | rule | source | conf |
 |---|---|---|---|---|
-| 1–10c | | As LB_W on the strong side. Kent State rover: "walls the hash and picks up #3" vs 2x2, pushes to #2 vs 3x1 | [AFCA Cox] | high |
+| 1–10c | | As LB_W on the strong side; pushes to #2 vs 3x1 (Kent State rover). Not found on the page: a #3 rule vs 2x2 (the article has no defender relating to #3 in its 2x2 form) | [AFCA Cox] | low |
 | 11 | notes | **Alt:** in 2-steal the nickel rushes and the Will plays the field seam ([BH 2-steal]) | [BH 2-steal] | high |
 
 ### deuce × DE_W (dropping end)
@@ -2253,8 +2253,7 @@ Check this list against the engine catalogue. I did not inspect the engine's ful
   only help is in the middle or at the sideline, so the man defender stays on top and outside of
   a flat-then-up route. Trail underneath is a 2-Man technique that relies on two deep halves
   ([ITP trail], [Svec 2M], [Bowen C1]).
-- **F04 in a fire zone:** the back's wheel belongs to the corner when #1 is not vertical
-  ([Bowen ZB]). Confidence: med.
+- **F04 in a fire zone:** a back's wheel against a corner whose #1 is not vertical is reasoning, not sourced: Bowen's zone-blitz article says only that such a corner looks inside to #2 / #3. Confidence: low.
 - **F05 (corner following motion bumps a teammate, no one adjusts):** man teams pre-set **lock**
   (travel) or **switch** (trade), or **Jump** on short motion ([Svec motion], [Bowen C1]).
   Tight splits, bunch and stacks get banjo or in/out ([BD C1 adj], [ITP banjo]). The travel path
@@ -2330,3 +2329,100 @@ The USA flow entry is search-result level and was not fetched.
 
 - **[search summary]:** a claim seen only in a search-engine summary; the page was not fetched.
   Low weight.
+
+# Quote check of the film-note rows (2026-11-23)
+
+The quoted phrases on the rows the film notes lean on (F04, F05, F09, F11, F13 / F15, F16, F17, F61 / F68) were checked against their cited pages. Results: 46 checked (exact words), 13 paraphrase, 4 not found, 5 unreachable (403). Six rules the cited page did not support have been corrected in the cards above, and their confidence lowered:
+- the F09 apex carries #2 unless a Push call hands him on;
+- the Deuce cards adapted from the four-deep Kent State form;
+- the Deuce #3 rule;
+- the fire-zone wheel;
+- the cover1 corner citation;
+- the cover6 half corner (unverifiable behind a 403).
+
+The table below is the per-phrase record.
+
+
+| card / section | quoted phrase (as in the doc) | url | status | page wording (if paraphrase) / note |
+|---|---|---|---|---|
+| cover4 × CB_S r1 | "seven to eight yards off the ball" | bleacherreport.com/articles/2094989 | CHECKED | |
+| cover4 × CB_S r2 | "pattern-matches the vertical release of No. 1" | bleacherreport.com/articles/2094989 | PARAPHRASE | "pattern match the vertical release from No. 1" |
+| cover4 × CB_S r3 / NB r3 | "cannot be outleveraged" | bleacherreport.com/articles/2094989 | CHECKED | said of the flat defenders (Sam/nickel) |
+| cover4 × CB_S r4 | PA "baits safeties, leaving cornerbacks exposed" | bleacherreport.com/articles/2094989 | PARAPHRASE | "play action to set the bait for safeties (leaving the cornerbacks exposed)" |
+| cover4 × SS r4 (F61) and quarters F61/F68 note | "play action baits safeties" / PA "baits safeties" | bleacherreport.com/articles/2094989 | PARAPHRASE | same sentence as above |
+| quarters F61/F68 note; cover4 SS r11 | "a tad bit slower" | xandolabs.com/?p=7544 | UNREACHABLE | 403 to curl and WebFetch |
+| quarters F61/F68 note | "Hook … generally takes the running back" | profootballnetwork.com/what-is-quarters-coverage-… | PARAPHRASE | "Generally speaking, they will be responsible for the running back." |
+| quarters F09 note | "checks for flat threats" | profootballnetwork.com/what-is-quarters-coverage-… | PARAPHRASE | "He'll then look to see if there is a threat or someone coming into the flat." |
+| quarters F09 note; NB r8 | "first to flat" (F2F) | blogs.usafootball.com/blog/7382 | CHECKED | "First to Flat (F2F)- First WR to flat will be manned by the Apex." |
+| quarters F09 note; LB_M r5/r8 | "Push" (and "Fast 3") | blogs.usafootball.com/blog/7382 | CHECKED | |
+| quarters F09 note | "The flats are the weakness of this coverage" | markbullock.substack.com/p/commanders-scheme-breakdown-quarters | CHECKED | |
+| cover4 × NB r2 | "high/low hat" | throwdeeppublishing.com/…/one-coverage-that-solves-a-ton-of-problems | CHECKED | "EMOL read high/low hat" |
+| cover4 × LB_M r2 | "Relates to No. 3 … eyes on No. 3" | blogs.usafootball.com/blog/7382 | PARAPHRASE | "He will Relate to No. 3 with no zone integrity (eyes on No. 3)" |
+| cover4 × SS r5 (F61 context) | "if No. 2 is up, he mans No. 3" | blogs.usafootball.com/blog/7382 | PARAPHRASE | "If No. 2 is up, man No. 3 with inside on-top leverage." |
+| quarters F16 note | "sink[s] and collect[s]" | weeklyspiral.com/2021/08/16/cover-6 | UNREACHABLE | 403 |
+| cover6 × CB_W r3 | "excellent position to cover outside runs and flat passes" | weeklyspiral.com/2021/08/16/cover-6 | UNREACHABLE | 403 |
+| cover6 × CB_W r5 | "funnel … inside, sink and collect … carry any vertical" | weeklyspiral.com/2021/08/16/cover-6 | UNREACHABLE | 403 |
+| cover6 × CB_W r7 | "eyes in the backfield" | weeklyspiral.com/2021/08/16/cover-6 | UNREACHABLE | 403 |
+| cover3 × CB_S r4; Cover 3 F16 note | "deeper than the deepest" | throwdeeppublishing.com/…/what-is-cover-3-in-football | CHECKED | |
+| cover3 × CB_S r5/r10a; F16 note | "1/3 Read" | si.com/…/seahawks-losing-the-tuff-cover-3-buzz-and-sky… | CHECKED | page: 1/3 "Read." (punctuation only) |
+| cover3 × CB_S r5; F16 note | "Zebra 1/3" / "Zebra" | si.com/…/seahawks-losing-the-tuff-cover-3-buzz-and-sky… | CHECKED | |
+| cover3 × CB_S r5; F16 note | "split two verticals" | bleacherreport.com/articles/2047445 | CHECKED | |
+| cover3 × CB_S r6 | "bottom of the numbers" | bleacherreport.com/articles/2047445 | CHECKED | |
+| cover3 × CB_S r1 | "outside third" | bleacherreport.com/articles/2047445 | CHECKED | |
+| cover3 × CB_S r7 | "chin on the shoulder looking at #1" | blogs.usafootball.com/blog/7272 | CHECKED | |
+| Cover 3 F61 note | "outside of number two" | glazierclinics.com/…/cover-3-breakdown-elite-curl/flat… | CHECKED | page: Outside of "number two" receiver |
+| Cover 3 F61 note | "pane of glass" | blogs.usafootball.com/blog/5615/blank | CHECKED | |
+| Cover 3 F61 note | OL "bump" | blogs.usafootball.com/blog/5615/blank | CHECKED | "If the linemen bump the pane, that is play action pass." |
+| Cover 3 F61 note | OL "break through" | blogs.usafootball.com/blog/5615/blank | PARAPHRASE | "if he breaks through the glass, that is run" |
+| Cover 3 F64 note | "find work" | brophyfootball.blogspot.com/2010/08/…; blogs.usafootball.com/blog/7272 | NOT FOUND | on neither page |
+| Cover 3 match pass-off note | "on a string" | blogs.usafootball.com/blog/7272 | CHECKED | |
+| Cover 3 match pass-off note | "divider rules fracture" | blogs.usafootball.com/blog/7272 | PARAPHRASE | "doing so will fracture the 'Divider' rules" |
+| Cover 3 match pass-off note | "under" call inside the first 5 yards (only "under" is quoted) | blogs.usafootball.com/blog/5615/blank | CHECKED | "within the first five yards of the route" |
+| Cover 2 family (ii) (F16 basis) | "sink hard at a 45-degree angle" | bleacherreport.com/articles/2039934 | CHECKED | |
+| cover2 × CB_S r7 | "strings on the QB's eyes" | throwdeeppublishing.com/…/installing-trap-coverage… | PARAPHRASE | play with "strings" on the quarterback's eyes and cadence |
+| cover2 × CB_S r9; Cover 2 F16 note | "Q flat you freeze" | throwdeeppublishing.com/…/installing-trap-coverage… | CHECKED | |
+| Cover 2 F16 note | "divider half" | throwdeeppublishing.com/…/installing-trap-coverage… | CHECKED | |
+| cover1 × CB_S r1 | "one-yard inside the top of the numbers" | sportstreatise.com/2021/01/saban-pass-coverages/ | CHECKED | |
+| cover1 × CB_S r6 | FS must "get over" the 9 route | bleacherreport.com/articles/2032934 (Bowen C1) | NOT FOUND | not on Bowen C1; Bowen ManP (2140586) has "get over the top of the 9 (fade) route (bottom of the numbers)" |
+| cover1 × CB_S r10b; F05 | "LOCK or SWITCH" | jonsvec.substack.com/p/adjusting-to-motion-in-man-coverage | CHECKED | "your two big options here are to LOCK or SWITCH" |
+| cover1 × CB_S r10b; F05 | "If your man moves, you move with him" | throwdeeppublishing.com/…/what-is-cover-0-in-football | CHECKED | |
+| cover1 × NB r10b (F05) | "blitz and engage" | jonsvec.substack.com/p/adjusting-to-motion-in-man-coverage | CHECKED | |
+| cover1 × CB_S r11 (F17) | "a step behind the receiver with his back to the line of scrimmage" | scoutingacademy.com/glossary-entry-trail-technique/ | CHECKED | via WebFetch; curl was blocked by a bot check |
+| cover1 × SS r4 | "keep their eyes on" | jonsvec.substack.com/p/blitz-and-engage | CHECKED | |
+| cover1 × LB_W r7 | "keep their eyes on the Running Back" | jonsvec.substack.com/p/blitz-and-engage | CHECKED | |
+| cover1 intro, LB_W r5/r11, SS r11, F68 note | "first back strong / first back weak" | bleacherreport.com/articles/2032934 | PARAPHRASE | "the linebackers ... match the first running back strong/weak" |
+| cover1 intro / LB_W r10c | "green dogs" / green dog | bleacherreport.com/articles/2032934 | CHECKED | "green dog" technique |
+| cover1 intro | FS "the key" | bleacherreport.com/articles/2032934 | CHECKED | "the free safety is the key" |
+| cover1 × LB_S; cover1_robber | "linebacker bumps out to cover the tight end" | bleacherreport.com/articles/2032934 | CHECKED | |
+| cover1 × LB_M r4; cover1 rat r4; deuce LB_W r4 | "pull the chute" | lbchalktalk.substack.com/p/defending-play-action | PARAPHRASE | "pulling the chute" / "pulls the chute" (rule matches) |
+| cover1 × LB_M r7; rat r7 | "vision dropper" | matchquarters.com/p/coverage-101-cover-1-tools-rat-lurk-cross-hole | CHECKED | free intro text |
+| cover1 × rat r4 | QB "crosses the line of scrimmage" | sportstreatise.com/2021/01/saban-pass-coverages/ | CHECKED | |
+| cover0 (family intro) | "Where's the help? The sideline." | bleacherreport.com/articles/2140586 | CHECKED | |
+| cover0 × FS r11 | "has no help" | throwdeeppublishing.com/…/what-is-cover-0-in-football | CHECKED | |
+| cover0 × LB_W r10c | "Bring pressure if the back stays in protection" | throwdeeppublishing.com/…/what-is-cover-0-in-football | CHECKED | |
+| cover2man × CB r5 | "can trail versus any vertical route" | sportstreatise.com/2021/01/saban-pass-coverages/ | CHECKED | |
+| cover2man × CB r6 | "attaching to the back hip" | scoutingacademy.com/glossary-entry-trail-technique/ | CHECKED | via WebFetch; it is in the page's Butler example |
+| cover2man × NB/LB r5 | "the hardest man position" | viqtorysports.com/what-is-cover-5-in-football/ | CHECKED | |
+| cover2man × NB/LB r5 | "the entire time" | viqtorysports.com/what-is-cover-5-in-football/ | CHECKED | |
+| cover2man × NB/LB r10c | "no blitz engage" | coachkoufootball.substack.com/p/patriots-pass-defense-concepts-man-to | CHECKED | |
+| cover2man × FS/SS r5 | "nothing should get behind the safeties" | viqtorysports.com/what-is-cover-5-in-football/ | CHECKED | |
+| firezone × FS r1 (F11) | "FS: Deep middle 1/3" | bleacherreport.com/articles/2102559 | CHECKED | |
+| firezone family (i) | "rush five, drop six" / "fire zone 1/3" | bleacherreport.com/articles/2102559 | CHECKED | |
+| firezone × CB r5 (F04 fire-zone note context) | "no questions asked" | bleacherreport.com/articles/2102559 | NOT FOUND | page: corners "match" to No. 1 vertically down the field |
+| firezone FS r6 / F11 (Rip/Liz drift then break) | (unquoted; checked as rule) | blogs.usafootball.com/blog/7272 | CHECKED | "'melting' ... then breaking on the 2nd direction the passer looks" |
+| deuce family (i) | "5-man zone blitz paired with 2-steal coverage" | buckeyehuddle.com/2024/11/14/defensively-speaking-purdue | CHECKED | |
+| deuce family (i) | corner "hesitates" | coachkoufootball.substack.com/p/copy-split-field-fire-zone-pressures | CHECKED | preview text |
+| deuce × CB_S r2 | "keys #2 to #1" | afca.com/?p=12234 | PARAPHRASE | "his key is #2 to #1 (TE to wing)" (cloud vs TE/wing) |
+| deuce × SS or NB r1-10c | "walls the hash and picks up #3" | afca.com/?p=12234 | NOT FOUND | the page says 2-under/4-deep has no relate-to-#3 defender |
+
+Counts (quoted phrases): CHECKED 46, PARAPHRASE 13, NOT FOUND 4, UNREACHABLE 5. One more row checks an unquoted rule (Rip/Liz melt-then-break), and the page supports it.
+
+## Rules the cited page does not support (beyond wording)
+
+1. **F09 apex pass-off.** cover4 × NB r8, cover4 × LB_W r8 and the F09 note have the apex pass an in-breaking #2 to the hook, citing [USAF-7]. USAF-7 says the reverse: "If No. 2 goes in/out and there is no fast No. 3, he will take two back across field." The apex hands #2 off only on a Push call against a Fast 3. Only PFN (the apex "walls" #2, then looks for a flat threat) loosely backs a zone pass-off.
+2. **deuce × SS/NB, "walls the hash and picks up #3" (Kent State rover).** This is not on the AFCA page. The page says the 2-under/4-deep form has no relate-to-#3 defender. Against 3x1 the rover pushes to #2 and the boundary backer takes #3.
+3. **Deuce cards built on AFCA Cox.** Cox describes a 2-under/4-deep quarters-style fire zone, not a 2-deep/4-under one. His "first out and second vertical" cloud corner is an adjustment against a TE/wing. deuce × CB_S r5 and r10c ("high") extend it to a generic deuce corner and to a back releasing to the flat, which is an inference. deuce × LB_W r5's "seam dropper with vision to the QB" is not on the page. The deuce_dot rules (rover to #2, boundary backer to #3, cloud 2-on-1 on X, weak hook vacated on slant-flare, check to 3-under/3-deep against 3x1) are supported. That the safety owns X vertical inside the cloud is inferred.
+4. **firezone corner and wheel (F04 fire-zone note, firezone CB r5/r10c).** Bowen ZB never mentions a wheel or "no questions asked". It says only that the corner without a #1 vertical looks inside to play No. 2 or No. 3 vertical.
+5. **cover1 × CB_S r6.** The FS getting over the 9 route at the bottom of the numbers comes from Bowen ManP, not the cited Bowen C1. The rule itself is sourced.
+6. **Cover 3 F64 note, "find work".** Neither cited page has it or a close equivalent.
+7. **Unverifiable.** Every cover6 × CB_W corner-sink rule (the F16 half-side corner) and the XOL key/timing claims rest on 403 pages (Weekly Spiral, X&O Labs). The F16 sink rule is still backed by Bowen C2, which says the Cover 2 corners "sink hard at a 45-degree angle" while reacting to the flat.
