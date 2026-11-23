@@ -54,7 +54,8 @@ if (mode === 'collect') {
   const out = opt('--out', 'out/film/film-room.html');
   const issuesFile = opt('--issues', ''); const issuesText = issuesFile ? readFileSync(resolve(root, issuesFile), 'utf8') : '';
   const all: any[] = []; let source = ''; let seeds: number[] = [];
-  for (const f of files) { const j = JSON.parse(readFileSync(resolve(root, f), 'utf8')); all.push(...j.plays.map((p: any) => ({ ...p, id: `${j.seed}-${p.id}`, gameSeed: j.seed + p.game }))); source = j.source; seeds.push(j.seed); }
+  // A file may be given as tag=path: its plays carry that tag (a second arm of the same games, e.g. a flag set on), and --select rows may name the tag.
+  for (const f0 of files) { const m = /^([a-z0-9]+)=(.+)$/.exec(f0); const tag = m ? m[1] : ''; const f = m ? m[2] : f0; const j = JSON.parse(readFileSync(resolve(root, f), 'utf8')); all.push(...j.plays.map((p: any) => ({ ...p, id: `${j.seed}-${tag ? tag + '-' : ''}${p.id}`, gameSeed: j.seed + p.game, fileTag: tag }))); source = j.source; seeds.push(j.seed); }
   const isZoneYac = (p: any) => p.flags.complete && (p.stats?.yac ?? 0) >= minYac && COVERAGE_BY_ID[p.plan?.coverage]?.man === false;
   const rng = new Rng(pickSeed);
   const shuffle = <T>(a: T[]) => { const b = a.slice(); for (let i = b.length - 1; i > 0; i--) { const j = Math.floor(rng.next() * (i + 1)); [b[i], b[j]] = [b[j], b[i]]; } return b; };
@@ -65,7 +66,7 @@ if (mode === 'collect') {
   const dnd = (p: any) => `${['', '1st', '2nd', '3rd', '4th'][p.down] ?? p.down} & ${p.dist}`;
   // --select rows.json: a hand-picked page instead of the random draw; each row {game, index, owner, receiver, note} names a play of a collected game (game index and log index) and, for the owner check, the defender who owns the receiver.
   const selFile = opt('--select', ''); const sel: any[] = selFile ? JSON.parse(readFileSync(resolve(root, selFile), 'utf8')) : [];
-  const picked: { p: any; set: string; row?: any }[] = selFile ? sel.map((row) => ({ p: all.find((q) => (row.gameSeed !== undefined ? q.gameSeed === row.gameSeed : q.game === row.game) && q.index === row.index), set: 'check', row })).filter((x) => x.p)
+  const picked: { p: any; set: string; row?: any }[] = selFile ? sel.map((row) => ({ p: all.find((q) => (row.gameSeed !== undefined ? q.gameSeed === row.gameSeed : q.game === row.game) && q.index === row.index && (q.fileTag ?? '') === (row.tag ?? '')), set: 'check', row })).filter((x) => x.p)
     : [...random.map((p) => ({ p, set: 'random' })), ...zone.map((p) => ({ p, set: 'zone-yac' }))];
   if (selFile) console.error(`select: ${picked.length} of ${sel.length} rows found`);
   const plays = picked.map(({ p, set, row }, i) => {
