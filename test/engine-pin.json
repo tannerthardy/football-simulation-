@@ -396,6 +396,7 @@
   "test/posture-witness.test.ts",
   "test/power-aim.test.ts",
   "test/presnap-rules.test.ts",
+  "test/press-align.test.ts",
   "test/press-mirror.test.ts",
   "test/press-release.test.ts",
   "test/pressure-call.test.ts",

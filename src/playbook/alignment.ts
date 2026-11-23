@@ -102,6 +102,13 @@ export function scatterSide(off: Pick<OffenseAlignment, 'ballY' | 'strongSign'>,
  * in the middle 14.5 deep, a man-free safety shades 0.34 toward the ball.
  * Off: the installed spots. */
 const DEF_ALIGN = process.env.DEF_ALIGN !== '0';
+/** PRESS_ALIGN (experimental, off; Tools' body measurements, 2026-11-18): a press man aligns on the receiver, about
+ * a yard off him at arm's length ("align one yard off the receiver"; the hands reach him at the snap), not 1.3 yd past
+ * the line. Off, with receivers set about a yard off the line, every press corner stood 2.27 yd in front of his man at
+ * the snap (staged Cover 0/1/2-Man, gun doubles and trips), so none was within 2 yd: 0.1% of our go reps against the
+ * NFL's 6.5% on Tools' operator (a defender within 2 yd ahead and 1.5 yd across), where NFL press costs the receiver
+ * 0.84 yd/s at 1.0 s. On: 1 yd in front of his man, never nearer the ball than half a yard past the line. */
+const PRESS_ALIGN = process.env.PRESS_ALIGN === '1';
 /** Default on (WR_ALIGN=0 turns it off): receivers align as tracked
  * (scripts/diag/align/nfl_scheme.py, 2022 tracking at the snap). The #1's room
  * to his sideline follows his route (ROUTE_ROOM: wide to run vertical or
@@ -997,7 +1004,7 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
   const dbSpot = (slot: DefSlot, r: Vec2, sign: number): { depth: number; shade: number } => {
     const role = cov.roles[slot];
     const spot = role?.kind === 'man' || (!role && cov.man)
-      ? (cov.press || (role?.kind === 'man' && role.press) ? { depth: 1.3, shade: 0.15 }
+      ? (cov.press || (role?.kind === 'man' && role.press) ? { depth: PRESS_ALIGN ? Math.max(0.5, r.x + 1 - los) : 1.3, shade: 0.15 }
         : { depth: 6, shade: role?.kind === 'man' && role.lev === 'outside' ? 0.5 : role?.kind === 'man' && role.lev === 'head' ? 0 : -0.2 })
       : zoneSpot(role?.kind === 'zone' ? role.zone : undefined, slot === 'NB' || slot === 'DB');
     // The team's habit moves its outside zone corners deeper or tighter.
@@ -1327,7 +1334,7 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
     const inside = Math.sign(off.ballY - tp.y) || Math.sign(spots[d]!.pos.y - tp.y) || s;
     const mr = roles[d] as Extract<CoverageRole, { kind: 'man' }>;
     const press = (mr.press ?? cov.press) && !mr.overTop;
-    const depth = off.spots[t].backfield ? 5 : mr.overTop ? 10 : isCorner ? (press ? (DEF_ALIGN ? 1.3 : 1.2) : 6) : 4;
+    const depth = off.spots[t].backfield ? 5 : mr.overTop ? 10 : isCorner ? (press ? (PRESS_ALIGN ? Math.max(0.5, tp.x + 1 - los) : DEF_ALIGN ? 1.3 : 1.2) : 6) : 4;
     const shade = mr.lev === 'outside' ? -inside : mr.lev === 'head' ? 0 : inside;
     // DEF_ALIGN: a corner presses about head-up, plays the called shoulder
     // from off, and takes the inside against a receiver near the sideline.
