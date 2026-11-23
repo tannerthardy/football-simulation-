@@ -115,7 +115,8 @@ def analyse(row):
     if outcome.startswith('stopped'):
         a1, _, o1 = rel(d1[contact_t], car[contact_t], unit(car[contact_t][3], car[contact_t][4], u0))
         tackle_from = dict(at_catch=pos, outside_at_catch=outs, at_contact='front' if a1 > 0.3 else 'behind' if a1 < -0.3 else 'side')
-    return dict(src=row['src'], man=row['man'], side=side, outside=side <= 12, cs=cs, cmax=cmax, air=row.get('air'), end=end,
+    spd = lambda tt: math.hypot(car[tt][3], car[tt][4]) if tt in car else None
+    return dict(src=row['src'], man=row['man'], side=side, outside=side <= 12, cs=cs, cmax=cmax, cs05=spd(round(t0 + 0.5, 1)), cs10=spd(round(t0 + 1.0, 1)), air=row.get('air'), end=end,
                 yac=round(car[tend][1] - cx, 1), bands=bands, d1=d1k, d1dist=dist(d10, c0), d1pos=pos, d1out=outs, d1clos=clos, cpa=cpa, cpa_t=ts,
                 outcome=outcome, cls=cls, contact_t=contact_t, beat_t=beat_t, start=start, after=after, tackle_from=tackle_from, geo=geo,
                 key=row.get('key'), ev=row.get('ev'))
