@@ -465,6 +465,7 @@
   "test/release-commit.test.ts",
   "test/release-cushion.test.ts",
   "test/release-evidence.test.ts",
+  "test/release-pace.test.ts",
   "test/release-redecide-technique.test.ts",
   "test/release-seen.test.ts",
   "test/release-through.test.ts",

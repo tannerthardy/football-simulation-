@@ -262,6 +262,18 @@ function passed(pos: Vec2, wp: Vec2, next: Vec2): boolean {
   return (pos.x - wp.x) * sx + (pos.y - wp.y) * sy > 0 && Math.hypot(pos.x - wp.x, pos.y - wp.y) < 2;
 }
 
+/** RELEASE_PACE (experimental, off; RELEASE_PACE=1): a receiver gets off the line at the same pace on every route,
+ * as taught: the release looks the same on a hitch, a slant and a go so the defender cannot read the route from it ("it
+ * is much harder for a DB to run the underneath routes when the receiver is taking off the ball with the same pace on
+ * vertical routes, quick game routes, running plays", USA Football, Coaching the Wide Receiver: Beating Loose Coverage;
+ * make every route look the same off the ball, AFCA, Winning Vertically at the WR Position). Off, the get-off share below
+ * rises with the depth of his first break (0.4 + 0.03 x depth), so a hitch, slant or flat leaves the line at about
+ * 0.5-0.6 of his start force and a go at 0.7; the NFL's hitch leaves at the go's pace (4.2 yd/s at 1.0 s, both). With
+ * the flag every route takes the go's share (the depth term at 10 yd); the defender and route-running terms stay.
+ * The stem caps (`routeEffort`) are unchanged: running every stem at the deep family's pace moved nothing at 1.5-2.0 s
+ * (docs/reviews/2026-11-23-release-pace.md). */
+export const RELEASE_PACE = process.env.RELEASE_PACE === '1';
+
 /** LINE_START: his first step out of the stance (yd). */
 export const GETOFF_STEP = 0.5;
 /** LINE_START: the share of his start force he chooses to push with until he declares his stem (estimated). Out of
@@ -272,7 +284,7 @@ export const GETOFF_STEP = 0.5;
  * leaving no lateral authority for those steps, but nothing in the receiver's controller yet values keeping that
  * authority while he reads; this share is that value. */
 export function getOffDrive(routeRunning: number, breakDepth: number, defenderAhead: number): number {
-  const route = 0.4 + 0.03 * clamp(breakDepth, 0, 10);
+  const route = 0.4 + 0.03 * clamp(RELEASE_PACE ? 10 : breakDepth, 0, 10);
   const defender = 0.05 * clamp((defenderAhead - 4.5) / 2.5, -1, 1);
   return clamp(route + defender + 0.15 * (routeRunning - 0.5), 0.3, 1);
 }
