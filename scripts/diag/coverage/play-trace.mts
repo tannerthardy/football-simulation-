@@ -12,6 +12,7 @@ import { ZoneCoverage, ManCoverage } from '../../../src/sim/behaviors/defense.js
 import { CoverageDefender } from '../../../src/sim/coverage/defender.js';
 import { facingTechnique } from '../../../src/sim/coverage/orientation.js';
 import { FIELD_WIDTH } from '../../../src/core/field.js';
+import { compilingPlan } from '../../../src/playbook/read-compiler/runtime.js';
 
 const [teamSeed, gameSeed, ls, concept, coverage, down, out] = process.argv.slice(2);
 const Z: any = ZoneCoverage.prototype, M: any = ManCoverage.prototype, P: any = PlaySim.prototype;
@@ -25,8 +26,10 @@ let found: any = null;
 // ordinal; the second pass sets the flag from the end of the play before it.
 let ordinal = 0, targetOrdinal = -1, pass = 1;
 P.tick = function () {
+  if (compilingPlan()) return tick0.call(this);
   if (this.__ord === undefined) {
     this.__ord = ordinal++;
+    if (process.env.PT_DEBUG && Math.abs(this.__ord - targetOrdinal) <= 1) console.error('pass', pass, 'ord', this.__ord, this.offCall?.pass?.id ?? this.offCall?.kind, this.defCall?.coverage?.id, this.down, 'env', process.env[process.env.ARM ?? ''] ?? '-');
     if (pass === 2 && process.env.ARM && this.__ord === targetOrdinal) { /* flag already on since the previous play's end */ }
   }
   if (this.__pt === undefined) {
@@ -52,17 +55,19 @@ P.tick = function () {
   if (this.phase !== 'live' || k > 60) { st.done = true; if (process.env.ARM) delete process.env[process.env.ARM]; }
   return res;
 };
-const rng = new Rng(Number(teamSeed));
-const home = generateTeam(rng, 'Ironmen', 'IRN', { strength: 0.55 }), away = generateTeam(rng, 'Comets', 'COM', { strength: 0.55 });
 const g = Number(gameSeed);
-const play = () => ls === '1' ? simulateGame(leagueSample(home, g), leagueSample(away, g), { seed: g, record: true, recordLevel: 'light' })
-  : simulateGame(home, away, { seed: g, record: true, recordLevel: 'light' });
+// Fresh teams for each pass: a game mutates its teams (the second pass must replay the same game).
+const play = () => { const rng = new Rng(Number(teamSeed));
+  const home = generateTeam(rng, 'Ironmen', 'IRN', { strength: 0.55 }), away = generateTeam(rng, 'Comets', 'COM', { strength: 0.55 });
+  return ls === '1' ? simulateGame(leagueSample(home, g), leagueSample(away, g), { seed: g, record: true, recordLevel: 'light' })
+  : simulateGame(home, away, { seed: g, record: true, recordLevel: 'light' }); };
 if (process.env.ARM && process.env.ARM_EARLY) {
   const saved = process.env[process.env.ARM]; delete process.env[process.env.ARM];
   play();
   if (targetOrdinal < 0) { console.log('not found'); process.exit(0); }
-  pass = 2; ordinal = 0; found = null;
+  console.error('pass 1 plays', ordinal); pass = 2; ordinal = 0; found = null;
   play();
+  console.error('pass 2 plays', ordinal);
   if (saved === undefined) delete process.env[process.env.ARM]; else process.env[process.env.ARM] = saved;
 } else play();
 writeFileSync(out, JSON.stringify(found));
