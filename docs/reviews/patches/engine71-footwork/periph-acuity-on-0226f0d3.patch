@@ -1,0 +1,394 @@
+diff --git a/config/baseline.json b/config/baseline.json
+index 8623ace15..eaebfea60 100644
+--- a/config/baseline.json
++++ b/config/baseline.json
+@@ -257,6 +257,7 @@
+     "LEGS_HELD": "0",
+     "THROW_BODY": "0",
+     "PICTURE_AGE": "0",
++    "PERIPH_ACUITY": "0",
+     "POCKET_CLIMB": "0",
+     "BLOCK_SEEN": "0",
+     "FREE_BOUND": "0",
+diff --git a/config/reference-stack.json b/config/reference-stack.json
+index c9ccfc944..f32ff38a8 100644
+--- a/config/reference-stack.json
++++ b/config/reference-stack.json
+@@ -207,6 +207,7 @@
+     "LEAN_PITCH": "on",
+     "LEGS_HELD": "on",
+     "PICTURE_AGE": "off",
++    "PERIPH_ACUITY": "off",
+     "POCKET_CLIMB": "off",
+     "BLOCK_SEEN": "on",
+     "FREE_BOUND": "off",
+diff --git a/docs/FLAGS.md b/docs/FLAGS.md
+index e6ddcc539..80000e70d 100644
+--- a/docs/FLAGS.md
++++ b/docs/FLAGS.md
+@@ -2,7 +2,7 @@
+ 
+ Every engine switch read from the environment, recounted from `src` at `57f50fc3` on 2026-10-22. This includes #210's promotion and #205's two additional default-on switches. Flags that are not on develop (parked, removed from a PR, or only on a side branch) are kept in [PARKED.md](PARKED.md) so the ideas are not lost. Registration rules are in [PLAN.md](PLAN.md): at most 10 experimental flags, and each expires two reviews after it lands.
+ 
+-There are 498 flags read from the environment in `src` (recounted 2026-11-18, engine-91: engine-90 plus STEM_WORK (on); engine-90: engine-89 plus READ_VERTICAL_LOS and BACK_CLEAR (on); engine-89: engine-88 plus FLAT_CARRY (on); engine-88: engine-87 plus FORECAST_FINISH and QB_ROLE_PATH (on), READ_WINDOW and QB_CLOSE_BELIEF (off); engine-87: engine-86 plus HALF_KEY (on); engine-86 was engine-85 plus MUSH_MATCH (on); engine-85 was engine-84 plus FLAT_SINK (on); engine-84 was engine-83 plus DOWN_RISE_PLANT (on); engine-83 was engine-82 plus QB_DRIVE, QB_RHYTHM_THROW, QB_ALIGN, QB_BODY_FOLLOW, QB_WINDOW_ARRIVE, QB_KEY_PLANT, QB_STICK, QB_PEEK_CLOCK, QB_MOF_READ, QB_DEEP_WAIT and QB_STANCE; QB_DRIVE, QB_RHYTHM_THROW, QB_WINDOW_ARRIVE, QB_KEY_PLANT and QB_STICK on): 379 are on unless set to `0`, 91 are off unless set to `1`, and 28 are numeric scales or modes (identity value unless listed in the stack's numeric section). The rows below carry each flag's history.
++There are 499 flags read from the environment in `src` (recounted 2026-11-23: engine-91 plus PERIPH_ACUITY (off); engine-91: engine-90 plus STEM_WORK (on); engine-90: engine-89 plus READ_VERTICAL_LOS and BACK_CLEAR (on); engine-89: engine-88 plus FLAT_CARRY (on); engine-88: engine-87 plus FORECAST_FINISH and QB_ROLE_PATH (on), READ_WINDOW and QB_CLOSE_BELIEF (off); engine-87: engine-86 plus HALF_KEY (on); engine-86 was engine-85 plus MUSH_MATCH (on); engine-85 was engine-84 plus FLAT_SINK (on); engine-84 was engine-83 plus DOWN_RISE_PLANT (on); engine-83 was engine-82 plus QB_DRIVE, QB_RHYTHM_THROW, QB_ALIGN, QB_BODY_FOLLOW, QB_WINDOW_ARRIVE, QB_KEY_PLANT, QB_STICK, QB_PEEK_CLOCK, QB_MOF_READ, QB_DEEP_WAIT and QB_STANCE; QB_DRIVE, QB_RHYTHM_THROW, QB_WINDOW_ARRIVE, QB_KEY_PLANT and QB_STICK on): 379 are on unless set to `0`, 92 are off unless set to `1`, and 28 are numeric scales or modes (identity value unless listed in the stack's numeric section). The rows below carry each flag's history.
+ 
+ **Promotion (2026-11-09):** the reference stack `run-ref-4` is now the engine's default. The 90 flags it lists `on` are read as on unless set to `0` (rows marked "promoted" below); the rest are unchanged. Decisions and evidence for each flag are in [REFERENCE_STACK.md](REFERENCE_STACK.md); `npm run ref -- --list` is the current inventory, and `npm run ref -- --off -- <command>` runs the engine as it was before. The test suites still run on the pre-promotion engine (pinned in `vitest.config.ts`) until their recorded cases are re-recorded. The counts in the paragraph above predate all of this.
+ 
+@@ -348,6 +348,7 @@ There are 498 flags read from the environment in `src` (recounted 2026-11-18, en
+ | `LEGS_HELD` | on | promoted 2026-11-11 (run-ref-23; `=0` restores); was experimental (drag-down attempt 2, 2026-11-11) | physics | `src/physics/world.ts` (`heldSwing`, `updateSupport`) | with `HELD_SWING`. A bound swing binds the legs actually held: each holder holds 1 + lock legs (open hand one, closed wrap both), capped at two. One leg: half his drive along his path is lost and his base is not left behind (the free leg steps). Both: the stride is bound in full and the base falls behind, as without the flag |
+ | `THROW_BODY` | on | promoted 2026-11-11 (run-ref-25; `=0` restores); was experimental (sacks, 2026-11-11) | quarterback | `src/sim/behaviors/qb.ts` (`throwInterference`, `update` windup, `release`) | a hold on the passer acts on the throw through what it holds: interference = heldBy x (1 - the highest grasp's leg share). In the load, before the arm comes forward, the hold pins the arm with that chance (rolled once a throw) and the throw is abandoned. A throw that comes out under a hold is an arm throw to that degree (flick = max(flick, interference): the flick's own speed and accuracy costs). Off, a windup in progress is immune to holds. qb-contact.py, run-ref-19: a defender within 1 yd before the ball is out on 13.0% of dropbacks (NFL 12.5%); thrown after it 70% (NFL 30%), complete 47% at 9.0 yd/att (NFL 33%, 4.5) |
+ | `PICTURE_AGE` | off | experimental (sacks attempt 2, timing half, 2026-11-11) | quarterback | `src/sim/behaviors/qb.ts` (`window`), `src/sim/qbmind.ts` (`pictureAge`), `src/sim/receiver-forecast.ts` (`lastPicture`) | an old picture is an uncertain one. Each picture's position uncertainty is what the body could have done since he saw it, from its own acceleration (A = vmax / tau) over the age t: a defender up to min(A t^2/2, vmax t), his receiver (installed route, can only fall off its tempo) up to min(A t^2/2, v t) at his last seen speed. In time, through the defender's top speed, it widens the margin spreads in quadrature (contest 0.13 s, undercut 0.10 s; receiver term at the catch point only). Off, an aged picture is extrapolated and scored as if certain. throw-path.mts, run-ref-19: hot/panic throws 83, 78% hit before release, 89% to a receiver he was not reading, complete 53% |
++| `PERIPH_ACUITY` | off | experimental (QB picture leak, 2026-11-23; docs/reviews/2026-11-23-turned-down-open.md) | quarterback | `src/sim/qbmind.ts` (`periphSeen`, `pictureSpread`, the clear cone), `src/sim/receiver-forecast.ts` (`lastPicture`), `src/sim/behaviors/qb.ts` (`window`) | what he sees off his gaze is less exact. Position error grows with eccentricity (0.06 x range x eccentricity in rad, Levi, Klein & Aitsebaomo 1985) and velocity error with it (0.14 x speed x eccentricity, McKee & Nakayama 1984), scaled 1.3-0.6 x vision; the error is a stable draw per player (his misreading, not frame noise). The clear cone that resolves separation narrows to 10-15 deg half-width (Ball et al. 1988 useful field), the periphery stays as before. No must-look rule: the window prices the error (margin spreads and the accuracy sigma widen in quadrature), so a picture from the corner of his eye earns less confidence and an aged one less still. Off, a peripheral picture is exact apart from its delay: at decisions with the target 30 deg+ off his head the receiver error was 0.13-0.32 yd p50 |
+ | `POCKET_CLIMB` | off | experimental (sacks: escape, 2026-11-11) | quarterback | `src/sim/behaviors/qb.ts` (`pocketMove`, `climb`) | pocket movement is buying time: when set he weighs standing against moving in eight directions at 2.2 yd/s (the pace missSigma already treats as the edge of a set throw) and takes whatever leaves the most felt time to contact (felt() + held()) one throwing motion (windup) from now; stays 2.5 yd behind the line, eyes on his read. Escape is the existing scramble check meeting a moving QB. qb-escape.py: in the 0.5 s before a rusher reaches 1 yd NFL QBs are moving 70% (2.25 yd/s, +0.60 toward the line), ours 34% (1.05, -0.20); qb-pocket.py pressured path p75 NFL 1.72 yd, ours 0.39 |
+ | `BLOCK_SEEN` | on | promoted 2026-11-12 (engine-38; `=0` restores); was experimental (rule compliance, 2026-11-11; contact test 2026-11-12) | quarterback | `src/sim/behaviors/qb.ts` (`held`, `seenHold`) | QB_FEEL's perception half on its own: the QB reads a rusher as held only from what he sees, an offensive body within arm's length of the rusher (blocker's reach + rusher's radius) and on his path to the QB, adding the time around that body; never the sim's engagement record or its private win score; and a rusher in contact with any blocker (driving him back, or ridden from beside) is paced: he closes no faster than the QB sees him closing (his seen velocity toward the QB less the QB's own), so his felt time is at least that pace over the distance (2026-11-12: a bull rush and an edge ride read 0.35-0.6 s short as a fresh sprint at a standing QB); so a blocker who has come off holds nothing. QB_FEEL's pocket move is not part of it. Off (and QB_FEEL off), held() credits any engaged rusher 0.35-1.75 s from engagement.win, which rises as the score falls while he closes (Rules + Coaching repro: hitches vs Cover 2, seed 2 flipped, BACK_RELEASE on). Test: test/block-seen.test.ts; diag: feel-trace.mts, feel-games.mts |
+ | `FREE_BOUND` | off | experimental (QB pocket: free-rusher blind spot, 2026-11-12) | quarterback | `src/sim/behaviors/qb.ts` (`freeBound`, in `pressure`) | for a rusher he sees unblocked (no offensive body within arm's length) within 3 yd, his felt time is at most how soon that man could hit him: a typical rusher's burst (5 yd/s^2, estimated) from where he sees him to within a hand (1.0 yd) of his body, speed toward him as a head start and none of the picture's speed away or across counted against him; behind his shoulder a poor pocket presence applies it up to 0.5 s late. Off, a free end drifting past at 1.6 yd on a 0.3 s old picture read 1-2 s off (Rules + Coaching repro under READ_PLAN). Test: test/free-bound.test.ts |
+diff --git a/scripts/diag/eyes/decision-picture.ts b/scripts/diag/eyes/decision-picture.ts
+new file mode 100644
+index 000000000..c54de5a73
+--- /dev/null
++++ b/scripts/diag/eyes/decision-picture.ts
+@@ -0,0 +1,43 @@
++// QB lane 2026-11-23 (Integration: is the picture he decides on degraded by his head angle?). League games; at each
++// throw decision (windup start): his head's angle to the target; the time since his head was last within 15 deg of him;
++// his receiver picture's age (forecast.lastPicture) and its error (forecast now vs truth); and, for the defenders near
++// the target (truth within 6 yd), his believed position's error and its picture age (QBMind.estimate / pictureAge),
++// and whether it comes from memory or a fresh see() (no memory).
++//   node --import tsx scripts/diag/eyes/decision-picture.ts <seed> <games> > rows.jsonl
++import { Rng } from '../../../src/core/rng.js';
++import { simulateGame } from '../../../src/game/game.js';
++import { generateTeam, leagueSample } from '../../../src/league/team.js';
++import { PlaySim } from '../../../src/sim/playsim.js';
++const seed = Number(process.argv[2] ?? 11), games = Number(process.argv[3] ?? 4);
++const wrap = (x: number) => Math.atan2(Math.sin(x), Math.cos(x));
++const orig = PlaySim.prototype.run;
++PlaySim.prototype.run = function (this: any) {
++  const sim: any = this; if (!sim.isPass) return orig.apply(this);
++  const lastIn = new Map<any, number>(); let hooked = false, done = false;
++  const tick0 = sim.tick.bind(sim);
++  sim.tick = () => {
++    const b: any = sim.qb.behavior;
++    if (!hooked && b?.kind === 'qb-pass') { hooked = true; const st = b.startThrow.bind(b);
++      b.startThrow = (a: any, s: any, ev: any) => {
++        if (!done) { done = true;
++          const r = ev.target, qb = s.qb, head = qb.head ?? qb.body.facing;
++          const ang = Math.abs(wrap(head - Math.atan2(r.pos.y - qb.pos.y, r.pos.x - qb.pos.x))) * 180 / Math.PI;
++          const f = b.receiverForecasts.get(r), pic = f?.lastPicture?.(), now = f?.predict?.(s.t, 0);
++          const defs = s.defense.filter((d: any) => Math.hypot(d.pos.x - r.pos.x, d.pos.y - r.pos.y) < 6).map((d: any) => {
++            const e = b.mind.estimate(d); const mem = b.mind.memory.get(d);
++            return { slot: d.slot, dist: +Math.hypot(d.pos.x - r.pos.x, d.pos.y - r.pos.y).toFixed(1), err: +Math.hypot(e.pos.x - d.pos.x, e.pos.y - d.pos.y).toFixed(2),
++              age: +b.mind.pictureAge(d).toFixed(2), fromMemory: !!mem,
++              angD: +(Math.abs(wrap(head - Math.atan2(d.pos.y - qb.pos.y, d.pos.x - qb.pos.x))) * 180 / Math.PI).toFixed(0) }; });
++          console.log(JSON.stringify({ t: +s.t.toFixed(2), slot: r.slot, ang: +ang.toFixed(1), sinceCone: lastIn.has(r) ? +(s.t - lastIn.get(r)!).toFixed(2) : null,
++            picAge: pic ? +(s.t - pic.sampledAt).toFixed(2) : null, recErr: now ? +Math.hypot(now.x - r.pos.x, now.y - r.pos.y).toFixed(2) : null, defs }));
++        }
++        return st(a, s, ev); }; }
++    tick0();
++    const qb = sim.qb, head = qb.head ?? qb.body.facing;
++    for (const o of sim.offense) if (o !== qb && Math.abs(wrap(head - Math.atan2(o.pos.y - qb.pos.y, o.pos.x - qb.pos.x))) * 180 / Math.PI <= 15) lastIn.set(o, sim.t);
++  };
++  return orig.apply(this);
++};
++for (let g = 0; g < games; g++) { const s = seed + g, rng = new Rng(s);
++  const home = generateTeam(rng, 'Ironmen', 'IRN', { strength: 0.55 }), away = generateTeam(rng, 'Comets', 'COM', { strength: 0.55 });
++  simulateGame(leagueSample(home, s), leagueSample(away, s), { seed: s }); }
+diff --git a/scripts/diag/eyes/open-turned-down.ts b/scripts/diag/eyes/open-turned-down.ts
+new file mode 100644
+index 000000000..677040445
+--- /dev/null
++++ b/scripts/diag/eyes/open-turned-down.ts
+@@ -0,0 +1,92 @@
++// QB lane 2026-11-23 (the user's film: "turned down a LOT of wide open throws"; measurement only).
++// League games; every dropback. Every 0.25 s (and on each read change) while he holds the ball after the snap, for every
++// receiver: wide open by geometry (truth: nearest defender 4+ yd and no defender within 2 yd of the throwing lane), his
++// head on him (within EYES_DEG of the bearing), where he is in the read order, the price he gives him (P, pick risk,
++// against his bar), the term that sets it and the defender who closes it, the footwork gate, the pressure. Every tick:
++// his head's angle to each receiver (for eyes-on timing). At each throw: the decision (windup start) and the release.
++//   node --import tsx scripts/diag/eyes/open-turned-down.ts <seed> <games> > rows.jsonl
++import { Rng } from '../../../src/core/rng.js';
++import { simulateGame } from '../../../src/game/game.js';
++import { generateTeam, leagueSample } from '../../../src/league/team.js';
++import { PlaySim } from '../../../src/sim/playsim.js';
++
++const seed = Number(process.argv[2] ?? 11), games = Number(process.argv[3] ?? 4);
++const EYES_DEG = 15;
++const wrap = (x: number) => Math.atan2(Math.sin(x), Math.cos(x));
++const segDist = (p: { x: number; y: number }, a: { x: number; y: number }, b: { x: number; y: number }) => {
++  const dx = b.x - a.x, dy = b.y - a.y, L = dx * dx + dy * dy || 1;
++  const t = Math.max(0, Math.min(1, ((p.x - a.x) * dx + (p.y - a.y) * dy) / L));
++  return Math.hypot(p.x - (a.x + t * dx), p.y - (a.y + t * dy));
++};
++let playNo = 0;
++const orig = PlaySim.prototype.run;
++PlaySim.prototype.run = function (this: any) {
++  playNo++;
++  const sim: any = this; if (!sim.isPass) return orig.apply(this);
++  const samples: any[] = [], heads: any[] = []; let decision: any = null, release: any = null, hooked = false, nextT = 0, lastRead: any = null;
++  const tick0 = sim.tick.bind(sim);
++  sim.tick = () => {
++    const b0: any = sim.qb.behavior;
++    if (!hooked && b0?.kind === 'qb-pass') { hooked = true;
++      const st = b0.startThrow.bind(b0);
++      b0.startThrow = (a: any, s: any, ev: any) => { if (!decision) decision = { t: +s.t.toFixed(2), slot: ev.target.slot, P: +ev.P.toFixed(3), iR: +ev.intRisk.toFixed(3) }; return st(a, s, ev); };
++      const tb = sim.throwBall.bind(sim);
++      sim.throwBall = (p: any, target: any, v0: any, intended: any, arrivalT: number, away = false, ...rest: any[]) => {
++        if (p === sim.qb && !release) release = { t: +sim.t.toFixed(2), slot: target?.slot ?? null, away: !!away || !target }; return tb(p, target, v0, intended, arrivalT, away, ...rest); };
++    }
++    tick0();
++    const b: any = sim.qb.behavior, qb = sim.qb;
++    if (b?.kind !== 'qb-pass' || sim.carrier !== qb || release || !b.reads) return;
++    const recv = sim.offense.filter((o: any) => o !== qb && b.receiverForecasts?.has(o));
++    const head = qb.head ?? qb.body.facing;
++    // Every tick: his head's angle to each receiver (truth bearing), and his phase.
++    const body = qb.body.facing;
++    heads.push({ t: +sim.t.toFixed(2), phase: b.phase, a: Object.fromEntries(recv.map((r: any) => [r.slot, +(Math.abs(wrap(head - Math.atan2(r.pos.y - qb.pos.y, r.pos.x - qb.pos.x))) * 180 / Math.PI).toFixed(1)])),
++      body: Object.fromEntries(recv.map((r: any) => [r.slot, +(Math.abs(wrap(body - Math.atan2(r.pos.y - qb.pos.y, r.pos.x - qb.pos.x))) * 180 / Math.PI).toFixed(1)])) });
++    const cur = b.reads[b.readIdx] ?? null;
++    const due = sim.t >= nextT - 1e-9 || cur !== lastRead;
++    lastRead = cur;
++    if (!due || sim.t < 0.5) return;
++    nextT = sim.t + 0.25;
++    const u = b.barNow?.u ?? 0, need = b.barNow?.thr ?? null, risk = b.barNow?.maxInt ?? null;
++    const row: any = { t: +sim.t.toFixed(2), phase: b.phase, readIdx: b.readIdx, cur: cur?.slot ?? null, u: +u.toFixed(2), need: need && +need.toFixed(3), risk: risk && +risk.toFixed(3), r: [] };
++    for (const r of recv) {
++      const dNear = Math.min(...sim.defense.map((d: any) => Math.hypot(d.pos.x - r.pos.x, d.pos.y - r.pos.y)));
++      const dLane = Math.min(...sim.defense.map((d: any) => segDist(d.pos, qb.pos, r.pos)));
++      const open = dNear >= 4 && dLane >= 2;
++      const idx = b.reads.indexOf(r);
++      const ang = Math.abs(wrap(head - Math.atan2(r.pos.y - qb.pos.y, r.pos.x - qb.pos.x))) * 180 / Math.PI;
++      const x: any = { slot: r.slot, open, dNear: +dNear.toFixed(1), dLane: +dLane.toFixed(1), idx, ang: +ang.toFixed(0), eyes: ang <= EYES_DEG,
++        order: idx < 0 ? 'not-a-read' : idx > b.readIdx ? 'ahead' : idx < b.readIdx ? 'passed' : 'current' };
++      if (open) {
++        let ready = false; try { ready = b.ready(r, sim); } catch { /* */ }
++        x.ready = ready;
++        if (ready) {
++          b.marginProbe = true; let ev: any = null; try { ev = b.evaluate(qb, sim, r, u); } catch { /* */ } b.marginProbe = false;
++          if (ev) {
++            x.P = +ev.P.toFixed(3); x.iR = +ev.intRisk.toFixed(4);
++            const parts = ev.parts ?? {}; x.parts = Object.fromEntries(Object.entries(parts).map(([k, v]: any) => [k, +(+v).toFixed(3)]));
++            const terms = ['pOpen', 'pClear', 'pAcc', 'hands'].filter((k) => parts[k] !== undefined);
++            x.low = terms.sort((p, q) => parts[p] - parts[q])[0] ?? null;
++            const rows = (b.marginLast ?? []).slice().sort((p: any, q: any) => (q.contest + 5 * (q.iPath + q.iJump + q.iContest)) - (p.contest + 5 * (p.iPath + p.iJump + p.iContest)));
++            x.closer = rows[0] ? { slot: rows[0].slot, m: rows[0].m, contest: rows[0].contest, iPath: rows[0].iPath, dTrue: +Math.hypot(sim.defense.find((d: any) => d.slot === rows[0].slot).pos.x - r.pos.x, sim.defense.find((d: any) => d.slot === rows[0].slot).pos.y - r.pos.y).toFixed(1) } : null;
++          }
++          let step = true; try { step = b.onStep ? b.onStep(qb, r, u, sim.t) : true; } catch { /* */ }
++          x.step = step;
++        }
++      }
++      row.r.push(x);
++    }
++    samples.push(row);
++  };
++  const res = orig.apply(this);
++  const ev = sim.events as any[];
++  console.log(JSON.stringify({ seed, playNo, concept: sim.offCall?.pass?.id ?? null, family: sim.offCall?.pass?.family ?? null, cov: sim.defCall?.coverage?.id ?? null,
++    decision, release, sack: ev.some((e) => e.type === 'sack'), scramble: !release && !ev.some((e) => e.type === 'sack'), cmp: !!sim.stats.completed, int: ev.some((e) => e.type === 'interception'), yards: res.yards, samples, heads }));
++  return res;
++};
++for (let g = 0; g < games; g++) {
++  const s = seed + g, rng = new Rng(s);
++  const home = generateTeam(rng, 'Ironmen', 'IRN', { strength: 0.55 }), away = generateTeam(rng, 'Comets', 'COM', { strength: 0.55 });
++  simulateGame(leagueSample(home, s), leagueSample(away, s), { seed: s });
++}
+diff --git a/src/sim/behaviors/qb.ts b/src/sim/behaviors/qb.ts
+index d72fe0575..457a9f4a8 100644
+--- a/src/sim/behaviors/qb.ts
++++ b/src/sim/behaviors/qb.ts
+@@ -36,6 +36,7 @@ import { believedProfile, typicalAt } from '../believed.js';
+ import type { PhysicalProfile } from '../../players/physical.js';
+ import type { ReplayTelemetryFrame } from '../types.js';
+ import { ReceiverForecast, type InstalledReceiverRoute } from '../receiver-forecast.js';
++import { PERIPH_ACUITY } from '../qbmind.js';
+ import { screenSpot, type ScreenSpot } from '../screen-spot.js';
+ import { compilingPlan, installedPlan } from '../../playbook/read-compiler/runtime.js';
+ import { DECLARED_BREAK } from '../../playbook/read-compiler/features.js';
+@@ -2949,6 +2950,8 @@ export class QBPass implements Behavior {
+         const age = this.mind.pictureAge(d), A = dp.vmax / Math.max(dp.tau, 1e-3);
+         spreadD = Math.min(0.5 * A * age * age, dp.vmax * age) / Math.max(dp.vmax, 1e-3);
+       }
++      // PERIPH_ACUITY: his uncertainty about where this defender is: the look's eccentric error grown over its age.
++      if (PERIPH_ACUITY) spreadD = Math.hypot(spreadD, this.mind.pictureSpread(d) / Math.max(dp.vmax, 1e-3));
+       return { d, dp, dBall, blind, mover, react, leap, spreadD, facingQB, tied, closeState, roof, deepBail, carryAt, seen, speedScale: mover.speedScale, estimateError: a.mind.judgment(`reach:${d.slot}`) * noise };
+     });
+     // A ball that arrives at `pt`: who contests it at the catch, who can get a
+@@ -2956,6 +2959,12 @@ export class QBPass implements Behavior {
+     // PICTURE_AGE: his receiver's uncertainty from the age of the last look
+     // (never seen: since the snap).
+     let spreadR = 0;
++    // PERIPH_ACUITY: his uncertainty about where the receiver will be: the look's eccentric error grown over its age.
++    let periphR = 0;
++    if (PERIPH_ACUITY) {
++      const pic = forecast?.lastPicture() ?? null;
++      if (pic) periphR = Math.hypot(pic.sigP, pic.sigV * Math.max(0, sim.t - pic.sampledAt));
++    }
+     if (PICTURE_AGE) {
+       const pic = forecast?.lastPicture() ?? null;
+       const age = Math.max(0, sim.t - (pic ? pic.sampledAt : this.snapAt)), A = r.profile.vmax / Math.max(r.profile.tau, 1e-3);
+@@ -2995,8 +3004,8 @@ export class QBPass implements Behavior {
+         const tt = carryTt !== null ? carryTt : deepZone ? bodyArrive(seen, dp, speedScale ?? 1, pt, dp.reach + 0.3, dzStart) : QB_ROLE_PATH && deepBail && !tied ? Math.max(total, bodyArrive(seen, dp, speedScale ?? 1, pt, dp.reach + 0.3, total)) : closeState && !tied ? cbArrive(pt, dp.reach + 0.3) : blind + (QB_WINDOW_ARRIVE && !tied ? arriveTime(mover, pt, dp.reach + 0.3, react) : timeToReach(mover, pt, dp.reach + 0.3) + react);
+         // BLITZ_READ: a defender he believes is rushing is going elsewhere, not to this point.
+         const m = tt - total + estimateError + (BLITZ_READ ? 3 * this.rushOf(d) : 0);
+-        const sCatch = PICTURE_AGE ? Math.hypot(0.13, spreadD, spreadR / Math.max(dp.vmax, 1e-3)) : 0.13;
+-        const sPath = PICTURE_AGE ? Math.hypot(0.1, spreadD) : 0.1;
++        const sCatch = PICTURE_AGE || PERIPH_ACUITY ? Math.hypot(0.13, spreadD, Math.hypot(spreadR, periphR) / Math.max(dp.vmax, 1e-3)) : 0.13;
++        const sPath = PICTURE_AGE || PERIPH_ACUITY ? Math.hypot(0.1, spreadD) : 0.1;
+         const contest = under ? 0 : 1 - logistic((m - 0.05) / sCatch);
+         // A defender who gets there well before the ball is sitting on the route.
+         const first = under ? 0 : 1 - logistic((m + 0.3) / sCatch);
+@@ -3052,6 +3061,8 @@ export class QBPass implements Behavior {
+     // QB_ALIGN: an armed throw (no time to reset) is priced with what it keeps of his body.
+     if (QB_ALIGN) { const pl = this.alignPlan(a, sim, point); if (!pl.reset) sigma *= this.alignCost(a, pl.resid, pl.across).sigK; }
+     const radius = ACC_RADIUS ? 1.6 + 0.9 * T + 0.4 * (r.r('ballSkills') - 0.5) : 1.35;
++    // PERIPH_ACUITY: not knowing exactly where the receiver will be adds to the miss, as his own error does.
++    if (PERIPH_ACUITY) sigma = Math.hypot(sigma, periphR);
+     const pAcc = Math.exp(-(sigma * sigma) / (2 * radius * radius));
+     // He knows his own accuracy: the ball can land anywhere in his miss, and an
+     // errant ball is the one a defender can pick. Its risk is averaged over the
+diff --git a/src/sim/qbmind.ts b/src/sim/qbmind.ts
+index 4bae7445e..32e57141e 100644
+--- a/src/sim/qbmind.ts
++++ b/src/sim/qbmind.ts
+@@ -153,8 +153,31 @@ interface Memory {
+   facing: number;
+   t: number;
+   latency?: number;
++  /** PERIPH_ACUITY: the look's position and velocity uncertainty (yd, yd/s), from its eccentricity. */
++  sigP?: number;
++  sigV?: number;
+ }
+ 
++/** PERIPH_ACUITY (experimental, off; PERIPH_ACUITY=1 turns it on; QB lane, 2026-11-23, an information leak under the
++ * user's standing rule: docs/reviews/2026-11-23-turned-down-open.md). A player seen off the passer's gaze is seen less
++ * precisely: motion is detected, position and velocity precision are lost with eccentricity. Off, a receiver or defender
++ * inside the peripheral cone (45-69 deg) was seen exactly, apart from 1.7 times the delay: a target 30-60 deg off his
++ * head at the decision was priced from a picture 0.13 yd off (0.04 dead centre), and on 62-72% of decisions made 15 deg
++ * or more off, the target had never been near his gaze. On:
++ * - position: an angular error of PERIPH_POS_K x eccentricity, at the player's range (peripheral localization error
++ *   grows about linearly with eccentricity, roughly 5-10% of it: Levi, Klein & Aitsebaomo 1985);
++ * - velocity: speed discrimination's Weber fraction rising about 0.1 per 40 deg off the fovea (McKee & Nakayama 1984), as
++ *   a velocity error of PERIPH_VEL_K x speed x eccentricity (rad);
++ * - both scaled by his vision rating (1.3 - 0.6 x vision), each player's error a stable draw of his (a coherent misjudgment
++ *   of where that man is, not jitter);
++ * - the clear cone for reading separation narrowed to the useful field for detail, 10-15 deg half-angle by vision (Ball
++ *   et al. 1988, useful field of view); the peripheral cone, where motion is still picked up, keeps its extent.
++ * His own confidence in a picture carries the look's error and its growth with age (the window, qb.ts). Nothing forbids
++ * a throw off a peripheral picture: he prices it with its error. */
++export const PERIPH_ACUITY = process.env.PERIPH_ACUITY === '1';
++const PERIPH_POS_K = 0.06;
++const PERIPH_VEL_K = 0.14;
++
+ type Features = number[];
+ 
+ const PRE_SIGMA = [0.3, 0.25, 0.3, 0.13, 0.35, 0.7];
+@@ -194,8 +217,9 @@ export class QBMind {
+     const p = qb.player;
+     this.rec = clamp(0.7 * r01(p.ratings.playRecognition) + 0.3 * Math.min(1, p.experience / 8), 0, 1);
+     this.vision = r01(p.ratings.awareness);
+-    this.clearHalf = 0.33 + 0.22 * this.vision;
+-    this.periphHalf = this.clearHalf + 0.45 + 0.2 * this.vision;
++    const legacyClear = 0.33 + 0.22 * this.vision;
++    this.clearHalf = PERIPH_ACUITY ? 0.17 + 0.09 * this.vision : legacyClear;
++    this.periphHalf = legacyClear + 0.45 + 0.2 * this.vision;
+     this.identifyAt = 0.45 + 0.4 * (1 - this.rec) + Math.abs(sim.dice('qb-mind').normal(0, 0.08));
+     // What he expects from this defense: league habits, adjusted by what
+     // he's seen of them today (the sharper QB uses more of it).
+@@ -414,6 +438,7 @@ export class QBMind {
+     const qb = this.qb;
+     this.justIdentified = false;
+     const dir = Math.atan2(gaze.y - qb.pos.y, gaze.x - qb.pos.x);
++    const mind = qb.mind; // his own
+     for (const d of sim.defense) {
+       // Sector membership uses the same delayed picture as the clear look.
+       // Current hidden position cannot decide whether that picture is acquired.
+@@ -423,11 +448,13 @@ export class QBMind {
+       const dist = Math.hypot(dx, dy);
+       const ang = Math.abs(angleDiff(Math.atan2(dy, dx), dir));
+       // Bodies right around him are felt, not seen; pocket presence handles them.
+-      if (ang < this.clearHalf * (0.65 + 0.35 * qb.mind.focus) || dist < 3) {
+-        this.memory.set(d, { pos: clear.pos, vel: clear.vel, facing: clear.facing, t: sim.t, latency: clear.age ?? 0 });
+-      } else if (ang < this.periphHalf * (0.85 + 0.15 * qb.mind.focus)) {
++      if (ang < this.clearHalf * (0.65 + 0.35 * mind.focus) || dist < 3) {
++        const e = PERIPH_ACUITY && dist >= 3 ? this.periphSeen(mind, d.player.id, clear, ang, dist) : null;
++        this.memory.set(d, { pos: e ? e.pos : clear.pos, vel: e ? e.vel : clear.vel, facing: clear.facing, t: sim.t, latency: clear.age ?? 0, sigP: e?.sigP, sigV: e?.sigV });
++      } else if (ang < this.periphHalf * (0.85 + 0.15 * mind.focus)) {
+         const s = sim.see(qb, d, 1.7);
+-        this.memory.set(d, { pos: s.pos, vel: s.vel, facing: s.facing, t: sim.t - 0.1, latency: s.age ?? 0 });
++        const e = PERIPH_ACUITY ? this.periphSeen(mind, d.player.id, s, ang, dist) : null;
++        this.memory.set(d, { pos: e ? e.pos : s.pos, vel: e ? e.vel : s.vel, facing: s.facing, t: sim.t - 0.1, latency: s.age ?? 0, sigP: e?.sigP, sigV: e?.sigV });
+       }
+     }
+     // Existing recognition milestones summarize this acquired look and its
+@@ -449,14 +476,18 @@ export class QBMind {
+     const delay = (scale: number) => qb.mind.observationDelay(qb.profile.reactionTime * scale);
+     const clear = sim.perception.perceive(target.idx, delay(1));
+     const dir = Math.atan2(gaze.y - qb.pos.y, gaze.x - qb.pos.x);
+-    const ang = Math.abs(angleDiff(Math.atan2(clear.pos.y - qb.pos.y, clear.pos.x - qb.pos.x), dir));
++    const rx = clear.pos.x - qb.pos.x, ry = clear.pos.y - qb.pos.y;
++    const ang = Math.abs(angleDiff(Math.atan2(ry, rx), dir));
+     const seen = ang < this.clearHalf * (0.65 + 0.35 * qb.mind.focus) ? clear
+       : ang < this.periphHalf * (0.85 + 0.15 * qb.mind.focus) ? sim.perception.perceive(target.idx, delay(1.7)) : null;
+     if (!seen) return null;
+     sim.trace.observe(qb, target, seen, sim.t);
+     const age = seen.age ?? 0;
+-    return { pos: { x: seen.pos.x - seen.vel.x * age, y: seen.pos.y - seen.vel.y * age },
+-      vel: { ...seen.vel }, facing: seen.facing, sampledAt: sim.t - age, acquiredAt: sim.t };
++    // PERIPH_ACUITY: off his gaze he sees the receiver less precisely (motion yes, position and velocity less so).
++    const e = PERIPH_ACUITY ? this.periphSeen(qb.mind, target.player.id, seen, ang, Math.hypot(rx, ry)) : null;
++    const sp = e ? e.pos : seen.pos, sv = e ? e.vel : seen.vel;
++    return { pos: { x: sp.x - sv.x * age, y: sp.y - sv.y * age },
++      vel: { ...sv }, facing: seen.facing, sampledAt: sim.t - age, acquiredAt: sim.t, ...(e ? { sigP: e.sigP, sigV: e.sigV } : {}) };
+   }
+ 
+   /** Acquired route keys, with memory age plus the original sensing latency. */
+@@ -471,6 +502,25 @@ export class QBMind {
+     });
+   }
+ 
++  /** PERIPH_ACUITY: a player seen `ecc` rad off his gaze at `range` yd: the look's position and velocity uncertainty and
++   * the picture he takes, offset by his stable misjudgment of that player (unit normals, scaled by the uncertainty). */
++  private periphSeen(mind: { judgment(key: string): number }, id: string, seen: { pos: Vec2; vel: Vec2 }, ecc: number, range: number): { pos: Vec2; vel: Vec2; sigP: number; sigV: number } {
++    const v = 1.3 - 0.6 * this.vision, speed = Math.hypot(seen.vel.x, seen.vel.y);
++    const sigP = range * PERIPH_POS_K * ecc * v, sigV = speed * PERIPH_VEL_K * ecc * v;
++    const j = (k: string) => mind.judgment(`periph:${id}:${k}`);
++    return { pos: { x: seen.pos.x + sigP * j('px'), y: seen.pos.y + sigP * j('py') },
++      vel: { x: seen.vel.x + sigV * j('vx'), y: seen.vel.y + sigV * j('vy') }, sigP, sigV };
++  }
++
++  /** PERIPH_ACUITY: his uncertainty about a defender's position now (yd): the look's position error and its velocity error
++   * grown over the picture's age (dead reckoning). 0 without the flag or a picture. */
++  pictureSpread(d: Agent): number {
++    const m = this.memory.get(d);
++    if (!PERIPH_ACUITY || !m) return 0;
++    const age = Math.max(0, this.sim.t - m.t) + (m.latency ?? 0);
++    return Math.hypot(m.sigP ?? 0, (m.sigV ?? 0) * age);
++  }
++
+   /** Age of his picture of a defender: memory age plus its sensing latency.
+    * Zero when he has no memory of him (the estimate is then a fresh look). */
+   pictureAge(d: Agent): number {
+diff --git a/src/sim/receiver-forecast.ts b/src/sim/receiver-forecast.ts
+index 4da299fb4..4f494a304 100644
+--- a/src/sim/receiver-forecast.ts
++++ b/src/sim/receiver-forecast.ts
+@@ -63,6 +63,9 @@ export interface ReceiverPicture {
+   readonly facing: number;
+   readonly sampledAt: number;
+   readonly acquiredAt: number;
++  /** PERIPH_ACUITY: the look's position and velocity uncertainty (yd, yd/s) from its eccentricity. */
++  readonly sigP?: number;
++  readonly sigV?: number;
+ }
+ 
+ export interface ReceiverEstimate {
+@@ -153,8 +156,9 @@ export class ReceiverForecast {
+   constructor(readonly observer: object, readonly prior: InstalledReceiverRoute, private readonly dt: number) {}
+ 
+   /** The last acquired picture of the receiver (sample time and speed), or null if never seen. */
+-  lastPicture(): { sampledAt: number; speed: number } | null {
+-    return this.picture ? { sampledAt: this.picture.sampledAt, speed: Math.hypot(this.picture.vel.x, this.picture.vel.y) } : null;
++  lastPicture(): { sampledAt: number; speed: number; sigP: number; sigV: number } | null {
++    return this.picture ? { sampledAt: this.picture.sampledAt, speed: Math.hypot(this.picture.vel.x, this.picture.vel.y),
++      sigP: this.picture.sigP ?? 0, sigV: this.picture.sigV ?? 0 } : null;
+   }
+ 
+   acquire(p: ReceiverPicture): void {

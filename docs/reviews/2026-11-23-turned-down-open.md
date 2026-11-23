@@ -106,3 +106,139 @@ So the decision on a target in his periphery is priced from a near-perfect posit
 than a passer's eyes give. Human peripheral vision detects motion but loses position and velocity precision with
 eccentricity. The missing mechanism is a positional and velocity error that grows with the angle off his gaze (and a
 "clear" cone narrower than 31° for reading separation), rather than latency alone. Not built.
+
+## PERIPH_ACUITY: the leak removed (built behind a flag, off)
+
+The assignment, relayed by Integration:
+- position and velocity error that grows with the angle off his gaze, for receivers and defenders, from stated vision
+  facts and scaled by his vision rating;
+- a narrower clear cone for reading separation;
+- no "must look" rule: his confidence in a picture falls with eccentricity and age.
+
+Built on develop 0226f0d3 (engine-91). Patch:
+`docs/reviews/patches/engine71-footwork/periph-acuity-on-0226f0d3.patch`.
+
+**What changes (src/sim/qbmind.ts, receiver-forecast.ts, behaviors/qb.ts).** Every picture he takes (receiverLook for
+receivers, observe for defenders) is offset by his misjudgment of that player.
+
+| quantity | law | source |
+|---|---|---|
+| position error σ_p | 0.06 × range × eccentricity (rad) | positional acuity grows about linearly with eccentricity (Levi, Klein & Aitsebaomo 1985) |
+| velocity error σ_v | 0.14 × speed × eccentricity | speed discrimination worsens off the fovea (McKee & Nakayama 1984) |
+| vision scale | both × (1.3 − 0.6 × vision) | — |
+
+- The offset is a stable unit normal per player (`mind.judgment`). It is his misreading of that man, so it doesn't
+  re-draw each tick and cause dither.
+- Defenders felt inside 3 yd keep their exact picture (pocket feel is separate).
+- The clear cone narrows from 19–31° to 10–15° half-width, by vision: the useful field for reading separation under
+  load (Ball et al. 1988). The periphery's edge is unchanged (45–69°).
+- No new gate. The window carries each picture's spread: σ_p plus σ_v grown over the picture's age. It widens the
+  margin spreads (contest, undercut, and the catch point through the receiver's spread) and the accuracy σ in
+  quadrature. The age spreads that PICTURE_AGE adds also come on with this flag, since an old peripheral picture is the
+  same uncertainty. A man seen from the corner of his eye is priced less confidently, and an old picture less still.
+- The decision-information scan stays at its listed counts. His own mind is read once per look and passed in, and the
+  receiver offset is reused; no row is raised.
+
+**Measured.** The same 8 games (seeds 11–14, 31–34), flag off against on. The games diverge, so the outcome rows are
+not paired.
+
+The decision's picture, by head angle at the windup (p50 / p90; off → on):
+
+| head angle | n (off / on) | receiver error, yd | near defenders' error, yd |
+|---|---|---|---|
+| 0-15° | 332 / 338 | 0.04 / 0.19 → 0.07 / 0.23 | 0.13 / 0.54 → 0.21 / 0.61 |
+| 15-30° | 109 / 90 | 0.05 / 0.18 → 0.32 / 0.65 | 0.13 / 0.57 → 0.32 / 2.05 |
+| 30-60° | 107 / 97 | 0.13 / 0.54 → 0.56 / 1.38 | 0.33 / 1.71 → 0.63 / 2.13 |
+| over 60° | 93 / 77 | 0.32 / 1.17 → 0.50 / 2.20 | 0.50 / 6.43 → 1.09 / 6.62 |
+
+The error now grows with the angle off his gaze, and in the cone it barely moves.
+
+Throws by head angle at the decision (completion, INT, yards per attempt; off → on):
+
+| head angle | off | on |
+|---|---|---|
+| 0-15° | n 265, 67%, 5, 7.1 | n 256, 69%, 4, 8.6 |
+| 15-30° | n 111, 72%, 2, 8.1 | n 111, 66%, 1, 7.2 |
+| 30-60° | n 125, 74%, 2, 8.2 | n 112, 64%, 4, 7.8 |
+| over 60° | n 120, 72%, 1, 8.7 | n 95, 75%, 2, 6.1 |
+
+Off, throws decided off-gaze completed *better* than throws he was looking at: the leak's signature. On, 15-60°
+throws fall to 64-66% while in-cone throws hold.
+
+Over 60° is unchanged at 75%. Those targets are outside the periphery (no new look), so the throw is priced on the
+installed-route forecast and old memory. The forecast's own uncertainty there comes only from PICTURE_AGE's age
+spread. That is the next place to look, not settled here.
+
+Whole sample (8 games, off → on):
+
+| | off | on |
+|---|---|---|
+| dropbacks | 692 | 648 |
+| completion | 70.0% | 68.5% |
+| INT | 10 | 11 |
+| sacks | 30 (4.3%) | 36 (5.6%) |
+| throwaways | 16 | 16 |
+| time to throw p50 | 2.75 s | 2.75 s |
+| yards per dropback | 6.89 | 6.68 |
+
+Sacks +6 is inside one SE (about 5.5), but it is the direction a less certain picture would push. Watch it on a
+paired run.
+
+Open receivers turned down, while set (off → on):
+
+| | off | on |
+|---|---|---|
+| open receiver never thrown | 18% of dropbacks | 20% |
+| not in read order yet | 65% | 65% |
+| his read, eyes not there yet | 17% | 20% |
+| read already passed | 10% | 8% |
+| eyes on, not ready | 4% | 2% |
+| eyes on, priced shut | 4% | 3% |
+| footwork gate | 1% | 1% |
+
+- Of the open men he never looked at, the share whose price would clear his bar fell from 52 of 88 to 38 of 83. A man
+  he has not looked at is now priced on a vaguer picture.
+- Turned-down open throws remain a progression-reach and eye-timing problem, as before. This flag was not meant to
+  move that.
+
+Eyes at the windup (off → on):
+
+| | off | on |
+|---|---|---|
+| eyes on target → release p50 | 0.30 s | 0.25 s |
+| eyes never within 15° before release | 13% | 18% |
+| windup starts before eyes arrive | 57% | 54% |
+| head angle at windup p50 / p75 / p90 | 20 / 50 / 76° | 18 / 44 / 75° |
+| over 30° | 39% | 36% |
+| over 60° | 19% | 17% |
+
+He still decides off-gaze about as often. The price now carries the error, so he is no longer rewarded for it, but
+nothing makes him prefer looking first. A must-look rule was ruled out by the assignment.
+
+The rise in "never within 15°" (13% → 18%) is unexplained and about 2 SE. The narrower cone sends hot throws to look
+first more often (HOT_LOOK's inClearLook), which would push the other way. Left for a paired check.
+
+**Dither budget** (test/dither-budget.test.ts):
+- Off, it passes.
+- On, it fails one row: controller carrier, 0.296/s recorded, 0.390/s measured, budget 0.378 (pooled, three draws).
+  Every other controller and stage is inside its budget.
+
+Attribution (the panel's 95 pass plays × 3 draws, per play; scratchpad probe, same plays and seeds):
+- Carrier reversals rise from 123 to 149, and 148 of the 285 plays change course.
+- The added events are carrier / spacing (27 → 33) and carrier / mode switch (0 → 3). They are spread thin: the largest
+  is curl_flat seed 5 (+6, one play), then a screen (+5) and mesh (+4 each).
+- In curl_flat seed 5 the throw is the same (2.35 s, Y on the flat) and so is the catch time (3.40 s). His head first
+  differs at 1.90 s, by 0.003 rad, because the eyes follow the re-priced options. The zone defenders who read his eyes
+  then break on slightly different lines, and the run after the catch meets them in different places.
+
+The carrier's controller and stages are not touched by the flag. This is the course-change effect the test file
+already records for ZONE_EYES (engine-75), not a stage that flips. The budget was not raised. The row must be
+re-recorded, or the panel's small-sample carrier row pooled further, before the flag is promoted.
+
+**Checks (worktree on 0226f0d3):**
+- typecheck clean;
+- reference-stack and decision-information guard/scan pass;
+- baseline-runner fails its three Node-pin cases here because the container runs Node 22.23.4 against .nvmrc 22.23.3.
+  That is environmental; the same cases fail without the patch.
+
+Flag registered off: baseline "0", reference-stack "off", a FLAGS.md row, count 499 (92 off).
