@@ -29,7 +29,15 @@ def q(v, p):
 def frames(track):
     return {round(r[0], 1): r for r in track}
 
+JUMP = 1.5   # data guard: any tracked body moving > JUMP yd between consecutive 0.1 s frames (15 yd/s) drops the play
+def jumps(row):
+    for tr in [row['car'], *row['defs'].values(), *(row.get('offs') or {}).values()]:
+        for a, b in zip(tr, tr[1:]):
+            if b[0] - a[0] < 0.15 and math.hypot(b[1] - a[1], b[2] - a[2]) > JUMP: return True
+    return False
+
 def analyse(row):
+    if jumps(row): return 'jump'
     car = frames(row['car']); T = sorted(car)
     if len(T) < 3: return None
     defs = {k: frames(v) for k, v in row['defs'].items()}
@@ -132,10 +140,11 @@ def analyse(row):
                 key=row.get('key'), ev=row.get('ev'))
 
 if __name__ == '__main__':
-    rows = []
+    rows = []; nj = 0
     for f in sys.argv[1:]:
         for r in json.load(open(f)):
             a = analyse(r)
-            if a: rows.append(a)
+            if a == 'jump': nj += 1
+            elif a: rows.append(a)
     json.dump(rows, open(sys.argv[1].replace('.json', '-an.json'), 'w'))
-    print('analysed', len(rows))
+    print('analysed', len(rows), 'dropped for a tracking jump (> %.1f yd in 0.1 s)' % JUMP, nj)
