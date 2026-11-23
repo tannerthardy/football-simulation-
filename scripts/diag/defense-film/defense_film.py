@@ -8,7 +8,7 @@ offensive players other than the OL and the QB. Labels used, both sides: coverag
 play action, the motion man, the blitzers.
 
   1 alignment at the snap, by coverage family: corners' cushion (depth off their receiver), leverage (+ inside),
-    press share (cushion < 1.5 yd); slot defenders the same; deep safeties' depth, width from the ball and the two
+    press share (cushion < 2.5 yd: the receiver stands about 1 yd off the ball); slot defenders the same; deep safeties' depth, width from the ball and the two
     safeties' split; box backers' depth; box count (defenders within the OL's width + 2 yd and 7.5 yd deep).
   2 disguise: the shell shown at the snap (two-high: two DBs 9+ yd deep 8+ yd apart; one-high: one or two together;
     zero: none) against the coverage played; rotation down (two-high shown, one-high played) and back.
@@ -108,7 +108,7 @@ def op_alignment(plays):
             if kind in ('corner', 'slot'):
                 rx, ry = P(pl, s, near); inside = 1 if ry > by else -1
                 R[fam][f'{kind} cushion'].append(x - rx); R[fam][f'{kind} leverage(+in)'].append((ry - y) * inside)
-                R[fam][f'{kind} press'].append(1.0 if x - rx < 1.5 else 0.0)
+                R[fam][f'{kind} press'].append(1.0 if x - rx < 2.5 else 0.0)  # the receiver stands about 1 yd off the ball: a press corner shows 1.5-2.5
             elif kind == 'box':
                 R[fam]['box LB depth'].append(x)
         saf = sorted([k for k, v in seat.items() if v[0] == 'safety'], key=lambda k: -P(pl, s, k)[0])[:2]
@@ -233,8 +233,11 @@ def op_blitz(plays):
     for pl in plays:
         if pl['kind'] != 'pass': continue
         ply = pl['players']
-        if pl['src'] == 'nfl': bl = pl['blitz']
-        else: bl = [k for k, qq in enumerate(ply) if qq['side'] == 'D' and qq['slot'] in pl['blitz']]
+        # A blitzer, both sides: an LB or DB off the ball (2+ yd deep at the snap) who rushed (NFL: an initial pass rusher;
+        # sim: a rush or blitz behaviour 0.3 s after the snap). Edge rushers on the line are not blitzers.
+        s0 = snap_i(pl)
+        rushed = (lambda k: ply[k].get('rush')) if pl['src'] == 'nfl' else (lambda k: ply[k].get('k0') in ('rush', 'blitz'))
+        bl = [k for k, qq in enumerate(ply) if qq['side'] == 'D' and (qq['pos'] in LB or qq['pos'] in DB) and P(pl, s0, k)[0] >= 2 and rushed(k)]
         nonb = [k for k, qq in enumerate(ply) if qq['side'] == 'O' and qq['pos'] not in OL and qq['pos'] != 'QB'
                 and ((qq.get('route') and not qq.get('block')) if pl['src'] == 'nfl' else (qq.get('k0', '') not in BLOCK_KINDS))]
         s = snap_i(pl); end = at_t(pl, min(pl['throw'] or 3.0, 3.0))
