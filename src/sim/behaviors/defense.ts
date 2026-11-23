@@ -1986,6 +1986,13 @@ export class ZoneCoverage implements Behavior {
     if (live) return live;
     // Until he sees the throw, a zone defender keeps playing his zone.
     const squat = !this.deep && (this.zone === 'flat_s' || this.zone === 'flat_w') && squatSinkCall(sim);
+    // FLIGHT_BREAK: his flight has landed by his own estimate (playsThrow is over) and pursuit's possession read above has
+    // not yet seen a carrier: the break keeps its receiver (continueFlightBreak: only within 1 s of a break he made on a
+    // throw he believed) instead of his zone drop resuming. His own picture only.
+    if (FLIGHT_BREAK_ON() && !playsThrow(a, sim, null)) {
+      const cont = continueFlightBreak(a, sim);
+      if (cont) return cont;
+    }
     if (playsThrow(a, sim, null)) return playBall(a, sim, null, RELEASE_BELIEF ? () => this.zonePlay(a, sim) : undefined);
     if (squat) {
       const sq = this.squatCorner(a, sim);
