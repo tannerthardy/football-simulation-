@@ -23,11 +23,17 @@
 import type { Vec2 } from '../core/vec.js';
 
 const BELIEF = { vmax: 5.8, tau: 2.4 };
+/** The forecast covers his first move only (s; stated choice). Attempt 1 (uncapped) led every late defender by his whole
+ * lateness: p50 3.3 s, a goal 8.7 yd upfield of the catch where the carrier actually was 4.2 yd (the next defenders tackle
+ * or slow him), a 6.9 yd miss; first-defender failures rose 53 -> 87 on the staged set. A defender later than this aims
+ * at where the first move takes him, and pursuit forecasts the rest from what it then sees. */
+const FIRST_MOVE = 1.0;
 
 /** Displacement (yd) of the receiver `dt` s after the catch, as a defender at `defPos` judges it.
  * `upfield` is +1/-1 along x (the offense's attack direction). */
 export function postCatchLead(seenVel: Vec2, catchSpot: Vec2, defPos: Vec2, upfield: number, dt: number): Vec2 {
   if (dt <= 0) return { x: 0, y: 0 };
+  dt = Math.min(dt, FIRST_MOVE);
   const sp = Math.hypot(seenVel.x, seenVel.y);
   const rx = sp > 1e-6 ? seenVel.x / sp : 0, ry = sp > 1e-6 ? seenVel.y / sp : 0;
   // Away from the defender, by how lateral he is to the catch spot (0 straight up- or downfield of it).

@@ -1986,6 +1986,13 @@ export class ZoneCoverage implements Behavior {
     if (live) return live;
     // Until he sees the throw, a zone defender keeps playing his zone.
     const squat = !this.deep && (this.zone === 'flat_s' || this.zone === 'flat_w') && squatSinkCall(sim);
+    // FLIGHT_BREAK: his flight has landed by his own estimate (playsThrow is over) and pursuit's possession read above has
+    // not yet seen a carrier: the break keeps its receiver (continueFlightBreak: only within 1 s of a break he made on a
+    // throw he believed) instead of his zone drop resuming. His own picture only.
+    if (FLIGHT_BREAK_ON() && !playsThrow(a, sim, null)) {
+      const cont = continueFlightBreak(a, sim);
+      if (cont) return cont;
+    }
     if (playsThrow(a, sim, null)) return playBall(a, sim, null, RELEASE_BELIEF ? () => this.zonePlay(a, sim) : undefined);
     if (squat) {
       const sq = this.squatCorner(a, sim);
@@ -3077,7 +3084,9 @@ function flightBreakMove(a: Agent, sim: PlaySim, R: Agent, seen: Perceived, catc
   if (flightLeadOn()) {
     const tArr = timeToReach({ pos: a.pos, vel: a.vel, profile: a.profile, speedScale: a.speedScale }, catchSpot, a.profile.reach);
     const late = sim.t + tArr - catchT;
-    const was = leading.get(a) ?? false, on = was ? late > 0 : late > 0.15;
+    // Diagnostic: FLIGHT_LEAD_ENTER (tenths of a second; default 1.5 = 0.15 s), the exit half of it.
+    const enter = Number(process.env.FLIGHT_LEAD_ENTER ?? 1.5) / 10;
+    const was = leading.get(a) ?? false, on = was ? late > enter / 2 : late > enter;
     leading.set(a, on);
     if (on) {
       const lead = postCatchLead(seen.vel, catchSpot, a.pos, sim.attackDir(R.team), late);
