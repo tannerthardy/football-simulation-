@@ -38,7 +38,7 @@ const MEASURED: { controller: Record<string, [number, number, number]>; stage: R
   controller: { // budget = rate x 1.10 + 2 sqrt(events) / moving s
     QB: [0.0782, 882, 69], 'QB facing': [0.1665, 847, 141], // facing: dither-core's facing reader (QB lane, 2026-11-16), recorded on engine-71
     block: [0.3195, 4361, 1393], rush: [0.2871, 2787, 800], coverage: [0.3825, 4149, 1587],
-    carrier: [0.2963, 854, 253], route: [0.1648, 1311, 216], pursuit: [0.5950, 333, 198],
+    carrier: [0.3897, 785, 306], // re-recorded engine-92 (PERIPH_ACUITY on; pooled, three draws): the QB's re-priced options move his head (curl_flat seed 5: 0.003 rad at 1.90 s, same throw and catch), defenders reading his eyes break on other lines, and the run after the catch meets them elsewhere; 148 of 285 pass plays change course; no stage flips (carrier / spacing 27 -> 33, mode switch 0 -> 3 on the pass plays; carrier / spacing 0.1312 inside its own budget); as ZONE_EYES on engine-75. Was [0.2963, 854, 253] route: [0.1648, 1311, 216], pursuit: [0.5950, 333, 198],
   },
   stage: {
     'QB / spacing': [0.0283, 882, 25], 'block / spacing': [0.0683, 4361, 298], 'block / engagement': [0.1456, 4361, 635],

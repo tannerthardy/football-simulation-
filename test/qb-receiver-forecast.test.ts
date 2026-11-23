@@ -60,7 +60,9 @@ describe('QB receiver acquired picture and immutable installation', () => {
     f.r.body.pos = { x: 48, y: 6 };
     expect(f.sim.qbMind.receiverLook(f.r, { x: 60, y: 6 })).toBeNull();
     const p = f.sim.qbMind.receiverLook(f.r, { x: 48, y: 45 })!;
-    expect(p.pos).toEqual({ x: 48, y: 45 });
+    // The delayed position (PERIPH_ACUITY: within his stated error for the look's small eccentricity), not the hidden one.
+    expect(Math.hypot(p.pos.x - 48, p.pos.y - 45)).toBeLessThan(4 * Math.hypot(p.sigP ?? 0, p.sigV ?? 0) + 1e-9);
+    expect(Math.hypot(p.pos.x - 48, p.pos.y - 45)).toBeLessThan(0.2);
     expect(p.acquiredAt).toBe(.4); expect(p.sampledAt).toBeLessThan(.35);
     expect(see).not.toHaveBeenCalled(); expect({ ...f.sim.rng }).toEqual(rng);
   });
