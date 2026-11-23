@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { FAST_DRAIN, spendEnergy, type Body } from '../src/physics/kinematics.js';
 import { newSupport } from '../src/physics/support.js';
 import { World, type Intent } from '../src/physics/world.js';
+import { DIVE_STANCE } from '../src/physics/dive.js';
 
 const profile = { massKg: 100, radius: .3, reach: 1, heightYd: 2.05, vmax: 9,
   tau: 1.3, brake: 6, lateral: 6, turnRate: 8, backpedal: .6, shuffle: .55,
@@ -21,7 +22,8 @@ const kineticPerKg = (b: Body) => .5 * (b.vel.x ** 2 + b.vel.y ** 2);
 const restingCost = (b: Body, elapsed: number) => (.0045 + FAST_DRAIN * .012 * (Math.hypot(b.vel.x, b.vel.y) / profile.vmax) ** 2) * elapsed;
 
 describe('completed action effort', () => {
-  it('charges delivered dive work once despite the terminal falling/free state', () => {
+  // The one-tick plant's accounting: with DIVE_STANCE the push-off is a stance over three ticks and its work is checked in dive-stance.test.ts.
+  it.skipIf(DIVE_STANCE)('charges delivered dive work once despite the terminal falling/free state', () => {
     for (const impactTiming of ['speculative', 'local-sweep'] as const) for (const substeps of [1, 12, 48]) {
       const { b, w } = scene(substeps, impactTiming);
       const r = w.step([{ vel: { x: 0, y: 0 }, dive: { x: 1, y: 0 } }, free], dt);
