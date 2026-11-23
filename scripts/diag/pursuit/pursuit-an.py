@@ -42,7 +42,37 @@ def analyse(row):
     if isinstance(a, dict):
         f = _an(row, front=True)
         a['front'] = {k: f[k] for k in ('d1', 'd1dist', 'd1pos', 'outcome', 'cls', 'blk', 'start', 'contact_t', 'beat_t', 'after', 'tackle_from')} if f else None
+        a['pair'] = pair(row)
     return a
+
+def pair(row):
+    """'Together': the two nearest defenders at the catch, +0.5 s, +1.0 s and the first contact (first frame any defender is
+    within CONTACT): the angle between them seen from the carrier and whether they are on opposite sides of his velocity
+    line (bracketed). And the first defender to reach contact range: from behind his hips (bearing > 90 deg off his travel)
+    or not; his along/lateral position at contact."""
+    car = frames(row['car']); T = sorted(car); defs = {k: frames(v) for k, v in row['defs'].items()}
+    t0 = T[0]; u0 = unit(car[t0][3], car[t0][4])
+    first = None
+    for t in T:
+        c = car[t]; near = [(math.hypot(f[t][1] - c[1], f[t][2] - c[2]), k) for k, f in defs.items() if t in f]
+        if near and min(near)[0] <= CONTACT: first = (t, min(near)[1]); break
+    def at(t, who=None):
+        if t not in car: return None
+        c = car[t]; u = unit(c[3], c[4], u0)
+        near = sorted((math.hypot(f[t][1] - c[1], f[t][2] - c[2]), k) for k, f in defs.items() if t in f)[:2]
+        if len(near) < 2: return None
+        out = []
+        for d_, k in near:
+            dx, dy = defs[k][t][1] - c[1], defs[k][t][2] - c[2]
+            out.append((dx * u[0] + dy * u[1], -dx * u[1] + dy * u[0], math.atan2(dy, dx)))
+        sep = abs(math.degrees(math.atan2(math.sin(out[0][2] - out[1][2]), math.cos(out[0][2] - out[1][2]))))
+        return dict(sep=round(sep), bracket=out[0][1] * out[1][1] < 0, d=[round(near[0][0], 1), round(near[1][0], 1)])
+    res = {'catch': at(t0), 'p05': at(round(t0 + 0.5, 1)), 'p10': at(round(t0 + 1.0, 1)), 'contact': at(first[0]) if first else None}
+    if first:
+        t, k = first; c = car[t]; u = unit(c[3], c[4], u0); dx, dy = defs[k][t][1] - c[1], defs[k][t][2] - c[2]
+        al = dx * u[0] + dy * u[1]; off = math.degrees(math.acos(max(-1, min(1, al / max(1e-6, math.hypot(dx, dy))))))
+        res['first'] = dict(t=t, who=k, off=round(off), behind_hips=off > 90, moving=math.hypot(c[3], c[4]) > 1.0)
+    return res
 
 def _an(row, front=False):
     """front=True: D1 is the nearest defender not behind the carrier at the catch (along his travel > -1 yd)."""

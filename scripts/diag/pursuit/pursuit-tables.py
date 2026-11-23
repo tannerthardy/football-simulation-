@@ -32,6 +32,15 @@ def block(name, R):
         oc = collections.Counter(f['outcome'] for f in Fr); Ff = [f for f in Fr if f['cls']]
         print(f'first defender in front (nearest not behind at the catch, n {len(Fr)}, dist p50 {q([f["d1dist"] for f in Fr], .5):.1f}): ' + '; '.join(f'{k} {pct(v, len(Fr))}' for k, v in oc.most_common()))
         if Ff: print(f'  its failure class (of {len(Ff)}): ' + '; '.join(f'{k} {pct(v, len(Ff))}' for k, v in collections.Counter(f['cls'] for f in Ff).most_common()))
+    Pr = [r['pair'] for r in R if r.get('pair')]
+    if Pr:
+        parts = []
+        for when in ('catch', 'p05', 'p10', 'contact'):
+            X = [p[when] for p in Pr if p.get(when)]
+            if X: parts.append(f"{when} n {len(X)}: bracketed {pct(sum(x['bracket'] for x in X), len(X))}, angle between p50 {q([x['sep'] for x in X], .5):.0f} deg (p25 {q([x['sep'] for x in X], .25):.0f} p75 {q([x['sep'] for x in X], .75):.0f}), 2nd man p50 {q([x['d'][1] for x in X], .5):.1f} yd")
+        print('two nearest defenders together: ' + ' | '.join(parts))
+        Fi = [p['first'] for p in Pr if p.get('first') and p['first']['moving']]
+        if Fi: print(f"first defender to contact range (carrier moving > 1 yd/s, n {len(Fi)}): from behind his hips (> 90 deg off his travel) {pct(sum(f['behind_hips'] for f in Fi), len(Fi))}; bearing off his travel p50 {q([f['off'] for f in Fi], .5):.0f} deg; contact at +{q([f['t'] for f in Fi], .5):.1f} s p50")
     T = [r for r in R if r['tackle_from']]
     if T:
         c1 = collections.Counter(r['tackle_from']['at_catch'] for r in T); c2 = collections.Counter(r['tackle_from']['at_contact'] for r in T)
