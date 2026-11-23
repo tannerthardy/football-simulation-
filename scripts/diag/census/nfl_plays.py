@@ -55,7 +55,7 @@ with gzip.open(OUT, 'wt') as out:
             X = np.full((22, nf), np.nan); Y = np.full((22, nf), np.nan); roster = []
             for i, nid in enumerate(ids):
                 team = by[nid][0][8]; side = 'O' if team == off else 'D'; m = meta.get(nid, {})
-                roster.append({'side': side, 'pos': pos_of.get(nid, '?'), 'id': nid, 'route': m.get('wasRunningRoute') == '1', 'target': m.get('wasTargettedReceiver') == '1',
+                roster.append({'side': side, 'pos': pos_of.get(nid, '?'), 'id': nid, 'route': m.get('wasRunningRoute') == '1', 'routeRan': m.get('routeRan'), 'target': m.get('wasTargettedReceiver') == '1',
                                'motion': (m.get('inMotionAtBallSnap') == 'TRUE' or m.get('motionSinceLineset') == 'TRUE')})
                 for r in by[nid]:
                     f = int(r[4]) - snap

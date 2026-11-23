@@ -15,13 +15,15 @@ import { PlaySim } from '../../../src/sim/playsim.js';
 import { compilingPlan } from '../../../src/playbook/read-compiler/runtime.js';
 
 const arg = (n: string, d: string) => { const i = process.argv.indexOf(n); return i >= 0 && process.argv[i + 1] ? process.argv[i + 1] : d; };
+const ALL = process.argv.includes('--all'); // with --full: every dropback, not only completions
+const RUNS = process.argv.includes('--runs'); // --runs (with --full): run plays instead of passes; `catch` = the frame the ball is first held by a back who is not the passer (the handoff), recv = him
 const FULL = process.argv.includes('--full'); // --full: completions only, recorded through the end of the play (14 s at most) with the catch frame and the catcher; screens kept (tagged)
 const seed = Number(arg('--seed', '101')), games = Number(arg('--games', '4')), first = Number(arg('--first', '0')), out = arg('--out', 'out/census/sim-plays.jsonl.gz');
 mkdirSync(dirname(out), { recursive: true });
 const gz = createGzip(); gz.pipe(createWriteStream(out));
 const r2 = (v: number) => Math.round(v * 100) / 100;
 const MOMENTS = [15, 20, 25, 30];
-interface Rec { catchK: number | null; recv: number; sim: any; x: number[][]; y: number[][]; rel: number | null; done: boolean; route: boolean[]; target: number; def: Record<string, any[]>; meta: any; players: any[] }
+interface Rec { routes: Record<number, { id: string; wp: number[][] }>; catchK: number | null; recv: number; sim: any; x: number[][]; y: number[][]; rel: number | null; done: boolean; route: boolean[]; target: number; def: Record<string, any[]>; meta: any; players: any[] }
 const recs = new Map<object, Rec | null>();
 const proto = PlaySim.prototype as unknown as { tick: () => void };
 const tick0 = proto.tick;
@@ -37,10 +39,10 @@ const seats = (sim: any) => sim.agents.filter((a: any) => a.team === 'D').map((a
 proto.tick = function (this: any) {
   if (!recs.has(this)) {
     let rec: Rec | null = null;
-    if (!compilingPlan() && this.offCall?.kind === 'pass' && this.defCall && (FULL || !this.offCall.pass?.screen)) {
+    if (!compilingPlan() && this.offCall?.kind === (RUNS ? 'run' : 'pass') && this.defCall && (RUNS || FULL || !this.offCall.pass?.screen)) {
       const n = this.agents.length;
-      rec = { catchK: null, recv: -1, sim: this, x: Array.from({ length: n }, () => []), y: Array.from({ length: n }, () => []), rel: null, done: false, route: this.agents.map(() => false), target: -1, def: {},
-        meta: { screen: !!this.offCall.pass?.screen, cov: this.defCall.coverage.id, fam: this.defCall.coverage.family, man: !!this.defCall.coverage.man, pa: !!this.offCall.pass?.fake, form: this.offCall.formation.id, concept: this.offCall.pass.id, press: this.defCall.pressure?.name ?? null },
+      rec = { routes: {}, catchK: null, recv: -1, sim: this, x: Array.from({ length: n }, () => []), y: Array.from({ length: n }, () => []), rel: null, done: false, route: this.agents.map(() => false), target: -1, def: {},
+        meta: { screen: !!this.offCall.pass?.screen, cov: this.defCall.coverage.id, fam: this.defCall.coverage.family, man: !!this.defCall.coverage.man, pa: RUNS ? false : !!this.offCall.pass?.fake, form: this.offCall.formation.id, concept: RUNS ? (this.offCall.run?.scheme ?? this.offCall.label) : this.offCall.pass.id, press: this.defCall.pressure?.name ?? null },
         players: this.agents.map((a: any) => ({ side: a.team, slot: a.slot, pos: a.player?.position ?? a.player?.pos ?? '?', route: false, target: false })) };
     }
     recs.set(this, rec);
@@ -54,12 +56,14 @@ proto.tick = function (this: any) {
       if (k >= 0 && k >= have) {
         if (this.motion) rec.meta.motion = true;
         // One sample per 0.1 s grid point; a tick that crosses a grid point records the state it reaches (the first tick of a play covers frame 0 too).
-        for (let g = have; g <= k; g++) this.agents.forEach((a: any, i: number) => { rec.x[i].push(r2(a.pos.x - this.los)); rec.y[i].push(r2(a.pos.y)); if (a.behavior?.kind === 'route') rec.route[i] = true; });
+        for (let g = have; g <= k; g++) this.agents.forEach((a: any, i: number) => { rec.x[i].push(r2(a.pos.x - this.los)); rec.y[i].push(r2(a.pos.y)); if (a.behavior?.kind === 'route') { rec.route[i] = true; if (!rec.routes[i] && a.behavior.route) rec.routes[i] = { id: String(a.behavior.route.id), wp: (a.behavior.path ?? []).map((w: any) => [r2(w.p.x - this.los), r2(w.p.y)]) }; } });
         const air = this.ball?.kind === 'air';
         if (FULL) {
           if (have === 0 || rec.def.snap === undefined) rec.def.snap = seats(this); // each defender's assignment as the engine holds it on the first tick: the call as installed
           if (air && rec.rel === null) { rec.rel = k; rec.def.rel = seats(this); const tg = this.ball?.target; if (tg) rec.target = this.agents.indexOf(tg); }
-          if (rec.rel !== null && rec.catchK === null && this.ball?.kind === 'held') {
+          if (RUNS && rec.rel === null) rec.rel = 0;
+          if (RUNS && rec.catchK === null && this.ball?.kind === 'held' && this.ball.carrier?.team === 'O' && this.ball.carrier !== this.qb) { rec.catchK = k; rec.recv = this.agents.indexOf(this.ball.carrier); }
+          else if (!RUNS && rec.rel !== null && rec.catchK === null && this.ball?.kind === 'held') {
             if (this.ball.carrier?.team === 'O') { rec.catchK = k; rec.recv = this.agents.indexOf(this.ball.carrier); rec.def.catch = seats(this); }
             else rec.done = true; // taken away: not a completion
           }
@@ -86,10 +90,10 @@ for (let i = 0; i < games; i++) {
   simulateGame(home, away, { seed: seed + first + i });
   let n = 0;
   for (const rec of recs.values()) {
-    if (!rec || rec.x[0].length < 10 || (FULL && rec.catchK === null)) continue;
+    if (!rec || rec.x[0].length < 10 || (FULL && !ALL && rec.catchK === null)) continue;
     const players = rec.players.map((p, j) => ({ ...p, route: rec.route[j], target: j === rec.target }));
     const qb = rec.sim.agents.findIndex((a: any) => a === rec.sim.qb);
-    gz.write(JSON.stringify({ src: 'sim', id: `${seed}-${first + i}-${n}`, ...rec.meta, players, qb, rel: rec.rel, catch: rec.catchK, recv: rec.recv, x: rec.x, y: rec.y, def: rec.def }) + '\n'); n++; kept++;
+    gz.write(JSON.stringify({ src: 'sim', id: `${seed}-${first + i}-${n}`, ...rec.meta, players, qb, rel: rec.rel, catch: rec.catchK, recv: rec.recv, routes: rec.routes, x: rec.x, y: rec.y, def: rec.def }) + '\n'); n++; kept++;
   }
   console.error(`game ${i + 1}/${games} (seed ${seed + first + i}): ${n} dropbacks`);
 }
