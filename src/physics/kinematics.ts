@@ -38,6 +38,9 @@ export interface Body {
   /** TRUNK_TWIST: shoulders minus hips, radians, within ±TRUNK_RANGE. `facing` stays the hips (the gait heading the
    * speed cap, the turn motor and the base read); the shoulders are `facing + trunk`. Absent or 0 = shoulders on the hips. */
   trunk?: number;
+  /** DIR_START: his first step is planned before the start (see `DIR_START`), so that one start is loaded for its direction and pays no direction penalty. Set by the play at the snap cue,
+   * cleared when the start ends or the assignment changes; absent or false = a reaction. */
+  loaded?: boolean;
   /** Body-owned balance state (physics/support.ts), created by the world. */
   support?: Support;
 }
@@ -237,6 +240,20 @@ export const PLANT_SPEED = 2.5;
 /** How far ahead of his actual path his hips can lead while carrying speed. */
 const FACING_LEAD = Math.PI / 3;
 
+/** DIR_START (on since engine-92; DIR_START=0 restores; docs/reviews/2026-11-18-start-from-rest.md): the start from rest depends on the angle between the push and the pelvis, and costs the legs when
+ * the start is not planned: the direction penalty is the cost of pushing off in a direction the body was not loaded for. A first step planned before the start (the assignment he holds at the snap
+ * cue: every offensive player, and a rusher, blitzer or zone defender: PlaySim.loadPlannedStarts) is loaded for it and pays nothing; one start only, every later movement is a reaction for everyone.
+ * The start from rest depends on the angle between the push and the pelvis. The start force
+ * (the `lift` in locomotionAccel: the low-speed end of the legs' force-velocity curve) is scaled by 1 - (1 - L) sin^2 of the angle between the way he pushes and his hips' facing: 1 pushing
+ * the way the pelvis points, L pushing across it, 1 again straight behind (the backpedal is priced by its speed cap and the controllers' asks, which already match the NFL's). As he opens
+ * his hips to his travel the angle falls and the start force returns to full, so a man who turns and runs starts like a forward start (NFL: starts that have turned to within 45 degrees of
+ * their travel by +0.4 s are as fast as forward starts, 1.43 / 2.33 / 3.75 against 1.45 / 2.37 / 3.73 yd/s at 0.2 / 0.4 / 0.8 s).
+ * L is MEASURED, one parameter, not tuned on any outcome: the NFL lateral / forward start speed ratio at 0.2 s, 0.67 in both matched peak-speed bands 3.5-4.5 and 4.5-5.5 yd/s (BDB 2025
+ * weeks 1-9, 26,748 defender starts under 1 yd/s, scripts/diag/body/start_accel.py; 0.70 at 0.4 s). DIR_START_PCT is that ratio in percent (identity: 100). */
+export const DIR_START = process.env.DIR_START !== '0';
+const DIR_START_L = Number(process.env.DIR_START_PCT ?? 67) / 100;
+export function dirStartFactor(angle: number): number { const s = Math.sin(angle); return 1 - (1 - DIR_START_L) * s * s; }
+
 /** Maximum yaw rate at the current speed. */
 export function turnRateOf(body: Body): number {
   return body.profile.turnRate * (len(body.vel) > 6 ? 0.75 : 1);
@@ -292,7 +309,9 @@ export function locomotionAccel(body: Body, cmd: MoveCommand, dt: number, capaci
   // sideways at 0.1 s with their shoulders opened 10 degrees by 0.3 s. Facing
   // limits only the speed at which that force runs out (full, above). A
   // shoulder squeeze still costs burst: it narrows the start force.
-  const lift = (w: number) => { const f = start * narrow; return w > 0 && w < f ? f / w : 1; };
+  // DIR_START: the start force depends on where the legs push relative to the pelvis (see DIR_START).
+  const startDir = DIR_START && !body.loaded && dmag > 1e-6 ? dirStartFactor(angleDiff(body.facing, angleOf(dv0))) : 1;
+  const lift = (w: number) => { const f = start * narrow * startDir; return w > 0 && w < f ? f / w : 1; };
 
   const dvx = desired.x - body.vel.x;
   const dvy = desired.y - body.vel.y;

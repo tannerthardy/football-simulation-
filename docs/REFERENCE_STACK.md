@@ -2,9 +2,7 @@
 
 One combination of experimental flags that Run Game, Defense, Flex and Coverage all measure against. Before this, each agent tested on its own mix (the FLAT_PRESS / ZONE_RUN back-and-forth on 2026-11-09 came from two different flag sets), and no list of anyone's stack existed in the repository.
 
-- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-91`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
-
-- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-88`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
+- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-92`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
 - **The code:** `run/G3-oz-backfield` a749beb7 + `defense/G2-stance-tell` a0cb0789 (#411) + `defense/G2-lb-start` (#416, with #409) + `claude/quirky-franklin-9lbwbp` (#417, with #415) + develop 6676dfc2.
 - **Since 2026-11-09 the stack is the engine's default.** The flags listed `on` are read as on unless set to `0`; a bare command in a clean shell and `npm run ref -- <command>` run the same engine. `npm run ref -- --off -- <command>` runs the legacy engine (every listed flag off). `test/reference-stack.test.ts` fails if the file and the code defaults ever disagree. See "Promotion" below.
 
@@ -610,6 +608,16 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
 
+
+## engine-92: a start from rest costs the legs in a direction they were not loaded for (2026-11-18)
+
+On: `DIR_START` (Tools/Physics; `DIR_START_PCT` = 67) and `READ_COMMIT_TICK` (a repair in the carrier's first request). Details, tables and tools: [the start-from-rest review](reviews/2026-11-18-start-from-rest.md).
+
+`DIR_START`: the start force in `locomotionAccel` is scaled by `1 - (1 - L) sin^2(theta)`, theta the angle between the push and the pelvis: 1 for forward and for straight back (the backpedal stays priced by its cap and the controllers), L across the hips, decaying as he opens his hips to his travel. L = 0.67 is the NFL lateral / forward start-speed ratio at 0.2 s on reaction starts (DB/LB/DL, 26,748 starts, same operator in both bands; 0.70 at 0.4 s), one parameter, not tuned on any outcome. The penalty is the cost of pushing off in a direction the body was not loaded for: a first step planned before the start is loaded for it and pays nothing (`Body.loaded`, set in `PlaySim.loadPlannedStarts` at the snap cue from the assignment he holds: every offensive player on the count, and a rusher, blitzer or zone defender; a man defender, a run fit and a pursuit are reactions); it is one start, ended at 2 yd/s or on a new assignment (`endPlannedStarts`); every later movement is a reaction for everyone. Applied to every body by the same rule, no table by team or position.
+
+`READ_COMMIT_TICK`: the tick a zone read commits, or the designed phase's own exit test ends the design window, the carrier runs the ordinary lane read at once instead of finishing the tick on the designed press (duo seed 2: first request 1 deg then 15 deg against a 19 deg mesh line, now 19 / 19).
+
+Lone body (LB profiles, 12 bodies, hips held, ask 5, speed at 0.2 / 0.4 / 0.8 s): forward 1.30 / 2.27 / 3.51 either arm, lateral reaction 0.91 / 1.65 / 2.75 (NFL matched band 0.92 / 1.61 / 3.20), loaded lateral = forward, hips opened to travel converge on forward. 16 games: reaction starts of defenders move toward the NFL (lateral 1.57 / 2.50 / 3.63 to 1.41 / 2.20 / 3.35; NFL 0.95 / 1.67 / 3.28); the sim shuffle opens its hips to travel faster than the NFL's, so the law decays early (the next body question).
 
 ## engine-91: the stem worked to the defender's leverage (2026-11-18)
 

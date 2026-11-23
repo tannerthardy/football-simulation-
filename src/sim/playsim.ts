@@ -1,4 +1,4 @@
-import { shouldersOf } from '../physics/kinematics.js';
+import { DIR_START, shouldersOf } from '../physics/kinematics.js';
 /**
  * The play simulator: 22 agents on a continuous field, ticked at 20 Hz.
  *
@@ -196,6 +196,9 @@ const RELEASE_REDECIDE = process.env.RELEASE_REDECIDE !== '0';
 
 /** Outside the field's boundary planes (sidelines and end lines). */
 const outOfField = (p: { x: number; y: number }): boolean => p.x <= 0 || p.x >= 120 || p.y <= 0 || p.y >= FIELD_WIDTH;
+
+/** DIR_START: a planned start is over when he is moving at this speed (yd/s); the low-speed end of the legs' force curve, where the start force acts, is behind him. */
+const START_DONE = 2;
 
 export class PlaySim {
   readonly dt = DT;
@@ -1677,7 +1680,9 @@ export class PlaySim {
       const passContactStarts = capturePassContactStarts(this);
       const blockStarts = this.possession === 'O' && this.throwAt < 0
         ? this.agents.map(a => ({ ...a.pos })) : undefined;
+      if (DIR_START) this.loadPlannedStarts(t);
       const report = this.world.step(this.intents, this.dt);
+      if (DIR_START) this.endPlannedStarts();
       this.snapActionIntervals = (this.snapActionIntervals ?? 0) + 1;
       this.lastStep = report;
       observeTeamContactRules(this, report, teamContactStart);
@@ -1757,6 +1762,28 @@ export class PlaySim {
       this.event('fall', a, null, a.body.support?.cause);
     }
     afterStep(this);
+  }
+
+  /** DIR_START: a start is loaded for its direction when the first step is planned before it (docs/reviews/2026-11-18-start-from-rest.md). The plan is the assignment he holds at the snap cue:
+   * every offensive player on the count (his route, block, drop or carry is the call), and a defender whose called job needs nothing seen to start: the get-off of a rush or blitz and the drop
+   * of a zone. A man defender mirrors a release, a run fit keys a read, a pursuit chases what he sees: those are reactions. It is one start: it ends when he reaches `START_DONE` yd/s or his
+   * assignment changes; every later movement is a reaction for everyone. */
+  private loadedKind = new Map<Agent, string>();
+  private loadPlannedStarts(t: number): void {
+    for (const a of this.agents) {
+      const b = a.body;
+      if (b.loaded !== undefined || t < a.snapReadyAt) continue;
+      const kind = a.behavior?.kind ?? 'none';
+      b.loaded = a.team === 'O' || kind === 'rush' || kind === 'blitz' || kind === 'zone';
+      this.loadedKind.set(a, kind);
+    }
+  }
+  private endPlannedStarts(): void {
+    for (const a of this.agents) {
+      const b = a.body;
+      if (!b.loaded) continue;
+      if (Math.hypot(b.vel.x, b.vel.y) >= START_DONE || (a.behavior?.kind ?? 'none') !== this.loadedKind.get(a)) b.loaded = false;
+    }
   }
 
   private updateBall(catchStarts?: readonly Readonly<Vec2>[]): void {

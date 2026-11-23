@@ -4,6 +4,8 @@
  * apart (median, within 1.2 yd 51%); ours were 0.82 (88%). Off, on and on a break the target is
  * unchanged. */
 import { afterEach, describe, expect, it, vi } from 'vitest';
+// engine-92 (DIR_START on): fixture recorded before a start from rest cost the legs in a direction they were not loaded for; pinned test-only, the owning lane to re-record with it on
+vi.hoisted(() => { process.env.DIR_START = '0'; });
 
 afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 

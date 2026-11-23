@@ -317,6 +317,7 @@ problem), resolved.
 | [PRO-2](#pro-2) | Pressure arrives too early and from the wrong places | G5 | high | open |
 | [PRO-3](#pro-3) | Interior pairs move as one block | G5 | medium | open |
 | [PRO-4](#pro-4) | The QB doesn't slide away from an edge | G5 | medium | open |
+| [PRO-7](#pro-7) | A protecting back's set point follows the live QB and then an assigned rusher, with no bound to the QB's set depth | G5 | low | open (parked, not assigned) |
 | [PRO-5](#pro-5) | No pass protection calls | G9 | high | open (rusher read from sight: `PRO_READ`, on) |
 | [COV-1](#cov-1) | Zone defenders barely close while the ball is in the air | G3 | high | paused (#324 diagnosis) |
 | [COV-2](#cov-2) | Too much yardage per attempt and after the catch | G3 | high | open |
@@ -2627,6 +2628,15 @@ BDB2025 weeks 1–2 with `run_film_reference.py`.
   it after G5's physics work, because PRO-1 (a tackle losing one-on-one) isn't
   a call problem. Logged 2026-10-22.
 
+### PRO-7: A protecting back's set point follows the live QB and then an assigned rusher, with no bound to the QB's set depth
+
+- **Symptom:** a back in pass protection retreats behind the quarterback. Taught: step up on his assigned or scanned rusher inside-out and meet him at or in front of the QB's set depth, never behind the QB.
+- **Measure:** the protection control of `test/quarters-trips-rules.test.ts` (gun_spread_10 vs cover4, seed 1, PASS_KICK=0 as the test pins): the back (RB, `pass-pro` throughout) steps up from -5.0 to -3.7 by 1.0 s with nobody assigned, backs up with the dropping QB to -4.8 at 1.8 s (request -2.4 to -3.5), is assigned DE_S at 1.8 s (the end has looped round the tackle, deeper than the QB: DE_S at -7.3 / -8.8 yd at 2.4 / 2.8 s, QB at -7.9) and goes back with him: -8.7 yd and -4.2 yd/s away from the line at 2.8 s. `BACKFIELD_DEPTH=0` is the same mechanism (-9.1 at 5.1; the flag moves the QB 0.5 yd). 8 games, seed 101, develop 6c7d09b12 (scripts/diag/body/back-pro-count.mts): 285 protecting-back samples at 2.5 s, all RB; deeper than the QB 12 (4.2%), 1 yd or more 8 (2.8%), 2 yd or more 1; moving away from the line (under -0.5 yd/s) 109 (38%) but nearly all in front of the QB (back median -5.7, QB -6.7); deeper than the QB and retreating 3 (1.1%), all with an assigned rusher himself deeper than the QB (LB_W twice, LB_M; 1.2 yd off, rusher moving back at 1.2 yd/s).
+- **Cause:** *confirmed:* `PassProtector.update` (`src/sim/behaviors/blocking.ts`). Unassigned, a back's set is `min(QB-as-seen x + 1.2, snap x + 1.5)`: beside the live QB, so he follows the drop. Assigned, his set point is on the rusher-to-QB line at punching distance (`along = 0.85 contact`); the tackle's vertical-set bound (`lowX`, `PASS_KICK`, `SET_SPOT_TACKLE`) applies to linemen only, so nothing keeps a back at or in front of the QB's set depth against a rusher who has looped behind it.
+- **Tried:** nothing. Parked by Integration (about 1% of protecting-back samples), not assigned (2026-11-18).
+- **Where:** `src/sim/behaviors/blocking.ts` (`PassProtector.update`), `src/sim/engagement.ts` (`passSetDepth`).
+- **Open:** bound a back's set point to the QB's set depth (the call's launch point, as the tackles'), and step up on the assigned rusher inside-out; a controller question for the protection owner.
+
 ## Pass defense and coverage
 
 <a id="rec-1"></a>
@@ -3272,10 +3282,6 @@ From the issue register:
   `apex-fixture.ts` seam_flat.
 - **Open:** whether the width comes with the anticipation commit; whether
   the seam row moves when the QB reads the apex.
-
-## Pre-snap
-
-<a id="aln-1"></a>
 
 ### COV-12: Underneath zone defenders switch technique 1.6 times a second and barely drift with the routes
 

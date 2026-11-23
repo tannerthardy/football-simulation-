@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "engine-91",
+  "id": "engine-92",
   "runSet": {
     "commit": "1b5415de99b5b7194eff045f3c37a07a4c54c1a9",
     "seeds": [
@@ -424,6 +424,8 @@
     "CURL_SINK": "on",
     "SETTLE_DEPTH": "on",
     "DOWN_RISE_PLANT": "on",
+    "DIR_START": "on",
+    "READ_COMMIT_TICK": "on",
     "HANG_LOAD": "on",
     "SAFETY_DEPTH": "on",
     "SINK_LEAD": "off",

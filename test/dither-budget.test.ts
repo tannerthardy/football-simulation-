@@ -28,10 +28,11 @@ const stackOn = Object.entries(JSON.parse(readFileSync(new URL('../config/refere
 /** Rows read from three pooled panel draws: the small ones (fewer than 150 events on one panel), recorded from the pooled mean. Their slack is two Poisson standard deviations of the
  * pooled events, times the measured overdispersion of reversed re-aims (events come in bursts inside a play): 1.4 on pursuit, about 1 elsewhere. */
 const POOLED = new Set(['controller QB', 'controller QB facing', 'controller carrier', 'controller pursuit', 'stage QB / spacing', 'stage rush / engagement', 'stage rush / tackle bond',
-  'stage coverage / mode switch', 'stage coverage / tackle bond', 'stage coverage / containment', 'stage carrier / spacing', 'stage carrier / mode switch', 'stage route / spacing']);
+  'stage coverage / mode switch', 'stage coverage / tackle bond', 'stage coverage / containment', 'stage carrier / spacing', 'stage route / spacing']);
 const POOLED_DISPERSION = 1.4;
 
-/** Measured 2026-11-12 on develop 121d458b (engine-49, PURSUIT_FIELD on). The POOLED rows (above) were re-recorded 2026-11-16 from three pooled panel draws (moving s and events are the pool's), on the engine-72
+/** carrier / mode switch (6 events, 0.0070/s) is not recorded since engine-92: READ_COMMIT_TICK removed the first-tick transient after the handoff (the tick a zone read commits or the design window's exit ends, he finished on the designed press while the next tick's lane read chose its own line); three pooled draws now read under the 5-event floor.
+ * Measured 2026-11-12 on develop 121d458b (engine-49, PURSUIT_FIELD on). The POOLED rows (above) were re-recorded 2026-11-16 from three pooled panel draws (moving s and events are the pool's), on the engine-72
  * defaults with the engine-73 set off (its flags and numerics QB_FOOTWORK, ZONE_HOLD, END_KEY, OFF_PEDAL stubbed to 0), in the project the test runs in now (core-defaults: BALL_EST 6145 and SIGHT_STALE 7 at their
  * defaults). The first pooled record, on ae9f566c4, ran with every numeric pinned to 0, which is not the engine the test runs on (it read pursuit 0.4025, containment 0.0031, carrier / spacing 0.0847). */
 const MEASURED: { controller: Record<string, [number, number, number]>; stage: Record<string, [number, number, number]> } = { // [reversed re-aims /s, moving s, reversed events]
@@ -45,7 +46,6 @@ const MEASURED: { controller: Record<string, [number, number, number]>; stage: R
     'rush / mode switch': [0.0589, 2787, 164], 'rush / spacing': [0.0736, 2787, 205], 'rush / engagement': [0.0415, 7756, 322],
     'rush / tackle bond': [0.0055, 7756, 43], 'coverage / spacing': [0.1056, 4149, 438], 'coverage / mode switch': [0.0277, 11522, 319],
     'coverage / tackle bond': [0.0080, 11522, 92], 'coverage / containment': [0.0020, 11522, 23], 'carrier / spacing': [0.1230, 789, 97], // re-recorded engine-77 (ZONE_EYES on; the same with ZONE_EYES=0 on this head). On engine-75 the flag added 5 reversals, all in one play (mesh seed 1, +2/+3 in the +100/+200 draws) whose carrier ran a different course with the zone defenders' eyes moved; no stage flipped; ARM_BREAK (engine-76) absorbed it
-    'carrier / mode switch': [0.0070, 854, 6],
     'route / spacing': [0.0090, 4011, 36],
   },
 };

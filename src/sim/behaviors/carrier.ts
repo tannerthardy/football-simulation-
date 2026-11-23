@@ -179,6 +179,14 @@ export function observedRecoveryAllowance(seen: Pick<Perceived, 'pose' | 'age'>,
  * tracked 2022 catchers 14 / 25), 8 games at develop f6fe9bf7. */
 export const CATCH_EYES = process.env.CATCH_EYES !== '0';
 
+/** READ_COMMIT_TICK (on; READ_COMMIT_TICK=0 restores): the tick a zone back's read commits (`pressAndRead` hands the entry over and ends the design window at the same instant) he runs
+ * the ordinary lane read at once, as he does on the next tick. Off, that tick still ran the designed press toward the entry (the window was read before the commit), and the next tick's
+ * lane read chose its own line: 15-40 deg off the entry line and back near the line he had run before (duo: -3 then 15 against a 19 deg mesh line; wz_strong 5 then 43 against 46),
+ * which the dither panel counts as 12-13 reversed carrier mode-switch re-aims per draw once a handoff lands on the commit tick, 0-1 when it does not. The committed read changes
+ * nothing else: the design window ended on that instant either way. The same holds when the designed phase's own exit test (`designExit`) ends the window: he no longer finishes that tick on the
+ * designed heading (duo, the first tick after the handoff: -3 then 15 against a 19 deg mesh line). */
+export const READ_COMMIT_TICK = process.env.READ_COMMIT_TICK !== '0';
+
 /** CARRIER_BRACE (off): the carrier lowers his pads for a tackler he sees closing
  * head-on, and drives his body through the contact in the last stride. */
 export const CARRIER_BRACE = process.env.CARRIER_BRACE === '1';
@@ -379,6 +387,7 @@ export class BallCarrier implements Behavior {
   private pressReadAt = 0;
   private followEnded = false;
   private catchLine: number | null = null;
+  private leftDesignAt = -1;
 
   constructor(
     private readonly opts: CarrierOptions = {},
@@ -390,8 +399,9 @@ export class BallCarrier implements Behavior {
   update(a: Agent, sim: PlaySim): MoveCommand {
     const dir = sim.attackDir(a.team);
     const cutSkill = 0.85 + 0.35 * a.r('elusiveness');
-    const designed = !!this.opts.aim && this.opts.aimUntil !== undefined
+    const inDesign = () => !!this.opts.aim && this.opts.aimUntil !== undefined
       && sim.t < this.opts.aimUntil && (a.pos.x - sim.los) * dir < -0.8;
+    let designed = inDesign();
     if (runReadObservers.has(sim)) observeRunRead(sim, a, 'carrier-start', { designed, aim: this.opts.aim, aimUntil: this.opts.aimUntil });
     // Zone runs: press the track and read the key relationship; commit on
     // what it shows, at decision depth, or when pressing is unsafe.
@@ -400,6 +410,7 @@ export class BallCarrier implements Behavior {
     if (zoneRead) {
       const cmd = this.pressAndRead(a, sim, dir, cutSkill);
       if (cmd) return cmd;
+      if (READ_COMMIT_TICK) designed = inDesign();
     }
     // CATCH_EYES: eyes still coming off the ball; he carries his catch line.
     if (CATCH_EYES && this.opts.catchAt !== undefined && sim.t < this.opts.catchAt + a.profile.reactionTime) {
@@ -423,6 +434,7 @@ export class BallCarrier implements Behavior {
     }
 
     // Designed phase: press the aiming point.
+    let leaveDesign = false;
     if (designed) {
       let aim = liveAim(a, sim, this.opts)!;
       // Press the installed track, reading its occupied approach on the same
@@ -455,7 +467,7 @@ export class BallCarrier implements Behavior {
         const best = this.evaluate(a, sim, dir, true, aim);
         const exit = designExit(best, a.r('patience'));
         sim.commandTraceFor?.(a)?.carrier({ kind: 'design-exit', t: sim.t, ...exit });
-        if (exit.exit) this.opts.aimUntil = sim.t;
+        if (exit.exit) { this.opts.aimUntil = sim.t; if (READ_COMMIT_TICK) { leaveDesign = true; this.leftDesignAt = sim.t; } }
         if (follow && this.opts.run && (best?.trackBody || best?.kickLanded) && !this.followEnded) {
           this.followEnded = true;
           this.pressReadAt = sim.t + a.mind.decisionInterval;
@@ -469,7 +481,8 @@ export class BallCarrier implements Behavior {
       // him off the puller's back; the press tempo below is his patience.
       // Press the hole under control (patient backs more so), then burst.
       const press = a.profile.vmax * (0.62 + 0.18 * (1 - a.r('patience')));
-      return this.command(a, sim, h, press, cutSkill);
+      if (!leaveDesign) return this.command(a, sim, h, press, cutSkill);
+      this.nextEval = sim.t; // the window just ended: the ordinary lane read runs this tick, as it does on the next
     }
 
     // QB slide: past the sticks (or any gain) with a hit coming.
@@ -495,7 +508,7 @@ export class BallCarrier implements Behavior {
       // blockers instead: the crease read ran slip backs along the line to
       // the sideline, away from linemen leading up the field.
       const caught = !!this.opts.screenCatch;
-      const entry = !caught && a.pos.x < sim.los+.3 && a.pos.x > sim.los-4 ? runReadAim(a,sim,this.opts) : null;
+      const entry = !caught && a.pos.x < sim.los+.3 && a.pos.x > sim.los-4 ? (this.leftDesignAt === sim.t && this.pressEntry ? this.pressEntry : runReadAim(a,sim,this.opts)) : null;
       const best = entry ? null : this.evaluate(a, sim, dir, false);
       if(entry) { this.heading=angleOf({x:entry.x-a.pos.x,y:entry.y-a.pos.y}); a.tags.add('run-crease-read'); }
       else if (best) { this.heading = best.heading; this.plannedExit = best.exits; }

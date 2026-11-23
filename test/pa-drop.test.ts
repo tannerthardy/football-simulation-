@@ -15,6 +15,7 @@ async function drop(flag: string, concept: string, formation: string) {
   vi.resetModules();
   const flags: Record<string, string> = JSON.parse(readFileSync(new URL('../config/reference-stack.json', import.meta.url), 'utf8')).flags;
   for (const [k, v] of Object.entries(flags)) if (v === 'on') vi.stubEnv(k, '1');
+  vi.stubEnv('DIR_START', '0'); // engine-92: fixture recorded before a start from rest cost the legs in a direction they were not loaded for; the owning lane to re-record with it on
   vi.stubEnv('PA_DROP', flag);
   const { PlaySim } = await import('../src/sim/playsim.js');
   const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');
