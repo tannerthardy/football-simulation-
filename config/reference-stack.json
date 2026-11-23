@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "engine-91",
+  "id": "engine-92",
   "runSet": {
     "commit": "1b5415de99b5b7194eff045f3c37a07a4c54c1a9",
     "seeds": [
@@ -207,6 +207,7 @@
     "LEAN_PITCH": "on",
     "LEGS_HELD": "on",
     "PICTURE_AGE": "off",
+    "PERIPH_ACUITY": "on",
     "POCKET_CLIMB": "off",
     "BLOCK_SEEN": "on",
     "FREE_BOUND": "off",

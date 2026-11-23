@@ -6,6 +6,7 @@ import { PASS_BY_ID } from '../src/playbook/concepts.js';
 import { COVERAGE_BY_ID, FRONT_BY_ID } from '../src/playbook/defense.js';
 import { FORMATION_BY_ID } from '../src/playbook/formations.js';
 import { PlaySim } from '../src/sim/playsim.js';
+import { PERIPH_ACUITY } from '../src/sim/qbmind.js';
 
 const home = generateTeam(new Rng(91), 'Memory offense', 'MOF');
 const away = generateTeam(new Rng(92), 'Memory defense', 'MDF');
@@ -80,8 +81,11 @@ describe('QB acquired memory and coverage confirmation', () => {
     const clear = f.sim.see(f.sim.qb, f.d), peripheral = f.sim.see(f.sim.qb, f.d, 1.7);
     expect(clear.pos).not.toEqual(peripheral.pos);
     f.sim.qbMind.observe(middle);
-    expect(f.sim.qbMind.estimate(f.d).pos).toEqual(peripheral.pos);
-    const memory = (f.sim.qbMind as unknown as { memory: Map<typeof f.d, { t: number }> }).memory.get(f.d)!;
+    const memory = (f.sim.qbMind as unknown as { memory: Map<typeof f.d, { t: number; sigP?: number; sigV?: number }> }).memory.get(f.d)!;
+    // PERIPH_ACUITY (engine-92): the peripheral picture is the delayed one, offset by his stated acuity error (sigP, sigV).
+    const est = f.sim.qbMind.estimate(f.d).pos, err = Math.hypot(est.x - peripheral.pos.x, est.y - peripheral.pos.y);
+    if (PERIPH_ACUITY) expect(memory.sigP ?? 0).toBeGreaterThan(0); else expect(est).toEqual(peripheral.pos);
+    expect(err).toBeLessThan(4 * Math.hypot(memory.sigP ?? 0, memory.sigV ?? 0) + 1e-9);
     expect(memory.t).toBeCloseTo(.1);
   });
 
