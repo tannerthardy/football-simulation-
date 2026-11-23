@@ -1191,7 +1191,8 @@ window.TELEMETRY_READY = Promise.resolve(true);
     if (job && job.t === 'route' && job.brk != null && job.path[job.brk]) { const bp = job.path[job.brk]; for (let k = 0; k < F.t.length; k++) { const n = p.roster.length, x = F.p[(k * n + ri) * 3], y = F.p[(k * n + ri) * 3 + 1]; if (Math.hypot(x - bp[0], y - bp[1]) < 1.0) { tb = F.t[k]; break; } } }
     const th = (p.eventDetails || []).find((e) => e.type === 'throw' || e.type === 'throwaway');
     const line = (lab, time) => { if (time == null) { out.push(`${lab}: not available (${lab.startsWith('At the break') ? 'no break point reached' : 'no throw'})`); return; } const o = ownerAt(p, time); if (o) out.push(`${lab} (${time.toFixed(1)} s): ${f.owner} ${o.d.toFixed(1)} yd from ${f.recv}, ${o.lev}; ${o.tech}`); };
-    line('At the break', tb); line('At the release', th ? th.t : null); return out;
+    const ce = (p.eventDetails || []).find((e) => e.type === 'catch');
+    line('At the break', tb); line('At the release', th ? th.t : null); line('At the catch', ce ? ce.t : null); return out;
   }
   function renderArt(p) {
     const body = $('art-body'); if (!body) return;

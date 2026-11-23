@@ -1,0 +1,72 @@
+[
+ {
+  "gameSeed": 101,
+  "index": 109,
+  "owner": "SS",
+  "receiver": "F",
+  "note": "class (b) zone seat now man on RB; flat catch by F, nearest defender 14.0 yd at the catch, 14 yd YAC, cover3_match / post_cross+pa / i_jumbo_22"
+ },
+ {
+  "gameSeed": 107,
+  "index": 155,
+  "owner": "CB_W",
+  "receiver": "RB",
+  "note": "class (b) zone seat now man on X; flat catch by RB, nearest defender 11.7 yd at the catch, 7 yd YAC, cover6_area / four_verts+pa / gun_wing_12"
+ },
+ {
+  "gameSeed": 404,
+  "index": 37,
+  "owner": "CB_W",
+  "receiver": "RB",
+  "note": "class (b) zone seat matching X; flat catch by RB, nearest defender 8.2 yd at the catch, 7 yd YAC, cover2_wild / fade_flat / gun_trips_10"
+ },
+ {
+  "gameSeed": 105,
+  "index": 51,
+  "owner": "NB",
+  "receiver": "Y",
+  "note": "class (b) zone seat matching H; flat catch by Y, nearest defender 8.8 yd at the catch, 7 yd YAC, cover6 / stick+pa / gun_trey_11"
+ },
+ {
+  "gameSeed": 407,
+  "index": 73,
+  "owner": "FS",
+  "receiver": "X",
+  "note": "class (b) zone seat matching H; flat catch by X, nearest defender 9.4 yd at the catch, 5 yd YAC, cover6_rev / smash / gun_trey_11"
+ },
+ {
+  "gameSeed": 505,
+  "index": 184,
+  "owner": "CB_S",
+  "receiver": "H",
+  "note": "class (b) zone seat now man on Z; flat catch by H, nearest defender 8.3 yd at the catch, 2 yd YAC, cover2_match / hitch_cross / gun_trips_10"
+ },
+ {
+  "gameSeed": 507,
+  "index": 40,
+  "owner": "LB_M",
+  "receiver": "RB",
+  "note": "class (a) no seat owns the flat by the call; ringed = the nearest zone seat of the call; flat catch by RB, nearest defender 10.1 yd at the catch, 26 yd YAC, cover3_trips / flood / gun_bunch_11"
+ },
+ {
+  "gameSeed": 404,
+  "index": 60,
+  "owner": "LB_M",
+  "receiver": "RB",
+  "note": "class (a) no seat owns the flat by the call; ringed = the nearest zone seat of the call; flat catch by RB, nearest defender 11.3 yd at the catch, 26 yd YAC, cover3 / corner_flat / gun_spread_10"
+ },
+ {
+  "gameSeed": 508,
+  "index": 81,
+  "owner": "SS",
+  "receiver": "Y",
+  "note": "class (a) no seat owns the flat by the call; ringed = the nearest zone seat of the call; flat catch by Y, nearest defender 12.2 yd at the catch, 24 yd YAC, cover4_stubbie / double_slants / gun_doubles_11"
+ },
+ {
+  "gameSeed": 405,
+  "index": 98,
+  "owner": "NB",
+  "receiver": "Y",
+  "note": "class (a) no seat owns the flat by the call; ringed = the nearest zone seat of the call; flat catch by Y, nearest defender 8.2 yd at the catch, 20 yd YAC, tampa2 / curl_flat / gun_doubles_11"
+ }
+]

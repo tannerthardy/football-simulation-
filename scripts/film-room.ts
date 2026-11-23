@@ -65,7 +65,7 @@ if (mode === 'collect') {
   const dnd = (p: any) => `${['', '1st', '2nd', '3rd', '4th'][p.down] ?? p.down} & ${p.dist}`;
   // --select rows.json: a hand-picked page instead of the random draw; each row {game, index, owner, receiver, note} names a play of a collected game (game index and log index) and, for the owner check, the defender who owns the receiver.
   const selFile = opt('--select', ''); const sel: any[] = selFile ? JSON.parse(readFileSync(resolve(root, selFile), 'utf8')) : [];
-  const picked: { p: any; set: string; row?: any }[] = selFile ? sel.map((row) => ({ p: all.find((q) => q.game === row.game && q.index === row.index), set: 'check', row })).filter((x) => x.p)
+  const picked: { p: any; set: string; row?: any }[] = selFile ? sel.map((row) => ({ p: all.find((q) => (row.gameSeed !== undefined ? q.gameSeed === row.gameSeed : q.game === row.game) && q.index === row.index), set: 'check', row })).filter((x) => x.p)
     : [...random.map((p) => ({ p, set: 'random' })), ...zone.map((p) => ({ p, set: 'zone-yac' }))];
   if (selFile) console.error(`select: ${picked.length} of ${sel.length} rows found`);
   const plays = picked.map(({ p, set, row }, i) => {
