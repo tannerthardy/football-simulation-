@@ -3077,7 +3077,9 @@ function flightBreakMove(a: Agent, sim: PlaySim, R: Agent, seen: Perceived, catc
   if (flightLeadOn()) {
     const tArr = timeToReach({ pos: a.pos, vel: a.vel, profile: a.profile, speedScale: a.speedScale }, catchSpot, a.profile.reach);
     const late = sim.t + tArr - catchT;
-    const was = leading.get(a) ?? false, on = was ? late > 0 : late > 0.15;
+    // Diagnostic: FLIGHT_LEAD_ENTER (tenths of a second; default 1.5 = 0.15 s), the exit half of it.
+    const enter = Number(process.env.FLIGHT_LEAD_ENTER ?? 1.5) / 10;
+    const was = leading.get(a) ?? false, on = was ? late > enter / 2 : late > enter;
     leading.set(a, on);
     if (on) {
       const lead = postCatchLead(seen.vel, catchSpot, a.pos, sim.attackDir(R.team), late);
