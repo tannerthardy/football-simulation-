@@ -869,6 +869,7 @@ const SEAT_FILL_STATE = { on: true };
 const SEAT_ROLE_COST = 6;
 function seatRolePenalty(slot: DefSlot, zone: ZoneId): number {
   if (!SEAT_FILL_STATE.on) return 0;
+  // The Mike off the curl-flats and flats; the Sam, nickel, dime, safeties and Will are the curl-flat players.
   return slot === 'LB_M' && (zone.startsWith('curl_flat') || zone.startsWith('flat')) ? SEAT_ROLE_COST : 0;
 }
 /** Do the open segments a1-a2 and b1-b2 cross (proper intersection; shared endpoints do not count)? */
@@ -1222,9 +1223,12 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
     const lms = seats.map(seat => zoneLandmark(seatZone(seat), off));
     const dist = (slot: DefSlot, i: number) => Math.hypot(spots[slot]!.pos.x - lms[i].x, spots[slot]!.pos.y - lms[i].y)
       + (seatFillOn() ? seatRolePenalty(slot, seatZone(seats[i])) : 0);
-    // SEAT_FILL: no two defenders' straight paths from their spots to their landmarks cross.
-    const crossesChosen = (slot: DefSlot, i: number) => seatFillOn() && pick.some((other, j) =>
-      segmentsCross(spots[other]!.pos, lms[j], spots[slot]!.pos, lms[i]));
+    // SEAT_FILL: no two defenders' straight paths from their spots to their landmarks cross, the call's named
+    // underneath seats included (Buzz's SS to his hook: the Mike must not be sent to the strong curl-flat across him).
+    const named = seatFillOn() ? present.filter((sl) => { const r = roles[sl]; return r?.kind === 'zone' && !isDeepZone(r.zone) && spots[sl]; })
+      .map((sl) => ({ from: spots[sl]!.pos, to: zoneLandmark((roles[sl] as { zone: ZoneId }).zone, off) })) : [];
+    const crossesChosen = (slot: DefSlot, i: number) => seatFillOn() && (pick.some((other, j) =>
+      segmentsCross(spots[other]!.pos, lms[j], spots[slot]!.pos, lms[i])) || named.some((n) => segmentsCross(n.from, n.to, spots[slot]!.pos, lms[i])));
     let best: { cost: number; pick: DefSlot[] } | null = null;
     const pick: DefSlot[] = [];
     const used = new Set<DefSlot>();

@@ -11,7 +11,8 @@ import { isOL } from './blocking.js';
 import { KEY_REACT, KEY_STEP_SEEN, STEP_SEEN, keyScale } from '../key-read.js';
 import { END_LINE_X, FIELD_WIDTH, OPP_GOAL_X } from '../../core/field.js';
 import { angleDiff, clamp, lerp, norm, sub, type Vec2 } from '../../core/vec.js';
-import { DIR_CAP, directionalSpeedFactor, TRUNK_PRICE, TRUNK_RANGE, TRUNK_TWIST, type MoveCommand } from '../../physics/kinematics.js';
+import { DIR_CAP, directionalSpeedFactor, fatigueFactor, movingArrivalVelocity, TRUNK_PRICE, TRUNK_RANGE, TRUNK_TWIST, type MoveCommand } from '../../physics/kinematics.js';
+import { availability, supportParams } from '../../physics/support.js';
 import { timeToReach } from '../../physics/reach.js';
 import { coverageDepth, gapY, isDeepZone, zoneLandmark } from '../../playbook/alignment.js';
 import type { DefSlot, Gap, ZoneId, ZoneStyle } from '../../playbook/types.js';
@@ -1984,7 +1985,6 @@ export class ZoneCoverage implements Behavior {
     if (live) return live;
     // Until he sees the throw, a zone defender keeps playing his zone.
     const squat = !this.deep && (this.zone === 'flat_s' || this.zone === 'flat_w') && squatSinkCall(sim);
-    if (squat) { const br = this.squatBreak(a, sim); if (br) return br; }
     if (playsThrow(a, sim, null)) return playBall(a, sim, null, RELEASE_BELIEF ? () => this.zonePlay(a, sim) : undefined);
     if (squat) {
       const sq = this.squatCorner(a, sim);
@@ -2055,34 +2055,6 @@ export class ZoneCoverage implements Behavior {
   private flatCarrying = false;
   private oneCancelled = false;
 
-  /**
-   * SQUAT_SINK, deep to short (Rules' hard-corner card row 5: off the sink on the throw, the QB's front shoulder / off hand
-   * leaving the ball; plant the upfield foot and drive downhill): once he believes the ball is out and his read of the
-   * passer's shoulders picks a receiver in his area in front of him, he drives at that receiver's upfield-outside
-   * shoulder, leading him by the time it takes to get there, after his reaction time. No ball flight is needed (the
-   * shoulder read is his cue); once he has the ball's flight the generic ball phase is no better a guide to a flat
-   * receiver he is already driving on, so the drive holds until the catch (pursuit takes over then).
-   */
-  private squatDriving: Agent | null = null;
-  private squatBreak(a: Agent, sim: PlaySim): MoveCommand | null {
-    const rb = lastReleaseBelief(sim, a);
-    if (rb?.releasedAt === undefined) { this.squatDriving = null; return null; }
-    const dir = sim.attackDir(sim.offense[0].team), myDepth = (a.pos.x - sim.los) * dir, [ylo, yhi] = this.band;
-    let R = this.squatDriving;
-    if (!R) {
-      if (sim.t - rb.releasedAt < a.profile.reactionTime) return null;
-      const pick = shoulderTarget(a, sim, rb.releasedAt);
-      if (!pick.R) return null;
-      const s = sim.see(a, pick.R), d = (s.pos.x - sim.los) * dir;
-      if (s.pos.y < ylo - 3 || s.pos.y > yhi + 3 || d > myDepth + 1) return null;
-      R = this.squatDriving = pick.R;
-    }
-    const s = sim.see(a, R), outside = Math.sign(s.pos.y - sim.ballY) || 1;
-    const gap = Math.hypot(s.pos.x - a.pos.x, s.pos.y - a.pos.y), lead = Math.min(1.2, gap / Math.max(1, a.profile.vmax * 0.9));
-    const to = { x: s.pos.x + s.vel.x * lead + dir * 0.7, y: s.pos.y + s.vel.y * lead + outside * 0.5 };
-    a.tags.add('squat-drive');
-    return withFacingTechnique(track(a, to, s.vel, { facing: angleTo(a.pos, to), speed: 1, gain: 2.2 }), { label: 'squat-drive', key: s.vel, sharp: true });
-  }
   /** SQUAT_SINK: sinking under #1 (entered on his vertical stem, left when he cancels). */
   private squatSinking = false;
   /**
@@ -2132,8 +2104,16 @@ export class ZoneCoverage implements Behavior {
       return withFacingTechnique(stand(toQB), { label: 'squat-read' });
     }
     // Deep to short (Rules' hard-corner card row 5b; Tools: the NFL corner is still 6.8 yd deep at 3.0 s with #2 in the
-    // flat): a flat threat does not bring him off the sink; the throw does (squatBreak).
-    void flat;
+    // flat): with the shared break on the throw (FLIGHT_BREAK) a flat threat does not bring him off the sink; the throw
+    // does. Without it (measured: keeping the sink with no working break gave up the flat), an early flat is his and a
+    // late one brings him down between the flat and #1.
+    if (flat && !FLIGHT_BREAK_ON()) {
+      const fDepth = (flat.pos.x - sim.los) * dir;
+      if (myDepth < 7) { this.squatSinking = false; return null; }
+      const tx = sim.los + dir * Math.max(fDepth + 3, 4), ty = (flat.pos.y + o.pos.y) / 2;
+      const to = { x: tx, y: ty };
+      return withFacingTechnique(track(a, to, { x: 0, y: 0 }, { facing: face(to), speed: 1, gain: 1.6 }), { label: 'squat-down', key: flat.vel });
+    }
     // The sink: under #1 by a couple of yards, level-to-outside, to the hole-shot depth (Rules' card row 5b: 10-12 yd;
     // "a completed fade is the corner's fault for not getting deep enough"), where he holds until the throw.
     const want = Math.min(oDepth - SQUAT_UNDER, SQUAT_HOLE);
@@ -3040,6 +3020,53 @@ function manLook(a: Agent, sim: PlaySim, cmd: MoveCommand): MoveCommand {
 /** RELEASE_BELIEF's playBall: with the ball seen, the flight he acquired; on a belief from the arm alone (the motion
  * tells him when, not where) he bites: a zone defender plants (stops his drop, the rest of his zone play goes on), a
  * man defender stays on his man, until he sees the ball or the pull-down. */
+/** FLIGHT_BREAK (off; FLIGHT_BREAK=1 turns it on; Coverage C14 with Defense, 2026-11-23): one break on the throw for
+ * every defender, during the flight (Defense owns pursuit from the catch on). Taught: plant and drive on the throw to
+ * where the receiver will be, come to balance, with the leverage his seat plays (corner and flat players outside-in,
+ * hooks and the middle inside-out); Rules' hard-corner card row 5, the off-man and zone break rows. Measured before:
+ * - on the big flat plays against the sinking corner (c6-flat.mts) he was 3-6 yd from the receiver at the release and did
+ *   not close through the flight: one aimed about 5 yd off the catch, one held about 0.5 s;
+ * - Defense: first defenders beaten after the catch were 6.0 yd away and 4.3 yd ahead of the catcher at the catch, coming
+ *   downhill at -2.9 yd/s along his line (those who stop him are 2.9 yd away moving +2.5 with him); the shoulder break
+ *   ran through a projected spot at 0.9 speed and the flight drive went full speed to a fixed catch point, braking by
+ *   distance only.
+ * With the flag, both the arm-read break (shoulder pick, before he has the ball's flight) and the flight drive when he
+ * cannot beat the ball to its path aim at a point moving with the receiver's seen velocity that crosses his catch window
+ * at the time he estimates (the shoulder read's lead, or his own flight estimate), shaded by his seat's leverage (0.8 yd,
+ * fading inside 6 yd of contact), and close only as fast as he can brake from to his tackling-scaled through speed
+ * (movingArrivalVelocity, as Defense's BREAK_BALANCE). The goal is kept per defender (flightBreakOf) so pursuit starts
+ * from it at the catch with no re-aim. Read per call (a replay can switch it for one play). */
+export const FLIGHT_BREAK = process.env.FLIGHT_BREAK === '1';
+const FLIGHT_BREAK_ON = () => process.env.FLIGHT_BREAK === '1';
+const FLIGHT_SHADE = 0.8;
+export interface FlightBreak { receiver: Agent; goal: Vec2; goalVel: Vec2; side: -1 | 1; catchSpot: Vec2; catchT: number; t: number }
+const flightBreaks = new WeakMap<Agent, FlightBreak>();
+/** FLIGHT_BREAK: the break this defender is making (or last made this play) on a throw: the moving goal and its velocity,
+ * his leverage side (+1 the receiver's sideline side, -1 the ball side), the catch spot and time he assumed. Read-only,
+ * for pursuit's first tick after the catch (Defense). */
+export function flightBreakOf(a: Agent): FlightBreak | null { return flightBreaks.get(a) ?? null; }
+/** Outside-in for corners and flat / curl-flat / deep outside seats, inside-out for hooks, the middle and robbers. */
+function seatOutsideIn(a: Agent): boolean {
+  const b = a.behavior as { zone?: string; kind?: string } | undefined;
+  const z = b?.zone ?? '';
+  if (z) return /^(flat_|curl_flat_|deep_third_|deep_half_|quarter_._out)/.test(z);
+  return a.slot.startsWith('CB');
+}
+function flightBreakMove(a: Agent, sim: PlaySim, R: Agent, seen: Perceived, catchT: number, catchSpot: Vec2): MoveCommand {
+  const left = Math.max(0, catchT - sim.t);
+  const goal = { x: catchSpot.x - seen.vel.x * left, y: clamp(catchSpot.y - seen.vel.y * left, 0.3, FIELD_WIDTH - 0.3) };
+  const outward = Math.sign(seen.pos.y - sim.ballY) || 1, side: -1 | 1 = seatOutsideIn(a) ? 1 : -1;
+  const contact = a.profile.radius + R.profile.radius + a.profile.reach * 0.65;
+  const dg = Math.hypot(goal.x - a.pos.x, goal.y - a.pos.y);
+  goal.y = clamp(goal.y + side * outward * FLIGHT_SHADE * clamp((dg - contact) / 6, 0, 1), 0.3, FIELD_WIDTH - 0.3);
+  const support = a.body.support;
+  const capacity = support ? availability(support, supportParams(a.profile), fatigueFactor(a.body.energy)) : 1;
+  const vel = movingArrivalVelocity(a.body, goal, seen.vel, a.profile.vmax * a.speedScale, contact, 2.5 + 2 * (1 - a.r('tackling')), 1, capacity);
+  flightBreaks.set(a, { receiver: R, goal: { ...goal }, goalVel: { ...seen.vel }, side, catchSpot: { ...catchSpot }, catchT, t: sim.t });
+  a.tags.add('flight-break');
+  return withMovementObjective({ vel }, { kind: 'moving', point: goal, velocity: seen.vel });
+}
+
 function playBelievedBall(a: Agent, sim: PlaySim, man: Agent | null, continueCoverage?: () => MoveCommand): MoveCommand {
   const fallback = (): MoveCommand => {
     if (continueCoverage) return continueCoverage();
@@ -3092,6 +3119,7 @@ function playBelievedBall(a: Agent, sim: PlaySim, man: Agent | null, continueCov
       // rule-of-thumb ball speed). One receiver per belief; his projected spot updates as his picture does.
       const r = sim.see(a, pick.R), left = !SHOULDER_LEAD ? 0 : Math.max(0, Math.min(SHOULDER_FLIGHT_MAX,
         Math.hypot(r.pos.x - pick.from.x, r.pos.y - pick.from.y) / SHOULDER_BALL_SPEED - (sim.t - rb.releasedAt)));
+      if (FLIGHT_BREAK_ON()) return flightBreakMove(a, sim, pick.R, r, sim.t + left, { x: r.pos.x + r.vel.x * left, y: r.pos.y + r.vel.y * left });
       return runThrough(a, { x: r.pos.x + r.vel.x * left, y: r.pos.y + r.vel.y * left }, { speed: 0.9 });
     }
     return stopDrop(sim, continueCoverage());
@@ -3227,6 +3255,8 @@ function flightApproach(a: Agent, sim: PlaySim, path: PlaySim['ballPath'], acqui
   // Can't beat the ball to its path: drive on the catch point to arrive with
   // the ball — on the receiver's near side, ready to play through the hands
   // or make the tackle the moment it's caught.
+  // FLIGHT_BREAK: he cannot beat the ball to its path: the shared break on the receiver's moving catch window.
+  if (FLIGHT_BREAK_ON() && window) return flightBreakMove(a, sim, window.receiver, window.seen, window.t, window.p);
   const land = window?.p ?? arrivalPoint(sim, path);
   if (land) {
     // Close to the catch itself. A fixed yard of standoff plus inside shade
