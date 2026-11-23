@@ -55,7 +55,7 @@ P.tick = function () {
     if (p.rec.rows.length && p.rec.rows.at(-1).k === k) continue;
     const c = p.c, o = p.one, b: any = c.behavior;
     const side = Math.sign(o.pos.y - this.ballY) || 1;
-    const job = b instanceof CoverageDefender ? b.job + (b.state?.mode ? `[${b.state.mode}]` : '') : b?.kind ?? '';
+    const job = b instanceof CoverageDefender ? b.job + ((b as any).state?.mode ? `[${(b as any).state.mode}]` : '') : b?.kind ?? '';
     const sub = b instanceof CoverageDefender ? (b as any).sub : b;
     const tech = sub?.kind === 'zone' ? label.get(c) ?? '' : sub?.kind === 'man' ? `man${sub.hipsOpen ? '-open' : ''}${sub.opts?.trail ? '-trail' : ''}` : sub?.kind ?? '';
     p.rec.route ??= o.behavior?.route?.id ?? null;

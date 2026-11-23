@@ -23,7 +23,14 @@ mkdirSync(dirname(out), { recursive: true });
 const FAM = new Set(['cover2', 'tampa2', 'cover6']);
 const THR = { fix: 5.1, rel: 5.2 };
 const Z: any = ZoneCoverage.prototype, P: any = PlaySim.prototype;
-const up0 = Z.update, tick0 = P.tick;
+const up0 = Z.update, tick0 = P.tick, res0 = P.buildResult;
+// Every throw against these calls: the target's route, depth and width at the release, and the play's result (the cost side).
+P.buildResult = function () {
+  const res = res0.call(this);
+  const st = this.__c26;
+  if (st?.throw && !st.thrown) { st.thrown = true; appendFileSync(out.replace(/\.jsonl$/, '-throws.jsonl'), JSON.stringify({ ...st.throw, outcome: res.outcome, yards: res.yards }) + '\n'); }
+  return res;
+};
 const label = new WeakMap<any, string>();
 Z.update = function (a: any, sim: any) { const c = up0.call(this, a, sim); try { label.set(a, facingTechnique(c)?.label ?? 'other'); } catch { /* */ } return c; };
 const r1 = (v: number) => Math.round(v * 10) / 10;
@@ -58,8 +65,17 @@ P.tick = function () {
   else if (!air && [15, 20, 25, 30].includes(k) && !st.k.has(String(k))) kind = 'fix';
   if (!kind || st.done) return res;
   st.k.add(kind === 'rel' ? 'rel' : String(k));
-  if (kind === 'rel') st.done = true;
   const dir = this.attackDir('O');
+  if (kind === 'rel') {
+    st.done = true;
+    const T = this.ball?.target;
+    if (T) {
+      const nr: Record<string, string> = {};
+      for (const [ref, slot] of Object.entries(this.offAlign.numbering ?? {})) if (slot) nr[slot as string] = ref;
+      st.throw = { seed, cov: this.defCall.coverage.id, fam: this.defCall.coverage.family, concept: this.offCall.pass?.id, slot: T.slot, ref: nr[T.slot] ?? '?',
+        route: T.behavior?.route?.id ?? null, depth: r1((T.pos.x - this.los) * dir), w: r1(Math.min(T.pos.y, FIELD_WIDTH - T.pos.y)) };
+    }
+  }
   const refOf: Record<string, string> = {};
   for (const [ref, slot] of Object.entries(this.offAlign.numbering ?? {})) if (slot) refOf[slot as string] = ref;
   let seats: any[] | null = null;

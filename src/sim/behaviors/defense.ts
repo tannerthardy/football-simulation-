@@ -89,6 +89,30 @@ export const FLAT_SINK = process.env.FLAT_SINK !== '0';
  * capped (ZoneCoverage.flatCarry); with #1 vertical he sinks with #1 as before. */
 export const FLAT_CARRY = process.env.FLAT_CARRY !== '0';
 const FLAT_SINK_DEPTH = 18;
+/** SQUAT_SINK (off; SQUAT_SINK=1 turns it on; Coverage C14, 2026-11-23): one flat-corner rule for every Cover 2 form, the
+ * Cover 6 / Cover 8 half side and the cloud corner (Cover 3 Cloud, inverted Cover 2), in place of FLAT_SINK, FLAT_CARRY
+ * and the sink_corner / cloud_corner rules (squatTopDown), which become this zone seat. Rules' standard card, cover2 x
+ * CB_S rows 1, 4, 5, 6, 8 ([TD Cover 2], [Bowen C2], [TD Trap]): he reads #1 and #2 from his alignment; #1's vertical stem
+ * with no flat threat means sink at 45 degrees under #1 (the key is #1's release as he sees it, not a run/pass read or
+ * #2/#3 declaring; pull to the run only if #1 blocks); stay under and level-to-outside of #1, cushioning the hole, until
+ * #1 is capped over the top; a flat threat in front of him brings him down top-down (early: the flat is his; late: he
+ * squeezes down between the flat and #1); #1 in or stopping releases him to his flat area; a #2 flat that turns up is
+ * carried until capped (FLAT_CARRY's rule). The sink is a side-on run with the hips open and the eyes on the QB (facing
+ * at most 70 degrees off his line of travel, so the body model's speed cap for that angle applies, not the backpedal's).
+ * Measured before (docs/reviews/2026-11-23-coverage-cards-engine.md F6): the match lane pick pulled him forward and inside
+ * until 1.5 s, the sink waited for a pass read, and he sank facing the QB at 2.5-3.6 yd/s against #1's 6.7; NFL corner
+ * at 3.0 s against a vertical #1 is 9.4 yd deep, 4.0 under #1 and 0.7 yd outside him (Tools' half_window.py). The depth
+ * he reaches comes from the relation to #1, the flat threat and the cap, not from a number. No jam (a follow-up: zone
+ * corners have no press contact). */
+export const SQUAT_SINK = process.env.SQUAT_SINK === '1';
+/** Is this call's flat seat played by SQUAT_SINK (every Cover 2 form, Cover 6/8 half side, cloud; not Deuce's palms or DOT)?
+ * The flag is read per call (not only at import) so a diagnostic replay can switch it for one play of a game. */
+export function squatSinkCall(sim: PlaySim): boolean {
+  const c = sim.defCall.coverage;
+  if (process.env.SQUAT_SINK !== '1' || c.id.startsWith('deuce')) return false;
+  return c.family === 'cover2' || c.family === 'tampa2' || c.family === 'cover6' || c.id === 'cover3_cloud';
+}
+const SQUAT_UNDER = 2, SQUAT_FACE = (70 * Math.PI) / 180;
 const SINK_ENTER = 2, SINK_EXIT = 1;
 /** SEEN_EYES (default on; SEEN_EYES=0 restores the QB's internal read target): a zone defender
  * reads the QB's look from what he sees of him, not from the QB's internal
@@ -1081,6 +1105,19 @@ export const OFF_PEDAL = (OFF_PEDAL_BITS & 1) !== 0;
  * him from the double move. NFL (quarters_cb.py "#1 stops", stops before pass_forward): the corner gains +0.5 yd in the
  * 0.5 s after #1 stops (+0.9 inside 5 yd); ours drove -0.6. */
 export const OFF_PEDAL_SETTLE = (OFF_PEDAL_BITS & 2) !== 0;
+/** OFF_DRIVE (off; OFF_DRIVE=1 turns it on; Coverage C14 build 2, 2026-11-23): the off-man corner's break on the stop. Rules'
+ * standard off-man card (corner technique section, rows 4-5: S1, S3, S21, S8): he reads the receiver's throttle, hip sink
+ * and plant at the top of the stem and drives on the break, down the line, to the receiver's upfield shoulder; he does
+ * not wait for the throw. In a man call, with his receiver's stem stopped in his own picture (the shared stem-stop read)
+ * 12 yd deep or less and the receiver in front of him, he drives once he has seen the receiver slow below his trigger
+ * speed for his reaction time. Skill sets both: a fluid corner (man coverage, play recognition) waits for the plant
+ * (seen speed under about 1.2 yd/s) and reacts in about 0.1 s; a stiff one bites on the throttle (under about 3 yd/s)
+ * and reacts later, so the chop of a double move fools him more often (the cost is the stop-and-go; no outcome is
+ * awarded). He abandons the drive when he sees the receiver climb again (over 3 yd/s upfield) and plays his man from
+ * there. Traced before (F06, Cover 1 Off vs a Z hitch): the corner pedalled to 4 yd over the stop, stood still from
+ * 2.5 s and drove only 0.3 s after the throw at 3.1 s (OFF_PEDAL_SETTLE: "never coming forward before the throw"). */
+export const OFF_DRIVE = process.env.OFF_DRIVE === '1'; // read per call in trackReceiver, so a replay can switch it for one play
+const OFF_DRIVE_TOP = 0.8, OFF_DRIVE_DEPTH = 12;
 function cornerDropSeat(a: Agent, zone: string | undefined): boolean {
   return !!zone && a.slot.startsWith('CB') && zone.startsWith('deep_third_');
 }
@@ -1325,6 +1362,9 @@ export class ManCoverage implements Behavior {
   /** OFF_PEDAL: the stem-stop read (coverage-leverage `stemStopped`) on his own delayed sight of the stem. */
   private readonly stemAccel = new StemAcceleration();
   private stemStop = false;
+  /** OFF_DRIVE: when he first saw his stopped receiver under his trigger speed (-1 not yet), and whether he is driving. */
+  private driveSeen = -1;
+  private driving = false;
   private routeRead = false;
   private stemHeading: number | null = null;
   private stableSince = 0;
@@ -1464,6 +1504,25 @@ export class ManCoverage implements Behavior {
 
   /** Release movement only; provisional zone readers retain their own
    * support and recognized-flight priorities before using this technique. */
+
+  /** OFF_DRIVE: does the off-man corner drive on his receiver's stop now (see OFF_DRIVE)? */
+  private offDrive(a: Agent, sim: PlaySim, seen: Perceived, vx: number): boolean {
+    if (!sim.defCall.coverage.man || this.opts.overTop || this.opts.trail) { this.driving = false; return false; }
+    if (this.driving) {
+      if (vx > 3) { this.driving = false; this.driveSeen = -1; return false; }
+      return true;
+    }
+    const deep = seen.pos.x - sim.los, inFront = a.pos.x - seen.pos.x > 0.5;
+    const skill = clamp(0.6 * a.r('manCoverage') + 0.4 * a.r('playRecognition'), 0, 1);
+    const trigger = 1.2 + 1.8 * (1 - skill);
+    const speed = Math.hypot(seen.vel.x, seen.vel.y);
+    if (!this.stemStop || deep > OFF_DRIVE_DEPTH || !inFront || speed > trigger) { this.driveSeen = -1; return false; }
+    if (this.driveSeen < 0) this.driveSeen = sim.t;
+    if (sim.t - this.driveSeen < 0.08 + 0.2 * (1 - skill)) return false;
+    this.driving = true;
+    return true;
+  }
+
   trackReceiver(a: Agent, sim: PlaySim): MoveCommand {
     const R = this.target;
 
@@ -1564,7 +1623,8 @@ export class ManCoverage implements Behavior {
       // (off-man request -3.9 yd/s at 0.9 s with the stem seen at 1.7 upfield; pedal-trace.mts).
       if (OFF_PEDAL && !this.press && this.releaseObserved) {
         this.stemStop = stemStopped(vx, this.stemAccel.value, this.stemStop);
-        if (!this.stemStop || OFF_PEDAL_SETTLE) tx = Math.max(tx, a.pos.x);
+        if (process.env.OFF_DRIVE === '1' && this.offDrive(a, sim, seen, vx)) { tx = seen.pos.x + OFF_DRIVE_TOP; a.tags.add('off-drive'); }
+        else if (!this.stemStop || OFF_PEDAL_SETTLE) tx = Math.max(tx, a.pos.x);
       }
     }
     // Over the top: a deep carrier keeps a cushion on the vertical; trail: a
@@ -1923,10 +1983,15 @@ export class ZoneCoverage implements Behavior {
     if (live) return live;
     // Until he sees the throw, a zone defender keeps playing his zone.
     if (playsThrow(a, sim, null)) return playBall(a, sim, null, RELEASE_BELIEF ? () => this.zonePlay(a, sim) : undefined);
-    if (FLAT_CARRY && !this.deep && (this.zone === 'flat_s' || this.zone === 'flat_w') && knowsPass(sim, a) && !believesRun(sim, a)) {
+    const squat = !this.deep && (this.zone === 'flat_s' || this.zone === 'flat_w') && squatSinkCall(sim);
+    if (squat) {
+      const sq = this.squatCorner(a, sim);
+      if (sq) return sq;
+    }
+    if (!squat && FLAT_CARRY && !this.deep && (this.zone === 'flat_s' || this.zone === 'flat_w') && knowsPass(sim, a) && !believesRun(sim, a)) {
       const carry = this.flatCarry(a, sim); if (carry) return carry;
     }
-    if (FLAT_SINK && !this.deep && (this.zone === 'flat_s' || this.zone === 'flat_w') && knowsPass(sim, a) && !believesRun(sim, a)) {
+    if (!squat && FLAT_SINK && !this.deep && (this.zone === 'flat_s' || this.zone === 'flat_w') && knowsPass(sim, a) && !believesRun(sim, a)) {
       const sink = this.flatSink(a, sim);
       if (sink) return sink;
     }
@@ -1987,6 +2052,73 @@ export class ZoneCoverage implements Behavior {
   private flatRoute: Agent | null = null;
   private flatCarrying = false;
   private oneCancelled = false;
+
+  /** SQUAT_SINK: sinking under #1 (entered on his vertical stem, left when he cancels). */
+  private squatSinking = false;
+  /**
+   * SQUAT_SINK: the squat corner's play before the throw (see SQUAT_SINK). Null hands him to his flat zone play (the flat
+   * threat early, #1 in or stopping, a run read with #1 not releasing).
+   */
+  private squatCorner(a: Agent, sim: PlaySim): MoveCommand | null {
+    const dir = sim.attackDir(sim.offense[0].team), [ylo, yhi] = this.band, myDepth = (a.pos.x - sim.los) * dir;
+    const side = this.zone === 'flat_s' ? 'S' : 'W';
+    const oneSlot = sim.offAlign.numbering[`${side}1` as 'S1' | 'W1'];
+    const one = oneSlot ? sim.offense.find((r) => r.slot === oneSlot) : undefined;
+    if (!one) return null;
+    // A #2 flat that turns up after #1 cancels is carried (FLAT_CARRY's rule; it also keeps the #1-cancelled read).
+    if (!believesRun(sim, a)) { const carry = this.flatCarry(a, sim); if (carry) return carry; }
+    const o = sim.see(a, one), oDepth = (o.pos.x - sim.los) * dir, oUp = o.vel.x * dir, oAcross = Math.abs(o.vel.y);
+    const outside = Math.sign(o.pos.y - sim.ballY) || 1;
+    const q = sim.see(a, sim.qb), toQB = angleTo(a.pos, q.pos);
+    // #1's stem, as he sees it: enter on a vertical release (past 1.5 yd, over 3.5 yd/s and clearly more up than across);
+    // leave when #1 cancels (FLAT_CARRY's read) or stops climbing (under 1 yd/s upfield), far inside the entry.
+    if (!this.squatSinking) this.squatSinking = !this.oneCancelled && oDepth >= 1.5 && oUp > 3.5 && oUp > 1.5 * oAcross;
+    else if (this.oneCancelled || oUp < 1) this.squatSinking = false;
+    // The flat threat: another receiver in or entering his area, 6 yd deep or less, moving toward the sideline.
+    const inArea = (p: Vec2) => p.y >= ylo - 2 && p.y <= yhi + 2;
+    let flat: Perceived | null = null;
+    for (const r of sim.offense) {
+      if (r === sim.qb || r === one || isOL(r)) continue;
+      const c = sim.see(a, r), d = (c.pos.x - sim.los) * dir;
+      if (inArea(c.pos) && d <= 6 && d > -3 && c.vel.y * outside > 2 && Math.abs(c.vel.y) > Math.abs(c.vel.x) * 0.7) { flat = c; break; }
+    }
+    // Hips open to the field: off his line of travel toward the inside (the ball's side), never more than SQUAT_FACE, so
+    // a sink straight away from the QB does not flip between the two hips.
+    const inSign = Math.sign(sim.ballY - a.pos.y) || -outside;
+    const face = (to: Vec2) => {
+      const tv = Math.hypot(to.x - a.pos.x, to.y - a.pos.y);
+      if (tv < 0.4) return toQB;
+      const trav = Math.atan2(to.y - a.pos.y, to.x - a.pos.x);
+      const want = Math.abs(angleDiff(toQB, trav));
+      const cands = [trav + Math.min(want, SQUAT_FACE), trav - Math.min(want, SQUAT_FACE)];
+      return Math.sin(cands[0]) * inSign >= Math.sin(cands[1]) * inSign ? cands[0] : cands[1];
+    };
+    if (!this.squatSinking) {
+      // Before #1 declares: read #1 and #2 from his alignment, square, no lane pick. A flat threat, #1 cancelled, or a run
+      // read with #1 not releasing goes to his flat zone play (which carries the run fit).
+      if (flat || this.oneCancelled || believesRun(sim, a) || oDepth >= 6) return null;
+      return withFacingTechnique(stand(toQB), { label: 'squat-read' });
+    }
+    if (flat) {
+      // Top-down: an early flat is his; a late one brings him down between the flat and #1.
+      const fDepth = (flat.pos.x - sim.los) * dir;
+      if (myDepth < 7) { this.squatSinking = false; return null; }
+      const tx = sim.los + dir * Math.max(fDepth + 3, 4), ty = (flat.pos.y + o.pos.y) / 2;
+      const to = { x: tx, y: ty };
+      return withFacingTechnique(track(a, to, { x: 0, y: 0 }, { facing: face(to), speed: 1, gain: 1.6 }), { label: 'squat-down', key: flat.vel });
+    }
+    // The sink: under #1 by a couple of yards, level-to-outside, until a teammate he sees caps #1 over the top.
+    const capped = myDepth >= 10 && sim.defense.some((d) => {
+      if (d === a) return false;
+      const c = sim.see(a, d), over = (c.pos.x - o.pos.x) * dir;
+      return over > 0.5 && over < 8 && Math.abs(c.pos.y - o.pos.y) < 4;
+    });
+    const want = capped ? Math.min(myDepth, oDepth - SQUAT_UNDER) : oDepth - SQUAT_UNDER;
+    const to = { x: sim.los + dir * Math.max(want, myDepth - 0.5), y: o.pos.y + outside * 0.5 };
+    a.tags.add('squat-sink');
+    return withFacingTechnique(track(a, to, capped ? { x: 0, y: o.vel.y } : { x: o.vel.x, y: o.vel.y }, { facing: face(to), speed: 1, gain: 1.8 }),
+      { label: capped ? 'squat-hold' : 'squat-sink', key: o.vel });
+  }
 
   private flatSink(a: Agent, sim: PlaySim): MoveCommand | null {
     const dir = sim.attackDir(sim.offense[0].team), [ylo, yhi] = this.band, myDepth = (a.pos.x - sim.los) * dir;

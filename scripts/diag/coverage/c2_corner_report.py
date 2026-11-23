@@ -1,7 +1,8 @@
 """Why the Cover 2 / Cover 6 hard corner trails #1 (c2-corner.mts output). Plays where #1 climbs to 10+ yd before
 the release. python3 scripts/diag/coverage/c2_corner_report.py"""
 import json, statistics as st, collections as C
-P = [json.loads(l) for l in open('out/diag/coverage/c2-corner-all.jsonl')]
+import sys
+P = [json.loads(l) for l in open(sys.argv[1] if len(sys.argv) > 1 else 'out/diag/coverage/c2-corner-all.jsonl')]
 def med(v): return f'{st.median(v):.2f}' if v else '-'
 def first(rows, f):
     return next((r for r in rows if f(r)), None)

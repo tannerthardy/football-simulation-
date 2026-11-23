@@ -161,7 +161,7 @@ function attribute(sim: any, log: any[], R: any, row: any, play: any): any {
   const base: any = { owners: owners.map((o) => `${o.s}@${o.from.toFixed(2)}-${o.to.toFixed(2)}`).join(' ') };
   const otherBacks = sim.offense.filter((o: any) => o !== R && (o.player.position === 'RB' || o.player.position === 'FB')).map((o: any) => o.slot);
   if (nowOwners.length) {
-    const lastL = log.at(-1), hows = nowOwners.map((o) => lastL.D.find((d: any) => d.s === o.s)?.how ?? log.findLast((L: any) => L.D.some((d: any) => d.s === o.s && d.rel === S))?.D.find((d: any) => d.s === o.s)?.how);
+    const lastL = log.at(-1), hows = nowOwners.map((o) => lastL.D.find((d: any) => d.s === o.s)?.how ?? (log as any).findLast((L: any) => L.D.some((d: any) => d.s === o.s && d.rel === S))?.D.find((d: any) => d.s === o.s)?.how);
     const rank = ['man', 'match-man', 'match-wall', 'match-crossWall', 'match-trap', 'match-read', 'match-rob', 'zone-under', 'zone-deep'];
     const how = hows.filter(Boolean).sort((a: string, b: string) => rank.indexOf(a) - rank.indexOf(b))[0] ?? '?';
     const dir = sim.attackDir('O');
