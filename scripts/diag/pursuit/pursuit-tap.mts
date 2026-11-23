@@ -55,5 +55,6 @@ export function dump(sim: any, OUT: string) {
   const s = st.get(sim); if (!s?.C) return;
   const ev = sim.events.filter((e: any) => e.t >= s.tc - 1e-6 && /tackle|missed|broken|hit|carrier_contact|out_of_bounds|fall/.test(e.type))
     .map((e: any) => [r2(e.t - s.tc), e.type, e.a != null ? sim.agents[e.a]?.slot : null, e.b != null ? sim.agents[e.b]?.slot : null]);
-  writeFileSync(OUT, JSON.stringify({ carrier: s.C.slot, ev, frames: s.frames }));
+  const prof = Object.fromEntries(sim.defense.map((d: any) => [d.slot, { vmax: r2(d.profile.vmax * (d.speedScale ?? 1)), brake: r2(d.profile.brake), lateral: r2(d.profile.lateral), tau: r2(d.profile.tau) }]));
+  writeFileSync(OUT, JSON.stringify({ carrier: s.C.slot, ev, frames: s.frames, prof }));
 }
