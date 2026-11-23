@@ -3063,7 +3063,7 @@ function seatOutsideIn(a: Agent): boolean {
 /** FLIGHT_BREAK: after his estimated catch time, until the possession read hands him to pursuit: the same break on the
  * same receiver, his window now (the receiver's seen spot), for up to FLIGHT_HOLD s after his last break request. */
 const FLIGHT_HOLD = 1.0;
-function continueFlightBreak(a: Agent, sim: PlaySim): MoveCommand | null {
+export function continueFlightBreak(a: Agent, sim: PlaySim): MoveCommand | null {
   const fb = flightBreaks.get(a);
   if (!fb || sim.t - fb.t > FLIGHT_HOLD) return null;
   const seen = sim.see(a, fb.receiver);
