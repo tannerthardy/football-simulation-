@@ -9,6 +9,7 @@ import type { Agent } from '../agent.js';
 import { chooseApproach } from '../approach-control.js';
 import { onTopCushion, onTopPoint } from '../open-field.js';
 import { withMovementObjective } from '../movement-objective.js';
+import { flightBreakOf } from './defense.js';
 import type { PlaySim } from '../playsim.js';
 
 export const STAND: MoveCommand = { vel: { x: 0, y: 0 } };
@@ -185,7 +186,7 @@ export function pursuitPoint(sim: PlaySim, a: Agent, target: Agent, horizon = 3,
   // Keep the support contract while approaching, then close onto the near
   // hip. A permanent two-yard sideline shade is outside tackling reach.
   const dist = Math.hypot(seen.pos.x-a.pos.x, seen.pos.y-a.pos.y);
-  const lev = pursuitLeverage(a,p.y) * clamp((dist-reach)/6,0,1);
+  const lev = pursuitLeverage(a,p.y,target) * clamp((dist-reach)/6,0,1);
   const point = { x: p.x, y: p.y + lev };
   trace?.pursuit(target, { kind: 'intercept', prediction: ip,
     estimateAppliesTo: 'sampled-point-before-bias-and-leverage', steeringPointEstimate: 'not-evaluated',
@@ -214,6 +215,13 @@ const angleBias = new WeakMap<Agent, number>();
  *  - it is under MEET_NEAR s away, past his horizon, or the target changed.
  * The exit is on the far side of the entry. Also: a defender playing the
  * ball holds his last approach on the flight's final tick (defense.ts). */
+/** HANDOFF_SEED (experimental, off; HANDOFF_SEED=1 turns it on; with Coverage's FLIGHT_BREAK): pursuit after the catch
+ * starts from the break the defender made through the flight (flightBreakOf), so the hand-off has no re-aim. The first
+ * held meeting spot is that break's moving goal carried forward; the shoulder is the break's side. Why: in the overrun
+ * class the request re-aims p50 47 deg at the hand-off (8 deg when the defender stops the carrier). The break's state is
+ * read only while fresh (HANDOFF_FRESH s since it last issued a request; stated: the possession read's delay). */
+export const HANDOFF_SEED = process.env.HANDOFF_SEED === '1';
+const HANDOFF_FRESH = 0.6;
 export const PURSUIT_COMMIT = process.env.PURSUIT_COMMIT !== '0';
 const MEET_ENTER = 0.1, MEET_EXIT = 0.15, MEET_MARGIN = 0.3, MEET_NEAR = 0.15;
 const heldMeeting = new WeakMap<Agent, { target: Agent; at: number; ok: boolean }>();
@@ -232,7 +240,17 @@ function commitSpot(sim: PlaySim, a: Agent, target: Agent, ip: ReturnType<typeof
   seen: { pos: Vec2 }, heading: Vec2, V: number, mover: Parameters<typeof timeToReach>[0], reach: number, horizon: number, request?: SprintRequest): number {
   const freshOk = ip.estimate.status === 'estimated-feasible';
   const choose = (t: number, ok: boolean) => { heldSpot.set(a, { target, spot: path(t), ok }); return t; };
-  const held = heldSpot.get(a);
+  let held = heldSpot.get(a);
+  // HANDOFF_SEED: his first meeting spot on a carrier he was breaking on through the flight (Coverage's FLIGHT_BREAK)
+  // continues that break: its moving goal carried to now and on along the receiver's seen velocity to the fresh
+  // meeting time. The ordinary release rules below then keep or drop it.
+  if ((!held || held.target !== target) && HANDOFF_SEED) {
+    const fb = flightBreakOf(a);
+    if (fb && fb.receiver === target && sim.t - fb.t <= HANDOFF_FRESH) {
+      const k = sim.t - fb.t + ip.t;
+      heldSpot.set(a, held = { target, spot: { x: fb.goal.x + fb.goalVel.x * k, y: clamp(fb.goal.y + fb.goalVel.y * k, 0, FIELD_WIDTH) }, ok: true });
+    }
+  }
   if (!held || held.target !== target || V < 0.5) return choose(ip.t, freshOk);
   const dx = held.spot.x - seen.pos.x, dy = held.spot.y - seen.pos.y;
   let along = dx * heading.x + dy * heading.y, miss = Math.abs(dx * heading.y - dy * heading.x);
@@ -290,7 +308,13 @@ function leverageMagnitude(a: Agent, y: number): number {
   return (0.5 + 1.7 * near) * (0.55 + 0.45 * a.r('pursuit'));
 }
 
-function pursuitLeverage(a: Agent, y: number): number {
+function pursuitLeverage(a: Agent, y: number, target?: Agent): number {
+  // HANDOFF_SEED: on the carrier he broke on through the flight, he keeps the shoulder that break played (its side: +1
+  // the receiver's sideline side, -1 the ball side), at the ordinary leverage magnitude.
+  if (HANDOFF_SEED && target) {
+    const fb = flightBreakOf(a);
+    if (fb && fb.receiver === target) return fb.side * (y < FIELD_WIDTH / 2 ? -1 : 1) * leverageMagnitude(a, y);
+  }
   const force = a.runFit?.kind === 'force' || (a.runFit?.kind === 'edge' && a.runFit.edge === 'box');
   // A called outside shoulder is unambiguous at midfield. Only the generic
   // inside preference needs the center-field fade; close approaches still
@@ -374,7 +398,7 @@ export function chase(sim: PlaySim, a: Agent, target: Agent, horizon = 3, opts: 
   const dist = Math.hypot(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y);
   const tackle = a.r('tackling');
   const contact = a.profile.radius + target.profile.radius + a.profile.reach * .65;
-  const offset = pursuitLeverage(a, seen.pos.y)
+  const offset = pursuitLeverage(a, seen.pos.y, target)
     * clamp((dist - contact) / 6, 0, 1);
   // Teammate navigation needs the responsibility this request serves. This
   // picture is already acquired and dead-reckoned to now; the intercept below
