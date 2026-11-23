@@ -269,6 +269,10 @@ select, input[type="search"] { width: 100%; min-width: 0; border: 1px solid var(
           <label><input type="checkbox" data-v="ball">Ball trail</label>
           <label><input type="checkbox" data-v="read">QB read &amp; footwork step</label>
           <label><input type="checkbox" data-v="dface">Defenders' facing ticks</label>
+          <label><input type="checkbox" data-v="marks">Contact, missed &amp; broken tackle markers</label>
+          <label><input type="checkbox" data-v="catchring">Nearest defender at the catch</label>
+          <label><input type="checkbox" data-v="tech">Defender technique labels</label>
+          <label><input type="checkbox" data-v="aimed">Receiver the throw was aimed at</label>
         </fieldset>
         <div id="telemetry-status" class="status-note"></div>
         <div class="clip-export" aria-label="Export a video clip">
@@ -369,7 +373,7 @@ window.TELEMETRY_READY = Promise.resolve(true);
   let showTrails = true;
   let artOn = true, artKeep = false, artHold = 0;
   // The film room's View panel: independent on/off switches, remembered per viewer (localStorage is only a convenience; the page works without it).
-  const V = { cone: true, art: false, routes: true, zones: true, man: true, rush: true, labels: true, ball: false, read: true, dface: true };
+  const V = { cone: true, art: false, routes: true, zones: true, man: true, rush: true, labels: true, ball: false, read: true, dface: true, marks: true, catchring: true, tech: false, aimed: true };
   try { Object.assign(V, JSON.parse(localStorage.getItem('film-view') || '{}')); } catch (e) { /* no storage: defaults */ }
   artKeep = V.art;
   let wide = false;
@@ -1016,6 +1020,39 @@ window.TELEMETRY_READY = Promise.resolve(true);
       ctx.fillStyle = 'rgba(0,0,0,0.62)'; ctx.fillRect(10, 10, w, lines.length * 16 + 8); ctx.fillStyle = '#ffd23f'; lines.forEach((l, k) => { ctx.fillStyle = k === 0 ? '#ffd23f' : '#fff'; ctx.fillText(l, 16, 14 + k * 16); }); ctx.restore();
     }
   }
+  // Film markers, all read from the recorded play (events with positions, the frames, and the read-only tap's defender labels and aimed receiver); nothing here is read by a player.
+  function posAtTime(p, time) { const F = p.frames, n = p.roster.length, [a, b, f] = frameAt(p, time); return p.roster.map((_, i) => { const ia = (a * n + i) * 3, ib = (b * n + i) * 3; return [F.p[ia] + (F.p[ib] - F.p[ia]) * f, F.p[ia + 1] + (F.p[ib + 1] - F.p[ia + 1]) * f]; }); }
+  function drawFilmMarks(p, positions, X, Y, sc) {
+    const evs = p.eventDetails || [], ctxm = ctx; const q = p.art && p.art.qb;
+    const tagm = (text, x, y, color) => { ctxm.save(); ctxm.font = '600 10px monospace'; ctxm.textAlign = 'center'; ctxm.textBaseline = 'middle'; const w = ctxm.measureText(text).width + 6; ctxm.fillStyle = 'rgba(0,0,0,0.7)'; ctxm.fillRect(x - w / 2, y - 7, w, 14); ctxm.fillStyle = color; ctxm.fillText(text, x, y); ctxm.restore(); };
+    if (V.marks) {
+      let first = true;
+      for (const e of evs) {
+        if (e.t > t || !e.pos) continue; const x = X(e.pos.x), y = Y(e.pos.y);
+        if ((e.type === 'carrier_contact' || e.type === 'tackle_wrap' || e.type === 'tackle') && first) { first = false; ctxm.save(); ctxm.strokeStyle = '#ffd23f'; ctxm.lineWidth = 2.5; ctxm.beginPath(); ctxm.arc(x, y, Math.max(11, sc * 1.1), 0, 7); ctxm.stroke(); ctxm.restore(); tagm('first contact', x, y - Math.max(11, sc * 1.1) - 8, '#ffd23f'); }
+        else if (e.type === 'missed_tackle' || e.type === 'broken_tackle') { const col = e.type === 'missed_tackle' ? '#ff5a4d' : '#ff9f43', r = Math.max(7, sc * 0.7); ctxm.save(); ctxm.strokeStyle = col; ctxm.lineWidth = 3; ctxm.beginPath(); ctxm.moveTo(x - r, y - r); ctxm.lineTo(x + r, y + r); ctxm.moveTo(x + r, y - r); ctxm.lineTo(x - r, y + r); ctxm.stroke(); ctxm.restore(); tagm(e.type === 'missed_tackle' ? 'missed' : 'broken', x, y + r + 9, col); }
+      }
+    }
+    if (V.catchring) {
+      const c = evs.find((e) => e.type === 'catch' || e.type === 'interception');
+      if (c && c.t <= t) {
+        const at = posAtTime(p, c.t), ci = c.a != null && p.roster[c.a] ? c.a : -1;
+        if (ci >= 0) {
+          let best = -1, bd = 1e9; p.roster.forEach((r, i) => { if (r[0] !== 'D') return; const d = Math.hypot(at[i][0] - at[ci][0], at[i][1] - at[ci][1]); if (d < bd) { bd = d; best = i; } });
+          if (best >= 0 && positions[best]) { const px = X(positions[best][0]), py = Y(positions[best][1]); ctxm.save(); ctxm.strokeStyle = '#ff5a4d'; ctxm.lineWidth = 3; ctxm.beginPath(); ctxm.arc(px, py, Math.max(12, sc * 1.15), 0, 7); ctxm.stroke(); ctxm.restore(); tagm(`nearest at the catch: ${p.roster[best][1]} ${bd.toFixed(1)} yd`, px, py - Math.max(12, sc * 1.15) - 8, '#ff9d94'); }
+        }
+      }
+    }
+    if (V.aimed && q && q.aimed) {
+      const th = evs.find((e) => e.type === 'throw' || e.type === 'throwaway');
+      const i = p.roster.findIndex((r) => r[0] === 'O' && r[1] === q.aimed);
+      if (i >= 0 && positions[i] && th && th.t <= t) { const px = X(positions[i][0]), py = Y(positions[i][1]); ctxm.save(); ctxm.strokeStyle = '#4fd0ff'; ctxm.lineWidth = 3; ctxm.setLineDash([3, 3]); ctxm.beginPath(); ctxm.arc(px, py, Math.max(13, sc * 1.3), 0, 7); ctxm.stroke(); ctxm.restore(); tagm('aimed', px, py + Math.max(13, sc * 1.3) + 9, '#4fd0ff'); }
+    }
+    if (V.tech && q && q.d && q.d.length) {
+      let cur = q.d[0]; for (const e of q.d) { if (e[0] <= t + 1e-6) cur = e; else break; }
+      for (const [slot, label] of cur[1]) { const i = p.roster.findIndex((r) => r[0] === 'D' && r[1] === slot); if (i < 0 || !positions[i]) continue; tagm(label, X(positions[i][0]), Y(positions[i][1]) + Math.max(14, sc * 1.2), '#ffb3ab'); }
+    }
+  }
   function drawArt(p, positions, X, Y, sc, sel) {
     const art = p.art; if (!art) return;
     const idx = (team, slot) => p.roster.findIndex((r) => r[0] === team && r[1] === slot);
@@ -1261,6 +1298,7 @@ window.TELEMETRY_READY = Promise.resolve(true);
     if (artView) drawArt(p, positions, X, Y, sc, inspected);
     if (V.ball) { ctx.save(); ctx.strokeStyle = 'rgba(255,255,255,0.7)'; ctx.lineWidth = 1.5; ctx.setLineDash([2, 3]); ctx.beginPath(); for (let k = 0; k <= a; k++) { const bx0 = X(F.b[k * 3]), by0 = Y(F.b[k * 3 + 1]); if (k === 0) ctx.moveTo(bx0, by0); else ctx.lineTo(bx0, by0); } ctx.stroke(); ctx.restore(); }
     drawQbLook(p, positions, X, Y, sc);
+    drawFilmMarks(p, positions, X, Y, sc);
     drawLayers(p,telemetry,positions,X,Y,sc,inspected);
     fieldProjection = {players:positions.map((p)=>[X(p[0]),Y(p[1])]),radius:rad};
     for (let i = 0; i < n; i++) {

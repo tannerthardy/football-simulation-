@@ -40,7 +40,7 @@ export type Job =
 
 export interface ArtSheet {
   /** The passer's recorded look (read-only tap): his head direction every 0.1 s with the receiver his eyes are on and the one his read is on, and the half-widths of his clear cone and periphery. */
-  qb?: { clear: number; periph: number; s: [number, number, number, number, string | null, string | null, string][] };
+  qb?: { clear: number; periph: number; s: [number, number, number, number, string | null, string | null, string][]; /** The receiver the throw was aimed at (the ball's target at the release). */ aimed?: string; /** Every 0.5 s: each defender's slot and the technique label the engine holds for him (behavior kind, man target, press / hips open, zone target). */ d?: [number, [string, string][]][] };
   los: number;
   formation: string;
   coverage: string;
@@ -147,6 +147,14 @@ function sampleQb(sim: any, sh: ArtSheet): void {
   const b = qb.behavior, st = b?.recordedState?.(), eyes = b?.eyesOn, readIdx = st?.read;
   const slot = (i: any) => (typeof i === 'number' && sim.agents[i] ? String(sim.agents[i].slot) : null);
   q.s.push([k / 10, Math.round(qb.pos.x * 100) / 100, Math.round(qb.pos.y * 100) / 100, Math.round((qb.head ?? qb.body.facing) * 1000) / 1000, eyes ? String(eyes.slot) : null, slot(readIdx), String(st?.phase ?? '')]);
+  if (k % 5 === 0 && !q.d?.some((e) => e[0] === k / 10)) {
+    const lab = (a: any): string => { const b = a.behavior; if (!b) return '—'; try {
+      if (b.kind === 'man') return `man→${b.target?.slot ?? b.opts?.target?.slot ?? '?'}${b.press ? ' press' : ''}${b.hipsOpen ? ' hips open' : ''}${b.opts?.trail ? ' trail' : ''}${b.opts?.overTop ? ' over the top' : ''}`;
+      if (b.kind === 'zone') return `zone${b.target ? '→' + b.target.slot : ''}`;
+      return String(b.kind); } catch { return String(b.kind ?? '—'); } };
+    (q.d ??= []).push([k / 10, sim.agents.filter((a: any) => a.team === 'D').map((a: any) => [String(a.slot), lab(a)] as [string, string])]);
+  }
+  if (!q.aimed && sim.ball?.kind === 'air') q.aimed = sim.ball.target ? String(sim.ball.target.slot) : '';
 }
 let installed = false;
 
