@@ -193,9 +193,9 @@ function flightStep(sim: PlaySim, d: Agent, c: Agent): boolean {
 /** LUNGE_FLIGHT: launch toward where he sees the carrier going over the layout's window. */
 function launch(sim: PlaySim, d: Agent, c: Agent, cp: Vec2, cv: Vec2, from: 'lunge' | 'dive'): void {
   const ax = cp.x + cv.x * DIVE_WINDOW - d.pos.x, ay = cp.y + cv.y * DIVE_WINDOW - d.pos.y, al = Math.hypot(ax, ay) || 1;
-  sim.diveAt(d, { x: ax / al, y: ay / al });
   const dd = Math.hypot(c.pos.x - d.pos.x, c.pos.y - d.pos.y);
   flights.set(d, { sim, t0: sim.t, carrier: c, from, launchDist: dd, closest: dd, closestArms: reachTo(d, c, 1) });
+  sim.diveAt(d, { x: ax / al, y: ay / al });
 }
 
 export function tryTackles(sim: PlaySim): void {
