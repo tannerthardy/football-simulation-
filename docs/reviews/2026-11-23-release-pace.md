@@ -131,8 +131,19 @@ docs/FLAGS.md.
   rising, loading the front foot, then the drive. Neither is modelled.
 - Ours start pushing at ~0.05 s (the mind's snapDelay), with a full start force from rest.
 - Tools cited sprint-start figures for this: stance about 0.10-0.15 s (Mero and Komi 1992, Rabita et al. 2015,
-  Hay 1993). They are being checked; see the citation check below.
-- Until they are checked, the share stays and no stance constant is added.
+  Hay 1993). **Checked 2026-11-23 (abstracts only; full texts were blocked): none supports it.**
+  - Mero, Komi and Gregor (Sports Med 1992, 13(6):376-392) is a sprint *reaction-time* review. The abstract gives no
+    numbers; secondary summaries quote a mean of about 120 ms from the gun to pressure on the blocks. That is reaction
+    latency, not the time a set stance costs.
+  - Rabita et al. (Scand J Med Sci Sports 2015, 25(5):583-594) is about force, power and force direction against
+    velocity over 40 m. It has no stance or reaction timing.
+  - Hay (1993, The Biomechanics of Sports Techniques): no excerpt with start timings could be found.
+- Football: no published measurement of the time to first movement from a two-point stance after the snap was
+  found. The closest, Knudsen and Andersen 2017 (Sports Med Int Open, DOI 10.1055/s-0043-103010; 11 amateur players,
+  staggered stance), gives 5 m times of 1.77 s (normal), 1.81 s (forward false step) and 2.01 s (backward false
+  step), and "no differences were found in reaction time".
+- So the share stays and no stance constant is added. A stance or first-step model needs its own measurement
+  (the NFL onset table above: 0.2 yd at p50 0.5 s, for every group but the back).
 
 **2. Back: the protection scan before he releases** (for the protection owner).
 - **Taught:** on a dropback, a back whose protection gives him a responsibility checks it before he releases. He
