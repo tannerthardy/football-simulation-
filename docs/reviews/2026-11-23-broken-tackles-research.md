@@ -52,6 +52,45 @@ forced" and "avoided" mean. No raw data is committed.
 - **What it enables:** miss probability against distance, approach angle and closing speed. No public study gives
   those curves, so they can be computed by joining these labels to that tracking.
 
+## NFL miss probability by approach (computed 2026-11-23)
+
+The Big Data Bowl 2024 PFF labels (one row per defender per play) were joined to the Big Data Bowl 2025 tracking
+(2022 weeks 1-9) using Defense's pursuit operator (#868), in `scripts/diag/tackles/bdb2024_miss_curves.py`. The full
+tables are in `docs/reviews/data/2026-11-23-tackle-miss-curves/nfl-tables.md`.
+
+**Attempt moment** (agreed with Defense; identical for made tackles, misses and the sim): the defender's first local
+minimum of distance to the carrier below 2.5 yd, or his first frame within 1.0 yd if earlier. Features are read 0.3 s
+before it, with 0.5 s as a sensitivity check. The rate is missed / (missed + tackle + assist), one per defender per
+play. Label limits: PFF charting, one per defender per play, contact not required, and no timestamp (hence the
+geometric attempt moment).
+
+Results:
+- **Coverage of the labels:** 16,234 attempts observed. Only 150 labelled defenders (30 of 1,966 misses) never came
+  within 2.5 yd. **Miss probability 0.119.**
+- **Distance at the attempt:** misses p50 0.88 yd (p90 1.06), made tackles p50 0.88 (p90 1.00), assists p50 0.89.
+  - 87% of NFL misses come within 1.0 yd.
+  - The engine misses at p50 1.95 yd and wraps at p50 1.38 (Defense, 0226f0d3).
+  - Defense traced this to the tackle range counting the tackler's own body radius twice (proposed flag
+    TACKLE_REACH). **This is the first concrete mechanism for TKL-1.**
+- **Closing speed (0.3 s before):** 0.08 below 4 yd/s, 0.12 at 4-6, 0.16 at 6-8, 0.20 at 8 and over. This is the
+  strongest single gradient; the 0.5 s look-back gives the same shape.
+- **Distance 0.3 s before the attempt:** 0.05 within 1 yd, 0.10 at 1-2, 0.15 at 2-3, 0.24 at 3-5.
+- **Approach bearing in the carrier's frame:** ahead 0.13, level 0.11, behind 0.09. Outside is slightly worse than
+  inside (ahead-outside 0.14). In the NFL, chasers from behind miss less, not more: rugby's "from behind triples
+  the break risk" does not carry over to these labels.
+- **Lateral speed difference** of 4 yd/s or more either way: 0.17, against 0.09 within 2. A cut or sideways chase
+  doubles it.
+- **Traffic** (other defenders within 5 yd): none 0.15, one 0.13, two 0.13, three or more 0.10.
+- **Sideline distance:** 0.04 within 3 yd, 0.10 at 3-6, 0.16 at 6-15.
+- **Speed:** carrier speed 8 yd/s or more 0.15, against 0.09 at 2-4. Defender speed peaks at 4-6 yd/s (0.15).
+- **Position:** CB 0.14, S 0.12, LB 0.11, DL 0.11.
+- **Play type:** run 0.125, catch 0.111.
+- **Yards after a miss:** median about 6 yd (5.5-8.4 by bearing), against about 1.5 after a made tackle.
+
+**For Defense's recount on engine-91:** feed engine rows in the script's JSONL shape (kind, ptype, pos,
+attempt_dist, bearing, outside, closing, cs, ds, dlat, traffic, sideline, t, yds_after and the `_0.5` variants) and
+run `tables`. Compare the same rows before and after TACKLE_REACH.
+
 ## Definitions mapped onto our engine events
 
 Our engine records two events (`src/sim/tackle.ts`):
