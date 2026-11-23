@@ -8811,3 +8811,65 @@ Seats come from the call's underneath list in priority order, cut to the number 
 - **Tampa-2 invert / 2-Robber.** Closest: cover2_invert (safeties to the flats, corners to the halves). Missing: the nickel rotating to a deep half while a safety comes down as robber from a mug.
 - **Mint/Tite.** The `mint` front exists (NICKEL_FRONTS). Missing: a pairing table with two-high match calls.
 - **Clamp/Palms.** Present as cover4_palms (palms_corner/palms_safety), out of scope here.
+
+### F5. Cover 2 and Cover 6 at 10-15 yd: which seat leaves the window
+
+This is Tools' one excess over the NFL (`docs/reviews/2026-11-23-open-receiver-census.md` on `tools/open-census`).
+
+**Method.**
+- Tools' export is gitignored, so I re-ran Tools' 24 games with a seat tap: `scripts/diag/coverage/c26-window.mts`
+  and `c26_window_report.py`. The games: seed 101 games 0-7, then seeds 202, 303, 404 and 505 with 4 games each,
+  `simulateGame(home, away, {seed})`.
+- Tools' operator and thresholds: route runners 10-15 yd past the line; wide open = nearest defender beyond the NFL
+  p90 (5.1 yd at fixed times, 5.2 yd at the release).
+- The rates reproduce Tools': Cover 2 family 0.50 at fixed times (0.39 at the release), Cover 6 0.26 (0.18).
+- I have no NFL seat positions here, so seats are compared with our landmarks and Rules' Cover 2 card. Flex's alignment
+  operator would give the NFL positions.
+
+**Who is open.**
+- **Cover 2, 226 wide-open moments:**
+  - Nearly all are #1: S1 113, W1 94.
+  - Routes: go 120, post 24, corner 19, comeback 18.
+  - Width: numbers to hash 218.
+  - In 154 he is outside the corner. The nearest defender is the corner in 154, the half safety in 46, a hook in 26.
+  - Spread across plain Cover 2 (76), Cover 2 Wild (56), Cover 2 Match (53) and Tampa 2 (21).
+- **Cover 6, 85:** the same picture on the half side. #1 79, go 56; the nearest defender is the corner in 60.
+
+**Where the seats are**, for #1 at 10-15 yd, Cover 2 family, wide-open moments:
+
+| time | #1 depth / width from sideline | corner depth / width | half safety depth / width | wide share of #1 at 10-15 |
+|---|---|---|---|---|
+| 2.5 s | 10.6 / 11.4 | 4.4 / 13.0 | 19.2 / 16.7 | 0.79 |
+| 3.0 s | 13.2 / 11.8 | 6.1 / 13.4 | 20.8 / 17.4 | 0.60 |
+
+- Cover 6 half side, same times: corner 4.5 and 6.6 deep, half safety 19.5 and 21.2 deep at 16.2-16.5 from the sideline.
+- Our landmarks: flat 4 deep, 9 from the sideline; deep half 15 deep, 13.5 from the sideline.
+- Rules' card: the corner sinks at 45° under #1 and hands him to the safety at 12-15; the half safety goes from 15 to 18
+  deep, at the top of the numbers.
+
+**Technique labels at those moments.**
+- Corner: `sink_corner` man trail or the flat seat's `flat-sink` / `lane`.
+- Half safety: `deep-open-carry` (184 of 224).
+- Hook: wall or zone-settle, 9.3 deep, 9.6 yd laterally from the receiver.
+- Tampa Mike: 21 moments, 16.5 yd laterally away.
+
+**Answer.** It is a hole between a corner who stays shallow and a half safety who is too deep and too far inside. It is
+not the hook or Tampa depth.
+
+1. **The half safety** is the larger, constant gap:
+   - 19-21 yd deep, about 8 yd over the receiver, against the taught 15-18;
+   - 16.5-17.5 yd from the sideline, against our own landmark of 13.5 and the taught top of the numbers.
+
+   His depth over the receiver is the same on wide and not-wide moments (7.8 against 7.9 yd), so he never closes the
+   window. He keeps carrying depth (`deep-open-carry`) while #1 is still at 10-13.
+2. **The sinking corner** decides which moments are open:
+   - Wide: 6.6 yd under the receiver, with #1 outside him.
+   - Not wide: 4.4 yd under.
+   - Every corner technique is equally shallow, 5-6 yd deep: plain flat seat with FLAT_SINK 5.7, `sink_corner` in
+     Wild / Match / Tampa 5.0-5.5, Deuce DOT 5.5. So it is the flat corner's sink as a whole, not only Cover 2 Match's
+     late declare (F16).
+   - He sits about 13 yd from the sideline, inside a #1 at 11-12, against the taught outside-leverage squat that
+     forces #1 inside.
+
+**Next check, no build.** Flex's NFL Cover 2 half-safety depth and width and corner depth at 2.5 / 3.0 s against #1
+verticals. That says whether to fix the safety's carry depth and width first or the corner's sink.
