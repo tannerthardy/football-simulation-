@@ -57,6 +57,16 @@ def P(pl, fi, k):
     return xy[2 * k], xy[2 * k + 1]
 
 
+def over_widest(pl, fi, rec, by, y):
+    """A deep DB who is the outermost defender on his side is a corner, however deep (a safety always has his corner
+    outside him). 21% of the NFL's 8+ yd DBs (9% of ours) were corners, which counted them as safeties and read a deep
+    corner as a two-high shell (the seat check, 2026-11-23). A first rule (within 3 yd of the widest receiver) took
+    safeties for corners in compressed formations and was replaced."""
+    side = 1 if y >= by else -1
+    outer = [P(pl, fi, k)[1] for k, qq in enumerate(pl['players']) if qq['side'] == 'D' and (P(pl, fi, k)[1] - by) * side > (y - by) * side + 1.0]
+    return not outer
+
+
 def roles(pl):
     """Seats at the snap by geometry."""
     s = snap_i(pl); ply = pl['players']; by = pl['ballY']
@@ -68,7 +78,7 @@ def roles(pl):
         if q['side'] != 'D': continue
         x, y = P(pl, s, k)
         if q['pos'] in DB or q['pos'] == 'CB':
-            if x >= 8: seat[k] = ('safety', None); continue
+            if x >= 8 and not over_widest(pl, s, rec, by, y): seat[k] = ('safety', None); continue
             near = min(rec, key=lambda r: abs(P(pl, s, r)[1] - y), default=None)
             if near is None or abs(P(pl, s, near)[1] - y) > 5: seat[k] = ('db-other', None); continue
             side = 1 if P(pl, s, near)[1] >= by else -1
@@ -122,7 +132,10 @@ def op_alignment(plays):
 
 
 def shell_at(pl, fi, depth):
-    ply = pl['players']; deep = [P(pl, fi, k) for k, qq in enumerate(ply) if qq['side'] == 'D' and (qq['pos'] in DB) and P(pl, fi, k)[0] >= depth]
+    ply = pl['players']; by = pl['ballY']
+    rec = [k for k, qq in enumerate(ply) if qq['side'] == 'O' and qq['pos'] not in OL and qq['pos'] != 'QB']
+    deep = [P(pl, fi, k) for k, qq in enumerate(ply) if qq['side'] == 'D' and (qq['pos'] in DB) and P(pl, fi, k)[0] >= depth
+            and not over_widest(pl, fi, rec, by, P(pl, fi, k)[1])]
     if not deep: return 'zero'
     ys = sorted(y for _, y in deep)
     return 'two-high' if len(deep) >= 2 and ys[-1] - ys[0] >= 8 else 'one-high'

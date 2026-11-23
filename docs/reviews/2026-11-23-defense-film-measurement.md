@@ -47,9 +47,9 @@ cushion [6.11, 8.13] against [3.83, 7.91]). The defense aligns the same way ever
 
 Quarters against the card (high confidence: safeties 10-12 yd on the inside eye of #2, corners 7-8 yd with outside
 leverage):
-- safeties: ours 11.57, NFL 12.08;
-- corner cushion: ours 7.29, NFL 6.62;
-- leverage: ours −0.49 outside, NFL −0.74.
+- safeties: ours 11.58, NFL 12.09;
+- corner cushion: ours 7.89, NFL 7.42;
+- leverage: ours −0.57 outside, NFL −0.77.
 Both sides are on the card.
 
 ### 2. Disguise: shell shown at the snap → coverage played (pass plays)
@@ -58,15 +58,15 @@ Shown: two-high means two DBs 9+ yd deep, 8+ yd apart. Played is the coverage la
 
 | | NFL (2,188) | ours (720) |
 |---|---|---|
-| two-high shown, two-high played | 36.3% | 30.3% |
-| one-high shown, one-high played | 29.3% | 31.9% |
-| **rotate down** (two-high shown, one-high or zero played) | **22.9%** | **21.2%** |
-| **rotate back** (one-high or zero shown, two-high played) | **6.0%** | **8.3%** |
-| zero shown | 5.6% | 9.7% |
+| two-high shown, two-high played | 35.1% | 28.5% |
+| one-high shown, one-high played | 32.1% | 34.4% |
+| **rotate down** (two-high shown, one-high or zero played) | **19.7%** | **18.5%** |
+| **rotate back** (one-high or zero shown, two-high played) | **7.2%** | **10.1%** |
+| zero shown | 5.3% | 10.0% |
 
 The user's rule holds in both: defenses show two-high and rotate down; showing one-high and rotating back is
-rarer. Ours does both at NFL rates. F08 (quarters shown single-high) is a 6-8% event in both, not a systematic
-fault.
+rarer. Ours rotates down at the NFL rate and rotates back a little more often (10% against 7%). F08 (quarters shown
+single-high) is a 7-10% event in both, not a systematic fault.
 
 The sim's own call: rotation from a two-high look on 67 of 720 (9%). The rest of the measured "rotate down" is a
 shell the geometry reads as two-high: a deep safety the coverage then spins down.
@@ -122,10 +122,10 @@ when a defender is within 1 yd of it laterally and 3 yd deep.
 | family | unfilled lanes (of 6) NFL / ours | nearest defender at the line NFL / ours | time to the line NFL / ours | safeties to the carrier at 1.5 s NFL / ours |
 |---|---|---|---|---|
 | Cover 1 | 2 / 3 | 1.67 / 1.79 | 2.2 / 2.1 | 18.2 / 16.3 |
-| Cover 3 | 3 / 2 | 1.70 / 1.83 | 2.3 / 2.1 | 19.1 / 16.8 |
-| Cover 2 | 3 / 2 | 1.63 / 1.92 | 2.3 / **2.0** | 20.5 / **17.5** |
-| Cover 4 | 3 / 2 | 1.77 / 1.76 | 2.3 / **2.0** | 17.2 / 16.3 |
-| Cover 6 | 3 / 2 | 1.90 / 1.97 | 2.4 / 2.3 | 19.8 / 17.5 |
+| Cover 3 | 3 / 2 | 1.70 / 1.83 | 2.3 / 2.1 | 19.3 / **16.1** |
+| Cover 2 | 3 / 2 | 1.63 / 1.92 | 2.3 / **2.0** | 20.6 / **17.6** |
+| Cover 4 | 3 / 2 | 1.77 / 1.76 | 2.3 / **2.0** | 17.1 / 15.8 |
+| Cover 6 | 3 / 2 | 1.90 / 1.97 | 2.4 / 2.3 | 20.0 / 17.4 |
 | Cover 0 | 2 / 2 | 1.27 / 1.25 | 2.2 / 2.3 | (n 14 / 0) |
 
 Deep safeties reach 5 yd from the line by 3.5 s on under a quarter of runs in both (p50 "never").
@@ -151,8 +151,8 @@ That is about fifteen times the NFL rate.
    - Cover 2 / 4: one fewer in the box.
 
    The spreads are a third of the NFL's, so offenses face one alignment per call.
-2. **Disguise is NFL-like.** Ours rotates down from two-high 21% of the time (NFL 23%) and rotates back 8% (NFL 6%).
-   F08 is an ordinary event, not a habit.
+2. **Disguise is NFL-like.** Ours rotates down from two-high 18.5% of the time (NFL 19.7%) and rotates back 10% (NFL
+   7%). F08 is an ordinary event, not a habit.
 3. **Motion is where ours is wrong.**
    - Deep safeties rotate with motion a quarter as often (9-10% against 35-39%).
    - In zone, nobody moves on 10% of motions (NFL 2%).
@@ -184,9 +184,16 @@ That is about fifteen times the NFL rate.
     collision plays had motion.
 - **Run fits:** a dozen rows per side, with play id, family, unfilled lanes, nearest defender and time.
 - **Blitzers:** every stopped case (NFL 2, ours 9).
-- **Not checked play by play:** alignment, disguise and play-action rows. They are distributions over thousands of
-  snaps. A dozen-play check of the seat classification (corner / slot / safety by geometry) is still owed before
-  any of their flagged rows is built on.
+- **Seat classes (corner / slot / safety / box by geometry), against the labels, all plays and a dozen per side:**
+  - Ours: corners are CB_W / CB_S (96%); slot defenders NB / SS; safeties FS / SS; box backers LB_M / LB_W.
+  - NFL: corners are CB 88%; box backers ILB / OLB / MLB.
+  - The check found one fault, now fixed. A DB 8+ yd deep was counted as a safety even when he was the outermost
+    defender on his side, i.e. a deep corner. That was 21% of the NFL's "safeties" (9% of ours), and a corner was
+    among the deep DBs on 25% of the NFL's two-high reads (9% of ours).
+  - Now a deep DB who is the outermost defender on his side is a corner. The NFL safety seat is 97% FS / SS. A first
+    fix (within 3 yd of the widest receiver) took safeties for corners in compressed sets and was replaced.
+  - The disguise table, the quarters numbers and the safeties' run-support column above are from the fixed rule. The
+    conclusions did not change.
 
 ## Caveats
 
