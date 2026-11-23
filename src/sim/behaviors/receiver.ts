@@ -123,6 +123,21 @@ const ROUTE_CRAFT = process.env.ROUTE_CRAFT !== '0';
  *   body makes it. */
 const STEM_WORK = process.env.STEM_WORK !== '0';
 const STEM_MIN = 5;
+/** RELEASE_PLAN (experimental, off): the release off the line is chosen, as taught, from the leverage of the man over him
+ * and his route's break side, decided once at the snap from what he sees. Off, the release is the drawn line: every go
+ * leaves 7.2 deg outside and every slant runs dead straight to its plant, so a corner could tell them apart from 0.3 s
+ * (NFL: not before about 1.1 s; Coverage's slant_go_sep.py, BDB 2025). On:
+ * - an inside-breaker (slant, dig, post, cross) wins inside, or, against a man with inside leverage, takes an outside
+ *   release first as a set-up (it costs him the path);
+ * - an outside-breaker (out, corner, flat) takes the outside, or sets up inside against outside leverage;
+ * - a vertical (go, fade, seam) wins outside, keeping his landmark and the sideline space the ball is thrown to,
+ *   except against a pressed man head-up or outside of him (2.5 yd or less in front), where the jam decides the side and
+ *   he plans none (NFL go at 1.0 s: path 9.8 deg outside, Coverage's slant_go_sep.py; Integration 2026-11-18);
+ * so a slant and a go against the same leverage leave the line alike. The man over him: the nearest defender in front
+ * within 9 yd deep and 4 yd across; leverage is 0.5 yd or more inside or outside his line. The release leans up to 1 yd
+ * off the route's first leg by 3 yd past the line (about 10-15 deg), at unchanged speed, then the route takes him on; a
+ * go's drawn outside lean is replaced by the plan. The press release (a man on him) is the press fight's, not this. */
+const RELEASE_PLAN = process.env.RELEASE_PLAN === '1';
 
 /** ROUTE_END (experimental, off; docs/reviews/2026-11-14-route-end.md): the route's end as coached.
  * - The settle stays alive (hitch, curl, comeback, any `settle` or `sitVsZone` end). After the break he keeps working
@@ -342,6 +357,8 @@ export class RouteRunner implements Behavior {
   private converted = false;
   /** STEM_WORK: his stem's decision (null undecided; 0 straight; otherwise the lateral offset he works to, yd). */
   private stemWork: number | null = null;
+  /** RELEASE_PLAN: his release side, field y sign (null undecided; 0 straight). */
+  private releasePlan: number | null = null;
   private readonly keyMemory = new Map<string, { at: number; picture: RouteKeyPicture }>();
   private routeEnd: RouteEnd;
   /** Passive diagnostic state; never shared with the quarterback's forecast. */
@@ -542,10 +559,51 @@ export class RouteRunner implements Behavior {
       this.settled = this.routeEnd !== 'continue';
       return this.settle(a, sim);
     }
+    if (RELEASE_PLAN) cmd = this.planRelease(a, sim, cmd);
     if (STEM_WORK) cmd = this.workStem(a, sim, cmd);
     if (ROUTE_CLEAR && this.fromBackfield) return clearLane(a, sim, cmd);
     if (ROUTE_CRAFT) return routeCraft(a, sim, cmd, rr, this.breakSide(a), CRAFT_HOLD ? this.routeSide() : null, this.pastDeclaredBreak());
     return cmd;
+  }
+
+  /** RELEASE_PLAN: the release off the line, from the man's leverage and the route's break side (see RELEASE_PLAN). */
+  private planRelease(a: Agent, sim: PlaySim, cmd: MoveCommand): MoveCommand {
+    const dirn = Math.sign(this.path[this.path.length - 1].p.x - this.start.x) || 1;
+    const depth = (a.pos.x - sim.los) * dirn;
+    const first = this.path[0]?.p;
+    if (!first) return cmd;
+    const firstDepth = (first.x - sim.los) * dirn;
+    const end = Math.min(3, Math.max(1.5, firstDepth));
+    if (depth > end) return cmd;
+    if (this.releasePlan === null) {
+      // Break side from the installed route: the first point that leaves his line by 2 yd (+ outside, - inside).
+      const brk = this.route.points.find((p) => Math.abs(p.l) >= 2);
+      const breakSide = brk ? Math.sign(brk.l) : 0;
+      let best: RouteKeyPicture | null = null, bd = Infinity;
+      for (const d of this.readKeys(a, sim)) {
+        const ahead = (d.pos.x - a.pos.x) * dirn, across = d.pos.y - a.pos.y;
+        if (ahead <= 0 || ahead > 9 || Math.abs(across) > 4) continue;
+        if (ahead < bd) { bd = ahead; best = d; }
+      }
+      // His leverage in route terms: + outside of the receiver, - inside.
+      const lev = best ? (best.pos.y - a.pos.y) * this.outside : 0;
+      const levSide = lev >= 0.5 ? 1 : lev <= -0.5 ? -1 : 0;
+      let side: number;
+      if (breakSide < 0) side = levSide < 0 ? 1 : -1;          // inside-breaker: inside, or set up outside vs inside leverage
+      else if (breakSide > 0) side = levSide > 0 ? -1 : 1;     // outside-breaker: outside, or set up inside vs outside leverage
+      else side = best && bd <= 2.5 && levSide >= 0 ? 0 : 1;  // vertical: outside, unless a pressed man over or outside him
+      this.releasePlan = side * this.outside;
+    }
+    // The route's first leg, minus a go's drawn lean (the plan replaces it), plus the planned lean, growing to 1 yd by `end`.
+    const lineY = this.start.y + (BREAK_DECL[this.route.id]?.at === 'vertical' ? 0 : (first.y - this.start.y)
+      * clamp((a.pos.x - this.start.x) / ((first.x - this.start.x) || 1e-6), 0, 1));
+    const lean = clamp((depth - (this.start.x - sim.los) * dirn) / (end - (this.start.x - sim.los) * dirn), 0, 1);
+    const goalY = lineY + this.releasePlan * lean;
+    const sp = Math.hypot(cmd.vel.x, cmd.vel.y);
+    if (sp < 0.5) return cmd;
+    const vy = cmd.vel.y + clamp((goalY - a.pos.y) * 3, -2.5, 2.5) - (BREAK_DECL[this.route.id]?.at === 'vertical' ? cmd.vel.y : 0);
+    const n = Math.hypot(cmd.vel.x, vy) || 1;
+    return { ...cmd, vel: { x: cmd.vel.x / n * sp, y: vy / n * sp } };
   }
 
   /** STEM_WORK: bend the stem toward the leverage of the defender over him (see STEM_WORK). */
