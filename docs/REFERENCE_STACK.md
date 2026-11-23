@@ -2,7 +2,7 @@
 
 One combination of experimental flags that Run Game, Defense, Flex and Coverage all measure against. Before this, each agent tested on its own mix (the FLAT_PRESS / ZONE_RUN back-and-forth on 2026-11-09 came from two different flag sets), and no list of anyone's stack existed in the repository.
 
-- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-91`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
+- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-92`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
 
 - **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-88`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
 - **The code:** `run/G3-oz-backfield` a749beb7 + `defense/G2-stance-tell` a0cb0789 (#411) + `defense/G2-lb-start` (#416, with #409) + `claude/quirky-franklin-9lbwbp` (#417, with #415) + develop 6676dfc2.
@@ -610,6 +610,33 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
 
+
+## engine-92: defenders estimate the flight from what they see, and catch what they reach (2026-11-18)
+
+On: the honest defender (Coverage, C14) with the defender's catch (Flex), one landing.
+
+- **The cheat removed:** under BALL_EST 6145 a defender's `acquireFlight` copied the true ball path after his
+  recognition gate. The default is now **26657** (bit 4096 clear), so defenders estimate the flight from their own samples
+  (the glance, settle and sight rules receivers already use). With **ACQ_SEEN** and **TRACKED_CATCH** a defender is not
+  left on a stale flight after the catch, and with **FLIGHT_MAN** his estimate picks the receiver and his feet play that
+  man. **CATCH_WINDOW_SEEN** was already on.
+- **DEF_CATCH / BALL_SIGHT** (Flex): a defender who reaches a ball he sees attempts the catch through the receiver's own
+  hands law, against the arms of the offensive body actually at the ball; sight is his own (on this arm, his estimator's
+  sighting).
+- **Evidence** (seeds 101-108, leagueSample games; game-ints.mts / short-picks.mts):
+
+  | arm | att | comp | INT | PBU |
+  |---|---|---|---|---|
+  | engine-91 (true flight, no defender catch) | 712 | 70.8% | 1.3% | 7.4% |
+  | engine-91 + DEF_CATCH/BALL_SIGHT | 666 | 71.5% | 4.4% | 5.1% |
+  | honest, no defender catch | 683 | 73.4% | 0.9% | 5.4% |
+  | **engine-92** (honest + DEF_CATCH/BALL_SIGHT) | 695 | 75.1% | 2.4% | 4.0% |
+
+  Staged zone set (cover 2/3/4/6, every non-screen concept): completion 74.0 -> 76.7%, PBU plays 58 -> 46, YAC p50
+  2.9 -> 4.2; an underneath man's own estimate is 0.47 yd off the true line (p50) 0.15 s before the ball reaches him;
+  his distance to it is 4.1 yd p50 even on the true flight.
+- **Open (the completion cost, +3.6 points):** the feet, not the information. The repairs are man technique
+  (MAN_TURN, coverage/C14-man-turn) and the underneath approach; it is not a reason to keep the true-flight read.
 
 ## engine-91: the stem worked to the defender's leverage (2026-11-18)
 

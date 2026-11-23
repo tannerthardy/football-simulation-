@@ -1,6 +1,7 @@
 // Carrier / spacing reversals per play on the dither panel (Integration, 2026-11-14, ENGAGE_FELT's dither row): the
 // same 135 plays as test/dither-budget.test.ts, each with its own accumulator, so two arms can be compared play by play;
 // at each new carrier spacing reversal, the bodies within 2 yd of the carrier (team, engaged or not, closing speed).
+// DITHER_SHIFT=100|200 shifts every play seed as the test's pooled draws do.
 // usage: [ENGAGE_FELT=1] node --import tsx scripts/diag/effective-mass/carrier-dither.mts > out.json
 import { readFileSync } from 'node:fs';
 const stackOn = Object.entries(JSON.parse(readFileSync('config/reference-stack.json', 'utf8')).flags as Record<string, string>)
@@ -40,7 +41,7 @@ async function measure() {
     const sim = new PlaySim({ offense: pickOffense(offense, formation.personnel), defense: pickDefense(defense, 'base43'),
       offCall: { formation, flip: seed % 2 === 0, kind: 'run', run: RUN_BY_ID[run], label: run },
       defCall: { personnel: 'base43', front: FRONT_BY_ID.under, coverage: COVERAGE_BY_ID.cover3, pressure: null, zoneStyle: 'spot', label: 'u3' },
-      los: 35, ballY: 26.65, firstDownX: 45, seed } as never);
+      los: 35, ballY: 26.65, firstDownX: 45, seed: seed + Number(process.env.DITHER_SHIFT ?? 0) } as never);
     play(sim, core, `${(sim as any).offCall?.label}/${seed}`);
   }
   for (const pass of ['curl_flat', 'stick', 'mesh', 'smash', 'slant_flat', 'four_verts']) for (let seed = 1; seed <= 5; seed++) {
@@ -48,7 +49,7 @@ async function measure() {
     const sim = new PlaySim({ offense: pickOffense(offense, '11'), defense: pickDefense(defense, 'nickel'),
       offCall: { formation, flip: seed % 2 === 0, kind: 'pass', pass: PASS_BY_ID[pass], label: pass },
       defCall: { personnel: 'nickel', front: FRONT_BY_ID.over, coverage: seed % 2 ? COVERAGE_BY_ID.cover3 : COVERAGE_BY_ID.cover1, pressure: null, zoneStyle: 'spot', label: 'o31' },
-      los: 35, ballY: 26.65, firstDownX: 45, seed } as never);
+      los: 35, ballY: 26.65, firstDownX: 45, seed: seed + Number(process.env.DITHER_SHIFT ?? 0) } as never);
     play(sim, core, `${(sim as any).offCall?.label}/${seed}`);
   }
   for (const pass of ['bubble_screen', 'rb_slip_screen', 'tunnel_screen', 'wide_now_screen', 'four_verts', 'y_cross', 'flood', 'pa_shot', 'pa_flood'])
@@ -58,7 +59,7 @@ async function measure() {
       offCall: { formation, flip: seed % 2 === 0, kind: 'pass', pass: deep ? PASS_BY_ID[pass] : SCREEN_BY_ID[pass], label: pass },
       defCall: { personnel: 'nickel', front: FRONT_BY_ID.over, coverage: pass.startsWith('pa_') ? COVERAGE_BY_ID.cover1 : deep ? COVERAGE_BY_ID.cover2 : seed % 2 ? COVERAGE_BY_ID.cover3 : COVERAGE_BY_ID.cover1,
         pressure: null, zoneStyle: 'spot', label: 'scr' },
-      los: 35, ballY: 26.65, firstDownX: 45, seed } as never);
+      los: 35, ballY: 26.65, firstDownX: 45, seed: seed + Number(process.env.DITHER_SHIFT ?? 0) } as never);
     play(sim, core, `${(sim as any).offCall?.label}/${seed}`);
   }
 

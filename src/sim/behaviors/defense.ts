@@ -18,7 +18,7 @@ import type { DefSlot, Gap, ZoneId, ZoneStyle } from '../../playbook/types.js';
 import type { Agent, Behavior } from '../agent.js';
 import type { PlaySim } from '../playsim.js';
 import type { Perceived } from '../perception.js';
-import { TRACKING_REACH_BONUS } from '../catching.js';
+import { BALL_SIGHT, TRACKING_REACH_BONUS } from '../catching.js';
 import { asCarrierPursuit } from '../coverage-space.js';
 import { angleTo, chase, goTo, leverage, PURSUIT_COMMIT, pursuitPoint, runThrough, stand, track, watch } from './common.js';
 import { creepPace } from '../backer-creep.js';
@@ -29,13 +29,13 @@ import { executeRunFit, guardStep, lineRead, pullers, type RunFitRead } from '..
 import { linePicture } from '../live-gaps.js';
 import { RouteObservation } from '../coverage-read.js';
 import { movingCatchApproach } from '../catch-approach.js';
-import { RELEASE_BELIEF, releaseBelief } from '../release-belief.js';
+import { lastReleaseBelief, RELEASE_BELIEF, releaseBelief } from '../release-belief.js';
 import { withMovementObjective } from '../movement-objective.js';
 import { OPEN_FIELD, playsBall } from '../open-field.js';
 import { DeepCoverage, StemAcceleration, stemStopped } from '../coverage-leverage.js';
 import { facingTechnique, roundedTurnTime, withFacingTechnique } from '../coverage/orientation.js';
 import { SNAP_REACT } from '../snap-count.js';
-import { BALL_EST, BALL_EST_MAN_LOOK, estimatesFor, lookAnyway, lookJoints, neckOf, PHASE_BEHIND, PHASE_SIDE, phaseJudgeSd } from '../ball-estimate.js';
+import { BALL_EST, BALL_EST_DEF_PICTURE, BALL_EST_FLIGHT_SETTLE, BALL_EST_MAN_LOOK, FLIGHT_SETTLE_SPAN, estimatesFor, lookAnyway, lookJoints, neckOf, PHASE_BEHIND, PHASE_SIDE, phaseJudgeSd } from '../ball-estimate.js';
 import { acquireFlight, anticipatedCatcher, catchOpportunity, flightLanded, hasObservedFlight, observedHolder, QB_RELEASE, qbRunning, qbRunningAtLine, rememberCatchOpportunity, rememberedFlight, unresolvedBallArea } from '../possession-read.js';
 import { seenEngaged } from '../seen-contact.js';
 import { BALL_CUE_OWN } from '../release-evidence.js';
@@ -228,6 +228,134 @@ export function knowsPass(_sim: PlaySim, a: Agent): boolean {
  * along the route instead (attempt 1) aimed behind settling catchers. */
 const ARRIVE_LEAD = process.env.ARRIVE_LEAD !== '0';
 /** An underneath zone player: a zone seat or zone-eyed match defender without deep responsibility. */
+/** FLIGHT_MAN (on since engine-92, the honest-defender landing; FLIGHT_MAN=0 restores; C14 honest defender, 2026-11-17): for a defender who estimates the flight himself (BALL_EST,
+ * estimatesFor), the estimate's job is to pick the receiver, and his feet play that receiver, the man he sees: the
+ * upfield shoulder for an underneath player, over the top for a deep one, arriving under control. The landing estimate
+ * is no longer a place to run to; he plays the ball itself only when his estimate has settled and he can reach it
+ * first (the hands, late). Between two receivers the flight does not yet separate (fit within FLIGHT_MAN_MARGIN yd of
+ * each other) he splits them until it does, and keeps a pick until another fits better by the margin (no flipping).
+ * Off, he steered on his own estimate's catch point (2.6 yd off at p50 on staged zone completions, honest-after.mts). */
+export const FLIGHT_MAN = process.env.FLIGHT_MAN !== '0';
+const FLIGHT_MAN_MARGIN = 1.5, FLIGHT_MAN_OVER = 2;
+const flightPick = new WeakMap<Agent, { flight: unknown; R: Agent | null }>();
+/** How far each receiver he sees, carried along his seen run, would be from the flight he estimates at its nearest
+ * catchable point: the best fit and the runner-up. */
+function flightFits(a: Agent, sim: PlaySim, path: PlaySim['ballPath']): { R: Agent; miss: number; t: number }[] {
+  const out: { R: Agent; miss: number; t: number }[] = [];
+  for (const R of sim.offense) {
+    if (R === sim.qb || ['LT', 'LG', 'C', 'RG', 'RT'].includes(R.slot)) continue;
+    // Only what he can see: the receiver's place and run, and his size (his height, with a typical jump, for how high
+    // he can catch); never the receiver's own speed or jump ratings.
+    const q = sim.see(a, R), ceiling = R.profile.heightYd * 1.33 + 0.75;
+    let best = Infinity, bt = sim.t;
+    for (const s of path) {
+      const dt = s.t - sim.t;
+      if (dt < 0 || s.z < 0.25 || s.z > ceiling) continue;
+      const m = Math.hypot(s.x - q.pos.x - q.vel.x * dt, s.y - q.pos.y - q.vel.y * dt);
+      if (m < best) { best = m; bt = s.t; }
+    }
+    if (Number.isFinite(best)) out.push({ R, miss: best, t: bt });
+  }
+  return out.sort((p, q) => p.miss - q.miss);
+}
+/** FLIGHT_MAN: where his feet go on the receiver(s) his estimate picks; null when it picks none. */
+function flightManTarget(a: Agent, sim: PlaySim, path: PlaySim['ballPath']): { p: Vec2; R: Agent | null } | null {
+  const fits = flightFits(a, sim, path);
+  if (!fits.length) return null;
+  const key = releaseBelief(sim, a).releasedAt;
+  let h = flightPick.get(a);
+  if (!h || h.flight !== key) { h = { flight: key, R: null }; flightPick.set(a, h); }
+  const held = h.R ? fits.find((f) => f.R === h!.R) : undefined;
+  if (!held || fits[0].miss < held.miss - FLIGHT_MAN_MARGIN) h.R = fits[0].R;
+  const pick = fits.find((f) => f.R === h!.R)!;
+  const second = fits.find((f) => f.R !== pick.R);
+  const dir = sim.attackDir(sim.offense[0].team);
+  const deep = (a.behavior as { plastersScramble?: boolean } | undefined)?.plastersScramble === true;
+  const aim = (f: { R: Agent; t: number }) => {
+    const q = sim.see(a, f.R), lead = clamp(f.t - sim.t, 0, 1.2);
+    const up = deep ? FLIGHT_MAN_OVER : a.profile.radius + f.R.profile.radius + a.profile.reach;
+    return { x: q.pos.x + q.vel.x * lead + dir * up, y: clamp(q.pos.y + q.vel.y * lead, 0.5, FIELD_WIDTH - 0.5) };
+  };
+  const p = aim(pick);
+  // Not yet separated: split the two he cannot tell apart.
+  if (second && second.miss - pick.miss < FLIGHT_MAN_MARGIN) { const o = aim(second); a.tags.add('flight-split'); return { p: { x: (p.x + o.x) / 2, y: (p.y + o.y) / 2 }, R: null }; }
+  return { p, R: pick.R };
+}
+
+/** FLIGHT_MAN, the coached in-phase rule (backlog item 15): his own judgment of where he is on the receiver he picked,
+ * from his picture of him (behind along the man's run, off it to the side, how far), with the man-look's judging error
+ * by rating (phaseJudgeSd) drawn once per pick. In phase = on his hip or over the top and close enough to stay with
+ * him: he turns his head back and finds the ball. Out of phase = trailing, beaten or closing from depth: he keeps his
+ * eyes on the man and plays the hands and the catch. Margins either way (FLIGHT_PHASE_HYST) so the call does not flip. */
+const FLIGHT_PHASE_REACH = 3, FLIGHT_PHASE_HYST = 0.3, FLIGHT_VIEW_AGE = 0.15;
+const flightPhaseState = new WeakMap<Agent, { R: Agent; err: number; inPhase: boolean }>();
+function flightInPhase(a: Agent, sim: PlaySim, R: Agent): boolean {
+  let st = flightPhaseState.get(a);
+  if (!st || st.R !== R) { st = { R, err: sim.dice('flight-phase', a).normal(0, phaseJudgeSd(a)), inPhase: false }; flightPhaseState.set(a, st); }
+  const q = sim.see(a, R), sp = Math.hypot(q.vel.x, q.vel.y);
+  const h = sp > 1 ? Math.atan2(q.vel.y, q.vel.x) : (q.facing ?? 0);
+  const dx = a.pos.x - q.pos.x, dy = a.pos.y - q.pos.y, ux = Math.cos(h), uy = Math.sin(h);
+  const behind = -(dx * ux + dy * uy) + st.err, side = Math.abs(-dx * uy + dy * ux), dist = Math.hypot(dx, dy);
+  const m = st.inPhase ? FLIGHT_PHASE_HYST : -FLIGHT_PHASE_HYST;
+  st.inPhase = behind <= PHASE_BEHIND + m && side <= PHASE_SIDE + m && dist <= FLIGHT_PHASE_REACH + m;
+  return st.inPhase;
+}
+/** FLIGHT_LANE (off; C14 honest defender, 2026-11-17; with FLIGHT_MAN): breakups are lost to position, not hands (the
+ * ball came within a zone defender's reach on 67 of 3270 staged zone defender-plays with FLIGHT_MAN, 101 on the
+ * default; inview-err.mts). An underneath defender with the ball in view plays the throwing lane: early, the point on the
+ * line from the passer (as he sees him) to the picked receiver's upfield shoulder nearest to him ("get in the throwing
+ * lane"); as the ball comes on, his own estimate of its line (about 1 yd off in the last 0.3 s, 0.5 yd in the last 0.1 s)
+ * takes over, a continuous blend by the time left to the ball's nearest pass (what he can know of his estimate's
+ * error: it tightens as the ball nears). He does not vacate a receiver he is the only man on: with no teammate he sees
+ * over the top of that receiver (deeper than him, within 6 yd across and 10 yd), he keeps the man. The contest itself
+ * acts when the ball comes within his reach, as before. */
+const FLIGHT_LANE = process.env.FLIGHT_LANE === '1';
+const LANE_BLEND_START = 0.6, LANE_BLEND_FULL = 0.15;
+/** Attempt 2 (2026-11-18; lane-aims.mts): the lane as first built ran to the receiver where he is, but the ball goes
+ * where he will be (a crosser's line was 3.25 yd off the true ball line at p50; led, 0.83), and it waited for the ball
+ * in view (+0.2 s) while he needed 4.7 yd in 0.7 s. Now the line ends at the receiver carried along his seen run for
+ * the flight he judges from the passer's distance (SHOULDER_BALL_SPEED, the same rule-of-thumb ball speed as the
+ * shoulder break; no hidden break: if the receiver breaks in the air he is wrong); his aim is the earliest point on it
+ * he can reach (his own body) before the ball does at that speed, else the point nearest him; and it runs from his
+ * throw belief (the shoulder break), before he has any ball sample. */
+function laneAim(a: Agent, sim: PlaySim, R: Agent, path: PlaySim['ballPath'] | null, releasedAt: number): Vec2 | null {
+  const dir = sim.attackDir(sim.offense[0].team), q = sim.see(a, R);
+  // Help over the top, as he sees it.
+  const help = sim.defense.some((o) => o !== a && (() => { const p = sim.see(a, o).pos; return (p.x - q.pos.x) * dir > 0 && Math.abs(p.y - q.pos.y) <= 6 && Math.hypot(p.x - q.pos.x, p.y - q.pos.y) <= 10; })());
+  if (!help) return null;
+  const qb = sim.see(a, sim.qb).pos, el = Math.max(0, sim.t - releasedAt), up = a.profile.radius + R.profile.radius + a.profile.reach;
+  // The flight he judges: from the passer to where the receiver will be (iterated), and how much of it is gone.
+  let tf = Math.hypot(q.pos.x - qb.x, q.pos.y - qb.y) / SHOULDER_BALL_SPEED, end = { x: q.pos.x, y: q.pos.y };
+  for (let i = 0; i < 4; i++) {
+    const rem = clamp(tf - el, 0, SHOULDER_FLIGHT_MAX);
+    end = { x: q.pos.x + q.vel.x * rem + dir * up, y: clamp(q.pos.y + q.vel.y * rem, 0.5, FIELD_WIDTH - 0.5) };
+    tf = Math.hypot(end.x - qb.x, end.y - qb.y) / SHOULDER_BALL_SPEED;
+  }
+  const ux = end.x - qb.x, uy = end.y - qb.y, L2 = ux * ux + uy * uy || 1;
+  let lane: Vec2 | null = null;
+  for (let k = 0.05; k <= 1 + 1e-9; k += 0.05) {
+    const p = { x: qb.x + ux * k, y: qb.y + uy * k };
+    if (timeToReach(a, p, a.profile.reach * 0.8) <= k * tf - el) { lane = p; break; }
+  }
+  if (!lane) { const k = clamp(((a.pos.x - qb.x) * ux + (a.pos.y - qb.y) * uy) / L2, 0, 1); lane = { x: qb.x + ux * k, y: qb.y + uy * k }; }
+  if (!path?.length) return lane;
+  // His estimate's line: its nearest point to him ahead in time, and the time left until it is there.
+  let best: { x: number; y: number; t: number } | null = null, bd = Infinity;
+  for (const p of path) { if (p.t < sim.t) continue; const d2 = Math.hypot(p.x - a.pos.x, p.y - a.pos.y); if (d2 < bd) { bd = d2; best = p; } }
+  if (!best) return lane;
+  const w = clamp((LANE_BLEND_START - (best.t - sim.t)) / (LANE_BLEND_START - LANE_BLEND_FULL), 0, 1);
+  return { x: lane.x + (best.x - lane.x) * w, y: lane.y + (best.y - lane.y) * w };
+}
+/** FLIGHT_LANE applies to an underneath man playing his own estimate (FLIGHT_MAN, estimatesFor). */
+function laneMan(a: Agent): boolean {
+  const z = (a.behavior as { zone?: string } | undefined)?.zone;
+  return FLIGHT_LANE && FLIGHT_MAN && estimatesFor(a) && !a.engagement && (a.behavior as { plastersScramble?: boolean } | undefined)?.plastersScramble !== true && !(z && isDeepZone(z as never));
+}
+
+/** Diagnostic: his FLIGHT_MAN branch this play ('in' looks for the ball, 'out' plays the man, 'split' between two). */
+export const flightManBranch = new WeakMap<Agent, { branch: 'in' | 'out' | 'split' | 'view' | 'lane'; R: Agent | null; t: number }>();
+export function flightManPickOf(a: Agent): Agent | null { return flightPick.get(a)?.R ?? null; }
+
 function underneathZone(a: Agent): boolean {
   const b = a.behavior as { plastersScramble?: boolean; zoneEyes?: boolean } | undefined;
   return (a.behavior instanceof ZoneCoverage && !b?.plastersScramble) || b?.zoneEyes === true;
@@ -517,7 +645,28 @@ export class PassRusher implements Behavior {
     // Throw in the air: peel off toward the ball.
     if (playsFlight(a, sim, null)) {
       const path = acquireFlight(a, sim), spot = catchSpot(a, { t: sim.t, ballPath: path });
+      // Bit 16384: on his own estimate, the ball's line until its catch point has settled.
+      if (spot && BALL_EST_FLIGHT_SETTLE && estimatesFor(a) && !settledFlight(a, sim, path)) {
+        a.tags.add('flight-unsettled');
+        const line = ballLinePoint(a, sim, path);
+        if (line) return runThrough(a, line, { speed: 0.9 });
+      }
       if (spot) return runThrough(a, spot.p, { speed: 0.9 });
+    }
+    // RUSH_ARM: a free rusher who saw the arm come through (a release believed from the arm, no ball yet in his eyes)
+    // stops rushing a passer who no longer has it and peels toward the receiver the shoulders pointed at, as a zone
+    // defender's shoulder break: one read per belief, its error by anticipation, after his reaction time.
+    if (RUSH_ARM && !a.engagement) {
+      const rb = releaseBelief(sim, a);
+      if ((rb.source === 'arm' || rb.source === 'call') && rb.releasedAt !== undefined && rb.ballAt === undefined) {
+        const pick = shoulderTarget(a, sim, rb.releasedAt);
+        if (pick.R && sim.t - pick.at >= a.profile.reactionTime * (1 - 0.4 * a.r('anticipation')) - 1e-9) {
+          a.tags.add('rush-arm');
+          const r = sim.see(a, pick.R), left = Math.max(0, Math.min(SHOULDER_FLIGHT_MAX,
+            Math.hypot(r.pos.x - pick.from.x, r.pos.y - pick.from.y) / SHOULDER_BALL_SPEED - (sim.t - rb.releasedAt)));
+          return runThrough(a, { x: r.pos.x + r.vel.x * left, y: r.pos.y + r.vel.y * left }, { speed: 0.9 });
+        }
+      }
     }
     // A called movement goes on the snap: across the blocker's face into his
     // new gap at the line, whatever the man in front of him does.
@@ -2645,6 +2794,8 @@ function zoneBand(zone: ZoneId, sim: PlaySim): [number, number] {
  * planted defender gives up depth to a route behind him. Replaces the earlier
  * eyes-directed lean (as often wrong as right on catches 0-10 yd). */
 const SHOULDER_READ = process.env.SHOULDER_READ !== '0';
+/** RUSH_ARM (off): a free rusher peels on the arm he saw (the shoulder read), not only on the ball in his eyes. */
+const RUSH_ARM = process.env.RUSH_ARM === '1';
 /** DEEP_GATE (on since engine-78, 2026-11-18; `=0` restores; Rules' coverage-position table gap 1): Cover 3 and Cover 2
  * deep players (deep thirds, the deep middle, deep halves, Tampa's middle) hold until they see the ball out: an arm-only
  * belief (the load, a delivery, a pump) keeps his coverage running, with no plant and no shoulder break. Quarter seats
@@ -2900,6 +3051,19 @@ function playBelievedBall(a: Agent, sim: PlaySim, man: Agent | null, continueCov
   // estimate is empty, and he plays as on the arm alone until it is not (not an empty path to playObservedFlight).
   const noFlight = rb.ballAt !== undefined && estimatesFor(a) && !hasObservedFlight(a) && !sim.ballEstimates?.estimate(a, sim).length;
   if (rb.ballAt === undefined || noFlight) {
+    // Bit 8192: a man defender who has not found the ball but sees his man looking back with his hands coming plays the
+    // hands: through them at the catch, as on a seen flight (DRIVE_CATCH), and the carry after it is his.
+    if (man && BALL_EST_DEF_PICTURE && estimatesFor(a) && !hasObservedFlight(a)) {
+      const hands = readsHandsAt(a, sim, man, undefined);
+      const react = a.mind.observationDelay(a.profile.reactionTime * (1 - 0.4 * a.r('anticipation'))) + 0.05;
+      const seen = sim.see(a, man);
+      if (hands !== undefined && sim.t - hands >= react && Math.hypot(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y) <= 4) {
+        const f = seen.facing ?? Math.atan2(a.pos.y - seen.pos.y, a.pos.x - seen.pos.x);
+        a.tags.add('play-hands');
+        if (CATCH_CARRY && catchDrive.get(a)?.receiver !== man) catchDrive.set(a, { receiver: man, t: sim.t });
+        return runThrough(a, { x: seen.pos.x + Math.cos(f) * 0.35, y: seen.pos.y + Math.sin(f) * 0.35 }, { speed: 1 });
+      }
+    }
     // Bit 256: a man defender who has not found the ball judges his phase and, in phase (or undisciplined), looks.
     if (man && BALL_EST_MAN_LOOK && estimatesFor(a) && !hasObservedFlight(a) && manLooks(a, sim, man, rb.releasedAt)) return manLook(a, sim, fallback());
     a.tags.add('arm-bite');
@@ -2931,6 +3095,11 @@ function playBelievedBall(a: Agent, sim: PlaySim, man: Agent | null, continueCov
     const since = ARM_BREAK & 1 ? sim.t - rb.releasedAt : sim.t - pick.at;
     if (pick.R && since >= react - 1e-9) {
       a.tags.add('shoulder-break');
+      // FLIGHT_LANE attempt 2: an underneath man on his own estimate breaks to the throwing lane from his throw belief.
+      if (!man && laneMan(a)) {
+        const aim = laneAim(a, sim, pick.R, null, rb.releasedAt);
+        if (aim) { a.tags.add('flight-lane'); flightManBranch.set(a, { branch: 'lane', R: pick.R, t: sim.t }); return arriveUnderControl(a, aim); }
+      }
       // He breaks to where that receiver will be when the ball gets there: the receiver as he now sees him, carried
       // along his seen velocity for the rest of the throw's flight, judged from the passer's distance (a coached
       // rule-of-thumb ball speed). One receiver per belief; his projected spot updates as his picture does.
@@ -2941,8 +3110,100 @@ function playBelievedBall(a: Agent, sim: PlaySim, man: Agent | null, continueCov
     return stopDrop(sim, continueCoverage());
   }
   a.tags.add('onBall');
+  // FLIGHT_MAN: what he has of the flight picks the receiver (read without turning his head); in phase he looks for
+  // the ball, out of phase his eyes stay on the man.
+  if (FLIGHT_MAN && !man && !a.engagement && estimatesFor(a) && sim.ballEstimates) {
+    const E = sim.ballEstimates, have = E.peek(a, sim);
+    const fm = have.length ? flightManTarget(a, sim, have) : null;
+    if (fm) {
+      a.tags.add('flight-man');
+      if (fm.R && flightInPhase(a, sim, fm.R)) {
+        flightManBranch.set(a, { branch: 'in', R: fm.R, t: sim.t });
+        a.tags.add('flight-in-phase');
+        const flight = acquireFlight(a, sim); // the look: his estimate attends, his head turns to where he believes the ball is
+        const cmd = flight.length && (!BALL_EST_FLIGHT_SETTLE || settledFlight(a, sim, flight)) ? playObservedFlight(a, sim, flight, true) : arriveUnderControl(a, fm.p);
+        const g = E.gazeAt(a, sim), sp = Math.hypot(cmd.vel.x, cmd.vel.y), heading = sp > 0.4 ? Math.atan2(cmd.vel.y, cmd.vel.x) : (cmd.facing ?? a.facing);
+        return lookJoints(a, cmd, heading, angleDiff(heading, Math.atan2(g.y - a.pos.y, g.x - a.pos.x)), true);
+      }
+      // Attempt 2: the ball already in his view without turning (a sample of his own within FLIGHT_VIEW_AGE, e.g. a zone
+      // player facing the passer under the throw): he plays it whatever his phase; phase is about having to turn and
+      // lose the man.
+      const last = E.lastSeen(a);
+      if (last && sim.t - last.t <= FLIGHT_VIEW_AGE) {
+        flightManBranch.set(a, { branch: 'view', R: fm.R, t: sim.t });
+        a.tags.add('flight-in-view');
+        const flight = acquireFlight(a, sim);
+        // FLIGHT_LANE: an underneath man with the ball in view plays the throwing lane (his feet in the ball's way).
+        const relAt = releaseBelief(sim, a).releasedAt;
+        if (laneMan(a) && fm.R && flight.length && relAt !== undefined) {
+          const aim = laneAim(a, sim, fm.R, flight, relAt);
+          if (aim) { a.tags.add('flight-lane'); flightManBranch.set(a, { branch: 'lane', R: fm.R, t: sim.t }); return arriveUnderControl(a, aim); }
+        }
+        return flight.length && (!BALL_EST_FLIGHT_SETTLE || settledFlight(a, sim, flight)) ? playObservedFlight(a, sim, flight, true) : arriveUnderControl(a, fm.p);
+      }
+      flightManBranch.set(a, { branch: fm.R ? 'out' : 'split', R: fm.R, t: sim.t });
+      a.tags.add('flight-out-phase');
+      // Out of phase: the man's eyes and hands; through the hands when he sees them come up within reach.
+      if (fm.R) {
+        const hands = readsHandsAt(a, sim, fm.R, undefined), q = sim.see(a, fm.R);
+        if (hands !== undefined && sim.t >= hands && Math.hypot(q.pos.x - a.pos.x, q.pos.y - a.pos.y) <= 2) {
+          a.tags.add('flight-hands');
+          const f = q.facing ?? Math.atan2(a.pos.y - q.pos.y, a.pos.x - q.pos.x);
+          return runThrough(a, { x: q.pos.x + Math.cos(f) * 0.35, y: q.pos.y + Math.sin(f) * 0.35 }, { speed: 1 });
+        }
+        // FLIGHT_LANE attempt 2: the lane does not need the ball in view (the passer and the receiver give it).
+        const relAt = releaseBelief(sim, a).releasedAt;
+        const aim = laneMan(a) && relAt !== undefined ? laneAim(a, sim, fm.R, E.peek(a, sim), relAt) : null;
+        if (aim) { a.tags.add('flight-lane'); flightManBranch.set(a, { branch: 'lane', R: fm.R, t: sim.t }); return arriveUnderControl(a, aim); }
+      }
+      return arriveUnderControl(a, fm.p);
+    }
+  }
   const path = hasObservedFlight(a) ? rememberedFlight(a, sim.t) : null;
-  return playObservedFlight(a, sim, path ?? (sim.ball.kind === 'air' ? acquireFlight(a, sim) : []), !path);
+  const flight = path ?? (sim.ball.kind === 'air' ? acquireFlight(a, sim) : []);
+  // Bit 16384: on his own estimate, a catch point only once it has settled; until then the ball's direction.
+  if (BALL_EST_FLIGHT_SETTLE && estimatesFor(a) && flight.length && !settledFlight(a, sim, flight)) {
+    a.tags.add('flight-unsettled');
+    if (man) return fallback();
+    if (a.engagement) return { vel: a.vel };
+    const line = ballLinePoint(a, sim, flight);
+    return line ? runThrough(a, line, { speed: 1 }) : fallback();
+  }
+  return playObservedFlight(a, sim, flight, !path);
+}
+
+/** Bit 16384: the catch points his own flight gave in his recent flight play, and whether he has committed to one. */
+const settleHist = new WeakMap<Agent, { flight: unknown; pts: { t: number; x: number; y: number }[]; committed?: { x: number; y: number } }>();
+/** Bit 16384: has his estimate's catch point held within his reach over the last FLIGHT_SETTLE_SPAN? Once it has he is
+ * committed; a later jump past his reach (a tip, a re-fit) puts him back on the direction until it settles again. */
+function settledFlight(a: Agent, sim: PlaySim, flight: PlaySim['ballPath']): boolean {
+  const spot = catchSpot(a, { t: sim.t, ballPath: flight });
+  if (!spot) return false;
+  let h = settleHist.get(a);
+  // Keyed on his own belief of this release (never the true flight object).
+  const fl = releaseBelief(sim, a).releasedAt;
+  if (!h || h.flight !== fl) { h = { flight: fl, pts: [] }; settleHist.set(a, h); }
+  h.pts.push({ t: sim.t, x: spot.p.x, y: spot.p.y });
+  while (h.pts.length && sim.t - h.pts[0].t > FLIGHT_SETTLE_SPAN + 1e-9) h.pts.shift();
+  const reach = a.profile.reach;
+  if (h.committed) {
+    if (Math.hypot(spot.p.x - h.committed.x, spot.p.y - h.committed.y) <= reach) return true;
+    h.committed = undefined; h.pts = [{ t: sim.t, x: spot.p.x, y: spot.p.y }];
+    return false;
+  }
+  const span = h.pts.length ? sim.t - h.pts[0].t : 0;
+  if (span < FLIGHT_SETTLE_SPAN - sim.dt / 2) return false;
+  if (h.pts.every((p) => Math.hypot(p.x - spot.p.x, p.y - spot.p.y) <= reach)) { h.committed = { x: spot.p.x, y: spot.p.y }; return true; }
+  return false;
+}
+/** Bit 16384: the point on the ball's ground line (his estimate's next half second) nearest him, not behind the ball. */
+function ballLinePoint(a: Agent, sim: PlaySim, flight: PlaySim['ballPath']): { x: number; y: number } | null {
+  const now = flight.find((p) => p.t >= sim.t - 1e-9), later = flight.find((p) => p.t >= sim.t + 0.5 - 1e-9) ?? flight[flight.length - 1];
+  if (!now || !later || later === now) return null;
+  const ux = later.x - now.x, uy = later.y - now.y, l = Math.hypot(ux, uy);
+  if (l < 0.3) return { x: now.x, y: now.y };
+  const k = Math.max(0, ((a.pos.x - now.x) * ux + (a.pos.y - now.y) * uy) / (l * l));
+  return { x: now.x + ux * k, y: now.y + uy * k };
 }
 
 /** RELEASE_BELIEF: the receiver the passer's shoulders point at in this defender's picture when his belief came from
@@ -3007,13 +3268,80 @@ function playObservedFlight(a: Agent, sim: PlaySim, path: PlaySim['ballPath'], a
 
 const lastFlightApproach = new WeakMap<Agent, { cmd: MoveCommand; t: number }>();
 
+/** BALL_SIGHT's look (Integration 2026-11-18), on his own information only. A defender who has seen the ball himself
+ * (his release belief has the ball in his own view: a zone defender facing the passer) keeps it: he opens to it and runs
+ * with his head on it (the zone turn), toward where his own acquired flight has the ball now. He loses it when his run
+ * puts his back to it, more than ZONE_LOSE_IN off his line of run (a speed turn), and has it again under ZONE_LOSE_OUT.
+ * A defender who has not seen the ball does not look: he plays the receiver's hands at the catch (as a man in trail is
+ * taught). The taught cue for a trailer to look (the receiver's eyes and head going back for the ball) is not in
+ * perception yet: what a defender sees of a body is its hips and stance, not its shoulders or head, so it is left out
+ * rather than read from the receiver's own state. The call of "ball" has no hearing channel yet: `ballCalls` logs who
+ * would have heard one (a teammate who saw the ball within EARSHOT, after the sound's travel and his reaction). Off
+ * (and with BALL_SIGHT off) the 'looking' latch below finds the ball for anyone near its path. */
+const ZONE_LOSE_IN = (150 * Math.PI) / 180, ZONE_LOSE_OUT = (135 * Math.PI) / 180;
+/** The "ball" call: earshot on a field (yd, estimated), the speed of sound (yd/s). */
+const EARSHOT = 15, SOUND = 375;
+/** BALL_SIGHT: who would have heard a "ball" call this flight, had calls a channel (for the communication work). */
+export const ballCalls = new WeakMap<PlaySim, { t: number; d: number; from: number }[]>();
+const lookState = new WeakMap<Agent, { key: number | undefined; lost: boolean; called: boolean }>();
+/** Where his own acquired flight has the ball at time t (its nearest sample), or null. */
+function pathAt(path: PlaySim['ballPath'], t: number): { x: number; y: number } | null {
+  if (!path.length) return null;
+  let best = path[0];
+  for (const p of path) if (Math.abs(p.t - t) < Math.abs(best.t - t)) best = p;
+  return { x: best.x, y: best.y };
+}
+function lookDecision(a: Agent, sim: PlaySim, path: PlaySim['ballPath']): { looks: boolean } {
+  const rb = releaseBelief(sim, a);
+  let st = lookState.get(a);
+  if (!st || st.key !== rb.releasedAt) lookState.set(a, st = { key: rb.releasedAt, lost: false, called: false });
+  const seen = rb.ballAt !== undefined;
+  if (!seen) {
+    // The "ball" call he would hear (logged only): a teammate within earshot who has seen the ball, after the sound and
+    // his reaction. Read-only on the teammates' beliefs; nothing here moves him.
+    if (!st.called) for (const m of sim.defense) {
+      if (m === a) continue;
+      const at = lastReleaseBelief(sim, m)?.ballAt; if (at === undefined) continue;
+      const mp = sim.see(a, m).pos, d = Math.hypot(mp.x - a.pos.x, mp.y - a.pos.y);
+      if (d <= EARSHOT && sim.t >= at + d / SOUND + a.profile.reactionTime) {
+        st.called = true; let l = ballCalls.get(sim); if (!l) ballCalls.set(sim, l = []); l.push({ t: sim.t, d: a.idx, from: m.idx }); break;
+      }
+    }
+    return { looks: false };
+  }
+  const at = pathAt(path, sim.t); if (!at) return { looks: false };
+  const run = Math.hypot(a.vel.x, a.vel.y) > 1 ? Math.atan2(a.vel.y, a.vel.x) : a.body.facing;
+  const off = Math.abs(angleDiff(run, Math.atan2(at.y - a.pos.y, at.x - a.pos.x)));
+  if (!st.lost && off > ZONE_LOSE_IN) { st.lost = true; a.tags.add('zone-lost'); }
+  else if (st.lost && off < ZONE_LOSE_OUT) st.lost = false;
+  return { looks: !st.lost };
+}
+/** BALL_SIGHT: the look itself: head, then the shoulders through the trunk, then the hips for what is left (priced by
+ * the facing cap), toward where his own acquired flight has the ball now. */
+function lookJointsToBall(a: Agent, sim: PlaySim, path: PlaySim['ballPath'], cmd: MoveCommand): MoveCommand {
+  const at = pathAt(path, sim.t); if (!at) return cmd;
+  const sp = Math.hypot(cmd.vel.x, cmd.vel.y), heading = sp > 0.4 ? Math.atan2(cmd.vel.y, cmd.vel.x) : (cmd.facing ?? a.facing);
+  return lookJoints(a, cmd, heading, angleDiff(heading, Math.atan2(at.y - a.pos.y, at.x - a.pos.x)), true);
+}
+
 function flightApproach(a: Agent, sim: PlaySim, path: PlaySim['ballPath'], acquired = false): MoveCommand | null {
+  if (!BALL_SIGHT) return flightApproachInner(a, sim, path, acquired);
+  const lb = lookDecision(a, sim, path);
+  const cmd = flightApproachInner(a, sim, path, acquired, lb);
+  if (!cmd) return cmd;
+  if (lb.looks) { a.tags.add('looking'); a.tags.add('zone-turn'); return lookJointsToBall(a, sim, path, cmd); }
+  a.tags.delete('looking');
+  a.tags.add('trail-hands');
+  return cmd;
+}
+
+function flightApproachInner(a: Agent, sim: PlaySim, path: PlaySim['ballPath'], acquired = false, lb: { looks: boolean } | null = null): MoveCommand | null {
   const spot = catchSpot(a, { t: sim.t, ballPath: path });
   const window = observedCatchWindow(a, sim, path);
   if (acquired) rememberCatchOpportunity(a, window);
   // Near the ball's path, a defender with ball skills turns his head and finds
   // it (looking over the shoulder doesn't turn the body).
-  const nearPath = spot && Math.hypot(spot.p.x - a.pos.x, spot.p.y - a.pos.y) < 5;
+  const nearPath = spot && Math.hypot(spot.p.x - a.pos.x, spot.p.y - a.pos.y) < 5 && !lb;
   if (LOOK_ONCE) { if (nearPath && !a.tags.has('looking') && findsBall(a, sim)) a.tags.add('looking'); }
   else if (nearPath && !a.tags.has('looking') && sim.dice('look', a).chance(0.15 + 0.5 * a.r('ballSkills'))) a.tags.add('looking');
   // DRIVE_CATCH: the ball is in a receiver's hands but not yet his: drive
@@ -3068,6 +3396,11 @@ function flightApproach(a: Agent, sim: PlaySim, path: PlaySim['ballPath'], acqui
     // an interception opportunity. Close the actual visible catch window.
     if (tt <= spot.t - sim.t + 0.05 && (!window || spot.t <= window.t + 0.05)) return goTo(a, spot.p);
   }
+  // FLIGHT_MAN: the estimate picked the receiver; his feet play the man he sees, not the estimate's landing point.
+  if (FLIGHT_MAN && estimatesFor(a) && a.behavior?.kind !== 'man') {
+    const fm = flightManTarget(a, sim, path);
+    if (fm) { a.tags.add('flight-man'); return arriveUnderControl(a, fm.p); }
+  }
   // Can't beat the ball to its path: drive on the catch point to arrive with
   // the ball — on the receiver's near side, ready to play through the hands
   // or make the tackle the moment it's caught.
@@ -3104,6 +3437,25 @@ function flightApproach(a: Agent, sim: PlaySim, path: PlaySim['ballPath'], acqui
   return spot ? runThrough(a, spot.p, { speed: 0.9 }) : null;
 }
 
+/** FLIGHT_MAN: full speed toward a point, braking down only for the last couple of yards (the catch approach's envelope;
+ * sure tacklers arrive under more control). */
+function arriveUnderControl(a: Agent, tgt: Vec2): MoveCommand {
+  const dx = tgt.x - a.pos.x, dy = tgt.y - a.pos.y, d = Math.hypot(dx, dy) || 1;
+  const control = 2.2 + 2.5 * (1 - a.r('tackling'));
+  const sp = Math.min(a.profile.vmax, Math.sqrt(control * control + 2 * a.profile.brake * 0.7 * Math.max(0, d - 0.3)));
+  return withMovementObjective({ vel: { x: (dx / d) * sp, y: (dy / d) * sp } }, { kind: 'fixed', point: tgt });
+}
+
+/** CATCH_WINDOW_SEEN (on by default; CATCH_WINDOW_SEEN=0 restores; an information repair, 2026-11-17): the catch window
+ * a defender reads from a receiver uses what he can see of him, not the receiver's ratings. Height is seen; catch
+ * height (his height with a typical jump) and reach (arm length about 0.4 of height) are judged from it; speed and
+ * acceleration are judged by his own body as the yardstick (a stated choice: he cannot see the other man's ratings). */
+const CATCH_WINDOW_SEEN = process.env.CATCH_WINDOW_SEEN !== '0';
+function seenBody(a: Agent, r: Agent): Agent['profile'] {
+  const h = r.profile.heightYd;
+  return { ...a.profile, heightYd: h, maxCatchHeight: h * 1.33 + 0.75, reach: 0.25 + 0.4 * h * 0.85, radius: r.profile.radius };
+}
+
 /** First plausible receiver catch from the defender's delayed picture and
  * the visible flight. Does not inspect the intended target or called route.
  * This is a possibility estimate; a receiver can still drop or miss it. */
@@ -3114,10 +3466,13 @@ function observedCatchWindow(a: Agent, sim: PlaySim, path: PlaySim['ballPath']):
     const remaining = s.t - sim.t;
     if (remaining < 0 || s.z < 0.25) continue;
     for (const { r, seen } of receivers) {
-      if (s.z > r.profile.maxCatchHeight * 0.92) continue;
+      // CATCH_WINDOW_SEEN: what he can judge of the receiver is his place, his run and his size; his catch height and
+      // reach from his height, his speed by the defender's own body as the yardstick. Off: the receiver's own ratings.
+      const judged = CATCH_WINDOW_SEEN ? seenBody(a, r) : r.profile;
+      if (s.z > judged.maxCatchHeight * 0.92) continue;
       const p = { x: s.x, y: s.y };
-      const reach = r.profile.reach + TRACKING_REACH_BONUS;
-      if (Math.hypot(p.x - seen.pos.x, p.y - seen.pos.y) > r.profile.vmax * remaining + reach) continue;
+      const reach = judged.reach + TRACKING_REACH_BONUS;
+      if (Math.hypot(p.x - seen.pos.x, p.y - seen.pos.y) > judged.vmax * remaining + reach) continue;
       // Catching does not require stopping at the ball point. A receiver's
       // observed path can carry his hands through it even when a point-arrival
       // estimate charges for braking/redirecting. Use the same maximum hand
@@ -3125,7 +3480,7 @@ function observedCatchWindow(a: Agent, sim: PlaySim, path: PlaySim['ballPath']):
       // route or eventual possession. He may still miss or drop the pass.
       const passing = Math.hypot(p.x - seen.pos.x - seen.vel.x * remaining,
         p.y - seen.pos.y - seen.vel.y * remaining) <= reach;
-      const tt = timeToReach({ pos: seen.pos, vel: seen.vel, profile: r.profile }, p, reach);
+      const tt = timeToReach({ pos: seen.pos, vel: seen.vel, profile: judged }, p, reach);
       if (passing || tt <= remaining) return { p, t: s.t, receiver: r, seen };
     }
   }

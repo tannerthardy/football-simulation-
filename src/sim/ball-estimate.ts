@@ -31,7 +31,7 @@
  * 5-10 % (choice, from psychophysics orders of magnitude); eye range 30 deg (choice); head 6 rad/s within 90 deg
  * (GAZE). Ratings: ballTracking for offense, ballSkills for defense, between best and worst.
  */
-import { HEAD as SHARED_HEAD, neckRange, want as headWant } from './head.js';
+import { HEAD as SHARED_HEAD, NECK_FULL, neckRange, want as headWant } from './head.js';
 import { INCIDENTAL_FLIGHT_MAX_AGE } from './catch-readiness.js';
 import { G } from '../core/units.js';
 import { clamp } from '../core/vec.js';
@@ -39,13 +39,17 @@ import type { Vec3 } from '../core/vec.js';
 import { qbArmSpeed, stepFlight, type BallFlight } from '../physics/ball.js';
 import { shouldersOf, TRUNK_RANGE, TRUNK_TWIST, type MoveCommand } from '../physics/kinematics.js';
 import { naturalFlightFor } from './behaviors/qb.js';
+import { releaseBelief } from './release-belief.js';
 import type { Agent } from './agent.js';
 import { ReceiverForecast, type InstalledReceiverRoute } from './receiver-forecast.js';
 import type { PlaySim } from './playsim.js';
 
 /** BALL_EST is a bitmask (0 off): 1 the estimator; 4 a committed catch point moves with his estimate; 8 looming; 2 removes catching.ts's tracking penalty (ballTracking acts through
  * the estimator; charging it again at the catch double-counts). */
-const BALL_EST_RAW = Number(process.env.BALL_EST ?? 6145);
+// Default 26657 since engine-92 (the honest-defender landing): 1 + 32 + 2048 + 8192 + 16384, bit 4096 clear, so a defender
+// estimates the flight from his own samples and never reads the true path (acquireFlight's copy). 6145 restores
+// defenders on the true flight (receivers-only estimation).
+const BALL_EST_RAW = Number(process.env.BALL_EST ?? 26657);
 /** Bit 1024 is the receiver's one meaning for a card: the receiver on his own sight of the ball. It carries the receiver
  * bits it was built on (2 no tracking penalty, 4 moving choice, 16 deep look, 64 trunk look), so 1025 = 1111; the
  * single bits stay for the parked designs' reads only. */
@@ -129,6 +133,26 @@ export function glanceSd(range: number, skillV: number, held: number, age: numbe
 /** Bit 4096 (receivers only, 2026-11-15): the estimator for the offense alone; defenders keep today's read of the
  * flight. The mirror of bit 128, so the receiver's side can be carded without changing the defense's. */
 export const BALL_EST_RCV_ONLY = (BALL_EST_BITS & 4096) !== 0 && !BALL_EST_DEF_ONLY;
+/** Bit 8192 (DEF_PICTURE, off; docs/reviews/2026-11-15-defender-throw-picture.md, cue 3): a man defender with no flight of
+ * his own (he has not sampled the ball) who reads his man looking back with his hands coming (Defense's `readsHandsAt`,
+ * his own picture within 3 yd) plays the hands: he drives through the receiver's hands at the catch, as DRIVE_CATCH
+ * does on a seen flight, and the carry after it is his (CATCH_CARRY). Off, the hands only told him the throw was up and
+ * he kept trailing at his offset: under the defense's estimator (2049) man defenders near the catch closed at 2.9 yd/s
+ * (p25 0.7) against the oracle's 4.3 (p25 2.4), and YAC per catch was 13.7 against 7.9 (yac-ladder.ts, engine-71). */
+export const BALL_EST_DEF_PICTURE = (BALL_EST_BITS & 8192) !== 0;
+/** Bit 16384 (FLIGHT_SETTLE, off; with defenders estimating): a defender acts on his own flight as a catch point only
+ * once it has settled; before that he breaks on the ball's direction. `settled`: the catch point his estimate gives has
+ * moved less than his reach over his last FLIGHT_SETTLE_SPAN of flight play (a test on the estimate itself; its spread
+ * shrinks with his samples, so his tracking skill sets how soon). Until then: a man defender stays on his man; anyone
+ * else runs to the point on the ball's ground line, as his estimate draws it, nearest him ahead of the ball. Once
+ * settled he plays the flight (playObservedFlight) and stays committed: a later jump of the catch point beyond his reach
+ * (a tip) starts the test again. Off, he re-aimed every tick at a catch point fitted from one or two looks: in the first
+ * third of the flight it was 10.6 yd off (p50) and jumped up to 4.8 yd a tick (p75), and the wrong first step cost him
+ * the rest of the flight (zone run toward the true point cos 0.47 in the middle third against the oracle's 0.86;
+ * def-flight.ts, engine-71). */
+export const BALL_EST_FLIGHT_SETTLE = (BALL_EST_BITS & 16384) !== 0;
+/** FLIGHT_SETTLE's window (s): a stated choice, read at 0.1 and 0.25. */
+export const FLIGHT_SETTLE_SPAN = Number(process.env.FLIGHT_SETTLE_SPAN ?? 15) / 100;
 export const BALL_EST_RCV = BALL_EST && !BALL_EST_DEF_ONLY;
 /** Is the estimator on for this player (his own estimate in place of the true flight)? */
 export const estimatesFor = (a: { team: string }): boolean => BALL_EST && (BALL_EST_DEF_ONLY ? a.team === 'D' : BALL_EST_RCV_ONLY ? a.team === 'O' : true);
@@ -175,7 +199,7 @@ export const LOOK_NECK = NECK;
 const NECK_SPRINT = (Number(process.env.BALL_EST_NECK_SPRINT ?? 45) * Math.PI) / 180;
 export function neckOf(a: Agent): number {
   // HEAD on: one head and one neck range per player (head.ts), whoever asks for the look.
-  if (SHARED_HEAD) return neckRange(a);
+  if (SHARED_HEAD || NECK_FULL) return neckRange(a);
   if (!BALL_EST_DEEP_LOOK) return NECK;
   const share = Math.min(1, Math.hypot(a.vel.x, a.vel.y) / Math.max(1e-6, a.profile.vmax));
   return NECK - (NECK - NECK_SPRINT) * share;
@@ -207,6 +231,8 @@ interface Track {
   armSeenAt?: number;
   /** SEEN_EMPTY: when (his delayed picture) he saw the passer without the ball, his own throw cue. Not a release time. */
   emptySeenAt?: number;
+  /** HEAD_RIDE: his shoulders' direction when his head was last set (field angle), so an undriven head keeps its offset. */
+  headBase?: number;
   /** Bit 2048: the current look (seen-time it began, last seen-time in his eyes, its error draw), and time held. */
   lookStart?: number; lookLast?: number; lookZ?: [number, number]; held?: number; looks?: number; gPath?: PathSample[]; gPathT?: number;
   /** His eye's place and his head over the last few ticks: a sample is what his eye took in when the ball was there. */
@@ -216,6 +242,8 @@ interface Track {
   fit: { t0: number; p: Vec3; v: Vec3 } | null;
   fitT: number;
   seeded?: boolean;
+  /** When his prior was seeded (CATCH_CLOSE reads it: the hands can start on it). */
+  seededAt?: number;
   /** Design 4: when he last looked for the QB before the throw. */
   preLookT?: number;
   priorT?: number;
@@ -227,11 +255,13 @@ interface Track {
   deliberate?: boolean;
   /** Bit 32: when the ball caught his eye without his looking for it (his hands are ready a reaction time later). */
   passiveAt?: number;
+  /** ARM_LOOK: his search line from the arm (the passer where he saw him, the shoulder bearing he read, the release). */
+  armLook?: { from: { x: number; y: number }; dir: number; at: number };
 }
 
 const skill = (a: Agent): number => clamp(a.r(a.team === 'O' ? 'ballTracking' : 'ballSkills'), 0, 1);
 
-/** SEEN_EMPTY (experimental, off; SEEN_EMPTY=1; with BALL_EST): a receiver who sees the passer without the ball (his own
+/** SEEN_EMPTY (on by default; SEEN_EMPTY=0 turns it off; with BALL_EST): a receiver who sees the passer without the ball (his own
  * delayed picture, the passer in his eyes) has the throw cue, as if he had seen the arm come through: his look stays on
  * the ball's search after the release instead of waiting for his body-turn window. It says the ball is up, not where it
  * is going or whose it is, and is never used as the release time (his estimate's seed keeps the arm or his first sample).
@@ -241,6 +271,28 @@ const skill = (a: Agent): number => clamp(a.r(a.team === 'O' ? 'ballTracking' : 
  * his head 90 deg off the passer, before his eyes got there; with the flag, it ends when he has seen the arm or the
  * empty hand in his eyes (`sawEmpty`); seeing the arm keeps him looking, since the ball is about to leave. */
 export const SEEN_EMPTY = process.env.SEEN_EMPTY !== '0';
+
+/** HEAD_RIDE (experimental, off; HEAD_RIDE=1; with BALL_EST, HEAD off): every observer's estimator head that no look is
+ * turning this tick (receiver, defender, anyone with a track) rides on his shoulders: it keeps its offset from them,
+ * within his neck, and relaxes toward them at HEAD_RATE, as a neck does. Off, it stayed where it last pointed in field
+ * coordinates while his body turned under it, and passive sight (bit 32) and the eye test read that stale head. Zone and
+ * man defenders are attended about one tick in ten in flight: those who never sampled a ball they had seen leave had it
+ * within 10 deg of their hips (median) and 63 deg off that stale head (def-nosample.ts, engine-71). HEAD on already
+ * works this way (one shared head per player). No new information: his own body. */
+export const HEAD_RIDE = process.env.HEAD_RIDE === '1';
+
+/** ARM_LOOK (experimental, off; ARM_LOOK=1; with BALL_EST): a defender who saw the passer's arm come through (his release
+ * belief from the arm) and has no sample of the ball yet looks for it: his estimator head is wanted along the passer's
+ * shoulder line as he reads it (the passer through his tracking channel, a read error drawn once by anticipation, the
+ * shoulder break's own draw), sweeping out from the passer at ARM_LOOK_SPEED. He knows nothing of the flight until the
+ * ball is in his eyes (a sample); his feet keep his assignment. Without it, an arm belief drove no look: under bit 32,
+ * 292 of 330 never-sampled rushers and 68 of 87 zone defenders held one at the catch and were still running away from
+ * the catcher (def-late.ts (D), engine-71). */
+export const ARM_LOOK = process.env.ARM_LOOK === '1';
+/** ARM_LOOK's sweep along the shoulder line (yd/s): the coached rule-of-thumb ball speed of the shoulder break
+ * (defense.ts SHOULDER_BALL_SPEED), out to ARM_LOOK_REACH yd. Stated choices; read at 12 and 22 yd/s. */
+const ARM_LOOK_SPEED = Number(process.env.ARM_LOOK_SPEED ?? 17), ARM_LOOK_REACH = 45;
+const ARM_READ_SD_MIN = 5, ARM_READ_SD_SPAN = 15;
 
 export class BallEstimates {
   private readonly tracks = new Map<Agent, Track>();
@@ -252,6 +304,16 @@ export class BallEstimates {
   sense(sim: PlaySim): void {
     if (!BALL_EST || sim.t <= this.lastSenseAt) return;
     this.lastSenseAt = sim.t;
+    // HEAD_RIDE: a head no look is turning this tick rides on his shoulders (its offset kept within the neck, relaxing
+    // toward them at HEAD_RATE), instead of staying where it last pointed in field coordinates while his body turns.
+    if (HEAD_RIDE && !SHARED_HEAD) for (const [a, tr] of this.tracks) {
+      const driven = sim.t - tr.attendT <= sim.dt + 1e-9 || (tr.preLookT !== undefined && sim.t - tr.preLookT <= sim.dt + 1e-9);
+      if (driven) continue;
+      const base = shouldersOf(a.body), neck = neckOf(a), dt = Math.max(0, sim.t - tr.headT);
+      const rel = clamp(angDiff(tr.head, tr.headBase ?? base), -neck, neck), relax = HEAD_RATE * dt;
+      tr.head = base + Math.sign(rel) * Math.max(0, Math.abs(rel) - relax);
+      tr.headT = sim.t; tr.headBase = base;
+    }
     // His own release belief: the passer's arm coming through, as he sees it while he is looking at him.
     for (const [a, tr] of this.tracks) {
       if ((tr.armSeenAt !== undefined && (!SEEN_EMPTY || tr.emptySeenAt !== undefined)) || a.isDown(sim.t)) continue;
@@ -274,7 +336,7 @@ export class BallEstimates {
         const lim = base + clamp(sideOf(angDiff(toward, base), angDiff(tr.head, base)), -neckOf(a), neckOf(a));
         const step = HEAD_RATE * Math.max(0, sim.t - tr.headT);
         tr.head = base + clamp(angDiff(tr.head + clamp(angDiff(lim, tr.head), -step, step), base), -neckOf(a), neckOf(a));
-        tr.headT = sim.t;
+        tr.headT = sim.t; tr.headBase = base;
       }
       return;
     }
@@ -298,6 +360,23 @@ export class BallEstimates {
         if (!tr0.deliberate && tr0.passiveAt === undefined) tr0.passiveAt = sim.t;
       }
     }
+    // ARM_LOOK: a defender with an arm belief and no sample of the ball looks for it along the passer's shoulder line.
+    if (ARM_LOOK) for (const a of sim.defense) {
+      if (a.isDown(sim.t) || !estimatesFor(a)) continue;
+      const rb = releaseBelief(sim, a);
+      if ((rb.source !== 'arm' && rb.source !== 'call' && rb.source !== 'man') || rb.releasedAt === undefined) continue;
+      let tr = this.tracks.get(a);
+      if (tr && tr.flight !== this.flight) { this.reset(tr); tr.flight = this.flight; }
+      if (tr && tr.samples.length) continue;
+      if (!tr?.armLook) {
+        const q = sim.track(a, sim.qb, 1, true);
+        if (q.facing === undefined) continue;
+        const err = sim.dice('shoulder', a).normal(0, (ARM_READ_SD_MIN + ARM_READ_SD_SPAN * (1 - a.r('anticipation'))) * Math.PI / 180);
+        if (!tr) { tr = { flight: this.flight, head: a.facing, headT: sim.t, attendT: sim.t, lastSampleT: -Infinity, err: null, samples: [], pseudo: [], fit: null, fitT: -1, path: null, pathT: -1, jumps: 0 }; this.tracks.set(a, tr); }
+        tr.armLook = { from: { x: q.pos.x, y: q.pos.y }, dir: q.facing + err, at: rb.releasedAt };
+      }
+      tr.attendT = sim.t; tr.deliberate = true;
+    }
     for (const [a, tr] of this.tracks) {
       if (tr.flight !== this.flight) { this.reset(tr); tr.flight = this.flight; }
       if (sim.t - tr.attendT > sim.dt + 1e-9 || a.isDown(sim.t)) continue;
@@ -313,7 +392,7 @@ export class BallEstimates {
         const lim = base + clamp(sideOf(angDiff(toward, base), angDiff(tr.head, base)), -neckOf(a), neckOf(a));
         const step = HEAD_RATE * Math.max(0, sim.t - tr.headT);
         tr.head = base + clamp(angDiff(tr.head + clamp(angDiff(lim, tr.head), -step, step), base), -neckOf(a), neckOf(a));
-        tr.headT = sim.t;
+        tr.headT = sim.t; tr.headBase = base;
       }
       // Pursuit runs on the visuomotor loop (about 110 ms), not on a decision's reaction time; his attention scales it.
       const delay = a.mind.observationDelay(PURSUIT_DELAY);
@@ -405,7 +484,7 @@ export class BallEstimates {
     if (tr.flight !== this.flight && sim.ball.kind === 'air' && sim.ball.flight === this.flight) { this.reset(tr); tr.flight = this.flight; }
     tr.attendT = sim.t; tr.deliberate = true;
     if (!tr.seeded && sim.ball.kind === 'air' && sim.ball.flight === this.flight) {
-      tr.seeded = true;
+      tr.seeded = true; tr.seededAt = sim.t;
       this.seed(a, sim, tr);
       if (tr.samples.length + tr.pseudo.length >= 2) { const nf = fitFlight([...tr.pseudo, ...tr.samples], sim.ball.flight.drag); if (finiteFit(nf)) { tr.fit = nf; tr.fitT = sim.t; tr.path = null; } }
     }
@@ -467,6 +546,20 @@ export class BallEstimates {
   firstSeenAt(a: Agent): number | undefined {
     const tr = this.tracks.get(a);
     return tr && tr.flight === this.flight && tr.samples.length ? tr.samples[0].t : undefined;
+  }
+
+  /** Read-only (CATCH_CLOSE): his prior alone (the pseudo-samples: the passer and his own route, before his eyes found
+   * the ball) as a path, and when it was seeded; null without one. */
+  priorLine(a: Agent, sim: PlaySim): { since: number; path: PathSample[] } | null {
+    const tr = this.tracks.get(a);
+    if (!tr || tr.flight !== this.flight || tr.seededAt === undefined || tr.pseudo.length < 2 || sim.ball.kind !== 'air') return null;
+    const nf = fitFlight([...tr.pseudo], sim.ball.flight.drag);
+    if (!finiteFit(nf)) return null;
+    const keep = { fit: tr.fit, path: tr.path, pathT: tr.pathT };
+    tr.fit = nf; tr.path = null; tr.pathT = -1;
+    const path = this.pathOf(sim, tr);
+    tr.fit = keep.fit; tr.path = keep.path; tr.pathT = keep.pathT;
+    return { since: tr.seededAt, path };
   }
 
   /** Read-only: his newest sample of this flight, `{ t, pos }` (t the ball's time, the position as he saw it), or null. */
@@ -533,8 +626,8 @@ export class BallEstimates {
   private reset(tr: Track): void {
     tr.searchAt = undefined; // armSeenAt is his belief of this play's release: a tip is a new flight of the same throw.
     tr.lookStart = undefined; tr.lookLast = undefined; tr.lookZ = undefined; tr.held = undefined; tr.looks = undefined; tr.gPath = undefined; tr.eyeHist = undefined;
-    tr.samples = []; tr.pseudo = []; tr.seeded = false; tr.priorT = undefined; tr.fit = null; tr.path = null; tr.lastSampleT = -Infinity; tr.err = null; tr.jumps = 0;
-    tr.deliberate = false; tr.passiveAt = undefined;
+    tr.samples = []; tr.pseudo = []; tr.seeded = false; tr.seededAt = undefined; tr.priorT = undefined; tr.fit = null; tr.path = null; tr.lastSampleT = -Infinity; tr.err = null; tr.jumps = 0;
+    tr.deliberate = false; tr.passiveAt = undefined; tr.armLook = undefined;
   }
 
   /** Bit 2048: has he held this flight in his eyes for his dwell (this look, or an earlier one of the same flight)? */
@@ -601,6 +694,11 @@ export class BallEstimates {
     }
     if (n === 1) { if (tr.fit) { const p = this.pathOf(sim, tr); if (p.length) return p[0]; } return { x: tr.samples[0].p.x, y: tr.samples[0].p.y }; }
     tr.searchAt ??= sim.t;
+    // ARM_LOOK: with no fit, his search runs out from the passer along the shoulder line he read.
+    if (ARM_LOOK && tr.armLook && !tr.fit) {
+      const L = tr.armLook, d = Math.min(ARM_LOOK_REACH, Math.max(1, ARM_LOOK_SPEED * (sim.t - L.at)));
+      return { x: L.from.x + Math.cos(L.dir) * d, y: L.from.y + Math.sin(L.dir) * d };
+    }
     const now = tr.fit ? this.pathOf(sim, tr)[0] : undefined;
     if (!now) return qb;
     const k = clamp((sim.t - tr.searchAt) / GAZE_SEARCH, 0, 1);

@@ -1,15 +1,25 @@
-import { describe, expect, it } from 'vitest';
-import { Rng } from '../src/core/rng.js';
-import { generateTeam, pickDefense, pickOffense } from '../src/league/team.js';
-import { PASS_BY_ID } from '../src/playbook/concepts.js';
-import { COVERAGE_BY_ID, FRONT_BY_ID } from '../src/playbook/defense.js';
-import { FORMATION_BY_ID } from '../src/playbook/formations.js';
-import { resolveCatchOpportunities } from '../src/sim/catching.js';
-import { PlaySim } from '../src/sim/playsim.js';
-// Scenes recorded, and dice forced, on the play's single random stream (see PlaySim.dice).
-PlaySim.recordedSingleStream = true;
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
-function contest(distance: number) {
+// Test-only pin (2026-11-18, the joint catch landing): one call puts the ball at him, so under DEF_CATCH he has had no
+// time since first seeing it; these scenes test the reach rule of the off law. test/def-catch.test.ts covers the catch
+// law. Owner: Coverage (catch reach), noted by Flex.
+afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
+async function load() {
+  vi.resetModules(); vi.stubEnv('DEF_CATCH', '0'); vi.stubEnv('BALL_SIGHT', '0');
+  const { Rng } = await import('../src/core/rng.js');
+  const { generateTeam, pickDefense, pickOffense } = await import('../src/league/team.js');
+  const { PASS_BY_ID } = await import('../src/playbook/concepts.js');
+  const { COVERAGE_BY_ID, FRONT_BY_ID } = await import('../src/playbook/defense.js');
+  const { FORMATION_BY_ID } = await import('../src/playbook/formations.js');
+  const { resolveCatchOpportunities } = await import('../src/sim/catching.js');
+  const { PlaySim } = await import('../src/sim/playsim.js');
+  // Scenes recorded, and dice forced, on the play's single random stream (see PlaySim.dice).
+  PlaySim.recordedSingleStream = true;
+  return { Rng, generateTeam, pickDefense, pickOffense, PASS_BY_ID, COVERAGE_BY_ID, FRONT_BY_ID, FORMATION_BY_ID, resolveCatchOpportunities, PlaySim };
+}
+
+async function contest(distance: number) {
+  const { Rng, generateTeam, pickDefense, pickOffense, PASS_BY_ID, COVERAGE_BY_ID, FRONT_BY_ID, FORMATION_BY_ID, resolveCatchOpportunities, PlaySim } = await load();
   const sim = new PlaySim({ offense: pickOffense(generateTeam(new Rng(7), 'O', 'OFF'), '11'),
     defense: pickDefense(generateTeam(new Rng(19), 'D', 'DEF'), 'nickel'),
     offCall: { formation: FORMATION_BY_ID.gun_doubles_11, flip: false, kind: 'pass', pass: PASS_BY_ID.four_verts, label: '' },
@@ -26,12 +36,12 @@ function contest(distance: number) {
   return { sim, d };
 }
 describe('physical contested possession', () => {
-  it('does not award an interception to a nearby defender who cannot reach the ball', () => {
-    const { sim } = contest(2);
+  it('does not award an interception to a nearby defender who cannot reach the ball', async () => {
+    const { sim } = await contest(2);
     expect(sim.stats.interceptedBy).toBeUndefined();
   });
-  it('still allows an in-phase defender inside the ball envelope to intercept', () => {
-    const { sim, d } = contest(0.4);
+  it('still allows an in-phase defender inside the ball envelope to intercept', async () => {
+    const { sim, d } = await contest(0.4);
     expect(sim.stats.interceptedBy).toBe(d.player.id);
   });
 });

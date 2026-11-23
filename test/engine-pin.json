@@ -231,6 +231,7 @@
   "test/declared-break.test.ts",
   "test/def-align.test.ts",
   "test/def-belief.test.ts",
+  "test/def-catch.test.ts",
   "test/def-stance.test.ts",
   "test/defensive-awareness-contact.test.ts",
   "test/defensive-check-menu.test.ts",

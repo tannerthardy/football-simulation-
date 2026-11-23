@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "engine-91",
+  "id": "engine-92",
   "runSet": {
     "commit": "1b5415de99b5b7194eff045f3c37a07a4c54c1a9",
     "seeds": [
@@ -43,7 +43,7 @@
   "numeric": {
     "INFO_HONEST": { "default": 63, "legacy": 0 },
     "SIGHT_STALE": { "default": 7, "legacy": 0 },
-    "BALL_EST": { "default": 6145, "legacy": 0 },
+    "BALL_EST": { "default": 26657, "legacy": 0 },
     "APEX_LEVERAGE": { "default": 7, "legacy": 0 },
     "END_KEY": { "default": 2, "legacy": 0 },
     "ZONE_HOLD": { "default": 114, "legacy": 0 },
@@ -133,6 +133,17 @@
     "SPACING_HOLD": "on",
     "BREAK_LOOK": "on",
     "SEEN_EMPTY": "on",
+    "HEAD_RIDE": "off",
+    "ACQ_SEEN": "on",
+    "TRACKED_CATCH": "on",
+    "ARM_LOOK": "off",
+    "RUSH_ARM": "off",
+    "BALL_CALL": "off",
+    "NECK_FULL": "off",
+    "FLIGHT_MAN": "on",
+    "CATCH_WINDOW_SEEN": "on",
+    "FLIGHT_LANE": "off",
+    "CATCH_CLOSE": "off",
     "DIR_CAP": "on",
     "CARRY_POSTURE": "on",
     "CORNER_DROP": "on",
@@ -190,6 +201,8 @@
     "HANG_GRIP": "off",
     "EXTEND": "off",
     "CATCH_CHOICE": "on",
+    "DEF_CATCH": "on",
+    "BALL_SIGHT": "on",
     "CATCH_SPEED": "on",
     "HANDS_CUE": "on",
     "IZ_FLAT": "on",

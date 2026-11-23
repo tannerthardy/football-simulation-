@@ -9,6 +9,10 @@ afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 
 async function scene(dy: number, facing: number) {
   vi.resetModules();
+  // Test-only pin (2026-11-18, the joint catch landing): these scenes put a ball at him in one call, so under DEF_CATCH he
+  // has had no time since first seeing it and cannot play it at all. They test the off law's blind rule;
+  // test/def-catch.test.ts covers the catch law. Owner: Coverage (blind defender), noted by Flex.
+  vi.stubEnv('DEF_CATCH', '0'); vi.stubEnv('BALL_SIGHT', '0');
   const { Rng } = await import('../src/core/rng.js');
   const { generateTeam, pickDefense, pickOffense } = await import('../src/league/team.js');
   const { PASS_BY_ID } = await import('../src/playbook/concepts.js');

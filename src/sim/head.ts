@@ -30,7 +30,13 @@ export const NECK_STAND = Math.PI / 2;
 export const NECK_SPRINT = (45 * Math.PI) / 180;
 /** Kept for callers of the old constant: the standing range. */
 export const NECK = NECK_STAND;
+/** NECK_FULL (off; ruled 2026-11-16 on the look-back read, scripts/diag/risk/look-back.ts): the neck turns NECK_STAND
+ * (90 deg, a stated choice) off the shoulders at every speed. The sprint narrowing's stated reason (the shoulders stay
+ * square, so a look back takes them) is what TRUNK_TWIST's TRUNK_PRICE already charges; with this on, the trunk price
+ * is the only cost of a look at speed, not a narrower neck on top of it. */
+export const NECK_FULL = process.env.NECK_FULL === '1';
 export function neckRange(a: Agent): number {
+  if (NECK_FULL) return NECK_STAND;
   const v = Math.hypot(a.body.vel.x, a.body.vel.y), vmax = a.profile.vmax || 1;
   return NECK_STAND - (NECK_STAND - NECK_SPRINT) * Math.min(1, v / vmax);
 }
