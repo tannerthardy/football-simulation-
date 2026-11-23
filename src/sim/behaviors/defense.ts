@@ -3072,7 +3072,8 @@ function continueFlightBreak(a: Agent, sim: PlaySim): MoveCommand | null {
 /** FLIGHT_LEAD (off; FLIGHT_LEAD=1 turns it on, with FLIGHT_BREAK; Coverage with Defense, 2026-11-23): a defender who will
  * arrive after the catch by dt breaks on where he expects the receiver dt after it (Defense's post-catch.ts forecast:
  * route momentum through the catch, upfield, away from him), not on the catch spot the carrier will have left. One with
- * the ball or before it keeps the catch spot. Entered at dt > 0.15 s, left at dt < 0 (Commit to a decision). Defense's
+ * the ball or before it, or who can still reach the hands within the securing beat (OPEN_FIELD's playsBall test, as
+ * taught), keeps the catch spot. Entered at dt > 0.15 s and beyond the beat, left inside half of it (Commit to a decision). Defense's
  * overrun class: 5.4 yd away at the catch, a 38 deg turn and >= 0.87 s to redirect, beaten at +0.9 s; stoppers 2.6 yd and
  * 12 deg. Read per call. */
 const flightLeadOn = () => process.env.FLIGHT_LEAD === '1';
@@ -3086,7 +3087,10 @@ function flightBreakMove(a: Agent, sim: PlaySim, R: Agent, seen: Perceived, catc
     const late = sim.t + tArr - catchT;
     // Diagnostic: FLIGHT_LEAD_ENTER (tenths of a second; default 1.5 = 0.15 s), the exit half of it.
     const enter = Number(process.env.FLIGHT_LEAD_ENTER ?? 1.5) / 10;
-    const was = leading.get(a) ?? false, on = was ? late > enter / 2 : late > enter;
+    // As taught (OPEN_FIELD's playsBall test): one who can still reach the hands within the securing beat plays the ball
+    // and the hit at the catch spot; only one who cannot is a pursuer and leads. Its own margins (0.1 s either way).
+    const beat = catchT + DRIVE_SECURE - sim.t, was = leading.get(a) ?? false;
+    const on = was ? late > enter / 2 && tArr > beat - 0.1 : late > enter && tArr > beat + 0.1;
     leading.set(a, on);
     if (on) {
       const lead = postCatchLead(seen.vel, catchSpot, a.pos, sim.attackDir(R.team), late);
