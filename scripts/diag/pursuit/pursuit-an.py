@@ -167,7 +167,18 @@ def _an(row, front=False):
     if beat_t is not None:
         cb = car[beat_t]; others = {k: f[beat_t] for k, f in defs.items() if k != d1k and beat_t in f}
         ahead = sum(1 for d in others.values() if rel(d, cb, unit(cb[3], cb[4], u0))[0] > 0 and dist(d, cb) <= 8)
-        after = dict(n3=sum(dist(d, cb) <= 3 for d in others.values()), n5=sum(dist(d, cb) <= 5 for d in others.values()), n8=sum(dist(d, cb) <= 8 for d in others.values()),
+        # The next defender into contact range after the beat: when, and the carrier's gain until then; the second
+        # defender (nearest other at the beat): where he is in the carrier's frame and whether he is closing.
+        nxt_t = next((t for t in T if t > beat_t and any(t in f and dist(f[t], car[t]) <= CONTACT for k, f in defs.items() if k != d1k)), None)
+        k2 = min(others, key=lambda k: dist(others[k], cb)) if others else None
+        sec = None
+        if k2:
+            ub = unit(cb[3], cb[4], u0); al2, _, out2 = rel(others[k2], cb, ub); t2b = round(beat_t + 0.2, 1)
+            cl2 = (dist(others[k2], cb) - dist(defs[k2][t2b], car[t2b])) / 0.2 if t2b in defs[k2] and t2b in car else None
+            sec = dict(pos='ahead' if al2 > 1 else 'behind' if al2 < -1 else 'level', outside=out2, d=round(dist(others[k2], cb), 1), closing=cl2,
+                       speed=math.hypot(others[k2][3], others[k2][4]))
+        after = dict(next_t=round(nxt_t - beat_t, 1) if nxt_t is not None else None, next_yds=round(car[nxt_t][1] - cb[1], 1) if nxt_t is not None else None, second=sec,
+                     n3=sum(dist(d, cb) <= 3 for d in others.values()), n5=sum(dist(d, cb) <= 5 for d in others.values()), n8=sum(dist(d, cb) <= 8 for d in others.values()),
                      ahead8=ahead, yds_after=round(car[tend][1] - cb[1], 1), end=end, secs_after=round(tend - beat_t, 1))
     tackle_from = None
     if outcome.startswith('stopped'):

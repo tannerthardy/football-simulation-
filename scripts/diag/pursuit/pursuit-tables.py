@@ -48,6 +48,11 @@ def block(name, R):
     A = [r['after'] for r in R if r['after']]
     if A:
         ends = collections.Counter(a['end'] for a in A)
+        N = [a for a in A if a.get('next_t') is not None]; S = [a['second'] for a in A if a.get('second')]
+        if S:
+            sp = collections.Counter(s['pos'] for s in S)
+            print(f"  next defender into contact range after the beat: {pct(len(N), len(A))} of beats; time p50 {q([a['next_t'] for a in N], .5):.1f} s (p75 {q([a['next_t'] for a in N], .75):.1f}); carrier's gain until then p50 {q([a['next_yds'] for a in N], .5):.1f} yd (p75 {q([a['next_yds'] for a in N], .75):.1f})")
+            print(f"  second defender at the beat: dist p50 {q([s['d'] for s in S], .5):.1f} yd; " + ', '.join(f'{k} {pct(v, len(S))}' for k, v in sp.most_common()) + f"; closing (> 1 yd/s) {pct(sum(1 for s in S if s['closing'] is not None and s['closing'] > 1), len(S))}, opening (< -1) {pct(sum(1 for s in S if s['closing'] is not None and s['closing'] < -1), len(S))}; his speed p50 {q([s['speed'] for s in S], .5):.1f}; slow (< 2 yd/s) {pct(sum(1 for s in S if s['speed'] < 2), len(S))}")
         print(f"after a beat (n {len(A)}): others within 3/5/8 yd {sum(a['n3'] for a in A) / len(A):.2f}/{sum(a['n5'] for a in A) / len(A):.2f}/{sum(a['n8'] for a in A) / len(A):.2f}, ahead within 8 {sum(a['ahead8'] for a in A) / len(A):.2f}; nobody within 5 {pct(sum(a['n5'] == 0 for a in A), len(A))}; yards after the beat p50 {q([a['yds_after'] for a in A], .5):.1f} p75 {q([a['yds_after'] for a in A], .75):.1f}; ends " + ', '.join(f'{k} {pct(v, len(A))}' for k, v in ends.most_common()))
 sets = [('outside catches (within 12 yd of the sideline)', [r for r in D if r['outside']]), ('all completions', D)]
 for name, R in sets:
