@@ -7630,6 +7630,9 @@ is not one of the twelve paths.
   three or four of them (a Cover 2 Match hitch, a Cover 1 Off out, a MOD comeback) to confirm the corner was on the
   man and lost the break, rather than the operator miscounting a relation.
 
+**Correction (F7):** about 70% of the owned rows are an off cushion over a short route, which is expected. Technique
+faults (a level or trailing owner) are 17% of wide-open receivers and 32% of their yards.
+
 ### F1. The gaps, ranked by frequency × consequence
 
 The census changes the order of section A. Assignment holes (no owner) are about a quarter of the wide-open men and
@@ -8873,3 +8876,116 @@ not the hook or Tampa depth.
 
 **Next check, no build.** Flex's NFL Cover 2 half-safety depth and width and corner depth at 2.5 / 3.0 s against #1
 verticals. That says whether to fix the safety's carry depth and width first or the corner's sink.
+
+### F6. Why the Cover 2 / Cover 6 hard corner trails #1
+
+Measured with `scripts/diag/coverage/c2-corner.mts` and `c2_corner_report.py`: 12 of Tools' games (seeds 101, 202 and
+303, games 0-3), 152 corner-against-#1 pairs where #1 climbed to 10+ yd before the release. Tools' break-point
+numbers: our Cover 2 corner is on top / level / trailing at .10 / .17 / .73, against the NFL's .40 / .23 / .36.
+Rules' card (cover2 × CB_S at 25b72b75): press or 5 yd with outside leverage forcing an inside release; on #1
+vertical with #2 not to the flat, jam and sink at 45° under #1 to 10-12; the key is #1's release, not a run/pass read.
+
+| phase (median, all 152) | ours | taught |
+|---|---|---|
+| snap | 4.0 deep, cushion 4.9, outside leverage in 129 of 152; no jam | press or 5 yd, jam, force inside |
+| 0-1.0 s | `lane-hold`: stands at his landmark, facing the QB | jam / reroute |
+| 1.0-1.5 s | `lane` (the match lane pick): comes forward (−1.5 yd/s downfield) and inside toward the QB-to-#1 lane; #1 is outside him at 1.0 s in 93 of 152 | sink with outside leverage |
+| #1 passes his depth | 1.5 s; the corner's first downfield move faster than 2 yd/s comes at 2.1 s | — |
+| the sink | starts at 1.5-1.6 s: `flat-sink` needs `knowsPass` (his run/pass read), `sink_corner` needs #2/#3 declared; he sinks facing the QB (cos −0.66 to −0.69 to downfield) at 2.5-3.6 yd/s against #1's 6.7 | 45° sink, hips open, keyed on #1's vertical stem |
+| #1 at 10 yd (2.6 s) | corner 5.3 yd under him, 1.4 yd laterally | under #1, cushioning the hole at 10-12 |
+
+**Answer.** It is not a turn the wrong way: he never turns at all. The causes, in order:
+1. **Wrong technique in the first second and a half.** The match-style zone lane pick pulls him forward and inside,
+   so #1 releases outside him and passes his depth by 1.5 s.
+2. **A late trigger.** The sink waits for a run/pass read or for the inside receivers to declare. The taught key is
+   #1's vertical stem itself.
+3. **A pedal sink.** He faces the QB, so the PEDAL_CAP backpedal cap applies (about 0.47 vmax; NFL-calibrated). The
+   taught 45° sink is side-on, at about 0.62 vmax.
+4. **No jam.** Zone corners never press or reroute.
+
+The control confirms it: the same corner in **spot** style spot-drops from 1.25 s. #1 is never outside him (0 of 28),
+and he ends 3.7 yd under instead of 5.3-6.0. The F16 late declare is one case of cause 2. The half safety's 19-21 yd
+depth (F5) leaves no one over the top in the gap.
+
+### F7. The owned rows split by leverage (rung 0, beyond the line)
+
+Re-run with the owner's position on the receiver (`ownerOver` = owner's depth beyond the receiver; on top > 1 yd, level
+±1, trailing < −1). 121 wide-open receivers, 87 owned:
+
+| owned rows | n | yards thrown |
+|---|---|---|
+| on top over a route under 10 yd (an off cushion over a short route: expected) | 62 | 239 |
+| on top over a route 10+ yd | 5 | 0 |
+| level | 7 | 15 |
+| trailing (beaten) | 13 | 160 |
+
+- Most owned rows are expected. About half of all wide-open receivers beyond the line (62 of 121) are owned from on
+  top over a short route, which is normal off coverage. Tools agrees: seven of the twelve check-page rows were this
+  case, an operator artifact rather than a bust.
+- Technique faults (level or trailing): 20 rows (17%), 175 yards (32% of wide-open yards), mostly #1 at 10+ yd against
+  Cover 2/6 corners (F6).
+- Assignment holes (P1-P11): 34 rows (28%), 139 yards (25%).
+- **This corrects F0's three-quarters-owned reading.**
+
+### F8. Technique inventory, ranked
+
+The full inventory is in `docs/reviews/coverage-c14/technique-inventory.md`. The table here is the ranked short form; classes are against
+Rules' cards (STANDARD rows where Rules has marked them).
+
+**Totals.** 71 technique rows across corner, slot, hook, curl-flat/apex, half, post and robber/rat: 13 modeled, 37
+partly, 21 absent.
+
+**How the estimates are made.** Shares are estimates from the 8-game census (121 wide-open beyond the line, 553
+yards), Tools' 24-game cells and the F6 measurement.
+
+| # | technique (absent / partly) | seats | plausible share of wide-open rows / yards | parked flag |
+|---|---|---|---|---|
+| 1 | Squat corner: jam, 45° side-on sink keyed on #1's stem, no lane pick before the sink | C2 / Tampa / C6 half corners | the Cover 2/6 10-15 yd excess (2.2-2.5x the NFL); about 10% / 25% of my census, since most of the trailing rows | ZONE_LADDER's first commit (the sink); none is merged |
+| 2 | Half safety depth: turn-and-run cushion, not a 19-21 yd drift; cap a turned-up route | C2 / C6 / 2-Man halves | the same 10-15 yd excess (the constant gap in F5) | DEEP_CUSHION (C40), HALF_CAP (parked) |
+| 3 | Defender-to-defender calls: Under (curl-flat robs #1, hook takes #2), in-breaking #2 carry and Push, robot at 7-14 | Cover 3 match, quarters apex and Mike, fire zone | P1 + P3: about 17% / 12% (F09, F61) | none |
+| 4 | Back and formation answers: Funnel, release-side backer, a DOT check on a flexed back, backs by release not slot | Cover 1 backers, Deuce, hooks | P10 + P6: about 5% beyond the line, most of the behind-the-line backs (F15, F68) | none |
+| 5 | Play-action leash: a #2/#3 release overrides the run key | every underneath seat; halves | P5: about 1-3% here, larger on film (F61) | none |
+| 6 | Zone corner's flat-foot read / drive on the 3-step set | Cover 3, quarters, fire-zone corners | the owned-on-top short rows (about 50% of rows) are NFL-normal by Tools' aggregate: low priority | none |
+| 7 | Man technique: press catch / soft shoe / in-hip ride, trail vs on top by phase, funnel leverage, break read on hips | Cover 1 / 2-Man / Cover 0 corners and slot | Cover 1 wide-open is low (0.11 per set throw); Tools: Cover 1 corner on top at the break .39 vs the NFL's .59; a few % | MAN_TURN, JAM_SQUARE, PRESS_ALIGN (none merged) |
+| 8 | Hooks on a string / melt; spot-style carry | plain Cover 3 / 2 hooks | partly within P1; small | ZONE_LADDER (not landed, COV-12) |
+| 9 | Robber keys and hole cut in base Cover 1; Lock / Cut / Jump on motion; In / Out and switch on rubs | Cover 1 robber, all man | P9 / P11: 0 in the sample; F05 on film | none |
+| 10 | Rally and leverage tackling by help; plant-and-drive angle | all | YAC, not openness | none |
+
+SIT_WORK is the offense's sitting-route control. It is not a coverage technique.
+
+### F9. Beyond standard: simplify candidates
+
+For Integration's removal arms. The full table, with call shares and removal arms, is in `docs/reviews/coverage-c14/beyond-standard.md`.
+
+**Variants.** The eight variants with no public source come from one HonestNFL staff's sheets in
+`docs/references/honest-nfl/`: HNFL-203 (Cover 9 Strap / Clue / Grab), -073 (Stuff / Area), -050 (Book), -068 (Cover 2
+Wild), -074/075 (Rolex).
+- So they are scheme options, not inventions: **defer** all eight.
+- The removal arm is a harness catalog filter on `structureChecks` (as the wide-census rung 2 does). Rolex needs a code
+  flag, because VARIANTS is local to `call()`.
+- Without them the base call plays trips, bunch and empty, as the cards' 10a rows describe.
+- One card error: cover9_strap × CB_W says "man on X". HNFL-203 keeps X's corner in a third.
+
+**Flags.**
+- **Keep, standard rows:** QUARTERS_CHECK (the Palms split could be deferred separately), MATCH_DECLARE, MUSH_MATCH,
+  C2_APEX, SQUAT_TOPDOWN, Q_APEX, CUT_WALL, BOX_IN, TAMPA_PIPE, FLAT_SINK, FLAT_CARRY, CURL_SINK, OPEN_CARRY (body
+  control), HALF_KEY.
+- **Defer:** SCREW (a game-plan call in its source, applied to every quarters safety) and MUSH_TRAP (goes with Book).
+- **Merge:** SQUAT_TOPDOWN, FLAT_SINK and FLAT_CARRY are three implementations of one card row (cover2 × CB_S r5) and
+  should become one rule. F6 shows that rule is where the Cover 2 hole comes from.
+- **Stale comments:** several doc comments still say "off" for flags that are on: CUT_WALL, OPEN_CARRY, CURL_SINK,
+  CURL_FLAT_BACK, CORNER_DROP, CARRY_POSTURE, CARRY_TURN, CUSHION_BREAK, PEDAL_CAP and OPEN_FIELD.
+
+**Random mixing.**
+
+| item | verdict | arm |
+|---|---|---|
+| plain Cover 2 / 3 spot-or-match coin flip by matchRate, per snap | remove candidate: pin a style per call id | matchRate 0 and 1 in the harness |
+| VARIANTS by coverage system | defer (team option) | base id per family |
+| per-coach manRate | defer: fix at 0.4 | — |
+| random shown shell (disguise pool) | remove candidate: deterministic, two-high shown, rotate late | coach.disguise 0 versus the rule |
+| Zeus | defer | coach.shadow false |
+| man lock on motion as a per-snap coin (51-69%) | defer: make it a pre-set Lock / Switch call | MOTION_LOCK constant |
+| checkPick | remove: dead code | — |
+| checkPrefer | keep Poach as standard; defer the system / down split | — |
+| in-game `learned()` adaptation | remove from standard: a management feature, and noise in controlled comparisons | LEARN=0 harness |
