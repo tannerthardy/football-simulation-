@@ -34,3 +34,25 @@ for who in ('nearest', 'front'):
     A = [r for r in rows if r['ah']]
     if A: print(f"  forecast speed (the meeting-spot forecast's own, where traced, n {len(A)}): +0.5 s p50 {q([r['ah'][0] for r in A], .5):.1f} vs actual {q([r['p05'] for r in A], .5):.1f} (actual minus forecast p50 {q([r['p05'] - r['ah'][0] for r in A if r['p05'] is not None], .5):+.1f}); +1.0 s {q([r['ah'][1] for r in A], .5):.1f} vs {q([r['p10'] for r in A], .5):.1f} (p50 {q([r['p10'] - r['ah'][1] for r in A if r['p10'] is not None], .5):+.1f}); heading commitment p50 {q([r['cm'] for r in A if r['cm'] is not None], .5):.2f} (p25 {q([r['cm'] for r in A if r['cm'] is not None], .25):.2f})")
     tot = sum(stages.values()); print('  pursuit ticks by stage before contact range: ' + ', '.join(f'{k} {100 * v / tot:.0f}%' for k, v in stages.most_common()))
+
+# Spacing cuts on pursuers: every defender tick with a pursuit stage, before he is within 1 yd of the carrier, where the
+# spacing stage turned his request by > 20 deg or slowed it by > 1 yd/s (the stage intents recorded by pursuit-tap.mts).
+def ang(a, b):
+    d = abs(math.degrees(math.atan2(b[1], b[0]) - math.atan2(a[1], a[0]))) % 360
+    return min(d, 360 - d)
+for lab, keep in (('all', lambda r: True), ('outside', lambda r: min(r['frames'][0]['car'][1], W - r['frames'][0]['car'][1]) <= 12)):
+    n = cut = 0; plays_cut = 0; plays = 0
+    for r in R:
+        if not keep(r) or not r['frames'] or 'stages' not in next(iter(r['frames'][0]['d'].values())): continue
+        plays += 1; any_cut = False
+        for f in r['frames']:
+            for k, d in f['d'].items():
+                if not d.get('stage') or not d.get('stages'): continue
+                if math.hypot(d['pos'][0] - f['car'][0], d['pos'][1] - f['car'][1]) <= 1.0: continue
+                st = dict((s[0], s[1]) for s in d['stages']); a, b = st.get('tackle-bond'), st.get('spacing')
+                if not a or not b: continue
+                n += 1
+                sa, sb = math.hypot(*a), math.hypot(*b)
+                if (sa > 1 and sb > 1 and ang(a, b) > 20) or sa - sb > 1: cut += 1; any_cut = True
+        plays_cut += any_cut
+    if n: print(f"spacing cuts a pursuer's request ({lab}): {100 * cut / n:.1f}% of {n} pursuit ticks; plays with any cut {plays_cut}/{plays}")
