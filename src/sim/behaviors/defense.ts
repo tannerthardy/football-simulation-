@@ -111,7 +111,7 @@ export const SQUAT_SINK = process.env.SQUAT_SINK === '1';
  * The flag is read per call (not only at import) so a diagnostic replay can switch it for one play of a game. */
 export function squatSinkCall(sim: PlaySim): boolean {
   const c = sim.defCall.coverage;
-  if (process.env.SQUAT_SINK !== '1' || c.id.startsWith('deuce')) return false;
+  if (!(process.env.SQUAT_SINK === '1') || c.id.startsWith('deuce')) return false;
   return c.family === 'cover2' || c.family === 'tampa2' || c.family === 'cover6' || c.id === 'cover3_cloud';
 }
 const SQUAT_UNDER = 2, SQUAT_HOLE = 11, SQUAT_FACE = (70 * Math.PI) / 180;
