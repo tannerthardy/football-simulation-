@@ -1,0 +1,29 @@
+defenders within 15 yd of the catch point at the throw: 22811 (plays 5316)
+
+all (n 22811): throw to catch p50 1.0 s
+  all  n 22811: breaks on the ball before the catch 51.7%, time from the throw p50 0.5 s (p75 1.1) | on the carrier by +1.0 s 73.2%, time from the catch p50 0.0 s (p75 0.4); never 17.5%
+  CB   n  5995: breaks on the ball before the catch 51.0%, time from the throw p50 0.4 s (p75 0.9) | on the carrier by +1.0 s 69.1%, time from the catch p50 0.0 s (p75 0.4); never 20.8%
+  S    n  3862: breaks on the ball before the catch 59.9%, time from the throw p50 0.4 s (p75 0.9) | on the carrier by +1.0 s 79.8%, time from the catch p50 0.0 s (p75 0.2); never 12.8%
+  LB   n  7030: breaks on the ball before the catch 59.2%, time from the throw p50 0.4 s (p75 0.9) | on the carrier by +1.0 s 78.3%, time from the catch p50 0.0 s (p75 0.3); never 13.1%
+  DL   n  5911: breaks on the ball before the catch 38.2%, time from the throw p50 0.9 s (p75 1.4) | on the carrier by +1.0 s 67.1%, time from the catch p50 0.1 s (p75 0.6); never 22.3%
+
+outside catches (n 4947): throw to catch p50 1.2 s
+  all  n  4947: breaks on the ball before the catch 65.6%, time from the throw p50 0.2 s (p75 0.8) | on the carrier by +1.0 s 81.3%, time from the catch p50 0.0 s (p75 0.2); never 13.2%
+  CB   n  2102: breaks on the ball before the catch 59.7%, time from the throw p50 0.3 s (p75 0.8) | on the carrier by +1.0 s 75.3%, time from the catch p50 0.0 s (p75 0.2); never 18.2%
+  S    n   876: breaks on the ball before the catch 71.7%, time from the throw p50 0.0 s (p75 0.6) | on the carrier by +1.0 s 87.6%, time from the catch p50 0.0 s (p75 0.1); never  8.4%
+  LB   n  1253: breaks on the ball before the catch 78.7%, time from the throw p50 0.0 s (p75 0.6) | on the carrier by +1.0 s 88.1%, time from the catch p50 0.0 s (p75 0.0); never  6.9%
+  DL   n   716: breaks on the ball before the catch 52.5%, time from the throw p50 0.7 s (p75 1.3) | on the carrier by +1.0 s 79.5%, time from the catch p50 0.0 s (p75 0.4); never 15.2%
+
+first defender (nearest at the catch) (n 4859): throw to catch p50 1.1 s
+  all  n  4859: breaks on the ball before the catch 86.9%, time from the throw p50 0.0 s (p75 0.3) | on the carrier by +1.0 s 91.2%, time from the catch p50 0.0 s (p75 0.1); never  2.8%
+  CB   n  2026: breaks on the ball before the catch 87.2%, time from the throw p50 0.0 s (p75 0.4) | on the carrier by +1.0 s 90.4%, time from the catch p50 0.0 s (p75 0.1); never  4.1%
+  S    n   932: breaks on the ball before the catch 90.1%, time from the throw p50 0.0 s (p75 0.2) | on the carrier by +1.0 s 93.0%, time from the catch p50 0.0 s (p75 0.1); never  1.6%
+  LB   n  1523: breaks on the ball before the catch 88.8%, time from the throw p50 0.0 s (p75 0.2) | on the carrier by +1.0 s 92.9%, time from the catch p50 0.0 s (p75 0.1); never  1.6%
+  DL   n   376: breaks on the ball before the catch 69.7%, time from the throw p50 0.1 s (p75 0.6) | on the carrier by +1.0 s 83.5%, time from the catch p50 0.0 s (p75 0.3); never  3.2%
+
+first defender, beaten or missed (n 979): throw to catch p50 1.0 s
+  all  n   979: breaks on the ball before the catch 81.4%, time from the throw p50 0.0 s (p75 0.3) | on the carrier by +1.0 s 81.6%, time from the catch p50 0.0 s (p75 0.2); never  4.6%
+  CB   n   417: breaks on the ball before the catch 81.3%, time from the throw p50 0.0 s (p75 0.4) | on the carrier by +1.0 s 81.3%, time from the catch p50 0.0 s (p75 0.2); never  6.2%
+  S    n   198: breaks on the ball before the catch 82.3%, time from the throw p50 0.0 s (p75 0.2) | on the carrier by +1.0 s 82.8%, time from the catch p50 0.0 s (p75 0.3); never  3.5%
+  LB   n   286: breaks on the ball before the catch 84.6%, time from the throw p50 0.0 s (p75 0.2) | on the carrier by +1.0 s 82.9%, time from the catch p50 0.0 s (p75 0.4); never  3.1%
+  DL   n    77: breaks on the ball before the catch 67.5%, time from the throw p50 0.0 s (p75 0.5) | on the carrier by +1.0 s 75.3%, time from the catch p50 0.0 s (p75 0.8); never  3.9%
