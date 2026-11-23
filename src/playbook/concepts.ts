@@ -5,6 +5,7 @@
  * route run the side's default (#1 go, #2+ seam) as clear-outs.
  */
 import type { PassConcept, RunConcept } from './types.js';
+import { TAUGHT_ORDER, TAUGHT_READS } from './taught-reads.js';
 
 const BASE_PASS_CONCEPTS: PassConcept[] = [
   // ------------------------------------------------------------ quick game
@@ -244,6 +245,8 @@ if (QUICK_HITCH) for (const c of [...BASE_PASS_CONCEPTS, ...MENU_CONCEPTS]) if (
  * 3.60 -> 3.25 s, sacks 52 -> 35, INT 2 -> 2; on the route card's stack: 6.98 -> 10.17, sacks 52 -> 35, INT 4 -> 2. */
 const VERTS_QUICK = process.env.VERTS_QUICK !== '0';
 if (VERTS_QUICK) for (const c of [...BASE_PASS_CONCEPTS, ...MENU_CONCEPTS]) if (c.id === 'four_verts' || c.id === 'verts_hitch') c.drop = 'gun3';
+// TAUGHT_ORDER (taught-reads.ts): the call's progression is the taught read, the one source the installed plan orders by.
+if (TAUGHT_ORDER) for (const c of [...BASE_PASS_CONCEPTS, ...MENU_CONCEPTS]) if (TAUGHT_READS[c.id]) c.progression = [...TAUGHT_READS[c.id]];
 export const PASS_CONCEPTS: PassConcept[] = CONCEPT_MENU ? [...BASE_PASS_CONCEPTS, ...MENU_CONCEPTS] : BASE_PASS_CONCEPTS;
 
 export const RUN_CONCEPTS: RunConcept[] = [

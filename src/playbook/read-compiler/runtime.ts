@@ -12,6 +12,7 @@ import { compile, PA_TABLES, tableId as tableIdOf } from './compile.js';
 import { DECLARED_BREAK } from './features.js';
 import { BREAK_DECL } from '../route-breaks.js';
 import { PLAN_ROLES } from './candidates.js';
+import { TAUGHT_LOOK, TAUGHT_ORDER, TAUGHT_PEEK, TAUGHT_READS } from '../taught-reads.js';
 import type { PlanStyle } from './types.js';
 
 export const READ_PLAN = process.env.READ_PLAN !== '0';
@@ -270,7 +271,7 @@ export function installedPlan(concept: PassConcept, formationId: string): Instal
   // A formation built for one play (a lab or stress scene) is not in the registry the on-air rep is run from: nothing
   // was installed for it, so he runs the play without a plan.
   if (!FORMATION_BY_ID[formationId]) return null;
-  const key = `${OUTLET_LAST ? 1 : 0}${PLAN_KEYS ? 1 : 0}${PLAN_ROLES ? 1 : 0}${PLAN_KEYS_2 ? 1 : 0}${PLAN_KEYS_3 ? 1 : 0}${DECLARED_BREAK ? 1 : 0}${GRASS_READ ? 1 : 0}${VERTS_KEYS ? 1 : 0}${PA_TABLES ? 1 : 0}|${formationId}|${concept.id}|${concept.drop}|${JSON.stringify(concept.strong)}|${JSON.stringify(concept.weak)}|${concept.back}|${concept.teBlock ? 1 : 0}|${concept.backIsThree ? 1 : 0}`;
+  const key = `${TAUGHT_ORDER ? 1 : 0}${OUTLET_LAST ? 1 : 0}${PLAN_KEYS ? 1 : 0}${PLAN_ROLES ? 1 : 0}${PLAN_KEYS_2 ? 1 : 0}${PLAN_KEYS_3 ? 1 : 0}${DECLARED_BREAK ? 1 : 0}${GRASS_READ ? 1 : 0}${VERTS_KEYS ? 1 : 0}${PA_TABLES ? 1 : 0}|${formationId}|${concept.id}|${concept.drop}|${JSON.stringify(concept.strong)}|${JSON.stringify(concept.weak)}|${concept.back}|${concept.teBlock ? 1 : 0}|${concept.backIsThree ? 1 : 0}`;
   if (cache.has(key)) return cache.get(key)!;
   teams ??= { off: generateTeam(new Rng(41), 'O', 'O', { strength: 0.6 }), def: generateTeam(new Rng(42), 'D', 'D', { strength: 0.6 }) };
   compiling++;
@@ -335,6 +336,20 @@ export function installedPlan(concept: PassConcept, formationId: string): Instal
       const io = PLAN_KEYS ? (INSTALL_ORDER[tableId] ?? (PLAN_ROLES ? ROLE_ORDER[tableId] : undefined))?.map((r) => (concept.backIsThree && r === 'S3' ? 'B' : r)).filter((r) => routes.has(r)) : undefined;
       if (io?.length) plan = { ...plan, style: 'pure', key: null, triangle: null, alert: null,
         order: [...io, ...plan.order.filter((r) => !io.includes(r))] };
+      // TAUGHT_ORDER: his eyes go in the taught order (taught-reads.ts): an installed key's pair leads as one look, then
+      // the taught refs this formation fields; a route the read does not list is a clear-out he does not look at.
+      const taught = TAUGHT_ORDER ? TAUGHT_READS[tableId] : undefined;
+      if (taught) {
+        const refs = taught.map((r) => (concept.backIsThree && r === 'S3' ? 'B' : r) as ReceiverRef)
+          .filter((r, i, a) => a.indexOf(r) === i && (routes.has(r) || r === plan!.outlet));
+        const lead = plan.key ? [plan.key.high, plan.key.low] : [];
+        // A taught peek is the alert, a glance before the order, not a place in it (TAUGHT_PEEK).
+        const peek = TAUGHT_PEEK[tableId];
+        const alert = peek && routes.has(peek) && !lead.includes(peek) ? peek : null;
+        plan = { ...plan, ...(alert ? { alert } : {}), order: [...lead, ...refs.filter((r) => !lead.includes(r) && r !== alert)] };
+        // A back read before the last taught read runs a designed route read in turn, not the outlet.
+        if (plan.outlet && refs.includes(plan.outlet) && refs.indexOf(plan.outlet) < refs.length - 1) plan = { ...plan, outlet: null };
+      }
       // OUTLET_LAST: the outlet leaves the field order; initPlan reads him after everyone else.
       if (OUTLET_LAST && plan.outlet) plan = { ...plan, order: plan.order.filter((r) => r !== plan!.outlet) };
       // PLAN_ROLES: a half-field read's back comes after the key pair, ahead of the backside.
@@ -362,6 +377,9 @@ export function installedPlan(concept: PassConcept, formationId: string): Instal
       if ((CONCEPT_DROPS_RHYTHM || (vk && key?.low === vk.low && key?.high === vk.high)) && key && seq.includes(key.low) && seq.includes(key.high)) groups.push([key.low, key.high]);
       const look = CONCEPT_DROPS_RHYTHM ? ONE_LOOK[tableId] : undefined;
       if (look && look.every((r) => seq.includes(r))) groups.push(look);
+      // TAUGHT_ORDER: the taught one-look pair shares a place, unless a key already makes it one look.
+      const tl = TAUGHT_ORDER ? TAUGHT_LOOK[tableId]?.map((r) => (concept.backIsThree && r === 'S3' ? 'B' : r) as ReceiverRef) : undefined;
+      if (tl && tl.every((r) => seq.includes(r)) && !groups.some((g) => tl.some((r) => g.includes(r)))) groups.push(tl);
       const groupOf = (r: ReceiverRef) => groups.find((g) => g.includes(r));
       let place = -1;
       const placeOf = new Map<ReceiverRef, number>();

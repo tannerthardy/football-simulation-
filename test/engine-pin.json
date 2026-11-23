@@ -560,6 +560,7 @@
   "test/tackle-wait-constraints.test.ts",
   "test/tampa-pipe.test.ts",
   "test/target-action-lifetime.test.ts",
+  "test/taught-order.test.ts",
   "test/team-identity.test.ts",
   "test/throw-platform.test.ts",
   "test/throw-react.test.ts",
