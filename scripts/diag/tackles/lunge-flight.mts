@@ -9,7 +9,7 @@ const { Rng } = await import(`${W}/src/core/rng.ts`);
 const { generateTeam } = await import(`${W}/src/league/team.ts`);
 const { simulateGame } = await import(`${W}/src/game/game.ts`);
 const { compilingPlan } = await import(`${W}/src/playbook/read-compiler/runtime.ts`);
-const { flightOf } = await import(`${W}/src/sim/tackle.ts`);
+const { flightOf, lungeForecast } = await import(`${W}/src/sim/tackle.ts`);
 const { reachTo } = await import(`${W}/src/sim/tackle-reach.ts`);
 const { writeFileSync } = await import('node:fs');
 const GAMES = Number(process.argv[2] ?? 2), OUT = process.argv[3], FIRST = Number(process.argv[4] ?? 201);
@@ -28,7 +28,7 @@ proto.diveAt = function (this: any, a: any, dir: any) {
     const ux = cs > 1 ? c.vel.x / cs : 1, uy = cs > 1 ? c.vel.y / cs : 0;
     const bearing = Math.acos(Math.max(-1, Math.min(1, (-rx * ux + -ry * uy) / (dd || 1)))) * 180 / Math.PI;
     const r = { from: f.from, def: a.player.position, dd: r3(dd), arms: r3(reachTo(a, c, 1)), over: r3(dd - reachTo(a, c, 1)), cs: r3(cs), ds: r3(ds),
-      headroom: r3(a.profile.vmax - ds), sep: r3(sep), asked: r3(Math.hypot(sim.intents[a.idx]?.vel.x ?? 0, sim.intents[a.idx]?.vel.y ?? 0)), cmd: r3(Math.hypot(sim.cmds?.[a.idx]?.vel.x ?? 0, sim.cmds?.[a.idx]?.vel.y ?? 0)), effort: sim.intents[a.idx]?.effort ?? null, bearing: Math.round(bearing), aimOff: null as any, end: null as any, closestOver: null as any, t0: sim.t };
+      headroom: r3(a.profile.vmax - ds), fGap: f.forecast ? r3(f.forecast.gap) : null, fAt: f.forecast ? r3(f.forecast.at) : null, trueGap: r3(lungeForecast(sim, a, c, c.pos, c.vel).gap), sep: r3(sep), asked: r3(Math.hypot(sim.intents[a.idx]?.vel.x ?? 0, sim.intents[a.idx]?.vel.y ?? 0)), cmd: r3(Math.hypot(sim.cmds?.[a.idx]?.vel.x ?? 0, sim.cmds?.[a.idx]?.vel.y ?? 0)), effort: sim.intents[a.idx]?.effort ?? null, bearing: Math.round(bearing), aimOff: null as any, end: null as any, closestOver: null as any, t0: sim.t };
     open.set(a, r);
   }
   return out;

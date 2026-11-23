@@ -163,7 +163,8 @@ function handHold(d: Agent, q: number, hands = 2): number {
 export const LUNGE_FLIGHT = process.env.LUNGE_FLIGHT === '1';
 /** Longest a lunge's flight is followed, s (a bound, not a law: a dive is on the ground well inside it). */
 const FLIGHT_MAX = 1;
-type Flight = { sim: PlaySim; t0: number; carrier: Agent; from: 'lunge' | 'dive'; launchDist: number; closest: number; closestArms: number };
+type Flight = { sim: PlaySim; t0: number; carrier: Agent; from: 'lunge' | 'dive'; launchDist: number; closest: number; closestArms: number;
+  forecast?: { gap: number; at: number } };
 const flights = new WeakMap<Agent, Flight>();
 /** Diagnostics: tackler `d`'s lunge flight in progress (LUNGE_FLIGHT), read-only. */
 export function flightOf(d: Agent): Readonly<Flight> | undefined { return flights.get(d); }
@@ -200,24 +201,32 @@ function flightStep(sim: PlaySim, d: Agent, c: Agent): boolean {
  * accelerating; a falling body cannot). A controller read of his own capability, not a cap: whenever the launch
  * reaches, he may take it. */
 function lungeReaches(sim: PlaySim, d: Agent, c: Agent, cp: Vec2, cv: Vec2): boolean {
+  return lungeForecast(sim, d, c, cp, cv).gap <= 0;
+}
+/** The flight `lungeReaches` forecasts: its closest approach beyond his standing reach (yd, <= 0 reaches) and when. */
+export function lungeForecast(sim: PlaySim, d: Agent, c: Agent, cp: Vec2, cv: Vec2): { gap: number; at: number } {
   const ax = cp.x + cv.x * DIVE_WINDOW - d.pos.x, ay = cp.y + cv.y * DIVE_WINDOW - d.pos.y, al = Math.hypot(ax, ay) || 1;
   const speed = Math.hypot(d.vel.x, d.vel.y);
   const dv = Math.min(1.5, Math.max(0, d.profile.vmax - speed), TURF_MU * G * sim.dt);
   const vx = d.vel.x + ax / al * dv, vy = d.vel.y + ay / al * dv;
   const flight = sim.dt + fallTime(supportParams(d.profile), d.body.support?.posture ?? 0);
   const arms = reachTo(d, c, 1);
+  let gap = Infinity, at = 0;
   for (let t = sim.dt; t <= flight + 1e-9; t += sim.dt) {
     const gx = cp.x + cv.x * t - (d.pos.x + vx * t), gy = cp.y + cv.y * t - (d.pos.y + vy * t);
-    if (Math.hypot(gx, gy) <= arms) return true;
+    const g = Math.hypot(gx, gy) - arms;
+    if (g < gap) { gap = g; at = t; }
+    if (g <= 0) break;
   }
-  return false;
+  return { gap, at };
 }
 
 /** LUNGE_FLIGHT: launch toward where he sees the carrier going over the layout's window. */
 function launch(sim: PlaySim, d: Agent, c: Agent, cp: Vec2, cv: Vec2, from: 'lunge' | 'dive'): void {
   const ax = cp.x + cv.x * DIVE_WINDOW - d.pos.x, ay = cp.y + cv.y * DIVE_WINDOW - d.pos.y, al = Math.hypot(ax, ay) || 1;
   const dd = Math.hypot(c.pos.x - d.pos.x, c.pos.y - d.pos.y);
-  flights.set(d, { sim, t0: sim.t, carrier: c, from, launchDist: dd, closest: dd, closestArms: reachTo(d, c, 1) });
+  flights.set(d, { sim, t0: sim.t, carrier: c, from, launchDist: dd, closest: dd, closestArms: reachTo(d, c, 1),
+    forecast: lungeForecast(sim, d, c, cp, cv) });
   sim.diveAt(d, { x: ax / al, y: ay / al });
 }
 
