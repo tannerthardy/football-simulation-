@@ -38,6 +38,14 @@ def jumps(row):
 
 def analyse(row):
     if jumps(row): return 'jump'
+    a = _an(row)
+    if isinstance(a, dict):
+        f = _an(row, front=True)
+        a['front'] = {k: f[k] for k in ('d1', 'd1dist', 'd1pos', 'outcome', 'cls', 'blk', 'start', 'contact_t', 'beat_t', 'after', 'tackle_from')} if f else None
+    return a
+
+def _an(row, front=False):
+    """front=True: D1 is the nearest defender not behind the carrier at the catch (along his travel > -1 yd)."""
     car = frames(row['car']); T = sorted(car)
     if len(T) < 3: return None
     defs = {k: frames(v) for k, v in row['defs'].items()}
@@ -56,7 +64,9 @@ def analyse(row):
     at0 = {k: f[t0] for k, f in defs.items() if t0 in f}
     if not at0: return None
     bands = {b: sum(1 for d in at0.values() if dist(d, c0) <= b) for b in (3, 5, 8)}
-    d1k = min(at0, key=lambda k: dist(at0[k], c0)); d1 = defs[d1k]; d10 = d1[t0]
+    pool = [k for k in at0 if rel(at0[k], c0, u0)[0] >= -1] if front else list(at0)
+    if not pool: return None
+    d1k = min(pool, key=lambda k: dist(at0[k], c0)); d1 = defs[d1k]; d10 = d1[t0]
     al, la, outs = rel(d10, c0, u0)
     pos = 'ahead' if al > 1 else 'behind' if al < -1 else 'level'
     t2 = round(t0 + 0.2, 1)

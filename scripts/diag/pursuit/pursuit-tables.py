@@ -27,6 +27,11 @@ def block(name, R):
         cl = collections.Counter(r['cls'] for r in F)
         print(f'failure class (of {len(F)} beaten or missed): ' + '; '.join(f'{k} {pct(v, len(F))}' for k, v in cl.most_common()))
         print(f"  carrier speed catch -> at the beat: p50 {q([r['cs'] for r in F], .5):.1f} -> play max {q([r['cmax'] for r in F], .5):.1f}; D1 start speed (first 0.5 s) p50 {q([r['start'] for r in F], .5):.1f}")
+    Fr = [r['front'] for r in R if r.get('front')]
+    if Fr:
+        oc = collections.Counter(f['outcome'] for f in Fr); Ff = [f for f in Fr if f['cls']]
+        print(f'first defender in front (nearest not behind at the catch, n {len(Fr)}, dist p50 {q([f["d1dist"] for f in Fr], .5):.1f}): ' + '; '.join(f'{k} {pct(v, len(Fr))}' for k, v in oc.most_common()))
+        if Ff: print(f'  its failure class (of {len(Ff)}): ' + '; '.join(f'{k} {pct(v, len(Ff))}' for k, v in collections.Counter(f['cls'] for f in Ff).most_common()))
     T = [r for r in R if r['tackle_from']]
     if T:
         c1 = collections.Counter(r['tackle_from']['at_catch'] for r in T); c2 = collections.Counter(r['tackle_from']['at_contact'] for r in T)
