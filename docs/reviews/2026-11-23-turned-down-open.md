@@ -300,3 +300,47 @@ Flag registered off: baseline "0", reference-stack "off", a FLAGS.md row, count 
   catch meets them elsewhere; 148 of 285 pass plays change course; no stage flips (carrier / spacing 27 → 33, mode
   switch 0 → 3 on the pass plays); as ZONE_EYES on engine-75."
 - To apply only with the flag's promotion.
+
+### Landing patch: engine-92 (PERIPH_ACUITY on)
+
+Integration's paired six-seed card on 0226f0d3 plus the flag (seeds 23/37/11/5/61/88), mean deltas:
+
+| | mean delta |
+|---|---|
+| completion | −1.2 pts |
+| yards per attempt | −0.17 |
+| sacks | +0.1 (the 30 → 36 drift was noise) |
+| INT | +0.1 |
+| 20+ yard plays | −0.9 |
+| YAC | +0.2 |
+| time to throw | flat |
+
+Accepted: the size and direction match the mechanism, and no bug was found.
+
+Patch: `docs/reviews/patches/engine71-footwork/periph-acuity-landing-engine92-0226f0d3.patch`. It applies cleanly to
+0226f0d3, 14 files.
+- **Engine and stack:** `PERIPH_ACUITY !== '0'`; reference stack `engine-92` with the flag on; baseline profile "0".
+- **Docs:** FLAGS row promoted, count 499 (380 on, 91 off); REFERENCE_STACK section for engine-92.
+- **Tests:**
+  - new `test/periph-acuity.test.ts`, a defaults file listed in the engine-pin manifest. It checks the same look,
+    flag off against on, at 5° and 35° off his gaze: off carries no error; on, the clear cone is narrower and the
+    error grows 0.08 → 0.60 yd, at the size the look states (0.45 yd);
+  - dither carrier row re-recorded [0.3897, 785, 306] with its attribution.
+
+Core suite (core and core-defaults, 2 workers), clean develop against the patch:
+- **Develop alone:** 68 failures in 32 files, before the patch. Among them are baseline-runner's three Node-pin cases,
+  12 in stretch-normal-follow and 8 in visible-help. They are left to their owners.
+- **New with the flag:** two, both fixtures that assumed an exact peripheral picture. Each keeps its contract (latency
+  and memory age; delayed rather than hidden position), now within the look's stated error; off it is still exact.
+  - `qb-memory-awareness` "retains the older peripheral picture";
+  - `qb-receiver-forecast` "gates receiver acquisition by the delayed look".
+- **Passing with the flag that fail on develop:**
+  - `arrival-lead` (ARRIVE_LEAD upfield crossing);
+  - `qb-peek-clock` (leaves the vertical peek by the second hitch).
+- The `qb-receiver-forecast` anticipatory-throw case fails on develop and with the patch, the same way with the flag
+  off: not this change.
+
+Other checks:
+- dither budget passes on the new default;
+- reference-stack, information scan and engine-pin manifest pass;
+- typecheck clean.
