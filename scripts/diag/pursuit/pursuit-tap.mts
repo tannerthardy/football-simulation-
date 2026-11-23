@@ -5,8 +5,10 @@
 const W = process.cwd();
 const { PlaySim } = await import(`${W}/src/sim/playsim.ts`);
 const { writeFileSync } = await import('node:fs');
+const { facingTechnique } = await import(`${W}/src/sim/coverage/orientation.ts`);
 const r2 = (v: number) => Math.round(v * 100) / 100;
 const st = new WeakMap<any, any>(); const noop = () => undefined;
+const techOf = new WeakMap<any, string | null>(); const wrapped = new WeakSet<any>();
 export function install() {
   const proto = PlaySim.prototype as any, tick = proto.tick;
   proto.commandTraceFor = function (this: any, a: any) {
@@ -18,6 +20,10 @@ export function install() {
     let s = st.get(this);
     if (!s) { s = { los: this.los, dir: this.attackDir(this.offense[0].team), C: null, tc: -1, next: 0, cur: {}, frames: [] }; st.set(this, s); }
     s.cur = {}; s.stg = {};
+    // This tick's facing-technique label of each defender's behaviour request (read off the command it returns).
+    for (const d of this.defense) { const b = d.behavior as any;
+      if (b && !wrapped.has(b)) { wrapped.add(b); const u = b.update.bind(b);
+        b.update = (a: any, sm: any) => { const c = u(a, sm); techOf.set(a, (c && facingTechnique(c)?.label) || null); return c; }; } }
     // Per-stage intents for defenders (the engine's own stage hooks, through a passive sink).
     if (!this.commandTrace) this.commandTrace = new Proxy({}, { get: (_o, name) => name === 'stage' ? (n: string, intents: any[]) => {
       if (!s.C) return; for (const d of this.defense) { const v = intents[d.idx]?.vel; if (v) (s.stg[d.slot] ??= []).push([n, [r2(v.x * s.dir), r2(v.y)]]); } }
@@ -35,7 +41,7 @@ export function install() {
         const stage = !ch ? (ic ? 'meeting spot' : null) : ch.planner === 'bypassed-close-gather' ? 'close gather'
           : ch.requests?.[0]?.stage === 'held-tackle' ? 'tackle bond' : ic ? 'meeting spot' : 'on-top point';
         const req = ch?.requests?.[ch.requests.length - 1]?.command;
-        f.d[d.slot] = { kind: d.behavior?.kind ?? null, tags: d.tags ? [...d.tags].filter((t: string) => /drive|open-field|onBall|looking|carry|rally|ball/.test(t)) : [], pos: [...P(d.pos), ...V(d.vel)], cmd: sim.cmds?.[d.idx] ? V(sim.cmds[d.idx].vel) : null, stages: s.stg[d.slot] ?? null, intent: sim.intents?.[d.idx] ? V(sim.intents[d.idx].vel) : null, stage, assumedV: ic ? r2(ic.forecast.relaxedSpeed) : ch ? r2(Math.hypot(ch.observed.vel.x, ch.observed.vel.y)) : null,
+        f.d[d.slot] = { tech: techOf.get(d) ?? null, kind: d.behavior?.kind ?? null, tags: d.tags ? [...d.tags].filter((t: string) => /drive|open-field|onBall|looking|carry|rally|ball/.test(t)) : [], pos: [...P(d.pos), ...V(d.vel)], cmd: sim.cmds?.[d.idx] ? V(sim.cmds[d.idx].vel) : null, stages: s.stg[d.slot] ?? null, intent: sim.intents?.[d.idx] ? V(sim.intents[d.idx].vel) : null, stage, assumedV: ic ? r2(ic.forecast.relaxedSpeed) : ch ? r2(Math.hypot(ch.observed.vel.x, ch.observed.vel.y)) : null,
           aim: ic ? P(ic.steeringPoint) : null, commit: ic?.forecast?.commit ?? null, ahead: ic?.forecast?.speedAhead ?? null, req: req ? V(req.vel) : null, gather: ch ? r2(ch.gather) : null };
       }
       s.frames.push(f);

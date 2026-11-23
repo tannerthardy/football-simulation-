@@ -49,7 +49,7 @@ for r in R:
         if dist < 1.0: continue
         ic = pa.cv_intercept(d['pos'][0], d['pos'][1], max(1.0, math.hypot(d['pos'][2], d['pos'][3])), c[0], c[1], c[2], c[3])
         along = -(b[0] * u[0] + b[1] * u[1])
-        stage = d['stage'] or ('none: ' + (d.get('kind') or '?') + ('[' + ','.join(sorted(d.get('tags') or [])) + ']' if d.get('tags') is not None else ''))
+        stage = d['stage'] or ('none: ' + (d.get('kind') or '?') + (' <' + d['tech'] + '>' if d.get('tech') else ' <no technique label>' if 'tech' in d else ('[' + ','.join(sorted(d.get('tags') or [])) + ']' if d.get('tags') is not None else '')))
         # Lead (Rules' tackle_geometry.py convention): angle off his line of sight, + toward the carrier's travel; against
         # the lead a constant-velocity intercept at his current speed needs. For his request and for his achieved velocity.
         sgn = 1 if (b[0] * c[3] - b[1] * c[2]) >= 0 else -1
