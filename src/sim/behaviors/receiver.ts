@@ -3,6 +3,7 @@
  * route-running skill and the traction ellipse, option routes that convert
  * vs. man/zone), tracking the ball in flight, and blocking after the catch.
  */
+import { jamSquare } from '../contact-holding.js';
 import { FIELD_WIDTH, OPP_GOAL_X } from '../../core/field.js';
 import { neckRange } from '../head.js';
 import { servoCommand, servoEngaged } from '../ball-servo.js';
@@ -288,6 +289,16 @@ export function routeCraft(a: Agent, sim: Pick<PlaySim, 'defense' | 'see' | 't'>
 /** PRESS_MIRROR (off; see behaviors/defense.ts): a receiver with a pressing
  * corner square in front of him releases around him, not up through him. */
 const PRESS_MIRROR = process.env.PRESS_MIRROR !== '0';
+/** JAM_SQUARE (experimental, off; Integration, 2026-11-18, from Coverage's MAN_TURN): a press jam's hands are a corner
+ * square to the receiver with his base under him, chest to chest ("the press corner must stay square ... a two-hand
+ * jam"); a corner who has turned and is running with him is in his hip, not jamming. Off, the hands join whenever the
+ * corner faces him within reach, and a corner who turns to run (MAN_TURN: he faces where his man will be) opened a jam
+ * 2.3 yd downfield at 1.5 s that the release's slide never wore off running side by side (parallel bodies do not move
+ * across the hand), so the joint held the receiver to 3.1-3.6 yd/s until 5 yd past the line (staged four verticals vs
+ * Cover 1: his command 9.3 yd/s throughout). On, the hands join and hold only while the corner faces him squarely
+ * (within 45 deg of the line to him) and is not running away from him faster than 1.5 yd/s (a pedal or a sit, not a
+ * run); otherwise the jam ends and the release is his. */
+const JAM_SQUARE = process.env.JAM_SQUARE === '1';
 /** PRESS_RELEASE (off; with PRESS_MIRROR): a pressed receiver works around
  * the corner from the snap, clear of his body and reach, on his route's side
  * (outside on a vertical) and away from the corner's shade. Tracked pressed
@@ -756,6 +767,8 @@ export class RouteRunner implements Behavior {
       return (Math.cos(d.facing) * relative.x + Math.sin(d.facing) * relative.y) / dist > 0.3;
     };
     const stop = () => this.clearPressContact(sim);
+    // JAM_SQUARE: chest to chest within 45 deg, and not running off from him (the contact's own law, contact-holding.ts).
+    const square = (d: Agent, relative: Vec2): boolean => !JAM_SQUARE || jamSquare(d, relative);
 
     // Beyond five yards the defender must cover rather than initiate or
     // sustain a release jam. A thrown ball also changes the players' task.
@@ -768,7 +781,7 @@ export class RouteRunner implements Behavior {
       this.recordJam(sim, p);
       const relative = sub(a.pos, d.pos), dist = Math.hypot(relative.x, relative.y);
       if (!sim.world.joints.includes(p.hands) || dist > reach(d) || usable(d) === 0 || !facingReceiver(d, relative)
-        || d.engagement || a.engagement) {
+        || !square(d, relative) || d.engagement || a.engagement) {
         stop();
         return null;
       }
@@ -793,7 +806,7 @@ export class RouteRunner implements Behavior {
         const spot = sim.defAlign.spots[d.slot as keyof typeof sim.defAlign.spots];
         if (!spot?.press || spot.manTarget !== a.slot || this.releasedCorners.has(d) || d.engagement || a.engagement || usable(d) === 0) continue;
         const relative = sub(a.pos, d.pos), dist = Math.hypot(relative.x, relative.y);
-        if (dist > reach(d) || a.pos.x > d.pos.x + a.profile.radius || !facingReceiver(d, relative)) continue;
+        if (dist > reach(d) || a.pos.x > d.pos.x + a.profile.radius || !facingReceiver(d, relative) || !square(d, relative)) continue;
         // Two hands cannot simultaneously jam one player and grasp/block
         // another. Contacts owned by another technique have priority.
         if (sim.world.joints.some((j) => j.a === d.body || j.b === d.body || j.a === a.body || j.b === a.body)) continue;

@@ -320,6 +320,7 @@
   "test/inside-stalk-access.test.ts",
   "test/installed-plan-unregistered.test.ts",
   "test/int-belief.test.ts",
+  "test/jam-square.test.ts",
   "test/joint-spacing-projection.test.ts",
   "test/joint-spacing.test.ts",
   "test/key-depth.test.ts",

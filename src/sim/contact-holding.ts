@@ -528,3 +528,13 @@ export function holdStage(sim: PlaySim, start: HoldingIntervalStart, h: HoldStar
     holdManToBall: tMan, holdFreeToBall: tFree, holdTraffic: traffic, holdEffectYdPerS: effectYdPerS, holdPSeen: pSeen };
   return { stage: facts.holdStage as 'committed' | 'material' | 'called', facts };
 }
+
+/** JAM_SQUARE (behaviors/receiver.ts): a press jam's hands are a corner square to the receiver with his base under him:
+ * chest within 45 deg of the line to him (`relative`: receiver minus corner) and not running off from him faster than
+ * 1.5 yd/s. A contact law of both bodies, not either player's read. */
+export function jamSquare(corner: { facing: number; vel: { x: number; y: number } }, relative: { x: number; y: number }): boolean {
+  const dist = Math.hypot(relative.x, relative.y) || 1;
+  const face = (Math.cos(corner.facing) * relative.x + Math.sin(corner.facing) * relative.y) / dist;
+  const away = -(corner.vel.x * relative.x + corner.vel.y * relative.y) / dist;
+  return face >= Math.SQRT1_2 && away <= 1.5;
+}
