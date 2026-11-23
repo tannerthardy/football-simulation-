@@ -450,6 +450,7 @@
   "test/race-lean.test.ts",
   "test/rat-coverage.test.ts",
   "test/reach-contact.test.ts",
+  "test/reach-time.test.ts",
   "test/read-plan.test.ts",
   "test/read-window.test.ts",
   "test/receiver-depth.test.ts",
