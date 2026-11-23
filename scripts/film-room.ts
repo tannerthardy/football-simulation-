@@ -70,6 +70,8 @@ if (mode === 'collect') {
       result: p.text, yds: p.yds, air: st.air ?? null, yac: st.yac ?? null, ttt: st.ttt ?? null, complete: !!p.flags.complete, sack: !!p.flags.sack, gameSeed: p.gameSeed,
     } };
   });
+  // The picked plays' keys, so a play can be replayed exactly: the game (seed 101 + game index; the teams come from Rng(101)) and the play's place in its log.
+  writeFileSync(resolve(root, out.replace(/\.html$/, '') + '.keys.json'), JSON.stringify(plays.map((p: any) => ({ f: p.id, set: p.film.set, gameSeed: p.gameSeed, game: p.gameSeed - Number(seeds[0]), index: p.index, q: p.q, clk: p.clk, down: p.down, dist: p.dist, yl: p.yl, concept: p.plan?.concept, coverage: p.plan?.coverage, formation: p.plan?.formation, front: p.plan?.front, text: p.text })), null, 1));
   console.error(`pool ${all.length} pass plays; zone 10+ YAC pool ${zonePool.length}; picked ${random.length} random + ${zone.length} zone-yac`);
   const data = {
     meta: { seed: seeds[0], games: [], final: { home: 0, away: 0 }, quarters: [], sourceSha256: source,
