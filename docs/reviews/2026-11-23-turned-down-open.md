@@ -80,3 +80,29 @@ not an eyes measure. The NFL data cannot say when a passer's eyes reach his targ
 2. Decide only on what his eyes have seen: the windup starts on a target his head reaches 0.10 s later (median), and on
    39% of throws the target is in his periphery. The decision is made on his picture of the receiver, kept current by
    QB_TICK_PICTURE and the forecast, not on a look.
+
+## Follow-up: what the decision knows about a target his head is not on (Integration)
+
+`scripts/diag/eyes/decision-picture.ts`, the same 8 games, 641 decisions (windup start). For the target: his head's
+angle; the time since his head was last within 15° of him; his receiver picture's age (forecast.lastPicture) and error
+(forecast now against truth). For the defenders within 6 yd of the target: his believed position's error and its age.
+
+| head angle at decision | n | since last in-cone look p50 / p90 | target never in the cone this play | receiver picture age p50 / p90 | receiver error p50 / p90 | near defenders' error p50 / p90 | their picture age p50 / p90 |
+|---|---|---|---|---|---|---|---|
+| 0-15° | 332 | 0.00 / 0.20 s | 20 | 0.25 / 0.25 s | 0.04 / 0.19 yd | 0.13 / 0.54 yd | 0.25 / 0.60 s |
+| 15-30° | 109 | 0.35 / 1.00 s | 62 | 0.25 / 0.25 s | 0.05 / 0.18 yd | 0.13 / 0.57 yd | 0.25 / 0.70 s |
+| 30-60° | 107 | 0.35 / 0.90 s | 65 | 0.40 / 0.40 s | 0.13 / 0.54 yd | 0.33 / 1.71 yd | 0.50 / 1.15 s |
+| over 60° | 93 | 0.45 / 0.65 s | 72 | 0.60 / 1.10 s | 0.32 / 1.17 yd | 0.50 / 6.43 yd | 0.70 / 1.90 s |
+
+**An information leak.** QBMind.receiverLook gives a clear picture (his delay) inside clearHalf, 19-31° by his vision,
+and a peripheral one inside periphHalf (45-69°). The peripheral picture is exact apart from 1.7 times the delay.
+- To 30° the picture is as good as dead centre: 0.25 s old and 0.05 yd off.
+- At 30-60° it is 0.40 s old and 0.13 yd off: nearly current and accurate, with latency the only cost.
+- Only past about 60° does it degrade (receiver 0.32 / 1.17 yd, near defenders up to 6.4 yd at p90).
+- On 62-72% of decisions made at 15° or more, the target was never within 15° of his head at any time in the play, yet
+  his picture of him was fresh and accurate.
+
+So the decision on a target in his periphery is priced from a near-perfect position and velocity: a far wider picture
+than a passer's eyes give. Human peripheral vision detects motion but loses position and velocity precision with
+eccentricity. The missing mechanism is a positional and velocity error that grows with the angle off his gaze (and a
+"clear" cone narrower than 31° for reading separation), rather than latency alone. Not built.
