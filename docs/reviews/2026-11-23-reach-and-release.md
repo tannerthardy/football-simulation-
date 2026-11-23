@@ -130,3 +130,105 @@ Measurement for a first build:
 - the open-turned-down table;
 - completion and pick rate on flashed throws against looked-at throws (they must not complete better);
 - the dither budget's QB facing row.
+
+## 4. The path-term check, 0.3 s before the break (Integration)
+
+`scripts/diag/eyes/path-check.ts` + `path_check_table.py`, on Coverage's coverage/C14-squat-sink (5abb7ade0) plus the
+engine-92 patch.
+- Staged plays: curl_flat, stick, quick_hitch, quick_outs, hitch_out, double_outs, smash, dagger × Cover 1/2/3/4 × 2
+  rosters × 2 seeds × flip.
+- Target: the first read that is a stop route or an out. His break is found on his own track: the plant on a stop, the
+  sharpest turn on an out.
+- At the tick 0.3 s before it: his price of a throw now and the window's per-defender rows. For the defender with the
+  largest path pick, truth and the QB's picture.
+- FLIGHT_BREAK off and on give the same rows; it changes the drive's goal, not its timing.
+
+**Stop routes** (31 plays, 30 with a deciding defender): 0 clear his bar. P p50 0.10, pick risk 0.23, pClear 0.34,
+pOpen 0.35. The path term sets it on 28 of 30.
+
+The defender who sets it:
+- Role: the man on him 9; flat / curl-flat zone 15; hook 2; rush 3.
+- Lane: in the lane to the expected catch point (under 1 yd) in truth on 14 of 30; median 1.2 yd off. The QB's picture
+  agrees (1.3 yd; picture error 0.40 p50, 1.8 p90). This is not a picture leak and not a phantom.
+- Leverage (truth): inside the receiver (−1.3 yd), level to slightly deeper (+0.3), cushion 1.8 yd, already moving
+  toward the catch point at +0.6 yd/s and with the stem at +0.9.
+- These are underneath defenders on top of the hitch. The corner on top and outside, who cannot undercut a hitch thrown
+  before the plant, is not the man that shuts these throws.
+
+By the defender's place:
+
+| | touch | path pick | P |
+|---|---|---|---|
+| in the lane (0.5 yd off) | 1.00 | 0.30 | 0.06 |
+| 1.5 yd off the lane | 0.76 | 0.23 | 0.09 |
+
+**Outs** (117 plays): 33 clear. P p50 0.37, pick risk 0.045, pClear 0.85.
+
+| | n | touch | path pick | P |
+|---|---|---|---|---|
+| in the lane (0.3 yd) | 20 | 0.99 | 0.30 | 0.09 |
+| 2.4 yd off the lane | 41 | 0.39 | 0.11 | 0.24 |
+| rushers as the path defender (5.7 yd from the QB) | 29 of 104 | 0.29 | 0.05 | — |
+
+The rusher row prices a batted ball far above the NFL's rate (about 1–2% of attempts batted).
+
+**Reaction, priced against measured.**
+- Priced: the deciding defender's blind time is 0.17 s and his reaction 0.22 s, so he starts about 0.39 s into the
+  windup, roughly at the release.
+- Measured on the 56 outs thrown to the target: the defender nearest the catch point at the release first turns
+  toward it (closing 1.5+ yd/s, within 45° of it) at windup + 0.55–0.60 s, which is release + 0.15 s and the receiver's
+  break + 0.35 s.
+- None was already moving to the spot 0.45 s before the windup.
+- So the passer prices a defender about 0.15–0.2 s quicker than ours, in the defender's favour. That is the size of
+  one zone defender's reaction to the release.
+- Over 1.5 yd of lateral reach that is enough to take touch from about 0.4 to about 0.8: the off-lane stop row.
+- No stop throws reached the target on this panel, so the stop reaction is not measured here.
+
+**Answers to Integration's three questions:**
+1. **The path defender is really there.** On stop routes he is an underneath defender inside the receiver and on top
+   of the spot, in the lane about half the time, in truth and in the QB's picture alike. The price is not putting a
+   phantom in the lane.
+2. **The reaction is over-quick.** The price starts the defender at about the release. Our defenders turn at release
+   + 0.15 s, about 0.35 s after the receiver's break. The price grants a defender more than ours does: an information
+   asymmetry in the defender's favour, about one reaction time. The deciding defender is a zone man facing the passer.
+   For a man defender on the target the window follows the stem until the break (DEF_BELIEF), as taught.
+3. **Leverage is handled through position and momentum only.** Arrival uses the seen velocity (momentum along the
+   route at +0.9 yd/s on stops), but no seat-based term says that a defender on top and outside cannot get under a ball
+   thrown inside him before the break. On these stop throws that rarely matters, because the deciding defender is
+   underneath and inside. For outs against an outside or over-the-top defender it would.
+4. **Also:** rushers set the path price on 29 of 104 outs, a batted-ball rate far above the NFL's.
+
+## 5. Proposal: one item, the clock from the snap and an honest anticipation price
+
+1. **One clock from the snap, keyed to the drop's steps** (the user's standing direction: reads keyed to footwork
+   events).
+   - Each read's look is tied to a step of the called drop: read 1 at the plant; read 2 at the first hitch, one stride
+     later; and so on.
+   - The step times run from the snap, so a read is available on its step even when he has not arrived at his set
+     point. Today reads 2+ wait for `setAt`.
+   - A late or deep set shifts nothing: the beat passes, and READ_WINDOW passes the read.
+   - READ_WINDOW + quick clock ride with it, as Integration said.
+2. **The defender's start in the price is what he can know.**
+   - A zone defender reading the passer starts at the release plus his reaction, calibrated against our own defenders'
+     measured turn (release + about 0.15 s), not at windup + blind.
+   - A man defender on the target starts at the receiver's break plus his reaction (the eyes on his man), as
+     DEF_BELIEF already follows the stem.
+   - A man sitting on the spot (moving to it before the windup, or settled within his reach of it) keeps the early
+     start: that is the jumped route.
+3. **Seat and leverage.** A defender on top and outside of the receiver, by the passer's picture, cannot undercut a
+   ball thrown inside him before the break unless his momentum carries him into the lane. This uses his position
+   against the route's break direction and his seen velocity, not a coverage label.
+4. **Rushers.**
+   - Batted balls should be priced by the ball's height as it passes the rusher's reach, at his distance and moment,
+     rather than in the general path term.
+   - Check the rate against NFL batted passes (BDB has no batted label; the deflection events near the line are the
+     handle) before changing it.
+5. **Measure on landing:**
+   - release − break by family against the NFL (stop −0.10 / out +0.30 / in +0.40);
+   - the share thrown before the break;
+   - pick rate on throws before the break;
+   - the open-turned-down table;
+   - sacks;
+   - the dither budget's QB and QB facing rows.
+
+The flash read stays a proposal for after this.
