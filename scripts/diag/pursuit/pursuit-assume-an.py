@@ -22,13 +22,15 @@ for who in ('nearest', 'front'):
             if d['stage']: stages[d['stage']] += 1
             if d['stage'] in ('meeting spot', 'on-top point') and d['assumedV'] is not None:
                 lag.append(sp[t] - d['assumedV'])
-                if first is None: first = (t, d['assumedV'], d['stage'])
+                if first is None: first = (t, d['assumedV'], d['stage'], d.get('ahead'), d.get('commit'))
         if first:
-            t, v, st = first
-            rows.append(dict(t=t, v=v, st=st, now=sp.get(t), p05=sp.get(round(t + 0.5, 1)), p10=sp.get(round(t + 1.0, 1)), lag=q(lag, .5)))
+            t, v, st, ah, cm = first
+            rows.append(dict(t=t, v=v, st=st, ah=ah, cm=cm, now=sp.get(t), p05=sp.get(round(t + 0.5, 1)), p10=sp.get(round(t + 1.0, 1)), lag=q(lag, .5)))
     if not rows: continue
     n = len(rows)
     print(f"{who} defender, {lab}: n {n}; first pursuit stage at +{q([r['t'] for r in rows], .5):.1f} s p50 ({', '.join(f'{k} {100 * v / n:.0f}%' for k, v in collections.Counter(r['st'] for r in rows).most_common())})")
     print(f"  carrier speed assumed at commitment p50 {q([r['v'] for r in rows], .5):.1f}; actual then {q([r['now'] for r in rows], .5):.1f}, +0.5 s {q([r['p05'] for r in rows], .5):.1f}, +1.0 s {q([r['p10'] for r in rows], .5):.1f} yd/s")
     print(f"  actual minus assumed: at +0.5 s p50 {q([r['p05'] - r['v'] for r in rows if r['p05'] is not None], .5):+.1f} (p75 {q([r['p05'] - r['v'] for r in rows if r['p05'] is not None], .75):+.1f}); at +1.0 s p50 {q([r['p10'] - r['v'] for r in rows if r['p10'] is not None], .5):+.1f}; during pursuit (each tick vs that tick) p50 {q([r['lag'] for r in rows], .5):+.2f}")
+    A = [r for r in rows if r['ah']]
+    if A: print(f"  forecast speed (the meeting-spot forecast's own, where traced, n {len(A)}): +0.5 s p50 {q([r['ah'][0] for r in A], .5):.1f} vs actual {q([r['p05'] for r in A], .5):.1f} (actual minus forecast p50 {q([r['p05'] - r['ah'][0] for r in A if r['p05'] is not None], .5):+.1f}); +1.0 s {q([r['ah'][1] for r in A], .5):.1f} vs {q([r['p10'] for r in A], .5):.1f} (p50 {q([r['p10'] - r['ah'][1] for r in A if r['p10'] is not None], .5):+.1f}); heading commitment p50 {q([r['cm'] for r in A if r['cm'] is not None], .5):.2f} (p25 {q([r['cm'] for r in A if r['cm'] is not None], .25):.2f})")
     tot = sum(stages.values()); print('  pursuit ticks by stage before contact range: ' + ', '.join(f'{k} {100 * v / tot:.0f}%' for k, v in stages.most_common()))
