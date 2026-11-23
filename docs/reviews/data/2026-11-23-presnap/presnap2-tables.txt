@@ -1,0 +1,16 @@
+
+## NFL: 15870 plays
+  4b last move start before the snap (last 3 s): DL: > 1.0 s  4.2%, 0.5-1.0 s  0.9%, < 0.5 s  0.2%, none 94.8% | LB: > 1.0 s 20.4%, 0.5-1.0 s  5.9%, < 0.5 s  0.3%, none 73.4% | CB: > 1.0 s 33.1%, 0.5-1.0 s  7.1%, < 0.5 s  0.2%, none 59.6% | S: > 1.0 s 50.6%, 0.5-1.0 s 10.3%, < 0.5 s  0.2%, none 38.8%
+     deep safeties (7+ yd) whose last move starts in the last 1.0 s: 11.0% (n 25275)
+  9 caught moving (> 1 yd/s at the snap): DL  4.0% | LB 12.8% | CB 15.7% | S 30.1%
+    time from the snap to 2 yd/s, moving vs still, p50 (p25-p75) s: DL 0.30 (0.20-0.50) vs 0.90 (0.70-1.60) | LB 0.40 (0.10-0.90) vs 1.00 (0.70-1.40) | CB 0.50 (0.10-1.10) vs 1.20 (1.00-1.50) | S 0.50 (0.10-1.00) vs 1.30 (1.00-1.60)
+  2b A-gap mug (both inside backers within 2.5 yd of the line and of the ball):  2.0% of plays; a backer rushed on 48.6% of them
+  1b path per defender before / after the offense's last movement (plays where the offense moved): DL 0.05 / 0.04 (mean 0.08 / 0.06) | LB 0.11 / 0.07 (mean 0.20 / 0.13) | CB 0.16 / 0.10 (mean 0.32 / 0.18) | S 0.27 / 0.18 (mean 0.40 / 0.28)
+
+## sim: 1055 plays
+  4b last move start before the snap (last 3 s): DL: > 1.0 s  1.7%, 0.5-1.0 s  1.6%, < 0.5 s  0.0%, none 96.6% | LB: > 1.0 s 10.3%, 0.5-1.0 s  1.9%, < 0.5 s  0.2%, none 87.6% | CB: > 1.0 s 15.5%, 0.5-1.0 s  1.4%, < 0.5 s  0.0%, none 83.0% | S: > 1.0 s 11.0%, 0.5-1.0 s  0.6%, < 0.5 s  0.1%, none 88.3%
+     deep safeties (7+ yd) whose last move starts in the last 1.0 s:  0.1% (n 1492)
+  9 caught moving (> 1 yd/s at the snap): DL  0.7% | LB  3.7% | CB  4.8% | S  2.7%
+    time from the snap to 2 yd/s, moving vs still, p50 (p25-p75) s: DL 0.65 (0.50-1.02) vs 0.90 (0.70-1.50) | LB 0.10 (0.10-0.30) vs 0.70 (0.60-1.00) | CB 0.10 (0.10-0.10) vs 1.00 (0.60-1.20) | S 0.10 (0.10-0.45) vs 0.60 (0.50-1.00)
+  2b A-gap mug (both inside backers within 2.5 yd of the line and of the ball):  5.3% of plays; a backer rushed on 92.9% of them
+  1b path per defender before / after the offense's last movement (plays where the offense moved): DL 0.00 / 0.00 (mean 0.00 / 0.01) | LB 0.00 / 0.00 (mean 0.27 / 0.15) | CB 0.10 / 0.00 (mean 0.53 / 0.19) | S 0.00 / 0.00 (mean 0.26 / 0.13)
