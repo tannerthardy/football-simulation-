@@ -62,8 +62,19 @@ Quotes are short and paraphrased; nothing downloaded is in the repository.
 
 ## No source found (not chased further)
 
-No public coaching source found under these engine names. Their cards are reasoning from the nearest named coverage,
-rated low throughout:
+No public coaching source was found under these engine names. The repository's own HonestNFL playbook sheets
+(`docs/references/honest-nfl/`, one NFL staff's install, OCR text, read the sheet images for exact assignments) do name
+them, so they are one staff's checks: treat them as later scheme options with that sheet as the source, not as
+unsourced:
+- HNFL-203: Cover 9 Strap / Clue / Grab;
+- HNFL-073: Cover 6 Stuff / Area;
+- HNFL-050: Book;
+- HNFL-068: Cover 2 Wild;
+- HNFL-074 / 075: Rolex (Cover 5 package).
+
+Only cover9_strap has been re-read against its sheet so far (2026-11-23: the X corner keeps his third; the free
+safety straps a free-releasing #2). The cards for the others are still reasoning from the nearest named coverage,
+rated low:
 - cover6_area, cover6_book (mapped from Stubbie / Special and zone exchanges);
 - cover9_strap, cover9_clue, cover9_grab;
 - cover3_clue;
@@ -1295,17 +1306,17 @@ Sources: [MQ Cover 9][mq9] (Fangio's weak-rotation Cover 3, mostly from two-high
 ### cover9 × LB_M / LB_W
 Strong hook and the other hook. In 4-3 the Will may become the weak C/F if the FS takes the hook. Otherwise as cover3 hooks. **low**
 
-### cover9_strap "vs x1": two-high → weak rotation vs 3x1, X side strapped (man). Beats an isolated X. No source; reasoning.
+### cover9_strap "vs x1": two-high → Cover 3 match vs an x1 (single-receiver) side. When #2 free-releases into the route, the call is "Strap": the free safety is used in coverage on him (HNFL-203, source-stated; one staff's adjustment, OCR text, read the sheet image for exact assignments). The X corner keeps his deep third. An earlier draft had the X corner in man, from reasoning; corrected 2026-11-23 against HNFL-203.
 
 ### cover9_strap × CB_W (X side)
 | # | field | rule | source | conf |
 |---|---|---|---|---|
-| 5 | pass job by release | Man on X with the rotated weak safety under/inside as a bracket. | reasoning (parallel to Mable backside man) | low |
+| 5 | pass job by release | As cover3 × CB_W: deep third (the X corner is not manned in Strap) | HNFL-203 | med |
 
 ### cover9_strap × FS (weak safety)
 | # | field | rule | source | conf |
 |---|---|---|---|---|
-| 5 | pass job by release | Weak hook: cuts X's in-breakers and helps the corner. | reasoning | low |
+| 5 | pass job by release | "Strap": in coverage on #2 when #2 free-releases into the route (HNFL-203: "utilize the Free Safety in coverage on him"); otherwise his Cover 3 job | HNFL-203 | med |
 
 ### cover9_clue "vs bunch/stack": as cover9 with cover3_clue rules on the bunch side (first out / first in / first vertical). **low**
 
