@@ -1,0 +1,16 @@
+diff --git a/src/sim/catching.ts b/src/sim/catching.ts
+index bbdb43782..381333e5a 100644
+--- a/src/sim/catching.ts
++++ b/src/sim/catching.ts
+@@ -289,7 +289,10 @@ function receiverContest(sim: PlaySim, o: Opp, opps: Opp[]): void {
+   }
+ 
+   if (diffHands > 0) pCatch = clamp(pCatch - diffHands * (1.3 - hands) * (1.15 - 0.55 * R.r('contestedCatch')), 0.05, 0.99);
+-  if (rng.chance(pCatch)) {
++  const won = rng.chance(pCatch);
++  (globalThis as any).__catchTap?.({ sim, R, isTarget: R === ball.target, tAir: airTime, dh: o.dh, reach, stretch, z: o.z, chest, high, low, ballSpeed, trackPen, shoulder, rs, fromBehind, hands, tracking: R.r('ballTracking'),
++    diff, pCatch, diffHands, deflected: !!ball.deflected, sep, dBall: Math.hypot(o.b.x - R.pos.x, o.b.y - R.pos.y), won, fromBehindRun, bestQ });
++  if (won) {
+     if (!inBounds(R)) {
+       sim.event('incomplete', R, null, 'out of bounds');
+       sim.whistle('incomplete', { x: sim.los, y: sim.ballY });
