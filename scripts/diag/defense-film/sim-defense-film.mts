@@ -78,5 +78,5 @@ PlaySim.prototype.run = function (this: any) {
 const rng = new Rng(seed);
 const home = generateTeam(rng, 'Ironmen', 'IRN', { strength: 0.55 }), away = generateTeam(rng, 'Comets', 'COM', { strength: 0.55 });
 simulateGame(leagueSample(home, seed), leagueSample(away, seed), { seed, record: true });
-out.end(); await new Promise((r) => out.on('finish', r));
+out.end(); await new Promise<void>((r) => out.on('finish', () => r()));
 console.log('plays', n);

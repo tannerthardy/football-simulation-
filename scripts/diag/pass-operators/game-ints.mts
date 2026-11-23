@@ -16,6 +16,6 @@ for (const p of result.log) {
   const rp = p.replay; if (!rp || p.nullified || p.kind !== 'pass') continue;
   const thr = rp.events.find((e: any) => e.type === 'throw'); if (!thr) continue;
   const ev = rp.events.filter((e: any) => e.t >= thr.t);
-  rows.push({ air: p.stats?.airYards ?? null, comp: !!p.stats?.completed, int: ev.some((e: any) => e.type === 'interception'), pbu: ev.some((e: any) => e.type === 'pbu') });
+  rows.push({ air: p.stats?.airYards ?? null, comp: !!p.stats?.completed, int: ev.some((e: any) => e.type === 'interception'), pbu: ev.some((e: any) => e.type === 'pbu'), drop: ev.some((e: any) => e.type === 'drop') });
 }
 writeFileSync(out, JSON.stringify(rows)); console.log('rows', rows.length);
