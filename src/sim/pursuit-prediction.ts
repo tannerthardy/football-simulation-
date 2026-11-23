@@ -13,9 +13,11 @@ export type PursuitPredictionRecord = {
     capacity: { vmax: number; tau: number; brake: number; lateral: number } };
   observed: Perceived;
   older: Perceived;
-  forecast: { model: 'fixed-observed-heading-relaxing-speed'; heading: Vec2; initialSpeed: number;
+  forecast: { model: 'fixed-observed-heading-relaxing-speed' | 'carrier-accel-believed-burst'; heading: Vec2; initialSpeed: number;
     acceleration: number; speedLimit: number; targetBrake: number; targetSprintTau: number;
-    relaxedSpeed: number; relaxationTime: number; lateralBoundary: [number, number] };
+    relaxedSpeed: number; relaxationTime: number; lateralBoundary: [number, number];
+    /** CARRIER_ACCEL: the forecast's carrier speed 0.5 s and 1.0 s ahead, and its heading commitment (0..1). */
+    speedAhead?: [number, number]; commit?: number };
   timeBias: number;
   biasedTime: number;
   forecastPoint: Vec2;

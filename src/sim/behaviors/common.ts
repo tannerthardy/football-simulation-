@@ -9,6 +9,7 @@ import type { Agent } from '../agent.js';
 import { chooseApproach } from '../approach-control.js';
 import { onTopCushion, onTopPoint } from '../open-field.js';
 import { withMovementObjective } from '../movement-objective.js';
+import { CARRIER_ACCEL, carrierRun, runDistance, runSpeed, runTime, type CarrierRun } from '../carrier-forecast.js';
 import type { PlaySim } from '../playsim.js';
 
 export const STAND: MoveCommand = { vel: { x: 0, y: 0 } };
@@ -158,13 +159,16 @@ export function pursuitPoint(sim: PlaySim, a: Agent, target: Agent, horizon = 3,
   // speed throughout the horizon. Reassess as new motion becomes visible.
   const tau = 0.3 + 0.3 * a.r('anticipation');
   const V = clamp(sp + acceleration * tau, 0, target.profile.vmax);
+  // CARRIER_ACCEL: a ball carrier's run is the shared forecast (carrier-forecast.ts), anticipating his acceleration.
+  const run = CARRIER_ACCEL && seen.carrying === true ? carrierRun(seen) : null;
+  const travelled = (t: number) => run ? runDistance(run, t) : V * t - (V - sp) * tau * (1 - Math.exp(-t / tau));
   const straight = (t: number): Vec2 => {
-    const d = V * t - (V - sp) * tau * (1 - Math.exp(-t / tau));
+    const d = travelled(t);
     return { x: seen.pos.x + heading.x * d, y: clamp(seen.pos.y + heading.y * d, 0, FIELD_WIDTH) };
   };
   const bend = BEND_FORECAST && sp > 1 && seen.carrying === true && hasObservedFlight(a)
     ? bendTarget(sim, a, target, seen, Math.atan2(seen.vel.y, seen.vel.x)) : null;
-  const curve = bend ? bentPath(seen.pos, Math.atan2(seen.vel.y, seen.vel.x), bend.heading, bend.rate, (t) => V * t - (V - sp) * tau * (1 - Math.exp(-t / tau)), horizon) : null;
+  const curve = bend ? bentPath(seen.pos, Math.atan2(seen.vel.y, seen.vel.x), bend.heading, bend.rate, travelled, horizon) : null;
   if (curve) curveOf.set(a, curve); else curveOf.delete(a);
   const path = curve ? (t: number): Vec2 => curve[Math.min(curve.length - 1, Math.max(0, Math.round(t / BEND_STEP)))] : straight;
   const reach = a.profile.radius + target.profile.radius + a.profile.reach * 0.75;
@@ -179,7 +183,7 @@ export function pursuitPoint(sim: PlaySim, a: Agent, target: Agent, horizon = 3,
     bias = sim.rng.fork(`pursuit:${a.idx}`).normal(0, 0.12 * (1.2 - a.r('pursuit')));
     angleBias.set(a, bias);
   }
-  const meetT = PURSUIT_COMMIT ? (PURSUIT_SPOT ? commitSpot(sim, a, target, ip, path, seen, heading, V, mover, reach, horizon, request) : commitMeeting(sim, a, target, ip, path, mover, reach, horizon, request)) : ip.t;
+  const meetT = PURSUIT_COMMIT ? (PURSUIT_SPOT ? commitSpot(sim, a, target, ip, path, seen, heading, V, mover, reach, horizon, request, run) : commitMeeting(sim, a, target, ip, path, mover, reach, horizon, request)) : ip.t;
   const biasedTime = clamp(meetT - bias, 0, horizon);
   const p = path(biasedTime);
   // Keep the support contract while approaching, then close onto the near
@@ -191,9 +195,10 @@ export function pursuitPoint(sim: PlaySim, a: Agent, target: Agent, horizon = 3,
     estimateAppliesTo: 'sampled-point-before-bias-and-leverage', steeringPointEstimate: 'not-evaluated',
     pursuer: { position: mover.pos, velocity: mover.vel, speedScale: mover.speedScale,
       capacity: { vmax: a.profile.vmax, tau: a.profile.tau, brake: a.profile.brake, lateral: a.profile.lateral } }, observed: seen, older,
-    forecast: { model: 'fixed-observed-heading-relaxing-speed', heading, initialSpeed: sp, acceleration,
+    forecast: { model: run ? 'carrier-accel-believed-burst' : 'fixed-observed-heading-relaxing-speed', heading, initialSpeed: sp, acceleration,
       speedLimit: target.profile.vmax, targetBrake: target.profile.brake, targetSprintTau: target.profile.tau,
-      relaxedSpeed: V, relaxationTime: tau, lateralBoundary: [0, FIELD_WIDTH] },
+      relaxedSpeed: V, relaxationTime: tau, lateralBoundary: [0, FIELD_WIDTH],
+      speedAhead: run ? [runSpeed(run, 0.5), runSpeed(run, 1)] : [V, V], commit: run?.commit },
     timeBias: bias, biasedTime, forecastPoint: p, leverage: lev, steeringPoint: point });
   return point;
 }
@@ -229,14 +234,16 @@ const heldSpot = new WeakMap<Agent, { target: Agent; spot: Vec2; ok: boolean }>(
  * passes the spot within reach, the pursuer can no longer reach it in time (MEET_EXIT), a fresh reachable meeting is
  * earlier by MEET_MARGIN, or it is under MEET_NEAR away. */
 function commitSpot(sim: PlaySim, a: Agent, target: Agent, ip: ReturnType<typeof interceptPoint>, path: (t: number) => Vec2,
-  seen: { pos: Vec2 }, heading: Vec2, V: number, mover: Parameters<typeof timeToReach>[0], reach: number, horizon: number, request?: SprintRequest): number {
+  seen: { pos: Vec2 }, heading: Vec2, V: number, mover: Parameters<typeof timeToReach>[0], reach: number, horizon: number, request?: SprintRequest,
+  run?: CarrierRun | null): number {
   const freshOk = ip.estimate.status === 'estimated-feasible';
   const choose = (t: number, ok: boolean) => { heldSpot.set(a, { target, spot: path(t), ok }); return t; };
   const held = heldSpot.get(a);
   if (!held || held.target !== target || V < 0.5) return choose(ip.t, freshOk);
   const dx = held.spot.x - seen.pos.x, dy = held.spot.y - seen.pos.y;
   let along = dx * heading.x + dy * heading.y, miss = Math.abs(dx * heading.y - dy * heading.x);
-  let t = along / V;
+  // CARRIER_ACCEL: his time to the held spot on the shared forecast (his anticipated acceleration), not at his seen speed.
+  let t = run ? runTime(run, along, horizon) : along / V;
   if (BEND_FORECAST && curveOf.has(a)) {
     // BEND_FORECAST: the held spot is judged against the bending forecast, its nearest sample.
     const c = curveOf.get(a)!; let k = 0, best = Infinity;
@@ -298,6 +305,10 @@ function pursuitLeverage(a: Agent, y: number): number {
   return force ? leverageMagnitude(a,y)*a.runFit!.side : leverage(a,y);
 }
 
+/** CARRIER_ACCEL: the longest look ahead (s) for the close gather's arrival on his forecast run (a stated choice: one
+ * second, about the time the gather is in charge before contact on the film plays). */
+const CLOSE_LOOK = 1;
+
 /** Gather from an already consumed runner picture. A fit and a chase use
  * the same braking and achievable arrival request; no new observation,
  * decision, random draw or physical capability is introduced here. */
@@ -316,7 +327,11 @@ export function gatheringApproach(a: Agent, seen: import('../perception.js').Per
     const brake=followAccel(a.body,{x:-ux*1e3,y:-uy*1e3},cutSkill,capacity);
     const decel=Math.max(.1,-brake.x*ux-brake.y*uy);
     const closing=Math.max(0,(a.vel.x-seen.vel.x)*ux+(a.vel.y-seen.vel.y)*uy);
-    const through=2.5+2*(1-tackle);
+    // CARRIER_ACCEL: the shared forecast of his run. A carrier who has not chosen his line (standing, or not facing his
+    // travel) can still go either way: he is met in balance, his arrival allowance halved at no commitment (a stated
+    // choice: the breakdown is the taught answer to a runner who can cut both ways), the full allowance once committed.
+    const run = CARRIER_ACCEL && seen.carrying === true ? carrierRun(seen) : null;
+    const through=(2.5+2*(1-tackle))*(run ? 0.5+0.5*run.commit : 1);
     const stopping=Math.max(0,(closing*closing-through*through)/(2*decel));
     // One arrival budget across incoming and crossing approaches. A small
     // heading change blends technique instead of selecting a new speed policy.
@@ -332,8 +347,13 @@ export function gatheringApproach(a: Agent, seen: import('../perception.js').Per
     gather = Math.max(headOn, close);
     if (gather > 0) {
       // OPEN_FIELD: `upfield` (yd along x) keeps the arrival on top of the runner, shrinking to nothing at contact.
-      const goal = { x: seen.pos.x + upfield, y: clamp(seen.pos.y + offset, .3, FIELD_WIDTH - .3) };
-      const vel=movingArrivalVelocity(a.body,goal,seen.vel,a.profile.vmax*a.speedScale,
+      // CARRIER_ACCEL: the arrival is where his run takes him by the time this defender closes the gap (the remaining
+      // gap over the closing speed, at most CLOSE_LOOK s), moving at the forecast speed then: not his seen spot, which
+      // a defender arriving level at speed slides behind.
+      const look = run ? clamp((dist - contact) / Math.max(1, closing), 0, CLOSE_LOOK) : 0;
+      const lead = run ? runDistance(run, look) : 0, ahead = run ? runSpeed(run, look) : 0;
+      const goal = { x: seen.pos.x + upfield + (run ? run.heading.x * lead : 0), y: clamp(seen.pos.y + offset + (run ? run.heading.y * lead : 0), .3, FIELD_WIDTH - .3) };
+      const vel=movingArrivalVelocity(a.body,goal,run ? { x: run.heading.x * ahead, y: run.heading.y * ahead } : seen.vel,a.profile.vmax*a.speedScale,
         contact,through,cutSkill,capacity);
       // A front tackler keeps driving through the near hip, rather than
       // retreating forever to match an incoming runner's sprint. This is a

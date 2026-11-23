@@ -17,7 +17,11 @@ export function install() {
   proto.tick = function (this: any) {
     let s = st.get(this);
     if (!s) { s = { los: this.los, dir: this.attackDir(this.offense[0].team), C: null, tc: -1, next: 0, cur: {}, frames: [] }; st.set(this, s); }
-    s.cur = {};
+    s.cur = {}; s.stg = {};
+    // Per-stage intents for defenders (the engine's own stage hooks, through a passive sink).
+    if (!this.commandTrace) this.commandTrace = new Proxy({}, { get: (_o, name) => name === 'stage' ? (n: string, intents: any[]) => {
+      if (!s.C) return; for (const d of this.defense) { const v = intents[d.idx]?.vel; if (v) (s.stg[d.slot] ??= []).push([n, [r2(v.x * s.dir), r2(v.y)]]); } }
+      : name === 'isCollecting' ? () => false : noop });
     const out = tick.call(this);
     const sim = this, P = (p: any) => [r2((p.x - s.los) * s.dir), r2(p.y)], V = (v: any) => [r2(v.x * s.dir), r2(v.y)];
     const bc = sim.ball.kind === 'held' ? sim.ball.carrier : null;
@@ -31,8 +35,8 @@ export function install() {
         const stage = !ch ? (ic ? 'meeting spot' : null) : ch.planner === 'bypassed-close-gather' ? 'close gather'
           : ch.requests?.[0]?.stage === 'held-tackle' ? 'tackle bond' : ic ? 'meeting spot' : 'on-top point';
         const req = ch?.requests?.[ch.requests.length - 1]?.command;
-        f.d[d.slot] = { pos: [...P(d.pos), ...V(d.vel)], stage, assumedV: ic ? r2(ic.forecast.relaxedSpeed) : ch ? r2(Math.hypot(ch.observed.vel.x, ch.observed.vel.y)) : null,
-          aim: ic ? P(ic.steeringPoint) : null, req: req ? V(req.vel) : null, gather: ch ? r2(ch.gather) : null };
+        f.d[d.slot] = { pos: [...P(d.pos), ...V(d.vel)], cmd: sim.cmds?.[d.idx] ? V(sim.cmds[d.idx].vel) : null, stages: s.stg[d.slot] ?? null, intent: sim.intents?.[d.idx] ? V(sim.intents[d.idx].vel) : null, stage, assumedV: ic ? r2(ic.forecast.relaxedSpeed) : ch ? r2(Math.hypot(ch.observed.vel.x, ch.observed.vel.y)) : null,
+          aim: ic ? P(ic.steeringPoint) : null, commit: ic?.forecast?.commit ?? null, ahead: ic?.forecast?.speedAhead ?? null, req: req ? V(req.vel) : null, gather: ch ? r2(ch.gather) : null };
       }
       s.frames.push(f);
     }

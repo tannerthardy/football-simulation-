@@ -29,6 +29,7 @@ import { clamp, type Vec2 } from '../core/vec.js';
 import type { Agent } from './agent.js';
 import type { Perceived } from './perception.js';
 import type { PlaySim } from './playsim.js';
+import { CARRIER_ACCEL, carrierRun, runDistance } from './carrier-forecast.js';
 
 export const OPEN_FIELD = process.env.OPEN_FIELD !== '0';
 /** Depth (yd upfield of the runner) at which he takes the on-top approach, and below which he leaves it. */
@@ -85,5 +86,8 @@ export function onTopPoint(sim: PlaySim, a: Agent, target: Agent, seen: Perceive
   if (!ok) return null;
   const tau = clamp(dist / Math.max(1, a.profile.vmax), 0, LEAD_MAX);
   const cushion = clamp(CUSHION_SHARE * dist, CUSHION_MIN, CUSHION_MAX);
-  return { x: seen.pos.x + seen.vel.x * tau + dir * cushion, y: clamp(seen.pos.y + seen.vel.y * tau + offset, 0.3, FIELD_WIDTH - 0.3) };
+  // CARRIER_ACCEL: the lead is the shared forecast's run over that time (his anticipated acceleration), not seen velocity x time.
+  const run = CARRIER_ACCEL && seen.carrying === true ? carrierRun(seen) : null;
+  const lx = run ? run.heading.x * runDistance(run, tau) : seen.vel.x * tau, ly = run ? run.heading.y * runDistance(run, tau) : seen.vel.y * tau;
+  return { x: seen.pos.x + lx + dir * cushion, y: clamp(seen.pos.y + ly + offset, 0.3, FIELD_WIDTH - 0.3) };
 }

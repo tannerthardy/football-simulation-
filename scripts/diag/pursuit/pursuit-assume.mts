@@ -3,7 +3,7 @@
 // actual speed then and 0.5 / 1.0 s later; the stage that set his request. Uses pursuit-tap.mts (read-only trace sink).
 // Usage: COVS=cover3,cover4 node --import tsx pursuit-assume.mts SEEDS OUT
 const W = process.cwd();
-const tap = await import('./pursuit-tap.mts'); tap.install();
+const TAP = new URL('./pursuit-tap.mts', import.meta.url).href; const tap: any = await import(TAP); tap.install();
 const { PlaySim } = await import(`${W}/src/sim/playsim.ts`);
 const { nativeTraceSetup } = await import(`${W}/scripts/diag/command-trace.ts`);
 const { PASS_BY_ID } = await import(`${W}/src/playbook/concepts.ts`);
