@@ -336,6 +336,21 @@ caught: a QB who reads it, a cadence that catches it, and a snap that comes whil
 
 ---
 
+## Measured: NFL against ours (Flex, 2026-11-23)
+
+These are Flex's pre-snap tracking tables (BDB 2025 against our pre-snap frames, same operator) on branch
+`claude/quirky-franklin-9lbwbp` (a867810d, 3a978178), in `docs/reviews/data/2026-11-23-presnap/`
+(`presnap-tables.txt`, `presnap2-tables.txt`, `edge-width.txt`). Numbers are as reported by Flex; they are not
+re-run here.
+
+| card | NFL | ours | reading |
+|---|---|---|---|
+| 4 late rotation | 11% of deep safeties start their last move in the final 1.0 s; 0.2% start it in the final 0.5 s | 0.1% | "Show late" is real but is not a last-instant move: it begins 0.5-1.5 s out and runs into the snap |
+| 9 caught moving | over 1 yd/s at the snap: safeties 30%, CBs 16%, LBs 13% | (see tables) | Movement into the snap is ordinary in the NFL |
+| 3 shown vs played | of LB/S walk-ups still up at the snap, 77% drop and 23% rush; 17% back off before the snap; 0.8% cycle up-back-up | creep is always a blitz | The STANDARD walk-up is mostly a disguise; the cycle is rare (keep it a later option) |
+| 2 tag, A-gap mug | 2.0% of plays; a backer rushes on 49% | 5.3%; rushes on 93% | Ours is shown more often and is nearly always real |
+| 1c edge vs wing | the wing aligns 0.3 yd inside the edge, 1.9 yd deep; the edge does not widen for him (0.0 yd in the last 3 s); the wing releases inside 51% | similar alignment | Matches the card (the edge sets on the surface). Contact between them: ours 52% vs 14%, because our edges rush 92% vs 39% |
+
 ## Engine today (develop 0226f0d3, read only)
 
 - **frontStem** (`src/game/playcaller.ts`, `src/sim/playsim.ts` `stageDefense`). With chance `coach.disguise × 0.35`,
