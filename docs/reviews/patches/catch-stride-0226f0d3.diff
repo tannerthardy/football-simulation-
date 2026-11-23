@@ -44,7 +44,7 @@ index e6ddcc53..384dcd35 100644
  | `PASS_SINK` | off | experimental | trenches | `src/sim/engagement.ts:696` | set at first review |
  | `PULL_CUE` | off | experimental | defense | `src/sim/run-fits.ts:195` | set at first review |
 diff --git a/src/sim/behaviors/receiver.ts b/src/sim/behaviors/receiver.ts
-index e22bdf0b..aff9dd0f 100644
+index e22bdf0b..592c8e8d 100644
 --- a/src/sim/behaviors/receiver.ts
 +++ b/src/sim/behaviors/receiver.ts
 @@ -17,7 +17,7 @@ import type { PlaySim } from '../playsim.js';
@@ -96,15 +96,18 @@ index e22bdf0b..aff9dd0f 100644
      const run0 = runThrough(a, target, { speed: clamp(need / a.profile.vmax, 0.35, 1) });
      // TRUNK_TWIST: within 3 yd he turns his shoulders to the ball and keeps the gait on his path, so a receiver looking
      // the ball in at 6-8 yd/s is not slowed by his hips turning (the cap reads the hips). Off: the old hips request.
-@@ -999,6 +1009,17 @@ export class TrackBall implements Behavior {
+@@ -999,6 +1009,20 @@ export class TrackBall implements Behavior {
      // Once he has the ball he keeps tracking it the whole way (the look and its body cost), not only in the late window.
      return BALL_EST && dist >= 3 && (sim.ballEstimates.lastSeen(a) || spot.t - sim.t <= bodyTurnLead(a)) ? lookFor(a, sim, run) : run;
    }
 +
-+  /** CATCH_STRIDE: through the securing window, his momentum and his intended direction: upfield, bent away from the
-+   * nearest defender he saw before looking for the ball (closer bends it more), at the speed he has. */
++  /** CATCH_STRIDE: through the securing window he is already starting to run: his intended direction (upfield, bent
++   * away from the nearest defender he saw before looking for the ball; closer bends it more) at his full speed, which
++   * the body model turns and accelerates him toward at its own rates (a slow receiver on a stop route begins his turn
++   * and his acceleration while he secures it, as real receivers do; one already running keeps his momentum). Integration
++   * 2026-11-23: at the speed he had, a stop-route receiver stayed at 2.0 -> 1.3 yd/s through the window (NFL 2.7 -> 2.9). */
 +  private afterCatch(a: Agent, sim: PlaySim): MoveCommand {
-+    const up = sim.attackDir(a.team), speed = Math.hypot(a.vel.x, a.vel.y);
++    const up = sim.attackDir(a.team), speed = a.profile.vmax * a.speedScale;
 +    let dx = up, dy = 0;
 +    const near = this.seenAtTurn.reduce<{ p: Vec2; d: number } | null>((m, p) => { const d = Math.hypot(p.x - a.pos.x, p.y - a.pos.y); return !m || d < m.d ? { p, d } : m; }, null);
 +    if (near && near.d > 1e-6) { const w = clamp(4 / near.d, 0, 1.5); dx += w * (a.pos.x - near.p.x) / near.d; dy += w * (a.pos.y - near.p.y) / near.d; }
