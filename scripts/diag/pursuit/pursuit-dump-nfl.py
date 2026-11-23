@@ -11,6 +11,8 @@ for r in csv.DictReader(open(f'{D}/plays.csv')):
     if r['passResult'] == 'C' and r.get('playNullifiedByPenalty') != 'Y':
         plays[(r['gameId'], r['playId'])] = dict(cov=r.get('pff_passCoverage'), man=r.get('pff_manZone') == 'Man', air=r.get('passLength'), poss=r['possessionTeam'])
 rec, missed = {}, defaultdict(list)
+# Player positions (seat for the hand-off split).
+POS = {r['nflId']: r['position'] for r in csv.DictReader(open(f'{D}/players.csv'))}
 pp = csv.DictReader(open(f'{D}/player_play.csv')); miss_cols = [c for c in pp.fieldnames if 'issed' in c and 'ackle' in c]
 for r in pp:
     k = (r['gameId'], r['playId'])
@@ -44,16 +46,18 @@ for w in weeks:
         def row(q, f, n):
             p, v = P(q), V(q); return [round((f - kc) / 10, 1), round(p[0] - los, 2), round(p[1], 2), round(v[0], 2), round(v[1], 2)]
         car = [row(F[c][f], f, c) for f in range(kc, ke + 1) if f in F[c]]
+        # Defender frames start at the throw (pass_forward) so the coverage-to-pursuit hand-off can be timed.
+        kf = evs.get('pass_forward'); k0 = kf if kf is not None and kf < kc else kc
         defs, offs = {}, {}
         for n in F:
             if n == 'football': continue
             if club.get(n) == plays[cur]['poss']:
                 if n != c: offs[n] = [row(F[n][f], f, n) for f in range(kc, ke + 1) if f in F[n]]
                 continue
-            defs[n] = [row(F[n][f], f, n) + [O(F[n][f])] for f in range(kc, ke + 1) if f in F[n]]
+            defs[n] = [row(F[n][f], f, n) + [O(F[n][f])] for f in range(k0, ke + 1) if f in F[n]]
         endt = next((e for e in ('touchdown', 'out_of_bounds', 'tackle') if e in evs and evs[e] == ke), 'other')
         out.append(dict(src='nfl', key=list(cur), cov=plays[cur]['cov'], man=plays[cur]['man'], air=plays[cur]['air'],
-                        end={'touchdown': 'td', 'out_of_bounds': 'oob'}.get(endt, endt), car=car, defs=defs, offs=offs,
+                        end={'touchdown': 'td', 'out_of_bounds': 'oob'}.get(endt, endt), car=car, defs=defs, offs=offs, throwT=(kf - kc) / 10 if kf is not None and kf < kc else None, dpos={n: POS.get(n) for n in defs},
                         ev=[[None, 'missed_tag', m, c] for m in missed.get(cur, [])], first_contact=(evs['first_contact'] - kc) / 10 if 'first_contact' in evs and evs['first_contact'] >= kc else None))
     with open(f'{D}/tracking_week_{w}.csv') as fh:
         for r in csv.DictReader(fh):
