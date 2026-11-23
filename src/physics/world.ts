@@ -34,6 +34,7 @@ import { G } from '../core/units.js';
 import { hypot2, angleDiff, clamp, type Vec2 } from '../core/vec.js';
 import { bodyRadius } from './bodyshape.js';
 import { commandFacing, legDriveFactor, trunkPrice, fatigueFactor, followAccel, locomotionAccel, spendEnergy, shouldersOf, PLANT_SPEED, TRUNK_TWIST, turnRateOf, updateSqueeze, updateTrunk, type Body, type MoveCommand } from './kinematics.js';
+import { DIVE_STANCE, DIVE_STANCE_S, divePushForce } from './dive.js';
 import { advanceRecovery, availability, legDrive, baseRadiusAt, comHeightAt, fallTime, newSupport, omega0, padHeightAt, recoverySpeed, supportParams, type Support, type SupportParams } from './support.js';
 import { ARM_SPEED, turnBodyResponse, workFraction } from './actuation.js';
 import { newVirtualFoot, recoveryRamp, supportInverseMass, supportVelocity, supportWorkChange } from './virtual-foot.js';
@@ -899,6 +900,11 @@ export class World {
   private readonly footImpulseY: Float64Array;
   /** Peak corrective speed allocated from this interval's common leg budget. */
   private readonly recovery: Float64Array;
+  /** DIVE_STANCE: the planted time left of a dive's push-off and the line and launch share it keeps across controller ticks (the controller asks for a dive once). */
+  private readonly diveLeft: Float64Array;
+  private readonly diveX: Float64Array;
+  private readonly diveY: Float64Array;
+  private readonly diveLaunch: Float64Array;
   /** Tick-local scratch never escapes through bodies, joints or StepReport.
    * Reuse its storage; each step still rebuilds all values in body order. */
   private readonly plans: Plan[];
@@ -945,6 +951,7 @@ export class World {
     this.armScale = f(); this.armCap = f(); this.active = f();
     this.footImpulseX = f(); this.footImpulseY = f();
     this.recovery = f();
+    this.diveLeft = f(); this.diveX = f(); this.diveY = f(); this.diveLaunch = f();
     this.plans = bodies.map(b => ({ ax: 0, ay: 0, facing: b.facing, cut: 1, free: false, dive: null, launch: 0,
       activeTime: 0, activeSteps: 0, hadPassive: false, actionWork: 0, activeNow: false, effortVx: 0, effortVy: 0 }));
     this.near = new Uint8Array(n);
@@ -1543,11 +1550,18 @@ export class World {
     plan.free = !!intent.free; plan.dive = null; plan.launch = 0;
     plan.activeTime = 0; plan.activeSteps = 0; plan.hadPassive = false;
     plan.actionWork = 0; plan.activeNow = false; plan.effortVx = 0; plan.effortVy = 0;
+    if (sup.state !== 'up') this.diveLeft[i] = 0;
+    // DIVE_STANCE: a push-off in progress is carried on whatever he is asked to do next tick; it ends only when he is off his feet.
+    if (DIVE_STANCE && this.diveLeft[i] > 0 && sup.state === 'up') {
+      plan.free = false; plan.dive = { x: this.diveX[i], y: this.diveY[i] }; plan.launch = this.diveLaunch[i];
+      return plan;
+    }
     if (sup.state !== 'up' || intent.free) return plan;
     if (intent.dive && hypot2(intent.dive.x, intent.dive.y) > 1e-9) {
       const l = hypot2(intent.dive.x, intent.dive.y);
       plan.dive = { x: intent.dive.x / l, y: intent.dive.y / l };
       plan.launch = Math.min(1, l);
+      if (DIVE_STANCE) { this.diveLeft[i] = DIVE_STANCE_S; this.diveX[i] = plan.dive.x; this.diveY[i] = plan.dive.y; this.diveLaunch[i] = plan.launch; }
       return plan;
     }
     const a = availability(sup, this.sp[i], this.fat[i]) * this.carry(i);
@@ -2119,12 +2133,19 @@ export class World {
       } else if (plan.dive) {
         // Finite launch force over the controller tick, independent of the
         // contact subdivision. He leaves his feet at the end of that plant.
-        const launch = Math.min(traction, Math.min(1.5, Math.max(0, p.vmax - hypot2(b.vel.x, b.vel.y))) * plan.launch * m / this.tickDt);
+        // DIVE_STANCE: the legs push along the line for the whole stance by the stride's force-velocity law (dive.ts), traction-capped, and he leaves his feet when it ends.
+        // The last substep of the stance pushes only for the part of it left (impulse over DIVE_STANCE_S exactly, whatever the tick).
+        const launch = DIVE_STANCE
+          ? Math.min(traction, divePushForce(p, b.vel.x * plan.dive.x + b.vel.y * plan.dive.y, plan.launch, this.fat[i])) * Math.min(1, this.diveLeft[i] / h)
+          : Math.min(traction, Math.min(1.5, Math.max(0, p.vmax - hypot2(b.vel.x, b.vel.y))) * plan.launch * m / this.tickDt);
         fx += plan.dive.x * launch; fy += plan.dive.y * launch;
         actionX = fx; actionY = fy;
         // Launch supplies translation, not a torque that arrests acquired spin.
         b.facing += (b.spin ?? 0) * h;
-        if (remaining<=h+1e-9) { this.startFall(sup, plan.dive, 'dive', report, i); plan.dive=null;plan.free=true; }
+        if (DIVE_STANCE) {
+          this.diveLeft[i] -= h;
+          if (this.diveLeft[i] <= 1e-9) { this.diveLeft[i] = 0; this.startFall(sup, plan.dive, 'dive', report, i); plan.dive=null;plan.free=true; }
+        } else if (remaining<=h+1e-9) { this.startFall(sup, plan.dive, 'dive', report, i); plan.dive=null;plan.free=true; }
         this.alpha[i] = 0; this.cut[i] = 1;
       } else {
         const fat = this.fat[i];
