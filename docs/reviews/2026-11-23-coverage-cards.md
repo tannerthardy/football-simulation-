@@ -60,6 +60,19 @@ A short second tier lists NFL coverages the engine lacks.
 
 Quotes are short and paraphrased; nothing downloaded is in the repository.
 
+## No source found (not chased further)
+
+No public coaching source found under these engine names. Their cards are reasoning from the nearest named coverage,
+rated low throughout:
+- cover6_area, cover6_book (mapped from Stubbie / Special and zone exchanges);
+- cover9_strap, cover9_clue, cover9_grab;
+- cover3_clue;
+- cover2_wild;
+- rolex (built as Finger's mirror).
+
+"Deuce" and "DOT" are also not found under those names. Their cards rest on college two-deep zone-pressure sources
+(Kent State's 2-under / 4-deep, Ohio State's "2-steal") and are low or medium.
+
 # Day-one installs (first-week versions)
 
 What a first-week install teaches each seat: alignment, key, one pass rule and one run fit. This is the simplified
