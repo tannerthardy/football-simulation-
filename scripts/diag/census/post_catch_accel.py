@@ -7,7 +7,8 @@ Gains: s(c + k) - s0 at 0.5 / 1.0 / 1.5 / 2.0 s. Peak acceleration = the largest
 Receiver groups: back (RB / FB / HB), TE, WR (slot and wide). Control: the same for the ball carrier after a handoff (the first frame the carrier has the ball; his own start), from run plays in the same format."""
 import gzip, json, sys, math, collections
 import numpy as np
-args = [a for i, a in enumerate(sys.argv) if i > 0 and not a.startswith('--') and sys.argv[i - 1] not in ('--out', '--shift')]
+_end = sys.argv.index('--control') if '--control' in sys.argv else len(sys.argv)  # arguments after --control are the control arm's
+args = [a for i, a in enumerate(sys.argv[:_end]) if i > 0 and not a.startswith('--') and sys.argv[i - 1] not in ('--out', '--shift')]
 OUT = sys.argv[sys.argv.index('--out') + 1] if '--out' in sys.argv else None
 CONTROL = '--control' in sys.argv
 BACK = {'RB', 'FB', 'HB'}
@@ -72,7 +73,7 @@ for sbin in ('0-2', '2-4'):
 table('By position group (all speeds)', 'grp', ['back', 'TE', 'WR'])
 table('Caught slow (under 4 yd/s), by position group', 'grp', ['back', 'TE', 'WR'], lambda r: r['s0'] < 4)
 if CONTROL:
-    ci = sys.argv.index('--control'); ctl = [a for a in sys.argv[ci + 1:] if not a.startswith('--')]
+    ci = sys.argv.index('--control'); ctl = [a for i, a in enumerate(sys.argv[ci + 1:], ci + 1) if not a.startswith('--') and sys.argv[i - 1] not in ('--out', '--shift')]
     data = {'NFL handoff': rows_of(ctl[0])}
     for a in ctl[1:]:
         lab, path = a.split('=', 1); data[lab + ' handoff'] = rows_of(path)
