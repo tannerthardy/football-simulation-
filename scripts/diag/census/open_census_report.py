@@ -82,10 +82,13 @@ def census(plays, src):
                 toward_mid = 1.0 if (26.67 - ry) >= 0 else -1.0
                 lat = (Y[j1, f] - ry) * toward_mid
                 io = 'inside' if lat > 0.5 else 'outside' if lat < -0.5 else 'head-up'
+                dxg = X[j1, f] - rx  # offense moves +x: a defender downfield of him is between him and the goal line
+                lev = 'over the top' if dxg > 1.0 else 'trailing' if dxg < -1.0 else 'level'
+                rclass = 'behind' if rx < 0 else 'checkdown' if (pl[i]['pos'] in BACK and rx < 3.0) else 'main'
                 f0 = max(0, f - 3); dprev = math.hypot(X[j1, f0] - X[i, f0], Y[j1, f0] - Y[i, f0])
                 rate = (d[o[0]] - dprev) / (0.1 * (f - f0)) if f > f0 else 0.0
                 cl = 'closing' if rate < -0.5 else 'opening' if rate > 0.5 else 'steady'
-                rows.append(dict(play=p['id'], kind=kind, f=f, slot=pl[i].get('slot') or pl[i].get('id'), depth=float(rx), side=float(min(ry, 53.33 - ry)), d1=float(d[o[0]]), d2=float(d[o[1]]), rel=relpos, io=io, cl=cl,
+                rows.append(dict(play=p['id'], kind=kind, f=f, slot=pl[i].get('slot') or pl[i].get('id'), depth=float(rx), side=float(min(ry, 53.33 - ry)), d1=float(d[o[0]]), d2=float(d[o[1]]), rel=relpos, io=io, cl=cl, lev=lev, rclass=rclass,
                                  target=bool(pl[i].get('target')), band=band(float(rx)), **{k: meta[k] for k in ('fam', 'man', 'align', 'empty', 'motion', 'motion_empty', 'pa')}, j1=pl[j1].get('slot') or pl[j1].get('id')))
     return rows, plays_meta
 
@@ -124,6 +127,28 @@ def tables(rows, meta, name):
         a = [r for r in rows if r['kind'] == kind]; n = max(len(a), 1)
         s = lambda key, val: f'{sum(r[key] == val for r in a) / n:.2f}'
         P(f'| {lab} | ' + ' | '.join([s('rel', 'front'), s('rel', 'level'), s('rel', 'behind'), s('io', 'inside'), s('io', 'head-up'), s('io', 'outside'), s('cl', 'closing'), s('cl', 'steady'), s('cl', 'opening')]) + ' |')
+    P('\n### Leverage of the nearest defender relative to the goal line (over the top: more than 1 yd downfield of him; trailing: more than 1 yd behind him)\n')
+    P('| receiver-moments | over the top | level | trailing |'); P('|---|---|---|---|')
+    for lab, sel in (('all, release', lambda r: r['kind'] == 'rel'), ('all, fixed', lambda r: r['kind'] == 'fix'), ('wide open, release', lambda r: r['kind'] == 'rel' and wide(r)), ('wide open, fixed', lambda r: r['kind'] == 'fix' and wide(r))):
+        a = [r for r in rows if sel(r)]; n = max(len(a), 1)
+        P(f'| {lab} (n {len(a)}) | ' + ' | '.join(f'{sum(r["lev"] == v for r in a) / n:.2f}' for v in ('over the top', 'level', 'trailing')) + ' |')
+    P('\n### Extreme openness per dropback: any route runner with d1 over T yd (main receivers: not behind the line, not a back within 3 yd of the line)\n')
+    P('| group | moment | dropbacks | >8 yd | >10 yd | >12 yd | >15 yd | receiver-moments >10 yd |'); P('|---|---|---|---|---|---|---|---|')
+    for gl, gsel in (('all', lambda r: True), ('man', lambda r: r['man'] == 'Man'), ('zone', lambda r: r['man'] == 'Zone')):
+        for kind, klab in (('rel', 'release'), ('fix', 'any fixed time')):
+            mp = collections.defaultdict(lambda: [0.0] * 1)
+            plays_k = {r['play'] for r in rows if r['kind'] == kind and gsel(r)}
+            mx = collections.defaultdict(float)
+            for r in rows:
+                if r['kind'] == kind and gsel(r) and r['rclass'] == 'main': mx[r['play']] = max(mx[r['play']], r['d1'])
+            nm = [r for r in rows if r['kind'] == kind and gsel(r) and r['rclass'] == 'main']
+            P(f'| {gl} | {klab} | {len(plays_k)} | ' + ' | '.join(f'{sum(mx[x] > T for x in plays_k) / max(len(plays_k), 1):.3f}' for T in (8, 10, 12, 15)) + f' | {sum(r["d1"] > 10 for r in nm) / max(len(nm), 1):.4f} |')
+    for cls, cl in (('behind', 'behind the line'), ('checkdown', 'back within 3 yd of the line')):
+        a = [r for r in rows if r['rclass'] == cls]
+        pl_ = {r['play'] for r in a}
+        mx = collections.defaultdict(float)
+        for r in a: mx[r['play']] = max(mx[r['play']], r['d1'])
+        P(f'| {cl} (separately), any moment | all | {len(pl_)} | ' + ' | '.join(f'{sum(mx[x] > T for x in pl_) / max(len(pl_), 1):.3f}' for T in (8, 10, 12, 15)) + f' | {sum(r["d1"] > 10 for r in a) / max(len(a), 1):.4f} |')
     P('\n### Share of dropbacks with at least one wide-open receiver, and of receiver-moments wide open\n')
     byplay = collections.defaultdict(lambda: {'rel': False, 'fix': False, 'hasrel': False, 'hasfix': False})
     for r in rows:
@@ -172,6 +197,19 @@ for sp in SIMS:
             wide_export.append(dict(play=r['play'], concept=p.get('concept'), cov=p.get('cov'), fam=p.get('fam'), form=p.get('form'), t=r['f'] / 10, kind=r['kind'], receiver=r['slot'], depth=round(r['depth'], 1), d1=round(r['d1'], 2), d2=round(r['d2'], 2),
                                     nearest=r['j1'], rel=r['rel'], io=r['io'], cl=r['cl'], target=r['target'], defenders=p['def'].get(key)))
     if WIDE: json.dump(wide_export, open(WIDE, 'w'))
+
+P('## Does the Cover-2 / Cover-6 10-15 yd excess hold? (wide-open share of receiver-moments, NFL p90 threshold; each sim file on its own)\n')
+P('| sample | Cover-2 fixed n | Cover-2 fixed wide | Cover-6 fixed n | Cover-6 fixed wide | Cover-2 release n | wide | Cover-6 release n | wide |'); P('|---|---|---|---|---|---|---|---|---|')
+def cellrow(lab, rows_):
+    out = []
+    for kind in ('fix', 'rel'):
+        for g in ('Cover-2', 'Cover-6'):
+            a = [wide(r) for r in rows_ if r['kind'] == kind and r['band'] == '10-15' and r['fam'] == g]
+            out += [str(len(a)), f'{np.mean(a):.3f}' if a else '-']
+    P(f'| {lab} | ' + ' | '.join(out) + ' |')
+cellrow('NFL', nfl_rows)
+for sp in SIMS: cellrow(sp.split('/')[-1], census(load(sp), 'sim')[0])
+P('')
 
 # Cells where ours differs from the NFL: share of receiver-moments wide open (the NFL p90 of its own depth band), by (coverage family, depth band, moment kind) and (man/zone, band, kind).
 P('## Largest cell differences, wide-open share (ours minus NFL), cells with at least 40 receiver-moments on each side\n')

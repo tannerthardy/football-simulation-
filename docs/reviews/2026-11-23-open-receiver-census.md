@@ -1,19 +1,160 @@
 # Open-receiver census, NFL vs ours (develop 0226f0d3, engine-91)
 
-Tools/Physics, 2026-11-23, for Integration (the user's film finding: "we're just leaving dudes way too wide open too often"). One operator on both sides (`scripts/diag/census/`): `nfl_plays.py` and `sim_plays.mts` write the same play format, `open_census_report.py` reads it. Sim: 8 games, seed 101 (Ironmen v Comets, strength .55), 693 dropbacks, read-only tap on `PlaySim.tick`. NFL: BDB 2025 weeks 1-9 (2022), 9,657 dropbacks. Definitions are in the script's header and in the tables below; wide open is d1 beyond the NFL's own p90 for that (moment kind, depth band).
+Tools/Physics, 2026-11-23, for Integration (the user's film finding: "we're just leaving dudes way too wide open too often"). One operator on both sides (`scripts/diag/census/`): `nfl_plays.py` and `sim_plays.mts` write the same play format, `open_census_report.py` reads it. NFL: BDB 2025 weeks 1-9 (2022), 9,657 dropbacks. Ours: 24 games (seed 101 Ironmen v Comets, 8 games; plus 16 games on seeds 202, 303, 404, 505, each with its own team pair), 2,128 dropbacks; read-only tap on `PlaySim.tick`. Wide open is d1 beyond the NFL's own p90 for that (moment kind, depth band).
 
 ## Answer in short
 
-- **In aggregate we do not leave receivers more open than the NFL does, by this operator.** Dropbacks with at least one wide-open receiver at the release: NFL .338 (2,922 of 8,638), ours .336 (206 of 614; binomial se .019). At any fixed time (1.5-3.0 s) while the ball is held: .550 / .525. Open for two consecutive fixed times (same receiver, 0.5 s apart): .250 / .273. The targeted receiver at the release: d1 median 3.5 / 3.7 yd, wide open .138 / .141. d1 tail at the release: p95 7.8 / 7.4, p99 10.6 / 10.2 yd.
-- **The excess is in one place: the 10-15 yd band while the ball is held, in zone, mainly Cover-2 and Cover-6.** Wide-open share of receiver-moments at fixed times, 10-15 yd: Cover-2 .573 ours vs .177 NFL (124 vs 1,801 receiver-moments), Cover-6 .305 vs .096 (105 vs 1,240), all zone .166 vs .119, 2x2 .160 vs .096, non-play-action .150 vs .089. At the release the 10-15 band is close (d1 p90 5.5 vs 5.2). So these are intermediate routes open before the ball comes out, not at the throw. Why the QB does not use them (timing, read order, or the deep-zone pricing in known issue 3) is not shown by this census.
-- **We are tighter than the NFL elsewhere:** 0-10 yd in zone (Cover-3 5-10 yd fixed .070 vs .139, Cover-2 0-5 yd .025 vs .104), behind the line after play action (.015 vs .066), Cover-0 and Cover-1 short. By family (dropbacks with a wide-open receiver at the release): Cover-3 .304 vs .409, Cover-2 .542 vs .530, Quarters .388 vs .404, Cover-1 .140 vs .098, Cover-6 .521 vs .418, Cover-0 .062 vs .226.
-- **The second-nearest defender is farther in the NFL than in ours** in the 0-10 yd bands (release d2 median 7.1 vs 6.0 yd at 0-5), so ours has fewer receivers with only one defender near: not more.
-- Operator checks: my formation label agrees with PFF's receiverAlignment on 8,469 of 9,258 NFL plays (.915). A second implementation (stacked norms, polar angles) matches the operator on 54 NFL and 58 sim receiver rows at the release to 0.0000 yd, with no relation or side mismatches (listed per play at the end).
-- Caveats: our sample is 8 games of one team pair; the z values in the cell tables treat receiver-moments as independent but receivers in one play are correlated, so they overstate; route runner = PFF `wasRunningRoute` (NFL) and a behavior that is a route (ours). The user's impression may rest on concepts or coverages the cell tables show; I did not look at concept-level cells.
+- **In aggregate we do not leave receivers more open than the NFL, and the extreme cases are not more common in ours.** Dropbacks with at least one wide-open receiver at the release (ours, 24 games): .361 against the NFL .338; at any fixed time .525 / .550. Per dropback, a main route runner (not behind the line, not a back within 3 yd of it) with d1 over 8 / 10 / 12 / 15 yd at the release: NFL .071 / .021 / .007 / .002, ours .070 / .013 / .002 / .001; any fixed time: NFL .072 / .012 / .003 / .001, ours .067 / .007 / .001 / .000. Man: NFL .022 / .003 at 8 / 10 yd at the release, ours .013 / .002. Zone: NFL .091 / .026, ours .088 / .017. So F09 (15.7 yd) and F13 (15.5 yd) are real but rare in both: about 1 in 500 dropbacks in the NFL at the release, about 1 in 1,000 in ours.
+- **Leverage: wide open with the nearest defender over the top (more than 1 yd downfield of him) is the norm on both sides.** Wide-open receiver-moments at the release (over the top / level / trailing): NFL .63 / .06 / .30, ours .61 / .06 / .33; at fixed times NFL .71 / .06 / .22, ours .66 / .07 / .27. Ours has slightly more trailing defenders, not more "open behind everyone".
+- **The one place ours is wider holds on the new games: 10-15 yd while the ball is held, Cover-2 and Cover-6.** Wide-open share of receiver-moments at fixed times, 10-15 yd: Cover-2 NFL .177 (n 1,801); the 8 original games .573 (n 124); the 16 new games .441 (n 186). Cover-6 NFL .096 (n 1,240); .305 (n 105); .216 (n 134). At the release: Cover-2 NFL .188, ours .391 / .348; Cover-6 NFL .097, ours .218 / .157. The excess shrinks on the new games but stays at about 2.5x (Cover-2) and 2.2x (Cover-6) the NFL's.
+- **Rungs.** Refinements off (rung 1) leaves roughly as many receivers open as the default; the spot arm (rung 2) leaves clearly more: wide-open receiver at the release .571 (rung 2) against .395 (rung 1) and .361 (default); targeted receiver d1 median 4.9 against 3.7 / 3.7. By Coverage's reading: the match layer is not what leaves men open; it closes spot drops (rung 2 is the worse, by a wide margin in Cover-3, Quarters and Cover-2). Rung 1 against rung 0 by family: Cover-6 .647 against .463 and Cover-1 .139 against .108 at the release (the refinements close Cover-6); Cover-2 .558 against .620 and Cover-3 .376 against .391 (the refinements are not what closes those). Rung samples are 8 games each, so each family cell is 70-280 dropbacks.
+- Operator checks (unchanged): formation label agrees with PFF's receiverAlignment on .915 of NFL plays; a second implementation matches the operator exactly on 54 NFL and 58 sim receiver rows at the release.
+- Caveats: the z values in the cell tables treat receiver-moments as independent but receivers in one play are correlated, so they overstate; route runner = PFF `wasRunningRoute` (NFL) and a behavior that is a route (ours); NFL tracking is the 2022 season weeks 1-9. I did not cut by concept. The census does not say why the QB does not use the 10-15 yd windows.
 
-Wide-open export for Coverage's attribution: `data/reviews/census/wide-open-default.json.gz` (1,160 wide-open receiver-moments: play, concept, coverage, receiver, time, d1/d2, nearest defender and relation, and every defender's behavior kind, target seat and man technique / zone landmark at that moment).
+Rung 2 is harness only: `scripts/diag/census/spot-harness.patch` wraps `installCoverage` (CENSUS_SPOT=1) in a separate worktree, never applied to the engine: coverage mapped to cover1 / 2 / 3 / 4 by family (cover0, cover1, cover2man to cover1; cover2, tampa2 to cover2; cover3 to cover3; cover4, cover6 to cover4), a pressure that brings its own coverage keeps its rushers (a creep needs its blitzer) and loses that coverage, zone calls play `zoneStyle = 'spot'`, no structure checks. Rung 1 and 2 run Coverage's flag set `QUARTERS_CHECK=0 MATCH_DECLARE=0 MUSH_MATCH=0 MUSH_TRAP=0 C2_APEX=0 SQUAT_TOPDOWN=0 Q_APEX=0 CUT_WALL=0 BOX_IN=0 SCREW=0 TAMPA_PIPE=0 FLAT_SINK=0 FLAT_CARRY=0 CURL_SINK=0 OPEN_CARRY=0 HALF_KEY=0`; sim seed 101, games 0-7, the same teams as the original sample.
 
-## Full tables
+Wide-open exports for Coverage's attribution (play, concept, coverage, receiver, time, d1 / d2, nearest defender and relation, every defender's behavior kind, seat and technique): `data/reviews/census/wide-open-all24.json.gz` (default), `wide-open-r1.json.gz`, `wide-open-r2.json.gz`.
+
+## The three rungs
+
+| sample | wide-open WR at the release | at any fixed time | two consecutive fixed times | targeted receiver d1 p10/25/50/75/90, wide |
+|---|---|---|---|---|
+| NFL (9,657 dropbacks) | 0.338 (2922/8638) | 0.550 (4776/8691) | 0.250 (2172/8691) | 1.2 / 2.0 / 3.5 / 5.5 / 7.4, 0.138 |
+| Rung 0, default (24 games, 2,128 dropbacks) | 0.361 (675/1868) | 0.525 (1116/2126) | 0.273 (581/2126) | 1.4 / 2.5 / 3.7 / 5.1 / 6.8, 0.147 |
+| Rung 1, refinements off (8 games, 703) | 0.395 (245/620) | 0.537 (377/702) | 0.271 (190/702) | 1.6 / 2.5 / 3.7 / 5.0 / 7.1, 0.163 |
+| Rung 2, spot (8 games, 690) | 0.571 (362/634) | 0.684 (472/690) | 0.432 (298/690) | 1.6 / 3.0 / 4.9 / 6.4 / 8.5, 0.314 |
+
+
+### By coverage family (our label mapped to PFF's; dropbacks with a wide-open receiver at the release, and at any fixed time)
+
+**Rung 0, default (24 games)**
+
+| group | dropbacks | release n | release d1 p50 / p90 | wide at release | dropbacks with a wide-open WR at release | fixed n | fixed d1 p50 / p90 | wide at fixed | dropbacks with one at any fixed |
+|---|---|---|---|---|---|---|---|---|---|
+| Cover-3 | 740 | 3161 | 3.0 / 6.0 | 0.102 | 0.391 | 10801 | 3.1 / 5.9 | 0.110 | 0.648 |
+| Cover-1 | 437 | 1815 | 1.8 / 4.6 | 0.024 | 0.108 | 6409 | 2.1 / 4.7 | 0.025 | 0.255 |
+| Quarters | 333 | 1436 | 3.1 / 6.4 | 0.121 | 0.448 | 4702 | 3.3 / 5.9 | 0.108 | 0.628 |
+| Cover-2 | 270 | 1137 | 3.4 / 7.7 | 0.208 | 0.620 | 4279 | 2.8 / 5.8 | 0.116 | 0.633 |
+| Cover-6 | 212 | 913 | 3.0 / 6.4 | 0.123 | 0.463 | 3090 | 3.0 / 5.7 | 0.101 | 0.590 |
+| Cover-0 | 108 | 343 | 1.5 / 4.4 | 0.023 | 0.087 | 1349 | 1.3 / 4.2 | 0.016 | 0.102 |
+| 2-Man | 28 | 117 | 1.9 / 4.4 | 0.000 | 0.000 | 418 | 2.3 / 4.9 | 0.033 | 0.357 |
+
+**Rung 1, refinements off**
+
+| group | dropbacks | release n | release d1 p50 / p90 | wide at release | dropbacks with a wide-open WR at release | fixed n | fixed d1 p50 / p90 | wide at fixed | dropbacks with one at any fixed |
+|---|---|---|---|---|---|---|---|---|---|
+| Cover-3 | 260 | 1093 | 2.8 / 6.1 | 0.091 | 0.376 | 3790 | 2.9 / 5.7 | 0.097 | 0.592 |
+| Cover-1 | 125 | 517 | 2.0 / 4.7 | 0.029 | 0.139 | 1959 | 2.1 / 4.7 | 0.024 | 0.280 |
+| Cover-2 | 123 | 488 | 3.4 / 6.9 | 0.160 | 0.558 | 1881 | 2.9 / 5.7 | 0.108 | 0.607 |
+| Quarters | 83 | 385 | 3.1 / 6.6 | 0.125 | 0.481 | 1168 | 3.3 / 5.9 | 0.112 | 0.627 |
+| Cover-6 | 72 | 330 | 3.2 / 6.9 | 0.170 | 0.647 | 1110 | 3.1 / 5.9 | 0.131 | 0.792 |
+| Cover-0 | 29 | 92 | 1.7 / 4.1 | 0.033 | 0.136 | 350 | 1.6 / 4.4 | 0.026 | 0.172 |
+| 2-Man | 11 | 49 | 1.4 / 4.8 | 0.020 | 0.100 | 163 | 1.9 / 4.3 | 0.000 | 0.000 |
+
+**Rung 2, spot**
+
+| group | dropbacks | release n | release d1 p50 / p90 | wide at release | dropbacks with a wide-open WR at release | fixed n | fixed d1 p50 / p90 | wide at fixed | dropbacks with one at any fixed |
+|---|---|---|---|---|---|---|---|---|---|
+| Cover-3 | 282 | 1263 | 3.9 / 7.5 | 0.194 | 0.658 | 3843 | 3.8 / 6.6 | 0.188 | 0.780 |
+| Quarters | 154 | 697 | 4.5 / 8.0 | 0.247 | 0.731 | 2097 | 4.5 / 7.2 | 0.273 | 0.877 |
+| Cover-1 | 145 | 581 | 1.7 / 4.7 | 0.021 | 0.095 | 1972 | 1.7 / 4.4 | 0.019 | 0.179 |
+| Cover-2 | 109 | 479 | 4.4 / 7.8 | 0.273 | 0.710 | 1614 | 3.6 / 6.5 | 0.199 | 0.835 |
+
+### Leverage and extreme openness, by sample
+
+**NFL**
+
+| receiver-moments | over the top | level | trailing |
+|---|---|---|---|
+| all, release (n 39701) | 0.50 | 0.32 | 0.18 |
+| all, fixed (n 111216) | 0.52 | 0.32 | 0.16 |
+| wide open, release (n 3972) | 0.63 | 0.06 | 0.30 |
+| wide open, fixed (n 11121) | 0.71 | 0.06 | 0.22 |
+
+| group | moment | dropbacks | >8 yd | >10 yd | >12 yd | >15 yd | receiver-moments >10 yd |
+|---|---|---|---|---|---|---|---|
+| all | release | 8638 | 0.071 | 0.021 | 0.007 | 0.002 | 0.0065 |
+| all | any fixed time | 8691 | 0.072 | 0.012 | 0.003 | 0.001 | 0.0022 |
+| man | release | 2281 | 0.022 | 0.003 | 0.001 | 0.000 | 0.0012 |
+| man | any fixed time | 2345 | 0.025 | 0.002 | 0.000 | 0.000 | 0.0003 |
+| zone | release | 5927 | 0.091 | 0.026 | 0.008 | 0.002 | 0.0077 |
+| zone | any fixed time | 5909 | 0.090 | 0.013 | 0.002 | 0.000 | 0.0017 |
+| behind the line (separately), any moment | all | 7550 | 0.153 | 0.054 | 0.015 | 0.002 | 0.0203 |
+| back within 3 yd of the line (separately), any moment | all | 2856 | 0.069 | 0.021 | 0.006 | 0.001 | 0.0148 |
+
+**Ours, default (24 games)**
+
+| receiver-moments | over the top | level | trailing |
+|---|---|---|---|
+| all, release (n 8922) | 0.48 | 0.31 | 0.21 |
+| all, fixed (n 31048) | 0.54 | 0.29 | 0.17 |
+| wide open, release (n 897) | 0.61 | 0.06 | 0.33 |
+| wide open, fixed (n 2706) | 0.66 | 0.07 | 0.27 |
+
+| group | moment | dropbacks | >8 yd | >10 yd | >12 yd | >15 yd | receiver-moments >10 yd |
+|---|---|---|---|---|---|---|---|
+| all | release | 1868 | 0.070 | 0.013 | 0.002 | 0.001 | 0.0034 |
+| all | any fixed time | 2126 | 0.067 | 0.007 | 0.001 | 0.000 | 0.0007 |
+| man | release | 454 | 0.013 | 0.002 | 0.000 | 0.000 | 0.0006 |
+| man | any fixed time | 541 | 0.015 | 0.002 | 0.000 | 0.000 | 0.0002 |
+| zone | release | 1414 | 0.088 | 0.017 | 0.003 | 0.001 | 0.0043 |
+| zone | any fixed time | 1585 | 0.085 | 0.008 | 0.001 | 0.000 | 0.0009 |
+| behind the line (separately), any moment | all | 1592 | 0.152 | 0.063 | 0.024 | 0.001 | 0.0214 |
+| back within 3 yd of the line (separately), any moment | all | 814 | 0.032 | 0.006 | 0.002 | 0.000 | 0.0041 |
+
+**Rung 1**
+
+| receiver-moments | over the top | level | trailing |
+|---|---|---|---|
+| all, release (n 2954) | 0.44 | 0.32 | 0.24 |
+| all, fixed (n 10421) | 0.51 | 0.30 | 0.18 |
+| wide open, release (n 301) | 0.57 | 0.07 | 0.36 |
+| wide open, fixed (n 904) | 0.65 | 0.07 | 0.29 |
+
+| group | moment | dropbacks | >8 yd | >10 yd | >12 yd | >15 yd | receiver-moments >10 yd |
+|---|---|---|---|---|---|---|---|
+| all | release | 620 | 0.097 | 0.031 | 0.008 | 0.002 | 0.0078 |
+| all | any fixed time | 702 | 0.091 | 0.019 | 0.004 | 0.000 | 0.0017 |
+| man | release | 136 | 0.029 | 0.000 | 0.000 | 0.000 | 0.0000 |
+| man | any fixed time | 160 | 0.031 | 0.000 | 0.000 | 0.000 | 0.0000 |
+| zone | release | 484 | 0.116 | 0.039 | 0.010 | 0.002 | 0.0099 |
+| zone | any fixed time | 542 | 0.109 | 0.024 | 0.006 | 0.000 | 0.0022 |
+| behind the line (separately), any moment | all | 529 | 0.147 | 0.055 | 0.015 | 0.000 | 0.0173 |
+| back within 3 yd of the line (separately), any moment | all | 265 | 0.026 | 0.008 | 0.004 | 0.000 | 0.0039 |
+
+**Rung 2**
+
+| receiver-moments | over the top | level | trailing |
+|---|---|---|---|
+| all, release (n 3020) | 0.51 | 0.26 | 0.23 |
+| all, fixed (n 9526) | 0.55 | 0.26 | 0.20 |
+| wide open, release (n 560) | 0.70 | 0.06 | 0.25 |
+| wide open, fixed (n 1653) | 0.71 | 0.05 | 0.24 |
+
+| group | moment | dropbacks | >8 yd | >10 yd | >12 yd | >15 yd | receiver-moments >10 yd |
+|---|---|---|---|---|---|---|---|
+| all | release | 634 | 0.174 | 0.028 | 0.000 | 0.000 | 0.0077 |
+| all | any fixed time | 690 | 0.186 | 0.017 | 0.000 | 0.000 | 0.0019 |
+| man | release | 126 | 0.024 | 0.000 | 0.000 | 0.000 | 0.0000 |
+| man | any fixed time | 145 | 0.028 | 0.000 | 0.000 | 0.000 | 0.0000 |
+| zone | release | 508 | 0.211 | 0.035 | 0.000 | 0.000 | 0.0095 |
+| zone | any fixed time | 545 | 0.228 | 0.022 | 0.000 | 0.000 | 0.0024 |
+| behind the line (separately), any moment | all | 523 | 0.193 | 0.107 | 0.040 | 0.002 | 0.0353 |
+| back within 3 yd of the line (separately), any moment | all | 253 | 0.071 | 0.012 | 0.004 | 0.000 | 0.0062 |
+
+### Does the Cover-2 / Cover-6 10-15 yd excess hold on new games?
+
+## Does the Cover-2 / Cover-6 10-15 yd excess hold? (wide-open share of receiver-moments, NFL p90 threshold; each sim file on its own)
+
+| sample | Cover-2 fixed n | Cover-2 fixed wide | Cover-6 fixed n | Cover-6 fixed wide | Cover-2 release n | wide | Cover-6 release n | wide |
+|---|---|---|---|---|---|---|---|---|
+| NFL | 1801 | 0.177 | 1240 | 0.096 | 1153 | 0.188 | 714 | 0.097 |
+| sim-default.jsonl.gz | 124 | 0.573 | 105 | 0.305 | 69 | 0.391 | 55 | 0.218 |
+| sim-x16.jsonl.gz | 186 | 0.441 | 134 | 0.216 | 141 | 0.348 | 89 | 0.157 |
+
+
+
+## Full tables (NFL, then ours on 24 games)
 
 NFL: 9657 dropbacks, 9257 with a route runner at a sampled moment, 150917 receiver-moments. Wide-open thresholds are the NFL p90 of d1 by (moment kind, depth band):
 
@@ -43,6 +184,28 @@ NFL: 9657 dropbacks, 9257 with a route runner at a sampled moment, 150917 receiv
 |---|---|---|---|---|---|---|---|---|---|
 | release | 0.28 | 0.36 | 0.36 | 0.50 | 0.19 | 0.31 | 0.48 | 0.19 | 0.32 |
 | fixed | 0.25 | 0.35 | 0.40 | 0.47 | 0.20 | 0.33 | 0.59 | 0.15 | 0.27 |
+
+### Leverage of the nearest defender relative to the goal line (over the top: more than 1 yd downfield of him; trailing: more than 1 yd behind him)
+
+| receiver-moments | over the top | level | trailing |
+|---|---|---|---|
+| all, release (n 39701) | 0.50 | 0.32 | 0.18 |
+| all, fixed (n 111216) | 0.52 | 0.32 | 0.16 |
+| wide open, release (n 3972) | 0.63 | 0.06 | 0.30 |
+| wide open, fixed (n 11121) | 0.71 | 0.06 | 0.22 |
+
+### Extreme openness per dropback: any route runner with d1 over T yd (main receivers: not behind the line, not a back within 3 yd of the line)
+
+| group | moment | dropbacks | >8 yd | >10 yd | >12 yd | >15 yd | receiver-moments >10 yd |
+|---|---|---|---|---|---|---|---|
+| all | release | 8638 | 0.071 | 0.021 | 0.007 | 0.002 | 0.0065 |
+| all | any fixed time | 8691 | 0.072 | 0.012 | 0.003 | 0.001 | 0.0022 |
+| man | release | 2281 | 0.022 | 0.003 | 0.001 | 0.000 | 0.0012 |
+| man | any fixed time | 2345 | 0.025 | 0.002 | 0.000 | 0.000 | 0.0003 |
+| zone | release | 5927 | 0.091 | 0.026 | 0.008 | 0.002 | 0.0077 |
+| zone | any fixed time | 5909 | 0.090 | 0.013 | 0.002 | 0.000 | 0.0017 |
+| behind the line (separately), any moment | all | 7550 | 0.153 | 0.054 | 0.015 | 0.002 | 0.0203 |
+| back within 3 yd of the line (separately), any moment | all | 2856 | 0.069 | 0.021 | 0.006 | 0.001 | 0.0148 |
 
 ### Share of dropbacks with at least one wide-open receiver, and of receiver-moments wide open
 
@@ -115,147 +278,176 @@ NFL: 9657 dropbacks, 9257 with a route runner at a sampled moment, 150917 receiv
 | False | 6906 | 30390 | 2.9 / 6.5 | 0.100 | 0.341 | 81748 | 2.8 / 5.9 | 0.106 | 0.561 |
 | True | 2351 | 9311 | 3.0 / 6.5 | 0.100 | 0.329 | 29468 | 2.7 / 5.4 | 0.082 | 0.517 |
 
-## Ours: sim-default.jsonl.gz
+## Ours: sim-all24.jsonl.gz
 
-693 dropbacks, 12933 receiver-moments (release 2906, fixed 10027).
+2128 dropbacks, 39970 receiver-moments (release 8922, fixed 31048).
 
 ### Nearest-defender distance (yd) p10 / 25 / 50 / 75 / 90 by depth band
 
 | band | release n | release d1 | release d2 | fixed n | fixed d1 | fixed d2 |
 |---|---|---|---|---|---|---|
-| behind LOS | 381 | 1.0 / 1.8 / 3.6 / 6.3 / 8.7 | 2.3 / 3.6 / 6.2 / 8.9 / 11.7 | 1837 | 0.9 / 1.5 / 2.4 / 3.9 / 6.1 | 2.1 / 2.8 / 4.2 / 6.0 / 8.3 |
-| 0-5 | 715 | 1.1 / 2.1 / 3.5 / 5.0 / 6.7 | 2.9 / 4.3 / 6.0 / 8.2 / 11.1 | 4496 | 1.2 / 2.0 / 3.3 / 4.6 / 5.9 | 3.0 / 4.2 / 5.8 / 8.1 / 10.4 |
-| 5-10 | 1114 | 1.0 / 1.6 / 2.7 / 3.9 / 4.9 | 2.9 / 4.0 / 6.0 / 8.6 / 11.1 | 2820 | 1.0 / 1.5 / 2.6 / 3.8 / 4.8 | 2.9 / 4.2 / 6.3 / 8.9 / 11.4 |
-| 10-15 | 495 | 0.8 / 1.4 / 2.3 / 3.4 / 5.5 | 3.3 / 4.9 / 6.9 / 9.2 / 12.1 | 832 | 1.0 / 1.5 / 2.3 / 3.5 / 6.0 | 3.8 / 5.9 / 8.0 / 10.1 / 12.9 |
-| 15-20 | 175 | 1.0 / 1.3 / 2.1 / 3.2 / 6.7 | 3.9 / 6.0 / 8.9 / 11.4 / 13.4 | 42 | 1.0 / 1.3 / 1.6 / 2.1 / 6.0 | 5.4 / 7.1 / 9.3 / 10.5 / 12.4 |
-| 20+ | 26 | 0.7 / 0.9 / 1.6 / 2.8 / 4.7 | 5.0 / 6.1 / 10.4 / 13.2 / 17.2 | 0 | - | - |
+| behind LOS | 1123 | 0.9 / 1.7 / 3.6 / 6.5 / 9.3 | 2.3 / 3.7 / 6.3 / 9.6 / 12.2 | 5371 | 0.9 / 1.5 / 2.5 / 4.0 / 6.1 | 2.1 / 2.9 / 4.2 / 6.2 / 8.4 |
+| 0-5 | 2088 | 1.2 / 2.2 / 3.6 / 5.1 / 6.9 | 3.1 / 4.4 / 6.3 / 8.4 / 11.1 | 14421 | 1.1 / 2.0 / 3.2 / 4.6 / 5.8 | 3.2 / 4.3 / 6.0 / 8.2 / 10.5 |
+| 5-10 | 3660 | 0.9 / 1.5 / 2.7 / 4.0 / 5.1 | 2.9 / 4.1 / 6.0 / 8.3 / 11.3 | 8908 | 0.9 / 1.4 / 2.5 / 3.8 / 4.9 | 2.9 / 4.3 / 6.3 / 8.8 / 11.5 |
+| 10-15 | 1482 | 0.8 / 1.2 / 2.1 / 3.3 / 5.1 | 3.1 / 4.6 / 6.8 / 9.2 / 12.0 | 2234 | 0.8 / 1.3 / 2.1 / 3.2 / 5.5 | 3.5 / 5.4 / 7.7 / 10.0 / 12.9 |
+| 15-20 | 499 | 1.0 / 1.3 / 2.1 / 3.3 / 6.3 | 4.2 / 6.1 / 8.8 / 11.6 / 14.7 | 114 | 1.0 / 1.2 / 1.5 / 2.1 / 7.1 | 5.2 / 7.1 / 9.5 / 11.4 / 13.1 |
+| 20+ | 70 | 0.8 / 0.9 / 1.7 / 3.3 / 4.9 | 4.7 / 6.7 / 9.7 / 13.5 / 17.3 | 0 | - | - |
 
 ### Relation of the nearest defender (share of receiver-moments)
 
 | moment | front | level | behind | inside | head-up | outside | closing | steady | opening |
 |---|---|---|---|---|---|---|---|---|---|
-| release | 0.31 | 0.31 | 0.38 | 0.53 | 0.17 | 0.31 | 0.42 | 0.17 | 0.40 |
-| fixed | 0.27 | 0.29 | 0.44 | 0.52 | 0.17 | 0.31 | 0.62 | 0.11 | 0.27 |
+| release | 0.29 | 0.34 | 0.37 | 0.54 | 0.17 | 0.29 | 0.42 | 0.19 | 0.39 |
+| fixed | 0.26 | 0.31 | 0.43 | 0.54 | 0.17 | 0.29 | 0.62 | 0.12 | 0.26 |
+
+### Leverage of the nearest defender relative to the goal line (over the top: more than 1 yd downfield of him; trailing: more than 1 yd behind him)
+
+| receiver-moments | over the top | level | trailing |
+|---|---|---|---|
+| all, release (n 8922) | 0.48 | 0.31 | 0.21 |
+| all, fixed (n 31048) | 0.54 | 0.29 | 0.17 |
+| wide open, release (n 897) | 0.61 | 0.06 | 0.33 |
+| wide open, fixed (n 2706) | 0.66 | 0.07 | 0.27 |
+
+### Extreme openness per dropback: any route runner with d1 over T yd (main receivers: not behind the line, not a back within 3 yd of the line)
+
+| group | moment | dropbacks | >8 yd | >10 yd | >12 yd | >15 yd | receiver-moments >10 yd |
+|---|---|---|---|---|---|---|---|
+| all | release | 1868 | 0.070 | 0.013 | 0.002 | 0.001 | 0.0034 |
+| all | any fixed time | 2126 | 0.067 | 0.007 | 0.001 | 0.000 | 0.0007 |
+| man | release | 454 | 0.013 | 0.002 | 0.000 | 0.000 | 0.0006 |
+| man | any fixed time | 541 | 0.015 | 0.002 | 0.000 | 0.000 | 0.0002 |
+| zone | release | 1414 | 0.088 | 0.017 | 0.003 | 0.001 | 0.0043 |
+| zone | any fixed time | 1585 | 0.085 | 0.008 | 0.001 | 0.000 | 0.0009 |
+| behind the line (separately), any moment | all | 1592 | 0.152 | 0.063 | 0.024 | 0.001 | 0.0214 |
+| back within 3 yd of the line (separately), any moment | all | 814 | 0.032 | 0.006 | 0.002 | 0.000 | 0.0041 |
 
 ### Share of dropbacks with at least one wide-open receiver, and of receiver-moments wide open
 
-- at the release: 206 of 614 thrown dropbacks (0.336); receiver-moments 0.095
-- at any fixed time while the ball was held: 364 of 693 dropbacks (0.525); receiver-moments 0.088
-- wide open at two consecutive fixed times (0.5 s apart, same receiver): 189 of 693 dropbacks (0.273)
-- d1 tail at release: p90 6.1, p95 7.4, p99 10.2; share of receiver-moments with d1 over 5 yd 0.173, over 7 yd 0.063, over 9 yd 0.017
-- d1 tail at fixed: p90 5.6, p95 6.5, p99 8.5; share of receiver-moments with d1 over 5 yd 0.150, over 7 yd 0.030, over 9 yd 0.006
-- the targeted receiver at release (n 604): d1 1.8 / 2.6 / 3.7 / 5.1 / 6.9, wide open 0.141; untargeted route runners at release d1 0.9 / 1.5 / 2.5 / 4.0 / 5.8
+- at the release: 675 of 1868 thrown dropbacks (0.361); receiver-moments 0.101
+- at any fixed time while the ball was held: 1116 of 2126 dropbacks (0.525); receiver-moments 0.087
+- wide open at two consecutive fixed times (0.5 s apart, same receiver): 581 of 2126 dropbacks (0.273)
+- d1 tail at release: p90 6.1, p95 7.6, p99 10.5; share of receiver-moments with d1 over 5 yd 0.175, over 7 yd 0.066, over 9 yd 0.023
+- d1 tail at fixed: p90 5.6, p95 6.4, p99 8.4; share of receiver-moments with d1 over 5 yd 0.151, over 7 yd 0.032, over 9 yd 0.006
+- the targeted receiver at release (n 1838): d1 1.4 / 2.5 / 3.7 / 5.1 / 6.8, wide open 0.147; untargeted route runners at release d1 0.9 / 1.4 / 2.5 / 4.1 / 5.9
 
 ### By coverage family
 
 | group | dropbacks | release n | release d1 p50 / p90 | wide at release | dropbacks with a wide-open WR at release | fixed n | fixed d1 p50 / p90 | wide at fixed | dropbacks with one at any fixed |
 |---|---|---|---|---|---|---|---|---|---|
-| Cover-3 | 286 | 1231 | 2.9 / 5.7 | 0.079 | 0.304 | 4123 | 3.0 / 5.6 | 0.093 | 0.598 |
-| Cover-1 | 114 | 476 | 2.0 / 4.8 | 0.034 | 0.140 | 1615 | 2.2 / 4.8 | 0.030 | 0.246 |
-| Cover-2 | 97 | 386 | 3.2 / 7.4 | 0.192 | 0.543 | 1538 | 2.6 / 5.7 | 0.118 | 0.588 |
-| Quarters | 91 | 386 | 3.0 / 6.3 | 0.104 | 0.388 | 1295 | 3.4 / 6.0 | 0.109 | 0.604 |
-| Cover-6 | 75 | 334 | 3.0 / 6.6 | 0.141 | 0.521 | 1072 | 3.1 / 5.8 | 0.111 | 0.600 |
-| Cover-0 | 22 | 64 | 2.4 / 4.6 | 0.016 | 0.062 | 255 | 1.4 / 4.7 | 0.020 | 0.136 |
-| 2-Man | 8 | 29 | 2.7 / 4.9 | 0.000 | 0.000 | 129 | 2.4 / 5.1 | 0.054 | 0.625 |
+| Cover-3 | 740 | 3161 | 3.0 / 6.0 | 0.102 | 0.391 | 10801 | 3.1 / 5.9 | 0.110 | 0.648 |
+| Cover-1 | 437 | 1815 | 1.8 / 4.6 | 0.024 | 0.108 | 6409 | 2.1 / 4.7 | 0.025 | 0.255 |
+| Quarters | 333 | 1436 | 3.1 / 6.4 | 0.121 | 0.448 | 4702 | 3.3 / 5.9 | 0.108 | 0.628 |
+| Cover-2 | 270 | 1137 | 3.4 / 7.7 | 0.208 | 0.620 | 4279 | 2.8 / 5.8 | 0.116 | 0.633 |
+| Cover-6 | 212 | 913 | 3.0 / 6.4 | 0.123 | 0.463 | 3090 | 3.0 / 5.7 | 0.101 | 0.590 |
+| Cover-0 | 108 | 343 | 1.5 / 4.4 | 0.023 | 0.087 | 1349 | 1.3 / 4.2 | 0.016 | 0.102 |
+| 2-Man | 28 | 117 | 1.9 / 4.4 | 0.000 | 0.000 | 418 | 2.3 / 4.9 | 0.033 | 0.357 |
 
 ### By man / zone
 
 | group | dropbacks | release n | release d1 p50 / p90 | wide at release | dropbacks with a wide-open WR at release | fixed n | fixed d1 p50 / p90 | wide at fixed | dropbacks with one at any fixed |
 |---|---|---|---|---|---|---|---|---|---|
-| Zone | 556 | 2369 | 3.0 / 6.3 | 0.110 | 0.385 | 8106 | 3.0 / 5.7 | 0.102 | 0.594 |
-| Man | 137 | 537 | 2.1 / 4.7 | 0.028 | 0.122 | 1921 | 2.1 / 4.8 | 0.029 | 0.248 |
+| Zone | 1586 | 6779 | 3.1 / 6.5 | 0.126 | 0.448 | 23309 | 3.0 / 5.8 | 0.108 | 0.628 |
+| Man | 542 | 2143 | 1.8 / 4.5 | 0.021 | 0.093 | 7739 | 1.9 / 4.6 | 0.023 | 0.222 |
 
 ### By formation (receivers each side)
 
 | group | dropbacks | release n | release d1 p50 / p90 | wide at release | dropbacks with a wide-open WR at release | fixed n | fixed d1 p50 / p90 | wide at fixed | dropbacks with one at any fixed |
 |---|---|---|---|---|---|---|---|---|---|
-| 3x1 | 286 | 1187 | 2.8 / 6.3 | 0.098 | 0.353 | 4077 | 3.0 / 5.7 | 0.097 | 0.577 |
-| 2x2 | 261 | 1107 | 2.9 / 6.3 | 0.099 | 0.342 | 3799 | 2.8 / 5.6 | 0.092 | 0.521 |
-| 3x2 | 98 | 427 | 2.8 / 5.6 | 0.084 | 0.314 | 1434 | 2.8 / 5.4 | 0.077 | 0.490 |
-| 2x1 | 43 | 165 | 2.5 / 5.8 | 0.079 | 0.263 | 642 | 2.4 / 4.6 | 0.045 | 0.302 |
-| 4x1 | 5 | 20 | 2.0 / 4.1 | 0.000 | 0.000 | 75 | 2.5 / 4.8 | 0.027 | 0.400 |
+| 3x1 | 900 | 3792 | 2.8 / 6.3 | 0.103 | 0.361 | 12872 | 2.9 / 5.6 | 0.088 | 0.539 |
+| 2x2 | 817 | 3362 | 2.7 / 6.0 | 0.096 | 0.344 | 12031 | 2.7 / 5.5 | 0.086 | 0.524 |
+| 3x2 | 321 | 1398 | 2.8 / 5.8 | 0.108 | 0.416 | 4756 | 2.9 / 5.6 | 0.093 | 0.520 |
+| 2x1 | 77 | 315 | 2.5 / 6.0 | 0.076 | 0.290 | 1184 | 2.4 / 4.9 | 0.059 | 0.390 |
+| 4x1 | 13 | 55 | 3.1 / 6.1 | 0.145 | 0.545 | 205 | 3.0 / 5.5 | 0.107 | 0.538 |
 
 ### By empty backfield
 
 | group | dropbacks | release n | release d1 p50 / p90 | wide at release | dropbacks with a wide-open WR at release | fixed n | fixed d1 p50 / p90 | wide at fixed | dropbacks with one at any fixed |
 |---|---|---|---|---|---|---|---|---|---|
-| False | 590 | 2459 | 2.8 / 6.3 | 0.097 | 0.342 | 8518 | 2.8 / 5.6 | 0.091 | 0.532 |
-| True | 103 | 447 | 2.7 / 5.5 | 0.081 | 0.300 | 1509 | 2.8 / 5.4 | 0.075 | 0.485 |
+| False | 1794 | 7469 | 2.8 / 6.2 | 0.099 | 0.350 | 26087 | 2.8 / 5.5 | 0.086 | 0.526 |
+| True | 334 | 1453 | 2.8 / 5.8 | 0.109 | 0.421 | 4961 | 2.9 / 5.6 | 0.094 | 0.521 |
 
 ### By motion
 
 | group | dropbacks | release n | release d1 p50 / p90 | wide at release | dropbacks with a wide-open WR at release | fixed n | fixed d1 p50 / p90 | wide at fixed | dropbacks with one at any fixed |
 |---|---|---|---|---|---|---|---|---|---|
-| False | 356 | 1479 | 2.9 / 6.4 | 0.097 | 0.334 | 5181 | 2.9 / 5.6 | 0.088 | 0.528 |
-| True | 337 | 1427 | 2.7 / 5.8 | 0.093 | 0.337 | 4846 | 2.8 / 5.5 | 0.089 | 0.522 |
+| False | 1134 | 4733 | 2.8 / 6.3 | 0.104 | 0.369 | 16580 | 2.8 / 5.6 | 0.089 | 0.537 |
+| True | 994 | 4189 | 2.7 / 5.9 | 0.096 | 0.352 | 14468 | 2.8 / 5.5 | 0.085 | 0.512 |
 
 ### By motion with empty
 
 | group | dropbacks | release n | release d1 p50 / p90 | wide at release | dropbacks with a wide-open WR at release | fixed n | fixed d1 p50 / p90 | wide at fixed | dropbacks with one at any fixed |
 |---|---|---|---|---|---|---|---|---|---|
-| False | 618 | 2589 | 2.8 / 6.2 | 0.096 | 0.340 | 8938 | 2.8 / 5.6 | 0.089 | 0.526 |
-| True | 75 | 317 | 2.7 / 5.5 | 0.082 | 0.297 | 1089 | 2.9 / 5.4 | 0.079 | 0.520 |
+| False | 1891 | 7889 | 2.8 / 6.1 | 0.099 | 0.352 | 27552 | 2.8 / 5.6 | 0.086 | 0.526 |
+| True | 237 | 1033 | 2.7 / 5.7 | 0.112 | 0.433 | 3496 | 2.9 / 5.6 | 0.093 | 0.519 |
 
 ### By play action
 
 | group | dropbacks | release n | release d1 p50 / p90 | wide at release | dropbacks with a wide-open WR at release | fixed n | fixed d1 p50 / p90 | wide at fixed | dropbacks with one at any fixed |
 |---|---|---|---|---|---|---|---|---|---|
-| False | 477 | 2023 | 2.9 / 6.3 | 0.108 | 0.374 | 6902 | 3.0 / 5.8 | 0.103 | 0.585 |
-| True | 216 | 883 | 2.5 / 5.4 | 0.063 | 0.251 | 3125 | 2.5 / 5.1 | 0.055 | 0.394 |
+| False | 1515 | 6437 | 2.9 / 6.3 | 0.112 | 0.391 | 22069 | 2.9 / 5.7 | 0.098 | 0.563 |
+| True | 613 | 2485 | 2.5 / 5.4 | 0.072 | 0.285 | 8979 | 2.5 / 5.1 | 0.060 | 0.430 |
+
+## Does the Cover-2 / Cover-6 10-15 yd excess hold? (wide-open share of receiver-moments, NFL p90 threshold; each sim file on its own)
+
+| sample | Cover-2 fixed n | Cover-2 fixed wide | Cover-6 fixed n | Cover-6 fixed wide | Cover-2 release n | wide | Cover-6 release n | wide |
+|---|---|---|---|---|---|---|---|---|
+| NFL | 1801 | 0.177 | 1240 | 0.096 | 1153 | 0.188 | 714 | 0.097 |
+| sim-all24.jsonl.gz | 310 | 0.494 | 239 | 0.255 | 210 | 0.362 | 144 | 0.181 |
 
 ## Largest cell differences, wide-open share (ours minus NFL), cells with at least 40 receiver-moments on each side
 
-### By coverage family (sim-default.jsonl.gz), top 8 by |z|
+### By coverage family (sim-all24.jsonl.gz), top 8 by |z|
 
 | z | moment | depth | group | n NFL | n ours | NFL wide | ours wide |
 |---|---|---|---|---|---|---|---|
-| -11.1 | fix | 0-5 | Cover-2 | 6565 | 675 | 0.104 | 0.025 |
-| +8.7 | fix | 10-15 | Cover-2 | 1801 | 124 | 0.177 | 0.573 |
-| -8.2 | fix | 5-10 | Cover-3 | 8952 | 1153 | 0.139 | 0.070 |
-| -7.0 | fix | 10-15 | Cover-3 | 3757 | 356 | 0.104 | 0.031 |
-| -6.0 | fix | behind LOS | Cover-0 | 572 | 52 | 0.059 | 0.000 |
-| -5.5 | fix | 10-15 | Cover-1 | 1682 | 96 | 0.018 | 0.000 |
-| +4.6 | fix | 10-15 | Cover-6 | 1240 | 105 | 0.096 | 0.305 |
-| -4.5 | fix | 0-5 | Cover-0 | 1540 | 127 | 0.094 | 0.024 |
+| -12.2 | fix | 0-5 | Cover-2 | 6565 | 1910 | 0.104 | 0.035 |
+| +10.6 | fix | 10-15 | Cover-2 | 1801 | 310 | 0.177 | 0.494 |
+| -9.9 | fix | 10-15 | Cover-3 | 3757 | 844 | 0.104 | 0.028 |
+| -8.3 | fix | 0-5 | Cover-0 | 1540 | 736 | 0.094 | 0.019 |
+| -7.8 | fix | 5-10 | Cover-1 | 5803 | 1768 | 0.040 | 0.012 |
+| -7.2 | fix | 5-10 | Cover-0 | 602 | 364 | 0.118 | 0.014 |
+| -6.5 | fix | 5-10 | Cover-3 | 8952 | 3109 | 0.139 | 0.097 |
+| -6.4 | rel | 10-15 | Cover-3 | 2116 | 551 | 0.118 | 0.045 |
 
-### By man / zone (sim-default.jsonl.gz), top 8 by |z|
-
-| z | moment | depth | group | n NFL | n ours | NFL wide | ours wide |
-|---|---|---|---|---|---|---|---|
-| -6.1 | fix | 5-10 | Zone | 20078 | 2291 | 0.120 | 0.082 |
-| -6.1 | fix | 10-15 | Man | 2025 | 121 | 0.018 | 0.000 |
-| -5.5 | fix | 0-5 | Zone | 29528 | 3581 | 0.128 | 0.099 |
-| -4.2 | rel | 5-10 | Zone | 6924 | 892 | 0.132 | 0.089 |
-| +3.3 | fix | 10-15 | Zone | 8358 | 711 | 0.119 | 0.166 |
-| -3.3 | fix | 5-10 | Man | 6943 | 529 | 0.045 | 0.023 |
-| -2.0 | fix | 0-5 | Man | 13192 | 915 | 0.044 | 0.032 |
-| -1.9 | fix | behind LOS | Man | 5848 | 352 | 0.064 | 0.043 |
-
-### By formation (sim-default.jsonl.gz), top 8 by |z|
+### By man / zone (sim-all24.jsonl.gz), top 8 by |z|
 
 | z | moment | depth | group | n NFL | n ours | NFL wide | ours wide |
 |---|---|---|---|---|---|---|---|
-| -17.4 | fix | behind LOS | 3x2 | 1528 | 112 | 0.165 | 0.000 |
-| -5.6 | fix | 5-10 | 3x1 | 11585 | 1122 | 0.103 | 0.060 |
-| -4.9 | fix | behind LOS | 2x1 | 2002 | 247 | 0.081 | 0.024 |
-| -3.8 | fix | 0-5 | 3x2 | 6617 | 671 | 0.133 | 0.088 |
-| +3.1 | fix | 10-15 | 2x2 | 4298 | 332 | 0.096 | 0.160 |
-| -3.0 | fix | 0-5 | 4x1 | 667 | 40 | 0.106 | 0.025 |
-| -2.8 | rel | 5-10 | 2x1 | 335 | 40 | 0.110 | 0.025 |
-| -2.6 | fix | 5-10 | 3x2 | 3779 | 505 | 0.110 | 0.077 |
+| -10.5 | fix | 5-10 | Man | 6943 | 2125 | 0.045 | 0.010 |
+| -7.6 | fix | 0-5 | Man | 13192 | 3811 | 0.044 | 0.022 |
+| -5.8 | fix | 0-5 | Zone | 29528 | 10610 | 0.128 | 0.107 |
+| -4.9 | fix | 5-10 | Zone | 20078 | 6783 | 0.120 | 0.099 |
+| -4.4 | fix | 10-15 | Man | 2025 | 482 | 0.018 | 0.002 |
+| -3.7 | rel | 5-10 | Man | 2955 | 908 | 0.034 | 0.014 |
+| +3.6 | rel | behind LOS | Zone | 4823 | 868 | 0.121 | 0.171 |
+| -2.7 | rel | 5-10 | Zone | 6924 | 2752 | 0.132 | 0.113 |
 
-### By play action (sim-default.jsonl.gz), top 8 by |z|
+### By formation (sim-all24.jsonl.gz), top 8 by |z|
 
 | z | moment | depth | group | n NFL | n ours | NFL wide | ours wide |
 |---|---|---|---|---|---|---|---|
-| -9.9 | fix | behind LOS | True | 10037 | 685 | 0.066 | 0.015 |
-| -5.0 | fix | 5-10 | False | 22031 | 1999 | 0.100 | 0.070 |
-| +4.1 | fix | 10-15 | False | 7793 | 586 | 0.089 | 0.150 |
-| -4.0 | rel | 0-5 | True | 2432 | 224 | 0.097 | 0.040 |
-| -3.6 | rel | 5-10 | True | 1622 | 308 | 0.119 | 0.062 |
-| -2.9 | rel | behind LOS | True | 2383 | 137 | 0.074 | 0.029 |
-| -2.5 | fix | 5-10 | True | 6504 | 821 | 0.099 | 0.074 |
-| -2.5 | fix | 0-5 | True | 9374 | 1367 | 0.069 | 0.053 |
+| -15.6 | fix | behind LOS | 3x2 | 1528 | 250 | 0.165 | 0.004 |
+| -7.2 | fix | 5-10 | 3x1 | 11585 | 3624 | 0.103 | 0.067 |
+| -4.5 | fix | 0-5 | 3x2 | 6617 | 2421 | 0.133 | 0.100 |
+| -4.2 | fix | 0-5 | 3x1 | 17410 | 6032 | 0.100 | 0.083 |
+| +3.7 | rel | behind LOS | 3x1 | 2798 | 513 | 0.100 | 0.164 |
+| -3.3 | rel | 5-10 | 3x1 | 3914 | 1582 | 0.096 | 0.070 |
+| -3.0 | fix | behind LOS | 2x1 | 2002 | 452 | 0.081 | 0.046 |
+| -3.0 | fix | 5-10 | 2x2 | 11497 | 3293 | 0.096 | 0.080 |
+
+### By play action (sim-all24.jsonl.gz), top 8 by |z|
+
+| z | moment | depth | group | n NFL | n ours | NFL wide | ours wide |
+|---|---|---|---|---|---|---|---|
+| -13.9 | fix | behind LOS | True | 10037 | 1830 | 0.066 | 0.014 |
+| -5.4 | fix | 5-10 | False | 22031 | 6446 | 0.100 | 0.079 |
+| -4.8 | fix | 0-5 | False | 36025 | 10406 | 0.108 | 0.092 |
+| +4.6 | rel | behind LOS | False | 4265 | 778 | 0.114 | 0.183 |
+| -4.3 | rel | behind LOS | True | 2383 | 345 | 0.074 | 0.029 |
+| -4.2 | rel | 0-5 | True | 2432 | 617 | 0.097 | 0.052 |
+| -3.6 | fix | 5-10 | True | 6504 | 2462 | 0.099 | 0.076 |
+| +3.5 | fix | 10-15 | False | 7793 | 1582 | 0.089 | 0.119 |
 
 ## Operator check
 
@@ -280,17 +472,17 @@ Second implementation: 54 receiver rows, max |d1|, |d2| difference 0.0000 yd, re
 
 ### ours: 12 plays at the release, every route runner: the operator against a second implementation (stacked norms, polar angles)
 
-- 101-2-35 cover1_off rel frame 23 QB (-8.3, 23.6): Y d1 2.1 d2 2.4 front/head-up/opening; X d1 0.8 d2 6.9 level/inside/closing; Z d1 0.8 d2 11.7 level/head-up/closing; H d1 5.1 d2 5.9 behind/inside/closing
-- 101-0-37 cover9_clue rel frame 24 QB (-7.9, 23.5): RB d1 9.3 d2 10.2 front/inside/opening; Y d1 1.2 d2 3.0 level/outside/opening; X d1 3.6 d2 7.8 behind/outside/steady; Z d1 1.3 d2 9.9 level/head-up/closing; H d1 2.2 d2 3.4 level/inside/closing
-- 101-0-39 cover8_trix rel frame 26 QB (-7.7, 29.7): RB d1 5.3 d2 5.4 front/inside/opening; Y d1 3.0 d2 3.0 behind/outside/closing; X d1 1.6 d2 5.4 front/inside/closing; Z d1 2.3 d2 9.5 front/inside/closing; H d1 2.2 d2 4.0 behind/head-up/closing
-- 101-2-29 cover3_buzz rel frame 21 QB (-5.8, 29.8): RB d1 2.8 d2 4.3 level/inside/closing; Y d1 5.8 d2 5.9 front/outside/opening; X d1 4.5 d2 14.8 behind/outside/closing; Z d1 1.2 d2 2.0 front/inside/opening; H d1 0.9 d2 2.3 level/inside/opening
-- 101-4-65 cover4_book_read rel frame 25 QB (-8.4, 26.8): RB d1 3.6 d2 4.1 front/inside/opening; Y d1 4.6 d2 7.0 front/inside/opening; X d1 3.6 d2 7.4 behind/outside/opening; Z d1 2.6 d2 11.9 behind/outside/closing; H d1 3.5 d2 3.6 behind/inside/steady
-- 101-4-70 cover2_match rel frame 35 QB (-8.3, 27.0): RB d1 3.1 d2 5.7 front/head-up/opening; Y d1 1.7 d2 3.7 front/head-up/closing; X d1 4.8 d2 5.2 behind/inside/closing; Z d1 3.2 d2 6.7 front/inside/opening; F d1 0.6 d2 3.6 level/head-up/steady
-- 101-0-57 cover1_lurk rel frame 27 QB (-9.1, 29.4): RB d1 5.6 d2 11.3 level/inside/closing; Y d1 0.6 d2 5.7 level/head-up/closing; X d1 1.1 d2 10.0 level/outside/opening; Z d1 0.7 d2 4.7 level/head-up/closing; H d1 5.2 d2 6.1 front/inside/opening
-- 101-7-42 cover1 rel frame 21 QB (-7.6, 23.5): RB d1 6.2 d2 8.6 front/inside/opening; Y d1 2.0 d2 2.9 behind/inside/closing; X d1 1.0 d2 2.8 level/outside/steady; Z d1 0.9 d2 6.7 level/inside/closing; H d1 1.3 d2 4.9 level/inside/steady
-- 101-2-26 cover8_trix rel frame 24 QB (-7.8, 23.6): Y d1 3.6 d2 5.9 behind/inside/steady; X d1 3.1 d2 6.0 behind/outside/closing; Z d1 5.7 d2 9.2 front/inside/opening; H d1 2.9 d2 4.4 behind/outside/steady
-- 101-0-47 cover4 rel frame 29 QB (-8.2, 27.0): RB d1 9.7 d2 10.4 behind/inside/closing; Y d1 4.3 d2 10.0 behind/inside/closing; X d1 5.0 d2 5.2 front/inside/closing; Z d1 3.4 d2 5.1 behind/head-up/closing; H d1 3.7 d2 6.6 front/inside/opening
-- 101-2-9 split_quarters_2man rel frame 26 QB (-7.8, 25.4): RB d1 4.6 d2 6.5 front/head-up/opening; Y d1 3.8 d2 5.4 behind/inside/steady; X d1 2.7 d2 7.7 level/inside/opening; Z d1 3.6 d2 4.2 front/inside/closing; H d1 4.4 d2 8.3 behind/inside/opening
-- 101-1-51 cover2_match rel frame 27 QB (-8.0, 23.8): RB d1 0.9 d2 9.6 level/head-up/opening; Y d1 4.0 d2 4.3 behind/inside/steady; X d1 4.7 d2 9.2 front/head-up/opening; Z d1 7.7 d2 9.2 front/inside/closing; H d1 1.6 d2 4.5 behind/outside/opening
+- 101-6-69 cover1_lurk rel frame 35 QB (-8.3, 23.6): RB d1 2.5 d2 12.4 front/inside/closing; Y d1 1.7 d2 2.6 front/head-up/closing; X d1 1.9 d2 4.1 level/inside/closing; Z d1 1.0 d2 1.6 level/inside/steady; H d1 10.0 d2 10.2 front/inside/opening
+- 101-4-6 cover9_grab rel frame 29 QB (-8.6, 26.8): RB d1 2.7 d2 4.4 front/inside/opening; Y d1 2.0 d2 5.7 level/inside/opening; X d1 6.0 d2 8.7 behind/outside/opening; Z d1 5.8 d2 11.0 behind/inside/opening; H d1 2.2 d2 5.7 level/inside/opening
+- 202-3-5 deuce_dot rel frame 31 QB (-7.1, 27.8): RB d1 9.3 d2 9.8 front/inside/opening; Y d1 4.3 d2 5.8 behind/outside/steady; X d1 9.1 d2 11.2 front/inside/opening; Z d1 2.3 d2 7.3 level/outside/opening; H d1 1.7 d2 1.9 level/inside/closing
+- 202-3-91 cover1_banjo rel frame 24 QB (-7.1, 23.5): RB d1 0.5 d2 1.9 level/head-up/closing; Y d1 1.1 d2 5.1 level/inside/opening; X d1 3.5 d2 5.2 behind/inside/closing; Z d1 0.8 d2 2.4 level/inside/closing; H d1 2.7 d2 3.6 behind/outside/opening
+- 101-6-102 cover1_lurk_trips rel frame 29 QB (-9.3, 29.9): RB d1 5.6 d2 6.0 front/inside/opening; Y d1 0.6 d2 1.1 level/head-up/closing; X d1 1.2 d2 20.1 level/outside/opening; Z d1 0.7 d2 12.2 level/outside/opening; H d1 1.8 d2 2.5 level/inside/closing
+- 101-1-10 cover4_box rel frame 35 QB (-8.6, 29.8): RB d1 12.8 d2 12.8 front/inside/opening; Y d1 2.3 d2 8.9 behind/outside/opening; X d1 4.4 d2 7.3 front/inside/closing; Z d1 0.4 d2 5.9 level/head-up/closing; H d1 2.8 d2 13.2 front/inside/closing
+- 202-3-58 cover0 rel frame 33 QB (-9.8, 25.7): Y d1 1.5 d2 4.6 front/inside/steady; X d1 1.2 d2 19.2 level/head-up/opening; Z d1 1.1 d2 4.2 level/outside/opening; H d1 1.5 d2 5.6 level/inside/steady
+- 101-6-24 cover2man rel frame 33 QB (-8.7, 24.8): RB d1 1.6 d2 12.6 level/inside/closing; Y d1 2.3 d2 3.1 front/head-up/opening; X d1 2.7 d2 12.8 front/inside/opening; Z d1 0.8 d2 2.9 level/inside/closing; H d1 2.8 d2 5.6 behind/head-up/steady
+- 202-0-55 cover0 rel frame 38 QB (-8.1, 27.0): Y d1 1.2 d2 14.3 front/head-up/closing; X d1 1.3 d2 13.7 behind/head-up/opening; Z d1 1.0 d2 15.0 level/head-up/steady; H d1 0.5 d2 4.9 level/head-up/steady
+- 303-0-64 cover3_match rel frame 34 QB (-7.8, 29.8): RB d1 5.3 d2 7.7 front/outside/opening; Y d1 3.5 d2 9.8 front/inside/closing; X d1 1.3 d2 2.2 level/inside/closing; Z d1 2.1 d2 2.2 behind/outside/opening; H d1 5.1 d2 7.0 level/inside/opening
+- 101-0-51 cover3_buzz rel frame 28 QB (-8.4, 23.7): RB d1 2.1 d2 5.2 behind/outside/steady; Y d1 5.5 d2 7.6 behind/inside/closing; X d1 4.0 d2 9.5 behind/outside/steady; Z d1 1.8 d2 5.3 behind/outside/closing; H d1 0.8 d2 6.5 level/inside/opening
+- 303-2-79 cover6 rel frame 34 QB (-6.7, 23.7): Y d1 4.5 d2 7.3 behind/head-up/steady; X d1 4.6 d2 14.7 behind/inside/closing; Z d1 3.3 d2 10.7 front/inside/steady; H d1 2.2 d2 2.2 level/outside/opening
 
-Second implementation: 58 receiver rows, max |d1|, |d2| difference 0.0000 yd, relation / side mismatches 0.
+Second implementation: 57 receiver rows, max |d1|, |d2| difference 0.0000 yd, relation / side mismatches 0.

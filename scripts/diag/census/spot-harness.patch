@@ -1,0 +1,24 @@
+diff --git a/src/playbook/coverages.ts b/src/playbook/coverages.ts
+index 8dceb99c..5ef73256 100644
+--- a/src/playbook/coverages.ts
++++ b/src/playbook/coverages.ts
+@@ -702,7 +702,19 @@ function quartersCheck(call: DefensivePlayCall, st: FormationStructure): Defensi
+   return { ...call, coverage: cov, check: { from: id, when }, label: `${call.label} → ${cov.name}` };
+ }
+ 
++/** CENSUS HARNESS ONLY (scripts/diag/census/spot-harness.patch; never applied to the engine): the day-one spot arm. Each called coverage becomes the base of its family
++ * (cover0 / cover1 / cover2man -> cover1; cover2 / tampa2 -> cover2; cover3 -> cover3; cover4 / cover6 -> cover4), a pressure that brings its own coverage keeps its rushers but not that coverage, zone calls
++ * play `zoneStyle = 'spot'` (a landmark drop, no #1/#2/#3 rule) and the call is installed as called (no structure checks, no quarters check, no Zeus). */
++function censusSpot(call: DefensivePlayCall): DefensivePlayCall {
++  const fam = call.coverage.family as string;
++  const to = fam === 'cover2' || fam === 'tampa2' ? 'cover2' : fam === 'cover3' ? 'cover3' : fam === 'cover4' || fam === 'cover6' ? 'cover4' : 'cover1';
++  const cov = COVERAGE_BY_ID[to];
++  const pressure = call.pressure?.coverage ? { ...call.pressure, coverage: undefined } : call.pressure; // keeps the rushers (a creep needs its blitzer), drops the coverage it brings
++  return { ...call, coverage: cov, pressure, zeus: undefined, check: undefined, zoneStyle: cov.man ? call.zoneStyle : 'spot', label: `${call.label} → ${cov.name} (spot)` };
++}
++
+ export function installCoverage(call: DefensivePlayCall, off: OffenseAlignment): DefensivePlayCall {
++  if (process.env.CENSUS_SPOT === '1') return censusSpot(call);
+   // A zone pressure that brings its own coverage (Deuce) replaces the called
+   // shell's coverage outright; it has its own structure checks, not Zeus.
+   const own = call.pressure?.coverage ? COVERAGE_BY_ID[call.pressure.coverage] : undefined;
