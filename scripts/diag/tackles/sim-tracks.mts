@@ -14,13 +14,17 @@ const { writeFileSync } = await import('node:fs');
 const GAMES = Number(process.argv[2] ?? 2), OUT = process.argv[3], FIRST = Number(process.argv[4] ?? 201);
 const r2 = (v: number) => Math.round(v * 100) / 100;
 const plays: any[] = [];
-const st = new WeakMap<any, any>();
+const st = new WeakMap<any, any>(); // per play: C, k0, next, frames, down
 const proto = PlaySim.prototype as any, tick = proto.tick, run = proto.run;
 proto.tick = function (this: any) {
   let s = st.get(this);
   if (s === undefined) { s = !compilingPlan() && this.offCall && (this.offCall.kind === 'run' || this.offCall.kind === 'pass') ? { C: null, k0: -1, next: 0, frames: [] as any[] } : null; st.set(this, s); }
+  const nev = this.events.length;
   const out = tick.call(this);
   if (!s) return out;
+  // Who holds him when he goes down (the bond's tacklers at the tackle event, with their grip).
+  for (let i = nev; i < this.events.length; i++) if (this.events[i].type === 'tackle' && !s.down)
+    s.down = (this.bond?.tacklers ?? []).map((d: any) => [d.slot, this.bond?.grip?.get(d) ?? 0]);
   const sim = this, bc = sim.ball.kind === 'held' ? sim.ball.carrier : null;
   if (!s.C && bc && bc.team === sim.offense[0].team && bc !== sim.qb) { s.C = bc; s.k0 = sim.t; s.next = sim.t; s.dir = sim.attackDir(bc.team); }
   if (s.C && sim.t >= s.next - 1e-9) {
@@ -36,13 +40,21 @@ proto.run = function (this: any) {
   const r = run.call(this); const s = st.get(this);
   if (s && s.C && s.frames.length >= 3 && (this.offCall.kind === 'run' || this.stats.completed)) {
     const sim = this, slotOf = (i: number | undefined) => i == null ? null : sim.agents[i]?.slot;
+    // Labels as PFF/NFL credit them (Rules, from BDB 2024 tackles.csv): one holder at the down = tackle; two or more =
+    // assists for the two strongest holds, no tackle; a defender who held earlier but not at the down is not credited
+    // (broken if the carrier escaped him); missed = an attempt that never held, with no later wrap by him.
     const lab: Record<string, string> = {};
     const evs = sim.events.filter((e: any) => e.t >= s.k0 - 1e-6);
     const tackler = evs.filter((e: any) => e.type === 'tackle').map((e: any) => slotOf(e.a)).filter(Boolean);
     const wrapped = new Set<string>(evs.filter((e: any) => e.type === 'tackle_wrap').map((e: any) => slotOf(e.a)));
     for (const e of evs) if (e.type === 'missed_tackle') { const k = slotOf(e.a); if (k && !wrapped.has(k)) lab[k] = 'missed'; }
-    for (const k of wrapped) if (k) lab[k] = 'assist';
-    for (const k of tackler) lab[k as string] = 'tackle';
+    const down: [string, number][] = (s.down ?? []).slice().sort((x: any, y: any) => y[1] - x[1]);
+    const broken = new Set(evs.filter((e: any) => e.type === 'broken_tackle').map((e: any) => slotOf(e.b)));
+    if (down.length === 1) lab[down[0][0]] = 'tackle';
+    else if (down.length >= 2) for (const [k] of down.slice(0, 2)) lab[k] = 'assist';
+    else for (const k of tackler) lab[k as string] = 'tackle';
+    const credited = new Set(Object.keys(lab).filter(k => lab[k] !== 'missed'));
+    for (const k of wrapped) if (k && !credited.has(k) && broken.has(k)) lab[k] = 'broken';
     plays.push({ ptype: this.offCall.kind === 'run' ? 'run' : 'catch', carrierPos: s.C.player.position,
       pos: Object.fromEntries(sim.defense.map((d: any) => [d.slot, d.player.position])), lab, frames: s.frames,
       events: evs.filter((e: any) => /tackle|missed|broken|carrier_contact/.test(e.type)).map((e: any) => [r2(e.t - s.k0), e.type, slotOf(e.a), slotOf(e.b)]) });
