@@ -1,0 +1,16 @@
+
+NFL: underneath zone (hook, curl_flat, hole) depth by the deepest receiver within 6 yd laterally and short of 12 yd (rows: that receiver depth band)
+  t 1.5: -2+: 5.0 (n 3424) | 0+: 4.5 (n 2519) | 2+: 5.1 (n 6803) | 4+: 5.9 (n 2579) | 6+: 6.6 (n 74) | 8+: 4.3 (n 1) | none: 5.3 (n 1168)
+  t 2.0: -2+: 5.9 (n 2102) | 0+: 5.2 (n 480) | 2+: 5.0 (n 1695) | 4+: 5.7 (n 3191) | 6+: 6.7 (n 4074) | 8+: 7.4 (n 1046) | 10+: 7.9 (n 35) | none: 6.2 (n 1136)
+  t 2.5: -2+: 6.8 (n 1241) | 0+: 6.5 (n 387) | 2+: 5.6 (n 566) | 4+: 6.0 (n 789) | 6+: 6.4 (n 1048) | 8+: 7.3 (n 2248) | 10+: 8.4 (n 2045) | none: 7.5 (n 1010)
+
+sim: underneath zone (hook, curl_flat, hole) depth by the deepest receiver within 6 yd laterally and short of 12 yd (rows: that receiver depth band)
+  t 1.5: -2+: 5.9 (n 186) | 0+: 5.9 (n 233) | 2+: 6.3 (n 703) | 4+: 7.4 (n 13) | none: 6.7 (n 57)
+  t 2.0: -2+: 7.6 (n 118) | 0+: 6.7 (n 38) | 2+: 6.3 (n 143) | 4+: 7.5 (n 516) | 6+: 7.6 (n 204) | 8+: 6.2 (n 2) | none: 8.6 (n 75)
+  t 2.5: -2+: 8.9 (n 54) | 0+: 7.5 (n 15) | 2+: 6.6 (n 39) | 4+: 7.5 (n 111) | 6+: 8.3 (n 205) | 8+: 9.4 (n 240) | 10+: 9.8 (n 89) | none: 9.5 (n 67)
+
+ZONE_SINK_SEEN=1 (attempt, removed):
+sim: underneath zone (hook, curl_flat, hole) depth by the deepest receiver within 6 yd laterally and short of 12 yd (rows: that receiver depth band)
+  t 1.5: -2+: 6.0 (n 171) | 0+: 5.9 (n 202) | 2+: 6.3 (n 831) | 4+: 7.0 (n 23) | none: 6.7 (n 50)
+  t 2.0: -2+: 7.2 (n 113) | 0+: 6.4 (n 31) | 2+: 6.8 (n 128) | 4+: 7.5 (n 584) | 6+: 7.9 (n 245) | 8+: 8.0 (n 6) | none: 8.6 (n 63)
+  t 2.5: -2+: 8.2 (n 36) | 0+: 7.6 (n 19) | 2+: 6.8 (n 42) | 4+: 6.6 (n 83) | 6+: 8.3 (n 212) | 8+: 9.5 (n 241) | 10+: 9.8 (n 101) | none: 9.4 (n 67)
