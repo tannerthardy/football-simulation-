@@ -36,6 +36,22 @@ forced" and "avoided" mean. No raw data is committed.
   - leg drive, for either player, has odds ratios of 3–6.
 - **Coaching** names overrunning, a wide angle (cutback), breaking down too early, and arm or high tackles.
 
+## Getting the labels (checked 2026-11-23)
+
+- **Official copy:** the Big Data Bowl 2024 competition data is gone from Kaggle. Its only file is a README: "The
+  dataset for this competition has been removed at the request of the host." The Big Data Bowl 2025 competition page
+  shows the same README.
+- **Where the labels came from:** at the user's direction, `tackles.csv` and `plays.csv` were taken from a
+  third-party Kaggle re-upload: `kaggle datasets download anis105/database -f nfl-big-data-bowl-2024/tackles.csv`. It
+  has 17,426 rows, 9,919 tackles, 2,090 `pff_missedTackle` and 12,025 plays, matching the published counts. The files
+  sit locally under `data/raw/bdb2024/` (ignored by git); nothing is committed.
+- **Tracking:** the competition's tracking covered the 2022 season, weeks 1-9, the same games as the project's
+  Big Data Bowl 2025 archive (`npm run nfl:fetch bdb2025-2022`, the user's Drive copy; checksum verified).
+  - 11,333 of the 12,025 labelled plays (94%) are in its `plays.csv`.
+  - In week 1, 1,917 of 2,051 labelled defenders (93%) have tracking.
+- **What it enables:** miss probability against distance, approach angle and closing speed. No public study gives
+  those curves, so they can be computed by joining these labels to that tracking.
+
 ## Definitions mapped onto our engine events
 
 Our engine records two events (`src/sim/tackle.ts`):
