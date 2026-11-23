@@ -130,6 +130,7 @@
     "ROUTE_CRAFT": "on",
     "STEM_WORK": "on",
     "SLANT_LEAN": "off",
+    "FLAT_SHAPE": "off",
     "ROUTE_FILLET": "on",
     "SPACING_HOLD": "on",
     "BREAK_LOOK": "on",

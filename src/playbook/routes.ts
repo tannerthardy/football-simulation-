@@ -11,6 +11,8 @@ import type { RouteDef } from './types.js';
 const BACK_PATHS = process.env.BACK_PATHS !== '0';
 /** SCREEN_QB (experimental, off; behaviors/qb.ts): the tunnel's route from tracking. */
 const SCREEN_QB = process.env.SCREEN_QB === '1';
+/** FLAT_SHAPE (experimental, off; src/sim/route-motion.ts): the back's flat as taught (see back_flat). */
+const FLAT_SHAPE = process.env.FLAT_SHAPE === '1';
 /** ROUTE_EFFORT (experimental, off; src/sim/route-motion.ts): every route's stem at full pace, with the break table below. */
 const ROUTE_EFFORT = process.env.ROUTE_EFFORT === '1';
 /** ROUTE_FILLET (experimental, off; src/sim/route-motion.ts): the break table's cut / roll column applies with it. */
@@ -109,7 +111,10 @@ const ROUTE_TABLE: Record<string, RouteDef> = {
   // non-PA drop-backs, BDB 2025 weeks 1-3, n 968: depth -4.6 / -4.6 / -4.4 / -3.7 yd at 1.0 / 1.5 / 2.0 / 2.5 s, width
   // from the ball 3.6 / 5.4 / 7.7 / 10.3 yd; caught at a median -1.0 yd, 56% behind the line). Off: to the line at once.
   back_flat: BACK_PATHS
-    ? { id: 'back_flat', family: 'back', depth: -2, end: 'continue', pace: 0.55, points: [{ d: -4.5, l: 3, s: 0.9 }, { d: -4.2, l: 7, s: 0.9 }, { d: -3.5, l: 10 }, { d: -1.5, l: 13 }] }
+    ? (FLAT_SHAPE
+      // FLAT_SHAPE (route-motion.ts): the NFL back's shallow flat, no climb, at full pace (the check is its own delay).
+      ? { id: 'back_flat', family: 'back', depth: -2, end: 'continue', pace: 1, points: [{ d: -4.5, l: 3, s: 0.9 }, { d: -4.1, l: 7.5, s: 0.9 }, { d: -3.6, l: 13 }] }
+      : { id: 'back_flat', family: 'back', depth: -2, end: 'continue', pace: 0.55, points: [{ d: -4.5, l: 3, s: 0.9 }, { d: -4.2, l: 7, s: 0.9 }, { d: -3.5, l: 10 }, { d: -1.5, l: 13 }] })
     : { id: 'back_flat', family: 'back', depth: 1, end: 'continue', points: [{ d: 0, l: 4, s: 0.9 }, { d: 2, l: 12 }] },
   // Screens (docs/football-handbook/screens.md). Caught behind the line.
   // Slip: after selling his block the back drifts wide behind the traffic and

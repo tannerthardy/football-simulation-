@@ -26,6 +26,21 @@ export interface PathPoint { readonly p: Readonly<Vec2>; readonly s: number; rea
  * down). Crossers, ins and the flat family keep their extensions (their finish is a separate item, and ROUTE_END's flat
  * rule covers the flat family); what any route does when the quarterback breaks the pocket is the scramble rule's. */
 export const ROUTE_FINISH = process.env.ROUTE_FINISH !== '0';
+/** FLAT_SHAPE (experimental, off; Integration 2026-11-23, from the user's film question and Tools' route_shape.py,
+ * docs/reviews/2026-11-23-flat-route-shape.md on tools/open-census): the flat as taught, a flat-angle path to the
+ * sideline with the head around early, and no upfield turn unless the play's design calls one (wheel and flat-and-up
+ * are their own routes). If he is still uncovered at the sideline he settles there facing his quarterback; he does
+ * not climb. Off:
+ * - the flat family turned up 5 yd at the sideline margin, and the back's flat's last drawn leg climbed at about
+ *   33 deg. Ours held the NFL's shape to 2.0 s, then climbed (slot +0.8, TE +1.6 yd deeper at 3.0 s). A caught flat
+ *   was 2.5 yd past the line at the catch against the NFL's 0.7.
+ * - Both were also run under invented throttles: the flat family's 0.80 effort, and the back's flat's 0.55 pace,
+ *   which counts his check-release a second time (the check is its own delay before he leaves protection, assign.ts).
+ *   Over 0.5-2.0 s: back 4.0 yd/s against the NFL's 5.1, slot 4.3 against 5.6, TE 4.4 against 4.9.
+ * On: the flat family and the back's flat finish at the margin (as ROUTE_FINISH's outward routes do), and are run at
+ * full effort ("get to the flat"). The back's flat holds the NFL back's shallow line: depth -3.6 at 13 yd lateral
+ * (BDB 2025: -5.0 at the snap, -4.1 at 2.0 s, -3.6 at 3.0 s). */
+export const FLAT_SHAPE = process.env.FLAT_SHAPE === '1';
 /** ROUTE_LANDMARK (experimental, off): a receiver off the drawn line runs the rest of a breaking route from where he is.
  * On a route with a declared vertex (a cut or a break; not a vertical), the landmark is the break's depth: knocked or bent
  * off his stem, he runs on parallel to it and breaks at the vertex's depth from where he is, the legs after it parallel
@@ -83,7 +98,7 @@ export function routePath(start: Vec2, los: number, outside: number, pts: readon
     const edge = { x: Math.min(endX, last.x + d.x * k), y: last.y + d.y * k };
     // ROUTE_FINISH: an outward route that runs out of field (the out, quick out, deep out; the back's flat, out and swing)
     // finishes at the margin: he stops there, in bounds and facing his quarterback, instead of turning up 40 yd.
-    if (ROUTE_FINISH && k < 39 && d.y * outside > 1e-6 && (family === 'quick' || family === 'intermediate' || family === 'back')) {
+    if (ROUTE_FINISH && k < 39 && d.y * outside > 1e-6 && (family === 'quick' || family === 'intermediate' || family === 'back' || (FLAT_SHAPE && family === 'flat'))) {
       if (k > 0) out.push({ p: edge, s: 0, ext: true, finish: true });
       else out[out.length - 1] = { ...out[out.length - 1], s: 0, finish: true };
       return out;
@@ -110,7 +125,7 @@ const ROUTE_EFFORT = process.env.ROUTE_EFFORT === '1';
 /** ROUTE_EFFORT: the pace of the stem only. What he brings through each break (s) and whether a break is a cut or a roll
  * are declared per route point in the route table (src/playbook/routes.ts, ROUTE_EFFORT), each with its coaching source. */
 export function routeEffort(family: RouteDef['family'], rr: number): number {
-  if (ROUTE_EFFORT) return 1;
+  if (ROUTE_EFFORT || (FLAT_SHAPE && family === 'flat')) return 1;
   const base = { quick: 0.78, flat: 0.8, back: 0.8, cross: 0.84, intermediate: 0.86, deep: 0.94 };
   return clamp(base[family] + 0.04 * (rr - 0.5), 0.7, 0.98);
 }
