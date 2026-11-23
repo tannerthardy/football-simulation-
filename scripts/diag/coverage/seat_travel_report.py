@@ -1,6 +1,9 @@
 """Seats whose landmark is far from their snap alignment (seat-travel.mts output).  python3 scripts/diag/coverage/seat_travel_report.py"""
 import json, glob, collections as C, statistics as st
 R = [json.loads(l) for f in sorted(glob.glob('out/diag/coverage/st-*.jsonl')) for l in open(f)]
+# Only underneath landmarks count as a crossed zone (a deep landmark 10+ yd behind his path is not in his way).
+DEEPZ = ('deep', 'quarter', 'tampa_mid')
+for r in R: r['crosses'] = [c for c in r['crosses'] if not c.split(':')[1].startswith(DEEPZ)]
 plays = len({(r['seed'], r['label'], tuple(r['tags'])) for r in R})
 bad = lambda r: (r['lat'] > 8 and not r['deep']) or (bool(r['crosses']) and not r['deep'])
 print(f'zone/match seats at the snap: {len(R)}; underneath seats {sum(not r["deep"] for r in R)}; flagged (underneath, lateral > 8 yd or crossing a teammate\'s landmark): {sum(bad(r) for r in R)}')

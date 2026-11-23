@@ -8989,3 +8989,129 @@ Wild), -074/075 (Rolex).
 | checkPick | remove: dead code | — |
 | checkPrefer | keep Poach as standard; defer the system / down split | — |
 | in-game `learned()` adaptation | remove from standard: a management feature, and noise in controlled comparisons | LEARN=0 harness |
+
+### F10. Build 1 (SQUAT_SINK) and build 2 (OFF_DRIVE), measured
+
+Both builds are on `coverage/C14-cards` behind flags that are off by default, with develop untouched:
+- `SQUAT_SINK=1`: `ZoneCoverage.squatCorner`; `squatTopDown` and `cloudCorner` hand the seat to it.
+- `OFF_DRIVE=1`: `ManCoverage.offDrive`.
+
+Both flags are read per call, so `play-trace.mts ARM=<flag>` can switch one on for a single play inside an otherwise
+identical game.
+
+**SQUAT_SINK: one flat-corner rule** for every Cover 2 form, the Cover 6/8 half side and the cloud corner. It replaces
+FLAT_SINK, FLAT_CARRY and the sink / cloud corner rules; Deuce's corners keep the old rules.
+- **Before #1 declares:** he reads #1 and #2 from his alignment. No lane pick.
+- **The trigger:** the sink starts on #1's vertical stem as he sees it. It does not wait for a run/pass read or for #2/#3
+  to declare.
+- **The sink:** he runs side-on with his hips open to the field and his eyes on the QB, under #1 by about 2 yd and level
+  to outside of him. He holds his depth once he sees a teammate over the top of #1.
+- **Flat threats:** an early flat is his. A late flat brings him down between the flat and #1. A #2 flat that turns up
+  he carries.
+- **Not built:** the jam. Zone corners have no press contact, so it is a follow-up.
+
+**OFF_DRIVE:** the off-man corner in a man call drives on the stop he sees.
+- **Trigger:** the shared stem-stop read, with the receiver 12 yd deep or less and in front of him.
+- **Skill sets the bite:** a skilled corner waits for the plant (seen speed under about 1.2 yd/s) and reacts in about
+  0.1 s; a stiff one drives on the throttle (under about 3 yd/s) and later.
+- **Double move:** he abandons the drive if he sees the receiver climb again.
+
+**Corner against a vertical #1** (12 of Tools' games; median at 2.0 / 2.5 / 3.0 s):
+
+| | ours before | SQUAT_SINK | NFL (Tools, half_window.py) |
+|---|---|---|---|
+| corner depth | 3.0 / 4.4 / 6.4 | 4.7 / 6.3 / 8.6 | 5.6 / 7.6 / 9.4 |
+| yards under #1 | 3.1 / 5.1 / 6.5 | 1.3 / 3.2 / 4.3 | 0.9 / 2.3 / 4.0 |
+| lateral relative to #1 | 1.0-1.5 inside | 0.2-0.5 outside | 0.7 outside |
+| #1 outside him at 1.0 s | 93 of 152 | 16 of 142 | — |
+| yards under #1 when #1 reaches 10 yd | 5.3 | 3.3 | — |
+
+Still short of the NFL:
+- **The hip turn is late.** The orientation planner's rounded turn takes about 0.5 s, so he faces the QB for most of the
+  first half second of the sink.
+- **He starts late.** The sink begins at about 1.5 s on #1's seen stem.
+- **What Rules' card changes.** The new hard-corner card (rules/coverage-cards 80276b8e) keys the sink at the snap on the
+  OL's high hat plus #1's release, after a jam. Our build keys on #1's stem only. Both would move his start earlier.
+
+**The 10-15 yd window** (Tools' operator and thresholds, all 24 of Tools' games; both flags on; wide-open share,
+fixed times / release):
+
+| | default | SQUAT_SINK + OFF_DRIVE | NFL |
+|---|---|---|---|
+| Cover 2 family | .498 / .386 | .198 / .184 | .177 / .188 |
+| Cover 6 | .263 / .176 | .069 / .118 | .096 / .097 |
+
+**Throws against these calls, cost side.** These are yards per attempt over about 20-40 throws per cell. The two runs
+play different games once a play diverges, so read them as directions only.
+
+| cell | default | built |
+|---|---|---|
+| Cover 2, #1 at 8+ yd | 13.6 | 8.4 |
+| Cover 6, #1 at 8+ yd | 14.2 | 7.0 |
+| Cover 2, flat and short outside | 14.0 | 13.4 |
+| Cover 6, flat and short outside | 7.7 | 12.9 (n 25) |
+| all Cover 2 throws | 10.0 | 9.6 |
+| all Cover 6 throws | 8.5 | 9.5 |
+
+The Cover 6 flat is the one to watch. Does the half-side corner rally to the flat late? Needs film on the flat throws
+before any merge.
+
+**Wide-open census** (8 games, seed 11, both flags; beyond the line):
+- **Wide-open per throw:** 0.197 to 0.168.
+- **Yards to wide-open receivers:** 553 to 402. Total pass yards went from 5026 to 4799.
+- **Owned trailing:** 13 to 6. Owned on top over short routes: 67 to 64 (expected).
+- **Cover 2 wide-open:** 24 to 16. Cover 1 went from 13 to 15 (noise; OFF_DRIVE's effect there is not visible at this
+  sample).
+
+**Film, same game up to the snap** (ARM per play):
+- **F16** (Cover 2 Match, four verticals): the 2.0 s hole shot to Z is gone. The corner is 6 yd deep and level with Z,
+  where before he was 3.4 deep and inside. The QB held to 3.8 s.
+- **F03** (Cover 2 Wild post-cross, the 69-yd catch): X is no longer wide open at the release (3.9 yd against 5.0).
+- **F06** (Cover 1 Off, Z hitch at 5.7 yd), with OFF_DRIVE. Before, the corner pedalled to 4 yd over the stop and stood
+  still from 2.5 s to 3.4 s; the throw was at 3.1 s. Now he drives from 2.6 s and is 3.2 yd away at the throw (was 4.7)
+  and 0.5 yd away at the catch (was 2.3).
+
+**Dither budget:** passes with SQUAT_SINK on. The coverage controller goes from 0.3947 to 0.4006 reversed re-aims per
+second, within its slack of 0.0202.
+
+**Still to measure:** Tools' on-top / level / trailing at #1's break with both flags (their operator); the Cover 6
+flat; the full test suite with both flags.
+
+### F11. F54 (Cover 9 Grab) and seat travel from the snap
+
+**F54.** The free safety is on the weak side at 11 yd, as the Cover 9 shell shows him. His job is `hook_s`, the strong
+hook 13.7 yd across, through the Mike's middle hook.
+- **What the catalog does.** `cover9_grab` gives the FS `z('hook_s', 'three_rec_hook', 11)`.
+- **What the source teaches.** HNFL-063 and 054 say Grab "converts rotation from Sky to Buzz". In Buzz Weak the rotating
+  weak safety is the "#3 receiver hook" from his own side, while the dime or nickel is the apex. Our `hook_s` landmark
+  for him is our own mapping.
+- **What it is not.** It is not motion, and not a check applied after alignment. The check is installed before the
+  alignment (and re-run on motion), and the safety aligns to the two-high shell the call shows. In 9 of the 11 Grab
+  dropbacks in Tools' 24 games he is 9-12 yd laterally from his landmark.
+
+**Seat travel, all 24 games** (`scripts/diag/coverage/seat-travel.mts`, `seat_travel_report.py`): every zone and match
+seat at the snap, against its landmark.
+- **Size.** 5,847 underneath seats. Lateral travel is 3.4 yd at the median and 9.2 at p90. 865 seats (15%) are more
+  than 8 yd from their landmark or cross a teammate's underneath landmark.
+- **Lateral over 8 yd: 812 seats, mostly box linebackers filling curl-flat seats.**
+  - LB_W to curl_flat_w: 237.
+  - LB_M to curl_flat_w: 141.
+  - LB_M to curl_flat_s: 110.
+  - The rest: CB_S to flat_s in Banjo and the inverted Cover 2 safeties to the flats.
+
+  A Will running to the curl-flat from the box is taught in 4-3 Cover 3. The Mike as a curl-flat player is not: taught
+  curl-flat players are Sam, Will, SS and nickel.
+- **Crossing a teammate's underneath landmark: 313 seats (5%).**
+  - Will to the weak curl-flat across the Mike's weak hook: 45.
+  - Mike to the weak curl-flat across the Will's hook: 42.
+  - Banjo CB_S across the SS's curl-flat: 24.
+  - Mike to the strong curl-flat across the Will's or SS's hook: 42.
+- **Not motion:** flagged 14.5% with motion against 15.1% without.
+- **Not the structure checks:** checked calls are flagged 12.5%, unchecked calls 16.3%.
+- **The source is the underneath seat fill.**
+  - `alignment.ts` (about lines 1186-1220) fills seats in priority order by least distance. It is not a non-crossing
+    assignment, and it does not match roles: the Mike can draw a curl-flat seat across the Will.
+  - Grab is a catalog special case on top of that.
+- **Highest-share calls** (underneath seats flagged): cover4 / MEG / MOD-from-Palms 0.36-0.40 (LB_M to curl_flat_s);
+  cover2_invert 0.41; Banjo 0.35; cover8_trix 0.26; cover3_buzz 0.24; cover9_grab 0.31.
+- **The full table** is in `out/diag/coverage/seat-travel-report.txt`; re-run it with the report script.
