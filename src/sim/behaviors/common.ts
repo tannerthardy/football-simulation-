@@ -9,6 +9,7 @@ import type { Agent } from '../agent.js';
 import { chooseApproach } from '../approach-control.js';
 import { onTopCushion, onTopPoint } from '../open-field.js';
 import { withMovementObjective } from '../movement-objective.js';
+import { PASS_ROLES, passRoleShade } from '../pass-pursuit.js';
 import type { PlaySim } from '../playsim.js';
 
 export const STAND: MoveCommand = { vel: { x: 0, y: 0 } };
@@ -189,7 +190,7 @@ export function pursuitPoint(sim: PlaySim, a: Agent, target: Agent, horizon = 3,
   // Keep the support contract while approaching, then close onto the near
   // hip. A permanent two-yard sideline shade is outside tackling reach.
   const dist = Math.hypot(seen.pos.x-a.pos.x, seen.pos.y-a.pos.y);
-  const lev = pursuitLeverage(a,p.y) * clamp((dist-reach)/6,0,1);
+  const lev = pursuitLeverage(a,p.y,sim,target,seen.carrying === true ? seen.pos : undefined) * clamp((dist-reach)/6,0,1);
   const point = { x: p.x, y: p.y + lev };
   trace?.pursuit(target, { kind: 'intercept', prediction: ip,
     estimateAppliesTo: 'sampled-point-before-bias-and-leverage', steeringPointEstimate: 'not-evaluated',
@@ -318,7 +319,10 @@ function leverageMagnitude(a: Agent, y: number): number {
   return (0.5 + 1.7 * near) * (0.55 + 0.45 * a.r('pursuit'));
 }
 
-function pursuitLeverage(a: Agent, y: number): number {
+function pursuitLeverage(a: Agent, y: number, sim?: PlaySim, target?: Agent, seenPos?: Vec2): number {
+  // PASS_ROLES: on a ball carrier he sees, after a catch, the shoulder is his pass pursuit role (pass-pursuit.ts), at
+  // the same magnitude. seenPos is passed only when his picture shows the ball carried.
+  if (PASS_ROLES && sim && target && seenPos) { const r = passRoleShade(sim, a, target, seenPos, leverageMagnitude(a, y)); if (r !== null) return r; }
   const force = a.runFit?.kind === 'force' || (a.runFit?.kind === 'edge' && a.runFit.edge === 'box');
   // A called outside shoulder is unambiguous at midfield. Only the generic
   // inside preference needs the center-field fade; close approaches still
@@ -402,7 +406,7 @@ export function chase(sim: PlaySim, a: Agent, target: Agent, horizon = 3, opts: 
   const dist = Math.hypot(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y);
   const tackle = a.r('tackling');
   const contact = a.profile.radius + target.profile.radius + a.profile.reach * .65;
-  const offset = pursuitLeverage(a, seen.pos.y)
+  const offset = pursuitLeverage(a, seen.pos.y, sim, target, seen.carrying === true ? seen.pos : undefined)
     * clamp((dist - contact) / 6, 0, 1);
   // Teammate navigation needs the responsibility this request serves. This
   // picture is already acquired and dead-reckoned to now; the intercept below
