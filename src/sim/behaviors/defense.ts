@@ -3033,7 +3033,7 @@ function manLook(a: Agent, sim: PlaySim, cmd: MoveCommand): MoveCommand {
  * With the flag, both the arm-read break (shoulder pick, before he has the ball's flight) and the flight drive when he
  * cannot beat the ball to its path aim at a point moving with the receiver's seen velocity that crosses his catch window
  * at the time he estimates (the shoulder read's lead, or his own flight estimate), shaded by his seat's leverage (0.8 yd,
- * fading inside 6 yd of contact), and close only as fast as he can brake from to his tackling-scaled through speed
+ * fading inside 6 yd of contact; from over the top the goal is on the receiver's upfield side), and close only as fast as he can brake from to his tackling-scaled through speed
  * (movingArrivalVelocity, as Defense's BREAK_BALANCE). The goal is kept per defender (flightBreakOf) so pursuit starts
  * from it at the catch with no re-aim. Read per call (a replay can switch it for one play). */
 export const FLIGHT_BREAK = process.env.FLIGHT_BREAK === '1';
@@ -3059,6 +3059,10 @@ function flightBreakMove(a: Agent, sim: PlaySim, R: Agent, seen: Perceived, catc
   const contact = a.profile.radius + R.profile.radius + a.profile.reach * 0.65;
   const dg = Math.hypot(goal.x - a.pos.x, goal.y - a.pos.y);
   goal.y = clamp(goal.y + side * outward * FLIGHT_SHADE * clamp((dg - contact) / 6, 0, 1), 0.3, FIELD_WIDTH - 0.3);
+  // From over the top (he is downfield of the receiver), the drive is to the receiver's upfield shoulder: a goal on top
+  // of him, so he arrives on the receiver rather than through him toward the line (the comeback overrun).
+  const dir = sim.attackDir(R.team);
+  if ((a.pos.x - seen.pos.x) * dir > contact) goal.x += dir * contact;
   const support = a.body.support;
   const capacity = support ? availability(support, supportParams(a.profile), fatigueFactor(a.body.energy)) : 1;
   const vel = movingArrivalVelocity(a.body, goal, seen.vel, a.profile.vmax * a.speedScale, contact, 2.5 + 2 * (1 - a.r('tackling')), 1, capacity);
