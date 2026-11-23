@@ -227,6 +227,26 @@ export function lungeForecast(sim: PlaySim, d: Agent, c: Agent, cp: Vec2, cv: Ve
   return { gap, at };
 }
 
+/** His picture of the carrier in his tackle window (the window preview's): TRACK_TACKLE's tracked carrier, else a
+ * scaled `see()`; perception was sampled at tick start, so its stale velocity is dead-reckoned to this body-state
+ * boundary (tryTackles follows physics). */
+function windowPicture(sim: PlaySim, d: Agent, c: Agent) {
+  const look = (.12 + .12 * (1 - d.r('awareness'))) / Math.max(.1, d.profile.reactionTime);
+  // TRACK_TACKLE (step 1a'): the carrier in his tackle window is tracked.
+  const seen = TRACK_TACKLE ? sim.track(d, c, 1, true) : sim.see(d, c, look);
+  const elapsed = clamp(sim.world.time - sim.t, 0, sim.dt);
+  return { ...seen, pos: { x: seen.pos.x + seen.vel.x * elapsed, y: seen.pos.y + seen.vel.y * elapsed } };
+}
+
+/** LUNGE_FLIGHT: the launch decision reads the same picture as the window preview (`windowPicture`). A first reading of
+ * HONEST_TACKLE's plain `see()` put the carrier about 0.3 yd nearer than he was at launch distance: every one of 23
+ * short launches in 3 games was out of reach by the true state (lunge-flight.mts: forecast gap p50 -0.10 yd, true
+ * +0.21). */
+function lungeOk(sim: PlaySim, d: Agent, c: Agent): { ok: boolean; pos: Vec2; vel: Vec2 } {
+  const p = windowPicture(sim, d, c);
+  return { ok: lungeReaches(sim, d, c, p.pos, p.vel), pos: p.pos, vel: p.vel };
+}
+
 /** LUNGE_FLIGHT: launch toward where he sees the carrier going over the layout's window. */
 function launch(sim: PlaySim, d: Agent, c: Agent, cp: Vec2, cv: Vec2, from: 'lunge' | 'dive'): void {
   const ax = cp.x + cv.x * DIVE_WINDOW - d.pos.x, ay = cp.y + cv.y * DIVE_WINDOW - d.pos.y, al = Math.hypot(ax, ay) || 1;
@@ -294,14 +314,7 @@ export function tryTackles(sim: PlaySim): void {
         && !sim.lastStep?.contacts.some(hit => hit.i === d.idx || hit.j === d.idx)) {
         // Forecast the command actually executed, without asking the behavior
         // for another decision or drawing from its pursuit-error stream.
-        const look = (.12 + .12 * (1 - d.r('awareness'))) / Math.max(.1, d.profile.reactionTime);
-        // TRACK_TACKLE (step 1a'): the carrier in his tackle window is tracked.
-        const seen = TRACK_TACKLE ? sim.track(d, c, 1, true) : sim.see(d, c, look);
-        // tryTackles follows physics. Perception was sampled at tick start;
-        // dead-reckon only its stale velocity to this body-state boundary.
-        const elapsed = clamp(sim.world.time - sim.t, 0, sim.dt);
-        const observed = { ...seen, pos: { x: seen.pos.x + seen.vel.x * elapsed,
-          y: seen.pos.y + seen.vel.y * elapsed } };
+        const observed = windowPicture(sim, d, c);
         const window = previewTackleWindow(d, observed, sim.intents[d.idx], body, arms, sim.world.time);
         if (window) {
           // Compare two estimates from the same observation. Actual reach and
@@ -322,7 +335,8 @@ export function tryTackles(sim: PlaySim): void {
       if (needsLastReach && !lastReach) continue;
       if (waitForBetter && !acquireAtReach) continue;
       if (LUNGE_FLIGHT && dd > arms && !engaged) {
-        if (lungeReaches(sim, d, c, cp, cv)) launch(sim, d, c, cp, cv, 'lunge');
+        const lo = lungeOk(sim, d, c);
+        if (lo.ok) launch(sim, d, c, lo.pos, lo.vel, 'lunge');
         continue;
       }
       attempt(sim, d, c, q, engaged, dd > arms, dd > arms ? range : arms);
@@ -335,7 +349,7 @@ export function tryTackles(sim: PlaySim): void {
     const separating = ((cv.x - d.vel.x) * rx + (cv.y - d.vel.y) * ry) / rd;
     const behind = (d.pos.x - cp.x) * cv.x + (d.pos.y - cp.y) * cv.y < 0;
     if (!engaged && dd <= dive && separating > 1.6 && behind && !sim.bond && !occluded(sim, d, c)) {
-      if (LUNGE_FLIGHT) { if (lungeReaches(sim, d, c, cp, cv)) launch(sim, d, c, cp, cv, 'dive'); continue; }
+      if (LUNGE_FLIGHT) { const lo = lungeOk(sim, d, c); if (lo.ok) launch(sim, d, c, lo.pos, lo.vel, 'dive'); continue; }
       d.nextTackleAt = t + 1;
       sim.diveAt(d, { x: dx, y: dy });
       const p = 0.22 + 0.3 * d.r('tackling') - 0.15 * c.r('elusiveness') - 0.1 * c.r('balance');
