@@ -52,7 +52,7 @@ import { IncidentalCatchReadiness } from './catch-readiness.js';
 import { spaceTeammates } from './spacing.js';
 import { L2_BREAKDOWN, breakdownForContact } from './breakdown.js';
 import { calledVelocityAhead, predictCalledMotion } from './called-motion.js';
-import { MotionRuntime, motionEnabled, planMotion } from './motion.js';
+import { giveWay, MotionRuntime, motionEnabled, planMotion } from './motion.js';
 import { prepareJoinedCombinations } from './behaviors/blocking.js';
 import { SnapMind } from './mind.js';
 import { orderedDefense, orderedOffense } from './lineup.js';
@@ -556,7 +556,9 @@ export class PlaySim {
       for (const [d,target] of targets) {
         const backer = creeps.get(d);
         const active = backer ? this.t>=-backer.start-1e-8 : d === mug ? this.t>=-creep!.secondsBeforeSnap-1e-8 : !!stem && this.t>=-stem.secondsBeforeSnap-1e-8;
-        const dx=target.x-d.pos.x,dy=target.y-d.pos.y,length=hypot2(dx,dy);
+        // PRESNAP_GIVE (motion.ts): a stemming or creeping defender goes around a teammate in his way.
+        const aim=active && process.env.PRESNAP_GIVE==='1' ? giveWay(d,target,this.defense,this.los) : target;
+        const dx=aim.x-d.pos.x,dy=aim.y-d.pos.y,length=hypot2(dx,dy);
         // A creeping backer walks at his creep pace into the snap; he does not stop short of it.
         const speed=!active ? 0 : backer ? backer.pace : Math.min(d.profile.vmax*.45,length*3);
         intents[d.idx] = {vel:{x:length ? dx/length*speed : 0,y:length ? dy/length*speed : 0},facing:Math.PI};

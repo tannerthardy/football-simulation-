@@ -879,6 +879,45 @@ function segmentsCross(a1: Vec2, a2: Vec2, b1: Vec2, b2: Vec2): boolean {
   const d1 = o(a1, a2, b1), d2 = o(a1, a2, b2), d3 = o(b1, b2, a1), d4 = o(b1, b2, a2);
   return d1 * d2 < 0 && d3 * d4 < 0;
 }
+/** SPOT_SPACE (off; SPOT_SPACE=1 turns it on; Coverage C14, 2026-11-23): no two defenders are assigned alignment spots
+ * closer than two bodies allow (SPOT_GAP between centres). Measured before (presnap-collide.mts, 8 of Tools' games):
+ * two installed spots within 1 yd of each other at the snap on 11% of pre-snap plays, 100 pairs: two down linemen
+ * 0.5-0.8 yd apart (NT-DT_W in the 3-4 Under, NT-DE_S in Bear), the Sam on the end's surface (DE_S-LB_S), man / robber
+ * spots on one spot in Cover 1 / 0 (LB_M-SS, LB_M-LB_W), the nickel and a walked-down safety (NB-SS); 38 of the 100 with
+ * no motion. The taught answers, applied after every other placement:
+ * - two on the line: the one farther from the ball widens to his own technique (lineup spacing);
+ * - one on the line, one off: the off-ball man takes the lineman's shoulder on his own side (the Sam off the end's outside
+ *   shoulder; a stacked backer offset to his gap), not his surface;
+ * - two off the ball: a press or man-over-receiver alignment keeps its spot; the other slides away from him along the line
+ *   (a walked-down safety takes the open gap or the edge of the box, not the Mike's spot).
+ * Depths are kept; only width moves; applied last, after the habit scatter (ALIGN_HABIT). The box count is taken before
+ * it (a slide of a yard does not move a defender in or out of the box). Read per alignment (a replay can switch it). */
+const SPOT_GAP = 1.0;
+function spaceSpots(spots: Partial<Record<DefSlot, DefSpot>>, present: DefSlot[], los: number, ballY: number): void {
+  const onLine = (sp: DefSpot) => sp.pos.x - los <= 1.6;
+  const fixed = (sp: DefSpot) => !!sp.press || (sp.role.kind === 'man' && !!sp.manTarget && sp.pos.x - los <= 6);
+  for (let pass = 0; pass < 3; pass++) {
+    let moved = false;
+    for (let i = 0; i < present.length; i++) for (let j = i + 1; j < present.length; j++) {
+      const A = spots[present[i]], B = spots[present[j]];
+      if (!A || !B) continue;
+      const dx = A.pos.x - B.pos.x, dy = A.pos.y - B.pos.y, d = Math.hypot(dx, dy);
+      if (d >= SPOT_GAP) continue;
+      let mover: DefSpot, anchor: DefSpot;
+      if (onLine(A) && onLine(B)) [mover, anchor] = Math.abs(A.pos.y - ballY) >= Math.abs(B.pos.y - ballY) ? [A, B] : [B, A];
+      else if (onLine(A) !== onLine(B)) [mover, anchor] = onLine(A) ? [B, A] : [A, B];
+      else if (fixed(A) !== fixed(B)) [mover, anchor] = fixed(A) ? [B, A] : [A, B];
+      else [mover, anchor] = Math.abs(A.pos.y - ballY) >= Math.abs(B.pos.y - ballY) ? [A, B] : [B, A];
+      // His own side of the anchor: where he already is, else his gap side, else away from the ball.
+      const off = mover.pos.y - anchor.pos.y;
+      const side = Math.abs(off) > 0.05 ? Math.sign(off) : (mover.gapSign || Math.sign(mover.pos.y - ballY) || 1);
+      const ddx = mover.pos.x - anchor.pos.x, need = Math.sqrt(Math.max(0, SPOT_GAP * SPOT_GAP - ddx * ddx));
+      mover.pos = { x: mover.pos.x, y: clamp(anchor.pos.y + side * need, 0.5, FIELD_WIDTH - 0.5) };
+      moved = true;
+    }
+    if (!moved) break;
+  }
+}
 export const isDeepZone = (z: ZoneId): boolean => DEEP_ZONES.has(z);
 
 export interface ManPreference {
@@ -1490,6 +1529,8 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
     if (!sp || !j || sp.press || sp.role.kind === 'blitz' || sp.pos.x - los <= 2) continue;
     sp.pos = { x: los + Math.max(2.2, sp.pos.x - los + j.x), y: clamp(sp.pos.y + j.y * (MIRROR_SCATTER ? scatterSide(off, sp.pos.y) : 1), 1, FIELD_WIDTH - 1) };
   }
+  // SPOT_SPACE: no two defenders told to stand in one place, after every placement (the habit scatter included).
+  if (process.env.SPOT_SPACE === '1') spaceSpots(spots, present, los, off.ballY);
   return { spots, rushers, coverage: cov, boxCount: box };
 }
 

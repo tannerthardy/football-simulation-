@@ -454,6 +454,40 @@ const CORNER = new Set<DefSlot>(['CB_S', 'CB_W']), SAFETY = new Set<DefSlot>(['F
  * runs the width of the field); `keep` holds his own. Rushers and
  * blitzers keep theirs. Among the rest, a deep job goes only to a safety
  * and a man job on a wide receiver never to a backer. */
+/** PRESNAP_GIVE (off; PRESNAP_GIVE=1 turns it on; Coverage C14, 2026-11-23): defenders adjusting to motion before the
+ * snap see their teammates and give way, as coached ("slide over", the one passing behind goes behind). Flex's pre-snap
+ * study (docs/reviews/data/2026-11-23-presnap/ on claude/quirky-franklin-9lbwbp): defender centres within 0.6 yd before
+ * the snap on 10.8% of our plays (89 of 827) against the NFL's 0.9%; 61% with both moving, 32% path crossings; this
+ * exchange re-sorts by least summed squared distance and walks every man at up to 0.75 vmax with no path or body check.
+ * - The walk gives way: a teammate standing in or moving across his path within reach ahead makes him go around him,
+ *   behind (deeper) when he is the deeper of the two or his spot is deeper than the teammate, else in front, at 0.6
+ *   vmax instead of 0.75 until he is clear (at 0.35 he arrived late: out of position at the snap 2.4% -> 3.1%). Measured (8 games, seed 101): a non-crossing exchange made it worse (collisions 9.4% -> 11.3% of plays with a
+ * pre-snap phase), so the exchange is unchanged; the give-way walk alone 9.4% -> 5.8%. The front's stem walks give way the
+ * same way (playsim.ts). Read per tick (a replay can switch it). */
+export const PRESNAP_GIVE = process.env.PRESNAP_GIVE === '1';
+const presnapGiveOn = () => process.env.PRESNAP_GIVE === '1';
+const giveWalk = presnapGiveOn;
+/** PRESNAP_GIVE: his walk this tick toward `target`, going around a teammate in his way. Shared with the front's stem
+ * walks (playsim.ts). */
+export function giveWay(d: Agent, target: Vec2, team: Agent[], los: number): Vec2 {
+  const dx = target.x - d.pos.x, dy = target.y - d.pos.y, len = Math.hypot(dx, dy);
+  if (len < 0.3) return target;
+  const ux = dx / len, uy = dy / len, depthSign = Math.sign(d.pos.x - los) || 1;
+  let worst: { t: Agent; along: number; off: number } | null = null;
+  for (const t of team) {
+    if (t === d) continue;
+    const rx = t.pos.x - d.pos.x, ry = t.pos.y - d.pos.y, along = rx * ux + ry * uy, off = -rx * uy + ry * ux;
+    const clear = d.profile.radius + t.profile.radius + 0.5;
+    if (along <= 0 || along > Math.min(len, 3) + clear || Math.abs(off) > clear) continue;
+    if (!worst || along < worst.along) worst = { t, along, off };
+  }
+  if (!worst) return target;
+  const t = worst.t, clear = d.profile.radius + t.profile.radius + 0.6;
+  // Behind (deeper, away from the line) when he is the deeper man or his spot is deeper than the teammate; else in front.
+  const behind = (d.pos.x - t.pos.x) * depthSign >= 0 || (target.x - t.pos.x) * depthSign > 0;
+  return { x: t.pos.x + depthSign * (behind ? clear : -clear), y: t.pos.y };
+}
+
 function exchange(align: DefenseAlignment, at: (slot: DefSlot) => Vec2 | undefined, keep: DefSlot | null,
   isWide: (target: string) => boolean): DefenseAlignment {
   const spots = { ...align.spots };
@@ -559,9 +593,12 @@ export class MotionRuntime {
         if (spot && (spot.role.kind === 'zone' || spot.role.kind === 'man')) this.targets.set(d, { ...spot.pos });
       }
     }
-    for (const [d, target] of this.targets) {
+    for (const [d, spotTarget] of this.targets) {
+      // PRESNAP_GIVE: around a teammate in his way, a little slower until he is clear.
+      const target = giveWalk() ? giveWay(d, spotTarget, sim.defense, sim.los) : spotTarget;
+      const detour = target !== spotTarget;
       const dx = target.x - d.pos.x, dy = target.y - d.pos.y, len = Math.hypot(dx, dy);
-      const speed = Math.min(d.profile.vmax * 0.75, len * 3);
+      const speed = Math.min(d.profile.vmax * (detour ? 0.6 : 0.75), len * 3);
       // Turn and run to a far spot; settle facing the offense.
       const facing = len > 2 ? Math.atan2(dy, dx) : Math.PI;
       intents[d.idx] = { vel: { x: len ? dx / len * speed : 0, y: len ? dy / len * speed : 0 }, facing };
