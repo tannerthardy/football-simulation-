@@ -6,7 +6,8 @@ const W = process.cwd();
 const { PlaySim } = await import(`${W}/src/sim/playsim.ts`);
 const { writeFileSync } = await import('node:fs');
 const { facingTechnique } = await import(`${W}/src/sim/coverage/orientation.ts`);
-// Coverage's shared break (coverage/C14-cards, FLIGHT_BREAK): flightBreakOf(a).t === sim.t marks a tick its break issued.
+// Coverage's shared break (coverage/C14-cards, FLIGHT_BREAK): flightBreakOf(a).t at this tick's decision time (the tap
+// reads after the tick has advanced sim.t by dt) marks a tick its break issued.
 const flightBreakOf = ((await import(`${W}/src/sim/behaviors/defense.ts`)) as any).flightBreakOf as ((a: any) => { t: number } | null) | undefined;
 const r2 = (v: number) => Math.round(v * 100) / 100;
 const st = new WeakMap<any, any>(); const noop = () => undefined;
@@ -43,7 +44,7 @@ export function install() {
         const stage = !ch ? (ic ? 'meeting spot' : null) : ch.planner === 'bypassed-close-gather' ? 'close gather'
           : ch.requests?.[0]?.stage === 'held-tackle' ? 'tackle bond' : ic ? 'meeting spot' : 'on-top point';
         const req = ch?.requests?.[ch.requests.length - 1]?.command;
-        f.d[d.slot] = { tech: (flightBreakOf && flightBreakOf(d)?.t === sim.t ? 'flight-break' : techOf.get(d)) ?? null, kind: d.behavior?.kind ?? null, tags: d.tags ? [...d.tags].filter((t: string) => /drive|open-field|onBall|looking|carry|rally|ball/.test(t)) : [], pos: [...P(d.pos), ...V(d.vel)], cmd: sim.cmds?.[d.idx] ? V(sim.cmds[d.idx].vel) : null, stages: s.stg[d.slot] ?? null, intent: sim.intents?.[d.idx] ? V(sim.intents[d.idx].vel) : null, stage, assumedV: ic ? r2(ic.forecast.relaxedSpeed) : ch ? r2(Math.hypot(ch.observed.vel.x, ch.observed.vel.y)) : null,
+        f.d[d.slot] = { tech: (flightBreakOf && (flightBreakOf(d)?.t ?? -1) >= sim.t - sim.dt - 1e-9 ? 'flight-break' : techOf.get(d)) ?? null, kind: d.behavior?.kind ?? null, tags: d.tags ? [...d.tags].filter((t: string) => /drive|open-field|onBall|looking|carry|rally|ball/.test(t)) : [], pos: [...P(d.pos), ...V(d.vel)], cmd: sim.cmds?.[d.idx] ? V(sim.cmds[d.idx].vel) : null, stages: s.stg[d.slot] ?? null, intent: sim.intents?.[d.idx] ? V(sim.intents[d.idx].vel) : null, stage, assumedV: ic ? r2(ic.forecast.relaxedSpeed) : ch ? r2(Math.hypot(ch.observed.vel.x, ch.observed.vel.y)) : null,
           aim: ic ? P(ic.steeringPoint) : null, commit: ic?.forecast?.commit ?? null, ahead: ic?.forecast?.speedAhead ?? null, req: req ? V(req.vel) : null, gather: ch ? r2(ch.gather) : null };
       }
       s.frames.push(f);
