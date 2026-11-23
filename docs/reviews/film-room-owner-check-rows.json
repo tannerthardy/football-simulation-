@@ -1,0 +1,14 @@
+[
+ {"game":1,"index":79,"owner":"CB_W","receiver":"X","note":"row 1: Cover 2 match, trips stick, 9.0 yd deep, owner 5.3 yd off at the release, not thrown to him"},
+ {"game":1,"index":78,"owner":"CB_W","receiver":"X","note":"row 2: Cover 2 wild, verts hitch, 8.6 yd, owner 6.5 yd off, not thrown to him"},
+ {"game":6,"index":38,"owner":"CB_W","receiver":"X","note":"row 3: Cover 2 wild, post cross, 8.0 yd, owner 4.6 yd off, thrown (69 yd)"},
+ {"game":2,"index":50,"owner":"CB_S","receiver":"Z","note":"row 4: Cover 2 wild, curl flat, 11.4 yd, owner 9.4 yd off, thrown (17 yd)"},
+ {"game":0,"index":7,"owner":"NB","receiver":"H","note":"row 5: Cover 1 off, quick outs, 4.5 yd, owner 5.1 yd off, not thrown to him"},
+ {"game":3,"index":109,"owner":"CB_W","receiver":"Z","note":"row 6: Cover 1 off, seam hitch + play action, 5.1 yd, owner 4.7 yd off, thrown (8 yd)"},
+ {"game":4,"index":116,"owner":"CB_S","receiver":"X","note":"row 7: Cover 1 off, seam hitch + play action, 5.1 yd, owner 4.4 yd off, thrown (5 yd)"},
+ {"game":1,"index":153,"owner":"CB_S","receiver":"Z","note":"row 8: Cover 1 double, quick outs, 4.3 yd, owner 4.9 yd off, not thrown to him"},
+ {"game":5,"index":141,"owner":"CB_S","receiver":"Z","note":"row 9: Cover 6 rev, comebacks, 14.3 yd, owner 7.8 yd off, not thrown to him"},
+ {"game":5,"index":28,"owner":"CB_S","receiver":"H","note":"row 10: Cover 4, stick + b3, 7.2 yd, owner 6.5 yd off, not thrown to him (RB went 62)"},
+ {"game":6,"index":55,"owner":"CB_S","receiver":"X","note":"row 11: Cover 6, seam hitch, 5.3 yd, owner 4.7 yd off, thrown (10 yd)"},
+ {"game":7,"index":160,"owner":"CB_S","receiver":"Z","note":"row 12: Cover 4 palms, double outs, 8.3 yd, owner 4.4 yd off, not thrown to him"}
+]

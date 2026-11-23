@@ -15,7 +15,7 @@ import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { Rng } from '../src/core/rng.js';
 import { simulateGame } from '../src/game/game.js';
-import { generateTeam } from '../src/league/team.js';
+import { generateTeam, leagueSample } from '../src/league/team.js';
 import { COVERAGE_BY_ID, COVERAGES, FRONTS } from '../src/playbook/defense.js';
 import { FORMATIONS } from '../src/playbook/formations.js';
 import { packReplayPlay } from './replay-data.js';
@@ -28,14 +28,15 @@ const args = process.argv.slice(2), mode = args[0];
 const opt = (n: string, d: string) => { const i = args.indexOf(n); return i >= 0 && args[i + 1] && !args[i + 1].startsWith('--') ? args[i + 1] : d; };
 
 if (mode === 'collect') {
-  const seed = Number(opt('--seed', '101')), games = Number(opt('--games', '4')), first = Number(opt('--first', '0')), out = opt('--out', `out/film/c${seed}.json`);
+  const seed = Number(opt('--seed', '101')), games = Number(opt('--games', '4')), first = Number(opt('--first', '0')), LEAGUE = args.includes('--league-sample'), out = opt('--out', `out/film/c${seed}.json`);
   installPlayArtTap();
   const rng = new Rng(seed);
   const home = generateTeam(rng, 'Ironmen', 'IRN', { strength: 0.55 }), away = generateTeam(rng, 'Comets', 'COM', { strength: 0.55 });
   const kept: unknown[] = [];
   for (let i = 0; i < games; i++) {
     takeSheets();
-    const g = simulateGame(home, away, { seed: seed + first + i, record: true, recordLevel: 'light' });
+    // --league-sample: Coverage's census games (teams from Rng(seed), each game's rosters from leagueSample(team, seed + game), game seed seed + game).
+    const g = simulateGame(LEAGUE ? leagueSample(home, seed + first + i) : home, LEAGUE ? leagueSample(away, seed + first + i) : away, { seed: seed + first + i, record: true, recordLevel: 'light' });
     const art = matchSheets(g.log, takeSheets());
     let n = 0;
     for (const p of g.log) {
@@ -62,11 +63,15 @@ if (mode === 'collect') {
   const taken = new Set(zone.map((p) => p.id));
   const random = shuffle(all.filter((p) => !taken.has(p.id) && !isZoneYac(p))).slice(0, nRandom);
   const dnd = (p: any) => `${['', '1st', '2nd', '3rd', '4th'][p.down] ?? p.down} & ${p.dist}`;
-  const picked = [...random.map((p) => ({ p, set: 'random' })), ...zone.map((p) => ({ p, set: 'zone-yac' }))];
-  const plays = picked.map(({ p, set }, i) => {
+  // --select rows.json: a hand-picked page instead of the random draw; each row {game, index, owner, receiver, note} names a play of a collected game (game index and log index) and, for the owner check, the defender who owns the receiver.
+  const selFile = opt('--select', ''); const sel: any[] = selFile ? JSON.parse(readFileSync(resolve(root, selFile), 'utf8')) : [];
+  const picked: { p: any; set: string; row?: any }[] = selFile ? sel.map((row) => ({ p: all.find((q) => q.game === row.game && q.index === row.index), set: 'check', row })).filter((x) => x.p)
+    : [...random.map((p) => ({ p, set: 'random' })), ...zone.map((p) => ({ p, set: 'zone-yac' }))];
+  if (selFile) console.error(`select: ${picked.length} of ${sel.length} rows found`);
+  const plays = picked.map(({ p, set, row }, i) => {
     const st = p.stats ?? {};
     return { ...p, id: `F${String(i + 1).padStart(2, '0')}`, game: 0, fixtureSeed: p.gameSeed, dist: Math.round(p.dist), film: {
-      set, n: i + 1, concept: p.art?.offense.name ?? p.concept.name, formation: p.art?.offense.formation, coverage: p.art?.defense.coverage, down: dnd(p), yl: p.yl,
+      set, owner: row?.owner, recv: row?.receiver, note: row?.note, n: i + 1, concept: p.art?.offense.name ?? p.concept.name, formation: p.art?.offense.formation, coverage: p.art?.defense.coverage, down: dnd(p), yl: p.yl,
       result: p.text, yds: p.yds, air: st.air ?? null, yac: st.yac ?? null, ttt: st.ttt ?? null, complete: !!p.flags.complete, sack: !!p.flags.sack, gameSeed: p.gameSeed,
     } };
   });
@@ -76,7 +81,7 @@ if (mode === 'collect') {
   const data = {
     meta: { seed: seeds[0], games: [], final: { home: 0, away: 0 }, quarters: [], sourceSha256: source,
       home: { name: 'Ironmen', abbr: 'IRN', color: '#a3302a', alt: '#f4efe6', text: '#ffffff' }, away: { name: 'Comets', abbr: 'COM', color: '#1d4f91', alt: '#f2c14e', text: '#ffffff' },
-      telemetryLevel: 'light', film: { issues: issuesText, seeds, pool: all.length, zonePool: zonePool.length, random: random.length, zone: zone.length, minYac, pickSeed, source } },
+      telemetryLevel: 'light', film: { issues: issuesText, seeds, pool: all.length, zonePool: zonePool.length, random: selFile ? 0 : random.length, zone: selFile ? 0 : zone.length, minYac, pickSeed, source } },
     games: [], plays: compactReplayPlays(plays as never),
     catalog: { coverage: Object.fromEntries(COVERAGES.map((c) => [c.id, c.name])), front: Object.fromEntries(FRONTS.map((f) => [f.id, f.name])), formation: Object.fromEntries(FORMATIONS.map((f) => [f.id, `${f.name} · ${f.personnel}`])) },
   };

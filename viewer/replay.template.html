@@ -273,6 +273,7 @@ select, input[type="search"] { width: 100%; min-width: 0; border: 1px solid var(
           <label><input type="checkbox" data-v="catchring">Nearest defender at the catch</label>
           <label><input type="checkbox" data-v="tech">Defender technique labels</label>
           <label><input type="checkbox" data-v="aimed">Receiver the throw was aimed at</label>
+          <label><input type="checkbox" data-v="owner">Owner ring, distance and technique (owner check)</label>
         </fieldset>
         <div id="telemetry-status" class="status-note"></div>
         <div class="clip-export" aria-label="Export a video clip">
@@ -350,7 +351,7 @@ window.TELEMETRY_READY = Promise.resolve(true);
     : key === 'team' ? teams[value]?.name ?? value : catalog[key]?.[value] ?? (value === 'unknown' ? 'Unlabelled' : value);
   function renderHeader(game) {
     if (FILM) {
-      $('game-label').textContent = `Pass game · engine ${String(FILM.source || '').slice(0, 8)} · ${plays.length} plays: ${FILM.random} random, ${FILM.zone} zone with ${FILM.minYac}+ YAC`;
+      $('game-label').textContent = `Pass game · engine ${String(FILM.source || '').slice(0, 8)} · ${plays.length} plays: ${FILM.random + FILM.zone === 0 ? 'owner check' : `${FILM.random} random, ${FILM.zone} zone with ${FILM.minYac}+ YAC`}`;
       $('teams').hidden = $('linescore').hidden = true;
       return;
     }
@@ -373,7 +374,7 @@ window.TELEMETRY_READY = Promise.resolve(true);
   let showTrails = true;
   let artOn = true, artKeep = false, artHold = 0;
   // The film room's View panel: independent on/off switches, remembered per viewer (localStorage is only a convenience; the page works without it).
-  const V = { cone: true, art: false, routes: true, zones: true, man: true, rush: true, labels: true, ball: false, read: true, dface: true, marks: true, catchring: true, tech: false, aimed: true };
+  const V = { cone: true, art: false, routes: true, zones: true, man: true, rush: true, labels: true, ball: false, read: true, dface: true, marks: true, catchring: true, tech: false, aimed: true, owner: true };
   try { Object.assign(V, JSON.parse(localStorage.getItem('film-view') || '{}')); } catch (e) { /* no storage: defaults */ }
   artKeep = V.art;
   let wide = false;
@@ -1048,6 +1049,15 @@ window.TELEMETRY_READY = Promise.resolve(true);
       const i = p.roster.findIndex((r) => r[0] === 'O' && r[1] === q.aimed);
       if (i >= 0 && positions[i] && th && th.t <= t) { const px = X(positions[i][0]), py = Y(positions[i][1]); ctxm.save(); ctxm.strokeStyle = '#4fd0ff'; ctxm.lineWidth = 3; ctxm.setLineDash([3, 3]); ctxm.beginPath(); ctxm.arc(px, py, Math.max(13, sc * 1.3), 0, 7); ctxm.stroke(); ctxm.restore(); tagm('aimed', px, py + Math.max(13, sc * 1.3) + 9, '#4fd0ff'); }
     }
+    if (V.owner && p.film && p.film.owner) {
+      const o = ownerAt(p, t), oi = p.roster.findIndex((r) => r[0] === 'D' && r[1] === p.film.owner), ri = p.roster.findIndex((r) => r[0] === 'O' && r[1] === p.film.recv);
+      if (o && oi >= 0 && ri >= 0 && positions[oi] && positions[ri]) {
+        const px = X(positions[oi][0]), py = Y(positions[oi][1]), rr = Math.max(13, sc * 1.3);
+        ctxm.save(); ctxm.strokeStyle = '#ffd23f'; ctxm.lineWidth = 3.5; ctxm.beginPath(); ctxm.arc(px, py, rr, 0, 7); ctxm.stroke();
+        ctxm.strokeStyle = 'rgba(255,210,63,0.8)'; ctxm.lineWidth = 1.5; ctxm.setLineDash([4, 3]); ctxm.beginPath(); ctxm.moveTo(px, py); ctxm.lineTo(X(positions[ri][0]), Y(positions[ri][1])); ctxm.stroke(); ctxm.restore();
+        tagm(`${p.film.owner}: ${o.d.toFixed(1)} yd, ${o.lev}`, px, py - rr - 8, '#ffd23f'); tagm(o.tech, px, py + rr + 9, '#ffe9a0');
+      }
+    }
     if (V.tech && q && q.d && q.d.length) {
       let cur = q.d[0]; for (const e of q.d) { if (e[0] <= t + 1e-6) cur = e; else break; }
       for (const [slot, label] of cur[1]) { const i = p.roster.findIndex((r) => r[0] === 'D' && r[1] === slot); if (i < 0 || !positions[i]) continue; tagm(label, X(positions[i][0]), Y(positions[i][1]) + Math.max(14, sc * 1.2), '#ffb3ab'); }
@@ -1141,10 +1151,26 @@ window.TELEMETRY_READY = Promise.resolve(true);
     if (!f) { box.hidden = true; return; }
     const cell = (k, v) => `<div><small>${esc(k)}</small><b>${esc(v ?? '—')}</b></div>`;
     box.hidden = false;
-    box.innerHTML = `<div class="fl-set fl-result">${esc(f.set === 'random' ? 'RANDOM PASS PLAY' : 'ZONE PLAY, 10+ YAC')} · clip ${f.n} of ${plays.length}</div>`
+    box.innerHTML = `<div class="fl-set fl-result">${esc(f.set === 'random' ? 'RANDOM PASS PLAY' : f.set === 'check' ? 'OWNER CHECK' : 'ZONE PLAY, 10+ YAC')} · clip ${f.n} of ${plays.length}</div>`
       + cell('Concept', f.concept) + cell('Formation', f.formation) + cell('Coverage', f.coverage) + cell('Down & distance', `${f.down} · ${yl(p.yl)}`)
       + cell('Air yards', f.air === null ? '—' : f.air.toFixed(1)) + cell('YAC', f.yac === null ? '—' : f.yac.toFixed(1)) + cell('Time to throw', f.ttt === null ? '—' : `${f.ttt.toFixed(2)} s`)
-      + `<div class="fl-result"><small>Result</small>${esc(f.result)}</div>`;
+      + `<div class="fl-result"><small>Result</small>${esc(f.result)}</div>`
+      + (f.owner ? `<div class="fl-result"><small>Owner check: ${esc(f.owner)} on ${esc(f.recv)}${f.note ? ' · ' + esc(f.note) : ''}</small>${ownerReadout(p).map((l) => `<div>${esc(l)}</div>`).join('')}</div>` : '');
+  }
+  // The census names an owner for a wide-open receiver; this shows what that man was doing at the receiver's break and at the release: distance, leverage relative to the goal line, and the engine's own technique label.
+  function ownerAt(p, time) {
+    const f = p.film, ri = p.roster.findIndex((r) => r[0] === 'O' && r[1] === f.recv), oi = p.roster.findIndex((r) => r[0] === 'D' && r[1] === f.owner); if (ri < 0 || oi < 0) return null;
+    const at = posAtTime(p, time), dir = p.fd >= p.los ? 1 : -1, d = Math.hypot(at[oi][0] - at[ri][0], at[oi][1] - at[ri][1]), dx = (at[oi][0] - at[ri][0]) * dir;
+    const q = p.art && p.art.qb; let tech = '—'; if (q && q.d) { let cur = q.d[0]; for (const e of q.d) { if (e[0] <= time + 1e-6) cur = e; else break; } const hit = cur[1].find((x) => x[0] === f.owner); if (hit) tech = hit[1]; }
+    return { d, lev: dx > 1 ? 'on top' : dx < -1 ? 'trailing' : 'level', tech };
+  }
+  function ownerReadout(p) {
+    const f = p.film, F = p.frames, ri = p.roster.findIndex((r) => r[0] === 'O' && r[1] === f.recv); const out = [];
+    const job = p.art && p.art.jobs ? p.art.jobs[ri] : null; let tb = null;
+    if (job && job.t === 'route' && job.brk != null && job.path[job.brk]) { const bp = job.path[job.brk]; for (let k = 0; k < F.t.length; k++) { const n = p.roster.length, x = F.p[(k * n + ri) * 3], y = F.p[(k * n + ri) * 3 + 1]; if (Math.hypot(x - bp[0], y - bp[1]) < 1.0) { tb = F.t[k]; break; } } }
+    const th = (p.eventDetails || []).find((e) => e.type === 'throw' || e.type === 'throwaway');
+    const line = (lab, time) => { if (time == null) { out.push(`${lab}: not available (${lab.startsWith('At the break') ? 'no break point reached' : 'no throw'})`); return; } const o = ownerAt(p, time); if (o) out.push(`${lab} (${time.toFixed(1)} s): ${f.owner} ${o.d.toFixed(1)} yd from ${f.recv}, ${o.lev}; ${o.tech}`); };
+    line('At the break', tb); line('At the release', th ? th.t : null); return out;
   }
   function renderArt(p) {
     const body = $('art-body'); if (!body) return;
