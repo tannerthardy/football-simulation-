@@ -62,7 +62,7 @@ Quotes are short and paraphrased; nothing downloaded is in the repository.
 
 # Family 1: quarters and Cover 6
 
-# Cards A — Quarters and Cover 6 family
+
 
 Research notes for coverage assignment cards. Nothing here is implemented; these are coaching rules paraphrased from web sources for the engine's controller.
 Quotes are short phrases as they appeared in the fetched text. Several key sources (MatchQuarters, X&O Labs, Steelers Depot, Weekly Spiral) are
