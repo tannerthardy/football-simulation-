@@ -3,6 +3,7 @@
  * route-running skill and the traction ellipse, option routes that convert
  * vs. man/zone), tracking the ball in flight, and blocking after the catch.
  */
+import { jamWanted } from '../press-contact.js';
 import { FIELD_WIDTH, OPP_GOAL_X } from '../../core/field.js';
 import { neckRange } from '../head.js';
 import { servoCommand, servoEngaged } from '../ball-servo.js';
@@ -790,8 +791,8 @@ export class RouteRunner implements Behavior {
       }
     } else {
       for (const d of sim.defense) {
-        const spot = sim.defAlign.spots[d.slot as keyof typeof sim.defAlign.spots];
-        if (!spot?.press || spot.manTarget !== a.slot || this.releasedCorners.has(d) || d.engagement || a.engagement || usable(d) === 0) continue;
+        // The jam is the defender's decision (press-contact.ts), on his own call; this file never reads the call.
+        if (!jamWanted(d, a, sim) || this.releasedCorners.has(d) || d.engagement || a.engagement || usable(d) === 0) continue;
         const relative = sub(a.pos, d.pos), dist = Math.hypot(relative.x, relative.y);
         if (dist > reach(d) || a.pos.x > d.pos.x + a.profile.radius || !facingReceiver(d, relative)) continue;
         // Two hands cannot simultaneously jam one player and grasp/block
