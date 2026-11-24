@@ -61,8 +61,14 @@ async function plays(flag: string, opts: { dropPicture?: boolean; airProbe?: boo
         } else if (sim.ball.kind !== 'air') break;
         continue;
       }
-      // Dropped: carried on any tick after the first empty picture has reached his decision.
-      if (driver.tags.has('catch-carry')) { if (opts.dropPicture) { if (sim.t > dropFrom + 1e-9) out.refutedCarry = true; else driver.tags.delete('catch-carry'); } else out.carried = true; }
+      // Dropped: the tag is cleared after every check, so it marks a carry decided on this tick. Under HONEST_FLIGHT the
+      // carry runs through the securing beat, and the first picture that refutes it is one taken strictly after the beat,
+      // which reaches his decision on the tick after dropFrom; off, the empty picture refutes at once (no carry is
+      // decided before the secure, as before).
+      if (driver.tags.has('catch-carry')) {
+        if (opts.dropPicture) { if (sim.t > dropFrom + (HONEST_FLIGHT ? sim.dt : 0) + 1e-9) out.refutedCarry = true; driver.tags.delete('catch-carry'); }
+        else out.carried = true;
+      }
       if (opts.airProbe) {
         // A ball back in the air: the unresolved-possession branch must not carry him.
         const real = sim.ball; driver.tags.delete('catch-carry');
