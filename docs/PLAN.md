@@ -144,6 +144,9 @@ diagnosis and owner of each item.
    It takes over one concept family at a time, quick game first, each phase
    gated on release against the break, what is thrown when, his belief
    against the outcome, and passers of different ratings behaving differently.
+   The pass menu itself is being checked against a standard one, quick game
+   first: missing concepts are added with their reads as taught, and installed
+   concepts that differ from the taught version are corrected.
 2. **In parallel:** coverage of the deep outside throw and the flat in
    Cover 2 and Cover 6; defenders re-aiming; pursuit after the catch; coming
    off a shed block; the tackle.
