@@ -34,7 +34,7 @@
  * past — never a jump in leverage or a prescribed speed.
  */
 import { KEY_REACT, keyScale } from './key-read.js';
-import { clamp, logistic, norm, sub, type Vec2 } from '../core/vec.js';
+import { angleDiff, clamp, logistic, norm, sub, type Vec2 } from '../core/vec.js';
 import { G } from '../core/units.js';
 import { directionalSpeedFactor, gaitLag, fatigueFactor, movingArrivalVelocity, shouldersOf, TRUNK_TWIST } from '../physics/kinematics.js';
 import { availability, baseRadiusAt, criticalDeviation, omega0, recoverySpeed, supportParams } from '../physics/support.js';
@@ -343,6 +343,30 @@ function baseOf(a: Agent): number {
 
 // ------------------------------------------------------------ creation
 
+/** BLOCK_FRAME (experimental, off; BLOCK_FRAME=1 turns it on). A blocker gets back on a defender who has already been
+ * released from a block this play only from where a block is legal: in front of the defender's path (the engagement's
+ * own phi, unclamped, |phi| < 1: the same measure HOLD_LEVERAGE uses for "past the blocker") and inside his frame (the
+ * front half-plane of his shoulders: the bearing to the blocker within 90 deg of his body facing; a labeled choice).
+ * From anywhere else, getting a hand on him is a grab, not a block: the blocker may still choose it, by the same
+ * discipline-and-situation chance a beaten blocker grabs with (holdChance, as tryHold), decided once per pair per play;
+ * a grab forms the engagement with the hold on (cloth), and contact-holding judges the restraint it achieves (with
+ * HOLD_CALL, whether it is seen). Otherwise he does not re-block that man (he goes on to the next one).
+ * Why (post-shed-joint-tap.mts, develop 7689bc4e, 4 games): no hand joint survives a shed, but 6% of run DL releases
+ * had hands back on them within 0.5 s, 36 of 37 by a new blocker, 31 of 37 from beside or behind him; createEngagement
+ * clamped phi to +-0.95, so a blocker from behind got the block of one at the hip, never a hold and never a call.
+ * Initial fits (a defender not yet released this play) are unchanged. */
+export const BLOCK_FRAME = process.env.BLOCK_FRAME === '1';
+const engagedBefore = new WeakMap<Agent, PlaySim>();
+const frameChoice = new WeakMap<Agent, { sim: PlaySim; by: Map<Agent, boolean> }>();
+function inFrameToBlock(axis: Vec2, d: Agent, b: Agent): boolean {
+  if (Math.abs(measurePhi(axis, d, b)) >= 1) return false;
+  return Math.abs(angleDiff(Math.atan2(b.pos.y - d.pos.y, b.pos.x - d.pos.x), d.body.facing)) <= Math.PI / 2;
+}
+/** The chance a blocker chooses a grab (tryHold's: less disciplined men grab more; in pass protection more than on runs). */
+function holdChance(b: Agent, type: 'pass' | 'run'): number {
+  return (0.04 + 0.13 * (1 - b.r('discipline'))) * (type === 'pass' ? 1 : 0.6);
+}
+
 export function createEngagement(sim: PlaySim, blocker: Agent, defender: Agent, type: 'pass' | 'run', drive: Vec2 | null, surface?: RunContactSurface): Engagement | null {
   const t = sim.t;
   if (sim.bond && [sim.bond.carrier, ...sim.bond.tacklers].some((a) => a === blocker || a === defender)) return null;
@@ -399,6 +423,18 @@ export function createEngagement(sim: PlaySim, blocker: Agent, defender: Agent, 
   }
   const axis = axisOf(sim, e);
   const lat = latOf(axis);
+  // BLOCK_FRAME: a defender already released from a block this play is blocked again only from in front of his path
+  // and inside his frame; from anywhere else it is a grab the blocker may choose (decided once per pair), or no block.
+  if (BLOCK_FRAME && engagedBefore.get(defender) === sim && !inFrameToBlock(axis, defender, blocker)) {
+    let pair = frameChoice.get(blocker);
+    if (!pair || pair.sim !== sim) { pair = { sim, by: new Map() }; frameChoice.set(blocker, pair); }
+    let grab = pair.by.get(defender);
+    if (grab === undefined) { grab = sim.dice('frame-hold', blocker, defender).chance(holdChance(blocker, type)); pair.by.set(defender, grab); }
+    if (!grab) return null;
+    e.holding = true;
+    blocker.tags.add('held'); blocker.tags.add('frame-grab');
+  }
+  engagedBefore.set(defender, sim);
   e.phi = clamp(measurePhi(axis, defender, blocker), -0.95, 0.95);
 
   // Working side: edge rushers work outside; interior/run defenders toward
@@ -3159,7 +3195,7 @@ function tryHold(sim: PlaySim, e: Engagement): boolean {
   const b = e.blocker;
   // Only possible with hands on him.
   if (e.control < -0.4) return false;
-  const pHold = (0.04 + 0.13 * (1 - b.r('discipline'))) * (e.type === 'pass' ? 1 : 0.6);
+  const pHold = holdChance(b, e.type);
   if (!sim.dice('hold', b).chance(pHold)) return false;
   e.holding = true;
   b.tags.add('held');
