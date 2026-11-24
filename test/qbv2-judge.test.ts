@@ -47,6 +47,12 @@ describe('QB_V2 judgment (module D)', () => {
     expect(findCoverer(q, [def(1, 7, 19, 1.8, 1.1)])?.id).toBe(1);
   });
 
+  it('a defender inside, sinking with another man, is not this receiver\'s coverer', () => {
+    const q = { ...stop(), receiverAt: (t: number) => ({ x: 6 + 7 * t, y: 20 }) };
+    expect(findCoverer(q, [def(1, 7, 25, 3, 0)])).toBeNull(); // 5 yd inside at 3 yd/s against the receiver's 7
+    expect(findCoverer(q, [def(2, 9, 23.5, 6.5, 0)])?.id).toBe(2); // 4.6 yd off, running with him
+  });
+
   it('a rough look is a wider belief on the same picture', () => {
     const d = [def(1, 9, 20, 6, 0, { facing: 0 })];
     expect(judge(stop(0.1), d).roles[0].sigma).toBeGreaterThan(judge(stop(1), d).roles[0].sigma);

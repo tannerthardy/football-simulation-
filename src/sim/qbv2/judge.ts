@@ -147,7 +147,11 @@ export function findCoverer(q: ThrowQuestion, defs: SeenDefender[]): SeenDefende
     const dist = hyp(d.pos, r0);
     if (dist > COVER_RADIUS || d.vel.x < -3 || atLine(d)) return false; // a rusher driving at the passer, or at the line
     if (q.coverEligible && !q.coverEligible.has(d.id)) return false;
-    return dist <= TIGHT_COVER || (rs < 1 ? dist <= SETTLE_COVER && Math.hypot(d.vel.x, d.vel.y) < 2 : (d.vel.x * rv.x + d.vel.y * rv.y) / rs > 0.5 * rs);
+    // Beyond tight, "with him" is a relation that holds: his velocity along the receiver's and his speed relative to him
+    // small (staged V2, 2026-11-24: a nickel 5 yd inside sinking with the slot passed a projection-only test as the far
+    // out's coverer, 12 yd from the catch).
+    const relV = Math.hypot(d.vel.x - rv.x, d.vel.y - rv.y);
+    return dist <= TIGHT_COVER || (rs < 1 ? dist <= SETTLE_COVER && Math.hypot(d.vel.x, d.vel.y) < 2 : (d.vel.x * rv.x + d.vel.y * rv.y) / rs > 0.5 * rs && relV <= 1 + 0.4 * rs);
   };
   let best: SeenDefender | null = null;
   for (const d of defs) if (onHim(d) && (!best || hyp(d.pos, r0) < hyp(best.pos, r0))) best = d;
