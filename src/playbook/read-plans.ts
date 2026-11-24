@@ -191,6 +191,8 @@ export const FLOOD: QbReadPlan = {
  * the middle backer takes both. (Chris Brown, Smart Football; Wilhite; Bowen NFP.) */
 export const LEVELS: QbReadPlan = {
   conceptId: 'levels', drop: 'five', readType: 'alert',
+  // The divide route is peeked every time ("The quarterback begins by 'peeking' ... the divide route", Brown): no condition.
+  alert: { read: 0, when: {} },
   reads: [
     { step: 0, look: { kind: 'receiver', ref: 'S3' }, throws: [{ ref: 'S3', timing: 'onBreak' }] },
     { step: 1, look: { kind: 'key', role: 'hook' },
@@ -284,6 +286,8 @@ export const PA_SHOT: QbReadPlan = {
  * sinks under it; the backside crosser; the back in the flat. (Chow via Chris Brown, "65"; Throw Deep; Kou.) */
 export const PA_FLOOD: QbReadPlan = {
   conceptId: 'pa_flood', drop: 'pa', readType: 'alert',
+  // "If the corner plays bump on Z the QB has the option of throwing deep" (Miller, Gridiron Strategies).
+  alert: { read: 0, when: { press: 'S1' } },
   reads: [
     { step: 0, look: { kind: 'receiver', ref: 'S1' }, throws: [{ ref: 'S1', timing: 'onBreak' }] },
     { step: 1, look: { kind: 'key', role: 'curl' },
