@@ -286,6 +286,28 @@ it was disguised, even on a play where the passer was sacked at 1.8 s.
 - **The coordinators' `observe` (game.ts 1106–1108)** learns from each side's own call and the visible result: not a
   leak.
 
+## 8c. The first decision that uses the belief: CUSHION_SPEED (step 2b, design with Coverage)
+
+Step 2's gate found that no coverage decision depends on how fast the receiver is. The man corner's cushion is identical
+whether he believes the receiver runs 9.0, 9.8 or truly 10.9. "Give a burner more room" does not exist yet. Step 2b adds it
+as the coached "respect his speed", behind its own flag. Coverage owns the technique and reviews the design before code.
+
+- **Speed edge:** Δ = q(believed v_R, 0.8) − v_C. That's a high quantile of what he believes the receiver's top speed
+  is, minus his own top speed, which he knows exactly. The 0.8 quantile is a stated choice: he plans for the fast case,
+  because being beaten deep costs more than giving up a hitch.
+- **Horizon:** H = 1.5 s, a stated choice. In coaching terms, it is how long he must be able to run with the man after
+  his turn before help arrives or the deep ball lands (a go is caught around 3.0 s; he turns around 1.2–1.6 s).
+- **Speed cushion:** c = clamp(Δ·H, −1, +2) yd. The clamp is a stated choice, in coaching terms: the most room he gives
+  a burner before the underneath throw is free (+2), and the most he will crowd a slower man to sit on the hitch (−1).
+- **Where it acts:** in pure man, ManCoverage.trackReceiver:
+  1. the off-cushion target: initialCushion + c;
+  2. the turn trigger: the cushion that counts as consumed grows by c;
+  3. CUSHION_NEED: the post-release close never eats max(0, c).
+- **What it costs:** extra room opens the hitch and out. A wrong belief costs him: believed slow but fast, he is beaten
+  deep; believed fast but slow, he gives up the hitch.
+- **Staged gate first:** one corner, one receiver, 12 seeds each on a go and a hitch. Arms: believed slow, believed
+  fast, and wrong both ways. It shows the cushion, the turn, and separation deep and at the hitch.
+
 ## 9. Example of the same structure: the receiver recount after motion
 
 Today a defender's numbering of the receivers (who is #2, #3) is not updated as a communication event after motion. In
