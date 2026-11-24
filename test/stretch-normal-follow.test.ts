@@ -52,6 +52,13 @@ async function command(input: Input = {}) {
     y: normal.y * (input.normalVelocity ?? 0) + across.y * side * (input.lateralVelocity ?? 0) };
   f.blocker.body.vel = { x: input.anchor ? -.4 : 0, y: 0 };
   f.blocker.body.support!.felt = input.anchor ? { x: -1000, y: 0 } : { x: 0, y: 0 };
+  // The blocker reads the defender through his delayed picture (ENGAGE_FELT): the fixture teleported the bodies, so
+  // record the picture again, or he sees the defender where he stood before the move.
+  // He sees velocity as the change in position over the history, so lay the defender's last second down as the
+  // track that ends where the test puts him, moving as it says.
+  { const d = f.defender.body, end = { ...d.pos }, v = { ...d.vel };
+    for (let k = 0; k < 24; k++) { const back = (23 - k) * f.sim.dt; d.pos = { x: end.x - v.x * back, y: end.y - v.y * back }; f.sim.perception.record(f.sim.agents); }
+    d.pos = end; }
   const before = structuredClone(f.sim.agents.map(a => a.body));
   const hands = f.engagement.hands!;
   let movement: { anchored: boolean; lateral: number; lat: Vec2 } | undefined;

@@ -10,6 +10,7 @@
  * which is how real exchanges bust. Nothing here knows the route that was
  * called; it only sees movement.
  */
+import { believedCaps, lookAt } from '../believed-body.js';
 import { clamp, type Vec2 } from '../../core/vec.js';
 import type { ReceiverRef } from '../../playbook/types.js';
 import type { Agent } from '../agent.js';
@@ -103,7 +104,9 @@ export class ReleaseReader {
     const m = this.memory.get(r);
     if (!m) return null;
     const a = this.a;
-    const seen = m.obs.read(sim.see(a, r), sim.t, r.profile, a.profile.reactionTime, a.r('anticipation') * a.mind.focus);
+    const cue = sim.see(a, r);
+    lookAt(sim, a, r, cue);
+    const seen = m.obs.read(cue, sim.t, believedCaps(sim, a, r), a.profile.reactionTime, a.r('anticipation') * a.mind.focus);
     // A back declares his side when he releases.
     if (m.outSign === 0 && Math.abs(seen.vel.y) > 1.5) m.outSign = Math.sign(seen.vel.y);
     const outSign = m.outSign || 1;

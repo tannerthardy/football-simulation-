@@ -56,11 +56,17 @@ describe('screen install (docs/football-handbook/screens.md)', () => {
   });
 
   it('a now screen with a press kill is checked out of against press, and run against off coverage', () => {
-    for (const seed of [1, 2]) {
+    // Press is always seen and killed; Cover 3's corners are clearly off. Cover 1 Off's corners stand near 5 yd, the
+    // cloud kill's edge, so through his own scan error (QB_SCAN, drawn once per play) he sometimes reads one as a cloud
+    // corner and checks out: an honest near-margin misread (owner Flex, 2026-11-24; 26/30 seeds kept with QB_SCAN on,
+    // 28/30 off). The contract is that he mostly runs it, not that one seed's draw lands inside the margin.
+    let kept = 0;
+    for (let seed = 1; seed <= 10; seed++) {
       expect(screen('wide_now_screen', 'gun_doubles_11', seed, 'cover1', true).offCall.pass?.id).not.toBe('wide_now_screen');
-      expect(screen('wide_now_screen', 'gun_doubles_11', seed, 'cover1_off', true).offCall.pass?.id).toBe('wide_now_screen');
-      expect(screen('wide_now_screen', 'gun_doubles_11', seed, 'cover3', true).offCall.pass?.id).toBe('wide_now_screen');
+      if (screen('wide_now_screen', 'gun_doubles_11', seed, 'cover1_off', true).offCall.pass?.id === 'wide_now_screen') kept++;
+      if (seed <= 2) expect(screen('wide_now_screen', 'gun_doubles_11', seed, 'cover3', true).offCall.pass?.id).toBe('wide_now_screen');
     }
+    expect(kept).toBeGreaterThanOrEqual(7);
   });
 
   it('released linemen sell the pass, stay within a yard of the line until the throw (8-3-1), then block the screen', () => {

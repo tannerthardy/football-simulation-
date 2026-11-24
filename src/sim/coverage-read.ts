@@ -9,7 +9,7 @@ import type { Perceived } from './perception.js';
 export class RouteObservation {
   private previous: { t: number; speed: number } | null = null;
 
-  read(cue: Perceived, t: number, profile: PhysicalProfile, horizon: number, confidence: number): Perceived {
+  read(cue: Perceived, t: number, profile: Pick<PhysicalProfile, 'brake' | 'lateral'>, horizon: number, confidence: number): Perceived {
     const speed = Math.hypot(cue.vel.x, cue.vel.y);
     const previous = this.previous;
     this.previous = { t, speed };

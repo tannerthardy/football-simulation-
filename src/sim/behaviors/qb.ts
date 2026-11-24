@@ -486,6 +486,23 @@ const QB_RELOOK = process.env.QB_RELOOK !== '0';
  * stood until sacked, slant_flat sacks 1 -> 24 of 252). A read his eyes moved off is kept on the read he ends each tick
  * on, so a key reorder within the tick cannot reopen it. Off, a passed quick read could come back and be thrown across the field at 3.1-3.5 s. */
 const READ_WINDOW = process.env.READ_WINDOW === '1';
+/** THROWAWAY_FELT (on; THROWAWAY_FELT=0 restores; QB lane with Integration, 2026-11-24): he throws the ball away on what he
+ * perceives, not on a timer. Before, a fixed per-passer timer from the set (2.5 + composure + 0.6 pocketPresence s) threw
+ * the ball away once it ran out, without asking whether anyone was open or whether he felt pressure: 24 of 24 timer
+ * throwaways (33 of 33 with QB_STEP_CLOCK) came from a clean pocket (felt pressure under 0.5), 19 (21) with a man
+ * clearing his bar (docs/reviews/2026-11-23-step-clock.md, "What throws the ball away"). Now:
+ * - the timer no longer throws the ball away; it stays as his urgency (it raises u, lowers his bar, drives him to the
+ *   checkdown, and still calls the scramble drill and his break or scramble);
+ * - he throws it away when he feels pressure, or is outside the pocket, and no option clears his bar;
+ * - READ_WINDOW's quick game out of reads in a clean pocket keeps working (the best live option at the lowered bar each
+ *   tick, his break or scramble) rather than throwing it away; its dead-read rule is unchanged. */
+const THROWAWAY_FELT = process.env.THROWAWAY_FELT !== '0';
+/** THROWAWAY_FELT: felt pressure (his urgency from the rush, 0-1) at which he feels the rush on him, and below which it
+ * has left him (chosen: the exit well under the entry, so a rush that hovers does not toggle his throwaway). */
+const FELT_ENTER = 0.6, FELT_EXIT = 0.4;
+/** THROWAWAY_FELT: how far from the ball's line, sideways, his own position puts him outside the pocket, and back inside
+ * it (yd; chosen: the entry is the existing pocket width, 4.5 yd; the exit 1 yd inside it). */
+const OUT_ENTER = 4.5, OUT_EXIT = 3.5;
 /** QB_KEY_MAN (experimental, off; QB_KEY_MAN=1; with READ_PLAN's defender keys): his key read is taken on the defender
  * the concept names, not on whoever is nearest the line between the two routes (on corner_flat that was the middle
  * linebacker once the corner sank under the corner route). Before the snap he picks the man by the role's alignment
@@ -1790,6 +1807,13 @@ export class QBPass implements Behavior {
     const clockUrgency = clamp((timeSet + this.snapAt + this.drop.time - this.clock) / 0.8, 0, 1);
     // BLITZ_READ: believed rushers beyond his protection's count shorten how long he thinks he has.
     const u = Math.max(urgency, clockUrgency, BLITZ_READ ? (BLITZ_SKILL ? clamp(0.7 * this.freeU, 0, 0.7) : clamp(0.4 * this.rushExcess, 0, 0.7)) : 0);
+    // THROWAWAY_FELT: whether he feels the rush on him and whether his own position has him outside the pocket, each with
+    // an entry and an exit margin.
+    if (THROWAWAY_FELT) {
+      this.feltOn = this.feltOn ? urgency > FELT_EXIT : urgency >= FELT_ENTER;
+      const side = Math.abs(a.pos.y - sim.ballY);
+      this.outOn = this.outOn ? side > OUT_EXIT : side >= OUT_ENTER;
+    }
     if (u > 0.5) this.underPressure++;
 
     // Look-off: veterans hold the safety with their eyes before the first read.
@@ -2020,7 +2044,10 @@ export class QBPass implements Behavior {
         // thrown away), not held in the pocket waiting for his clock (off this branch, 24 of 252 slant_flat snaps were
         // sacks at 4-5 s after his reads ran out at about 2.8 s).
         if (!QB_BREAK && this.shouldScramble(a, sim, false)) return this.scramble(a, sim);
-        return this.throwAway(a, sim);
+        // THROWAWAY_FELT: thrown away only with the rush on him or outside the pocket; in a clean pocket he keeps working
+        // (the best live option at a bar his urgency lowers, each tick; his break or scramble).
+        if (!THROWAWAY_FELT) return this.throwAway(a, sim);
+        const away = this.awayDecision(a, sim, u, thr, maxInt); if (away) return away;
       }
     } else if (!read && QB_RELOOK) {
       // QB_RELOOK: his reads are done and nothing was there. He moves and reads on (QB_BREAK), or goes back to his
@@ -2080,8 +2107,11 @@ export class QBPass implements Behavior {
       if (QB_BREAK) { if (this.tryBreak(a, sim, 'clock')) return this.outTick(a, sim); }
       else if (this.shouldScramble(a, sim, false)) return this.scramble(a, sim);
       const over = timeSet + this.snapAt + this.drop.time - this.clock;
-      if (timeSet > 1.4 + this.clock * 0.5 && this.outsidePocket(a, sim) && sim.dice('qb', a).chance(0.06)) return this.throwAway(a, sim);
-      if ((over > 0.8 && sim.dice('qb', a).chance(0.06 + 0.1 * a.r('awareness'))) || over > 2.2) return this.throwAway(a, sim);
+      if (THROWAWAY_FELT) { const away = this.awayDecision(a, sim, u, thr, maxInt); if (away) return away; }
+      else {
+        if (timeSet > 1.4 + this.clock * 0.5 && this.outsidePocket(a, sim) && sim.dice('qb', a).chance(0.06)) return this.throwAway(a, sim);
+        if ((over > 0.8 && sim.dice('qb', a).chance(0.06 + 0.1 * a.r('awareness'))) || over > 2.2) return this.throwAway(a, sim);
+      }
     }
     // Mobile QBs leave the pocket when coverage holds and the lane is there.
     if (!QB_BREAK && timeSet > 1.0 && this.readIdx >= 2 && this.shouldScramble(a, sim, false) && sim.dice('qb', a).chance(0.06 + 0.14 * a.r('elusiveness'))) {
@@ -3460,6 +3490,22 @@ export class QBPass implements Behavior {
   private out: { side: number; since: number; dest: Vec2; until: number; decideAt: number; clearSince: number | null; away: number | null; best: ThrowEval | null; thr: number; risk: number; order: Agent[]; idx: number } | null = null;
   /** QB_RELOOK diagnostics (no effect): how many times his reads ran out on this play. */
   relooks = 0;
+  /** THROWAWAY_FELT: he feels the rush on him; his own position has him outside the pocket (each with its margins). */
+  private feltOn = false;
+  private outOn = false;
+  /** THROWAWAY_FELT diagnostics (no effect): throwaways he decided, by what he perceived. */
+  awayBy: Record<string, number> = {};
+  /** THROWAWAY_FELT: the ball goes away when he feels the rush or is outside the pocket and no option clears his bar (the
+   * out-of-reads bar: P within 0.1 of his threshold, interception risk within 0.03 of his limit); an option that clears
+   * is thrown. Null: he keeps working. */
+  private awayDecision(a: Agent, sim: PlaySim, u: number, thr: number, maxInt: number): MoveCommand | null {
+    if (!this.feltOn && !this.outOn) return null;
+    const best = this.bestOption(a, sim, u);
+    if (best && best.P >= thr - 0.1 && best.intRisk <= maxInt + 0.03) { const go = this.startIfFinish(a, sim, best); if (go) return go; }
+    const why = this.feltOn ? 'felt' : 'outside';
+    this.awayBy[why] = (this.awayBy[why] ?? 0) + 1;
+    return this.throwAway(a, sim);
+  }
   /** QB_BREAK: he has stopped and set outside the pocket on this play. */
   private hasSet = false;
   /** QB_BREAK diagnostics (no effect): what he did out there and when. */
