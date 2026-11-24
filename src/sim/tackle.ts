@@ -383,8 +383,9 @@ function reachStep(sim: PlaySim, d: Agent, c: Agent): boolean {
  * at full stretch, the feet (the tap). Stated choice: those regions as legs shares: thigh 0.7, near hip 0.5, hips/legs
  * 0.6, feet 1; off a block, what one arm reaches (gripReach's 0.35). Execution: about that mean with gripReach's own
  * spread for the situation, widened by lost balance and narrowed by skill (WHIFF_MARGIN's law: x (2 - availability) x
- * (1.3 - 0.6 tackling)). The cost of a low aim is not yet built: he bends to strike low, and that bend's speed and
- * balance cost belongs to the World's posture (step 2: request it with the reach). A first build charged the reach
+ * (1.3 - 0.6 tackling)). The cost of a low aim is the bend: with REACH_TIME, while his hands go out he asks for the
+ * posture that brings his shoulder line to the target (`reachIntents`; the World's posture law solved for it), and the
+ * World charges it (pad level costs speed, at its own rate of change). A first build charged the reach
  * instead (the arm coming down from his crouched shoulder line, `aimReach`), which made the waist all but unreachable:
  * the World's crouch lowers the centre of mass by a quarter and does not model the trunk lean that brings the shoulders
  * down and forward. No height is forbidden. */
@@ -418,6 +419,27 @@ export function aimReach(d: Agent, c: Agent, share: number, legs: number): numbe
   const drop = Math.min(arm, Math.abs(shoulder - target));
   return full - (arm - Math.sqrt(Math.max(0, arm * arm - drop * drop)));
 }
+/** HOLD_AIM step 2: the posture a tackler bends to so his shoulder line comes down to the target at legs share `legs`
+ * (the World's comHeightAt law solved for posture; 0 upright, 1 his deepest crouch). */
+function aimPosture(d: Agent, c: Agent, legs: number): number {
+  const sp = supportParams(d.profile), csp = supportParams(c.profile), cpost = c.body.support?.posture ?? 0;
+  const target = upperHoldHeight(c, legs) ?? comHeightAt(csp, cpost) * (1 - 0.55 * clamp(legs, 0, 1));
+  const standing = SHOULDER * d.profile.heightYd;
+  return clamp((1 - target / standing) / (0.25 * (0.4 + 0.6 * sp.bend)), 0, 1);
+}
+/** HOLD_AIM step 2 (with REACH_TIME): while his hands are going out, a tackler asks for the bend his aim needs, so the
+ * World charges it (a lower pad level costs speed; the posture changes at the World's own rate). Called with the
+ * tick's intents, before the physics step (PlaySim, beside updateBond). */
+export function reachIntents(sim: PlaySim, intents: Intent[]): void {
+  if (!HOLD_AIM || !REACH_TIME) return;
+  for (const d of sim.agents) {
+    const r = reaches.get(d), aim = aimFor.get(d);
+    if (!r || r.sim !== sim || !aim || r.engaged) continue;
+    const want = aimPosture(d, r.carrier, aim.mean), own = intents[d.idx];
+    if (own && (own.posture ?? 0) < want) intents[d.idx] = { ...own, posture: want };
+  }
+}
+
 /** Diagnostics: the aim chosen for tackler `d`'s last attempt (HOLD_AIM). */
 export function aimOf(d: Agent): Readonly<Aim> | undefined { return aimFor.get(d); }
 
