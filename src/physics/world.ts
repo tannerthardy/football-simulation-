@@ -345,6 +345,7 @@ const GRASP_ARM_MOMENT = process.env.GRASP_ARM_MOMENT !== '0';
 const POSTURE_RATE = 2.5;
 /** SCRATCH (Phase 2 test, not for landing): HAND_FREE=1 makes each man's hand height a free input (world.handDz). */
 const HAND_FREE = process.env.HAND_FREE === '1' || process.env.HAND_FREE === '2';
+const ARM_SHARE = Number(process.env.ARM_SHARE ?? 0.5);
 const HAND_DYN = process.env.HAND_FREE === '2', DZ_LOW = Number(process.env.DZ_LOW ?? -0.2), DZ_HIGH = Number(process.env.DZ_HIGH ?? 0.1);
 /** POSTURE_HOLD (experimental, off; POSTURE_HOLD=1; docs/reviews/2026-11-24-blocking-phase1-design.md section 3, docs/reviews/2026-11-24-blocking-phase1-bench.md).
  * DORMANT UNTIL PHASE 2: it does nothing at the lifts the pad geometry gives (0.06-0.2 body weights against about 1 body weight his legs hold), and it is not
@@ -2670,7 +2671,9 @@ export class World {
           const dzI = HAND_DYN ? (this.padHeight[i] < this.padHeight[j] ? DZ_LOW : DZ_HIGH) : this.handDz[i], dzJ = HAND_DYN ? (this.padHeight[j] < this.padHeight[i] ? DZ_LOW : DZ_HIGH) : this.handDz[j];
           const zJ = this.padHeight[j] + dzI, zI = this.padHeight[i] + dzJ, dd = Math.max(d, .3);
           const riseI = clamp((zJ - this.padHeight[i]) / dd, -LEVERAGE_SLOPE, LEVERAGE_SLOPE), riseJ = clamp((zI - this.padHeight[j]) / dd, -LEVERAGE_SLOPE, LEVERAGE_SLOPE);
-          const net = riseI - riseJ;
+          // Force balance: the two arm forces' horizontal parts sum to the one horizontal force H the legs and grip set (each body's ground supplies H),
+          // so each arm carries its share w of H (equal here: w = 1/2) and the vertical on j is H (w riseI - w riseJ). With dz = 0 on both this is exactly the single pad-to-pad line.
+          const net = ARM_SHARE * riseI - (1 - ARM_SHARE) * riseJ;
           this.liftImp[j] += press * net; this.liftImp[i] -= press * net;
         } else {
           const rise = clamp((this.padHeight[j] - this.padHeight[i]) / Math.max(d, .3), -LEVERAGE_SLOPE, LEVERAGE_SLOPE);
