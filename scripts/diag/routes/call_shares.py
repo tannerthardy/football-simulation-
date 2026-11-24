@@ -13,6 +13,8 @@ Outputs (JSON):
     at (#1, or #2 behind a clear-out); a final FLAT may be the back's on that side; a play can count for several halves;
   - for each half, what the other side matches (our halves, or 'unmatched');
   - for each half, the back's job on the play;
+  - core_partner / core_back: on a side with the half's core, which halves' cores are on the other side (equal split;
+    'unmatched' if none), and the back's job on the play;
   - the share of plays per full concept.
 Labelled defaults for the play-caller, not targets.
   python3 -I call_shares.py NFL=nfl-routes.jsonl.gz [OURS=sim.jsonl.gz] HALVES=src/playbook/calls/halves.ts [--json OUT]"""
@@ -112,6 +114,7 @@ def full_match(S):
 def run(path, nfl, H):
     N = 0; side = collections.Counter(); partner = collections.defaultdict(collections.Counter)
     back = collections.defaultdict(collections.Counter); full = collections.Counter(); core = collections.Counter()
+    cpartner = collections.defaultdict(collections.Counter); cback = collections.defaultdict(collections.Counter)
     for ball, R in plays(path, nfl):
         N += 1
         S = {s: [tag(r) for r in sorted([r for r in R if not r['back'] and (r['y'] - ball) * s > 0], key=lambda r: -(r['y'] - ball) * s)]
@@ -124,14 +127,22 @@ def run(path, nfl, H):
                 w = 1 / len(M[s]); side[h] += w; back[h][job] += w
                 for o in (M[-s] or ['unmatched']): partner[h][o] += w / max(1, len(M[-s]))
         for f in full_match(S): full[f] += 1
+        on = {s: [] for s in (1, -1)}
         for h, t in H.items():
             st, c = CORE.get(h, (1, t))
-            if len(c) >= 2 and any(core_on(S[s], st, c, any(tag(b) == 'FLAT' and (b['y'] - ball) * s > 0 for b in backs)) for s in (1, -1)):
-                core[h] += 1
+            for s in (1, -1):
+                if core_on(S[s], st, c, any(tag(b) == 'FLAT' and (b['y'] - ball) * s > 0 for b in backs)): on[s].append(h)
+        for h in set(on[1]) | set(on[-1]):
+            if len(CORE.get(h, (1, H[h]))[1]) >= 2: core[h] += 1
+        for s in (1, -1):
+            for h in on[s]:
+                cpartner[h].update({o: 1 / len(on[-s]) for o in on[-s]} if on[-s] else {'unmatched': 1})
+                cback[h][job] += 1
     norm = lambda c: {k: round(v / sum(c.values()), 4) for k, v in c.most_common()}
     return dict(plays=N, sides=2 * N, side_share={h: round(side[h] / (2 * N), 4) for h in H},
                 partner={h: norm(partner[h]) for h in H if partner[h]}, back={h: norm(back[h]) for h in H if back[h]},
                 core_share={h: round(core[h] / N, 4) for h in H if len(CORE.get(h, (1, H[h]))[1]) >= 2},
+                core_partner={h: norm(cpartner[h]) for h in H if cpartner[h]}, core_back={h: norm(cback[h]) for h in H if cback[h]},
                 full_share={f: round(full[f] / N, 4) for f in ('mesh', 'drive', 'y_cross', 'hitch_cross', 'post_cross', 'four_verts')})
 
 
