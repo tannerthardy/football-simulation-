@@ -69,6 +69,7 @@ for (let seed = s0; seed <= s1; seed++) {
   console.log(JSON.stringify({ concept, coverage, seed, v2: !!qbb?.v2, rel: thrown ? r2(thrown.t - snap) : null, slot: thrown?.slot ?? null, away: thrown?.away ?? null,
     route: thrown?.idx != null ? String(sim.agents[thrown.idx]?.behavior?.route?.id ?? '').split(':').pop() : null, relBrk,
     complete: !!sim.stats.completed, int: ev.some((e) => e.type === 'interception'), sack: ev.some((e) => e.type === 'sack'),
+    pre: qbb?.v2?.presnap ? { flip: qbb.v2.presnap.flip, start: qbb.v2.presnap.startRead, look: qbb.v2.presnap.look ? { shell: qbb.v2.presnap.look.shell, over: Object.fromEntries(Object.entries(qbb.v2.presnap.look.over ?? {}).map(([k, v]: any) => [k, v ? { cushion: v.cushion, press: v.press, lev: v.leverage } : null])) } : null } : null,
     belief: thrown?.belief ?? null, roles: (thrown?.roles ?? []).map((r: any) => ({ ...r, arrived: !!r.arrived || ev.some((e) => ['pbu', 'deflection', 'interception'].includes(e.type) && e.a === r.id), slot: sim.agents[r.id].slot })),
     intents: qbb?.v2Intents ?? null, trace }));
 }

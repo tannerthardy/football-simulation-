@@ -14,7 +14,8 @@ import { arcPoint, dragFreeLaunch } from '../../physics/ball.js';
 import { Cycle, type CycleSenses, type Intent, type Judged } from './cycle.js';
 import { COVER_RADIUS, judge, type SeenDefender, type ThrowQuestion } from './judge.js';
 import type { LookTarget } from './look.js';
-import type { QbReadPlan, ThrowOption } from './plan.js';
+import type { PreSnapState, QbReadPlan, ThrowOption } from './plan.js';
+import { decidePreSnap, mirrorPlan } from './presnap.js';
 import { RoleResolver, type RolePicture } from './roles.js';
 
 type V = { x: number; y: number };
@@ -59,7 +60,9 @@ export const CATCH_CLEAN = 0.9;
 const CUE_ENTER = 1.5, CUE_EXIT = 0.8;
 
 export class V2Drive {
-  readonly cycle: Cycle;
+  cycle: Cycle;
+  /** The pre-snap decision (Flex's module B), once taken at the snap. */
+  presnap: PreSnapState | null = null;
   private roles = new RoleResolver();
   private cue = new Map<string, string>();
   private lastJudged = new Map<string, Judged>();
@@ -70,7 +73,18 @@ export class V2Drive {
   /** Diagnostics (no effect): the roles behind the last judgment of each receiver. */
   readonly lastRoles = new Map<string, ReturnType<typeof judge>['roles']>();
 
-  constructor(readonly plan: QbReadPlan, startRead = 0) { this.cycle = new Cycle(plan, startRead); }
+  constructor(public plan: QbReadPlan, startRead = 0) { this.cycle = new Cycle(plan, startRead); }
+
+  /** At the snap: Flex's pre-snap decision on his scan picture (the plan as authored: condHolds mirrors the alert itself),
+   * then the cycle on the plan he will run (mirrored when the pick flips it) from the read he starts on. */
+  decidePreSnap(h: V2Host, belief: Record<string, number>, pSingleHigh: number, boxHalfWidth: { S: number; W: number }, protectors: { S: number; W: number }): PreSnapState {
+    const pic = { ...this.picture(h), t: -0.01 };
+    const st = decidePreSnap({ plan: this.plan, picture: pic, belief, pSingleHigh, boxHalfWidth, protectors });
+    this.presnap = st;
+    if (st.flip) this.plan = mirrorPlan(this.plan);
+    this.cycle = new Cycle(this.plan, st.startRead);
+    return st;
+  }
 
   private receiver(h: V2Host, ref: ReceiverRef): Agent | null {
     const slot = h.sim.offAlign.numbering[ref];
