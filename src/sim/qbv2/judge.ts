@@ -264,6 +264,12 @@ export function judge(q: ThrowQuestion, defs: SeenDefender[]): Judgment {
     const lc = laneOf(cov), cr = roles[0];
     if (lc && !lc.rusher && cr && lc.pArrive > cr.pArrive) roles[0] = { ...cr, margin: lc.margin, sigma: lc.sigma, pArrive: lc.pArrive, pPlay: lc.pArrive * PLAY_BREAKUP, pPick: lc.pArrive * PLAY_BREAKUP * PICK_OF_PLAY * (0.5 + cov.ballSkills) };
   }
+  const driverOf = (d: SeenDefender): RoleJudged | null => {
+    if (hyp(d.pos, q.catchAt) > DRIVE_RANGE) return null;
+    const start = q.windup + (d.facesPasser ? 0 : ARM_LEAD), tArr = arriveTime(d, q.catchAt, d.reach + PLAY_CLEAR, start);
+    const sigma = arriveSigma(d, recvSig, tArr), margin = tBall - tArr, pArrive = phi(margin / sigma);
+    return { id: d.id, role: 'driver', margin, sigma, pArrive, pPlay: pArrive * PLAY_BREAKUP, pPick: pArrive * PLAY_BREAKUP * PICK_OF_PLAY * (0.5 + d.ballSkills) };
+  };
   for (const d of defs) {
     if (d === cov) continue;
     // Lane: under the ball's path where it passes low enough for his leap. A rusher at the line by his hands (the batted
@@ -274,13 +280,15 @@ export function judge(q: ThrowQuestion, defs: SeenDefender[]): Judgment {
       // In front of the receiver near the catch: the catch-point model; farther back, our batting rule. The larger.
       const bat = lane.pArrive * LANE_PLAY * (d.facesPasser ? 1 : LANE_PLAY_BLIND) * (0.5 + d.ballSkills), pn = lane.pNear ?? 0;
       const front = { play: pn * PLAY_BREAKUP, pick: pn * PLAY_BREAKUP * PICK_OF_PLAY * (0.5 + d.ballSkills) }, useFront = front.play > bat;
-      roles.push({ id: d.id, role: 'lane', margin: lane.margin, sigma: lane.sigma, pArrive: lane.pArrive, pPlay: useFront ? front.play : bat, pPick: (useFront ? front.play : bat) * PICK_OF_PLAY * (0.5 + d.ballSkills) });
+      const laneRole: RoleJudged = { id: d.id, role: 'lane', margin: lane.margin, sigma: lane.sigma, pArrive: lane.pArrive, pPlay: useFront ? front.play : bat, pPick: (useFront ? front.play : bat) * PICK_OF_PLAY * (0.5 + d.ballSkills) };
+      // He can also drive on the catch point: the larger of the two, as for the coverer (outside audit 2026-11-24 §2: a
+      // corner sitting 2-3 yd off the flat's point was priced only as a bat, 0.03-0.43, and played 7 of 10).
+      const asDriver = driverOf(d);
+      roles.push(asDriver && asDriver.pPlay > laneRole.pPlay ? asDriver : laneRole);
       continue;
     }
-    if (hyp(d.pos, q.catchAt) > DRIVE_RANGE) continue;
-    const start = q.windup + (d.facesPasser ? 0 : ARM_LEAD);
-    const tArr = arriveTime(d, q.catchAt, d.reach + PLAY_CLEAR, start);
-    add(d, 'driver', tArr);
+    const asDriver = driverOf(d);
+    if (asDriver) roles.push(asDriver);
   }
   const notPlayed = roles.reduce((p, r) => p * (1 - r.pPlay), 1), notPicked = roles.reduce((p, r) => p * (1 - r.pPick), 1);
   return { P: q.catchClean * notPlayed, risk: 1 - notPicked, roles };

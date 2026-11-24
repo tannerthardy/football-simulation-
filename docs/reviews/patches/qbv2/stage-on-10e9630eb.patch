@@ -767,10 +767,10 @@ index 000000000..ee6683630
 +}
 diff --git a/src/sim/qbv2/drive.ts b/src/sim/qbv2/drive.ts
 new file mode 100644
-index 000000000..bdde9621b
+index 000000000..c8b24976b
 --- /dev/null
 +++ b/src/sim/qbv2/drive.ts
-@@ -0,0 +1,246 @@
+@@ -0,0 +1,254 @@
 +/**
 + * QB_V2 wiring (QB lane, 2026-11-24): drives the cycle (module E) from QBPass on a concept with an authored read plan
 + * that fits the call, with the look (C), the judgment (D), the role resolver and the pre-snap decision (B, Flex). It
@@ -871,16 +871,24 @@ index 000000000..bdde9621b
 +    return slot ? h.sim.slot(slot) ?? null : null;
 +  }
 +
++  /** Information-honest (outside audit 2026-11-24 §1 row 14): a defender is up unless the passer sees him down, and a
++   * receiver is where the passer's forecast puts him, else his estimate; never the true body. */
++  private seenUp(h: V2Host, d: Agent): boolean { return h.sim.see(h.a, d).pose !== 'down'; }
++  private seenAt(h: V2Host, r: Agent, ahead = 0): V {
++    const p = h.predict(r, ahead); if (p) return p;
++    const e = h.estimate(r); return { x: e.pos.x + e.vel.x * ahead, y: e.pos.y + e.vel.y * ahead };
++  }
++
 +  private picture(h: V2Host): RolePicture {
-+    const sim = h.sim, s1 = this.receiver(h, 'S1'), strong: 1 | -1 = s1 && s1.pos.y < sim.ballY ? -1 : 1;
-+    const defenders = sim.defense.filter((d) => !d.isDown(sim.t)).map((d) => {
++    const sim = h.sim, s1 = this.receiver(h, 'S1'), strong: 1 | -1 = s1 && this.seenAt(h, s1).y < sim.ballY ? -1 : 1;
++    const defenders = sim.defense.filter((d) => this.seenUp(h, d)).map((d) => {
 +      const e = h.estimate(d), pos = d.player.position as string;
 +      return { id: d.idx, x: e.pos.x, y: e.pos.y, vx: e.vel.x, vy: e.vel.y, db: ['CB', 'S', 'FS', 'SS', 'NB', 'DB'].includes(pos) };
 +    });
 +    const receivers: RolePicture['receivers'] = {};
 +    for (const ref of ['S1', 'S2', 'S3', 'W1', 'W2', 'W3', 'B'] as ReceiverRef[]) {
 +      const r = this.receiver(h, ref); if (!r) continue;
-+      const p = h.predict(r, 0) ?? r.pos; receivers[ref] = { id: r.idx, x: p.x, y: p.y, vx: 0, vy: 0 };
++      const p = this.seenAt(h, r); receivers[ref] = { id: r.idx, x: p.x, y: p.y, vx: 0, vy: 0 };
 +    }
 +    return { defenders, receivers, los: sim.los, dir: 1, ballY: sim.ballY, strong, t: sim.t - h.snapAt };
 +  }
@@ -921,7 +929,7 @@ index 000000000..bdde9621b
 +    const sq = r?.keyRules?.find((k) => k.cue === 'squats')?.throwTo, wd = r?.keyRules?.find((k) => k.cue === 'widens')?.throwTo;
 +    if (!sq || !wd || sq === wd) return 'squats';
 +    const a = this.receiver(h, sq), b = this.receiver(h, wd);
-+    const pa = a ? h.predict(a, 0.5) ?? a.pos : null, pb = b ? h.predict(b, 0.5) ?? b.pos : null;
++    const pa = a ? this.seenAt(h, a, 0.5) : null, pb = b ? this.seenAt(h, b, 0.5) : null;
 +    if (!pa || !pb) return 'squats';
 +    return Math.abs(m.y - pa.y) < Math.abs(m.y - pb.y) ? 'widens' : 'squats';
 +  }
@@ -930,7 +938,7 @@ index 000000000..bdde9621b
 +  private remember(h: V2Host): void {
 +    const t = h.sim.t; if (this.hist.length && this.hist[this.hist.length - 1].t === t) return;
 +    const defs = new Map<number, V>(), recv = new Map<string, V>();
-+    for (const d of h.sim.defense) if (!d.isDown(t)) defs.set(d.idx, h.estimate(d).pos);
++    for (const d of h.sim.defense) if (this.seenUp(h, d)) defs.set(d.idx, h.estimate(d).pos);
 +    for (const ref of ['S1', 'S2', 'S3', 'W1', 'W2', 'W3', 'B'] as ReceiverRef[]) { const r = this.receiver(h, ref); if (r) { const p = h.predict(r, 0); if (p) recv.set(ref, p); } }
 +    this.hist.push({ t, defs, recv });
 +    while (this.hist.length && this.hist[0].t < t - 0.5) this.hist.shift();
@@ -957,14 +965,14 @@ index 000000000..bdde9621b
 +    const look = this.cycle.looks.current;
 +    const q: ThrowQuestion = {
 +      windup: h.windup(), flight: mech.T, catchAt: { x: mech.point.x, y: mech.point.y },
-+      receiverAt: (t) => (o.timing === 'seenOpen' ? (() => { const e = h.estimate(r), p = h.predict(r, 0) ?? e.pos; return { x: p.x + e.vel.x * t, y: p.y + e.vel.y * t }; })() : h.predict(r, t) ?? r.pos),
++      receiverAt: (t) => (o.timing === 'seenOpen' ? (() => { const e = h.estimate(r), p = h.predict(r, 0) ?? e.pos; return { x: p.x + e.vel.x * t, y: p.y + e.vel.y * t }; })() : this.seenAt(h, r, t)),
 +      breakIn: o.timing === 'onBreak' && bk !== null ? bk - sim.t : null,
 +      ballHeightAt: (p) => { let bi = -1, bd = Infinity; path.forEach((q2, i) => { const d = Math.hypot(q2.x - p.x, q2.y - p.y); if (d < bd) { bd = d; bi = i; } }); return bi >= 0 && bd < 1.5 ? heights[bi] : null; },
 +      heldCoverer: this.held.get(o.ref) ?? null, coverEligible: this.eligible(h, o.ref),
 +      path: [{ x: from.x, y: from.y }, ...path], los: sim.los, catchClean: CATCH_CLEAN, res: look ? this.cycle.looks.resolved(look) : 0, receiverSpread: h.pictureSpread(r),
 +      placeSpread: h.placeSpread?.(Math.hypot(mech.point.x - from.x, mech.point.y - from.y)),
 +    };
-+    const defs: SeenDefender[] = sim.defense.filter((d) => !d.isDown(sim.t) && h.pictureAge(d) < 1.5).map((d) => {
++    const defs: SeenDefender[] = sim.defense.filter((d) => this.seenUp(h, d) && h.pictureAge(d) < 1.5).map((d) => {
 +      const e = h.estimate(d), b = h.body(d), toQB = Math.atan2(h.a.pos.y - e.pos.y, h.a.pos.x - e.pos.x), eyes = h.seenHead(d) ?? e.facing;
 +      // His eyes on the passer: the head he sees on the man where perception records it, else the body (Coverage's review).
 +      const faces = Math.abs(Math.atan2(Math.sin(eyes - toQB), Math.cos(eyes - toQB))) < Math.PI / 3;
@@ -1019,10 +1027,10 @@ index 000000000..bdde9621b
 +}
 diff --git a/src/sim/qbv2/judge.ts b/src/sim/qbv2/judge.ts
 new file mode 100644
-index 000000000..880685b05
+index 000000000..c81465748
 --- /dev/null
 +++ b/src/sim/qbv2/judge.ts
-@@ -0,0 +1,287 @@
+@@ -0,0 +1,295 @@
 +/**
 + * QB_V2 module D: the judgment (QB lane, 2026-11-24; docs/reviews/2026-11-24-qb-v2-design.md §2, §7, §8). For one
 + * candidate throw, his belief that it is caught (P) and that it is intercepted (risk), from the defenders in his picture
@@ -1289,6 +1297,12 @@ index 000000000..880685b05
 +    const lc = laneOf(cov), cr = roles[0];
 +    if (lc && !lc.rusher && cr && lc.pArrive > cr.pArrive) roles[0] = { ...cr, margin: lc.margin, sigma: lc.sigma, pArrive: lc.pArrive, pPlay: lc.pArrive * PLAY_BREAKUP, pPick: lc.pArrive * PLAY_BREAKUP * PICK_OF_PLAY * (0.5 + cov.ballSkills) };
 +  }
++  const driverOf = (d: SeenDefender): RoleJudged | null => {
++    if (hyp(d.pos, q.catchAt) > DRIVE_RANGE) return null;
++    const start = q.windup + (d.facesPasser ? 0 : ARM_LEAD), tArr = arriveTime(d, q.catchAt, d.reach + PLAY_CLEAR, start);
++    const sigma = arriveSigma(d, recvSig, tArr), margin = tBall - tArr, pArrive = phi(margin / sigma);
++    return { id: d.id, role: 'driver', margin, sigma, pArrive, pPlay: pArrive * PLAY_BREAKUP, pPick: pArrive * PLAY_BREAKUP * PICK_OF_PLAY * (0.5 + d.ballSkills) };
++  };
 +  for (const d of defs) {
 +    if (d === cov) continue;
 +    // Lane: under the ball's path where it passes low enough for his leap. A rusher at the line by his hands (the batted
@@ -1299,13 +1313,15 @@ index 000000000..880685b05
 +      // In front of the receiver near the catch: the catch-point model; farther back, our batting rule. The larger.
 +      const bat = lane.pArrive * LANE_PLAY * (d.facesPasser ? 1 : LANE_PLAY_BLIND) * (0.5 + d.ballSkills), pn = lane.pNear ?? 0;
 +      const front = { play: pn * PLAY_BREAKUP, pick: pn * PLAY_BREAKUP * PICK_OF_PLAY * (0.5 + d.ballSkills) }, useFront = front.play > bat;
-+      roles.push({ id: d.id, role: 'lane', margin: lane.margin, sigma: lane.sigma, pArrive: lane.pArrive, pPlay: useFront ? front.play : bat, pPick: (useFront ? front.play : bat) * PICK_OF_PLAY * (0.5 + d.ballSkills) });
++      const laneRole: RoleJudged = { id: d.id, role: 'lane', margin: lane.margin, sigma: lane.sigma, pArrive: lane.pArrive, pPlay: useFront ? front.play : bat, pPick: (useFront ? front.play : bat) * PICK_OF_PLAY * (0.5 + d.ballSkills) };
++      // He can also drive on the catch point: the larger of the two, as for the coverer (outside audit 2026-11-24 §2: a
++      // corner sitting 2-3 yd off the flat's point was priced only as a bat, 0.03-0.43, and played 7 of 10).
++      const asDriver = driverOf(d);
++      roles.push(asDriver && asDriver.pPlay > laneRole.pPlay ? asDriver : laneRole);
 +      continue;
 +    }
-+    if (hyp(d.pos, q.catchAt) > DRIVE_RANGE) continue;
-+    const start = q.windup + (d.facesPasser ? 0 : ARM_LEAD);
-+    const tArr = arriveTime(d, q.catchAt, d.reach + PLAY_CLEAR, start);
-+    add(d, 'driver', tArr);
++    const asDriver = driverOf(d);
++    if (asDriver) roles.push(asDriver);
 +  }
 +  const notPlayed = roles.reduce((p, r) => p * (1 - r.pPlay), 1), notPicked = roles.reduce((p, r) => p * (1 - r.pPick), 1);
 +  return { P: q.catchClean * notPlayed, risk: 1 - notPicked, roles };

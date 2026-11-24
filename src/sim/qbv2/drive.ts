@@ -98,16 +98,24 @@ export class V2Drive {
     return slot ? h.sim.slot(slot) ?? null : null;
   }
 
+  /** Information-honest (outside audit 2026-11-24 §1 row 14): a defender is up unless the passer sees him down, and a
+   * receiver is where the passer's forecast puts him, else his estimate; never the true body. */
+  private seenUp(h: V2Host, d: Agent): boolean { return h.sim.see(h.a, d).pose !== 'down'; }
+  private seenAt(h: V2Host, r: Agent, ahead = 0): V {
+    const p = h.predict(r, ahead); if (p) return p;
+    const e = h.estimate(r); return { x: e.pos.x + e.vel.x * ahead, y: e.pos.y + e.vel.y * ahead };
+  }
+
   private picture(h: V2Host): RolePicture {
-    const sim = h.sim, s1 = this.receiver(h, 'S1'), strong: 1 | -1 = s1 && s1.pos.y < sim.ballY ? -1 : 1;
-    const defenders = sim.defense.filter((d) => !d.isDown(sim.t)).map((d) => {
+    const sim = h.sim, s1 = this.receiver(h, 'S1'), strong: 1 | -1 = s1 && this.seenAt(h, s1).y < sim.ballY ? -1 : 1;
+    const defenders = sim.defense.filter((d) => this.seenUp(h, d)).map((d) => {
       const e = h.estimate(d), pos = d.player.position as string;
       return { id: d.idx, x: e.pos.x, y: e.pos.y, vx: e.vel.x, vy: e.vel.y, db: ['CB', 'S', 'FS', 'SS', 'NB', 'DB'].includes(pos) };
     });
     const receivers: RolePicture['receivers'] = {};
     for (const ref of ['S1', 'S2', 'S3', 'W1', 'W2', 'W3', 'B'] as ReceiverRef[]) {
       const r = this.receiver(h, ref); if (!r) continue;
-      const p = h.predict(r, 0) ?? r.pos; receivers[ref] = { id: r.idx, x: p.x, y: p.y, vx: 0, vy: 0 };
+      const p = this.seenAt(h, r); receivers[ref] = { id: r.idx, x: p.x, y: p.y, vx: 0, vy: 0 };
     }
     return { defenders, receivers, los: sim.los, dir: 1, ballY: sim.ballY, strong, t: sim.t - h.snapAt };
   }
@@ -148,7 +156,7 @@ export class V2Drive {
     const sq = r?.keyRules?.find((k) => k.cue === 'squats')?.throwTo, wd = r?.keyRules?.find((k) => k.cue === 'widens')?.throwTo;
     if (!sq || !wd || sq === wd) return 'squats';
     const a = this.receiver(h, sq), b = this.receiver(h, wd);
-    const pa = a ? h.predict(a, 0.5) ?? a.pos : null, pb = b ? h.predict(b, 0.5) ?? b.pos : null;
+    const pa = a ? this.seenAt(h, a, 0.5) : null, pb = b ? this.seenAt(h, b, 0.5) : null;
     if (!pa || !pb) return 'squats';
     return Math.abs(m.y - pa.y) < Math.abs(m.y - pb.y) ? 'widens' : 'squats';
   }
@@ -157,7 +165,7 @@ export class V2Drive {
   private remember(h: V2Host): void {
     const t = h.sim.t; if (this.hist.length && this.hist[this.hist.length - 1].t === t) return;
     const defs = new Map<number, V>(), recv = new Map<string, V>();
-    for (const d of h.sim.defense) if (!d.isDown(t)) defs.set(d.idx, h.estimate(d).pos);
+    for (const d of h.sim.defense) if (this.seenUp(h, d)) defs.set(d.idx, h.estimate(d).pos);
     for (const ref of ['S1', 'S2', 'S3', 'W1', 'W2', 'W3', 'B'] as ReceiverRef[]) { const r = this.receiver(h, ref); if (r) { const p = h.predict(r, 0); if (p) recv.set(ref, p); } }
     this.hist.push({ t, defs, recv });
     while (this.hist.length && this.hist[0].t < t - 0.5) this.hist.shift();
@@ -184,14 +192,14 @@ export class V2Drive {
     const look = this.cycle.looks.current;
     const q: ThrowQuestion = {
       windup: h.windup(), flight: mech.T, catchAt: { x: mech.point.x, y: mech.point.y },
-      receiverAt: (t) => (o.timing === 'seenOpen' ? (() => { const e = h.estimate(r), p = h.predict(r, 0) ?? e.pos; return { x: p.x + e.vel.x * t, y: p.y + e.vel.y * t }; })() : h.predict(r, t) ?? r.pos),
+      receiverAt: (t) => (o.timing === 'seenOpen' ? (() => { const e = h.estimate(r), p = h.predict(r, 0) ?? e.pos; return { x: p.x + e.vel.x * t, y: p.y + e.vel.y * t }; })() : this.seenAt(h, r, t)),
       breakIn: o.timing === 'onBreak' && bk !== null ? bk - sim.t : null,
       ballHeightAt: (p) => { let bi = -1, bd = Infinity; path.forEach((q2, i) => { const d = Math.hypot(q2.x - p.x, q2.y - p.y); if (d < bd) { bd = d; bi = i; } }); return bi >= 0 && bd < 1.5 ? heights[bi] : null; },
       heldCoverer: this.held.get(o.ref) ?? null, coverEligible: this.eligible(h, o.ref),
       path: [{ x: from.x, y: from.y }, ...path], los: sim.los, catchClean: CATCH_CLEAN, res: look ? this.cycle.looks.resolved(look) : 0, receiverSpread: h.pictureSpread(r),
       placeSpread: h.placeSpread?.(Math.hypot(mech.point.x - from.x, mech.point.y - from.y)),
     };
-    const defs: SeenDefender[] = sim.defense.filter((d) => !d.isDown(sim.t) && h.pictureAge(d) < 1.5).map((d) => {
+    const defs: SeenDefender[] = sim.defense.filter((d) => this.seenUp(h, d) && h.pictureAge(d) < 1.5).map((d) => {
       const e = h.estimate(d), b = h.body(d), toQB = Math.atan2(h.a.pos.y - e.pos.y, h.a.pos.x - e.pos.x), eyes = h.seenHead(d) ?? e.facing;
       // His eyes on the passer: the head he sees on the man where perception records it, else the body (Coverage's review).
       const faces = Math.abs(Math.atan2(Math.sin(eyes - toQB), Math.cos(eyes - toQB))) < Math.PI / 3;
