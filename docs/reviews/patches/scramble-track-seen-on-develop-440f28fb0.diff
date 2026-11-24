@@ -1,0 +1,206 @@
+diff --git a/config/baseline.json b/config/baseline.json
+index c29a10f52..007399b2b 100644
+--- a/config/baseline.json
++++ b/config/baseline.json
+@@ -376,6 +376,8 @@
+     "QB_SCAN": "0",
+     "QB_CANON_SEEN": "0",
+     "BELIEVED_BODY": "0",
++    "SCRAMBLE_SEEN": "0",
++    "TRACK_SEEN": "0",
+     "QB_SEEN_OUT": "0",
+     "QB_SEEN_REC": "0",
+     "ACC_RADIUS": "0",
+diff --git a/config/reference-stack.json b/config/reference-stack.json
+index a475c8f2e..25fb724d6 100644
+--- a/config/reference-stack.json
++++ b/config/reference-stack.json
+@@ -339,6 +339,8 @@
+     "QB_SCAN": "on",
+     "QB_CANON_SEEN": "on",
+     "BELIEVED_BODY": "off",
++    "SCRAMBLE_SEEN": "off",
++    "TRACK_SEEN": "off",
+     "QB_SEEN_OUT": "on",
+     "QB_SEEN_REC": "on",
+     "ACC_RADIUS": "off",
+diff --git a/docs/FLAGS.md b/docs/FLAGS.md
+index f69966527..a0c201fc5 100644
+--- a/docs/FLAGS.md
++++ b/docs/FLAGS.md
+@@ -2,7 +2,7 @@
+ 
+ Every engine switch read from the environment, recounted from `src` at `57f50fc3` on 2026-10-22. This includes #210's promotion and #205's two additional default-on switches. Flags that are not on develop (parked, removed from a PR, or only on a side branch) are kept in [PARKED.md](PARKED.md) so the ideas are not lost. Registration rules are in [PLAN.md](PLAN.md): at most 10 experimental flags, and each expires two reviews after it lands.
+ 
+-There are 508 flags read from the environment in `src` (recounted 2026-11-24, with CALL_COMPOSE (off, rules/call-compose) counted: BELIEVED_BODY (off, experimental; Flex) on top of engine-97; engine-97: engine-96 plus QB_SCAN and QB_CANON_SEEN (on, leak removals; Flex; recounted from `src`, the on count also takes in engine-96's BALL_DRAG); engine-96: engine-95 plus BALL_DRAG (on); engine-95: engine-94 plus THROWAWAY_FELT (on); engine-94: engine-93 plus FLIGHT_BREAK (on) and FLIGHT_LEAD (off, parked); engine-93: engine-92 plus HEAD_FOLLOW (on); engine-92: engine-91 plus PERIPH_ACUITY (on); engine-91: engine-90 plus STEM_WORK (on); engine-90: engine-89 plus READ_VERTICAL_LOS and BACK_CLEAR (on); engine-89: engine-88 plus FLAT_CARRY (on); engine-88: engine-87 plus FORECAST_FINISH and QB_ROLE_PATH (on), READ_WINDOW and QB_CLOSE_BELIEF (off); engine-87: engine-86 plus HALF_KEY (on); engine-86 was engine-85 plus MUSH_MATCH (on); engine-85 was engine-84 plus FLAT_SINK (on); engine-84 was engine-83 plus DOWN_RISE_PLANT (on); engine-83 was engine-82 plus QB_DRIVE, QB_RHYTHM_THROW, QB_ALIGN, QB_BODY_FOLLOW, QB_WINDOW_ARRIVE, QB_KEY_PLANT, QB_STICK, QB_PEEK_CLOCK, QB_MOF_READ, QB_DEEP_WAIT and QB_STANCE; QB_DRIVE, QB_RHYTHM_THROW, QB_WINDOW_ARRIVE, QB_KEY_PLANT and QB_STICK on): 386 are on unless set to `0`, 93 are off unless set to `1`, and 28 are numeric scales or modes (identity value unless listed in the stack's numeric section). The rows below carry each flag's history.
++There are 510 flags read from the environment in `src` (recounted 2026-11-24, SCRAMBLE_SEEN and TRACK_SEEN (off, experimental; Flex), with CALL_COMPOSE (off, rules/call-compose) counted: BELIEVED_BODY (off, experimental; Flex) on top of engine-97; engine-97: engine-96 plus QB_SCAN and QB_CANON_SEEN (on, leak removals; Flex; recounted from `src`, the on count also takes in engine-96's BALL_DRAG); engine-96: engine-95 plus BALL_DRAG (on); engine-95: engine-94 plus THROWAWAY_FELT (on); engine-94: engine-93 plus FLIGHT_BREAK (on) and FLIGHT_LEAD (off, parked); engine-93: engine-92 plus HEAD_FOLLOW (on); engine-92: engine-91 plus PERIPH_ACUITY (on); engine-91: engine-90 plus STEM_WORK (on); engine-90: engine-89 plus READ_VERTICAL_LOS and BACK_CLEAR (on); engine-89: engine-88 plus FLAT_CARRY (on); engine-88: engine-87 plus FORECAST_FINISH and QB_ROLE_PATH (on), READ_WINDOW and QB_CLOSE_BELIEF (off); engine-87: engine-86 plus HALF_KEY (on); engine-86 was engine-85 plus MUSH_MATCH (on); engine-85 was engine-84 plus FLAT_SINK (on); engine-84 was engine-83 plus DOWN_RISE_PLANT (on); engine-83 was engine-82 plus QB_DRIVE, QB_RHYTHM_THROW, QB_ALIGN, QB_BODY_FOLLOW, QB_WINDOW_ARRIVE, QB_KEY_PLANT, QB_STICK, QB_PEEK_CLOCK, QB_MOF_READ, QB_DEEP_WAIT and QB_STANCE; QB_DRIVE, QB_RHYTHM_THROW, QB_WINDOW_ARRIVE, QB_KEY_PLANT and QB_STICK on): 386 are on unless set to `0`, 96 are off unless set to `1`, and 28 are numeric scales or modes (identity value unless listed in the stack's numeric section). The rows below carry each flag's history.
+ 
+ **Promotion (2026-11-09):** the reference stack `run-ref-4` is now the engine's default. The 90 flags it lists `on` are read as on unless set to `0` (rows marked "promoted" below); the rest are unchanged. Decisions and evidence for each flag are in [REFERENCE_STACK.md](REFERENCE_STACK.md); `npm run ref -- --list` is the current inventory, and `npm run ref -- --off -- <command>` runs the engine as it was before. The test suites still run on the pre-promotion engine (pinned in `vitest.config.ts`) until their recorded cases are re-recorded. The counts in the paragraph above predate all of this.
+ 
+@@ -231,6 +231,8 @@ There are 508 flags read from the environment in `src` (recounted 2026-11-24, wi
+ | `QB_SCAN` | on | leak removal, on at landing (`=0` restores; Flex, 2026-11-24; QB decision plan §1.6) | quarterback | `src/sim/qbmind.ts` (`QBMind.scanned`) | his pre-snap picture is one full scan with a per-defender error drawn once per play (recognition-scaled), feeding his memory at the snap, the coverage features, the box count, the screen look and the quick check. Off: memory seeded with exact positions; four reads with independent fresh noise. |
+ | `QB_CANON_SEEN` | on | leak removal, on at landing (`=0` restores; Flex, 2026-11-24; QB decision plan §1.6) | quarterback | `src/sim/qbmind.ts` (canonical looks, `cornersSeen`) | the canonical looks use the defense's personnel slots and the front's visible alignment (front, edge, strength, mug, Sam on) only; corners are found where he sees them (on each side the widest defensive back of the visible personnel group within 12 yd of the line and 4+ yd off the ball; attempt 1's 8 yd floor and 9 yd depth cut missed 40-50% of corners on condensed trips and heavy 13 and fell to quickCheck's default; staged probe `scripts/diag/eyes/corner-find.mts`: 98-100% right in 17 looks incl. press, bunch, condensed, nub and rolled safeties, residual misses scan-only at rec <= 0.5). Off: the call object and the CB_S / CB_W labels. |
+ | `BELIEVED_BODY` | off (`=1` turns it on) | experimental (Flex, 2026-11-24; believed-body note, docs/reviews/2026-11-24-believed-body.md, step 2) | coverage (first consumers) | `src/sim/believed-body.ts` (`BeliefStore`, `believedCaps`, `lookAt`); `src/sim/behaviors/defense.ts`, `src/sim/coverage/reads.ts`; `src/game/game.ts` (one store per game, the huddle) | two reviews after it lands. A defender's read of a receiver's top speed, burst, braking and cutting is what he believes, not the man's true profile: his build seen (the engine's own build-capacity fit, `scripts/diag/belief/body-prior-fit.mts`, with one weight error per holder and man), the staff's film (truth plus one error per game, tighter with the man's snaps; none for a rookie) and his own clear looks (a plateau of seen speed held 0.6 s: a floor always, a measurement on a vertical stem; a rise from rest: his burst). Between plays the huddle passes each player's two biggest steps to his unit on the field (stated choices: 2 items, lost 0.15 - 0.13 x awareness). Consumers: man coverage (slow-play sprint test, route observation, stem acceleration, release and upfield burst, the deep cushion), zone route observation and the deep cushion, coverage/reads, the ball-reach check. Off: the man's own capacities, bit-identical. |
++| `SCRAMBLE_SEEN` | off (`=1` turns it on) | experimental (Flex, 2026-11-24; outside audit, offense #1) | receivers | `src/sim/behaviors/receiver.ts` (`RouteRunner.scrambleDrill`) | two reviews after it lands. The scramble drill finds grass away from the defenders where he sees them (`sim.see`) and works back toward the passer where he sees him; off, every defender's true position and the passer's. Test `test/receiver-seen.test.ts`. |
++| `TRACK_SEEN` | off (`=1` turns it on) | experimental (Flex, 2026-11-24; outside audit, offense #5) | receivers | `src/sim/behaviors/receiver.ts` (`TrackBall.update`) | two reviews after it lands. Under BALL_EST his ball tracking ends when his own estimate has the ball down (its last sample past), never on the true ball's state; off, he stopped tracking on the tick the true ball left the air (a receiver with his back turned knew the instant it landed elsewhere). Test `test/receiver-seen.test.ts`. |
+ | `QB_SEEN_OUT` | on | promoted 2026-11-14 (engine-63; `=0` restores); was experimental (QB lane, information rule, 2026-11-13; staged test `test/qb-seen-out.test.ts`; game rows near flat) | quarterback | `src/sim/behaviors/qb.ts` (`seenOut`, `checkRelease`, `breakClock`, `ready`) | Whether a check-release man is out on his route comes from the quarterback's own picture placing him on his installed release route (then he stays out), not from the man's behaviour object; gates the rhythm outlet, his readiness and his place in the hot order. A slow screen's settle is read from where the quarterback has the receiver. |
+ | `QB_SEEN_REC` | on | promoted 2026-11-14 (engine-63; `=0` restores); was experimental (QB lane, information rule, 2026-11-14; first build) | quarterback | `src/sim/behaviors/qb.ts` (`has`, `evaluate`, `orderReads`) | The remaining reads of his own receivers' true state use where he has them (his forecast, else his delayed picture): a receiver's side for the look-off and the hot side, the verticals' stems for the peek, the clear-look test, the fallback target point, and the man-coverage reorder (with his picture of the defender). A receiver is down when his delayed picture shows him off his feet; a block is the call or an unseen check-release man, not the engagement record. With `QB_BELIEVED_DEF` the reorder also uses the defender's believed speed and man coverage. |
+ | `ACC_RADIUS` | off | experimental (deep-window belief, 2026-11-13) | QB | `src/sim/behaviors/qb.ts` (`window`, pAcc) | set at first review. His accuracy belief's catchable radius grows with the flight and the receiver's ball skills (1.6 + 0.9 T yd) instead of a fixed 1.35: our own catches by aim miss keep about 0.6-0.9 of an on-target ball's completion at a 2 yd miss and 0.2-0.55 at 3 yd (short to long flights), where the fixed radius priced 0.33 and 0.08. To be carded beside Coverage's medium-flight ball defending (our defenders 4.5 yd from the ball at 1.2-1.8 s against the NFL's 2.8). docs/reviews/2026-11-13-qb-gather.md |
+diff --git a/src/sim/behaviors/receiver.ts b/src/sim/behaviors/receiver.ts
+index 634b876c3..42d2ff2ea 100644
+--- a/src/sim/behaviors/receiver.ts
++++ b/src/sim/behaviors/receiver.ts
+@@ -51,6 +51,14 @@ const ROUTE_CLEAR = process.env.ROUTE_CLEAR !== '0';
+  * state or engagement record; the convoy's target choice, its fit and its timing use the seen defender, and a teammate
+  * turns to the convoy when his picture shows the catcher with the ball (`ConvoyCue`), not at the true catch. Contact
+  * itself stays physics. Off: the true reads (docs/reviews/2026-11-13-information-leak-sweep.md, Rules + Coaching). */
++/** SCRAMBLE_SEEN (experimental, off; Flex, 2026-11-24; outside audit, offense #1): the scramble drill finds grass away from the
++ * defenders where he sees them and works back to the passer where he sees him, not their true positions. */
++export const SCRAMBLE_SEEN = process.env.SCRAMBLE_SEEN === '1';
++/** TRACK_SEEN (experimental, off; Flex, 2026-11-24; outside audit, offense #5): his ball tracking ends when his own estimate
++ * has the ball down, not on the tick the true ball stops flying. */
++export const TRACK_SEEN = process.env.TRACK_SEEN === '1';
++/** Off TRACK_SEEN (and without BALL_EST) the tracker runs only while the ball is in the air. */
++type AirBall = Extract<PlaySim['ball'], { kind: 'air' }>;
+ export const RCV_SEEN = process.env.RCV_SEEN !== '0';
+ const isDownFor = (a: Agent, sim: PlaySim, o: Agent): boolean => RCV_SEEN ? seenDown(sim, a, o) : o.isDown(sim.t);
+ const isTakenFor = (a: Agent, sim: PlaySim, d: Agent): boolean => RCV_SEEN ? seenTaken(sim, a, d, 'my-team') : !!d.engagement;
+@@ -639,16 +647,19 @@ export class RouteRunner implements Behavior {
+    */
+   private scrambleDrill(a: Agent, sim: PlaySim): MoveCommand {
+     const qb = sim.qb;
++    // SCRAMBLE_SEEN: the passer where he sees him (a teammate's picture: his own sight, no reading delay).
++    const qbAt = SCRAMBLE_SEEN ? sim.see(a, qb).pos : qb.pos;
+     if (!this.drill || sim.t >= this.drill.at) {
+       const depth = a.pos.x - sim.los;
+       const baseX = sim.los + (depth > 14 ? Math.max(10, depth - 9) : clamp(depth + 2, 4, 12));
+-      const baseY = a.pos.y + (qb.pos.y - a.pos.y) * (depth > 14 ? 0.15 : 0.35);
++      const baseY = a.pos.y + (qbAt.y - a.pos.y) * (depth > 14 ? 0.15 : 0.35);
+       let best: Vec2 = { x: baseX, y: baseY };
+       let bestScore = -Infinity;
+       for (const [dx, dy] of [[0, 0], [0, 4], [0, -4], [3, 0], [-3, 0], [2, 3], [2, -3]]) {
+         const p = { x: Math.min(OPP_GOAL_X + 8, baseX + dx), y: clamp(baseY + dy, 2, FIELD_WIDTH - 2) };
+         let near = Infinity;
+-        for (const d of sim.defense) near = Math.min(near, Math.hypot(d.pos.x - p.x, d.pos.y - p.y));
++        // SCRAMBLE_SEEN: grass away from the defenders where he sees them (his delayed picture), not where they are.
++        for (const d of sim.defense) { const at = SCRAMBLE_SEEN ? sim.see(a, d).pos : d.pos; near = Math.min(near, Math.hypot(at.x - p.x, at.y - p.y)); }
+         const score = Math.min(near, 6) - 0.15 * Math.hypot(p.x - a.pos.x, p.y - a.pos.y);
+         if (score > bestScore) {
+           bestScore = score;
+@@ -657,7 +668,7 @@ export class RouteRunner implements Behavior {
+       }
+       this.drill = { at: sim.t + 0.5, spot: best };
+     }
+-    return goTo(a, this.drill.spot, { speed: 0.85, facing: angleTo(a.pos, qb.pos) });
++    return goTo(a, this.drill.spot, { speed: 0.85, facing: angleTo(a.pos, qbAt) });
+   }
+ 
+   /** RELEASE_THROUGH: the press release carried him wide of his stem. Stem points just ahead of him (under
+@@ -917,7 +928,13 @@ export class TrackBall implements Behavior {
+   }
+ 
+   update(a: Agent, sim: PlaySim): MoveCommand {
+-    if (sim.ball.kind !== 'air') return this.fallback.update(a, sim);
++    // TRACK_SEEN: under BALL_EST he tracks the flight he has seen until his own estimate has it down (its last sample past),
++    // not until the true ball stops flying: a receiver with his back turned does not know the tick the ball lands elsewhere.
++    if (TRACK_SEEN && BALL_EST && sim.ballEstimates) {
++      // His estimate has the ball down (its last sample is past): the flight is over as far as he knows.
++      const seen = sim.ballEstimates.estimate(a, sim);
++      if (seen.length && seen[seen.length - 1].t < sim.t) return this.fallback.update(a, sim);
++    } else if (sim.ball.kind !== 'air') return this.fallback.update(a, sim);
+     // BALL_EST design 3: his own perception replaces the legacy reaction gate (in series with it, it delayed him
+     // twice). He attends from the release; his head still has to come round at its own rate before he samples.
+     if (!BALL_EST && sim.t < this.reactAt) return this.fallback.update(a, sim);
+@@ -977,7 +994,7 @@ export class TrackBall implements Behavior {
+     // Arrive on time, keep running through if the ball is leading him.
+     const need = dist / dtArr;
+     // BALL_EST: he faces where he believes the ball is, not where it is.
+-    const facing = BALL_EST ? angleTo(a.pos, path[0]) : angleTo(a.pos, { x: sim.ball.flight.pos.x, y: sim.ball.flight.pos.y });
++    const facing = BALL_EST ? angleTo(a.pos, path[0]) : angleTo(a.pos, { x: (sim.ball as AirBall).flight.pos.x, y: (sim.ball as AirBall).flight.pos.y });
+     if (dist < 0.5) return { vel: { x: a.vel.x * 0.5, y: a.vel.y * 0.5 }, facing };
+     const run0 = runThrough(a, target, { speed: clamp(need / a.profile.vmax, 0.35, 1) });
+     // TRUNK_TWIST: within 3 yd he turns his shoulders to the ball and keeps the gait on his path, so a receiver looking
+diff --git a/test/engine-pin.json b/test/engine-pin.json
+index 9525e4c6d..8ed72eb06 100644
+--- a/test/engine-pin.json
++++ b/test/engine-pin.json
+@@ -460,6 +460,7 @@
+   "test/receiver-eligibility-gh.test.ts",
+   "test/receiver-flat-release.test.ts",
+   "test/receiver-middle-read.test.ts",
++  "test/receiver-seen.test.ts",
+   "test/receiving-fumble-credit.test.ts",
+   "test/recognition-ball-cues.test.ts",
+   "test/recognition.test.ts",
+diff --git a/test/information-guard-allowlist.ts b/test/information-guard-allowlist.ts
+index 619f7b930..be0dad52b 100644
+--- a/test/information-guard-allowlist.ts
++++ b/test/information-guard-allowlist.ts
+@@ -108,7 +108,7 @@ export const INFORMATION_DEBT: InformationDebt[] = [
+   { file: 'src/sim/behaviors/receiver.ts', key: 'agent.engagement', reads: 3, class: 'unreviewed', owner: 'Rules+Coaching', since: '2026-11-13', why: "whether another player is engaged and with whom; he sees contact only through his own pictures" },
+   { file: 'src/sim/behaviors/receiver.ts', key: 'agent.isDown', reads: 1, class: 'leak', owner: 'Rules+Coaching', since: '2026-11-13', why: "another player's true off-feet state; sim.see(...).pose is the delayed cue" },
+   { file: 'src/sim/behaviors/receiver.ts', key: 'agent.isDown', reads: 1, class: 'unreviewed', owner: 'Rules+Coaching', since: '2026-11-13', why: "another player's true off-feet state; sim.see(...).pose is the delayed cue" },
+-  { file: 'src/sim/behaviors/receiver.ts', key: 'agent.pos', reads: 12, class: 'leak', owner: 'Rules+Coaching', since: '2026-11-13', why: "another player's true position; read it through sim.see(a, other)" },
++  { file: 'src/sim/behaviors/receiver.ts', key: 'agent.pos', reads: 10, class: 'leak', owner: 'Rules+Coaching', since: '2026-11-13', why: "another player's true position; read it through sim.see(a, other)" },
+   { file: 'src/sim/behaviors/receiver.ts', key: 'agent.pos', reads: 11, class: 'unreviewed', owner: 'Rules+Coaching', since: '2026-11-13', why: "another player's true position; read it through sim.see(a, other)" },
+   { file: 'src/sim/behaviors/receiver.ts', key: 'agent.speedScale', reads: 1, class: 'unreviewed', owner: 'Rules+Coaching', since: '2026-11-13', why: "another player's true fatigue; a defender sees a fade, not the tank" },
+   { file: 'src/sim/behaviors/receiver.ts', key: 'agent.vel', reads: 1, class: 'unreviewed', owner: 'Rules+Coaching', since: '2026-11-13', why: "another player's true velocity; read it through sim.see(a, other)" },
+diff --git a/test/receiver-seen.test.ts b/test/receiver-seen.test.ts
+new file mode 100644
+index 000000000..4da94ebcc
+--- /dev/null
++++ b/test/receiver-seen.test.ts
+@@ -0,0 +1,53 @@
++// SCRAMBLE_SEEN and TRACK_SEEN (Flex, 2026-11-24; outside audit, offense #1 and #5): a receiver's scramble drill and his
++// ball tracking go by what he sees, not by true positions or the true ball state.
++import { afterEach, describe, expect, it, vi } from 'vitest';
++import type { Agent } from '../src/sim/agent.js';
++import type { PlaySim } from '../src/sim/playsim.js';
++
++afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
++const load = async (env: Record<string, string>) => {
++  for (const [k, v] of Object.entries(env)) vi.stubEnv(k, v);
++  vi.resetModules();
++  return import('../src/sim/behaviors/receiver.js');
++};
++const agent = (x: number, y: number, extra: Partial<Agent> = {}) => ({ pos: { x, y }, vel: { x: 0, y: 0 }, ...extra }) as unknown as Agent;
++
++describe('SCRAMBLE_SEEN: the scramble drill finds grass from his picture', () => {
++  // A defender truly sitting on the spot he would work back to, but seen 8 yd away (a stale picture): with the flag he
++  // goes by the picture; without it, by the truth.
++  const drillSpot = async (flag: string) => {
++    const { RouteRunner } = await load({ SCRAMBLE_SEEN: flag });
++    const me = agent(52, 20), qb = agent(33, 26.67), d = agent(54, 21);
++    const sim = { los: 40, t: 0, qb, defense: [d], see: (_a: Agent, o: Agent) => ({ pos: o === d ? { x: 60, y: 30 } : o.pos, vel: { x: 0, y: 0 } }) } as unknown as PlaySim;
++    const rr = Object.create(RouteRunner.prototype) as { drill: unknown; scrambleDrill(a: Agent, s: PlaySim): unknown };
++    rr.drill = null;
++    try { rr.scrambleDrill(me, sim); } catch { /* goTo needs a full body; the spot is chosen before it */ }
++    return (rr.drill as { spot: { x: number; y: number } }).spot;
++  };
++  it('steers by the defender he sees, not the one who is there', async () => {
++    const off = await drillSpot('0'), on = await drillSpot('1');
++    expect(on).not.toEqual(off);
++    // Off, the true defender at (54, 21) pushes him off the base spot; on, the seen one at (60, 30) is far, so he takes it.
++    expect(Math.hypot(on.x - 54, on.y - 21)).toBeLessThan(Math.hypot(off.x - 54, off.y - 21));
++  });
++});
++
++describe('TRACK_SEEN: the ball tracker ends on his own estimate', () => {
++  const run = async (flag: string, lastT: number) => {
++    const { TrackBall } = await load({ TRACK_SEEN: flag });
++    const me = agent(50, 20, { tags: new Set(), r: () => 0.5 } as unknown as Partial<Agent>);
++    const fallback = { kind: 'route', update: () => ({ vel: { x: 7, y: 7 } }) };
++    const sim = { t: 1, dice: () => ({ normal: () => 0 }), ball: { kind: 'held' },
++      ballEstimates: { estimate: () => [{ t: lastT - 0.1, x: 55, y: 20, z: 2 }, { t: lastT, x: 56, y: 20, z: 1.5 }] } } as unknown as PlaySim;
++    const tb = new TrackBall(me, sim, fallback as never);
++    const spy = vi.spyOn(fallback, 'update');
++    try { tb.update(me, sim); } catch { /* the rest of the tracker needs a full sim; only whether he left it matters here */ }
++    return spy.mock.calls.length > 0;
++  };
++  it('off: the true ball no longer in the air ends tracking on the tick', async () => {
++    expect(await run('0', 3)).toBe(true);
++  });
++  it('on: once his own estimate has the ball down he stops, though nothing told him the true ball landed', async () => {
++    expect(await run('1', 0.5)).toBe(true); // his estimate's last sample is past: the flight is over for him
++  });
++});
