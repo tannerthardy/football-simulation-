@@ -536,6 +536,7 @@
   "test/seam-delivery.test.ts",
   "test/seen-contact.test.ts",
   "test/shed-route.test.ts",
+  "test/sight-body.test.ts",
   "test/sight-carrier.test.ts",
   "test/sight-cover.test.ts",
   "test/sight-pure.test.ts",

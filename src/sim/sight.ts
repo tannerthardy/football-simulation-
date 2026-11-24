@@ -41,6 +41,17 @@ export const SIGHT_STALE = Number(process.env.SIGHT_STALE ?? 7) | 0;
 export const STALE_SPREAD = 2;
 export const STALE_HOLD = (SIGHT_STALE & 1) !== 0, STALE_MARK = (SIGHT_STALE & 2) !== 0, STALE_ALIGN = (SIGHT_STALE & 4) !== 0;
 
+/** SIGHT_BODY (experimental, off; SIGHT_BODY=1): a man is seen when any part of him is, not only one point of his head. Today the line of sight is one ray from the observer's eye to the
+ * target's one head point, so a 9-inch helmet on that line (a tackle's, an end's, a back's) hides a perimeter defender for as long as the three bodies line up (QB lane's finding, 2026-11-24:
+ * the passer's picture of the corner he keys 1.05-1.45 s old; docs/reviews/2026-11-24-qb-sight.md: in default games perimeter defenders are blocked on 18% of ticks, only by helmets, and
+ * about a third to a half of those are a single-ray artefact). On, the target is seen if the ray is clear to ANY of three points: his head (eye height, as before) and his two shoulder
+ * tips (`SHOULDER` height, a torso half-width `SHOULDER_HALF` = 0.2 yd either side of the line, across it). Why those points: the head and the two shoulders are the extremes of the part of a body
+ * above the other bodies' shoulders; anything lower is hidden by the same bodies that hide the shoulders, and a point on the centreline at shoulder height is between the two. The observer's eye
+ * stays one point (a passer's own head movement in the pocket is a separate choice, not made here). 0.2 yd is the half-width of a shoulder-to-shoulder span of about 0.4 yd of body radius
+ * (the bodies' collision radii are 0.3-0.4 yd; a lineman's shoulders are wider, a corner's narrower). */
+export const SIGHT_BODY = process.env.SIGHT_BODY === '1';
+export const SHOULDER_HALF = 0.2;
+
 /** A body's posture as a tick recorded it (SIGHT_PURE). */
 export interface PoseAt { up: boolean; posture: number }
 
@@ -62,24 +73,33 @@ export function lineOfSight(bodies: readonly Agent[], observer: Agent, target: A
   const eye = bodyHeight(observer, EYE, poseOf?.(observer)), h = height ?? bodyHeight(target, EYE, poseOf?.(target));
   const o = posOf(observer), t = posOf(target);
   if (!o || !t) return true;
-  const sx = t.x - o.x, sy = t.y - o.y, l2 = sx * sx + sy * sy;
-  if (l2 < 1e-9) return true;
-  for (const b of bodies) {
-    if (b === observer || b === target) continue;
-    const bp = posOf(b);
-    if (!bp) continue;
-    const u = ((bp.x - o.x) * sx + (bp.y - o.y) * sy) / l2;
-    if (u <= 0 || u >= 1) continue;
-    const px = o.x + sx * u - bp.x, py = o.y + sy * u - bp.y, d = Math.hypot(px, py);
-    // A body touching either end cannot stand between them.
-    const along = Math.sqrt(l2) * Math.min(u, 1 - u);
-    if (along < b.profile.radius) continue;
-    const line = eye + (h - eye) * u;
-    const at = poseOf?.(b);
-    if (d < b.profile.radius && line < bodyHeight(b, SHOULDER, at)) return false;
-    if (d < HEAD_RADIUS && line < bodyHeight(b, 1, at)) return false;
-  }
-  return true;
+  const clear = (tx: number, ty: number, th: number): boolean => {
+    const sx = tx - o.x, sy = ty - o.y, l2 = sx * sx + sy * sy;
+    if (l2 < 1e-9) return true;
+    for (const b of bodies) {
+      if (b === observer || b === target) continue;
+      const bp = posOf(b);
+      if (!bp) continue;
+      const u = ((bp.x - o.x) * sx + (bp.y - o.y) * sy) / l2;
+      if (u <= 0 || u >= 1) continue;
+      const px = o.x + sx * u - bp.x, py = o.y + sy * u - bp.y, d = Math.hypot(px, py);
+      // A body touching either end cannot stand between them.
+      const along = Math.sqrt(l2) * Math.min(u, 1 - u);
+      if (along < b.profile.radius) continue;
+      const line = eye + (th - eye) * u;
+      const at = poseOf?.(b);
+      if (d < b.profile.radius && line < bodyHeight(b, SHOULDER, at)) return false;
+      if (d < HEAD_RADIUS && line < bodyHeight(b, 1, at)) return false;
+    }
+    return true;
+  };
+  if (clear(t.x, t.y, h)) return true;
+  if (!SIGHT_BODY || height !== undefined) return false;
+  // SIGHT_BODY: his shoulder tips, across the line from the observer.
+  const dx = t.x - o.x, dy = t.y - o.y, L = Math.hypot(dx, dy);
+  if (L < 1e-9) return true;
+  const nx = -dy / L, ny = dx / L, sh = bodyHeight(target, SHOULDER, poseOf?.(target));
+  return clear(t.x + nx * SHOULDER_HALF, t.y + ny * SHOULDER_HALF, sh) || clear(t.x - nx * SHOULDER_HALF, t.y - ny * SHOULDER_HALF, sh);
 }
 
 /** One tick's bodies for many line tests (SIGHT_PURE's per-tick history, which tests every pair every tick): each body's position, radius and the three heights he had at that
@@ -97,9 +117,19 @@ export class SightFrame {
     this.eye[i] = bodyHeight(a, EYE, pose); this.shoulder[i] = bodyHeight(a, SHOULDER, pose); this.top[i] = bodyHeight(a, 1, pose);
   }
   clear(io: number, it: number): boolean {
-    const ox = this.x[io]!, oy = this.y[io]!, sx = this.x[it]! - ox, sy = this.y[it]! - oy, l2 = sx * sx + sy * sy;
+    const ox = this.x[io]!, oy = this.y[io]!, eye = this.eye[io]!;
+    if (this.ray(io, it, ox, oy, eye, this.x[it]!, this.y[it]!, this.eye[it]!)) return true;
+    if (!SIGHT_BODY) return false;
+    const dx = this.x[it]! - ox, dy = this.y[it]! - oy, L = Math.hypot(dx, dy);
+    if (L < 1e-9) return true;
+    const nx = -dy / L, ny = dx / L, sh = this.shoulder[it]!;
+    return this.ray(io, it, ox, oy, eye, this.x[it]! + nx * SHOULDER_HALF, this.y[it]! + ny * SHOULDER_HALF, sh)
+      || this.ray(io, it, ox, oy, eye, this.x[it]! - nx * SHOULDER_HALF, this.y[it]! - ny * SHOULDER_HALF, sh);
+  }
+  private ray(io: number, it: number, ox: number, oy: number, eye: number, tx: number, ty: number, h: number): boolean {
+    const sx = tx - ox, sy = ty - oy, l2 = sx * sx + sy * sy;
     if (l2 < 1e-9) return true;
-    const eye = this.eye[io]!, h = this.eye[it]!, L = Math.sqrt(l2);
+    const L = Math.sqrt(l2);
     for (let b = 0; b < this.n; b++) {
       if (b === io || b === it) continue;
       const bx = this.x[b]!, by = this.y[b]!, u = ((bx - ox) * sx + (by - oy) * sy) / l2;

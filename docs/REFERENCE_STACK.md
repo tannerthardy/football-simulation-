@@ -2684,3 +2684,7 @@ completion .677 -> .682, uncontested drop .052 -> .058, breakup .097 -> .094, in
 run share .310 -> .310. Catch roll, actual run (8 games a side): ball speed p50 22.5 -> 21.9 yd/s, share over 24 yd/s 28.9% -> 23.7%.
 Not modelled: the NFL ball's decay roughly doubles 0.3-0.6 s before arrival (tracker smoothing near the catch, or the ball's nose-over at the end
 of the arc); the catch roll's 24 yd/s step is not what the NFL ball avoids on short throws (a catch-rebuild question, not drag).
+
+## SIGHT_BODY (Tools/Physics, 2026-11-24; off, experimental)
+
+Off in the stack. The passer's (and every observer's) line of sight tests the target as a body: head, or either shoulder tip. docs/reviews/2026-11-24-qb-sight.md; probe numbers in the FLAGS row. Own card arm.
