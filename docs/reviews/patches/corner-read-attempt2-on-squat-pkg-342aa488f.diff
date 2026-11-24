@@ -1,0 +1,155 @@
+diff --git a/config/baseline.json b/config/baseline.json
+index 201b1f4ab..7743a67f9 100644
+--- a/config/baseline.json
++++ b/config/baseline.json
+@@ -132,6 +132,7 @@
+     "THREAT_SINK": "0",
+     "DEPTH_FIRST": "0",
+     "HALF_DECLARE": "0",
++    "CORNER_READ": "0",
+     "CATCH_SPEED": "0",
+     "HANDS_CUE": "0",
+     "KEEPER_TORSO": "1",
+diff --git a/config/reference-stack.json b/config/reference-stack.json
+index 85fe66e53..579276301 100644
+--- a/config/reference-stack.json
++++ b/config/reference-stack.json
+@@ -197,6 +197,7 @@
+     "THREAT_SINK": "off",
+     "DEPTH_FIRST": "off",
+     "HALF_DECLARE": "off",
++    "CORNER_READ": "off",
+     "CATCH_SPEED": "on",
+     "HANDS_CUE": "on",
+     "IZ_FLAT": "on",
+diff --git a/docs/FLAGS.md b/docs/FLAGS.md
+index bb2916650..3f9573b29 100644
+--- a/docs/FLAGS.md
++++ b/docs/FLAGS.md
+@@ -2,7 +2,7 @@
+ 
+ Every engine switch read from the environment, recounted from `src` at `57f50fc3` on 2026-10-22. This includes #210's promotion and #205's two additional default-on switches. Flags that are not on develop (parked, removed from a PR, or only on a side branch) are kept in [PARKED.md](PARKED.md) so the ideas are not lost. Registration rules are in [PLAN.md](PLAN.md): at most 10 experimental flags, and each expires two reviews after it lands.
+ 
+-There are 510 flags read from the environment in `src` (`MAN_BACK`, `UNDER_CARRY`, `CARRY_RELEASE`, `HOOK_EXPAND`, `THREAT_SINK`, `DEPTH_FIRST` and `HALF_DECLARE` off, Flex flat package ported to coverage/C14-squat-v2 2026-11-24; 2026-11-24, coverage/C14-squat-v2: engine-94 plus SQUAT_SINK (off); recounted 2026-11-24, engine-94: engine-93 plus FLIGHT_BREAK (on) and FLIGHT_LEAD (off, parked); engine-93: engine-92 plus HEAD_FOLLOW (on); engine-92: engine-91 plus PERIPH_ACUITY (on); engine-91: engine-90 plus STEM_WORK (on); engine-90: engine-89 plus READ_VERTICAL_LOS and BACK_CLEAR (on); engine-89: engine-88 plus FLAT_CARRY (on); engine-88: engine-87 plus FORECAST_FINISH and QB_ROLE_PATH (on), READ_WINDOW and QB_CLOSE_BELIEF (off); engine-87: engine-86 plus HALF_KEY (on); engine-86 was engine-85 plus MUSH_MATCH (on); engine-85 was engine-84 plus FLAT_SINK (on); engine-84 was engine-83 plus DOWN_RISE_PLANT (on); engine-83 was engine-82 plus QB_DRIVE, QB_RHYTHM_THROW, QB_ALIGN, QB_BODY_FOLLOW, QB_WINDOW_ARRIVE, QB_KEY_PLANT, QB_STICK, QB_PEEK_CLOCK, QB_MOF_READ, QB_DEEP_WAIT and QB_STANCE; QB_DRIVE, QB_RHYTHM_THROW, QB_WINDOW_ARRIVE, QB_KEY_PLANT and QB_STICK on): 382 are on unless set to `0`, 100 are off unless set to `1`, and 28 are numeric scales or modes (identity value unless listed in the stack's numeric section). The rows below carry each flag's history.
++There are 511 flags read from the environment in `src` (`MAN_BACK`, `UNDER_CARRY`, `CARRY_RELEASE`, `HOOK_EXPAND`, `THREAT_SINK`, `DEPTH_FIRST`, `HALF_DECLARE` and `CORNER_READ` off, Flex flat package ported to coverage/C14-squat-v2 2026-11-24; 2026-11-24, coverage/C14-squat-v2: engine-94 plus SQUAT_SINK (off); recounted 2026-11-24, engine-94: engine-93 plus FLIGHT_BREAK (on) and FLIGHT_LEAD (off, parked); engine-93: engine-92 plus HEAD_FOLLOW (on); engine-92: engine-91 plus PERIPH_ACUITY (on); engine-91: engine-90 plus STEM_WORK (on); engine-90: engine-89 plus READ_VERTICAL_LOS and BACK_CLEAR (on); engine-89: engine-88 plus FLAT_CARRY (on); engine-88: engine-87 plus FORECAST_FINISH and QB_ROLE_PATH (on), READ_WINDOW and QB_CLOSE_BELIEF (off); engine-87: engine-86 plus HALF_KEY (on); engine-86 was engine-85 plus MUSH_MATCH (on); engine-85 was engine-84 plus FLAT_SINK (on); engine-84 was engine-83 plus DOWN_RISE_PLANT (on); engine-83 was engine-82 plus QB_DRIVE, QB_RHYTHM_THROW, QB_ALIGN, QB_BODY_FOLLOW, QB_WINDOW_ARRIVE, QB_KEY_PLANT, QB_STICK, QB_PEEK_CLOCK, QB_MOF_READ, QB_DEEP_WAIT and QB_STANCE; QB_DRIVE, QB_RHYTHM_THROW, QB_WINDOW_ARRIVE, QB_KEY_PLANT and QB_STICK on): 382 are on unless set to `0`, 101 are off unless set to `1`, and 28 are numeric scales or modes (identity value unless listed in the stack's numeric section). The rows below carry each flag's history.
+ 
+ **Promotion (2026-11-09):** the reference stack `run-ref-4` is now the engine's default. The 90 flags it lists `on` are read as on unless set to `0` (rows marked "promoted" below); the rest are unchanged. Decisions and evidence for each flag are in [REFERENCE_STACK.md](REFERENCE_STACK.md); `npm run ref -- --list` is the current inventory, and `npm run ref -- --off -- <command>` runs the engine as it was before. The test suites still run on the pre-promotion engine (pinned in `vitest.config.ts`) until their recorded cases are re-recorded. The counts in the paragraph above predate all of this.
+ 
+@@ -435,6 +435,7 @@ There are 510 flags read from the environment in `src` (`MAN_BACK`, `UNDER_CARRY
+ | `THREAT_SINK` | off | experimental (Flex, 2026-11-24; Integration, the 1.5-2.5 s drop relation) | coverage | `src/sim/behaviors/defense.ts` (`threatSinkX`; `ManCoverage.trackReceiver`, `ZoneCoverage` no-target drop) | one relation for match carries (zone call, deep help) and plain droppers: against a climbing receiver in his window he sinks toward its depth facing the QB with no feed-forward (his backpedal sets the pace) and hands it on once it is 2 yd beyond him with deep help seen (latched), then holds; a route there not climbing: hold; none in his band: the drop as before. Off: carries rode verticals at 2-4 yd/s and droppers ran to the landmark; NFL pace from 2.0 s follows the receiver in front (pace_driver.py). |
+ | `DEPTH_FIRST` | off | experimental (Flex, 2026-11-24; Integration + Coverage, safety first move) | coverage | `src/sim/behaviors/defense.ts` (`ZoneCoverage`, the deep read with no vertical) | the deep safety opens and gains depth with his eyes on his key, taking width (landmark and eye lean) only once he has seen it shown: the QB's eyes held on one target for his read time (0.2 + 0.4 x (1 - recognition x focus) s) in his delayed picture, or a receiver climbing past 5 yd at over 3 yd/s; before the cue his lateral target is his alignment; latched. Off: first move lateral 81-85% for deep middles / halves (NFL backward 75%); not alignment depth (aligned 14-15+ yd still 85-88% lateral). |
+ | `HALF_DECLARE` | off | experimental (Flex, 2026-11-24; Coverage's ask) | coverage | `src/sim/behaviors/defense.ts` (`ZoneCoverage`, the deep zones' vertical filter) | the half's carry waits for a declared vertical: a deep-half safety counts a receiver he sees climbing past 6 yd at over 2 yd/s, or past 7.5 yd; kept while past 5 yd climbing at over 0.5 yd/s, or past 6.5 yd. Off: any receiver past the line at over 1.5 yd/s was a vertical, so the half carried every release (deep-open-carry at about 0.55 s). |
++| `CORNER_READ` | off | experimental (Flex, 2026-11-24; Coverage's sign-off) | coverage | `src/sim/behaviors/defense.ts` (`ZoneCoverage.cornerRead`) | the Cover 2 hook reads the corner: a hook / curl dropper with a flat-zone corner on his side who sees that corner sinking (past 7 yd and climbing; exit under 5.5 yd or driving down) widens inside-out under the flat threat he sees on his side (under 6 yd, outside him, going out; held for his recognition time; released past 8 yd or back inside him); a crosser at the ball or a vertical in his window keeps him home. Why: on package + SQUAT_SINK v2, five of six traced open flats were the sinking corner's own flat with nobody under it, and spot Cover 2 hooks never ran HOOK_EXPAND. |
+ | `CATCH_SPEED` | on | promoted 2026-11-12 (engine-47; `=0` restores); was experimental (C14 catch, 2026-11-12) | receivers | `src/sim/catching.ts` (`runTrackTerm`, the `shoulder` term) | set at first review. Tracking a ball he is not facing while he runs: replaces the over-the-shoulder step (from behind, above 6.5 yd/s only, +0.12-0.24) with K x clamp((speed - 3) / 4.5, 0, 1) x angle x clamp(air time / 1.3, 0, 1) x (0.7 + 0.6 x (1 - ball tracking)), angle from behind 1, straight across 0.46 (second constant, from the NFL's pooled across-vs-behind loss, 8.4 vs 18.4 points), facing past 120 deg 0; through hands like the other terms. By design it is smaller than the old step for a fast catch on a short-flight ball (air time well under 1.3 s: e.g. 0.15 at 0.6 s against the old 0.12-0.24 from behind above 6.5 yd/s), and larger on every deep ball (air time >= 1.3 s), so it can only make the same deep catch harder. K = 0.37, estimated from the NFL's fall in completion on well-placed balls with no defender within 2 yd (catch_speed.py: short 88%, deep 72% at 5+ yd/s; ours were 92-100 / 89-90). Debt: a stand-in for hands and eyes at speed; a physical model of the hand path against the ball replaces it. Pooled read (catch_speed.py, seeds 11 + 23, 16 games each, on 3081064c; baseline -> CATCH_SPEED -> with CATCH_CHOICE, NFL in brackets): at 5+ yd/s with no defender within 2 yd short 93 -> 95 -> 87% (88), deep 89 -> 84 -> 80% (72); defender within 2 yd short 73 -> 66 -> 65% (57), deep 65 -> 61 -> 53% (52); deep from behind 0-5 / 5-6.5 / 6.5+ 75 / 73 / 81 -> with both 84 / 66 / 68% (78 / 57 / 60); deep across his line stays easy (both 95 / 94 / 86% vs 65 / 53 / 73, n 7-96); control (short, facing it) 86 -> 85 -> 90% (77; the term is zero there). Deep man 0-2 yd completion 44 -> 53 -> 59% (32; n 81-98, ~5 pts sampling error). Forced outside go balls (identical throws by construction, forced-meet.ts, n 211): completions 110 -> 102 with CATCH_SPEED, 123 with CATCH_CHOICE, 115 with both. Test `test/catch-speed.test.ts`. |
+ | `PASS_SINK` | off | experimental | trenches | `src/sim/engagement.ts:696` | set at first review |
+ | `PULL_CUE` | off | experimental | defense | `src/sim/run-fits.ts:195` | set at first review |
+diff --git a/src/sim/behaviors/defense.ts b/src/sim/behaviors/defense.ts
+index d4938f156..bba6eb820 100644
+--- a/src/sim/behaviors/defense.ts
++++ b/src/sim/behaviors/defense.ts
+@@ -1355,6 +1355,23 @@ export const THREAT_SINK = process.env.THREAT_SINK === '1';
+  * widening 1.5 yd by 1.0 s (NFL 0.5); not alignment depth: aligned 14-15+ yd they were still 85-88% lateral
+  * (safety-first-move.mts, nfl_safety_seat.py). */
+ export const DEPTH_FIRST = process.env.DEPTH_FIRST === '1';
++/** CORNER_READ (experimental, off; CORNER_READ=1 turns it on; Coverage's sign-off, 2026-11-24): the Cover 2 hook reads the
++ * corner. Attempt 2: a hook or curl dropper (hook_s / hook_w / curl_flat) with a flat-zone corner on his side (Cover 2,
++ * the Cover 6 half side) widens under the flat threat on his side when, in his own picture, the corner cannot reach its
++ * window by the catch (the corner's timeToReach from his seen position and velocity, on the hook's own body as the
++ * stand-in, minus the threat's flight plus the securing beat, over 0.2 s) and he can (his own lateness under 0.2 s); he
++ * keeps going until the corner is no longer late or he falls 0.4 s behind. Attempt 1 (the corner seen past 7 yd and
++ * climbing) fired on 7% of Cover 2 / 6 dropbacks and moved nothing: in class (c) the corner sat 5-7 yd, too deep to
++ * play the flat but under the gate, and where it fired the hook was 15-20 yd from a late flat. The flat threat: a receiver he sees under 6 yd, outside him, going out at over
++ * 1.5 yd/s or already 4+ yd outside him, held for his recognition time (kept until it is past 8 yd deep or back inside
++ * him). He plays it inside-out at its depth, eyes on the QB. A crosser at the ball or a vertical in his window (2-12 yd
++ * deep, within 6 yd of him) comes first: then he stays home. A corner who squats instead of sinking keeps the flat and
++ * the hook stays home. Read from what he sees the corner and the receivers do, not from the corner's call or tags.
++ * Why: on the squat-pkg base (package + SQUAT_SINK v2) five of six traced open flats were the sinking corner's own flat
++ * with nobody under it; spot Cover 2 hooks never ran HOOK_EXPAND (data/2026-11-24-squat-pkg-trace). */
++export const CORNER_READ = process.env.CORNER_READ === '1';
++/** CORNER_READ: the margin (s) on the corner's and his own lateness to the flat window (enter at it, exit on the far side). */
++const CORNER_READ_MARGIN = 0.2;
+ /** HALF_DECLARE (experimental, off; HALF_DECLARE=1 turns it on; Coverage's ask, 2026-11-24): the half's carry waits for
+  * a declared vertical. A deep-half safety counts a receiver as a vertical only once he sees him declare it: a stem
+  * climbing past 6 yd at over 2 yd/s, or already past 7.5 yd; once counted, he keeps him while that receiver is still past
+@@ -1953,6 +1970,12 @@ export class ZoneCoverage implements Behavior {
+   private readonly initialDepth: number;
+   /** DEPTH_FIRST: where he aligned laterally; the QB eye target he is reading and since when; width shown (latched). */
+   private readonly snapY: number;
++  /** CORNER_READ: his flat-side corner (by the call, once), whether he sees him sinking, the flat threat he took and since when it showed. */
++  private crCorner: Agent | null | undefined = undefined;
++  private crSink = false;
++  private crThreat: Agent | null = null;
++  private crCand: Agent | null = null;
++  private crCandSince = -1;
+   private eyeTarget: Agent | null = null;
+   private eyeSince = 0;
+   private widthShown = false;
+@@ -2158,10 +2181,68 @@ export class ZoneCoverage implements Behavior {
+     }
+     // SHOULDER_READ: an underneath defender reading the QB stops his drop on
+     // the throwing motion he has seen; the rest of his zone play goes on.
++    if (CORNER_READ && !this.deep) { const cr = this.cornerRead(a, sim); if (cr) return cr; }
+     if (SHOULDER_READ && !this.deep && underneathPlant(a, sim)) return stopDrop(sim, this.zonePlay(a, sim));
+     return this.zonePlay(a, sim);
+   }
+ 
++  /** CORNER_READ: widen under the flat threat when, in his own picture, the corner cannot reach its window by the catch and
++   * he can (see CORNER_READ). */
++  private cornerRead(a: Agent, sim: PlaySim): MoveCommand | null {
++    if (!this.zone.startsWith('hook_s') && !this.zone.startsWith('hook_w') && !this.zone.startsWith('curl_flat')) return null;
++    if (!knowsPass(sim, a) || believesRun(sim, a)) return null;
++    const side = Math.sign(this.snapY - sim.ballY) || 1;
++    if (this.crCorner === undefined) {
++      this.crCorner = sim.defense.find((d) => {
++        const r = (sim.defAlign.spots as Record<string, { role?: { kind: string; zone?: string } }>)[d.slot]?.role;
++        return d !== a && r?.kind === 'zone' && (r.zone === 'flat_s' || r.zone === 'flat_w') && (d.pos.y - sim.ballY) * side > 0;
++      }) ?? null;
++    }
++    const c = this.crCorner;
++    if (!c) return null;
++    const recvs = sim.offense.filter((r) => r !== sim.qb && !['LT', 'LG', 'C', 'RG', 'RT'].includes(r.slot));
++    if (this.crThreat) {
++      const t = sim.see(a, this.crThreat);
++      if (t.pos.x - sim.los > 8 || (t.pos.y - a.pos.y) * side < -1) { this.crThreat = null; this.crSink = false; }
++    }
++    if (!this.crThreat) {
++      let best: Agent | null = null, bestOut = -Infinity;
++      for (const r of recvs) {
++        const t = sim.see(a, r), out = (t.pos.y - a.pos.y) * side;
++        if (t.pos.x - sim.los < 6 && out > 1 && (t.vel.y * side > 1.5 || out > 4) && out > bestOut) { best = r; bestOut = out; }
++      }
++      if (best !== this.crCand) { this.crCand = best; this.crCandSince = sim.t; }
++      if (best && sim.t - this.crCandSince >= 0.2 + 0.4 * (1 - a.r('playRecognition') * a.mind.focus)) this.crThreat = best;
++    }
++    const thr = this.crThreat;
++    if (!thr) return null;
++    // The flat window: the threat as he sees it carried for the throw's flight, to the catch (the securing beat).
++    const q = sim.see(a, sim.qb), t = sim.see(a, thr), cs = sim.see(a, c);
++    const flight = (w: Vec2) => Math.hypot(w.x - q.pos.x, w.y - q.pos.y) / SHOULDER_BALL_SPEED;
++    const ft = flight(t.pos);
++    const F = { x: t.pos.x + t.vel.x * ft, y: clamp(t.pos.y + t.vel.y * ft, 1, FIELD_WIDTH - 1) };
++    const tF = flight(F) + DRIVE_SECURE;
++    // The corner's reach from what he sees of him (his seen position and velocity), on his own body as the stand-in for a
++    // teammate's capacity he cannot know; his own reach on his own body.
++    const cornerLate = timeToReach({ pos: cs.pos, vel: cs.vel, profile: a.profile, speedScale: a.speedScale }, F, a.profile.reach) - tF;
++    const myLate = timeToReach({ pos: a.pos, vel: a.vel, profile: a.profile, speedScale: a.speedScale }, F, a.profile.reach) - tF;
++    if (!this.crSink) {
++      if (!(cornerLate > CORNER_READ_MARGIN && myLate < CORNER_READ_MARGIN)) return null;
++      // His window first: a crosser at the ball or a vertical in it keeps him home (on entry; once gone he stays gone).
++      const busy = recvs.some((r) => {
++        if (r === thr) return false;
++        const u = sim.see(a, r), d = u.pos.x - sim.los;
++        if (d < 2 || d > 12 || Math.abs(u.pos.y - a.pos.y) > 6) return false;
++        return Math.sign(sim.ballY - u.pos.y) * u.vel.y > 2 || u.vel.x > 3;
++      });
++      if (busy) return null;
++      this.crSink = true;
++    } else if (cornerLate < 0 || myLate > 2 * CORNER_READ_MARGIN) { this.crSink = false; return null; }
++    a.tags.add('corner-read');
++    return withFacingTechnique(track(a, { x: Math.max(t.pos.x + 1, sim.los + 1), y: clamp(t.pos.y - side * 0.7, 0.5, FIELD_WIDTH - 0.5) }, { x: t.vel.x, y: t.vel.y },
++      { facing: angleTo(a.pos, q.pos), gain: 1.6 }), { label: 'corner-read', key: t.vel });
++  }
++
+   /** FLAT_SINK: the vertical over him he is sinking with, if any. */
+   private sinkWith: Agent | null = null;
+   /**
