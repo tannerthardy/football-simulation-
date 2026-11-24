@@ -11,6 +11,8 @@ import type { GraspJoint } from '../src/physics/world.js';
 import { PlaySim } from '../src/sim/playsim.js';
 import { contactQuality } from '../src/sim/tackle-window.js';
 import { tryTackles } from '../src/sim/tackle.js';
+import { tackleNow } from './helpers/tackle-now.js';
+import { reachTo } from '../src/sim/tackle-reach.js';
 // Scenes recorded, and dice forced, on the play's single random stream (see PlaySim.dice).
 PlaySim.recordedSingleStream = true;
 
@@ -44,7 +46,7 @@ function stage(side = 1) {
       })));
     }
   }
-  function withinReach(arms = body + defender.profile.reach) {
+  function withinReach(arms = reachTo(defender, carrier, 1)) {
     // Extended but physically reachable now. Ideal straight motion predicts
     // torso contact soon, although the current constraint has not disappeared.
     const distance = arms - .03;
@@ -65,11 +67,11 @@ describe('waiting requires a supported acquired-picture forecast', () => {
     const engagement = f.sim.engage(blocker, f.defender, 'run', { x: 1, y: 0 })!;
     expect(engagement).toBeTruthy(); expect(engagement.hands).toBeTruthy();
     engagement.win = .8;
-    f.withinReach(f.body + f.defender.profile.reach * .4);
+    f.withinReach(reachTo(f.defender, f.carrier, .4));
     const preview = vi.spyOn(MovementPreview, 'previewFreeMovement');
     const chance = vi.spyOn(f.sim.rng, 'chance').mockReturnValue(false);
     try {
-      tryTackles(f.sim);
+      tackleNow(f.sim);
       expect(preview).not.toHaveBeenCalled();
       expect(f.sim.bond?.tacklers).toContain(f.defender);
       // A free-arm grab keeps the block (ONE_ARM_HOLD): one arm on the runner.
@@ -97,7 +99,7 @@ describe('waiting requires a supported acquired-picture forecast', () => {
       const preview = vi.spyOn(MovementPreview, 'previewFreeMovement');
       const chance = vi.spyOn(f.sim.rng, 'chance').mockReturnValue(false);
       try {
-        tryTackles(f.sim);
+        tackleNow(f.sim);
         expect(preview).not.toHaveBeenCalled();
         expect(f.sim.bond?.tacklers).toContain(f.defender);
       } finally { preview.mockRestore(); chance.mockRestore(); }
@@ -115,7 +117,7 @@ describe('waiting requires a supported acquired-picture forecast', () => {
     const preview = vi.spyOn(MovementPreview, 'previewFreeMovement');
     const chance = vi.spyOn(f.sim.rng, 'chance').mockReturnValue(false);
     try {
-      tryTackles(f.sim);
+      tackleNow(f.sim);
       expect(preview).not.toHaveBeenCalled(); expect(f.sim.bond?.tacklers).toContain(f.defender);
     } finally { preview.mockRestore(); chance.mockRestore(); }
   });
@@ -129,7 +131,7 @@ describe('waiting requires a supported acquired-picture forecast', () => {
     const chance = vi.spyOn(f.sim.rng, 'chance');
     const behavior = vi.spyOn(f.defender.behavior, 'update');
     try {
-      tryTackles(f.sim);
+      tackleNow(f.sim);
       expect(f.sim.bond).toBeNull(); expect(f.defender.nextTackleAt).toBe(0);
       expect(chance).not.toHaveBeenCalled(); expect(behavior).not.toHaveBeenCalled();
     } finally { chance.mockRestore(); behavior.mockRestore(); }

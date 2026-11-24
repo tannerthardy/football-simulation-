@@ -14,6 +14,7 @@ import { PlaySim } from '../src/sim/playsim.js';
 import type { Agent } from '../src/sim/agent.js';
 import { inBlockReach, traits } from '../src/sim/engagement.js';
 import { afterStep as afterTackleStep, gripForce, tryTackles, updateBond } from '../src/sim/tackle.js';
+import { tackleNow } from './helpers/tackle-now.js';
 // Scenes recorded, and dice forced, on the play's single random stream (see PlaySim.dice).
 PlaySim.recordedSingleStream = true;
 
@@ -156,7 +157,7 @@ describe('physical tackle contact',()=>{
   it('a wrap acts through the world: momentum is conserved and a passive hold adds no kinetic energy',()=>{
     const {sim,c,d}=stage();d.body.pos={x:50,y:CENTER_Y+.8};c.body.vel={x:8,y:1};d.body.vel={x:0,y:-2};
     vi.spyOn(sim.rng,'chance').mockReturnValue(false);
-    tryTackles(sim);expect(sim.bond?.tacklers).toContain(d);
+    tackleNow(sim);expect(sim.bond?.tacklers).toContain(d);
     // The grab itself changes no velocity; the hold acts in the next steps.
     const hold=sim.bond!.holds!.get(d)!;hold.pull=0;
     for(let k=0;k<6;k++){
@@ -176,7 +177,7 @@ describe('physical tackle contact',()=>{
     const {sim,c,d}=stage(),b=sim.slot('C')!;
     d.body.pos={x:50,y:CENTER_Y+.7};b.body.pos={x:49.7,y:CENTER_Y+.7};b.downUntil=-1;
     const block=sim.engage(b,d,'run',{x:1,y:0})!;block.win=.8;
-    vi.spyOn(sim.rng,'chance').mockReturnValue(false);tryTackles(sim);
+    vi.spyOn(sim.rng,'chance').mockReturnValue(false);tackleNow(sim);
     expect(sim.bond?.tacklers).toContain(d);expect(d.engagement).toBe(block);expect(b.engagement).toBe(block);
     expect(sim.bond!.oneArm?.has(d)).toBe(true);
     expect(sim.bond!.holds!.get(d)!.capacity).toBeCloseTo(gripForce(d,sim.bond!.grip!.get(d)!,0,1),6);
@@ -187,7 +188,7 @@ describe('physical tackle contact',()=>{
   it('a moving wrap advects with its momentum; the arms tighten it only at their own rate',()=>{
     const {sim,c,d}=stage();d.body.pos={x:49.3,y:CENTER_Y};c.body.vel=d.body.vel={x:8,y:0};
     vi.spyOn(sim.rng,'chance').mockReturnValue(false);
-    tryTackles(sim);expect(sim.bond?.tacklers).toContain(d);
+    tackleNow(sim);expect(sim.bond?.tacklers).toContain(d);
     const pull=sim.bond!.holds!.get(d)!.pull??0;
     const mass=c.profile.massKg+d.profile.massKg;
     const centre=()=>(c.pos.x*c.profile.massKg+d.pos.x*d.profile.massKg)/mass;
@@ -205,10 +206,10 @@ describe('physical tackle contact',()=>{
   it('an arriving assist joins the existing pile without changing its momentum',()=>{
     const {sim,c,d}=stage(),assist=sim.slot('SS')!;
     d.body.pos={x:50,y:CENTER_Y+.8};c.body.vel={x:8,y:0};
-    vi.spyOn(sim.rng,'chance').mockReturnValue(false);tryTackles(sim);
+    vi.spyOn(sim.rng,'chance').mockReturnValue(false);tackleNow(sim);
     assist.downUntil=-1;assist.body.pos={x:c.pos.x,y:c.pos.y-.8};assist.body.vel={x:0,y:2};
     const bodies=[c,d,assist];
-    const before=totals(bodies);tryTackles(sim);
+    const before=totals(bodies);tackleNow(sim);
     expect(sim.bond?.tacklers).toEqual([d,assist]);
     expect(totals(bodies).x).toBeCloseTo(before.x,6);expect(totals(bodies).y).toBeCloseTo(before.y,6);
     for(let k=0;k<3;k++){
@@ -223,13 +224,13 @@ describe('physical tackle contact',()=>{
   it('a whiff at full reach neither records contact nor slows the carrier',()=>{
     const {sim,c,d}=stage();d.body.pos={x:50,y:CENTER_Y+1.4};c.body.vel={x:8,y:0};
     vi.spyOn(sim.rng,'chance').mockReturnValue(true);
-    tryTackles(sim);
+    tackleNow(sim);
     expect(sim.stats.missedTackles).toBe(1);expect(sim.firstContactX).toBeNull();expect(c.vel.x).toBe(8);
   });
   it('takes a glancing opportunity instead of waiting for unreachable better contact',()=>{
     const {sim,c,d}=stage();d.body.pos={x:50,y:CENTER_Y+1.4};c.body.vel={x:8,y:2};
     vi.spyOn(sim.rng,'chance').mockReturnValue(false);
-    tryTackles(sim);
+    tackleNow(sim);
     expect(sim.bond?.tacklers).toContain(d);expect(sim.firstContactX).toBe(50);
     expect(sim.events.some((e)=>e.type==='tackle_wrap')).toBe(true);
   });
@@ -244,12 +245,12 @@ describe('physical tackle contact',()=>{
         vel:a.vel,facing:a.facing,stance:a.stance,pose:a.pose})));
     }
     vi.spyOn(sim.rng,'chance').mockReturnValue(false);
-    tryTackles(sim);expect(sim.bond).toBeNull();expect(d.nextTackleAt).toBe(0);
+    tackleNow(sim);expect(sim.bond).toBeNull();expect(d.nextTackleAt).toBe(0);
   });
   it('a grab at full reach couples only partly, still conserving momentum',()=>{
     const {sim,c,d}=stage();d.body.pos={x:50,y:CENTER_Y+1.4};c.body.vel={x:8,y:2};d.body.vel={x:0,y:0};
     vi.spyOn(sim.rng,'chance').mockReturnValue(false);
-    tryTackles(sim);expect(sim.bond?.tacklers).toContain(d);
+    tackleNow(sim);expect(sim.bond?.tacklers).toContain(d);
     expect(sim.bond!.grip!.get(d)!).toBeLessThan(.6);
     const before=totals([c,d]);
     stepFree(sim,4);
@@ -261,7 +262,7 @@ describe('physical tackle contact',()=>{
     const {sim,c,d}=stage();d.body.pos={x:49.4,y:CENTER_Y};c.body.vel=d.body.vel={x:5,y:0};
     park(sim,[]);c.behavior={kind:'carrier',update:()=>({vel:{x:7,y:0}})} as never;
     vi.spyOn(sim.rng,'chance').mockReturnValue(false);observe(sim);
-    tryTackles(sim);expect(sim.bond?.tacklers).toContain(d);
+    tackleNow(sim);expect(sim.bond?.tacklers).toContain(d);
     const t0=sim.t;
     while(sim.phase==='live'&&sim.t<t0+6)sim.tick();
     expect(sim.phase).toBe('dead');
@@ -273,7 +274,7 @@ describe('physical tackle contact',()=>{
     const {sim,c,d}=stage();d.body.pos={x:50.6,y:CENTER_Y};c.body.vel=d.body.vel={x:0,y:0};d.body.facing=Math.PI;
     park(sim,[]);observe(sim);
     vi.spyOn(sim.rng,'chance').mockReturnValue(false);
-    tryTackles(sim);expect(sim.bond?.tacklers).toContain(d);
+    tackleNow(sim);expect(sim.bond?.tacklers).toContain(d);
     const t0=sim.t;
     // Isolate officiating from the world: an active pull can physically
     // knock this carrier down first, which exercises a different rule.

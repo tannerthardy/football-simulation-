@@ -13,6 +13,8 @@ import { COVERAGE_BY_ID, FRONT_BY_ID } from '../src/playbook/defense.js';
 import { FORMATION_BY_ID } from '../src/playbook/formations.js';
 import type { Engagement } from '../src/sim/agent.js';
 import { PlaySim } from '../src/sim/playsim.js';
+import { tackleNow } from './helpers/tackle-now.js';
+import { reachTo } from '../src/sim/tackle-reach.js';
 
 /** The carrier passes a blocked tackle 0.55 of an arm beyond body contact. */
 function stage(control: number, blocker: 'free' | 'covered' | 'square') {
@@ -24,7 +26,7 @@ function stage(control: number, blocker: 'free' | 'covered' | 'square') {
   const c = sim.slot('RB')!, d = sim.slot('DT_S')!, b = sim.slot('RG')!;
   for (const a of sim.agents) { a.body.pos = { x: 5 + Math.floor(a.idx / 12) * 2, y: 2 + a.idx % 12 * 4 }; a.body.vel = { x: 0, y: 0 }; a.downUntil = 99; }
   c.downUntil = d.downUntil = -1;
-  const gap = c.profile.radius + d.profile.radius + .55 * d.profile.reach;
+  const gap = reachTo(d, c, .55);
   d.body.pos = { x: 41, y: CENTER_Y }; d.body.facing = Math.PI / 2;
   c.body.pos = { x: 41, y: CENTER_Y + gap }; c.body.vel = { x: 1, y: 0 };
   // In front of him, offset away from the runner, toward him, or head-up.
@@ -39,11 +41,11 @@ async function reach(enabled: boolean, control: number, blocker: 'free' | 'cover
   vi.stubEnv('BLOCKED_REACH', enabled ? '1' : '0');
   vi.stubEnv('TACKLE_TOUCH', '0'); vi.stubEnv('REACH_CONTACT', '0');
   vi.resetModules();
-  const { tryTackles } = await import('../src/sim/tackle.js');
+  const T = await import('../src/sim/tackle.js'); const { tryTackles } = T;
   const f = stage(control, blocker);
   const chance = vi.spyOn(f.sim.rng, 'chance').mockReturnValue(true);
   const strike = vi.spyOn(f.sim, 'lungeAt');
-  tryTackles(f.sim);
+  tackleNow(f.sim, T);
   return { reached: chance.mock.calls.length > 0 || strike.mock.calls.length > 0 || !!f.sim.bond, ...f };
 }
 afterEach(() => { vi.restoreAllMocks(); vi.unstubAllEnvs(); vi.resetModules(); });

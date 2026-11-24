@@ -8,6 +8,7 @@ import { COVERAGE_BY_ID, FRONT_BY_ID } from '../src/playbook/defense.js';
 import { FORMATION_BY_ID } from '../src/playbook/formations.js';
 import { PlaySim } from '../src/sim/playsim.js';
 import type { GraspJoint, Intent } from '../src/physics/world.js';
+import { tackleNow } from './helpers/tackle-now.js';
 // Scenes recorded, and dice forced, on the play's single random stream (see PlaySim.dice).
 PlaySim.recordedSingleStream = true;
 
@@ -34,11 +35,11 @@ function stage(distance: number, speed: number) {
 async function acquire(enabled: boolean, distance: number, speed: number) {
   vi.stubEnv('TACKLE_TOUCH', enabled ? '1' : '0'); vi.stubEnv('REACH_CONTACT', '0');
   vi.resetModules();
-  const { tryTackles } = await import('../src/sim/tackle.js');
+  const T = await import('../src/sim/tackle.js'); const { tryTackles } = T;
   const f = stage(distance, speed);
   const chance = vi.spyOn(f.sim.rng, 'chance').mockReturnValue(false);
   const strike = vi.spyOn(f.sim, 'lungeAt'), dive = vi.spyOn(f.sim, 'diveAt');
-  tryTackles(f.sim);
+  tackleNow(f.sim, T);
   return { ...f, chance, strike, dive };
 }
 afterEach(() => { vi.restoreAllMocks(); vi.unstubAllEnvs(); vi.resetModules(); });
