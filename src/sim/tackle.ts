@@ -275,16 +275,25 @@ function launch(sim: PlaySim, d: Agent, c: Agent, cp: Vec2, cv: Vec2, from: 'lun
  * a rating contest and a random execution draw. roll-audit.mts (3 games): the roll missed 4.7% of free reaches, nearly
  * flat in the reach margin (0.02 deep inside reach, 0.13 beyond it), granted 12% of grabs that were out of reach, and
  * missed 28% of grabs off a block that were inside it. On: the attempt starts the reach (his strike step, committed:
- * `strike`); his hands arrive after the reach window, as long as the arms must extend (REACH_WINDOW at full extension,
- * at least 0.08 s; whiffMargin's own law), sweeping out from where the carrier was to the full reach (`limit`, the same
- * arms or free-arm reach the attempt was judged on); the first tick the carrier's body is inside the hands' reach so far
- * (and not behind another body), the hold is made at the distance the bodies are at (a fast-closing runner meets the
- * hands early; a first build judged only at arrival and missed runners who had come inside and passed), with its ordinary quality law and no draw; otherwise it is a miss, and the reach has committed his body
+ * `strike`); his hands go out from his torso, accelerating, to the full reach (`limit`, the same arms or free-arm reach the
+ * attempt was judged on) in REACH_EXTEND; the first tick the carrier's body is inside the hands' reach so far (and not
+ * behind another body), the hold is made at the distance the bodies are at; a nearer or fast-closing carrier is met
+ * sooner. (Earlier builds: judged only at arrival, which missed runners who had come inside and passed; swept from the
+ * carrier's start distance, which put the hands at him at once; went out at one speed over the unsourced 0.2 s
+ * REACH_WINDOW, about 3.5 yd/s, which doubled the misses and is half a sourced strike's speed), with its ordinary quality law and no draw; otherwise it is a miss, and the reach has committed his body
  * (`commitLunge`). Both bodies keep moving in the window under their own commands and contacts, so the carrier's actual
  * cut, speed and the tackler's own momentum decide it. Ratings act through capability only: his grip (gripForce, the
  * reel), his strike, his cut and the carrier's, and the picture delays that chose the moment. Stated choice: the window
  * is the existing REACH_WINDOW law, not a new number. */
 export const REACH_TIME = process.env.REACH_TIME === '1';
+/** REACH_TIME: seconds for the hands to go from his torso to full reach (stated choice inside sourced ranges, Rules +
+ * Coaching 2026-11-24, checked: a trained straight punch's attack phase, fist's first motion to contact, 111 +/- 41 ms
+ * experienced and 102 +/- 37 ms inexperienced, Menzel & Potthast 2021 Sensors 21:7882; peak hand speed 6.6-12.5 m/s
+ * reached 8-21 ms before contact, Whiting, Gregor & Finerman 1988 AJSM 16(2). Rules' stated range for a tackler, who opens
+ * and wraps from wide or low arms while running, is 0.12-0.15 s with a late-peaking speed; 0.12 s, its fast end, with
+ * constant acceleration, the simplest late-peaking profile). Not whiffMargin's REACH_WINDOW (0.2 s, an unsourced
+ * assumption that TKL_WHIFF keeps). */
+const REACH_EXTEND = 0.12;
 type Reach = { sim: PlaySim; carrier: Agent; t0: number; arrive: number; engaged: boolean; lunged: boolean; limit: number; arms: number; start: number };
 const reaches = new WeakMap<Agent, Reach>();
 /** Diagnostics: tackler `d`'s reach in progress (REACH_TIME), read-only. */
@@ -292,12 +301,11 @@ export function reachOf(d: Agent): Readonly<Reach> | undefined { return reaches.
 
 function startReach(sim: PlaySim, d: Agent, c: Agent, engaged: boolean, lunged: boolean, limit: number): void {
   const body = c.profile.radius + d.profile.radius;
-  const dd = Math.hypot(c.pos.x - d.pos.x, c.pos.y - d.pos.y);
   const span = Number.isFinite(limit) ? limit : reachTo(d, c, 1);
-  const w = Math.max(0.08, REACH_WINDOW * clamp((dd - body) / Math.max(0.1, span - body), 0, 1));
+  // The hands go out from his torso to full reach in REACH_EXTEND, accelerating (reachStep).
   // The contact-quality span is his arms (for a lunge, his standing reach, not the lunge's limit), as at the attempt.
-  reaches.set(d, { sim, carrier: c, t0: sim.t, arrive: sim.t + w - 1e-9, engaged, lunged, limit: span, arms: lunged ? reachTo(d, c, 1) : span,
-    start: Math.min(dd, span) });
+  reaches.set(d, { sim, carrier: c, t0: sim.t, arrive: sim.t + REACH_EXTEND - 1e-9, engaged, lunged, limit: span, arms: lunged ? reachTo(d, c, 1) : span,
+    start: body });
   d.nextTackleAt = sim.t + 0.5;
   // He commits his last step to the near hip as the arms go (a lunge has already left his feet).
   if (!engaged && !lunged) strike(sim, d, c, d.r('tackling'));
@@ -314,8 +322,10 @@ function reachStep(sim: PlaySim, d: Agent, c: Agent): boolean {
   // The hands sweep out over the window: the reach he has now grows from where the carrier was when he started (or
   // his torso) to the full limit at arrival. A carrier who comes inside it on the way (a fast-closing runner meeting
   // the hands early) is reached then; one never inside it by arrival is missed.
+  // Constant acceleration from his torso: the extension covered is the square of the time share (speed peaking at
+  // full extension, as a strike's does just before contact).
   const share = clamp((sim.t - r.t0) / Math.max(1e-6, r.arrive - r.t0), 0, 1);
-  const now = Math.max(body, r.start) + (r.limit - Math.max(body, r.start)) * share;
+  const now = r.start + (r.limit - r.start) * share * share;
   const inside = dd <= now && !occluded(sim, d, c) && d.body.support?.state !== 'down';
   if (!inside && sim.t < r.arrive) return true;
   reaches.delete(d);
