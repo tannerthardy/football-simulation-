@@ -222,14 +222,18 @@ export function simulateGame(home: Team, away: Team, opts: GameOptions = {}): Ga
   return new Game(home, away, opts).play();
 }
 
-/** DRIVE_HASH (experimental, off; DRIVE_HASH=1): a drive that begins on a kick result starts on a hash, not at the
- * field's center line. The ball is put in play where the return ended, or at the inbounds line (the hash) when it ended
- * outside it; special teams here produce only yards, with no lateral spot, so the return's end is taken on either hash
- * with equal chance (a dedicated stream: no other draw moves). A missed field goal goes back to the spot of the kick, the
- * snap's own lateral spot. Off, every kick result put the ball at the center line, and it stayed there until a play ended
- * outside the hashes: 18% of our scrimmage snaps were exactly on it, and a drive started there every time. NFL (BDB 2025
- * weeks 1-9, the first dropback of each possession): 86% on a hash, 10% within a yard of the middle
- * (docs/reviews/2026-11-24-alignment-chart.md). */
+/** DRIVE_HASH (experimental, off; DRIVE_HASH=1): a drive that begins on a kick result starts where the rules put it,
+ * not at the field's center line. By case:
+ * - a return (kick or punt) ends where the returner is downed, and the ball is put in play there, or at the inbounds
+ *   line (the hash) when that is outside it. Special teams here produce only yards, with no lateral spot, so the
+ *   return's end is a stated choice standing in for what the game does not model: either hash, with equal chance;
+ * - a touchback: the offense chooses its spot between the hashes. In practice that is a hash or the middle, by its first
+ *   call; the stated choice here is a hash, either side with equal chance (the NFL's drive starts: 86% on a hash);
+ * - a missed field goal: the spot of the kick, which is the snap's own lateral spot.
+ * The draws come from a dedicated stream forked by label, so no other draw in the game moves. Off, every kick result
+ * put the ball on the center line, and it stayed there until a play ended outside the hashes: 18% of our scrimmage
+ * snaps were exactly on it, and a drive started there every time. NFL (BDB 2025 weeks 1-9, the first dropback of each
+ * possession): 86% on a hash, 10% within a yard of the middle (docs/reviews/2026-11-24-alignment-chart.md). */
 const DRIVE_HASH = process.env.DRIVE_HASH === '1';
 
 export class Game {
@@ -1323,7 +1327,10 @@ export class Game {
     } else {
       s.possession = other(owner);
       if (s.quarter >= 5 && s.otPossessions === 0) s.otFirst = owner;
-      this.changePossession(ruling.yardline, !DRIVE_HASH ? CENTER_Y : fromSnapSpot ? s.ballY : this.spots.chance(0.5) ? HASH_LEFT_Y : HASH_RIGHT_Y);
+      // DRIVE_HASH: a missed field goal at the kick's spot; a touchback at the offense's chosen hash; a return's end on
+      // a hash (both stated choices, see DRIVE_HASH).
+      this.changePossession(ruling.yardline, !DRIVE_HASH ? CENTER_Y : fromSnapSpot && !ruling.touchback ? s.ballY
+        : this.spots.chance(0.5) ? HASH_LEFT_Y : HASH_RIGHT_Y);
     }
     if (ruling.fairCatchKickAvailable) {
       this.fairCatchEntitlement = { side: s.possession, quarter: s.quarter, index: this.playIndex, yardline: s.yardline };
