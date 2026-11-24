@@ -173,6 +173,8 @@ export interface GraspJoint {
   firstApplied?: ContactSnapshot;
   /** Rate the holder's arms reel the two bodies together, yd/s (bounded by the grip). */
   pull?: number;
+  /** Arms on the hold (ONE_ARM_SHARE): 1 for a one-armed grab; omission is both arms. */
+  arms?: number;
   /** Current arm distance; ratchets in as the holder closes, slides out when the grip slips. */
   hold?: number;
   /** True while the grip is at its limit this step. */
@@ -402,6 +404,12 @@ export const HAND_MU = 0.42;
  * modelled), and past the edge it is off: no push, hold or steer until he re-fits (engagement.ts). With no force
  * on the hand it stays at 0 and every joint force is today's. */
 export const RUSH_HANDS = process.env.RUSH_HANDS === '1';
+/** ONE_ARM_SHARE (experimental, off; ONE_ARM_SHARE=1 turns it on; Integration 2026-11-24): a one-armed hold (GraspJoint
+ * arms 1) reels and holds with one arm's share of the holder's arm capacity (armCap / 2), not both arms'. Off, a one-arm
+ * grab's reel took min(armCap, grip) and its hold its grip capacity alone (one hand's squeeze, about 700 kg·yd/s² for a
+ * 160 kg lineman), so one arm pulled with two arms' force. The share is the arms' count, not a fitted constant. */
+export const ONE_ARM_SHARE = process.env.ONE_ARM_SHARE === '1';
+const armShare = (jt: { arms?: number }): number => ONE_ARM_SHARE && jt.arms === 1 ? 0.5 : 1;
 export const ARM_MASS = 0.05;
 /** RUSH_HANDS: with one hand off, the share of the remaining hand's steer left to resist the man toward the vacated
  * side (his body has to turn on the remaining hand to stop him there: most of it is lost). */
@@ -1185,8 +1193,8 @@ export class World {
       }
       else if (!jt.broken) {
         const holder = this.indexOf(jt.a);
-        if (jt.brace !== undefined) this.active[holder] += Math.min(this.gripCapacity(jt), this.armCap[holder]);
-        else if (jt.pull! > 0) this.active[holder] += this.armCap[holder];
+        if (jt.brace !== undefined) this.active[holder] += Math.min(this.gripCapacity(jt), this.armCap[holder] * armShare(jt));
+        else if (jt.pull! > 0) this.active[holder] += this.armCap[holder] * armShare(jt);
       }
     }
     for (const p of this.pending) if(this.canStrike(p.a,p.b)) this.active[this.indexOf(p.a)]+=hypot2(p.x,p.y)/this.tickDt;
@@ -1201,7 +1209,9 @@ export class World {
     const holds=this.joints.filter((j):j is GraspJoint=>j.kind==='grasp'&&!j.broken&&j.a===jt.a);
     const total=holds.reduce((s,j)=>s+Math.max(0,j.capacity),0);
     const structural=Math.min(3.36*this.sp[i].armForce,Math.max(0,...holds.map(j=>j.capacity)));
-    return Math.max(0,jt.capacity)*Math.min(1,structural/Math.max(1e-9,total))*(jt.a.support!.state==='up'?1:.7);
+    const cap=Math.max(0,jt.capacity)*Math.min(1,structural/Math.max(1e-9,total))*(jt.a.support!.state==='up'?1:.7);
+    // ONE_ARM_SHARE: one arm holds with one arm's share of his arm capacity (armCap carries fatigue and off-feet).
+    return armShare(jt)<1?Math.min(cap,this.armCap[i]*armShare(jt)):cap;
   }
 
   /** Apply internal impulse and record its exact planar kinetic work.
@@ -1780,7 +1790,7 @@ export class World {
       // alter later closed-loop contacts even with the experiment disabled.
       const wanted=foot ? Math.max(0,vn+Math.min(ARM_SPEED,jt.pull!))/demandMobility
         : Math.max(0,vn+Math.min(ARM_SPEED,jt.pull!))/(1/this.mass[i]+1/this.mass[j])/this.tickDt;
-      const impulse=Math.min(wanted,this.armCap[i]*this.armScale[i],this.gripCapacity(jt))*h;
+      const impulse=Math.min(wanted,this.armCap[i]*armShare(jt)*this.armScale[i],this.gripCapacity(jt))*h;
       const height=this.graspHeight(jt,j);
       const observed = jt.firstApplied ?? this.jointSnapshot(jt, h, nx, ny, height);
       const fraction=share>0?this.supportImpulse(jt,-nx*impulse,-ny*impulse,h,true)

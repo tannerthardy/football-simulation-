@@ -77,5 +77,7 @@ proto.run = function (this: any) {
 const rng = new Rng(FIRST);
 const home = generateTeam(rng, 'Ironmen', 'IRN', { strength: 0.55 }), away = generateTeam(rng, 'Comets', 'COM', { strength: 0.55 });
 for (let g = 0; g < GAMES; g++) { simulateGame(home, away, { seed: FIRST + g }); console.error(`game ${g + 1}/${GAMES}: ${events.length} events, ${plays.length} plays`); }
-writeFileSync(OUT, JSON.stringify({ games: GAMES, firstSeed: FIRST, events, plays }));
+// The flag set, so a comparison between outputs can be checked as paired (every env var in UPPER_SNAKE with value 0/1).
+const env = Object.fromEntries(Object.entries(process.env).filter(([k, v]) => /^[A-Z][A-Z0-9_]+$/.test(k) && (v === '0' || v === '1')).sort());
+writeFileSync(OUT, JSON.stringify({ games: GAMES, firstSeed: FIRST, env, events, plays }));
 console.log('events', events.length, 'plays', plays.length);

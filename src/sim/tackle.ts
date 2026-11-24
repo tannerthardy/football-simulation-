@@ -944,7 +944,7 @@ function grasp(sim: PlaySim, d: Agent, c: Agent, quality: number, legs: number, 
   (bond.execution ??= new Map()).set(d, execution);
   // A hold is one-armed for exactly as long as this grab: a later two-arm grab
   // in the same bond must not inherit an earlier grab's missing arm.
-  if (oneArm) (bond.oneArm ??= new Set()).add(d);
+  if (oneArm) { (bond.oneArm ??= new Set()).add(d); joint.arms = 1; }
   else bond.oneArm?.delete(d);
   sim.world.joints.push(joint);
 }
@@ -1113,6 +1113,7 @@ export function updateBond(sim: PlaySim, bond: TackleBond, intents: Intent[]): v
     joint.capacity = oneArm && bond.oneArm!.has(d) ? gripForce(d, clamp(next, 0.05, 1), 0, 1)
       : gripForce(d, clamp(next, 0.05, 1), Math.min(clamp(next, 0.05, 1), held));
     joint.lock = oneArm && bond.oneArm!.has(d) ? 0 : Math.min(clamp(next, 0.05, 1), held);
+    joint.arms = oneArm && bond.oneArm!.has(d) ? 1 : undefined;
     // The lower-body share describes the acquired point's motion relative
     // to corrective support. Grip security limits transmitted load above;
     // it cannot move that point or change its geometric Jacobian.

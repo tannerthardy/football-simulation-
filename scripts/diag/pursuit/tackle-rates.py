@@ -18,6 +18,7 @@ att = len(miss) + len(wrap)
 rush = sum(p['rush'] for p in P); rec = sum(p['reception'] for p in P)
 rushE = [e for e in E if e['playType'] in ('inside run', 'outside run', 'qb scramble')]; recE = [e for e in E if e['playType'] in ('pass', 'screen')]
 print(f"{G} games, {len(P)} scrimmage plays; rush attempts {rush}, receptions {rec}; seed {J['firstSeed']}+")
+print('flags on: ' + (', '.join(k for k, v in J['env'].items() if v == '1') if 'env' in J else 'NOT RECORDED (output predates the env field: not a checkable pair)'))
 print(f"per game: missed {len(miss) / G:.1f}, broken {len(brk) / G:.1f}, attempts {att / G:.1f}, wraps {len(wrap) / G:.1f}")
 print(f"per attempt: missed {pct(len(miss), att)}; broken per hold {pct(len(brk), len(wrap))}; missed + broken per attempt {pct(len(miss) + len(brk), att)}")
 for lab, S, n in (('rush', rushE, rush), ('reception', recE, rec)):
