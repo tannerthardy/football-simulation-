@@ -2941,6 +2941,10 @@ const FLIGHT_HOLD = 1.0;
 export function continueFlightBreak(a: Agent, sim: PlaySim): MoveCommand | null {
   const fb = flightBreaks.get(a);
   if (!fb || sim.t - fb.t > FLIGHT_HOLD) return null;
+  // Only while the throw he broke on is still a throw in his picture: a pump he has seen pulled down (the release belief
+  // undone) ends the break, and his coverage resumes (acc-radius cover6 s8: the Mike kept driving on a pump's receiver
+  // for 1 s after the pull-down and the middle opened for a 34 yd scramble).
+  if (RELEASE_BELIEF && releaseBelief(sim, a).releasedAt === undefined) return null;
   const seen = sim.see(a, fb.receiver);
   return flightBreakMove(a, sim, fb.receiver, seen, sim.t, seen.pos);
 }
