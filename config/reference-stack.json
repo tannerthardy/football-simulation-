@@ -338,6 +338,7 @@
     "QB_SEEN_MAN": "on",
     "QB_SCAN": "on",
     "QB_CANON_SEEN": "on",
+    "BELIEVED_BODY": "off",
     "QB_SEEN_OUT": "on",
     "QB_SEEN_REC": "on",
     "ACC_RADIUS": "off",

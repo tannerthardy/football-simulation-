@@ -65,6 +65,16 @@ export const PHYSICS: Record<string, string> = {
   'src/sim/catching.ts': 'catch resolution (hands meet ball)',
   'src/sim/engagement.ts': 'hand-fight and block-lifecycle physics',
 };
+/**
+ * Rule `capacity` (believed body, Flex 2026-11-24; docs/reviews/2026-11-24-believed-body.md): another player's true physical
+ * capacity, `other.profile.<capacity>`, or his whole profile escaping (passed on, returned, assigned or aliased). A player knows another man's
+ * capacities only as he believes them (build, film, what he saw or felt); his visible build (mass, height, radius, reach) is
+ * not reported. Referee and contact-resolution files may read capacities (resolving a contact is their job).
+ */
+export const CAPACITY = new Set(['vmax', 'tau', 'brake', 'lateral', 'power', 'press', 'turnRate', 'backpedal', 'shuffle', 'balance', 'bend',
+  'stepSpeed', 'getUp', 'reactionTime']);
+/** A man's build as seen (size, height, arm length): visible, not a hidden capacity. */
+export const VISIBLE_BUILD = new Set(['massKg', 'heightYd', 'radius', 'reach', 'maxCatchHeight', 'reactReach']);
 export const INTENT = new Set(['behavior', 'passSet', 'runFit', 'recog', 'mind', 'eyes', 'keyStep', 'readAt', 'snapReadyAt', 'shedBy']);
 
 /** The files that own a published field: its own record may read it (the passer's windup and eyes are qb.ts's). */
@@ -74,7 +84,7 @@ export const SIM_OWNERS: Record<string, string[]> = {
   qbEyes: ['src/sim/behaviors/qb.ts'],
 };
 
-export interface Read { file: string; line: number; rule: 'agent' | 'sim' | 'behavior'; member: string; receiver: string; text: string }
+export interface Read { file: string; line: number; rule: 'agent' | 'sim' | 'behavior' | 'capacity'; member: string; receiver: string; text: string }
 
 /** The actor rule that counts a method's first Agent parameter as another player (default on; STRICT_ACTOR=0 is the 2026-11-13 rule). */
 export const STRICT_ACTOR = process.env.STRICT_ACTOR !== '0';
@@ -125,6 +135,17 @@ export function scan(root: string): Read[] {
         const where = sf.getLineAndCharacterOfPosition(n.name.getStart(sf)).line + 1;
         const text = n.parent.getText(sf).split('\n')[0]!.slice(0, 110);
         const cls = t.symbol?.name;
+        // Rule `capacity`: `X.profile.<capacity>` or `X.profile` passed on whole, X another player's Agent.
+        const profileOf = (e: ts.Expression): string | null => ts.isPropertyAccessExpression(e) && e.name.text === 'profile'
+          && isAgentType(checker.getTypeAtLocation(e.expression), 'Agent') ? e.expression.getText(sf) : null;
+        const capOwner = CAPACITY.has(member) ? profileOf(n.expression) : null;
+        // The whole profile escaping (passed, returned, assigned, aliased): any `X.profile` not read for one member here. A
+        // capacity member is reported above; a visible-build member (his size, seen) is not a read of hidden capacity.
+        const next = ts.isPropertyAccessExpression(n.parent) && n.parent.expression === n ? n.parent.name.text : null;
+        const wholeOwner = member === 'profile' && (next === null || (!CAPACITY.has(next) && !VISIBLE_BUILD.has(next))) ? profileOf(n) : null;
+        if ((capOwner || wholeOwner) && !physics && !(actors[actors.length - 1] ?? new Set(['a'])).has((capOwner ?? wholeOwner)!)) {
+          out.push({ file: rel, line: where, rule: 'capacity', member: capOwner ? `profile.${member}` : 'profile', receiver: (capOwner ?? wholeOwner)!, text });
+        }
         if (cls && behaviorClass.has(cls) && behaviorClass.get(cls) !== rel && !BEHAVIOR_PUBLIC.has(member) && receiver !== 'this' && !receiver.startsWith('this.') && !physics) {
           out.push({ file: rel, line: where, rule: 'behavior', member: `${cls}.${member}`, receiver, text });
         } else if (AGENT_HIDDEN.has(member) && (isAgentType(t, 'Agent') || declaredOn === 'Agent')) {

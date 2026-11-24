@@ -170,6 +170,7 @@
   "test/ball-rules.test.ts",
   "test/baseline-runner.test.ts",
   "test/belief-no-calltype.test.ts",
+  "test/believed-body.test.ts",
   "test/blind-defender.test.ts",
   "test/blitz-creep.test.ts",
   "test/blocker-work-picture.test.ts",
