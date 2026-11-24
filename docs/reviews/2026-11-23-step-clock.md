@@ -232,3 +232,34 @@ interception rate. Its yards per dropback (6.64 → 6.09) are within the unpaire
   38% (#1) and 54% (#2).
 - The next measurement is the window's arrival against the breaking defender, held until Coverage answers the
   back-to-the-passer question.
+
+## Clock-only landing (2026-11-24)
+
+Integration asked for QB_STEP_CLOCK alone, with READ_WINDOW and the quick clock, in the usual landing form; the price
+code stays off develop until the arrival work changes it.
+
+Patch: `docs/reviews/patches/engine71-footwork/step-clock-landing-on-7689bc4e.patch`. It applies to develop 7689bc4e7
+and c0c4bdd70.
+- **Defaults and engine id.**
+  - QB_STEP_CLOCK is on by default (`=0` restores); the engine is engine-93 by merge order (renumber if
+    coverage/C14-flight-break lands first).
+  - READ_WINDOW is on with the clock and acts only with it (`READ_WINDOW=0` turns it off). Its read is now of the
+    `!== '0'` form the scorecard's setting reader requires.
+  - The flag count is 500: 382 on, 90 off.
+- **The price code is removed:** no QB_DEF_START or QB_BAT_HEIGHT.
+- **One fix since the measured runs.** A keyed pair (slant and flat) is one look; leaving it for a read outside it now
+  passes both its routes. Under the clock, slant_flat's flat was otherwise thrown at 4.0 s on a 1.5 s flight after the
+  order ran out (read-window test, on arm). This acts only with the clock, on keyed pairs.
+- **Tests:**
+  - read-window, the off control: with the clock the failure READ_WINDOW prevents shows as late flats, not reopened
+    reads, so the control is reopened + late flats > 0.
+  - qb-peek-clock: done with the peek by the second hitch, either to the back or by throwing a vertical from it (both
+    arms throw the go at 2.25 s under the clock), with off no shorter. QB_PEEK_CLOCK no longer separates the arms on this
+    play; it needs a scene or a retirement review.
+- **Pinned to QB_STEP_CLOCK=0 with owner notes:**
+  - acc-radius: the seam on the two-high scene comes at 3.3 s under the clock; QB to re-record.
+  - drop-belief: the window's spreads carry each look's history, which confounds its "nothing else moves" comparison;
+    QB to restate it.
+  - tackle-set: the throw moves, so the tackler meets a different play; Defense to re-record.
+- **red-diff** (quiet machine, on 7689bc4e7 + patch): **new red: 0, fixed: 1** (qb-stick, owner Coverage). The ledger is
+  updated (59 entries).
