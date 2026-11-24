@@ -19,7 +19,9 @@ import { overallAt, ROLE_BY_ID, roleSuitability } from '../players/roles.js';
 import { r01, type Player } from '../players/types.js';
 import type { ManPreference } from '../playbook/alignment.js';
 import { coverageHasNamedZonePlayers, pressureIsInstallable } from '../playbook/call-integrity.js';
-import { PASS_CONCEPTS, RPO_CONCEPTS, RUN_BY_ID, RUN_CONCEPTS, SCREEN_BY_ID } from '../playbook/concepts.js';
+import { CALL_COMPOSE, PASS_CONCEPTS, RPO_CONCEPTS, RUN_BY_ID, RUN_CONCEPTS, SCREEN_BY_ID } from '../playbook/concepts.js';
+import { baseWeight, drawSetting, variantOf } from '../playbook/calls/axes.js';
+import { callEligibility } from './call-eligibility.js';
 import { COVERAGE_BY_ID, FRONTS, MENU_FRONTS, NICKEL_FRONT_IDS, PRESSURES } from '../playbook/defense.js';
 import { FORMATION_BY_ID, FORMATIONS } from '../playbook/formations.js';
 import type { Coverage, DefPersonnelId, DefSlot, DefensivePlayCall, Formation, MotionCall, OffensivePlayCall, OffSlot, PassConcept, PersonnelId, ReceiverRef, RunConcept, SkillSlot, ZoneStyle } from '../playbook/types.js';
@@ -460,6 +462,10 @@ export class OffensiveCoordinator {
       // CONCEPT_FIT: only the concepts whose read's receivers are on the field after the called motion.
       const fields = CONCEPT_FIT ? this.conceptFields(s, formation, flip, motion) : undefined;
       let concept = this.choosePass(s, formation, defense, fields && new Set(PASS_CONCEPTS.filter((c) => conceptFits(c, fields.get(c.id)!)).map((c) => c.id)));
+      // CALL_COMPOSE: the call's open axes (the half's version, the backside half, the back's job, tags), by NFL share,
+      // on their own stream (src/playbook/calls/axes.ts).
+      if (CALL_COMPOSE) concept = variantOf(concept, drawSetting(concept.id, this.rng.fork(`call-axes:${this.axisCalls++}`)),
+        callEligibility(formation, flip, s.ballY, motion, { los: 10 + s.yardline, ctx: {}, bodies: {} }));
       // PA_CALL: play action as a tag on the call, at the NFL's rate for this situation and alignment.
       if (PA_CALL) concept = this.playActionTag(concept, s, formation);
       // BACK_AS_THREE: from a field with no #3, the back is #3 to the flat.
@@ -564,6 +570,8 @@ export class OffensiveCoordinator {
   }
   private paTags = 0;
   private screenCalls = 0;
+  /** CALL_COMPOSE: draws of a call's open axes, each on its own forked stream. */
+  private axisCalls = 0;
 
   /** CONCEPT_FIT: each pool concept's field at the snap, after the called motion, aligned as the play aligns it (its
    * routes set the receivers' room), with this team's bodies. */
@@ -585,7 +593,8 @@ export class OffensiveCoordinator {
     const weights: Array<[PassConcept, number]> = [];
     const offered = fitting ? PASS_CONCEPTS.filter((c) => fitting.has(c.id)) : PASS_CONCEPTS;
     for (const c of offered.length ? offered : PASS_CONCEPTS) {
-      let w = 1;
+      // CALL_COMPOSE: the composition's NFL share (relative to the pool's mean) in place of an even 1 per concept.
+      let w = CALL_COMPOSE ? baseWeight(c.id) : 1;
       if (c.family === 'quick') w *= thirdShort ? 2.2 : longYd ? 0.6 : 1.1;
       if (c.family === 'dropback') w *= longYd ? 1.6 : 1;
       if (c.family === 'playaction') w *= earlyDown && !s.hurry ? (underCenter ? 2.2 : 1.1) : 0.15;

@@ -1,0 +1,97 @@
+/**
+ * NFL call shares, the labelled defaults for CALL_COMPOSE step 2 (src/playbook/calls/axes.ts). This is a copy of the NFL
+ * block of config/call-shares.json, which is the output of scripts/diag/routes/call_shares.py (rules/route-chart, #876)
+ * on 2022 BDB non-PA dropbacks (7,207 plays). test/call-compose.test.ts keeps it equal to the config.
+ *
+ * What each table holds:
+ * - core_share: the share of plays with a half's core on a side. A play can count for several halves.
+ * - core_partner: on a side with that core, which halves' cores are on the other side ('unmatched' if none of ours).
+ * - core_back: the back's job on those plays.
+ * - full_share: the share of plays per full-field concept.
+ * - mesh_outside, mesh_back: mesh's outside routes and the back's job on mesh plays.
+ *
+ * These are a starting call sheet, not targets.
+ */
+export const NFL_CALL_SHARES: {
+  core_share: Record<string, number>; full_share: Record<string, number>; mesh_outside: Record<string, number>; mesh_back: Record<string, number>;
+  core_partner: Record<string, Record<string, number>>; core_back: Record<string, Record<string, number>>;
+} = {
+  core_share: { slant_flat: 0.034, stick: 0.0322, slant_stick: 0.0128, quick_out_hitch: 0.0148, hitches: 0.0204, double_slants: 0.029, hitch_quick_out: 0.0046, seam_slant: 0.0021, trips_hitch_flat: 0.005, smash: 0.0189, curl_flat: 0.0377, flood: 0.0056, dagger: 0.013, levels_outside_deep: 0.0046, levels_outside_short: 0.0112, comeback_dig: 0.0076, fade_flat: 0.047, hitch_post: 0.0155, double_outs: 0.0083, corner_out: 0.0126, corner_flat: 0.018, trips_sail: 0.0021, seam_hitch: 0.0058, trips_outs: 0.001, verts_hitch: 0.0185, slant_go: 0.0205, slant_hitch: 0.0128, dig_shallow: 0.0196, go_hook: 0.0433, go_hitch: 0.0433, hitch_go: 0.0409, hitch_out: 0.0072, hitch_seam: 0.0409, comeback_seam: 0.019 },
+  full_share: { mesh: 0.0326, drive: 0.0683, y_cross: 0.009, hitch_cross: 0.0017, post_cross: 0.0039, four_verts: 0.0089 },
+  mesh_outside: { SHALLOW: 0.5191, GO: 0.1383, POST: 0.0681, 'IN8+': 0.0638, 'HITCH8+': 0.0489, CORNER: 0.034, 'OUT8+': 0.034, SLANT: 0.0319, 'HITCH<8': 0.0191, 'OUT<8': 0.017, 'IN<8': 0.0106, PROTECT: 0.0043, 'CROSS-deep': 0.0043, FLAT: 0.0043, SCREEN: 0.0021 },
+  mesh_back: { flat: 0.3872, empty: 0.234, wheel: 0.1277, stay: 0.1191, angle: 0.0851, out: 0.0298, other: 0.017 },
+  core_partner: {
+    slant_flat: { unmatched: 0.3175, go: 0.2543, double_slants: 0.119, slant_flat: 0.0556, slant_go: 0.0516, quick_out_hitch: 0.0298, stick: 0.0248, hitch_go: 0.0139, hitch_seam: 0.0139, seam_slant: 0.0139, slant_stick: 0.0112, slant_hitch: 0.0112, hitches: 0.0106, go_hook: 0.0083, go_hitch: 0.0083, smash: 0.0079, verts_hitch: 0.0079, comeback_seam: 0.0079, levels_outside_short: 0.004, corner_out: 0.004, dagger: 0.004, comeback_dig: 0.004, double_outs: 0.004, fade_flat: 0.004, curl_flat: 0.004, trips_hitch_flat: 0.0026, seam_hitch: 0.002 },
+    stick: { unmatched: 0.4828, go: 0.2205, slant_flat: 0.0647, double_slants: 0.0603, curl_flat: 0.0259, go_hook: 0.0158, go_hitch: 0.0158, dig_shallow: 0.0129, corner_out: 0.0129, hitches: 0.0129, slant_go: 0.0086, double_outs: 0.0086, quick_out_hitch: 0.0086, slant_stick: 0.0065, slant_hitch: 0.0065, fade_flat: 0.0065, comeback_seam: 0.0043, levels_outside_deep: 0.0043, hitch_out: 0.0043, corner_flat: 0.0043, hitch_quick_out: 0.0043, hitch_go: 0.0043, hitch_seam: 0.0043 },
+    slant_stick: { unmatched: 0.3696, go: 0.2165, double_slants: 0.1848, slant_flat: 0.087, comeback_seam: 0.0217, fade_flat: 0.0217, stick: 0.019, hitch_post: 0.0109, double_outs: 0.0109, slant_go: 0.0109, go_hook: 0.01, go_hitch: 0.01, hitch_go: 0.0082, hitch_seam: 0.0082, quick_out_hitch: 0.0054, seam_hitch: 0.0027, verts_hitch: 0.0027 },
+    quick_out_hitch: { unmatched: 0.4746, quick_out_hitch: 0.1864, go: 0.1321, slant_flat: 0.0678, hitches: 0.0282, go_hook: 0.0219, go_hitch: 0.0219, comeback_seam: 0.0085, levels_outside_short: 0.0085, levels_outside_deep: 0.0085, dig_shallow: 0.0085, slant_go: 0.0085, comeback_dig: 0.0085, stick: 0.0049, slant_stick: 0.0042, slant_hitch: 0.0042, trips_hitch_flat: 0.0028 },
+    hitches: { unmatched: 0.5346, go: 0.1494, hitches: 0.1426, hitch_quick_out: 0.044, slant_flat: 0.0252, quick_out_hitch: 0.0252, go_hook: 0.0142, go_hitch: 0.0142, dagger: 0.0126, fade_flat: 0.0094, double_slants: 0.0063, curl_flat: 0.0063, stick: 0.0058, trips_hitch_flat: 0.0042, hitch_go: 0.0031, hitch_seam: 0.0031 },
+    double_slants: { unmatched: 0.2851, go: 0.244, slant_flat: 0.1448, double_slants: 0.1086, slant_stick: 0.0302, slant_hitch: 0.0302, stick: 0.0238, smash: 0.0226, fade_flat: 0.0204, hitch_go: 0.0136, hitch_seam: 0.0136, slant_go: 0.0136, comeback_seam: 0.0136, go_hook: 0.0087, go_hitch: 0.0087, verts_hitch: 0.0068, seam_hitch: 0.0045, hitch_quick_out: 0.0045, hitches: 0.0015, trips_hitch_flat: 0.0015 },
+    hitch_quick_out: { unmatched: 0.3636, go: 0.2525, hitches: 0.1919, go_hook: 0.0404, go_hitch: 0.0404, slant_go: 0.0303, double_slants: 0.0303, levels_outside_short: 0.0303, stick: 0.0101, trips_hitch_flat: 0.0101 },
+    seam_slant: { slant_flat: 0.4, unmatched: 0.4, go: 0.0889, fade_flat: 0.0667, go_hook: 0.0222, go_hitch: 0.0222 },
+    trips_hitch_flat: { unmatched: 0.6389, go: 0.1667, slant_flat: 0.0556, hitches: 0.0556, hitch_quick_out: 0.0278, double_slants: 0.0278, quick_out_hitch: 0.0278 },
+    smash: { unmatched: 0.5985, go: 0.1764, double_slants: 0.0365, corner_out: 0.0292, levels_outside_short: 0.0219, hitch_post: 0.0219, slant_flat: 0.0146, smash: 0.0146, dig_shallow: 0.0146, corner_flat: 0.0146, levels_outside_deep: 0.0146, comeback_seam: 0.0073, curl_flat: 0.0073, hitch_go: 0.0073, hitch_seam: 0.0073, go_hook: 0.0049, go_hitch: 0.0049, fade_flat: 0.0036 },
+    curl_flat: { unmatched: 0.639, go: 0.1637, curl_flat: 0.0361, stick: 0.0217, comeback_dig: 0.0217, levels_outside_short: 0.0144, dig_shallow: 0.0144, verts_hitch: 0.0117, comeback_seam: 0.0108, hitch_go: 0.0099, hitch_seam: 0.0099, slant_go: 0.009, dagger: 0.009, fade_flat: 0.0054, go_hook: 0.0048, go_hitch: 0.0048, smash: 0.0036, hitches: 0.0036, slant_flat: 0.0036, flood: 0.0018, seam_hitch: 0.0009 },
+    flood: { unmatched: 0.65, slant_go: 0.1, levels_outside_short: 0.075, dig_shallow: 0.05, go: 0.0458, curl_flat: 0.025, hitch_post: 0.025, fade_flat: 0.0125, go_hook: 0.0083, go_hitch: 0.0083 },
+    dagger: { unmatched: 0.7128, go: 0.1046, curl_flat: 0.0426, slant_go: 0.0319, hitches: 0.0213, corner_flat: 0.0213, fade_flat: 0.016, double_outs: 0.0106, levels_outside_short: 0.0106, slant_flat: 0.0106, corner_out: 0.0106, go_hook: 0.0035, go_hitch: 0.0035 },
+    levels_outside_deep: { unmatched: 0.5152, go: 0.2121, corner_out: 0.0909, double_outs: 0.0606, smash: 0.0606, stick: 0.0303, quick_out_hitch: 0.0303 },
+    levels_outside_short: { unmatched: 0.3704, go: 0.323, curl_flat: 0.0494, smash: 0.037, hitch_go: 0.0309, hitch_seam: 0.0309, corner_flat: 0.0247, fade_flat: 0.0247, flood: 0.0185, quick_out_hitch: 0.0123, comeback_seam: 0.0123, double_outs: 0.0123, slant_flat: 0.0123, dagger: 0.0123, hitch_quick_out: 0.0123, go_hook: 0.0082, go_hitch: 0.0082 },
+    comeback_dig: { unmatched: 0.4909, go: 0.297, curl_flat: 0.1091, comeback_seam: 0.0364, fade_flat: 0.0182, slant_flat: 0.0182, quick_out_hitch: 0.0182, go_hook: 0.0061, go_hitch: 0.0061 },
+    fade_flat: { unmatched: 0.487, go: 0.3043, double_slants: 0.0261, dig_shallow: 0.0232, fade_flat: 0.0174, hitch_post: 0.0145, slant_go: 0.0116, comeback_seam: 0.0116, levels_outside_short: 0.0116, curl_flat: 0.0087, dagger: 0.0087, hitches: 0.0087, verts_hitch: 0.0072, comeback_dig: 0.0058, seam_slant: 0.0058, slant_flat: 0.0058, slant_stick: 0.0048, slant_hitch: 0.0048, stick: 0.0048, go_hook: 0.0029, go_hitch: 0.0029, double_outs: 0.0029, corner_flat: 0.0029, hitch_out: 0.0029, hitch_go: 0.0029, hitch_seam: 0.0029, smash: 0.0029, trips_sail: 0.0029, flood: 0.0014 },
+    hitch_post: { unmatched: 0.4483, go: 0.25, hitch_post: 0.069, hitch_go: 0.0453, hitch_seam: 0.0453, smash: 0.0259, fade_flat: 0.0216, comeback_seam: 0.0172, verts_hitch: 0.0151, go_hook: 0.0086, go_hitch: 0.0086, slant_go: 0.0086, hitch_out: 0.0086, corner_out: 0.0086, seam_hitch: 0.0065, slant_stick: 0.0043, slant_hitch: 0.0043, flood: 0.0043 },
+    double_outs: { unmatched: 0.6129, corner_out: 0.0806, double_outs: 0.0645, go: 0.0403, stick: 0.0323, levels_outside_deep: 0.0323, dig_shallow: 0.0323, dagger: 0.0161, levels_outside_short: 0.0161, hitch_out: 0.0161, slant_flat: 0.0161, fade_flat: 0.0081, slant_stick: 0.0081, slant_hitch: 0.0081, hitch_go: 0.0081, hitch_seam: 0.0081 },
+    corner_out: { unmatched: 0.4947, go: 0.1561, corner_out: 0.0842, double_outs: 0.0526, smash: 0.0421, dig_shallow: 0.0316, levels_outside_deep: 0.0316, stick: 0.0158, verts_hitch: 0.0105, hitch_go: 0.0105, hitch_seam: 0.0105, slant_flat: 0.0105, corner_flat: 0.0105, hitch_post: 0.0105, dagger: 0.0105, go_hook: 0.0088, go_hitch: 0.0088 },
+    corner_flat: { unmatched: 0.7293, go: 0.0946, corner_flat: 0.0451, verts_hitch: 0.0376, dig_shallow: 0.015, levels_outside_short: 0.015, smash: 0.015, dagger: 0.0075, trips_outs: 0.0075, corner_out: 0.0075, go_hook: 0.0044, go_hitch: 0.0044, fade_flat: 0.0038, hitch_go: 0.0038, hitch_seam: 0.0038, hitch_out: 0.0038, stick: 0.0019 },
+    trips_sail: { unmatched: 0.9333, fade_flat: 0.0333, go: 0.0333 },
+    seam_hitch: { unmatched: 0.381, go: 0.1667, double_slants: 0.0952, hitch_go: 0.0833, hitch_seam: 0.0833, hitch_post: 0.0714, slant_flat: 0.0476, comeback_seam: 0.0238, curl_flat: 0.0238, slant_stick: 0.0119, slant_hitch: 0.0119 },
+    trips_outs: { unmatched: 0.5714, corner_flat: 0.2857, go: 0.1429 },
+    verts_hitch: { unmatched: 0.4662, go: 0.2368, corner_flat: 0.0451, curl_flat: 0.0451, double_slants: 0.0376, slant_flat: 0.0376, hitch_go: 0.0338, hitch_seam: 0.0338, hitch_post: 0.0301, fade_flat: 0.0113, corner_out: 0.0075, comeback_seam: 0.0075, slant_stick: 0.0038, slant_hitch: 0.0038 },
+    slant_go: { unmatched: 0.3831, go: 0.2771, slant_flat: 0.0844, slant_go: 0.0779, curl_flat: 0.0195, dagger: 0.0195, double_slants: 0.0195, hitch_go: 0.0162, hitch_seam: 0.0162, stick: 0.013, fade_flat: 0.013, flood: 0.013, go_hook: 0.0108, go_hitch: 0.0108, hitch_quick_out: 0.0065, hitch_post: 0.0065, quick_out_hitch: 0.0065, slant_stick: 0.0032, slant_hitch: 0.0032 },
+    slant_hitch: { unmatched: 0.3696, go: 0.2165, double_slants: 0.1848, slant_flat: 0.087, comeback_seam: 0.0217, fade_flat: 0.0217, stick: 0.019, hitch_post: 0.0109, double_outs: 0.0109, slant_go: 0.0109, go_hook: 0.01, go_hitch: 0.01, hitch_go: 0.0082, hitch_seam: 0.0082, quick_out_hitch: 0.0054, seam_hitch: 0.0027, verts_hitch: 0.0027 },
+    dig_shallow: { unmatched: 0.5674, go: 0.247, fade_flat: 0.0284, curl_flat: 0.0284, corner_out: 0.0213, corner_flat: 0.0142, smash: 0.0142, double_outs: 0.0142, stick: 0.0106, hitch_go: 0.0071, hitch_seam: 0.0071, quick_out_hitch: 0.0071, hitch_out: 0.0071, comeback_seam: 0.0071, flood: 0.0071, go_hook: 0.0059, go_hitch: 0.0059 },
+    go_hook: { unmatched: 0.3834, go: 0.3154, go_hook: 0.0271, go_hitch: 0.0271, quick_out_hitch: 0.023, hitches: 0.0215, slant_flat: 0.0215, double_slants: 0.0184, stick: 0.0184, slant_go: 0.0153, curl_flat: 0.0123, hitch_quick_out: 0.0123, hitch_go: 0.0107, hitch_seam: 0.0107, dig_shallow: 0.0092, corner_out: 0.0092, hitch_post: 0.0092, smash: 0.0061, corner_flat: 0.0061, comeback_seam: 0.0061, hitch_out: 0.0061, levels_outside_short: 0.0061, slant_stick: 0.0046, slant_hitch: 0.0046, fade_flat: 0.0046, dagger: 0.0031, comeback_dig: 0.0031, seam_slant: 0.0031, flood: 0.0015 },
+    go_hitch: { unmatched: 0.3834, go: 0.3154, go_hook: 0.0271, go_hitch: 0.0271, quick_out_hitch: 0.023, hitches: 0.0215, slant_flat: 0.0215, double_slants: 0.0184, stick: 0.0184, slant_go: 0.0153, curl_flat: 0.0123, hitch_quick_out: 0.0123, hitch_go: 0.0107, hitch_seam: 0.0107, dig_shallow: 0.0092, corner_out: 0.0092, hitch_post: 0.0092, smash: 0.0061, corner_flat: 0.0061, comeback_seam: 0.0061, hitch_out: 0.0061, levels_outside_short: 0.0061, slant_stick: 0.0046, slant_hitch: 0.0046, fade_flat: 0.0046, dagger: 0.0031, comeback_dig: 0.0031, seam_slant: 0.0031, flood: 0.0015 },
+    hitch_go: { unmatched: 0.4174, go: 0.1861, hitch_go: 0.0755, hitch_seam: 0.0755, hitch_post: 0.0374, comeback_seam: 0.0312, slant_flat: 0.0249, double_slants: 0.0249, curl_flat: 0.0187, levels_outside_short: 0.0156, slant_go: 0.014, hitch_out: 0.0093, verts_hitch: 0.0086, go_hook: 0.007, go_hitch: 0.007, corner_out: 0.0062, dig_shallow: 0.0062, smash: 0.0062, seam_hitch: 0.0055, stick: 0.0039, slant_stick: 0.0031, slant_hitch: 0.0031, corner_flat: 0.0031, hitches: 0.0031, fade_flat: 0.0031, double_outs: 0.0031 },
+    hitch_out: { unmatched: 0.5769, go: 0.234, hitch_go: 0.0288, hitch_seam: 0.0288, stick: 0.0192, double_outs: 0.0192, corner_flat: 0.0192, dig_shallow: 0.0192, hitch_post: 0.0192, go_hook: 0.0128, go_hitch: 0.0128, fade_flat: 0.0096 },
+    hitch_seam: { unmatched: 0.4174, go: 0.1861, hitch_go: 0.0755, hitch_seam: 0.0755, hitch_post: 0.0374, comeback_seam: 0.0312, slant_flat: 0.0249, double_slants: 0.0249, curl_flat: 0.0187, levels_outside_short: 0.0156, slant_go: 0.014, hitch_out: 0.0093, verts_hitch: 0.0086, go_hook: 0.007, go_hitch: 0.007, corner_out: 0.0062, dig_shallow: 0.0062, smash: 0.0062, seam_hitch: 0.0055, stick: 0.0039, slant_stick: 0.0031, slant_hitch: 0.0031, corner_flat: 0.0031, hitches: 0.0031, fade_flat: 0.0031, double_outs: 0.0031 },
+    comeback_seam: { unmatched: 0.4865, go: 0.1532, comeback_seam: 0.1486, hitch_go: 0.0321, hitch_seam: 0.0321, curl_flat: 0.0203, double_slants: 0.0203, fade_flat: 0.0135, comeback_dig: 0.0135, slant_flat: 0.0135, hitch_post: 0.0135, slant_stick: 0.0068, slant_hitch: 0.0068, smash: 0.0068, levels_outside_short: 0.0068, dig_shallow: 0.0068, go_hook: 0.0045, go_hitch: 0.0045, stick: 0.0034, quick_out_hitch: 0.0034, seam_hitch: 0.0017, verts_hitch: 0.0017 },
+    go: { unmatched: 0.4687, go: 0.3245, slant_flat: 0.0182, double_slants: 0.0159, fade_flat: 0.0144, curl_flat: 0.0126, slant_go: 0.0125, dig_shallow: 0.0106, go_hook: 0.0098, go_hitch: 0.0098, hitch_post: 0.0086, stick: 0.0081, hitch_go: 0.0079, hitch_seam: 0.0079, levels_outside_short: 0.0078, smash: 0.0066, comeback_seam: 0.0066, hitches: 0.0066, verts_hitch: 0.0052, quick_out_hitch: 0.005, comeback_dig: 0.0045, corner_out: 0.0043, corner_flat: 0.0038, hitch_out: 0.0035, slant_stick: 0.0029, slant_hitch: 0.0029, dagger: 0.0029, hitch_quick_out: 0.0028, levels_outside_deep: 0.0018, double_outs: 0.0008, seam_slant: 0.0008, trips_hitch_flat: 0.0005, seam_hitch: 0.0004, flood: 0.0004, trips_outs: 0.0003, trips_sail: 0.0003 },
+  },
+  core_back: {
+    slant_flat: { flat: 0.5635, angle: 0.1548, stay: 0.123, empty: 0.119, other: 0.0198, out: 0.0198 },
+    stick: { flat: 0.875, empty: 0.0517, angle: 0.0388, stay: 0.0172, other: 0.0129, out: 0.0043 },
+    slant_stick: { flat: 0.4891, empty: 0.163, stay: 0.1522, angle: 0.087, other: 0.0652, out: 0.0217, wheel: 0.0217 },
+    quick_out_hitch: { angle: 0.2797, stay: 0.2712, flat: 0.2542, empty: 0.1271, other: 0.0508, out: 0.0169 },
+    hitches: { flat: 0.3774, angle: 0.2013, stay: 0.1824, other: 0.1006, empty: 0.1006, out: 0.0189, wheel: 0.0189 },
+    double_slants: { flat: 0.3529, empty: 0.2308, angle: 0.181, stay: 0.1629, other: 0.0498, out: 0.0181, wheel: 0.0045 },
+    hitch_quick_out: { angle: 0.3333, flat: 0.2424, empty: 0.1515, other: 0.1212, stay: 0.0909, out: 0.0606 },
+    seam_slant: { flat: 0.7333, other: 0.0667, stay: 0.0667, angle: 0.0667, empty: 0.0667 },
+    trips_hitch_flat: { flat: 0.8333, empty: 0.0833, angle: 0.0556, other: 0.0278 },
+    smash: { flat: 0.4818, stay: 0.1533, empty: 0.146, angle: 0.0876, out: 0.0657, other: 0.0438, wheel: 0.0219 },
+    curl_flat: { flat: 0.6751, empty: 0.1661, angle: 0.0758, stay: 0.0542, out: 0.0181, other: 0.0108 },
+    flood: { flat: 0.725, empty: 0.1, stay: 0.1, out: 0.05, angle: 0.025 },
+    dagger: { flat: 0.3404, empty: 0.1915, angle: 0.1809, stay: 0.1489, out: 0.1064, other: 0.0319 },
+    levels_outside_deep: { flat: 0.5455, stay: 0.1515, empty: 0.1212, out: 0.0909, angle: 0.0606, wheel: 0.0303 },
+    levels_outside_short: { flat: 0.5185, empty: 0.1728, stay: 0.1728, angle: 0.0864, wheel: 0.0247, other: 0.0123, out: 0.0123 },
+    comeback_dig: { angle: 0.2545, empty: 0.2182, stay: 0.2, flat: 0.1818, out: 0.0727, other: 0.0545, wheel: 0.0182 },
+    fade_flat: { flat: 0.6928, empty: 0.1159, angle: 0.0957, stay: 0.0493, other: 0.0261, out: 0.0116, wheel: 0.0087 },
+    hitch_post: { empty: 0.3276, flat: 0.2759, stay: 0.1552, angle: 0.1207, out: 0.0603, other: 0.0431, wheel: 0.0172 },
+    double_outs: { flat: 0.2581, stay: 0.2581, angle: 0.2419, empty: 0.1774, out: 0.0645 },
+    corner_out: { flat: 0.3474, stay: 0.2632, angle: 0.2, empty: 0.1263, out: 0.0421, other: 0.0211 },
+    corner_flat: { flat: 0.6015, stay: 0.1278, empty: 0.1128, angle: 0.0677, other: 0.0451, out: 0.0376, wheel: 0.0075 },
+    trips_sail: { angle: 0.2667, out: 0.2, stay: 0.1333, wheel: 0.1333, flat: 0.1333, other: 0.0667, empty: 0.0667 },
+    seam_hitch: { empty: 0.5952, angle: 0.1429, flat: 0.1429, stay: 0.0952, other: 0.0238 },
+    trips_outs: { empty: 0.5714, flat: 0.2857, stay: 0.1429 },
+    verts_hitch: { empty: 0.391, flat: 0.218, angle: 0.1429, stay: 0.1429, other: 0.0526, out: 0.0301, wheel: 0.0226 },
+    slant_go: { flat: 0.3182, empty: 0.2922, stay: 0.1364, angle: 0.1234, other: 0.0844, out: 0.026, wheel: 0.0195 },
+    slant_hitch: { flat: 0.4891, empty: 0.163, stay: 0.1522, angle: 0.087, other: 0.0652, out: 0.0217, wheel: 0.0217 },
+    dig_shallow: { flat: 0.4539, out: 0.1489, stay: 0.1348, empty: 0.1135, angle: 0.0851, wheel: 0.0355, other: 0.0284 },
+    go_hook: { flat: 0.3804, empty: 0.2577, stay: 0.181, angle: 0.1196, other: 0.0399, out: 0.0184, wheel: 0.0031 },
+    go_hitch: { flat: 0.3804, empty: 0.2577, stay: 0.181, angle: 0.1196, other: 0.0399, out: 0.0184, wheel: 0.0031 },
+    hitch_go: { empty: 0.4081, flat: 0.2368, stay: 0.1464, angle: 0.1402, other: 0.0374, out: 0.0249, wheel: 0.0062 },
+    hitch_out: { flat: 0.5, empty: 0.1731, stay: 0.1346, angle: 0.0769, other: 0.0385, wheel: 0.0385, out: 0.0385 },
+    hitch_seam: { empty: 0.4081, flat: 0.2368, stay: 0.1464, angle: 0.1402, other: 0.0374, out: 0.0249, wheel: 0.0062 },
+    comeback_seam: { angle: 0.3108, flat: 0.2365, stay: 0.223, empty: 0.1284, out: 0.0473, other: 0.0473, wheel: 0.0068 },
+    go: { flat: 0.2984, empty: 0.1955, stay: 0.171, angle: 0.1693, other: 0.0777, out: 0.0774, wheel: 0.0106 },
+  },
+};
