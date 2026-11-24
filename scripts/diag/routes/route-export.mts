@@ -10,7 +10,7 @@ const outPath = process.argv[3] ?? 'out/diag/routes/sim.jsonl';
 const { PlaySim } = await import(`${W}/src/sim/playsim.ts`);
 const { nativeTraceSetup } = await import(`${W}/scripts/diag/command-trace.ts`);
 const { PASS_BY_ID } = await import(`${W}/src/playbook/concepts.ts`);
-const FAMILY: Record<string, string> = { slant: 'slant', corner: 'corner', post: 'post', dig: 'dig', out: 'out', comeback: 'comeback', curl: 'curl',
+const FAMILY: Record<string, string> = { corner: 'corner', post: 'post', dig: 'dig', out: 'out', comeback: 'comeback', curl: 'curl',
   deep_out: 'sail', cross: 'over', hitch: 'hitch' };
 const concepts = Object.entries(PASS_BY_ID).filter(([id, c]: any) => !/screen/.test(id) && c.family !== 'playaction' && c.drop !== 'pa').map(([id]) => id);
 const lines: string[] = [];

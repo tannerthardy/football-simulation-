@@ -29,8 +29,6 @@ const ROUTE_FILLET = process.env.ROUTE_FILLET !== '0';
 const CROSS_OVER = process.env.CROSS_OVER === '1';
 /** ROUTE_SHAPE (default on, engine-82; ROUTE_SHAPE=0 turns it off): the in and out breaks as rolls, as taught (see SHAPES below). */
 const ROUTE_SHAPE = process.env.ROUTE_SHAPE !== '0';
-/** SLANT_LEAN (experimental, off): the slant as a roll through its first point, flattening at its catch depth (see SLANT_LEAN_POINTS). */
-const SLANT_LEAN = process.env.SLANT_LEAN === '1';
 /** GO_STEM (experimental, off): the go stems outside and stacks the corner instead of running a straight line up his
  * alignment: an outside release, then on to the outside up to 4 yd from where he lined up, keeping 5 yd of room to the
  * sideline (or the room he started with). Taught: stem the defender, then stack him to own the vertical leverage
@@ -197,17 +195,9 @@ const SHAPES: Record<string, RouteDef['points']> = {
   deep_out: [{ d: 12, l: 0, s: 1 }, { d: 14, l: 3 }, { d: 14.5, l: 12 }],
   dig: [{ d: 10, l: 0, s: 1 }, { d: 12, l: -3.5 }, { d: 12.3, l: -24 }],
 };
-/** SLANT_LEAN: the slant leaned in from the line, not planted. Off, it runs straight 2 yd from his start (about 1 yd past
- * the line), plants (`cut`) and climbs at 45 deg to 6.5, flattening at 8.5. Taught: "push up field 3 steps, then lean
- * in at a 45 degree angle" (one step from the gun), a speed cut into the window between the underneath defenders, the
- * ball caught at 5-6 yd. NFL (BDB 2025 week 1, route_timing.py, PFF SLANT, traditional drop-backs, n 227): inside by 0.3
- * yd at 1.0 s and 1.2 at 1.6 s, no speed dip (4.2 / 4.6 / 4.9 yd/s at 1.4 / 1.6 / 1.8 s), the break at 1.60 s and 2.6 yd
- * past the line, 5.3 yd deep at 2.5 s and 5.6 at 3.0; ours, the break at 1.85 s and 3.9 yd, 6.7 and 7.8 yd deep.
- * On, the first point is a roll led by the fillet (no `cut`; s 1, the radius his lateral allows at the speed he carries
- * gives the lean), 45 deg to 6 yd from his start, then flat (about 5 yd past the line). */
-const SLANT_LEAN_POINTS: RouteDef['points'] = [{ d: 2.5, l: 0, s: 1 }, { d: 6, l: -3.5 }, { d: 6.5, l: -12 }];
-const SHAPED: Record<string, RouteDef> = Object.fromEntries(Object.entries(ROUTE_TABLE).map(([id, r]) => [id,
-  ROUTE_SHAPE && SHAPES[id] ? { ...r, points: SHAPES[id] } : SLANT_LEAN && id === 'slant' ? { ...r, points: SLANT_LEAN_POINTS } : r]));
+const SHAPED: Record<string, RouteDef> = ROUTE_SHAPE
+  ? Object.fromEntries(Object.entries(ROUTE_TABLE).map(([id, r]) => [id, SHAPES[id] ? { ...r, points: SHAPES[id] } : r]))
+  : ROUTE_TABLE;
 
 /** ROUTE_EFFORT: the break table. With effort at 1 (the stem's pace, no coached throttle), each break says how it is run:
  * a cut (`cut: true`: plant, stick the foot and break; the follower's vertex law, no lead) or a roll (led as a fillet
@@ -244,7 +234,7 @@ const BREAKS: Record<string, ReadonlyArray<{ cut?: boolean; s?: number } | null>
  * ROUTE_EFFORT's, set against full-pace stems. With ROUTE_FILLET alone, the cuts are planted at their authored s. */
 const BREAK_CUTS = ROUTE_FILLET || ROUTE_EFFORT;
 export const ROUTES: Record<string, RouteDef> = BREAK_CUTS
-  ? Object.fromEntries(Object.entries(SHAPED).map(([id, r]) => [id, BREAKS[id] && !(ROUTE_SHAPE && SHAPES[id]) && !(SLANT_LEAN && id === 'slant')
+  ? Object.fromEntries(Object.entries(SHAPED).map(([id, r]) => [id, BREAKS[id] && !(ROUTE_SHAPE && SHAPES[id])
     ? { ...r, points: r.points.map((p, i) => {
       const b = BREAKS[id][i];
       if (!b) return p;
