@@ -209,6 +209,7 @@
     "PICTURE_AGE": "off",
     "PERIPH_ACUITY": "on",
     "HEAD_FOLLOW": "on",
+    "HALF_ALIGN": "off",
     "POCKET_CLIMB": "off",
     "BLOCK_SEEN": "on",
     "FREE_BOUND": "off",
