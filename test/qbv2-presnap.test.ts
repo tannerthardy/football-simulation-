@@ -137,6 +137,7 @@ describe('mirrorPlan (QB lane)', () => {
     expect(fieldSide(hashPic(field, 8.5))).toBe('W');
     expect(decidePreSnap(inputs(hashPic(field, 8.5), outs)).flip).toBe(true); // flat defender inside #2: field is clearly better
     expect(decidePreSnap(inputs(hashPic(field, 11.5), outs)).flip).toBe(false); // outside #2 by 1.5 yd: take the boundary
+    expect(decidePreSnap(inputs(hashPic(field, 10.8), outs)).flip).toBe(true); // head-up (0.8 yd outside, within 1.0): not outside
     // The boundary flip is not taxed: with the weak side the boundary, the same look flips.
     expect(fieldSide(hashPic(20, 11.5))).toBe('S');
     expect(decidePreSnap(inputs(hashPic(20, 11.5), outs)).flip).toBe(true);

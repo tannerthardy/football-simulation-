@@ -29,9 +29,13 @@ export const MARGIN_SHELL = 0.1;
 export const MARGIN_LEVERAGE = 0.5;
 /** The hot side: 'either' when the two sides' surpluses are within this many defenders. */
 export const MARGIN_HOT_SIDE = 0.5;
-/** A flat defender is outside #2 (outside leverage on the out) when aligned more than this far outside him (yd; stated
- * choice, pending Rules' teaching source). */
-export const OUTSIDE_OF_TWO = 0.5;
+/** A flat defender is outside #2 (outside leverage on the out) when aligned more than this far outside him, in the passer's
+ * seen picture; head-up within it counts as not outside (yd). Stated choice (Rules + Coaching's measurable definition,
+ * 2026-11-24): the whole field-flip condition is an extension of the taught flat-defender key, not itself a sourced rule. */
+export const OUTSIDE_OF_TWO = 1.0;
+/** ...and no deeper than this past the line: deeper he is a third or quarter player, not the flat defender (yd; stated
+ * choice, Rules + Coaching). */
+export const APEX_MAX_DEPTH = 7;
 /** The ball within this of the middle has no field side (yd; stated choice). */
 const FIELD_MIDDLE = 1.0;
 const FIELD_MIDDLE_Y = 53.333 / 2;
@@ -172,12 +176,14 @@ export function fieldSide(p: RolePicture): 'S' | 'W' | null {
   return Math.sign(toMiddle) === p.strong ? 'S' : 'W';
 }
 
-/** The flat defender over a side's #2, found in his scan by the shared resolver (never a label), aligned outside #2 by more
- * than OUTSIDE_OF_TWO: outside leverage on the out. No #2 or no flat defender: false. */
+/** The flat defender over a side's #2, found in his scan by the shared resolver (never a label), at apex depth
+ * (APEX_MAX_DEPTH or less) and aligned outside #2 by more than OUTSIDE_OF_TWO: outside leverage on the out. No #2 or no flat
+ * defender: false. A stated choice, not a taught rule (Rules + Coaching, 2026-11-24): it extends the taught post-snap key
+ * (the apex widens to the out, sits on the hitch) to his pre-snap alignment. */
 export function flatOutsideOfTwo(p: RolePicture, side: 'S' | 'W'): boolean {
   const two = p.receivers[`${side}2`];
   const man = two ? resolveRole(p, 'flat', side) : null;
-  return !!two && !!man && out(p, man, side) - out(p, two, side) > OUTSIDE_OF_TWO;
+  return !!two && !!man && deep(p, man) <= APEX_MAX_DEPTH && out(p, man, side) - out(p, two, side) > OUTSIDE_OF_TWO;
 }
 
 /** Whether he mirrors the plan, by its pick. Near the margin he keeps the coach's (strong) side. */
@@ -188,7 +194,8 @@ export function pickFlip(plan: QbReadPlan, look: PreSnapLook, picture?: RolePict
       const s = look.over.S1?.cushion, w = look.over.W1?.cushion;
       if (!(s != null && w != null && w > s + MARGIN_CUSHION)) return false;
       // To the field only when the field side is clearly better: the flat defender over the field #2 must not sit outside
-      // him with outside leverage, or the long field out is the risk throw (QB lane and Integration, 2026-11-24).
+      // him with outside leverage, or the long field out is the risk throw (QB lane and Integration, 2026-11-24; a stated
+      // choice extending the taught flat-defender key, Rules + Coaching).
       return !(picture && fieldSide(picture) === 'W' && flatOutsideOfTwo(picture, 'W'));
     }
     case 'shell':
