@@ -208,6 +208,7 @@
     "LEGS_HELD": "on",
     "PICTURE_AGE": "off",
     "PERIPH_ACUITY": "on",
+    "SEAM_LANDMARK": "off",
     "POCKET_CLIMB": "off",
     "BLOCK_SEEN": "on",
     "FREE_BOUND": "off",

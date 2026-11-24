@@ -39,11 +39,33 @@ const ROUTE_SHAPE = process.env.ROUTE_SHAPE !== '0';
  *   underneath him, a yard apart so they cross close enough to rub (Air Raid / Holgorsen); points at 5 and 4.
  * The deep cross is unchanged until the over's install is sourced. His freedom at the route's end is unchanged. */
 const CROSS_FLAT = process.env.CROSS_FLAT !== '0';
+/** SEAM_LANDMARK (experimental, off): the seam is run to a field landmark and reads the middle of the field from the
+ * safeties he sees, instead of a fixed line just inside his alignment. Taught: the seam is run "through the lane between
+ * the numbers and the hash marks" (ITP glossary, seam route); the seam runner "must see open vs closed middle of the
+ * field": closed, he stays on it and pressures the free safety; open, he bends inside the near safety (First Down
+ * Playbook, the 94 / Dagger and the hitch-seam installs; M).
+ * - Base (closed middle, or no fresh picture of two split safeties): release up his line, then stem to the seam
+ *   landmark, halfway between the top of the numbers and the hash (16.3 yd from his sideline) by 12 yd, and run up it.
+ *   A man already outside the landmark keeps his line.
+ * - Open middle (he sees two safeties split off the middle and none in it, the existing installed 'middle' read): he
+ *   stays on his line to 12 yd, then bends 3 yd inside by 30, between the safeties.
+ * NFL #2 verticals with two receivers on the side (BDB 2025, PFF GO; room to his sideline at the snap, 2.0, 3.0, 4.0 s):
+ * against a closed middle 18.6 -> 16.5 -> 15.3 -> 15.8 to the field and 16.5 -> 15.7 -> 15.0 -> 16.0 to the boundary
+ * with #1 vertical; against an open middle 18.7 -> 17.4 -> 17.2 -> 18.4 and 15.9 -> 16.0 -> 15.9 -> 16.4. Ours, off:
+ * flat or inward in every case (18.8 -> 19.9 to the field). docs/reviews/2026-11-24-seam-landmark.md. */
+export const SEAM_LANDMARK = process.env.SEAM_LANDMARK === '1';
+const SEAM_ROOM = (9 + 70.75 / 3) / 2;
 const ROUTE_TABLE: Record<string, RouteDef> = {
   // Verticals
   go: { id: 'go', family: 'deep', depth: 30, end: 'continue', points: [{ d: 4, l: 0.6 }, { d: 50, l: 1.5 }] },
   fade: { id: 'fade', family: 'deep', depth: 25, end: 'continue', points: [{ d: 3, l: 1.6 }, { d: 50, l: 3.5 }] },
-  seam: { id: 'seam', family: 'deep', depth: 22, end: 'continue', points: [{ d: 4, l: -0.4 }, { d: 50, l: -1.2 }] },
+  seam: SEAM_LANDMARK
+    ? { id: 'seam', family: 'deep', depth: 22, end: 'continue',
+      points: [{ d: 4, l: 0 }, { d: 12, l: 0, room: SEAM_ROOM }, { d: 50, l: 0, room: SEAM_ROOM }],
+      read: { key: 'middle', depth: 4, answers: [
+        { id: 'post', end: 'continue', points: [{ d: 4, l: 0 }, { d: 12, l: 0 }, { d: 30, l: -3 }, { d: 50, l: -3.5 }] },
+      ] } }
+    : { id: 'seam', family: 'deep', depth: 22, end: 'continue', points: [{ d: 4, l: -0.4 }, { d: 50, l: -1.2 }] },
   // A tagged near-safety read. Reserve the middle in the concept; this is not
   // permission for every vertical to bend into a teammate's route. Corner/sail
   // is a different install. See docs/football-handbook/receiver-route-reads.md.

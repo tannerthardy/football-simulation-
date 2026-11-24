@@ -527,6 +527,7 @@
   "test/screw.test.ts",
   "test/seal-hold.test.ts",
   "test/seam-delivery.test.ts",
+  "test/seam-landmark.test.ts",
   "test/seen-contact.test.ts",
   "test/shed-route.test.ts",
   "test/sight-carrier.test.ts",
