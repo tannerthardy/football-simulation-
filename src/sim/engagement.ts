@@ -3191,7 +3191,12 @@ const legacyHoldVisible = new WeakSet<PlaySim>();
 /** A beaten blocker may attempt a cloth grab. This changes the bounded hand
  * technique, not the official ruling. Only achieved illegal restraint is a foul. */
 function tryHold(sim: PlaySim, e: Engagement): boolean {
-  if (e.holding) return false;
+  // BLOCK_FRAME: a chosen hold persists while the blocker still has him: his hands joint on the man (not slipped off)
+  // and the man within his arm's reach. The joint's tension is capped at the arm's hold force, so a man stronger than
+  // the hold opens the gap and gets free in the World; officiating (contact-holding) judges the restraint achieved.
+  // Before, a chosen hold lived one tick: on the next beat this returned false and the caller ended the block, so no
+  // restraint accumulated (audit of engagement.ts, 2026-11-24).
+  if (e.holding) return BLOCK_FRAME && !!e.hands && !e.hands.off && inBlockReach(e.blocker, e.defender, e.type);
   const b = e.blocker;
   // Only possible with hands on him.
   if (e.control < -0.4) return false;
