@@ -267,3 +267,20 @@ when not limited by grip, balance or arms. Longer arms: large when he can lock o
 once chest to chest. Lower pads: the strongest single lever. Hands inside: roughly a sixth to a quarter more push
 along the line, plus control of the other man's turn. A disagreement between these and the bench is a bug in one of
 them; find which.
+
+## 8. Measured in games: the pass set is most of an engaged pass blocker's retreat (Tools, 2026-11-24)
+
+From `scripts/diag/blocking/pad-gap.mts` (read-only tap, 4 games, one sample per engaged blocker-defender pair per age; `data/reviews/blocking/phase0b-retreat-vs-request-games.md`). Retreat is toward his backfield, yd/s; the request is the velocity the blocker asked the World for that tick.
+
+| rep | age since contact (s) | pairs | blocker's retreat, p50 | his own requested retreat, p50 | forced by the contact (velocity - request, mean) | rusher's closing velocity | rusher's request |
+|---|---|---|---|---|---|---|---|
+| pass | 0.3 | 1,757 | +1.61 | +1.17 | +0.20 | +1.97 | +4.23 |
+| pass | 0.6 | 1,605 | +1.89 | +1.58 | +0.43 | +1.86 | +4.14 |
+| pass | 1.0 | 1,464 | +1.95 | +1.81 | +0.34 | +1.90 | +4.83 |
+| pass | 1.5 | 1,127 | +1.74 | +1.27 | +0.39 | +1.75 | +4.17 |
+| run (the blocker advances) | 0.3 / 1.0 / 1.5 | 756 / 516 / 383 | -0.31 / -0.71 / -0.66 | -1.35 / -1.53 / -1.49 | +0.95 / +0.86 / +0.77 | -0.33 / -0.30 / -0.46 | +0.50 / +1.21 / +0.98 |
+
+- **About 80-90% of an engaged pass blocker's retreat is his own set** (kick back 1.2-1.8 yd/s); the contact adds 0.2-0.43 yd/s. The rusher asks 4.1-4.8 and gets 1.8-2.0.
+- **So the pass set (how deep, how fast, when he stops and anchors) is the first technique to examine in Phase 4, and it sets the pocket's depth for the QB lane** (the QB lane is told).
+- In runs the blocker asks to advance 1.35-1.55 yd/s and advances 0.3-0.7; the contact takes back 55-75% of his request.
+- The typical engaged pair is not at the grip cap in games (median grip use 0.62-0.75; at 95% or more of grip in 20% of pass blockers, 5% of rushers, 4-6% in runs), so Phase 1 changes the reps that reach the cap, not the whole trench.

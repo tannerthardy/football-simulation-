@@ -106,6 +106,13 @@ constant (staged-table file, section 2). Grip 1.1 -> 1.3 moves C / DT_W from 1,5
   run rep it survives (still +0.25 / +0.49 at 1.3) because the lifted blocker is still grip-bound there. So **grip alone is not enough**: posture under load, which gives pad level a route
   to the legs, is part of this phase for exactly this reason.
 
+## 5b. How much of the trench Phase 1 changes (so nobody expects all of it)
+
+From the games tap (12 games; `data/reviews/blocking/phase0b-lean-grip-games.md`): the typical engaged pair is **not** at the grip cap. Median grip use is 0.62-0.75 of the limit; pairs at 95% or more of grip at 1.0 s are 20%
+of pass blockers (5% of the rushers they face) and 4-6% in runs. A grip change from 1.1 to 1.3 therefore changes the reps that reach the cap (about one pass block in five, about one run block in twenty) and
+leaves the rest on legs and request; its effect on cuts and tackles is separate and expected small (to be shown on the card). Posture under load changes pairs whose vertical load exceeds what his legs hold, which
+is not measured until it is built: report its share of ticks and pairs on the card, and read the whole-game statistics knowing that most engaged reps are decided by the requests (80-90% of a pass blocker's retreat is his own set).
+
 ## 6. Phase 2 spec: critique and my questions (reviewer section 3)
 
 - **cos(flare) on every term double counts.** If the arm's line is built from its hand and shoulder points, the axial and transverse components
