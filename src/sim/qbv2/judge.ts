@@ -102,6 +102,17 @@ export const RUSH_BAT = 0.08;
 export const BAT_PICK = 0.15;
 /** The ball's first yards out of his hand are climbing: no lane before this far from the passer (yd; chosen). */
 export const LANE_CLEAR = 3;
+/** A dropper who gets under the ball's path plays it by our engine's batting rule, not as a man at the catch point: 0.12
+ * for a free defender who sees the throw, 0.2 of that if he does not (catching.ts defenderPlay, typical recognition), once
+ * per throw; LANE_PICK of those plays are caught. The belief matches our world (Integration, 2026-11-24). Stated, checked
+ * by the calibration contract. A coverer undercutting his receiver keeps the catch-point model. */
+export const LANE_PLAY = 0.12;
+export const LANE_PLAY_BLIND = 0.2;
+export const LANE_PICK = 0.3;
+/** The part of the path within this of the catch point (yd) is in front of the receiver: a dropper who gets there is at
+ * the catch point and plays it as a coverer would (staged V2, 2026-11-24: every stick interception was 1.3-2.3 yd from
+ * the point, at 0.75-1.0 of the flight). Farther back, under a rising ball, he can only bat it (LANE_PLAY). Chosen. */
+export const LANE_NEAR = 3;
 
 const hyp = (a: V2, b: V2) => Math.hypot(a.x - b.x, a.y - b.y);
 const phi = (z: number) => 0.5 * (1 + Math.tanh(0.7978845608 * (z + 0.044715 * z * z * z)));
@@ -198,21 +209,22 @@ export function judge(q: ThrowQuestion, defs: SeenDefender[]): Judgment {
     const towardQB = hyp(cov.pos, q.path[0] ?? cov.pos) < hyp(q.catchAt, q.path[0] ?? q.catchAt);
     add(cov, 'coverer', tArr, towardQB);
   }
-  const laneOf = (d: SeenDefender): { margin: number; sigma: number; pArrive: number; rusher: boolean } | null => {
+  const laneOf = (d: SeenDefender): { margin: number; sigma: number; pArrive: number; rusher: boolean; pNear?: number } | null => {
     const origin = q.path[0], n = q.path.length - 1;
     if ((d.pos.x - q.los) <= RUSH_LINE) {
       const inLane = q.path.some((p, i) => i > 0 && origin && hyp(p, origin) >= LANE_CLEAR && (q.ballHeightAt(p) ?? Infinity) <= d.leap && hyp(d.pos, p) <= d.reach + 0.5);
       return inLane ? { margin: 0, sigma: ARRIVE_SIGMA0, pArrive: 1, rusher: true } : null;
     }
-    let best: number | null = null;
+    let best: number | null = null, near: number | null = null;
     q.path.forEach((p, i) => {
       if (i === 0 || !origin || hyp(p, origin) < LANE_CLEAR || (q.ballHeightAt(p) ?? Infinity) > d.leap || hyp(d.pos, p) > DRIVE_RANGE) return;
-      const tPass = q.windup + q.flight * (i / Math.max(n, 1)), tArr = arriveTime(d, p, d.reach, q.windup + (d.facesPasser ? 0 : ARM_LEAD));
-      if (best === null || tPass - tArr > best) best = tPass - tArr;
+      const tPass = q.windup + q.flight * (i / Math.max(n, 1)), tArr = arriveTime(d, p, d.reach, q.windup + (d.facesPasser ? 0 : ARM_LEAD)), m = tPass - tArr;
+      if (best === null || m > best) best = m;
+      if (hyp(p, q.catchAt) <= LANE_NEAR && (near === null || m > near)) near = m;
     });
     if (best === null || best <= -0.3) return null;
     const sigma = Math.hypot(ARRIVE_SIGMA0, d.spread / Math.max(d.vmax, 1e-3));
-    return { margin: best, sigma, pArrive: phi(best / sigma), rusher: false };
+    return { margin: best, sigma, pArrive: phi(best / sigma), rusher: false, pNear: near === null ? 0 : phi(near / sigma) };
   };
   // The coverer can also undercut the route and take the ball on its line, short of the catch point: the higher of the two.
   if (cov) {
@@ -225,7 +237,13 @@ export function judge(q: ThrowQuestion, defs: SeenDefender[]): Judgment {
     // ball); a dropper only if he gets there before the ball passes (the body law).
     const lane = laneOf(d);
     if (lane?.rusher) { roles.push({ id: d.id, role: 'lane', margin: 0, sigma: ARRIVE_SIGMA0, pArrive: 1, pPlay: RUSH_BAT, pPick: RUSH_BAT * BAT_PICK }); continue; }
-    if (lane) { roles.push({ id: d.id, role: 'lane', margin: lane.margin, sigma: lane.sigma, pArrive: lane.pArrive, pPlay: lane.pArrive * PLAY_BREAKUP, pPick: lane.pArrive * PICK_IN_FRONT * (0.5 + d.ballSkills) }); continue; }
+    if (lane) {
+      // In front of the receiver near the catch: the catch-point model; farther back, our batting rule. The larger.
+      const bat = lane.pArrive * LANE_PLAY * (d.facesPasser ? 1 : LANE_PLAY_BLIND) * (0.5 + d.ballSkills), pn = lane.pNear ?? 0;
+      const front = { play: pn * PLAY_BREAKUP, pick: pn * PICK_IN_FRONT * (0.5 + d.ballSkills) }, useFront = front.play > bat;
+      roles.push({ id: d.id, role: 'lane', margin: lane.margin, sigma: lane.sigma, pArrive: lane.pArrive, pPlay: useFront ? front.play : bat, pPick: useFront ? front.pick : bat * LANE_PICK });
+      continue;
+    }
     if (hyp(d.pos, q.catchAt) > DRIVE_RANGE) continue;
     const start = q.windup + (d.facesPasser ? 0 : ARM_LEAD);
     const tArr = arriveTime(d, q.catchAt, d.reach + PLAY_CLEAR, start);

@@ -56,7 +56,8 @@ describe('QB_V2 judgment (module D)', () => {
     const q = { ...stop(), receiverAt: () => ({ x: 12, y: 20 }), breakIn: null, ballHeightAt: (p: { x: number }) => (p.x < 4 ? 2.4 : 3.5) };
     const dropper = judge(q, [def(5, 3, 20.5, 0, 0, { ballSkills: 0.8 })]);
     expect(dropper.roles[0].role).toBe('lane');
-    expect(dropper.risk).toBeGreaterThan(0.2);
+    expect(dropper.risk).toBeGreaterThan(0.02); // he gets there and plays it by our batting rule, a share of it caught
+    expect(dropper.risk).toBeLessThan(0.1);
     const rusher = judge({ ...q, path: [{ x: -5, y: 20 }, { x: -1, y: 20 }, { x: 0.5, y: 20 }, { x: 11.5, y: 20 }], ballHeightAt: (p: { x: number }) => (p.x < 1 ? 2.6 : 3.5) }, [def(6, 0.5, 20.3, 0, 0)]);
     expect(rusher.roles[0].role).toBe('lane');
     expect(rusher.risk).toBeLessThan(0.03);
