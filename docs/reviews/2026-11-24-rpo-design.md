@@ -153,6 +153,21 @@ This is later work: it needs the QB-run keep, which belongs to Run Game.
 - Run Game decides whether half-line is supported and with which runs.
 - The 1-yard rule stays in `RpoRunBlocker`, and the ineligible-downfield foul stays a rule check, not a ban.
 
+**The QB lane's answers (2026-11-24):**
+- **`fills` is its own KeyCue.**
+  - `fills` is a defender stepping downhill into his run fit, toward the line and the mesh.
+  - `jumps` stays a defender driving on a route.
+  - The QB lane is adding `fills` to plan.ts.
+- **The RPO throw is one read, and the key decides it.** It is a one-look pull and throw. A reset to a second read
+  would hold the ball past what the ride allows. The half's plan for an RPO is:
+  - `look: {kind: 'key', role}`;
+  - `keyRules: [{cue: 'fills', throwTo}]`;
+  - `step: 0`, where step 0 means the pull (the mesh deadline or earlier, on Run Game's clock);
+  - no checkdown.
+- **No cue by the deadline means a handoff.** The cycle gets a new intent, `{kind: 'handoff'}`.
+- **On a blitz**, the hot rule fires as it does now.
+- **A pre-snap pick of the throw** hands the cycle the pass plan with `drop: 'catch'`, so there is no ride.
+
 ## 4. Constraints the play-caller checks
 
 1. **The throw is quick.** The half's first read must break under 7.5 yd or be a screen, a glance or a seam/pop. Deep
@@ -207,5 +222,5 @@ They are the route work for item (c).
    - the shape (a run call with an RpoTag; pre, post or both);
    - the first set in §5.
 2. **Run Game:** what sets the mesh deadline, and whether half-line is supported.
-3. **QB lane:** the ride-and-read in the cycle, and whether `fills` is a new KeyCue or the existing `jumps`.
+3. **QB lane:** answered in §3: `fills` is a new cue, the throw is one read, and there is a handoff intent.
 4. **Defense:** are the conflict defenders' run-or-drop choices made from what they see, so the read is honest?
