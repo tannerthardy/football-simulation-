@@ -15,6 +15,7 @@ Remaining with the package on: 22 (all other owners).
 | cause (flags that fail it alone) | owner | file | test | status |
 |---|---|---|---|---|
 | TACKLE_REACH+REACH_TIME | Run Game | `test/blocked-reach.test.ts` | a blocked defender reaches with his free arm on: his free arm reaches a carrier passing within it | re-recorded (passes) |
+| FREE_ARM_FULL | Run Game | `test/blocked-reach.test.ts` | on: latched inside hands pull that arm in | re-recorded (passes): with FREE_ARM_FULL the latch does not decide the free arm (Integration's ruling on Defense's control curve), so the latched case reaches |
 | TACKLE_REACH+REACH_TIME | owner of the recorded case | `test/concept-menu.test.ts` | CONCEPT_MENU against the coverage it is drawn to beat, the quarterback throws most balls to the first two reads | to re-record by its owner |
 | DIVE_STANCE | Tools/Physics | `test/contact-legality.test.ts` | real World contact → native rule caller does not attribute a self-initiated dive fall to a simultaneously loaded collar grip | to re-record by its owner |
 | DIVE_STANCE | Tools/Physics | `test/contact-legality.test.ts` | real World contact → native rule caller does not infer a hip-drop finish from an executed wrap/swivel/dive and lower-leg restraint, trap=false | to re-record by its owner |

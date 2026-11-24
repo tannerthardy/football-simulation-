@@ -57,8 +57,10 @@ describe('a blocked defender reaches with his free arm', () => {
   it('on: his free arm reaches a carrier passing within it', async () => {
     expect((await reach(true, 0)).reached).toBe(true);
   });
-  it('on: latched inside hands pull that arm in', async () => {
-    expect((await reach(true, 1)).reached).toBe(false);
+  it('on: latched inside hands pull that arm in (FREE_ARM_FULL: they do not; free is the side, not the latch)', async () => {
+    // FREE_ARM_FULL (Integration 2026-11-24, Defense's control curve): hand control does not decide whether the arm
+    // is free, so a latched blocker on the far side leaves the free arm its full reach.
+    expect((await reach(true, 1)).reached).toBe(process.env.FREE_ARM_FULL === '1');
   });
   it.each(['covered', 'square'] as const)('on: a blocker %s occupies that arm', async blocker => {
     // FREE_ARM_2D: a square blocker in front of him does not cover a runner passing 90 deg to his side (the review's
