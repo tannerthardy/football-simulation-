@@ -302,7 +302,25 @@ const reaches = new WeakMap<Agent, Reach>();
  * his picture of the carrier's speed and position). */
 export const reachForecast = new WeakMap<Agent, { gap: number; cs: number; seen: Vec2 }>();
 /** Diagnostics (REACH_TIME): reaches met between two checks that the end-of-tick distance alone would not have met. */
-export const reachDiag = { sweptMeets: 0 };
+export const reachDiag = { sweptMeets: 0, waits: [] as { waited: number; advance: number; why: string; reached: boolean }[] };
+/** Diagnostics (REACH_TIME): when each tackler first had the carrier inside his arms, and why he has not reached yet. */
+const inReach = new WeakMap<Agent, { sim: PlaySim; t: number; x: number; why: string }>();
+function noteWait(sim: PlaySim, d: Agent, c: Agent, why: string): void {
+  const w = inReach.get(d);
+  if (!w || w.sim !== sim) inReach.set(d, { sim, t: sim.t, x: c.pos.x, why });
+  else if (w.why === 'none') w.why = why;
+}
+/** Diagnostics: close every open wait of this play (unreached) at its end. */
+export function flushWaits(sim: PlaySim): void {
+  const c = sim.carrier;
+  for (const d of sim.agents) if (inReach.get(d)?.sim === sim && c) closeWait(sim, d, c, false);
+}
+function closeWait(sim: PlaySim, d: Agent, c: Agent, reached: boolean): void {
+  const w = inReach.get(d);
+  if (!w || w.sim !== sim) return;
+  inReach.delete(d);
+  if (reachDiag.waits.length < 20000) reachDiag.waits.push({ waited: sim.t - w.t, advance: (c.pos.x - w.x) * sim.attackDir(c.team), why: w.why, reached });
+}
 /** Diagnostics: tackler `d`'s reach in progress (REACH_TIME), read-only. */
 export function reachOf(d: Agent): Readonly<Reach> | undefined { return reaches.get(d); }
 
@@ -567,6 +585,7 @@ export function tryTackles(sim: PlaySim): void {
         }
       }
       if (needsLastReach && !lastReach) continue;
+      if (REACH_TIME && dd <= arms) noteWait(sim, d, c, waitForBetter && !acquireAtReach ? 'better shot coming' : needsLastReach && !lastReach ? 'not his last reach' : 'none');
       if (waitForBetter && !acquireAtReach) continue;
       if (LUNGE_FLIGHT && dd > arms && !engaged) {
         const lo = lungeOk(sim, d, c);
@@ -733,7 +752,8 @@ function attempt(sim: PlaySim, d: Agent, c: Agent, q: number, engaged: boolean, 
   // REACH_TIME: a reach takes time; it resolves on the bodies' actual geometry when the hands arrive (reachStep).
   if (REACH_TIME && !reached) {
     // He commits his arms when, by his picture, they will meet the man; otherwise he keeps his feet and closes.
-    if (!lunged && !reachMeets(sim, d, c, engaged, limit)) return;
+    if (!lunged && !reachMeets(sim, d, c, engaged, limit)) { if (inReach.get(d)?.why === 'none') inReach.get(d)!.why = 'reach would not meet'; return; }
+    closeWait(sim, d, c, true);
     startReach(sim, d, c, engaged, lunged, limit);
     return;
   }
