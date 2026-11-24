@@ -38,6 +38,8 @@ export interface V2Host {
   /** The throw's mechanics to this receiver now (catch point, flight), or null when it cannot be thrown. */
   mechanics(r: Agent, u: number): { point: V3; T: number } | null;
   windup(): number;
+  /** His belief of his placement error (yd, one sigma) on a throw of this length, under the rush he feels. */
+  placeSpread?(dist: number): number;
   body(d: Agent): PhysicalProfile;
   ballSkills(d: Agent): number;
   /** When he plants (his set point on the drop's count) and his stride (one footwork step), absolute times. */
@@ -125,9 +127,27 @@ export class V2Drive {
     if (held && score[held] !== undefined && score[held] > CUE_EXIT) return held;
     let best: string | null = null, bv = CUE_ENTER;
     for (const [c, v] of Object.entries(score)) if (v >= bv) { best = c; bv = v; }
-    if (!best && Math.hypot(m.vx, m.vy) < 1 && pic.t > 0.6) best = 'squats';
+    // No movement cue clears its entry: he is read by where he is, whatever his speed (Rules, 2026-11-24: the cue is the
+    // route he takes; a speed gate left a corner drifting at 1-1.5 yd/s over the flat with no cue at all).
+    if (!best && pic.t > 0.6) best = this.sitsWhere(h, role, side, m);
     if (best) this.cue.set(key, best);
     return best;
+  }
+
+  /** A key who sits: which route he has taken, by where he sits (Rules' taught meaning, 2026-11-24: Walsh in Ross, "If he
+   * took the flat route ... fire the stick ... If he squatted on the stick, he would hit Roger Craig on the move in the
+   * flat"; Throw Deep). Against the read's two answers, the receiver a squat sends him to (the route he leaves open) and
+   * the one a widen sends him to, each where his forecast puts it half a second on: sitting nearer the squat answer's
+   * landmark laterally means he sits over that route, so he has taken it, and reads as `widens`; otherwise he walls the
+   * other route: `squats`. Only his seen position and the passer's own forecasts. Without both rules, a sit is `squats`. */
+  private sitsWhere(h: V2Host, role: string, side: 'S' | 'W', m: { x: number; y: number }): string {
+    const r = this.cycle.plan.reads.find((x) => x.look.kind === 'key' && x.look.role === role && (x.look.side ?? 'S') === side);
+    const sq = r?.keyRules?.find((k) => k.cue === 'squats')?.throwTo, wd = r?.keyRules?.find((k) => k.cue === 'widens')?.throwTo;
+    if (!sq || !wd || sq === wd) return 'squats';
+    const a = this.receiver(h, sq), b = this.receiver(h, wd);
+    const pa = a ? h.predict(a, 0.5) ?? a.pos : null, pb = b ? h.predict(b, 0.5) ?? b.pos : null;
+    if (!pa || !pb) return 'squats';
+    return Math.abs(m.y - pa.y) < Math.abs(m.y - pb.y) ? 'widens' : 'squats';
   }
 
   /** Keep his picture's history (one sample a tick, the last 0.5 s). */
@@ -166,6 +186,7 @@ export class V2Drive {
       ballHeightAt: (p) => { let bi = -1, bd = Infinity; path.forEach((q2, i) => { const d = Math.hypot(q2.x - p.x, q2.y - p.y); if (d < bd) { bd = d; bi = i; } }); return bi >= 0 && bd < 1.5 ? heights[bi] : null; },
       heldCoverer: this.held.get(o.ref) ?? null, coverEligible: this.eligible(h, o.ref),
       path: [{ x: from.x, y: from.y }, ...path], los: sim.los, catchClean: CATCH_CLEAN, res: look ? this.cycle.looks.resolved(look) : 0, receiverSpread: h.pictureSpread(r),
+      placeSpread: h.placeSpread?.(Math.hypot(mech.point.x - from.x, mech.point.y - from.y)),
     };
     const defs: SeenDefender[] = sim.defense.filter((d) => !d.isDown(sim.t) && h.pictureAge(d) < 1.5).map((d) => {
       const e = h.estimate(d), b = h.body(d), toQB = Math.atan2(h.a.pos.y - e.pos.y, h.a.pos.x - e.pos.x), eyes = h.seenHead(d) ?? e.facing;

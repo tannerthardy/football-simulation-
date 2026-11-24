@@ -53,6 +53,10 @@ export interface ThrowQuestion {
   /** How resolved his look at the receiver is (0-1) and his picture spread on the receiver (yd). */
   res: number;
   receiverSpread: number;
+  /** His belief of his own placement error at this distance (yd, one sigma; his missSigma): where the ball lands about the
+   * point he aims at. A defender near the point is in play when the ball strays toward him (staged V2, 2026-11-24: a
+   * corner 2.3 yd off the flat's point intercepted a ball placed 1.1 yd toward him). Absent: none. */
+  placeSpread?: number;
   /** The coverer he held for this receiver last time (kept unless another is nearer by COVER_SWAP), and the defenders his
    * picture had within the coverage radius of this receiver 0.2 s ago too (only they can be the coverer: a relation held
    * over his picture's own history, not one sample; Coverage's review). Absent: no history yet (no restriction). */
@@ -198,7 +202,7 @@ function coverReact(q: ThrowQuestion, d: SeenDefender): number {
 /** Judge one candidate throw on his picture. */
 export function judge(q: ThrowQuestion, defs: SeenDefender[]): Judgment {
   const tBall = q.windup + q.flight, roles: RoleJudged[] = [];
-  const recvSig = Math.hypot(q.receiverSpread, LOOK_SEP * (1 - q.res));
+  const recvSig = Math.hypot(q.receiverSpread, LOOK_SEP * (1 - q.res), q.placeSpread ?? 0);
   const cov = findCoverer(q, defs);
   const add = (d: SeenDefender, role: Role, tArr: number) => {
     const sigma = arriveSigma(d, recvSig, tArr);
@@ -252,7 +256,7 @@ export function judge(q: ThrowQuestion, defs: SeenDefender[]): Judgment {
       if (hyp(p, q.catchAt) <= LANE_NEAR && (near === null || m > near)) near = m;
     });
     if (best === null || best <= -0.3) return null;
-    const sigma = arriveSigma(d, 0, q.windup + q.flight);
+    const sigma = arriveSigma(d, q.placeSpread ?? 0, q.windup + q.flight);
     return { margin: best, sigma, pArrive: phi(best / sigma), rusher: false, pNear: near === null ? 0 : phi(near / sigma) };
   };
   // The coverer can also undercut the route and take the ball on its line, short of the catch point: the higher of the two.
