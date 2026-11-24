@@ -102,7 +102,7 @@ export function scatterSide(off: Pick<OffenseAlignment, 'ballY' | 'strongSign'>,
  * in the middle 14.5 deep, a man-free safety shades 0.34 toward the ball.
  * Off: the installed spots. */
 const DEF_ALIGN = process.env.DEF_ALIGN !== '0';
-/** HALF_ALIGN (off; HALF_ALIGN=1 turns it on; Coverage C14, 2026-11-24): a two-high halves safety aligns off the receivers
+/** HALF_ALIGN (default on, engine-99; `=0` restores; Coverage C14, 2026-11-24): a two-high halves safety aligns off the receivers
  * on his side, as taught, not off the field. With a detached #2 on his side he stands on #2's line (inside-out on him);
  * with none, he splits the difference between #1 and the ball. Read from the alignment he sees (the formation's spots),
  * per call. Measured before (Flex, half_align.py, NFL PFF 2L/2R weeks 1-2 n 955 vs ours n 317): the NFL half stands
@@ -111,7 +111,7 @@ const DEF_ALIGN = process.env.DEF_ALIGN !== '0';
  * split. Ours sat on the field-centred spot (centre 6.9 yd plus 0.36 of the ball's offset), 1.5-3 yd inside #2 when #1
  * was wide (wide #1 to the field: NFL 10.2 yd from the ball, ours 7.2), and the half reached #1's vertical 4 yd late
  * from the snap alone (half_timing.py). Quarters seats and the depth are unchanged. */
-const HALF_ALIGN = () => process.env.HALF_ALIGN === '1';
+const HALF_ALIGN = () => process.env.HALF_ALIGN !== '0';
 /** Default on (WR_ALIGN=0 turns it off): receivers align as tracked
  * (scripts/diag/align/nfl_scheme.py, 2022 tracking at the snap). The #1's room
  * to his sideline follows his route (ROUTE_ROOM: wide to run vertical or

@@ -611,6 +611,35 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
 
 
+## engine-95: the ball goes away on what he perceives (2026-11-24)
+
+On: `THROWAWAY_FELT` (QB lane with Integration). Off, a fixed per-passer timer from the set (2.5 + 1.0 composure + 0.6
+pocketPresence + N(0, 0.25) s) threw the ball away once it ran out (over 0.8 s by a per-tick chance, or 2.2 s), without
+asking whether anyone was open or whether he felt pressure: an invented timer, not football.
+
+Taught: a passer throws it away because the rush is on him and nobody is there, or he is out of the pocket with nobody;
+with a clean pocket he keeps working, checks down or moves. On:
+
+- The timer no longer throws the ball away. It stays as his sense of time: it raises his urgency (his bar drops toward
+  the checkdown), calls the scramble drill, and his break or scramble.
+- He throws it away with the rush on him (felt pressure from the rush: enter 0.6, exit 0.4; chosen) or outside the
+  pocket by his own position (4.5 yd from the ball's line sideways, exit 3.5 yd; chosen), when no option clears his bar.
+  Under imminent pressure the existing no-throw path still answers first.
+- READ_WINDOW's quick game out of reads in a clean pocket keeps working (the best live option at the lowered bar, his
+  break or scramble); its dead-read rule is unchanged.
+
+Same 16 games (seeds 11-18, 19-26), engine-94 without the clock, off / on (`scripts/diag/eyes/dropback-outcome.ts`):
+
+| | off | on |
+|---|---|---|
+| completion (throwaways as attempts) | 65.8% | 68.0% |
+| thrown away | 34 (timer 24, pressure 10) | 19 (pressure) |
+| INT | 1.38% | 1.40% |
+| sacks | 92 (6.39%) | 96 (6.77%) |
+| scrambles | 39 | 28 |
+| time to throw p50 | 2.36 s | 2.31 s |
+| clean-pocket holds (timer out, felt < 0.4, in the pocket) | 23: 19 thrown away | 29: 10 complete, 5 sacked (p50 6.31 s, 2.15 s after the timer) |
+
 ## engine-94: one break on the throw (2026-11-24)
 
 On: `FLIGHT_BREAK` (Coverage C14 with Defense; Integration's paired card). `FLIGHT_LEAD` is present but off and
@@ -2627,3 +2656,26 @@ As the ball carrier the numbers equal the flag off at every speed.
 **What it moves.** Ordinary games, 16 per arm (seeds 7-22; arms diverge after the first changed play): defender dives 789 / 802; dives still down at the whistle with the play live when he would have been up 120 / 134. Staged and paired (720 zone plays, 12 concepts x 5 coverages x 2 formations x 3 rosters x 2 seeds, identical until a defender dives): 239 plays have a defender dive in either arm and 3 differ (2 worse for the offense, 1 better); completions 422 / 422, zone YAC mean 7.22 / 7.22, 10+ yd YAC 61 / 61, missed-tackle then touchdown 1 / 1, touchdowns 23 / 24, yards per play 7.85 / 7.84. The repair is the diver's own time on the ground and almost never reaches the play.
 
 **Fixtures.** None moved. `npm test` (core and core-defaults, Node 22.22.0) on this tree and on clean develop fe150600 fails the same 29 files with the same failure counts (the Node-version and numeric ones already red on develop); the 6-test `down-rise-plant.test.ts` is new, listed in `test/engine-pin.json` defaults, and sets the flag explicitly for both arms. `dither-budget` passes with the flag on by default.
+
+## engine-96: the spiral's drag is the NFL ball's measured deceleration (2026-11-24)
+
+On: `BALL_DRAG` (Tools/Physics; `=0` restores the old constant). `DRAG_SPIRAL` 0.003027 /yd (C_d 0.099, a recalled value) becomes 0.0050 /yd
+(interval 0.0045-0.0057, C_d about 0.16 on the rulebook ball): the horizontal deceleration of BDB 2025 weeks 1-9 passes, release frames and the
+last 0.6 s excluded (`docs/reviews/2026-11-24-ball-drag-reconciliation.md`; build, bench and cards `2026-11-24-ball-drag-build.md`). A measured
+physical quantity of the ball, not fitted to an outcome; no attitude law. `solveLaunch` re-derives the release for the QB's flight time, so hang
+time and apex by distance do not move; the release is faster and the arrival slower (lone ball +0.3 to +1.2 and -0.3 to -0.8 yd/s).
+
+Card (Tools, 48 games a side, seeds 301-348, paired seeds; Integration's 6-seed card: completion about -0.8, designed runs not reproduced):
+completion .677 -> .682, uncontested drop .052 -> .058, breakup .097 -> .094, interception .012 -> .014; designed runs 3.79 -> 3.74 yd/carry (SE 0.27),
+run share .310 -> .310. Catch roll, actual run (8 games a side): ball speed p50 22.5 -> 21.9 yd/s, share over 24 yd/s 28.9% -> 23.7%.
+Not modelled: the NFL ball's decay roughly doubles 0.3-0.6 s before arrival (tracker smoothing near the catch, or the ball's nose-over at the end
+of the arc); the catch roll's 24 yd/s step is not what the NFL ball avoids on short throws (a catch-rebuild question, not drag).
+
+## engine-99: a halves safety aligns off the receivers on his side (2026-11-24)
+
+On: `HALF_ALIGN` (Coverage C14; `=0` restores). A two-high halves safety (not quarters) aligns on a detached #2's line, else halfway
+between the ball and #1, as taught; off, he stood at a fixed width. Width minus #2 -2.9 / -3.3 -> -0.3 yd (NFL -0.7 to +0.9); the go
+cell's snap gap matches the NFL; no Cover 2 middle hole beyond the NFL's in Tools' census.
+
+Card (Integration, 5 seeds x 16 games x 2 leagues, each against ref on engine-95): yards per attempt -0.58* / -0.04 / -0.21 / -0.33 /
++0.12, YAC -0.72* / +0.13 / -0.44 / -0.58 / +0.15, completion mixed: slightly tighter. Lands on because it matches the NFL's alignment.

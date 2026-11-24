@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "engine-94",
+  "id": "engine-99",
   "runSet": {
     "commit": "1b5415de99b5b7194eff045f3c37a07a4c54c1a9",
     "seeds": [
@@ -134,6 +134,8 @@
     "BREAK_LOOK": "on",
     "SEEN_EMPTY": "on",
     "DIR_CAP": "on",
+    "BALL_DRAG": "on",
+    "HALF_ALIGN": "on",
     "CARRY_POSTURE": "on",
     "CORNER_DROP": "on",
     "CARRY_TURN": "on",
@@ -211,7 +213,6 @@
     "FLIGHT_BREAK": "on",
     "FLIGHT_LEAD": "off",
     "HEAD_FOLLOW": "on",
-    "HALF_ALIGN": "off",
     "POCKET_CLIMB": "off",
     "BLOCK_SEEN": "on",
     "FREE_BOUND": "off",
@@ -307,6 +308,7 @@
     "QB_POCKET": "off",
     "QB_BREAK": "off",
     "QB_RELOOK": "on",
+    "THROWAWAY_FELT": "on",
     "READ_WINDOW": "off",
     "QB_KEY_MAN": "on",
     "QB_KEY_THROW": "off",
