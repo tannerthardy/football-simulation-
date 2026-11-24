@@ -52,15 +52,17 @@ const STAGED: Record<string, StagedThrow> = {
 const PANEL: [string, number][] = [...['stick', 'slant_flat', 'curl_flat', 'smash'].flatMap(p => [1, 2, 3, 4].map(s => [p, s] as [string, number])),
   ['slant_flat', 5], ['slant_flat', 11], ['curl_flat', 11]];
 
-async function run(flag: string) {
+async function run(flag: string, pinBreak = false) {
   const flagName = flag;
   vi.resetModules();
   for (const k of stackOn) vi.stubEnv(k, '1');
   vi.stubEnv('PURSUIT_COMMIT', flag);
-  // Pinned to FLIGHT_BREAK=0 (engine-93, Coverage C14): with the break on no defender asks for a stop on the catch tick
-  // in either arm (the break and its continuation keep his receiver through it), so the off arm's premise is gone and
-  // the commit's own effect on the paths it governs is not reached. Retire with the replaced paths.
-  vi.stubEnv('FLIGHT_BREAK', '0');
+  // The off case's premise only (pinBreak): pinned to FLIGHT_BREAK=0 (engine-93, Coverage C14, #882). With the break
+  // on no defender asks for a stop on the catch tick (the break and its continuation keep his receiver through it), so
+  // the premise tests the retired paths (playObservedFlight's stale catch-point drive and the rally goTo). Owner:
+  // Defense; rewrite the premise on the break, or remove it, when FLIGHT_BREAK=0's paths are retired. The contract case
+  // below runs on the real engine.
+  if (pinBreak) vi.stubEnv('FLIGHT_BREAK', '0');
   const { Rng } = await import('../src/core/rng.js');
   const { generateTeam, pickDefense, pickOffense } = await import('../src/league/team.js');
   const { PASS_BY_ID } = await import('../src/playbook/concepts.js');
@@ -110,7 +112,7 @@ async function run(flag: string) {
 
 describe('PURSUIT_COMMIT: pursuers commit to their meeting and keep their approach through the catch', () => {
   it('off: some nearby defenders ask for a stop on the catch tick', async () => {
-    const r = await run('0');
+    const r = await run('0', true);
     // Premise floor (a sample for the claim, not a mechanism): enough defenders near the catch. With the throws staged
     // the count still moves with what defenders saw of the passer before the throw (his eyes and body under QB_EYES:
     // develop 21, the QB lane's engine-63 arm 19), so the floor is 15. Measured 1 of 27 asking for a stop before staging.
