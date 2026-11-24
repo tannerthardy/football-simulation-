@@ -61,6 +61,9 @@ export interface RoutePoint {
   s?: number;
   /** ROUTE_FILLET: this point is a cut (plant, stick the foot and break): the vertex law applies, no lead. Absent: inferred as before (a lead). */
   cut?: boolean;
+  /** SEAM_LANDMARK: a field landmark for this point, as room (yd) to his own sideline, in place of `l`. He goes no
+   * further inside than his own alignment for it: a man already outside the landmark keeps his line. */
+  room?: number;
 }
 
 export type RouteEnd = 'continue' | 'settle' | 'sitVsZone';
