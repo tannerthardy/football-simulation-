@@ -111,3 +111,22 @@ A cell whose prediction does not appear goes to its owner through Integration, a
    This blocks cells 5, 5a and 5b until it is fixed. Next: why, on a few plays (the jam on the H?), then a fix of the
    crossers' timing to the mesh landmark.
 4. **Deferred cells** (splits, motion), unchanged.
+
+### Cell 5 diagnosis: the crossers are late (scripts/diag/calls/mesh_probe.mts; 2 seeds, press man and zone)
+
+Mesh from gun doubles. Y (S2) starts at y 19.1 and H (W2) at y 34.9, 15.8 yd apart. Their lateral gap over time:
+
+| | 1.0 s | 1.5 s | 2.0 s | 2.5 s |
+|---|---|---|---|---|
+| Cover 1 press | 14.6 | 12.4 | 8.8 | 4.3 |
+| Cover 3 | 14.5 | 12.3 | 8.5 | 3.6 |
+
+- Their speed is 1.3 yd/s at 0.5 s and 3.3-3.6 at 1.0 s. Most of the first 1.5 s goes into the stem (to 2 yd) before they
+  cross. The mesh point would come after about 3 s.
+- Against press man, H also climbs deeper (6.3 yd at 2.5 s, against 4.5 against zone); the nickel's jam on H is at
+  2.0 s.
+
+So the cell could not appear in the 2.6 s window, against man or zone, and the 1.0 yd closest point against zone came
+later in the play. The repair is the crossers' release and pace, which is mine: mesh as taught is a quick inside release
+to the mesh landmark at 5-6 yd, the two crossers timed to meet there. The route chart has the cross family's timing
+against the NFL to check it with. Cells 5, 5a and 5b re-run after that.
