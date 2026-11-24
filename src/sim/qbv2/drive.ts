@@ -33,6 +33,8 @@ export interface V2Host {
   /** His receiver's predicted position `ahead` s from now (his forecast), and the forecast's break (absolute time). */
   predict(r: Agent, ahead: number): V | null;
   breakAt(r: Agent): number | null;
+  /** His timing anchor for an on-break throw (absolute): when his forecast turns the receiver's body, else breakAt. */
+  timingAt?(r: Agent): number | null;
   /** Whether his clear cone holds this point now (his head's direction and his focus). */
   inClear(p: V): boolean;
   /** The throw's mechanics to this receiver now (catch point, flight), or null when it cannot be thrown. */
@@ -210,7 +212,8 @@ export class V2Drive {
     this.held.set(o.ref, j.roles.find((x) => x.role === 'coverer')?.id ?? null);
     // A timing throw is not started before its time: the release (now + windup) may lead his forecast of the break by at
     // most his anticipation lead. Judged all the same (the trace shows it), marked early.
-    const early = h.lead !== undefined && o.timing === 'onBreak' && q.breakIn !== null && q.breakIn > q.windup + h.lead;
+    const ta = h.timingAt ? h.timingAt(r) : bk, timeIn = o.timing === 'onBreak' && ta !== null ? ta - sim.t : null;
+    const early = h.lead !== undefined && timeIn !== null && timeIn > q.windup + h.lead;
     const judged: Judged = { option: o, P: j.P, risk: j.risk, reachesSticks: mech.point.x >= sim.firstDownX, early };
     this.lastJudged.set(o.ref, judged);
     this.lastRoles.set(o.ref, j.roles);

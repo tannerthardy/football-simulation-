@@ -208,7 +208,7 @@ index 000000000..6050b81d9
 +sim.run();
 diff --git a/scripts/diag/qbv2/stage.ts b/scripts/diag/qbv2/stage.ts
 new file mode 100644
-index 000000000..154e59774
+index 000000000..2ee386ec0
 --- /dev/null
 +++ b/scripts/diag/qbv2/stage.ts
 @@ -0,0 +1,102 @@
@@ -282,7 +282,7 @@ index 000000000..154e59774
 +    // The passer's forecast of each receiver's break, first taken at the secure and at 1.0 s from the snap (absolute times).
 +    if (h && !thrown) for (const r of sim.offense) { if (r.behavior?.kind !== 'route') continue; const fb = (fbk[r.idx] ??= {}); const b = h.breakAt(r);
 +      if (fb.atSecure === undefined && sim.t >= h.snapAt) fb.atSecure = b == null ? null : r2(b);
-+      if (fb.at1 === undefined && sim.t >= 1.0) fb.at1 = b == null ? null : r2(b); }
++      if (fb.at1 === undefined && sim.t >= 1.0) { fb.at1 = b == null ? null : r2(b); const tt = h.timingAt ? h.timingAt(r) : null; fb.turn1 = tt == null ? null : r2(tt); } }
 +    if (v2 && h && !thrown && sim.t >= h.plantAt - 1e-6 && Math.round(sim.t * 20) % 1 === 0 && trace.length < 60) {
 +      const c = v2.cycle, look = c.looks.current, r = c.plan.reads[c.readIdx];
 +      trace.push({ t: r2(sim.t - h.snapAt), read: c.readIdx, st: c.state, look: look ? (look.kind === 'receiver' ? look.ref : look.role) : null,
@@ -355,7 +355,7 @@ index 000000000..6ce43eb69
 +  if (sim.t > 2) sim.phase = 'dead'; };
 +sim.run();
 diff --git a/src/sim/behaviors/qb.ts b/src/sim/behaviors/qb.ts
-index d6943e2dd..7846e3db5 100644
+index d6943e2dd..08cbedaf9 100644
 --- a/src/sim/behaviors/qb.ts
 +++ b/src/sim/behaviors/qb.ts
 @@ -16,12 +16,16 @@
@@ -472,7 +472,7 @@ index d6943e2dd..7846e3db5 100644
  
      // Look-off: veterans hold the safety with their eyes before the first read.
      if (!this.lookOffChecked) {
-@@ -2127,6 +2166,70 @@ export class QBPass implements Behavior {
+@@ -2127,6 +2166,71 @@ export class QBPass implements Behavior {
    /** QB_EYES: the man he is gating a throw to (his eyes went there for it), or null. */
    private gateFor: Agent | null = null;
    /** QB_EYES: his processing time on a man his eyes have just reached. */
@@ -493,6 +493,7 @@ index d6943e2dd..7846e3db5 100644
 +      estimate: (d) => this.mind.estimate(d), seenHead: (d) => sim.see(a, d).head ?? null, pictureAge: (d) => this.mind.pictureAge(d), pictureSpread: (d) => this.mind.pictureSpread?.(d) ?? 0.5,
 +      predict: (r, ahead) => this.receiverForecasts.get(r)?.predict(sim.t, ahead) ?? null,
 +      breakAt: (r) => this.receiverForecasts.get(r)?.breakAt() ?? null,
++      timingAt: (r) => { const f = this.receiverForecasts.get(r); return f ? f.turnAt() ?? f.breakAt() : null; },
 +      inClear: (p) => { const eyes = a.head ?? a.body.facing; return Math.abs(wrapAngle(angleTo(a.pos, p) - eyes)) < this.mind.clearHalf * (0.65 + 0.35 * a.mind.focus); },
 +      mechanics: (r, u) => { const ev = this.evaluate(a, sim, r, u); return ev ? { point: ev.point, T: ev.T } : null; },
 +      windup: () => this.windup(a),
@@ -543,7 +544,7 @@ index d6943e2dd..7846e3db5 100644
    private processing(a: Agent): number { return (0.15 + 0.25 * (1 - a.r('decisionMaking'))) * (1 + 0.8 * this.narrow(a)); }
  
    /** QB_STICK: his picture when he decided the throw: each defender's distance to the catch point and to the low flight. */
-@@ -2290,6 +2393,8 @@ export class QBPass implements Behavior {
+@@ -2290,6 +2394,8 @@ export class QBPass implements Behavior {
    }
  
    private gazePoint(sim: PlaySim): Vec2 {
@@ -767,10 +768,10 @@ index 000000000..ee6683630
 +}
 diff --git a/src/sim/qbv2/drive.ts b/src/sim/qbv2/drive.ts
 new file mode 100644
-index 000000000..c8b24976b
+index 000000000..70acc5ac7
 --- /dev/null
 +++ b/src/sim/qbv2/drive.ts
-@@ -0,0 +1,254 @@
+@@ -0,0 +1,257 @@
 +/**
 + * QB_V2 wiring (QB lane, 2026-11-24): drives the cycle (module E) from QBPass on a concept with an authored read plan
 + * that fits the call, with the look (C), the judgment (D), the role resolver and the pre-snap decision (B, Flex). It
@@ -806,6 +807,8 @@ index 000000000..c8b24976b
 +  /** His receiver's predicted position `ahead` s from now (his forecast), and the forecast's break (absolute time). */
 +  predict(r: Agent, ahead: number): V | null;
 +  breakAt(r: Agent): number | null;
++  /** His timing anchor for an on-break throw (absolute): when his forecast turns the receiver's body, else breakAt. */
++  timingAt?(r: Agent): number | null;
 +  /** Whether his clear cone holds this point now (his head's direction and his focus). */
 +  inClear(p: V): boolean;
 +  /** The throw's mechanics to this receiver now (catch point, flight), or null when it cannot be thrown. */
@@ -983,7 +986,8 @@ index 000000000..c8b24976b
 +    this.held.set(o.ref, j.roles.find((x) => x.role === 'coverer')?.id ?? null);
 +    // A timing throw is not started before its time: the release (now + windup) may lead his forecast of the break by at
 +    // most his anticipation lead. Judged all the same (the trace shows it), marked early.
-+    const early = h.lead !== undefined && o.timing === 'onBreak' && q.breakIn !== null && q.breakIn > q.windup + h.lead;
++    const ta = h.timingAt ? h.timingAt(r) : bk, timeIn = o.timing === 'onBreak' && ta !== null ? ta - sim.t : null;
++    const early = h.lead !== undefined && timeIn !== null && timeIn > q.windup + h.lead;
 +    const judged: Judged = { option: o, P: j.P, risk: j.risk, reachesSticks: mech.point.x >= sim.firstDownX, early };
 +    this.lastJudged.set(o.ref, judged);
 +    this.lastRoles.set(o.ref, j.roles);
@@ -1945,6 +1949,40 @@ index 000000000..923769975
 +
 +/** One-shot form (Flex's pre-snap scan). */
 +export const resolveRole = (p: RolePicture, role: KeyRole, side: 'S' | 'W' = 'S'): PicturedMan | null => pick(role, p, side);
+diff --git a/src/sim/receiver-forecast.ts b/src/sim/receiver-forecast.ts
+index 4f494a304..a5d521c30 100644
+--- a/src/sim/receiver-forecast.ts
++++ b/src/sim/receiver-forecast.ts
+@@ -206,6 +206,29 @@ export class ReceiverForecast {
+     return c.breakStep === null ? null : c.estimate.sampledAt + c.breakStep * this.dt;
+   }
+ 
++  /** QB_V2's timing anchor (QB lane, 2026-11-24; Integration's ruling): when his forecast has the receiver's body turn,
++   * the onset of the forecast path's turn off the stem (below), up to his forecast's break and a little past it. breakAt is arrival at the route's nominal cut point,
++   * which a rounded cut reaches 0.45-0.8 s after the body has turned (staged cells: the out and the flat); the stage
++   * operator and Rules' route-chart operator both time the turn. Absolute time, or null (past, none, or not his route). */
++  turnAt(): number | null {
++    const c = this.build();
++    if (!c || c.estimate.motion !== 'installed-route') return null;
++    this.extend(c, Math.ceil(8 / this.dt));
++    // Onset: the first moment the forecast heading (over 0.2 s) leaves the stem's by more than 20 deg, the stem being his
++    // heading where the forecast first moves over 2 yd/s. The forecast's cut is a smooth arc (about 4 yd radius on the
++    // quick out), so a peak-rate rule finds none; its onset sits near the true body's sharpest turn.
++    const k = Math.max(1, Math.round(0.2 / this.dt)), P = c.pts, end = Math.min(P.length - 1 - k, (c.breakStep ?? P.length) + Math.round(0.4 / this.dt));
++    const hd = (a: Vec2, b: Vec2) => Math.atan2(b.y - a.y, b.x - a.x), sp = (a: Vec2, b: Vec2) => Math.hypot(b.x - a.x, b.y - a.y) / (k * this.dt);
++    let stem: number | null = null;
++    for (let i = 0; i <= end; i++) {
++      if (sp(P[i], P[i + k]) < 2) continue;
++      const h = hd(P[i], P[i + k]);
++      if (stem === null) { stem = h; continue; }
++      if (Math.abs(Math.atan2(Math.sin(h - stem), Math.cos(h - stem))) > 20 * Math.PI / 180) return c.estimate.sampledAt + (i + k / 2) * this.dt;
++    }
++    return null;
++  }
++
+   /** Forecast at absolute time. A held picture ages; it never refreshes itself. */
+   predict(now: number, ahead: number): Vec2 | null {
+     const c = this.build();
 diff --git a/test/qbv2-cycle.test.ts b/test/qbv2-cycle.test.ts
 new file mode 100644
 index 000000000..edf75a1b1

@@ -68,7 +68,7 @@ for (let seed = s0; seed <= s1; seed++) {
     // The passer's forecast of each receiver's break, first taken at the secure and at 1.0 s from the snap (absolute times).
     if (h && !thrown) for (const r of sim.offense) { if (r.behavior?.kind !== 'route') continue; const fb = (fbk[r.idx] ??= {}); const b = h.breakAt(r);
       if (fb.atSecure === undefined && sim.t >= h.snapAt) fb.atSecure = b == null ? null : r2(b);
-      if (fb.at1 === undefined && sim.t >= 1.0) fb.at1 = b == null ? null : r2(b); }
+      if (fb.at1 === undefined && sim.t >= 1.0) { fb.at1 = b == null ? null : r2(b); const tt = h.timingAt ? h.timingAt(r) : null; fb.turn1 = tt == null ? null : r2(tt); } }
     if (v2 && h && !thrown && sim.t >= h.plantAt - 1e-6 && Math.round(sim.t * 20) % 1 === 0 && trace.length < 60) {
       const c = v2.cycle, look = c.looks.current, r = c.plan.reads[c.readIdx];
       trace.push({ t: r2(sim.t - h.snapAt), read: c.readIdx, st: c.state, look: look ? (look.kind === 'receiver' ? look.ref : look.role) : null,
