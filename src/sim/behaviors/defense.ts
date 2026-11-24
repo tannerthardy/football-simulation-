@@ -224,6 +224,20 @@ const ZONE_HOLD_LEAN_ROPE = 1.0 * ZONE_HOLD_SCALE;
  * the direction he was moving); the limit shrinks with his speed and is gone when he has stopped along it. Taught:
  * when the seam clears, settle and find the next threat; don't sprint back to a spot. */
 export const ZONE_HOLD_HANDOFF = (ZONE_HOLD_BITS & 64) !== 0;
+/** HANDOFF_FREEZE (experimental, off; Coverage C14 2026-11-24, found on the Cover 2 four-verts rally stage): ZONE_HOLD bit
+ * 64's hand-off from motion fixes his stopping point at the hand-off (where he was, his speed then, at 0.8 of his
+ * braking) instead of re-placing it a stopping distance ahead of him every tick. Re-placed, the target stayed ahead of
+ * him at his own speed and the arrival asked for a little more than he had: a hook handed off a seam at 13.6 yd kept
+ * accelerating deeper (requesting +5.7 yd/s at 14.6 yd, 3.2 s), 16-17 yd deep at the throw against a 10 yd landmark. */
+const HANDOFF_FREEZE = process.env.HANDOFF_FREEZE === '1';
+/** HOOK_WALL (experimental, off; Coverage C14 2026-11-24, the Cover 2 flat-cost stage): in Cover 2 (and Tampa 2 except its
+ * middle hook) a hook walls and carries a vertical #2 from underneath and inside him (half a yard under his depth) to
+ * HOOK_WALL_DEPTH and then hands him to the half safety, as taught (wall and carry #2 to 10-12 yd between the numbers and
+ * the hash, then off on the throw). Off, every hook carried on top of the seam (1.5 yd over him) to 13 yd: on four verts
+ * the hooks stood 12.5 / 16.1 / 17.1 yd deep at the throw (hook_s / hook_mid / hook_w; landmarks 10-10.5) and a checkdown
+ * to the back ran 10.8 yd after the catch with nobody inside 10 yd. */
+const HOOK_WALL = process.env.HOOK_WALL === '1';
+const HOOK_WALL_DEPTH = 11;
 const CARRY_LABEL = /^(open-carry-seam|carry-wall|carry-run-past)$/;
 const eyesHeld = new WeakMap<Agent, Agent>();
 const eyesCache = new WeakMap<Agent, { t: number; r: Agent | null }>();
@@ -1830,17 +1844,30 @@ export class ZoneCoverage implements Behavior {
   private leanAt: Vec2 | null = null;
   /** ZONE_HOLD bit 64: the direction he was moving at the hand-off (null when none is binding), and last tick's technique. */
   private handoffDir: Vec2 | null = null;
+  /** HANDOFF_FREEZE: the stopping point fixed at the hand-off. */
+  private handoffStop: Vec2 | null = null;
   private lastLabel = '';
   private fromMotion(a: Agent, t: Vec2, settleSite = false): Vec2 {
     if (!ZONE_HOLD_HANDOFF) return t;
     if (!this.handoffDir && (CARRY_LABEL.test(this.lastLabel) || (settleSite && this.lastLabel.startsWith('lane')))) {
       const s = Math.hypot(a.vel.x, a.vel.y);
-      if (s > 0.3) this.handoffDir = { x: a.vel.x / s, y: a.vel.y / s };
+      if (s > 0.3) {
+        this.handoffDir = { x: a.vel.x / s, y: a.vel.y / s };
+        // HANDOFF_FREEZE: the point he can stop at, fixed at the hand-off (his speed then, his braking).
+        this.handoffStop = { x: a.pos.x + this.handoffDir.x * (s * s) / (2 * a.profile.brake * 0.8),
+          y: a.pos.y + this.handoffDir.y * (s * s) / (2 * a.profile.brake * 0.8) };
+      }
     }
     const u = this.handoffDir;
     if (!u) return t;
     const along = a.vel.x * u.x + a.vel.y * u.y;
-    if (along <= 0) { this.handoffDir = null; return t; }
+    if (along <= 0) { this.handoffDir = null; this.handoffStop = null; return t; }
+    if (HANDOFF_FREEZE && this.handoffStop) {
+      // The target may lie anywhere across his motion, but not back against it short of the stopping point fixed at the
+      // hand-off: re-placing the point a stopping distance ahead of him every tick kept it ahead of him at his own speed.
+      const P = this.handoffStop, ta = (t.x - P.x) * u.x + (t.y - P.y) * u.y;
+      return ta >= 0 ? t : { x: t.x - u.x * ta, y: t.y - u.y * ta };
+    }
     const stop = (along * along) / (2 * a.profile.brake * 0.8);
     const ta = (t.x - a.pos.x) * u.x + (t.y - a.pos.y) * u.y;
     return ta >= stop ? t : { x: t.x + u.x * (stop - ta), y: t.y + u.y * (stop - ta) };
@@ -1972,7 +1999,7 @@ export class ZoneCoverage implements Behavior {
     const cmd = this.updateCore(a, sim);
     if (ZONE_HOLD_HANDOFF) {
       this.lastLabel = facingTechnique(cmd)?.label ?? '';
-      if (CARRY_LABEL.test(this.lastLabel)) this.handoffDir = null;
+      if (CARRY_LABEL.test(this.lastLabel)) { this.handoffDir = null; this.handoffStop = null; }
     }
     return cmd;
   }
@@ -2548,7 +2575,11 @@ export class ZoneCoverage implements Behavior {
     // otherwise sit in the throwing lane of the nearest threat.
     // Curl-flat players wall #2 only to ~10 yards, then hand him off and expand
     // under #1; hook players carry seams a little deeper.
-    const carryTo = this.zone.startsWith('curl_flat') ? 10 : 13;
+    // HOOK_WALL: in Cover 2 (two halves over the top) a hook walls and carries #2 underneath him to 10-12 yd, not on top
+    // to 13 (Tampa 2's middle hook carries the seam deep: kept).
+    const c2 = sim.defCall.coverage, hookWall = HOOK_WALL && this.zone.startsWith('hook')
+      && (c2.family === 'cover2' || (c2.family === 'tampa2' && this.zone !== 'hook_mid'));
+    const carryTo = this.zone.startsWith('curl_flat') ? 10 : hookWall ? HOOK_WALL_DEPTH : 13;
     const carryable = threats.filter((th) => th.vel.x > 4.5 && th.pos.x - sim.los > 2 && th.pos.x - sim.los < carryTo && Math.abs(th.pos.y - lm.y) < 6);
     if (carryable.length > 0 && this.zone !== 'flat_s' && this.zone !== 'flat_w') {
       carryable.sort((p, q) => Math.abs(p.pos.y - lm.y) - Math.abs(q.pos.y - lm.y));
@@ -2557,9 +2588,13 @@ export class ZoneCoverage implements Behavior {
       // Wall and carry: keep him in front and inside, gaining depth before he
       // gets there. Eyes stay on the QB until the seam threatens to run past;
       // then turn and run with him.
-      const tgt = { x: Math.max(th.pos.x + 1.5, a.pos.x - 0.5), y: th.pos.y + inside(th.pos.y) * 0.9 };
-      const runPast = th.vel.x > 4.5 && a.pos.x - th.pos.x < 2.5;
-      const carry = track(a, tgt, { x: th.vel.x, y: th.vel.y }, { facing: runPast ? undefined : facingQB,
+      // HOOK_WALL: he holds his landmark depth until #2 reaches him, then carries from underneath; feeding #2's
+      // upfield speed forward while #2 was still under him ran the hook away from him.
+      const level = th.pos.x >= Math.max(lm.x, a.pos.x) - 1;
+      const tgt = hookWall ? { x: Math.max(th.pos.x - 0.5, lm.x), y: th.pos.y + inside(th.pos.y) * 0.9 }
+        : { x: Math.max(th.pos.x + 1.5, a.pos.x - 0.5), y: th.pos.y + inside(th.pos.y) * 0.9 };
+      const runPast = hookWall ? level && th.vel.x > 4.5 : th.vel.x > 4.5 && a.pos.x - th.pos.x < 2.5;
+      const carry = track(a, tgt, { x: hookWall && !level ? 0 : th.vel.x, y: th.vel.y }, { facing: runPast ? undefined : facingQB,
         speed: runPast ? 0.92 + 0.08 * a.r('zoneCoverage') : zs * 1.1, gain: 1.8 });
       // OPEN_CARRY: run with the seam as square to the QB as the run allows.
       if (OPEN_CARRY && runPast) {
