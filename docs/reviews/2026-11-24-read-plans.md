@@ -79,6 +79,11 @@ two-concept pairing, left as a variant.
   Roger Craig on the move in the flat" (Ross).
 - Wilhite (Learning to teach Y-stick): "We teach this as a 'key defender read'", with the Mike as the danger player
   inside.
+- **The cue is positional, by which route he takes.**
+  - `squats` = he sits inside the flat's landing, between it and the stick, walling the stick. Throw the flat.
+  - A flat defender sitting over or outside the flat landing has taken the flat (`widens`). Throw the stick.
+  - Speed does not decide it: a Cover 2 corner squatting over the flat is `widens`.
+  - Settled with the QB lane, 2026-11-24, after their staged Cover 2 cells threw the flat into the corner sitting on it.
 
 **First hitch: the backside slant, then the backside stick.** "If there was any hesitation for the quarterback on the
 stick side he would shuffle back and work the backside" (Ross). "The backside slot receiver runs a slant, and sits
@@ -148,7 +153,15 @@ fade against press. Neither is authored: neither is a route ours runs from this 
 
 ## Quick outs (`quick_outs`)
 
-**Read: a structure pick by the corners' cushion, then a progression on that side.**
+**Read: a pick of side by the corners' cushion, then a key on that side's flat defender at the plant.**
+Revised 2026-11-24, on the QB lane's and Integration's request: his eyes go to the flat defender in the drop, so the
+picture judged at the plant is fresh.
+- Sinks, carries or bails: #1's out on its break.
+- Squats, jumps or widens: #2's hitch.
+- First hitch: the backside #1.
+- Sources for the key: "the apex (flat) defender: he widens to the out: #1 hitch inside him; he sits on the hitch: #2
+  out" (hitch_out's read line); the flat defender "sinks under the curl… hit the speed out" (Gridiron Strategies).
+- Before the revision, the plan was a structure read: #1, then #2.
 - "Pre-snap, the QB will read the corners. If a soft corner to the quick side, go to quick out to X with progression
   continuing on the weak side ... If both corners are pressing, you have a mismatch and can go to a fade adjustment"
   (Kratzer).
@@ -169,9 +182,10 @@ concept owner: a back release would restore the taught outlet.
 (Kratzer); the speed out at 4-6 yd (Shaw).
 
 **Expected by coverage family:**
-- Cover 3 and Cover 4: #1's quick out, index 0. "It works best when you have soft corners in cover 3 or cover 4"
-  (Kratzer).
-- Cover 2: #2's hitch, index 1. The squatting corner takes the out (Win With The Pass, Cover 2 beaters).
+- Cover 3 and Cover 4: the key (index 0) gives #1's quick out. "It works best when you have soft corners in cover 3
+  or cover 4" (Kratzer).
+- Cover 2: the key (index 0) gives #2's hitch. The squatting corner takes the out (Win With The Pass, Cover 2
+  beaters).
 
 **Pick (the flip):** `cushion`, the softer corner.
 

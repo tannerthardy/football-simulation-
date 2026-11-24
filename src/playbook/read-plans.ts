@@ -73,17 +73,24 @@ export const HITCHES: QbReadPlan = {
 /** Quick outs: pick the side with the softer corner; #1's quick out on the plant, thrown before the break; #2's hitch on
  * the first hitch. No checkdown: the back blocks. (Kratzer; Shaw; The QB Stable.) */
 export const QUICK_OUTS: QbReadPlan = {
-  conceptId: 'quick_outs', drop: 'quick', readType: 'structure', pick: 'cushion',
+  conceptId: 'quick_outs', drop: 'quick', readType: 'key', pick: 'cushion',
   reads: [
-    { step: 0, look: { kind: 'receiver', ref: 'S1' }, throws: [{ ref: 'S1', timing: 'onBreak' }] },
-    { step: 1, look: { kind: 'receiver', ref: 'S2' }, throws: [{ ref: 'S2', timing: 'onBreak' }] },
+    // The flat defender over the picked side, in the drop (QB lane and Integration, 2026-11-24: his eyes on the field
+    // nickel, a fresh picture at the plant). "the apex (flat) defender: he widens to the out: #1 hitch inside him; he
+    // sits on the hitch: #2 out" (hitch_out's read); "sinks under the curl ... hit the speed out" (Gridiron Strategies).
+    { step: 0, look: { kind: 'key', role: 'flat' },
+      throws: [{ ref: 'S1', timing: 'onBreak' }, { ref: 'S2', timing: 'onBreak' }],
+      keyRules: [{ cue: 'sinks', throwTo: 'S1' }, { cue: 'carries', throwTo: 'S1' }, { cue: 'bails', throwTo: 'S1' },
+        { cue: 'squats', throwTo: 'S2' }, { cue: 'jumps', throwTo: 'S2' }, { cue: 'widens', throwTo: 'S2' }] },
+    // "progression continuing on the weak side" (Kratzer): the backside quick out on the first hitch.
+    { step: 1, look: { kind: 'receiver', ref: 'W1' }, throws: [{ ref: 'W1', timing: 'onBreak' }] },
   ],
   hot: [{ side: 'S', over: 1, answer: { ref: 'S2', timing: 'onBreak' } }, { side: 'W', over: 1, answer: { ref: 'W2', timing: 'onBreak' } }],
-  // Taught: the back's shoot (CONCEPT_TAUGHT, #896). While that flag is off ours blocks: CONCEPT_GAPS.
+  // Taught: the back's shoot (CONCEPT_TAUGHT, #896; a CALL_COMPOSE step-2 setting). While it is not called ours blocks.
   checkdown: { ref: 'B', fromStep: 1, timing: 'seenOpen' },
   confirm: null,
-  expected: { cover2: 1, tampa2: 1, cover3: 0, cover4: 0 },
-  source: 'docs/reviews/2026-11-24-read-plans.md#quick-outs-quick_outs (Kratzer; Shaw; The QB Stable; Win With The Pass Cover 2 beaters; Brown, Grantland). Outlet: the back\'s shoot (CONCEPT_TAUGHT).',
+  expected: { cover2: 0, tampa2: 0, cover3: 0, cover4: 0 },
+  source: 'docs/reviews/2026-11-24-read-plans.md#quick-outs-quick_outs (Kratzer; Shaw; The QB Stable; Win With The Pass Cover 2 beaters; Brown, Grantland; Gridiron Strategies curl/speed out). Outlet: the back\'s shoot.',
 };
 
 // ------------------------------------------------------------------ dropback (docs/reviews/2026-11-24-read-plans.md)
