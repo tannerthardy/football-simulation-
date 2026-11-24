@@ -11,7 +11,7 @@ import { isOL } from './blocking.js';
 import { KEY_REACT, KEY_STEP_SEEN, STEP_SEEN, keyScale } from '../key-read.js';
 import { END_LINE_X, FIELD_WIDTH, OPP_GOAL_X } from '../../core/field.js';
 import { angleDiff, clamp, lerp, norm, sub, type Vec2 } from '../../core/vec.js';
-import { DIR_CAP, directionalSpeedFactor, fatigueFactor, movingArrivalVelocity, TRUNK_PRICE, TRUNK_RANGE, TRUNK_TWIST, type MoveCommand } from '../../physics/kinematics.js';
+import { arriveVelocity, DIR_CAP, directionalSpeedFactor, fatigueFactor, movingArrivalVelocity, TRUNK_PRICE, TRUNK_RANGE, TRUNK_TWIST, type MoveCommand } from '../../physics/kinematics.js';
 import { availability, supportParams } from '../../physics/support.js';
 import { postCatchLead } from '../post-catch.js';
 import { timeToReach } from '../../physics/reach.js';
@@ -1145,6 +1145,24 @@ function cushionBroken(a: Agent, cushion: number, receiverVx: number, help: bool
  * cushion breaks and he turns. a is his own: the propulsion his legs give
  * toward his facing cap downfield at his current speed (1 - v / cap) * vmax /
  * tau, so a slow-footed defender has to start earlier. */
+/** CARRY_COMMIT (default on; Coverage C14 2026-11-24, COV-15; `=0` restores): the CARRY_POSTURE carry's request is one
+ * continuous request, his command with its downfield speed raised to the carry's need (carrySpeedNeed: continuous in
+ * the cushion and the receiver's seen pace, not in his own velocity), capped by his end-line arrival speed; it no
+ * longer switches between the command (~2 yd/s pedal) and DeepCoverage's override (~6-7 yd/s run), a choice made from
+ * a preview of his live body, so the speed the switch requested decided the next tick's switch. DeepCoverage's
+ * override keeps its mode as state with an exit margin for its other callers. */
+export const CARRY_COMMIT = process.env.CARRY_COMMIT !== '0';
+/** CARRY_COMMIT: how much deeper (yd, pictured future) another vertical must be to replace the one he carries. */
+const DEEP_PICK_BEAT = 1.5;
+function carryFloor(a: Agent, command: MoveCommand, need: number): MoveCommand {
+  const cap = Math.max(0, arriveVelocity(a.body, { x: END_LINE_X - a.profile.radius, y: a.pos.y }, a.profile.vmax).x);
+  // No need (the cushion covers the throw): his command stands, downhill included.
+  if (need <= 1e-9) return command;
+  const floor = Math.min(need, cap);
+  if (command.vel.x >= floor) return command;
+  const y = command.vel.y, scale = Math.min(1, a.profile.vmax / Math.max(1e-9, Math.hypot(floor, y)));
+  return { ...command, vel: { x: floor * scale, y: y * scale } };
+}
 function carrySpeedNeed(a: Agent, cushion: number, receiverVx: number, help: boolean, receiverRadius: number,
   seenAccel?: number, open = false, qbDist?: number): number {
   const vx = Math.max(0, receiverVx), p = a.profile;
@@ -1634,10 +1652,10 @@ export class ManCoverage implements Behavior {
       // CARRY_POSTURE 3b: short of CUSHION_BREAK's turn (hipsOpen, his seen cushion and closing), one half-open posture
       // within his head's reach of the QB, look on the QB, at a pace bounded by what that posture gives.
       if (!this.hipsOpen) {
-        const req = selected.facing === undefined ? selected : command;
         const qbSeen = sim.see(a, sim.qb).pos;
         const need = carrySpeedNeed(a, a.pos.x - seen.pos.x, vx, help, R.profile.radius, this.depth.seenAcceleration, false,
           Math.hypot(qbSeen.x - a.pos.x, qbSeen.y - a.pos.y));
+        const req = CARRY_COMMIT ? carryFloor(a, command, need) : selected.facing === undefined ? selected : command;
         const facing = carryFacing(a, R, qbSeen, seen.pos, Math.atan2(req.vel.y, req.vel.x), need,
           bailSeat(a, (a.behavior as { zone?: string } | undefined)?.zone));
         const toQB = Math.atan2(qbSeen.y - a.pos.y, qbSeen.x - a.pos.x);
@@ -1780,6 +1798,8 @@ export class ZoneCoverage implements Behavior {
   private leanAt: Vec2 | null = null;
   /** ZONE_HOLD bit 64: the direction he was moving at the hand-off (null when none is binding), and last tick's technique. */
   private handoffDir: Vec2 | null = null;
+  /** CARRY_COMMIT: the vertical he is carrying as the deepest (kept until another is deeper by DEEP_PICK_BEAT). */
+  private deepHeld: Agent | null = null;
   private lastLabel = '';
   private fromMotion(a: Agent, t: Vec2, settleSite = false): Vec2 {
     if (!ZONE_HOLD_HANDOFF) return t;
@@ -2208,6 +2228,13 @@ export class ZoneCoverage implements Behavior {
           { label: 'deep-read' });
       }
       vert.sort((p, q) => q.fut.x - p.fut.x);
+      // CARRY_COMMIT: the deepest is kept until another vertical's pictured future is deeper by DEEP_PICK_BEAT; two
+      // verticals level in his picture were re-picked every tick and his target jumped between them.
+      if (CARRY_COMMIT) {
+        const held = this.deepHeld ? vert.find((th) => th.r === this.deepHeld) : undefined;
+        if (held && held !== vert[0] && vert[0].fut.x - held.fut.x < DEEP_PICK_BEAT) vert = [held, ...vert.filter((th) => th !== held)];
+        this.deepHeld = vert[0].r;
+      }
       const deepest = vert[0];
       // Pattern read: once the threat stops climbing (breaks in/out or sits)
       // under the deep defender, he drives downhill on it.
@@ -2282,10 +2309,11 @@ export class ZoneCoverage implements Behavior {
         // CARRY_POSTURE 3b: short of CUSHION_BREAK's turn (turnedWith: his seen cushion broken), one half-open posture
         // within his head's reach of the QB, look on the QB, at a pace bounded by what that posture gives.
         if (this.turnedWith !== deepest.r) {
-          const req = selected.facing === undefined ? selected : command;
-          const qbSeen = sim.see(a, sim.qb).pos, heading = Math.atan2(req.vel.y, req.vel.x);
+          const qbSeen = sim.see(a, sim.qb).pos;
           const need = carrySpeedNeed(a, a.pos.x - deepest.pos.x, deepest.vel.x, false, deepest.r.profile.radius, depth.seenAcceleration, false,
             Math.hypot(qbSeen.x - a.pos.x, qbSeen.y - a.pos.y));
+          const req = CARRY_COMMIT ? carryFloor(a, command, need) : selected.facing === undefined ? selected : command;
+          const heading = Math.atan2(req.vel.y, req.vel.x);
           const facing = carryFacing(a, deepest.r, qbSeen, deepest.pos, heading, need, bailSeat(a, this.zone));
           const toQB = Math.atan2(qbSeen.y - a.pos.y, qbSeen.x - a.pos.x);
           if (Math.abs(angleDiff(facing, toQB)) < 1e-6 && req === command) return command;

@@ -42,8 +42,12 @@ export const stemStopped = (vx: number, accel: number, held: boolean): boolean =
   return held ? p < 3 : p < 1;
 };
 
+/** CARRY_COMMIT: the margin (yd of preview cushion) by which the original must clear before the override is left. */
+const DEEP_EXIT_MARGIN = 0.5;
 export class DeepCoverage {
   private readonly stem = new StemAcceleration();
+  /** CARRY_COMMIT: the override is in effect (entered below zero, left above DEEP_EXIT_MARGIN). */
+  private overriding = false;
   /** The receiver's upfield acceleration in this defender's picture (the last estimate choose made). */
   get seenAcceleration(): number { return this.stem.value; }
 
@@ -92,7 +96,13 @@ export class DeepCoverage {
       return Math.min(margin, end.pos.x - targetX(end.t) - base - recovery);
     };
     let choice = original, best = score(original);
-    if (best >= 0) return original;
+    // CARRY_COMMIT: the override is a mode kept as state. It is entered when the original's preview breaks the cushion
+    // and left only once the original's preview clears it by DEEP_EXIT_MARGIN: the preview starts from his live body,
+    // which the override itself has sped up, so a cut at zero both ways re-chose every tick.
+    if (process.env.CARRY_COMMIT !== '0') {
+      if (!this.overriding) { if (best >= 0) return original; this.overriding = true; }
+      else if (best >= DEEP_EXIT_MARGIN) { this.overriding = false; return original; }
+    } else if (best >= 0) return original;
     const endLineSpeed = Math.max(0, arriveVelocity(a.body,
       { x: END_LINE_X - a.profile.radius, y: a.pos.y }, a.profile.vmax).x);
     const request = (vx: number, facing?: number): MoveCommand => {
