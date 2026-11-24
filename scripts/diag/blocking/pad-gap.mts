@@ -9,14 +9,14 @@ import { simulateGame } from '../../../src/game/game.js';
 import { generateTeam } from '../../../src/league/team.js';
 import { PlaySim } from '../../../src/sim/playsim.js';
 import { compilingPlan } from '../../../src/playbook/read-compiler/runtime.js';
-import { padHeightAt, supportParams } from '../../../src/physics/support.js';
+import { baseRadiusAt, padHeightAt, supportParams } from '../../../src/physics/support.js';
 const arg = (n: string, d: string) => { const i = process.argv.indexOf(n); return i >= 0 && process.argv[i + 1] ? process.argv[i + 1] : d; };
 const seed = Number(arg('--seed', '101')), games = Number(arg('--games', '4')), first = Number(arg('--first', '0')), out = arg('--out', 'out/p0/pad-gap.json');
 mkdirSync(dirname(out), { recursive: true });
 const proto = PlaySim.prototype as unknown as { tick: () => void }; const tick0 = proto.tick;
 const AGES = [0.3, 0.6, 1.0, 1.5];
 const OLP = new Set(['OT', 'OG', 'C', 'T', 'G']);
-interface Row { kind: string; age: number; bPos: string; dPos: string; bPad: number; dPad: number; bPost: number; dPost: number; bReq: number | null; dReq: number | null; bLift: number; dLift: number; bKg: number; dKg: number; bStr: number; dStr: number; bBend: number; dBend: number }
+interface Row { kind: string; age: number; bPos: string; dPos: string; bPad: number; dPad: number; bPost: number; dPost: number; bReq: number | null; dReq: number | null; bLift: number; dLift: number; bKg: number; dKg: number; bStr: number; dStr: number; bBend: number; dBend: number; bLean: number; dLean: number; bOff: number; dOff: number; bUtil: number | null; dUtil: number | null; dir: number; bv: number; bReq: number | null; dv: number; dReq: number | null }
 const rows: Row[] = [];
 const state = new WeakMap<object, Map<string, { t0: number; done: Set<number> }>>();
 proto.tick = function (this: any) {
@@ -43,7 +43,12 @@ proto.tick = function (this: any) {
         const lf = (i: number, p: any) => (this.world.liftFelt?.[i] ?? 0) / (p.massKg * 10.73);
         rows.push({ kind: this.offCall.kind, age: a, bPos: blk.slot ?? '?', dPos: def.slot ?? '?', bPad: pb, dPad: pd, bPost: sb.posture, dPost: sd.posture,
           bReq: this.cmds?.[blk.idx]?.posture ?? null, dReq: this.cmds?.[def.idx]?.posture ?? null, bLift: lf(blk.idx, blk.profile), dLift: lf(def.idx, def.profile),
-          bKg: blk.profile.massKg, dKg: def.profile.massKg, bStr: blk.profile.power / blk.profile.massKg, dStr: def.profile.power / def.profile.massKg, bBend: blk.profile.bend ?? 0, dBend: def.profile.bend ?? 0 });
+          bKg: blk.profile.massKg, dKg: def.profile.massKg, bStr: blk.profile.power / blk.profile.massKg, dStr: def.profile.power / def.profile.massKg, bBend: blk.profile.bend ?? 0, dBend: def.profile.bend ?? 0,
+          bLean: Math.atan2(Math.hypot(sb.lean.x, sb.lean.y), blk.profile.massKg * 10.73) * 180 / Math.PI, dLean: Math.atan2(Math.hypot(sd.lean.x, sd.lean.y), def.profile.massKg * 10.73) * 180 / Math.PI,
+          bOff: Math.hypot(sb.xi.x, sb.xi.y) / baseRadiusAt(supportParams(blk.profile), sb.posture), dOff: Math.hypot(sd.xi.x, sd.xi.y) / baseRadiusAt(supportParams(def.profile), sd.posture),
+          dir: this.attackDir('O'), bv: blk.vel.x, bReq: this.intents?.[blk.idx]?.vel?.x ?? null, dv: def.vel.x, dReq: this.intents?.[def.idx]?.vel?.x ?? null,
+          bUtil: this.lastStep?.groundImpulse?.[blk.idx] && this.lastStep?.groundImpulseLimit?.[blk.idx] ? Math.hypot(this.lastStep.groundImpulse[blk.idx].x, this.lastStep.groundImpulse[blk.idx].y) / this.lastStep.groundImpulseLimit[blk.idx] : null,
+          dUtil: this.lastStep?.groundImpulse?.[def.idx] && this.lastStep?.groundImpulseLimit?.[def.idx] ? Math.hypot(this.lastStep.groundImpulse[def.idx].x, this.lastStep.groundImpulse[def.idx].y) / this.lastStep.groundImpulseLimit[def.idx] : null });
       }
     }
     for (const k of [...S.keys()]) if (!seen.has(k)) S.delete(k);
