@@ -114,13 +114,6 @@
    "class": "fixture"
   },
   {
-   "file": "test/pursuit-commit.test.ts",
-   "test": "PURSUIT_COMMIT: pursuers commit to their meeting and keep their approach through the catch on: none do, his request turns less, and the bearing to his planned meeting jumps no more often",
-   "owner": "Defense",
-   "flag": "RCV_KNOWS (merged into the #834 coverage landing)",
-   "class": "landing #834"
-  },
-  {
    "file": "test/qb-installed-box-count.test.ts",
    "test": "pre-snap numbers include installed fullback work once retains the nine-versus-six singleback overload control",
    "owner": "QB",
