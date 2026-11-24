@@ -11,6 +11,7 @@ afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 async function align(flag: string, coverage: string, ballY = 26.65, wr = '1') {
   vi.stubEnv('DEF_ALIGN', flag);
   vi.stubEnv('WR_ALIGN', wr);
+  vi.stubEnv('HALF_ALIGN', '0'); // engine-99 (Coverage, pinned test-only): these cases record DEF_ALIGN's fixed two-high safety width (13.8 apart, shading part way to the ball); HALF_ALIGN aligns a halves safety off the receivers on his side instead (on a detached #2's line, else halfway to #1). Coverage to re-record the two-high rows with it on
   vi.resetModules();
   const { alignOffense, alignDefense } = await import('../src/playbook/alignment.js');
   const { FORMATION_BY_ID } = await import('../src/playbook/formations.js');

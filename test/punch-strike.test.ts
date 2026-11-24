@@ -23,6 +23,7 @@ async function falls(flags: Record<string, string>, roster: number, coverage = '
   for (const [k, v] of Object.entries(stack)) if (v === 'on') vi.stubEnv(k, '1');
   for (const k of ['QB_KEY_READ', 'QB_EDGE_THREAT', 'QB_HEAD', 'QB_CALL_ROUTES', 'QB_FOOTWORK', 'CONCEPT_DROPS', 'CONCEPT_FIT', 'BACK_AS_THREE', 'PA_TABLES', 'QUICK_HITCH', 'VERTS_KEYS', 'CURL_SINK', 'SETTLE_DEPTH', 'CRAFT_HOLD', 'CRAFT_EXIT', 'ROUTE_LANDMARK', 'RELEASE_COMMIT', 'PA_HINGE', 'EDGE_SET', 'POCKET_DROP', 'POWER_AIM', 'END_KEY', 'LOOSE_OWN', 'ZONE_HOLD', 'OFF_PEDAL']) vi.stubEnv(k, '0'); // engine-73: scenes recorded before this group of the engine-73 landing; Flex to re-record with it on
   vi.stubEnv('SET_SPOT', '0'); // engine-72: fixture recorded with the tackle and guards setting off the live quarterback; Flex to re-record on the call's set spot
+  vi.stubEnv('HALF_ALIGN', '0'); // engine-99 (Coverage, pinned test-only): these cover2 pass-pro scenes were recorded with the halves safeties on the fixed two-high spot; HALF_ALIGN moves them onto #2's line, which re-draws the rush. Coverage to re-find the scenes with it on
   vi.stubEnv('VERTS_QUICK', '0'); // engine-67: these four_verts scenes were recorded on the five-step set; the quick drop is a different play
   for (const [k, v] of Object.entries(flags)) vi.stubEnv(k, v);
   vi.stubEnv('VERTS_QUICK', '0'); // engine-67: these four_verts scenes were recorded on the five-step set; the quick drop is a different play
@@ -81,6 +82,7 @@ describe('PUNCH_STRIKE', () => {
     for (const [k, v] of Object.entries(stack)) if (v === 'on') vi.stubEnv(k, '1');
     for (const k of ['QB_KEY_READ', 'QB_EDGE_THREAT', 'QB_HEAD', 'QB_CALL_ROUTES', 'QB_FOOTWORK', 'CONCEPT_DROPS', 'CONCEPT_FIT', 'BACK_AS_THREE', 'PA_TABLES', 'QUICK_HITCH', 'VERTS_KEYS', 'CURL_SINK', 'SETTLE_DEPTH', 'CRAFT_HOLD', 'CRAFT_EXIT', 'ROUTE_LANDMARK', 'RELEASE_COMMIT', 'PA_HINGE', 'EDGE_SET', 'POCKET_DROP', 'POWER_AIM', 'END_KEY', 'LOOSE_OWN', 'ZONE_HOLD', 'OFF_PEDAL']) vi.stubEnv(k, '0'); // engine-73: scenes recorded before this group of the engine-73 landing; Flex to re-record with it on
     vi.stubEnv('SET_SPOT', '0'); // engine-72: fixture recorded with the tackle and guards setting off the live quarterback; Flex to re-record on the call's set spot
+    vi.stubEnv('HALF_ALIGN', '0'); // engine-99 (Coverage, pinned test-only): these cover2 pass-pro scenes were recorded with the halves safeties on the fixed two-high spot; HALF_ALIGN moves them onto #2's line, which re-draws the rush. Coverage to re-find the scenes with it on
       vi.stubEnv('VERTS_QUICK', '0'); // engine-67: these four_verts scenes were recorded on the five-step set; the quick drop is a different play
     const { PlaySim } = await import('../src/sim/playsim.js');
     const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');
