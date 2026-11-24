@@ -1,0 +1,26 @@
+
+## package: team-games 24; targeted 44.2 per team-game; 20+ air attempts 1.50, completions 0.88 (comp 58.3%), int 0.0%
+  single-high POST   20+: n    3, per team-game 0.125, comp  66.7%, int  0.0%
+  single-high GO     20+: n   14, per team-game 0.583, comp  64.3%, int  0.0%
+  single-high CORNER 20+: n    4, per team-game 0.167, comp  25.0%, int  0.0%
+  single-high other  20+: n    1, per team-game 0.042, comp   0.0%, int  0.0%
+  two-high    POST   20+: n    2, per team-game 0.083, comp 100.0%, int  0.0%
+  two-high    GO     20+: n    9, per team-game 0.375, comp  77.8%, int  0.0%
+  two-high    CORNER 20+: n    2, per team-game 0.083, comp   0.0%, int  0.0%
+  look-off yes: 20+ n 28, comp  60.7%; deep safeties toward the target at the throw p50 +0.10 yd (n 41)
+  look-off no : 20+ n 8, comp  50.0%; deep safeties toward the target at the throw p50 -0.17 yd (n 13)
+  look-off yes, all 10+ air: n 130, comp  54.6%; deep safeties toward target p50 +0.58 yd
+  look-off no , all 10+ air: n 70, comp  64.3%; deep safeties toward target p50 +0.64 yd
+
+## package + DEPTH_FIRST: team-games 24; targeted 43.5 per team-game; 20+ air attempts 1.83, completions 0.83 (comp 45.5%), int 0.0%
+  single-high POST   20+: n    3, per team-game 0.125, comp  33.3%, int  0.0%
+  single-high GO     20+: n   17, per team-game 0.708, comp  52.9%, int  0.0%
+  single-high CORNER 20+: n    4, per team-game 0.167, comp  50.0%, int  0.0%
+  single-high other  20+: n    1, per team-game 0.042, comp 100.0%, int  0.0%
+  two-high    POST   20+: n    3, per team-game 0.125, comp  66.7%, int  0.0%
+  two-high    GO     20+: n   11, per team-game 0.458, comp  36.4%, int  0.0%
+  two-high    CORNER 20+: n    1, per team-game 0.042, comp   0.0%, int  0.0%
+  look-off yes: 20+ n 30, comp  43.3%; deep safeties toward the target at the throw p50 -0.55 yd (n 43)
+  look-off no : 20+ n 14, comp  50.0%; deep safeties toward the target at the throw p50 -1.25 yd (n 22)
+  look-off yes, all 10+ air: n 154, comp  53.2%; deep safeties toward target p50 +0.29 yd
+  look-off no , all 10+ air: n 71, comp  62.0%; deep safeties toward target p50 +0.65 yd

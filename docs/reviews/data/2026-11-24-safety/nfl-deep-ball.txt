@@ -1,0 +1,10 @@
+NFL: team-games 272; targeted 32.1 per team-game; 20+ air attempts 3.53, completions 1.24 per team-game (comp 35.2%)
+coverage labels: [('Cover-3', 2269), ('Cover-1', 1778), ('Cover-2', 1221), ('Quarters', 1145), ('Cover-3 Seam', 460), ('Cover-6 Right', 420), ('Cover 6-Left', 405), ('Cover-0', 321), ('Red Zone', 301), ('2-Man', 154), ('Bracket', 64), ('Cover-1 Double', 45), ('Prevent', 40), ('Cover-3 Cloud Right', 23)]
+  single-high POST   20+: n   55, per team-game 0.202, comp  36.4%, int  7.3%
+  single-high GO     20+: n  299, per team-game 1.099, comp  33.1%, int  2.7%
+  single-high CORNER 20+: n   70, per team-game 0.257, comp  31.4%, int  4.3%
+  single-high other  20+: n  124, per team-game 0.456, comp  39.5%, int  8.9%
+  two-high    POST   20+: n   86, per team-game 0.316, comp  36.0%, int 16.3%
+  two-high    GO     20+: n  161, per team-game 0.592, comp  37.3%, int  6.2%
+  two-high    CORNER 20+: n   48, per team-game 0.176, comp  37.5%, int  6.2%
+  two-high    other  20+: n   59, per team-game 0.217, comp  39.0%, int 10.2%

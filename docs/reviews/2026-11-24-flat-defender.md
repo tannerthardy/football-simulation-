@@ -80,3 +80,59 @@ Open-flat class (c) is not a width problem: 11 of its 13 cases are "too deep", a
 - The NFL drop rate on clean balls is 4.9% against our 7.0% (the `dropped_pass` tag).
 - The NFL edge against a wing is the same alignment as ours. What differs is the contact rate: 14% NFL against 52% ours, from how often our edge rushes.
 - The pre-snap movement study is in `docs/reviews/data/2026-11-23-presnap/`.
+
+## The deep safety's read: `DEPTH_FIRST` (off; Flex, 2026-11-24)
+
+The patch is `docs/reviews/patches/flat-package-threat-sink-depth-first-ramp-c14-squat-sink-b346e56f.diff`, on coverage/C14-squat-sink. Off is bit-identical: seed 999 gives 6ae1f980d7662a6a with FLIGHT_BREAK=1 SQUAT_SINK=1. Coverage asked for a taught-order cue, an eye lean from the seen and held picture, and no step function.
+
+**What I built: depth first, then width, with the eye lean ramped in.** It applies to the deep read before any vertical has shown, for any defender aligned 9 yd or deeper.
+- **Before the cue**, his lateral target is his snap spot, so he only gains depth.
+- **The cue** is either of two things. One is his seen QB eyes held on one target for his read time, 0.2 + 0.4·(1 − playRecognition·focus) s; the timer restarts whenever the seen target changes. The other is a receiver he sees climbing past 5 yd at over 3 yd/s.
+- **After the cue**, a one-way latch ramps his lateral target from his snap spot to the existing read target (landmark plus eye lean) over the same read time. The lean grows with time in the read and never appears on the first tick.
+
+Depth (SAFETY_DEPTH), the vertical / key / ownership paths, DEEP_GATE and the run fit are not touched.
+
+**First move and path on dropbacks, 8 games, package on in both arms** (`ours-first-move-872-*-ramp.txt`, `nfl-by-seat.txt`). Depth and width are changes at 0.5 / 1.0 / 1.5 / 2.0 s; width + = out.
+
+| seat | arm | lateral first | depth change | width change |
+|---|---|---|---|---|
+| deep middle | NFL | 23% | +0.4 / +1.1 / +2.3 / +3.9 | -0.1 / -0.4 / -0.9 / -1.4 |
+| | package | 86% | +0.1 / +0.5 / +1.5 / +3.1 | -0.4 / -1.8 / -2.9 / -3.8 |
+| | + DEPTH_FIRST | 25% | +0.3 / +0.9 / +1.6 / +3.0 | +0.0 / +0.0 / -0.6 / -1.6 |
+| deep half | NFL | 24% | +0.4 / +1.3 / +2.6 / +4.2 | +0.1 / +0.5 / +1.1 / +1.8 |
+| | package | 82% | +0.1 / +0.7 / +2.0 / +3.5 | +0.3 / +1.4 / +2.7 / +3.2 |
+| | + DEPTH_FIRST | 61% | +0.1 / +0.7 / +1.8 / +3.4 | +0.0 / +0.3 / +1.3 / +2.5 |
+| quarter | NFL | 30% | +0.2 / +0.5 / +1.3 / +2.3 | +0.0 / +0.1 / +0.1 / +0.2 |
+| | package | 55% | +0.2 / +0.7 / +1.5 / +2.8 | +0.1 / +0.2 / +0.2 / +0.6 |
+| | + DEPTH_FIRST | 27% | +0.3 / +0.8 / +1.4 / +2.9 | +0.0 / +0.0 / +0.2 / +0.3 |
+
+- **The deep half's remainder** is mostly `deep-open-carry`: its vertical filter (vx > 1.5) counts every release as a vertical. That threshold is Coverage's (ZONE_HOLD_BAND), so I left it.
+- **Depth gain** after 1.0 s is still about 0.8 yd short of the NFL in every arm. That is the drop speed, not the read.
+- **Runs:** the deep middle's lateral-first share fell 75% → 30%. This is the time before he reads run, which is his read phase. The run fit itself is unchanged.
+
+**Deep balls, 12 games** (`ours-deep-ball-872.txt`, `nfl-deep-ball.txt`; 20+ yd air, per team-game). BDB has no seam label, so seams count as GO.
+
+| | NFL | package | + DEPTH_FIRST |
+|---|---|---|---|
+| 20+ attempts | 3.53 | 1.50 | 1.83 |
+| 20+ completions | 1.24 | 0.88 | 0.83 |
+| 20+ completion % | 35% | 58% | 45% |
+
+The cells by shell and route hold 1-17 throws each, too few to read. We throw deep half as often as the NFL; that is the passer's, not the safety's.
+
+**Look-off.** The deep safeties' lateral move toward the eventual target at the throw, 10+ yd air, comparing throws after the eyes were held 0.3 s+ on another receiver with throws where they were not:
+
+| arm | eyes held elsewhere | not held elsewhere |
+|---|---|---|
+| package | +0.58 | +0.64 |
+| + DEPTH_FIRST | +0.29 | +0.65 |
+
+So the eyes he holds now move him. The operator is crude: it flags 70% of throws, because it catches progression reading, not only true look-offs.
+
+**Dither:** `test/dither-budget.test.ts` passes with all eight flags on.
+
+**Alignment inputs (nothing changed):**
+- **Width.** NFL 3M (deep middle) in a one-high shell at the snap stands 3.2 yd from the ball; ours stands 3.2. The 4.8 came from pooling with two-high-at-snap rotations (5.7 yd).
+- **Depth.** NFL 14.4 against our 13.6 over the 8 games. Our snap spot equals the alignment exactly, which is 14.5 + the team's safetyDepth habit (sd 0.95) + situationDepth (mean -0.3 here) + the player's ALIGN_HABIT and per-snap scatter (sd 0.4 / 0.6). Some calls also set a depth (match, robber). Its expected value is about 14.2; the 8-game median is the sample of a few teams' and players' draws.
+
+**Run read:** a deep safety reads run through the same Recognition as everyone else (S keys: tackle 0.8, #2 0.7, QB 0.6). It is not gated: DEEP_GATE holds only his break on the arm before he sees the ball out, and zonePlay sends a run read to runFit before the deep branch.
