@@ -174,6 +174,13 @@ const ZONE_HOLD_LEAN_ROPE = 1.0 * ZONE_HOLD_SCALE;
  * the direction he was moving); the limit shrinks with his speed and is gone when he has stopped along it. Taught:
  * when the seam clears, settle and find the next threat; don't sprint back to a spot. */
 export const ZONE_HOLD_HANDOFF = (ZONE_HOLD_BITS & 64) !== 0;
+/** LANE_LEVERAGE (experimental, off; Coverage C14 2026-11-24, Integration's item 3, the 0.82 lane spot): an underneath
+ * zone defender reading a receiver in his zone (zonePlay's lane) plays under the route with his seat's leverage,
+ * LANE_SHADE yd outside the receiver for curl-flat and flat seats and inside him for hooks and the middle, at the old
+ * lane depth; off, lerp(QB, receiver, 0.82) put a curl-flat 3 yd inside the receiver he read and 4.5 yd inside his
+ * landmark (Flex's width trace, 2026-11-24; NFL curl-flat 11.5 yd from the ball at 3.0 s, ours 8.0-8.6). */
+const LANE_LEVERAGE = process.env.LANE_LEVERAGE === '1';
+const LANE_SHADE = 0.8;
 const CARRY_LABEL = /^(open-carry-seam|carry-wall|carry-run-past)$/;
 const eyesHeld = new WeakMap<Agent, Agent>();
 const eyesCache = new WeakMap<Agent, { t: number; r: Agent | null }>();
@@ -2469,6 +2476,13 @@ export class ZoneCoverage implements Behavior {
     }
     const lane = lerp(qbAt, best.pos, 0.82);
     let tgt = { x: Math.min(lane.x, best.pos.x - 0.5), y: lane.y };
+    if (LANE_LEVERAGE) {
+      // LANE_LEVERAGE: under the route with his seat's leverage on the receiver as he sees him (curl-flat and flat seats
+      // outside-in, hooks inside-out), not on the QB-to-receiver line, which runs inside the receiver whenever the QB
+      // is inside him. Depth as before.
+      const outward = Math.sign(best.pos.y - sim.ballY) || 1;
+      tgt = { x: tgt.x, y: best.pos.y + (seatOutsideIn(a) ? outward : -outward) * LANE_SHADE };
+    }
     const off = sub(tgt, lm);
     const l = Math.hypot(off.x, off.y);
     if (l > this.radius) tgt = { x: lm.x + (off.x / l) * this.radius, y: lm.y + (off.y / l) * this.radius };
