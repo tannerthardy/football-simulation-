@@ -141,6 +141,7 @@
     "GATHER_ATTACK": "off",
     "HOLD_AIM": "off",
     "FREE_ARM_2D": "off",
+    "FREE_ARM_SHARE": "off",
     "CARRY_POSTURE": "on",
     "CORNER_DROP": "on",
     "CARRY_TURN": "on",
