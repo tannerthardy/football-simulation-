@@ -121,12 +121,12 @@ export class V2Drive {
    * his route's break point than his windup plus his anticipation lead covers at the speed he sees him run (plus half a
    * yard): the release then leads the break by at most the lead. Once due it
    * stays due for that receiver (he has reached the top of the stem; a later look does not take it back). */
-  private reachedBreak = new Set<string>();
+  private reachedBreak = new Map<string, number>();
   private notAtBreak(h: V2Host, r: Agent, ref: string, lead: number): boolean {
     if (this.reachedBreak.has(ref)) return false;
     const bp = h.breakPoint?.(r); if (!bp) return false;
     const e = h.estimate(r), sp = Math.hypot(e.vel.x, e.vel.y);
-    if (Math.hypot(e.pos.x - bp.x, e.pos.y - bp.y) <= lead * Math.max(sp, 1) + 0.5) { this.reachedBreak.add(ref); return false; }
+    if (Math.hypot(e.pos.x - bp.x, e.pos.y - bp.y) <= lead * Math.max(sp, 1) + 0.5) { this.reachedBreak.set(ref, h.sim.t); return false; }
     return true;
   }
 
@@ -157,7 +157,12 @@ export class V2Drive {
     if (t.kind === 'receiver') { const r = this.receiver(h, t.ref as ReceiverRef); return r ? h.predict(r, 0) ?? h.estimate(r).pos : null; }
     const [side, role] = t.role.split(':') as ['S' | 'W', string];
     const m = this.roles.resolve(this.picture(h), role, side);
-    return m ? { x: m.x, y: m.y } : null;
+    if (m) return { x: m.x, y: m.y };
+    // No man in that role in his picture: his eyes go to the read's first throw rather than to nothing (Integration's
+    // ruling, 2026-11-24); the plan's 'none' cue, where Rules authors one, answers the read.
+    const rd = this.cycle.plan.reads.find((x) => x.look.kind === 'key' && x.look.role === role && (x.look.side ?? 'S') === side);
+    const r0 = rd?.throws[0] ? this.receiver(h, rd.throws[0].ref) : null;
+    return r0 ? this.seenAt(h, r0) : null;
   }
 
   /** The key's cue: what the man in that role is doing in his picture, kept until another clears its entry. */
@@ -243,7 +248,10 @@ export class V2Drive {
     // A timing throw is not started before its time: the release (now + windup) may lead his forecast of the break by at
     // most his anticipation lead. Judged all the same (the trace shows it), marked early.
     const early = h.lead !== undefined && o.timing === 'onBreak' && this.notAtBreak(h, r, o.ref, q.windup + h.lead);
-    const judged: Judged = { option: o, P: j.P, risk: j.risk, reachesSticks: mech.point.x >= sim.firstDownX, early };
+    // His window has been seen once the receiver reached the top of his stem a windup ago (Integration's ruling: a window
+    // cannot be refused before it can exist). Only with the timing rule on.
+    const at = this.reachedBreak.get(o.ref), seenBreak = h.lead !== undefined && o.timing === 'onBreak' ? at !== undefined && sim.t - at >= q.windup : undefined;
+    const judged: Judged = { option: o, P: j.P, risk: j.risk, reachesSticks: mech.point.x >= sim.firstDownX, early, seenBreak };
     this.lastJudged.set(o.ref, judged);
     this.lastRoles.set(o.ref, j.roles);
     return judged;

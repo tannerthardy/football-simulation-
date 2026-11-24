@@ -27,6 +27,6 @@ for (let seed = 1; seed <= 10; seed++) {
 }
 function v2key(sim: any): string {
   const b = sim.qb.behavior, v2 = b?.v2, h = b?.v2h; if (!v2 || !h) return '';
-  const m = v2.roles.resolve(v2.picture(h), 'flat', 'S'); if (!m) return 'flat:none';
+  const side = (process.env.KEY_SIDE ?? 'S') as 'S' | 'W', m = v2.roles.resolve(v2.picture(h), 'flat', side); if (!m) return `flat(${side}):none`;
   const d = sim.agents[m.id]; return `flat=${d?.slot} @(${Math.round((m.x - sim.los) * 10) / 10},${Math.round(m.y * 10) / 10}) v(${Math.round(m.vx * 10) / 10},${Math.round(m.vy * 10) / 10})`;
 }

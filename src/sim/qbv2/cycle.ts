@@ -11,7 +11,7 @@ export type CycleState = 'presnap' | 'drop' | 'read' | 'throw' | 'structureOut' 
 export type PressureState = 'clean' | 'felt' | 'imminent' | 'contact';
 
 /** What D returns for a candidate throw (the judgment), or null when he cannot judge it (not in his picture). */
-export interface Judged { option: ThrowOption; P: number; risk: number; reachesSticks: boolean; /** Before its time (an on-break throw whose release would lead the break by more than his anticipation): not thrown yet. */ early?: boolean }
+export interface Judged { option: ThrowOption; P: number; risk: number; reachesSticks: boolean; /** Before its time (an on-break throw whose release would lead the break by more than his anticipation): not thrown yet. */ early?: boolean; /** Its window has been seen (the receiver at his break a windup ago); undefined without the timing rule. */ seenBreak?: boolean }
 
 /** His senses as the cycle needs them (all from his own picture, felt rush and the judgment). */
 export interface CycleSenses {
@@ -149,7 +149,8 @@ export class Cycle {
     const notDue = timed.some(early);
     // No hitch to keep the rhythm (bit 2): a read resolved and answered no, with the throw he times due, lets the eyes go
     // on without waiting for a step his feet do not take.
-    const answeredNo = s.readFrom !== undefined && res >= s.need && !notDue;
+    // (c) and a timed throw is refused only once its window has been seen (at or after his break, a windup on).
+    const answeredNo = s.readFrom !== undefined && res >= s.need && !notDue && timed.every((o) => s.judge(o)?.seenBreak !== false);
     if (s.now >= next || answeredNo) {
       this.looks.markDue(t, s.now);
       // Resolved and answered no: the eyes move. Unresolved: hold while the look is resolving (the stare-down), bounded
