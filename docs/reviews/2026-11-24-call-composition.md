@@ -217,16 +217,21 @@ After the backside comes the checkdown, the back's route when he is released.
 **Compiled result.**
 - **Reads:** the front half's reads, then the backside's, each with its step.
 - **Hot:** the union of the two halves' hot rules. Each half authors its own side's hot.
-- **Checkdown:** the back.
+- **Checkdown:** the back, from step max(authored, cross).
 - **Flip:** for `pick`, the compiler emits both orders, strong-first and weak-first. The pre-snap pick selects one. So
   `PreSnapState.flip` is not used to swap two different halves; it still mirrors a half authored on the strong side.
 
 The cycle and `QbReadPlan` do not change. Only the compiler that produces the plan is new.
 
-**Questions for the QB lane:**
-- Is emitting two plans and picking one before the snap acceptable? The alternative is a `sides` field inside
-  `QbReadPlan`.
-- Is the reset/progression table right for your clock?
+**The QB lane's answers (2026-11-24):**
+- **Two compiled plans plus a pick.** The cycle runs one QbReadPlan. A `sides` field would put the combination logic in
+  the cycle. The pre-snap decision (Flex's module B) hands the cycle the chosen plan.
+- **The reset/progression table fits the footwork clock.** On a catch or quick drop, the crossing step is one hitch
+  (about a stride, 0.35-0.45 s) after the front half's last read, which is right for a reset.
+- **The checkdown waits for the backside.** The compiler sets the checkdown's `fromStep` to max(authored, cross), so he
+  cannot check down before the backside is read.
+- **Kill/can is pre-snap.** It belongs in Flex's module B, beside the pick and the alert, on the same scan. The cycle
+  receives the resulting plan.
 
 **Question for Flex:** do formation ids carry enough to place `HalfConcept` numbers and the back as #3 (`backAs`)?
 
@@ -317,7 +322,8 @@ Nothing is deleted. Each concept becomes a composition:
 
 **Ownership** (to agree):
 - Rules + Coaching: the half and full concept tables, tags, the call-sheet weights, and the golden test.
-- QB lane: the plan compiler (§4) and the kill at the line.
+- QB lane: the plan compiler (§4).
+- Flex: the pre-snap decision (module B): the pick, the alert, and the kill at the line.
 - Flex: formations, motion and legality.
 - The protection count stays with PRO_CALL's owner.
 
@@ -374,7 +380,7 @@ outcomes are judged as usual, not by matching them.
    - halves × halves plus full-field concepts;
    - the back as his own axis;
    - variants as tags or axis settings, not new concepts.
-2. **The QB lane:** two compiled plans with the pick, or a `sides` field? And is the reset/progression table right?
+2. **The QB lane:** answered in §4. Two compiled plans plus a pick, and the table as written.
 3. **Flex:** formation fields for half placement.
 4. **Then, in order:** build the tables and compiler behind `CALL_COMPOSE` (off), re-cut #896 as above, and go on to
    the RPO note (b).
