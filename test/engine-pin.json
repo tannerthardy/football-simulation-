@@ -473,6 +473,7 @@
   "test/release-redecide-technique.test.ts",
   "test/release-seen.test.ts",
   "test/release-through.test.ts",
+  "test/release-zone.test.ts",
   "test/rep-seen.test.ts",
   "test/replay-export.test.ts",
   "test/replay-recording-precision.test.ts",

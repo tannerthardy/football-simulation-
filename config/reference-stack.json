@@ -209,6 +209,7 @@
     "LEGS_HELD": "on",
     "PICTURE_AGE": "off",
     "PERIPH_ACUITY": "on",
+    "RELEASE_ZONE": "off",
     "CALL_COMPOSE": "off",
     "FLIGHT_BREAK": "on",
     "FLIGHT_LEAD": "off",
