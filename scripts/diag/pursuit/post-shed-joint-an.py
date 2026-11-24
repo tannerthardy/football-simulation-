@@ -1,7 +1,10 @@
 """Summary of post-shed-joint-tap.mts files: python3 -I post-shed-joint-an.py GLOB"""
 import json, glob, sys, collections
 GRP = {'DE': 'DL', 'DT': 'DL', 'NT': 'DL', 'EDGE': 'DL', 'OLB': 'LB', 'ILB': 'LB', 'MLB': 'LB', 'LB': 'LB'}
-R = [r for f in sorted(glob.glob(sys.argv[1])) for r in json.load(open(f))['rows']]
+D = [json.load(open(f)) for f in sorted(glob.glob(sys.argv[1]))]
+R = [r for d in D for r in d['rows']]
+G = sum(d['games'] for d in D); H = sum(d.get('fouls', {}).get('holding', 0) for d in D); FG = sum(d.get('fouls', {}).get('frameGrabs', 0) for d in D)
+print(f"games {G}: offensive holding events {H} = {H / max(1, 2 * G):.2f} per team-game | frame grabs chosen (BLOCK_FRAME) {FG}")
 def pct(n, d): return f"{100*n/max(1,d):.0f}%"
 for typ in ('run', 'pass'):
     for g in ('DL', 'LB'):

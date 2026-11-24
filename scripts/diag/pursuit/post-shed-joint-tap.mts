@@ -19,7 +19,7 @@ const GAMES = Number(process.argv[2] ?? 2), OUT = process.argv[3], FIRST = Numbe
 const r2 = (v: number) => Math.round(v * 100) / 100;
 const deg = (a: number) => Math.round(Math.abs(Math.atan2(Math.sin(a), Math.cos(a))) * 180 / Math.PI);
 const zone = (d: number) => d < 45 ? 'front' : d <= 135 ? 'side' : 'behind';
-const rows: any[] = []; const st = new WeakMap<any, any>();
+const rows: any[] = []; const fouls = { holding: 0, plays: 0, frameGrabs: 0 }; const st = new WeakMap<any, any>();
 const proto = PlaySim.prototype as any, tick = proto.tick, run = proto.run;
 const handsOn = (sim: any, d: any) => sim.world.joints.filter((j: any) => j.kind === 'hands' && !j.off && (j.a === d.body || j.b === d.body))
   .map((j: any) => ({ j, o: sim.agents.find((x: any) => x.body === (j.a === d.body ? j.b : j.a)) })).filter((x: any) => x.o && x.o.team !== d.team);
@@ -63,16 +63,17 @@ proto.tick = function (this: any) {
   for (; s.seen < sim.events.length; s.seen++) {
     const e = sim.events[s.seen];
     if (e.type !== 'holding') continue;
+    fouls.holding++;
     for (const x of s.track) if (x.first && ((sim.agents[e.a] === x.d && x.first.oid === sim.agents[e.b]?.idx) || (sim.agents[e.b] === x.d && x.first.oid === sim.agents[e.a]?.idx))) x.foul = true;
   }
   return out;
 };
 proto.run = function (this: any) {
   const r = run.call(this); const s = st.get(this);
-  if (s) for (const x of s.track) { const { d, b, ...rest } = x; rows.push({ ...rest, foul: !!x.foul }); }
+  if (s) { fouls.plays++; fouls.frameGrabs += this.offense.filter((o: any) => o.tags?.has?.('frame-grab')).length; for (const x of s.track) { const { d, b, ...rest } = x; rows.push({ ...rest, foul: !!x.foul }); } }
   return r;
 };
 const rng = new Rng(FIRST);
 const home = generateTeam(rng, 'Ironmen', 'IRN', { strength: 0.55 }), away = generateTeam(rng, 'Comets', 'COM', { strength: 0.55 });
 for (let g = 0; g < GAMES; g++) { simulateGame(home, away, { seed: FIRST + g }); console.error(`game ${g + 1}/${GAMES}: ${rows.length} ends`); }
-writeFileSync(OUT, JSON.stringify({ games: GAMES, firstSeed: FIRST, rows })); console.log('ends', rows.length);
+writeFileSync(OUT, JSON.stringify({ games: GAMES, firstSeed: FIRST, rows, fouls })); console.log('ends', rows.length);
