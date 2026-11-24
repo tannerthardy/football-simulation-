@@ -13,10 +13,21 @@
 import type { Vec2 } from '../core/vec.js';
 import type { Agent } from './agent.js';
 import type { PlaySim } from './playsim.js';
-import { shouldersOf } from '../physics/kinematics.js';
+import { shouldersOf, TRUNK_RANGE } from '../physics/kinematics.js';
 import { ZONE_EYES, zoneEyesFor, zoneEyesTarget } from './zone-eyes.js';
 
 export const HEAD = process.env.HEAD === '1';
+/** HEAD_FOLLOW (default on since engine-93; HEAD_FOLLOW=0 restores; Coverage C14, 2026-11-24, an information leak under
+ * the user's standing rule): with HEAD off, stepHeads turned only zone-eyed defenders' heads and skipped the passer, so a
+ * player whose head nobody drove kept the head he last had while his body turned under it: a match defender converted
+ * to man, a zone defender handed to pursuit or a return, the passer once he blocks or pursues after the throw.
+ * Perception reads that recorded head (release-evidence's sawAt, the ball estimator), so he saw the passer or the ball
+ * through a head up to 180 deg off his body (scripts/diag/coverage/head-audit.mts, one game: man defenders 815 of
+ * 15,451 ticks past 145 deg; the neck allows 45-90 off the body, 145 with the trunk's twist for zone eyes). On, a head
+ * nobody turns relaxes to his body facing at the head rate within the neck range (this file's stated model), and the
+ * passer's head, while a passer's controller runs him, is held within the neck plus the trunk's twist of his body. A man defender's look
+ * (his man's hip, then back for the ball) is a later technique; here his head simply follows his body. */
+export const HEAD_FOLLOW = process.env.HEAD_FOLLOW !== '0';
 /** Head turn rate (rad/s) and the view cone about the head: GAZE's. */
 export const HEAD_RATE = 6;
 export const HEAD_CONE = Math.PI / 2;
@@ -64,21 +75,45 @@ export function wantAt(a: Agent, t: number): { reason: string; since: number } |
 
 /** The turn (rad, relative to body facing) toward a target `rel` off his body, given where his head already points
  * (`headRel`): the short way, except for a target behind him, which goes over the shoulder already turned to. */
-export function sideOf(rel: number, headRel: number): number {
-  if (Math.abs(rel) <= BEHIND || Math.abs(headRel) < 0.2) return rel;
-  const side = Math.sign(headRel);
+export function sideOf(rel: number, headRel: number, who?: object): number {
+  // LOOK_SIDE_HOLD: a target near dead behind him is reached over one shoulder, chosen once and held. Without the hold, a
+  // target within 0.2 rad of straight behind (`headRel` near 0) took the raw sign of `rel`, which flips at +-pi, so the
+  // look, and the turn priced off its side (lookJoints), swung to the other shoulder between ticks. The side is kept per
+  // man until the target is well forward again (EXIT) and a head clearly turned the other way (over HEAD_PICK) still decides.
+  if (Math.abs(rel) <= BEHIND) { if (who && Math.abs(rel) < BEHIND_EXIT) lastSide.delete(who); return rel; }
+  const prev = who ? lastSide.get(who) : undefined;
+  const side = Math.abs(headRel) >= 0.2 ? Math.sign(headRel) : (prev ?? (Math.sign(rel) || 1));
+  if (who) lastSide.set(who, side);
   return Math.sign(rel) === side ? rel : side * (2 * Math.PI - Math.abs(rel));
 }
+const BEHIND_EXIT = (130 * Math.PI) / 180;
+const lastSide = new WeakMap<object, number>();
 
 /** Turn every head for this tick (before the perception record). */
 export function stepHeads(sim: PlaySim): void {
   if (!HEAD && !ZONE_EYES) return;
   const step = HEAD_RATE * sim.dt;
   for (const a of sim.agents) {
-    if (a === sim.qb) continue;
+    if (a === sim.qb) {
+      // HEAD_FOLLOW: the passer's head is his controller's while it drives it; once it does not (after the throw he
+      // blocks, pursues or carries), it relaxes to his body like anyone's. Either way it is never further off his body
+      // than the neck and the trunk's twist allow (a body that turns inside a tick does not leave his eyes behind him).
+      if (HEAD_FOLLOW && a.head !== null && a.head !== undefined) {
+        // Driven while a passer's controller runs him (any qb-* behaviour, the mesh, the PA fake: they set his head each
+        // tick); once he blocks, pursues, carries or chases a loose ball, nothing does.
+        const k = (a.behavior as { kind?: string } | undefined)?.kind ?? '';
+        const driven = k.startsWith('qb') || k === 'mesh' || k === 'pa-fake';
+        a.head = driven ? bodyBound(a, a.head) : turnHead(a, a.head, a.body.facing, step, a.body.facing);
+      }
+      continue;
+    }
     // ZONE_EYES: a zone defender's head turns with HEAD off too, on his shoulders (the neck sits on the trunk).
     const zone = zoneEyesFor(a);
-    if (!HEAD && !zone) continue;
+    if (!HEAD && !zone) {
+      // HEAD_FOLLOW: an undriven head relaxes to his body facing, within the neck range (never frozen while he turns).
+      if (HEAD_FOLLOW && a.head !== null && a.head !== undefined) a.head = turnHead(a, a.head, a.body.facing, step, a.body.facing);
+      continue;
+    }
     const facing = a.body.facing;
     let head = a.head ?? facing;
     const w = wants.get(a);
@@ -96,12 +131,19 @@ export function stepHeads(sim: PlaySim): void {
   }
 }
 
+/** HEAD_FOLLOW: a head no further off his body facing than the neck's range plus the trunk's twist (the furthest any look
+ * reaches: zone eyes turn the neck off the shoulders). */
+function bodyBound(a: Agent, head: number): number {
+  const lim = neckRange(a) + TRUNK_RANGE, off = angDiff(head, a.body.facing);
+  return a.body.facing + Math.max(-lim, Math.min(lim, off));
+}
+
 /** The one head turn: from `head` toward the bearing `toward` (rad, field frame) by at most `step` rad, within the
  * neck's range off `base` (his body facing; ZONE_EYES: his shoulders), over the shoulder for a target behind him.
  * stepHeads turns every head with it; the QB lane turns the passer's with it (QB_HEAD). */
 export function turnHead(a: Agent, head: number, toward: number, step: number, base = a.body.facing): number {
   const facing = base, neck = neckRange(a);
-  const lim = facing + Math.max(-neck, Math.min(neck, sideOf(angDiff(toward, facing), angDiff(head, facing))));
+  const lim = facing + Math.max(-neck, Math.min(neck, sideOf(angDiff(toward, facing), angDiff(head, facing), a)));
   head = head + Math.max(-step, Math.min(step, angDiff(lim, head)));
   return facing + Math.max(-neck, Math.min(neck, angDiff(head, facing)));
 }
