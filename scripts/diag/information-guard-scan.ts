@@ -72,9 +72,10 @@ export const PHYSICS: Record<string, string> = {
  * not reported. Referee and contact-resolution files may read capacities (resolving a contact is their job).
  */
 export const CAPACITY = new Set(['vmax', 'tau', 'brake', 'lateral', 'power', 'press', 'turnRate', 'backpedal', 'shuffle', 'balance', 'bend',
-  'stepSpeed', 'getUp', 'reactionTime']);
-/** A man's build as seen (size, height, arm length): visible, not a hidden capacity. */
-export const VISIBLE_BUILD = new Set(['massKg', 'heightYd', 'radius', 'reach', 'maxCatchHeight', 'reactReach']);
+  'stepSpeed', 'getUp', 'reactionTime', 'maxCatchHeight', 'reactReach']);
+/** A man's build as seen (size, height, arm length): visible, not a hidden capacity. His catch heights are not: they carry his
+ * vertical jump (height x 1.33 + vertical; the outside audit, 2026-11-24, row 3). */
+export const VISIBLE_BUILD = new Set(['massKg', 'heightYd', 'radius', 'reach']);
 export const INTENT = new Set(['behavior', 'passSet', 'runFit', 'recog', 'mind', 'eyes', 'keyStep', 'readAt', 'snapReadyAt', 'shedBy']);
 
 /** The files that own a published field: its own record may read it (the passer's windup and eyes are qb.ts's). */
