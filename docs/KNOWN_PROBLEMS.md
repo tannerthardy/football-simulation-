@@ -311,6 +311,9 @@ problem), resolved.
 | [TKL-5](#tkl-5) | "Reach" means different things in each tackle branch | G1, G10 | high | in work (#264 needs rework) |
 | [TKL-6](#tkl-6) | An engaged tackler's miss is a flat bonus, not his reach, balance or the blocker's hold | G1 | medium | open |
 | [TKL-8](#tkl-8) | The tackling rating slows a defender's approach | P1 | low | open |
+| [TKL-10](#tkl-10) | Two pursuers of one carrier aim at the same spot | D1 | medium | flag (`TRAIL_LEVERAGE`, #892) |
+| [TKL-11](#tkl-11) | A defender off a shed block barely accelerates | D2 | high | in work (Defense) |
+| [TKL-12](#tkl-12) | The tackle's reach, miss cost, aim and finish | D3 | high | in work (`run/tackle-repair`, not landed) |
 | [PRO-OPTRUST](#pro-optrust) | Inferred come-off counts are a lower-bound sample (24% of charted pressures) | G5 | medium | open |
 | [PRO-INFO](#pro-info) | Information leaks and rating-awarded outcomes in protection and the rush | G5 | high | in work |
 | [PRO-1](#pro-1) | Edge rushers meet the tackle at the line and walk through him | G5 | high | in work (G5, #215) |
@@ -318,7 +321,7 @@ problem), resolved.
 | [PRO-3](#pro-3) | Interior pairs move as one block | G5 | medium | open |
 | [PRO-4](#pro-4) | The QB doesn't slide away from an edge | G5 | medium | open |
 | [PRO-5](#pro-5) | No pass protection calls | G9 | high | open (rusher read from sight: `PRO_READ`, on) |
-| [COV-1](#cov-1) | Zone defenders barely close while the ball is in the air | G3 | high | paused (#324 diagnosis) |
+| [COV-1](#cov-1) | Zone defenders barely close while the ball is in the air | G3 | high | on: `FLIGHT_BREAK` (#882, engine-94), on `HEAD_FOLLOW` (#885, engine-93) |
 | [COV-2](#cov-2) | Too much yardage per attempt and after the catch | G3 | high | open |
 | [COV-3](#cov-3) | Coverage rules and calls not yet complete | G3 | medium | in work (#193) |
 | [COV-4](#cov-4) | Defenders react late to jet motion | G3 | low | on |
@@ -332,11 +335,14 @@ problem), resolved.
 | [COV-11](#cov-11) | Quarters apex with a flat back: level with No. 2 rather than outside him; the seam is roomier | C14 | medium | flag (`APEX_LEVERAGE`, #702) |
 | [COV-12](#cov-12) | Underneath zone defenders switch technique 1.6 times a second and barely drift with the routes | C14 | medium | open (ZONE_LADDER recorded, not landed) |
 | [COV-13](#cov-13) | A man defender meets bodies that are not his man (traffic) without passing over or under them | C14 | low | open (`MAN_TRAFFIC` parked off, two attempts) |
+| [COV-14](#cov-14) | Cover 2 / Cover 6 give up either the deep outside throw or the flat | V1 | high | in work (Coverage, Flex) |
+| [COV-15](#cov-15) | Coverage defenders re-aim three to eight times as often as NFL players | V2 | medium | flag (`SPOT_LEAN`, #889); deep carry open |
 | [BALL-1](#ball-1) | Too many interceptions | G4 | high | flag (partial) |
 | [BALL-2](#ball-2) | Throws always leave from standing height | — | low | open |
 | [QB-1](#qb-1) | Throws come out early and deep | G3, G7 | medium | open |
 | [QB-2](#qb-2) | Scramble frequency and escape-lane criteria | G5, G7 | low | open |
 | [QB-3](#qb-3) | Scrambling QBs fall with nobody near them (film, Oct 23) | G1, G5 | medium | open |
+| [QB-4](#qb-4) | The quarterback's decision: late on stops and outs, almost no early rhythm throws, a judgment calibrated to old engines | Q1 | high | in work: rebuild as `QB_V2` ([plan](reviews/2026-11-24-qb-decision-plan.md)) |
 | [KICK-1](#kick-1) | Kicking too accurate, too many punts | — | low | open |
 | [ALN-1](#aln-1) | Defensive pre-snap picture unlike tracking | G2, G3 | medium | on |
 | [ALN-2](#aln-2) | Offensive formations over-compress the box | G2, G7 | medium | open |
@@ -348,7 +354,7 @@ problem), resolved.
 | [CALL-2](#call-2) | Defensive calls read raw ratings that aren't on one scale | G7 | medium | on |
 | [CALL-3](#call-3) | Pressure rate ignored the coverage shell | G7 | low | on |
 | [CALL-4](#call-4) | The play-caller reads the roster, not the players on the field | G7 | low–medium | open |
-| [INFO-1](#info-1) | Players use information they couldn't have seen | G10 | high | in work (#258, #274, #280, #282 landed; jet-sweep give cue open) |
+| [INFO-1](#info-1) | Players use information they couldn't have seen | G10 | high | in work (#258, #274, #280, #282 landed; jet-sweep give cue open; 2026-11-24: `PERIPH_ACUITY` #875 and `HEAD_FOLLOW` #885 landed, the passer's remaining true-state reads are listed in the [QB plan](reviews/2026-11-24-qb-decision-plan.md) §1.6) |
 | [ACT-1](#act-1) | Aims outlive the target they were made for | G10 | medium | on (#251) |
 | [PHY-1](#phy-1) | Contact and hand physics limits | F2, G5 | medium | open |
 | [PHY-2](#phy-2) | Movement detail that's costly or unproven | F2 | low | open |
@@ -1263,6 +1269,76 @@ Carried over from the issue register; each was measured on an older develop.
   approach speed is parked ([PARKED](PARKED.md), `TACKLE_APPROACH`), with
   `arrival_finish.py`, `contact_finish.py` and `arrival-control.mts` as the
   measure to re-open it.
+
+<a id="tkl-10"></a>
+### TKL-10: Two pursuers of one carrier aim at the same spot
+
+- **Symptom:** the second man runs up the first man's back instead of taking
+  the other shoulder (owner's film, F09 and F74, 2026-11-23).
+- **Measure** (Defense's tap on the pursuit-commit test, 2026-11-24): in the
+  3–8 yd band, over half the ticks where spacing cuts a pursuer's request are
+  cut off another pursuer of the same carrier, the two steering points a
+  median 0.2–0.4 yd apart, the other man nearer the carrier in about 90%.
+- **Cause:** *confirmed:* the pursuit shoulder shade fades to zero with
+  distance for every pursuer (`lev × clamp((dist − reach)/6, 0, 1)`), so both
+  converge on the carrier's forecast point. It happens with the commitment
+  flags off too.
+- **Tried:** `TRAIL_LEVERAGE` (#892, off). Attempt 1 held the trail shoulder
+  unfaded: the trail man arrived 1.6 yd wide and missed 15%. Attempt 2 fades
+  it with his own distance on the side away from the lead. Pooled over six
+  seed sets (about 1,250 catches an arm): catch attempts missed 7.1 → 5.3%,
+  misses and broken holds a catch 0.170 → 0.137; the play after a first miss
+  is flat (next attempt made 50 → 48%). An early 16-game read of 33 → 68% was
+  seed noise.
+- **Open:** pursuit after a first miss is not repaired by this. Not slow
+  bodies: top speed after the catch is at or above the NFL's (Tools, #866).
+
+<a id="tkl-11"></a>
+### TKL-11: A defender off a shed block barely accelerates
+
+- **Measure** (Defense, `defense/carrier-accel` taps, develop 7689bc4e):
+  after a run shed, achieved speed 2.1–2.5 yd/s against 5–7 requested; NFL run
+  D-line live release 2.84 yd/s at +0.5 s against our 2.1–2.2.
+- **Cause:** *confirmed:* the behaviour's own decision asks for a facing
+  43–87° off the travel it requests, and the body follows the asked facing to
+  within 5–7°. For linebackers the owner at those ticks is often still a
+  coverage or rush behaviour after he has taken on and shed a run block; for
+  linemen it is the fit's square `facing: Math.PI`. No post-decision stage is
+  involved (166 of 170 LB ticks and 415 of 443 DL ticks set by the decision).
+- **Cause, second and smaller:** *confirmed:* a hand joint never survives a
+  shed, but 6% of run D-line releases are re-blocked within 0.5 s, nearly
+  always by a different blocker and from beside or behind (31 of 37). The
+  engine forms it as an ordinary engagement, because `createEngagement`
+  clamped the block angle; it never goes through `tryHold` and is never
+  called. The owner's read: that re-block is usually a hold.
+- **Tried:** `SHED_PLAY` (off; an earlier table's "off" arm was void because
+  the name collided with an existing default-on `SHED_PURSUE`) showed no
+  speed gain on either base. `BLOCK_FRAME` (off, `defense/block-frame`): a
+  released defender is re-blocked only from in front of his path and inside
+  his frame; otherwise it is a grab the blocker chooses at `tryHold`'s chance.
+- **Open:** run-read ownership for a blocked linebacker, on what he perceives
+  (a run block, the handoff), and facing that follows travel; `BLOCK_FRAME`'s
+  measurement with `HOLD_CALL` off and on against the NFL's accepted
+  offensive-holding rate.
+
+<a id="tkl-12"></a>
+### TKL-12: The tackle's reach, miss cost, aim and finish
+
+- **Cause:** *confirmed* (Run Game, 2026-11-23): reach counted the tackler's
+  body twice; an attempt took three rating rolls; a miss applied nothing to
+  the tackler or the carrier; aim height was a random draw; a light hold at
+  mid-torso does not finish. See also [TKL-5](#tkl-5) and TKL-7.
+- **Tried** (all on `run/tackle-repair`, off, not landed): `TACKLE_REACH`,
+  `LUNGE_FLIGHT`, `DIVE_STANCE`, `REACH_TIME`, then `HOLD_AIM` (aim by the
+  tackler's seen bearing on the carrier, from Rules' taught rule on #869) and
+  the bend the aim needs, charged by the World's posture law. With all on:
+  open-field miss 0.103 against the NFL's 0.140; light holds needing a second
+  man 65 → 51%; three or more tacklers 16 → 10% (NFL 4%).
+- **Open:** designed runs average 6.3 yd with the package against develop's
+  3.85, with 7% of runs never grasped. Not yet attributed between honest
+  reach exposing approach angles and a fault in the package. The low aim is
+  taken most and does not fail more than higher aims, so the carrier's
+  answers (lowering the pads, the stiff arm) are next after the attribution.
 
 ## Pass protection
 
@@ -2664,6 +2740,14 @@ BDB2025 weeks 1–2 with `run_film_reference.py`.
 <a id="cov-1"></a>
 ### COV-1: Zone defenders barely close while the ball is in the air
 
+- **Status, 2026-11-24:** `FLIGHT_BREAK` (#882, engine-94) is on: defenders
+  break on the throw from an arm or ball cue they can see. It followed
+  `HEAD_FOLLOW` (#885, engine-93), which removed defenders perceiving through
+  a frozen head; with that leak present the break intercepted from men with
+  their backs to the passer. Paired staged plays: −0.5 to −1.05 yd a play by
+  coverage family, all after the catch (Coverage). The entry below is the
+  earlier record.
+
 - **Measure** (#190): the nearest zone defender closes 0.12 yd during the
   flight; NFL 0.65.
 - **Cause** (G3, `scripts/diag/depth/throwbreak.py`, BDB 2022 vs promoted
@@ -2897,7 +2981,7 @@ From the issue register:
   (closest 3.77 → 2.92 yd). P017 (pass) and P019 controls were unchanged;
   they never met the cue, so they prove nothing about play action.
 - **Open:** this is the first test of a player adapting off his rule (see
-  [PLAN](PLAN.md#next-after-the-film-threads)). Options: stay in man, take
+  [PLAN](PLAN.md#next-after-the-film-threads-2026-10-23-historical)). Options: stay in man, take
   the capped alley fit, or chase. Judge against a matched halfback pass,
   stalk-then-release and delayed route, and keep force/alley duties. Not a
   special case for Toss or this receiver. Coverage with Defense.
@@ -3240,6 +3324,40 @@ From the issue register:
 - **Open:** distance bins for field goals; punts may follow from drive
   outcomes rather than the kicking game.
 
+<a id="qb-4"></a>
+### QB-4: The quarterback's decision
+
+- **Symptom:** the ball comes out after the break on stops and outs; flats and
+  backs come as a last resort; a passer cannot stare a read down or dart past
+  it by his ratings.
+- **Measure:** whole-play timing matches the NFL (release p50 2.65 s against
+  2.60, 2026-11-11). Non-screen throws released under 2.0 s: 14.4% of NFL
+  dropbacks, 2.2% of ours (Rules, #876 and #893, dropbacks without play
+  action). Release minus the receiver's break (QB lane, same 8 games): stops
+  +0.30 to +0.50 s against the NFL's −0.10, outs +0.35 to +0.60 against
+  +0.30. Defenders who reach the catch point by the ball are priced a median
+  0.58 s late (QB lane, `scripts/diag/eyes/arrival-check.ts`).
+- **Cause:** *confirmed* by a read of `QBPass` on engine-95
+  ([plan](reviews/2026-11-24-qb-decision-plan.md) §1): five timing models
+  joined in one condition; six pressure responses in tick order; hot and
+  rhythm throws skipping the gates; `window()` pricing every defender through
+  six branches and about a hundred constants, several fitted to engines
+  40–47; plays that do not carry their reads; a coverage belief that never
+  says what should be open; looks that resolve instantly.
+- **Tried:** the step clock (`QB_STEP_CLOCK`, QB lane's branch) was carded
+  four times and surfaced three faults (a hold on a look that cannot resolve;
+  a true-position read in its repair; throwaways after a hold through a fixed
+  timer). The timer's throwaway was replaced by `THROWAWAY_FELT` (engine-95).
+  Two window-arrival builds (`QB_DEF_START`, `QB_DEF_ARRIVE`) doubled
+  interceptions: defenders reaching the catch point are following the
+  receiver through his break, not reacting to the throw.
+- **Where:** `src/sim/behaviors/qb.ts`, `src/sim/qbmind.ts`,
+  `src/playbook/read-compiler/`; the QB lane's records on
+  `claude/exciting-cori-hc8l4u` (`docs/reviews/2026-11-23-step-clock.md`,
+  `2026-11-24-window-arrival.md`, `2026-11-24-qb-v2-design.md`).
+- **Open:** the rebuild (`QB_V2`), by the plan's phases and gates. The step
+  clock is not landing on the old controller.
+
 ### COV-11: Quarters apex with a flat back: level with No. 2 rather than outside him; the seam is roomier
 
 - **Symptom:** against No. 2's vertical with a back releasing to the flat, the
@@ -3537,6 +3655,61 @@ need personnel the sim doesn't have.
 - **Measure** (#196): 5+ rushers from one-high 24% (NFL 38%), two-high 3% (NFL
   11%). A two-high blitz roll with no installable pressure silently rushed four.
 - **Fix:** `PRESSURE_CALL` with `DEUCE` (#193, #196, off): 36% and 8%.
+
+<a id="cov-14"></a>
+### COV-14: Cover 2 / Cover 6 give up either the deep outside throw or the flat
+
+- **Measure** (Tools' 24-game census for Coverage, 2026-11-24, engine-94):
+  10–15 yd wide open against Cover 2 at fixed times 43.3% (NFL 17.7%); the
+  Cover 2 corner on top of #1 at the break 7% (NFL 40%), 6.4 yd deep at 3.0 s
+  (NFL 9.9); open flats 2.04 a game (NFL 1.50).
+- **Cause:** *confirmed:* the squat corner never sank. *Confirmed:* in spot
+  Cover 2 nothing hands the sinking corner's flat to anyone; the hook rule
+  that widens to the flat exists only in the match coverages. *Likely:* the
+  curl-flat dropper sits about 3 yd narrow (8.0–8.6 yd from the ball at 3.0 s
+  against 11.5; landmark fine at 12.0), half from the zone lane spot
+  `lerp(QB, receiver, 0.82)` (about 7.5 yd) and zone-settle (5.5), half from
+  inside-out carries (Flex).
+- **Tried:**
+  - `SQUAT_SINK` first form: over-closed (corner 2.1 yd under #1 against 4.2).
+  - `SQUAT_SINK` v2 (minimax of the hole shot and the flat; `coverage/C14-squat-v2`):
+    window 17.9–24.3% and position NFL-like, open flats 2.9–3.0 a game. Two
+    attempts.
+  - Flex's flat package (`UNDER_CARRY`, `CARRY_RELEASE`, `HOOK_EXPAND`,
+    `THREAT_SINK` attempt 2, `MAN_BACK`): open flats 1.17 a game, by keeping
+    the corner at 4.8 yd, with the window at 61.5%. Package plus v2: window
+    31.6%, corner on top 42%, flats 2.08. Whole-game card on engine-94: the
+    package is about neutral; with v2 completion falls about 1.7 points.
+  - `CORNER_READ` (the hook takes the sinking corner's flat): fired on 3–7%
+    of dropbacks; parked after two attempts.
+  - `SQUAT_FLAT_FIRST` (`coverage/C14-squat-flat`, off): the flat is his first
+    responsibility; he sinks only as far as he can still reach it. Census
+    pending.
+- **Open:** replace the 0.82 lane spot with the taught relation (hold
+  landmark width and depth, eyes to the quarterback, squeeze or widen to a
+  seen threat), then re-run the census with `SQUAT_FLAT_FIRST`.
+
+<a id="cov-15"></a>
+### COV-15: Coverage defenders re-aim three to eight times as often as NFL players
+
+- **Measure** (Tools, #866, 1,200 pass plays snap to release, same operator on
+  tracking): heading steps over 8° per 0.1 s at 3+ yd/s, share of moving
+  intervals, NFL | ours: WR 1.4 | 6.1%, LB 1.9 | 8.6%, CB 1.6 | 8.7%,
+  S 1.5 | 12.2%. At least 80% follow a controller request that changed;
+  coverage is about 60% of those, routes 27%. Not an export artefact.
+- **Cause:** *confirmed* for one cell: a settled spot dropper's target jumped
+  between receivers as his read of the quarterback's eyes changed, snapping
+  to the 0.82 lane spot (about 100 of 117 pre-throw reversals). *Open:* on the
+  deep carry his requested downfield speed alternates tick to tick (1.9, 5.9,
+  1.8 yd/s) with target, receiver and turn state unchanged.
+- **Tried:** `SPOT_LEAN` (#889, off): the dropper slides along the held point
+  on the quarterback's seen head line; spot-settle reversals 117 → 66, zone
+  reversals 0.448 → 0.393/s. Two fixes on the deep carry's choice of receiver
+  were bit-identical and reverted. A first attribution table was mislabelled
+  (see GAPS, measurement artefacts).
+- **Open:** a stage-by-stage trace inside the carry's posture path; the
+  after-catch chase (126 reversals) is Defense's; two cells have no
+  attributed branch. Related: COV-12, [COV-6](#cov-6).
 
 <a id="call-4"></a>
 ### CALL-4: The play-caller reads the roster, not the players on the field
