@@ -442,6 +442,7 @@
   "test/qb-relook.test.ts",
   "test/qb-rhythm.test.ts",
   "test/qb-running-cue.test.ts",
+  "test/qb-scout.test.ts",
   "test/qb-seen-man.test.ts",
   "test/qb-seen-out.test.ts",
   "test/qb-seen-rec.test.ts",

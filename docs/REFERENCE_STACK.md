@@ -611,6 +611,35 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
 
 
+## engine-99: what he believes of a defender is a scouting report (2026-11-24)
+
+Card e138 (5 seeds x 32 games, QB_SCOUT on against off): completion -1.7 to +3.2, yards per attempt -0.38 to +0.62, sack rate -0.4 to +1.1, INT rate -0.2 to +0.6; no row moves the same way across seeds. QB_SCREEN_SEEN was on in every arm of that card, so it is not isolated by it.
+
+On: `QB_SCOUT` and `QB_SCREEN_SEEN` (QB lane, plan of record §1.6: true-state reads in the passer's decision).
+
+- `QB_SCOUT`: what he believes of a defender's body and ball skills is a scouting report, fixed before the game per
+  passer and defender. It is the position's typical plus his share (playRecognition, experience) of a film reading. Film
+  errs: 6% of typical on each trait at no snaps on film, falling with the defender's experience to a floor of a third
+  of that (chosen). Off, the belief was the man's truth pulled toward the typical by a rating. The felt rush, the stick
+  checks, pocket movement and the screen check read rushers' and defenders' true profile and fatigue outright; on,
+  they all read the report, with no fatigue (he cannot see it). True fatigue reads in qb.ts fall 10 → 3
+  (decision-information scan).
+- `QB_SCREEN_SEEN`: the screen check's "blocked" is whether he sees one of his men on the defender, not the true
+  engagement.
+
+Same 16 games (seeds 11-18, 19-26), `scripts/diag/eyes/dropback-outcome.ts`:
+
+| | both off | QB_SCOUT only | both on |
+|---|---|---|---|
+| dropbacks | 1417 | 1444 | 1444 |
+| completion | 68.0% | 69.2% | 69.2% |
+| sacks | 96 (6.77%) | 94 (6.51%) | 94 (6.51%) |
+| INT | 18 | 19 | 19 |
+| thrown away | 19 | 17 | 17 |
+| time to throw p50 | 2.31 s | 2.31 s | 2.31 s |
+
+QB_SCREEN_SEEN changes no play on these seeds (the screen check's engaged case is rare); it removes the read.
+
 ## engine-97: the passer's pre-snap picture is his own scan (2026-11-24)
 
 On: `QB_SCAN` and `QB_CANON_SEEN` (Flex; leak removals, QB decision plan §1.6; `=0` restores each). His pre-snap picture is one
