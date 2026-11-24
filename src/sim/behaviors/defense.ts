@@ -181,6 +181,11 @@ export const ZONE_HOLD_HANDOFF = (ZONE_HOLD_BITS & 64) !== 0;
  * landmark (Flex's width trace, 2026-11-24; NFL curl-flat 11.5 yd from the ball at 3.0 s, ours 8.0-8.6). */
 const LANE_LEVERAGE = process.env.LANE_LEVERAGE === '1';
 const LANE_SHADE = 0.8;
+/** SPOT_LEAN (experimental, off; Coverage C14 2026-11-24): the settled spot dropper (spotUnderneath) slides with the
+ * QB's eyes along ZONE_HOLD bit 32's held head-line point, not toward whichever receiver the eyes are on, leaning
+ * harder the nearer that line runs through his zone (continuous); replaces the step to lerp(QB, receiver, 0.82) when
+ * the eyes land on a receiver in his zone. Needs ZONE_HOLD bit 32. Taught: slide with the quarterback's eyes. */
+const SPOT_LEAN = process.env.SPOT_LEAN === '1';
 const CARRY_LABEL = /^(open-carry-seam|carry-wall|carry-run-past)$/;
 const eyesHeld = new WeakMap<Agent, Agent>();
 const eyesCache = new WeakMap<Agent, { t: number; r: Agent | null }>();
@@ -2550,7 +2555,18 @@ export class ZoneCoverage implements Behavior {
     const eyes = seenQbEyes(a, sim);
     const inZone = threats.filter((th) => Math.hypot(th.pos.x - lm.x, th.pos.y - lm.y) < this.radius && th.pos.x - sim.los > 1);
     const looked = eyes ? inZone.find((th) => th.r === eyes) : undefined;
-    if (looked) {
+    const lean = SPOT_LEAN && ZONE_HOLD_LEAN ? this.headLean(a, sim, lm) : null;
+    if (lean) {
+      // SPOT_LEAN: slide with the QB's eyes along his seen head line (held on the lean leash), not from receiver to
+      // receiver; the nearer that line runs through his zone, the harder he leans into it (the throwing window he
+      // takes away), continuously. The squeeze on the nearest receiver in his zone stays.
+      const d = Math.hypot(lean.x - lm.x, lean.y - lm.y), inWin = clamp(1 - d / this.radius, 0, 1);
+      tgt = lerp(lm, lean, (0.15 + 0.25 * read) + inWin * (0.3 + 0.15 * read));
+      if (inZone.length) {
+        const near = inZone.reduce((p, q) => (Math.hypot(p.pos.x - lm.x, p.pos.y - lm.y) < Math.hypot(q.pos.x - lm.x, q.pos.y - lm.y) ? p : q));
+        tgt = lerp(tgt, lerp(qbAt, near.pos, 0.82), 0.3 * (1 - inWin));
+      }
+    } else if (looked) {
       // The QB is looking at a receiver in my zone: get in the throwing lane.
       const lane = lerp(qbAt, looked.pos, 0.82);
       tgt = lerp(lm, lane, 0.45 + 0.4 * read);
