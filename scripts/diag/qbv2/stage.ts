@@ -44,7 +44,7 @@ for (let seed = s0; seed <= s1; seed++) {
   const t = process.env.NO_TAUGHT === "1" ? undefined : TAUGHT[concept]; if (t) setup.offCall.pass = { ...PASS_BY_ID[concept], ...t };
   const qbP = setup.offense.QB; for (const [k, v] of Object.entries(MID)) qbP.ratings[k] = v; qbP.experience = EXP;
   const sim: any = new PlaySim(setup);
-  let thrown: any = null, qbb: any = null, lastT = -1; const fbk: Record<number, any> = {}; const trace: any[] = []; const tr: Record<number, S[]> = {};
+  let thrown: any = null, qbb: any = null, lastT = -1; const fbk: Record<number, any> = {}; let decAim: any = null; const trace: any[] = []; const tr: Record<number, S[]> = {};
   const tb = sim.throwBall.bind(sim);
   sim.throwBall = (q: any, target: any, v0: any, intended: any, arrivalT: number, ...rest: any[]) => {
     if (q === sim.qb && !thrown) {
@@ -67,9 +67,19 @@ for (let seed = s0; seed <= s1; seed++) {
       const bp = sim.ball.flight.pos, rc = sim.agents[thrown.idx].pos, d = Math.hypot(bp.x - rc.x, bp.y - rc.y);
       if (d <= 1.2 || sim.t >= thrown.arr - 1e-6) thrown.at = { miss: r2(d), z: r2(bp.z), dx: r2(bp.x - rc.x), dy: r2(bp.y - rc.y) };
     }
+    // The miss split (Integration, 2026-11-24): at the ball's planned arrival, the ball against the point he aimed at (his
+    // release error) and the receiver against that point (the target moving after the aim).
+    if (thrown?.pt && !thrown.split && sim.ball?.kind === 'air' && sim.t >= thrown.arr - 1e-6 && thrown.idx != null) {
+      const bp = sim.ball.flight.pos, rc = sim.agents[thrown.idx].pos, pt = thrown.pt;
+      thrown.split = { ballVsAim: r2(Math.hypot(bp.x - pt.x, bp.y - pt.y)), recvVsAim: r2(Math.hypot(rc.x - pt.x, rc.y - pt.y)), ballVsRecv: r2(Math.hypot(bp.x - rc.x, bp.y - rc.y)), z: r2(bp.z) };
+    }
     // Calibration: did each judged defender get within his reach + 0.5 of the throw's point by the ball's arrival?
     if (thrown?.roles && thrown.pt && sim.t <= thrown.arr + 1e-6) for (const r of thrown.roles) { const d = sim.agents[r.id]; if (Math.hypot(d.pos.x - thrown.pt.x, d.pos.y - thrown.pt.y) <= d.profile.reach + 0.5) r.arrived = true; }
     const v2 = qbb?.v2, h = qbb?.v2h;
+    if (v2 && h && !decAim && v2.cycle.state === 'throw') {
+      const ref = v2.cycle.decision?.intent?.judged?.option?.ref, rr = ref ? v2.target(h, ref) : null, m = rr ? h.mechanics(rr, h.felt) : null;
+      decAim = m ? { x: m.point.x, y: m.point.y, t: sim.t } : { t: sim.t };
+    }
     // The passer's forecast of each receiver's break, first taken at the secure and at 1.0 s from the snap (absolute times).
     if (h && !thrown) for (const r of sim.offense) { if (r.behavior?.kind !== 'route') continue; const fb = (fbk[r.idx] ??= {}); const b = h.breakAt(r);
       if (fb.atSecure === undefined && sim.t >= h.snapAt) fb.atSecure = b == null ? null : r2(b);
@@ -97,7 +107,7 @@ for (let seed = s0; seed <= s1; seed++) {
     route: thrown?.rid ?? null, fcBreak: thrown?.idx != null ? fbk[thrown.idx] ?? null : null, plannedBreak: thrown?.plannedBreak ?? null, depthAtThrow: thrown?.depthAtThrow ?? null, relBrk,
     complete: !!sim.stats.completed, int: ev.some((e) => e.type === 'interception'), sack: ev.some((e) => e.type === 'sack'),
     pre: qbb?.v2?.presnap ? { flip: qbb.v2.presnap.flip, start: qbb.v2.presnap.startRead, look: qbb.v2.presnap.look ? { shell: qbb.v2.presnap.look.shell, over: Object.fromEntries(Object.entries(qbb.v2.presnap.look.over ?? {}).map(([k, v]: any) => [k, v ? { cushion: v.cushion, press: v.press, lev: v.leverage } : null])) } : null } : null,
-    ball: thrown?.at ?? null, dist: thrown?.dist ?? null, qbDepth: thrown?.qbDepth ?? null, qbSpeed: thrown?.qbSpeed ?? null,
+    ball: thrown?.at ?? null, split: thrown?.split ? { ...thrown.split, reaim: decAim?.x != null && thrown.pt ? r2(Math.hypot(decAim.x - thrown.pt.x, decAim.y - thrown.pt.y)) : null, decToRel: decAim ? r2(thrown.t - decAim.t) : null } : null, dist: thrown?.dist ?? null, qbDepth: thrown?.qbDepth ?? null, qbSpeed: thrown?.qbSpeed ?? null,
     catchEv: [...new Set(ev.filter((e) => thrown && e.t >= thrown.t && ['catch', 'drop', 'miss', 'pbu', 'deflection', 'interception', 'incomplete', 'secure'].includes(e.type)).map((e) => `${e.type}:${sim.agents[e.a]?.team === sim.qb.team ? 'O' : 'D'}${sim.agents[e.a]?.slot ?? ''}`))],
     belief: thrown?.belief ?? null, roles: (thrown?.roles ?? []).map((r: any) => ({ ...r, arrived: !!r.arrived || ev.some((e) => ['pbu', 'deflection', 'interception'].includes(e.type) && e.a === r.id), slot: sim.agents[r.id].slot, picked: ev.some((e) => e.type === 'interception' && e.a === r.id), played: ev.some((e) => ['pbu', 'deflection', 'interception'].includes(e.type) && e.a === r.id) })),
     intents: qbb?.v2Intents ?? null, trace,

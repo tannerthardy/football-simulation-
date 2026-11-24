@@ -69,6 +69,18 @@ export interface V2Host {
 /** A throw no defender plays is caught this often in our engine (cal14 staged cells, 2026-11-24: 165 of 202; the rest land
  * uncaught or are dropped). To be replaced by the catch model's own estimate once Tools' catching fix lands. */
 export const CATCH_CLEAN = 0.82;
+/** His completion belief on a throw no defender plays, from his own arm (Integration, 2026-11-24: one constant made every
+ * passer equally sure, the 35 passer overconfident by 0.18). Measured on the staged quick outs and hitches (35/60/88,
+ * 152 throws no defender played): a ball within CATCH_ADJUST of where he aimed is caught CATCH_IN of the time (the receiver
+ * adjusts to it), farther out CATCH_OUT; his real release error at the arrival is PLACE_REAL times his own missSigma
+ * (medians 1.40/1.17/0.95 yd against 0.95/0.81/0.61 believed). His ball lands in a disk of that spread around the aim
+ * (Rayleigh), so P(caught clean) = IN * P(|e| <= R) + OUT * (1 - P). Falls back to CATCH_CLEAN without a spread. */
+export const CATCH_ADJUST = 1.0, CATCH_IN = 0.90, CATCH_OUT = 0.58, PLACE_REAL = 1.5;
+export function catchFrom(spread: number | undefined): number {
+  if (spread === undefined || !(spread > 0)) return CATCH_CLEAN;
+  const s = PLACE_REAL * spread, pin = 1 - Math.exp(-(CATCH_ADJUST * CATCH_ADJUST) / (2 * s * s));
+  return CATCH_IN * pin + CATCH_OUT * (1 - pin);
+}
 /** A key's cue from his picture of the man's velocity (yd/s) relative to the read's side: enter and exit (chosen). */
 const CUE_ENTER = 1.5, CUE_EXIT = 0.8;
 
@@ -216,7 +228,7 @@ export class V2Drive {
       breakIn: o.timing === 'onBreak' && bk !== null ? bk - sim.t : null,
       ballHeightAt: (p) => { let bi = -1, bd = Infinity; path.forEach((q2, i) => { const d = Math.hypot(q2.x - p.x, q2.y - p.y); if (d < bd) { bd = d; bi = i; } }); return bi >= 0 && bd < 1.5 ? heights[bi] : null; },
       heldCoverer: this.held.get(o.ref) ?? null, coverEligible: this.eligible(h, o.ref),
-      path: [{ x: from.x, y: from.y }, ...path], los: sim.los, catchClean: CATCH_CLEAN, res: look ? this.cycle.looks.resolved(look) : 0, receiverSpread: h.pictureSpread(r),
+      path: [{ x: from.x, y: from.y }, ...path], los: sim.los, catchClean: catchFrom(h.placeSpread?.(Math.hypot(mech.point.x - from.x, mech.point.y - from.y))), res: look ? this.cycle.looks.resolved(look) : 0, receiverSpread: h.pictureSpread(r),
       placeSpread: h.placeSpread?.(Math.hypot(mech.point.x - from.x, mech.point.y - from.y)),
     };
     const defs: SeenDefender[] = sim.defense.filter((d) => this.seenUp(h, d) && h.pictureAge(d) < 1.5).map((d) => {

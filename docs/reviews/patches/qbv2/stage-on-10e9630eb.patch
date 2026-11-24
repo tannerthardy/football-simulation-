@@ -208,10 +208,10 @@ index 000000000..6050b81d9
 +sim.run();
 diff --git a/scripts/diag/qbv2/stage.ts b/scripts/diag/qbv2/stage.ts
 new file mode 100644
-index 000000000..b50a7ec7d
+index 000000000..9887d1b5d
 --- /dev/null
 +++ b/scripts/diag/qbv2/stage.ts
-@@ -0,0 +1,107 @@
+@@ -0,0 +1,117 @@
 +// QB lane 2026-11-24 (QB_V2 bring-up, the user's "start simple" set): staged plays of a quick concept against the coverage
 +// where its answer is plain, and the control that takes it away. One mid-rated passer. Run once with QB_V2 unset (the
 +// old controller) and once with QB_V2=1 on the same cells. Per play: the release (from the snap), the target and its
@@ -258,7 +258,7 @@ index 000000000..b50a7ec7d
 +  const t = process.env.NO_TAUGHT === "1" ? undefined : TAUGHT[concept]; if (t) setup.offCall.pass = { ...PASS_BY_ID[concept], ...t };
 +  const qbP = setup.offense.QB; for (const [k, v] of Object.entries(MID)) qbP.ratings[k] = v; qbP.experience = EXP;
 +  const sim: any = new PlaySim(setup);
-+  let thrown: any = null, qbb: any = null, lastT = -1; const fbk: Record<number, any> = {}; const trace: any[] = []; const tr: Record<number, S[]> = {};
++  let thrown: any = null, qbb: any = null, lastT = -1; const fbk: Record<number, any> = {}; let decAim: any = null; const trace: any[] = []; const tr: Record<number, S[]> = {};
 +  const tb = sim.throwBall.bind(sim);
 +  sim.throwBall = (q: any, target: any, v0: any, intended: any, arrivalT: number, ...rest: any[]) => {
 +    if (q === sim.qb && !thrown) {
@@ -281,9 +281,19 @@ index 000000000..b50a7ec7d
 +      const bp = sim.ball.flight.pos, rc = sim.agents[thrown.idx].pos, d = Math.hypot(bp.x - rc.x, bp.y - rc.y);
 +      if (d <= 1.2 || sim.t >= thrown.arr - 1e-6) thrown.at = { miss: r2(d), z: r2(bp.z), dx: r2(bp.x - rc.x), dy: r2(bp.y - rc.y) };
 +    }
++    // The miss split (Integration, 2026-11-24): at the ball's planned arrival, the ball against the point he aimed at (his
++    // release error) and the receiver against that point (the target moving after the aim).
++    if (thrown?.pt && !thrown.split && sim.ball?.kind === 'air' && sim.t >= thrown.arr - 1e-6 && thrown.idx != null) {
++      const bp = sim.ball.flight.pos, rc = sim.agents[thrown.idx].pos, pt = thrown.pt;
++      thrown.split = { ballVsAim: r2(Math.hypot(bp.x - pt.x, bp.y - pt.y)), recvVsAim: r2(Math.hypot(rc.x - pt.x, rc.y - pt.y)), ballVsRecv: r2(Math.hypot(bp.x - rc.x, bp.y - rc.y)), z: r2(bp.z) };
++    }
 +    // Calibration: did each judged defender get within his reach + 0.5 of the throw's point by the ball's arrival?
 +    if (thrown?.roles && thrown.pt && sim.t <= thrown.arr + 1e-6) for (const r of thrown.roles) { const d = sim.agents[r.id]; if (Math.hypot(d.pos.x - thrown.pt.x, d.pos.y - thrown.pt.y) <= d.profile.reach + 0.5) r.arrived = true; }
 +    const v2 = qbb?.v2, h = qbb?.v2h;
++    if (v2 && h && !decAim && v2.cycle.state === 'throw') {
++      const ref = v2.cycle.decision?.intent?.judged?.option?.ref, rr = ref ? v2.target(h, ref) : null, m = rr ? h.mechanics(rr, h.felt) : null;
++      decAim = m ? { x: m.point.x, y: m.point.y, t: sim.t } : { t: sim.t };
++    }
 +    // The passer's forecast of each receiver's break, first taken at the secure and at 1.0 s from the snap (absolute times).
 +    if (h && !thrown) for (const r of sim.offense) { if (r.behavior?.kind !== 'route') continue; const fb = (fbk[r.idx] ??= {}); const b = h.breakAt(r);
 +      if (fb.atSecure === undefined && sim.t >= h.snapAt) fb.atSecure = b == null ? null : r2(b);
@@ -311,7 +321,7 @@ index 000000000..b50a7ec7d
 +    route: thrown?.rid ?? null, fcBreak: thrown?.idx != null ? fbk[thrown.idx] ?? null : null, plannedBreak: thrown?.plannedBreak ?? null, depthAtThrow: thrown?.depthAtThrow ?? null, relBrk,
 +    complete: !!sim.stats.completed, int: ev.some((e) => e.type === 'interception'), sack: ev.some((e) => e.type === 'sack'),
 +    pre: qbb?.v2?.presnap ? { flip: qbb.v2.presnap.flip, start: qbb.v2.presnap.startRead, look: qbb.v2.presnap.look ? { shell: qbb.v2.presnap.look.shell, over: Object.fromEntries(Object.entries(qbb.v2.presnap.look.over ?? {}).map(([k, v]: any) => [k, v ? { cushion: v.cushion, press: v.press, lev: v.leverage } : null])) } : null } : null,
-+    ball: thrown?.at ?? null, dist: thrown?.dist ?? null, qbDepth: thrown?.qbDepth ?? null, qbSpeed: thrown?.qbSpeed ?? null,
++    ball: thrown?.at ?? null, split: thrown?.split ? { ...thrown.split, reaim: decAim?.x != null && thrown.pt ? r2(Math.hypot(decAim.x - thrown.pt.x, decAim.y - thrown.pt.y)) : null, decToRel: decAim ? r2(thrown.t - decAim.t) : null } : null, dist: thrown?.dist ?? null, qbDepth: thrown?.qbDepth ?? null, qbSpeed: thrown?.qbSpeed ?? null,
 +    catchEv: [...new Set(ev.filter((e) => thrown && e.t >= thrown.t && ['catch', 'drop', 'miss', 'pbu', 'deflection', 'interception', 'incomplete', 'secure'].includes(e.type)).map((e) => `${e.type}:${sim.agents[e.a]?.team === sim.qb.team ? 'O' : 'D'}${sim.agents[e.a]?.slot ?? ''}`))],
 +    belief: thrown?.belief ?? null, roles: (thrown?.roles ?? []).map((r: any) => ({ ...r, arrived: !!r.arrived || ev.some((e) => ['pbu', 'deflection', 'interception'].includes(e.type) && e.a === r.id), slot: sim.agents[r.id].slot, picked: ev.some((e) => e.type === 'interception' && e.a === r.id), played: ev.some((e) => ['pbu', 'deflection', 'interception'].includes(e.type) && e.a === r.id) })),
 +    intents: qbb?.v2Intents ?? null, trace,
@@ -782,10 +792,10 @@ index 000000000..3e8a38858
 +}
 diff --git a/src/sim/qbv2/drive.ts b/src/sim/qbv2/drive.ts
 new file mode 100644
-index 000000000..d56f7caea
+index 000000000..8539f9b8c
 --- /dev/null
 +++ b/src/sim/qbv2/drive.ts
-@@ -0,0 +1,274 @@
+@@ -0,0 +1,286 @@
 +/**
 + * QB_V2 wiring (QB lane, 2026-11-24): drives the cycle (module E) from QBPass on a concept with an authored read plan
 + * that fits the call, with the look (C), the judgment (D), the role resolver and the pre-snap decision (B, Flex). It
@@ -857,6 +867,18 @@ index 000000000..d56f7caea
 +/** A throw no defender plays is caught this often in our engine (cal14 staged cells, 2026-11-24: 165 of 202; the rest land
 + * uncaught or are dropped). To be replaced by the catch model's own estimate once Tools' catching fix lands. */
 +export const CATCH_CLEAN = 0.82;
++/** His completion belief on a throw no defender plays, from his own arm (Integration, 2026-11-24: one constant made every
++ * passer equally sure, the 35 passer overconfident by 0.18). Measured on the staged quick outs and hitches (35/60/88,
++ * 152 throws no defender played): a ball within CATCH_ADJUST of where he aimed is caught CATCH_IN of the time (the receiver
++ * adjusts to it), farther out CATCH_OUT; his real release error at the arrival is PLACE_REAL times his own missSigma
++ * (medians 1.40/1.17/0.95 yd against 0.95/0.81/0.61 believed). His ball lands in a disk of that spread around the aim
++ * (Rayleigh), so P(caught clean) = IN * P(|e| <= R) + OUT * (1 - P). Falls back to CATCH_CLEAN without a spread. */
++export const CATCH_ADJUST = 1.0, CATCH_IN = 0.90, CATCH_OUT = 0.58, PLACE_REAL = 1.5;
++export function catchFrom(spread: number | undefined): number {
++  if (spread === undefined || !(spread > 0)) return CATCH_CLEAN;
++  const s = PLACE_REAL * spread, pin = 1 - Math.exp(-(CATCH_ADJUST * CATCH_ADJUST) / (2 * s * s));
++  return CATCH_IN * pin + CATCH_OUT * (1 - pin);
++}
 +/** A key's cue from his picture of the man's velocity (yd/s) relative to the read's side: enter and exit (chosen). */
 +const CUE_ENTER = 1.5, CUE_EXIT = 0.8;
 +
@@ -1004,7 +1026,7 @@ index 000000000..d56f7caea
 +      breakIn: o.timing === 'onBreak' && bk !== null ? bk - sim.t : null,
 +      ballHeightAt: (p) => { let bi = -1, bd = Infinity; path.forEach((q2, i) => { const d = Math.hypot(q2.x - p.x, q2.y - p.y); if (d < bd) { bd = d; bi = i; } }); return bi >= 0 && bd < 1.5 ? heights[bi] : null; },
 +      heldCoverer: this.held.get(o.ref) ?? null, coverEligible: this.eligible(h, o.ref),
-+      path: [{ x: from.x, y: from.y }, ...path], los: sim.los, catchClean: CATCH_CLEAN, res: look ? this.cycle.looks.resolved(look) : 0, receiverSpread: h.pictureSpread(r),
++      path: [{ x: from.x, y: from.y }, ...path], los: sim.los, catchClean: catchFrom(h.placeSpread?.(Math.hypot(mech.point.x - from.x, mech.point.y - from.y))), res: look ? this.cycle.looks.resolved(look) : 0, receiverSpread: h.pictureSpread(r),
 +      placeSpread: h.placeSpread?.(Math.hypot(mech.point.x - from.x, mech.point.y - from.y)),
 +    };
 +    const defs: SeenDefender[] = sim.defense.filter((d) => this.seenUp(h, d) && h.pictureAge(d) < 1.5).map((d) => {
