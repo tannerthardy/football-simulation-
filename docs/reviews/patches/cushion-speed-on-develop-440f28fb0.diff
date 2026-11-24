@@ -1,0 +1,346 @@
+diff --git a/config/baseline.json b/config/baseline.json
+index c29a10f52..bb210d59c 100644
+--- a/config/baseline.json
++++ b/config/baseline.json
+@@ -376,6 +376,8 @@
+     "QB_SCAN": "0",
+     "QB_CANON_SEEN": "0",
+     "BELIEVED_BODY": "0",
++    "CUSHION_SPEED": "0",
++    "CUSHION_SPEED_ALIGN": "0",
+     "QB_SEEN_OUT": "0",
+     "QB_SEEN_REC": "0",
+     "ACC_RADIUS": "0",
+diff --git a/config/reference-stack.json b/config/reference-stack.json
+index a475c8f2e..8f3627035 100644
+--- a/config/reference-stack.json
++++ b/config/reference-stack.json
+@@ -339,6 +339,8 @@
+     "QB_SCAN": "on",
+     "QB_CANON_SEEN": "on",
+     "BELIEVED_BODY": "off",
++    "CUSHION_SPEED": "off",
++    "CUSHION_SPEED_ALIGN": "off",
+     "QB_SEEN_OUT": "on",
+     "QB_SEEN_REC": "on",
+     "ACC_RADIUS": "off",
+diff --git a/docs/FLAGS.md b/docs/FLAGS.md
+index f69966527..3b0dceaed 100644
+--- a/docs/FLAGS.md
++++ b/docs/FLAGS.md
+@@ -2,7 +2,7 @@
+ 
+ Every engine switch read from the environment, recounted from `src` at `57f50fc3` on 2026-10-22. This includes #210's promotion and #205's two additional default-on switches. Flags that are not on develop (parked, removed from a PR, or only on a side branch) are kept in [PARKED.md](PARKED.md) so the ideas are not lost. Registration rules are in [PLAN.md](PLAN.md): at most 10 experimental flags, and each expires two reviews after it lands.
+ 
+-There are 508 flags read from the environment in `src` (recounted 2026-11-24, with CALL_COMPOSE (off, rules/call-compose) counted: BELIEVED_BODY (off, experimental; Flex) on top of engine-97; engine-97: engine-96 plus QB_SCAN and QB_CANON_SEEN (on, leak removals; Flex; recounted from `src`, the on count also takes in engine-96's BALL_DRAG); engine-96: engine-95 plus BALL_DRAG (on); engine-95: engine-94 plus THROWAWAY_FELT (on); engine-94: engine-93 plus FLIGHT_BREAK (on) and FLIGHT_LEAD (off, parked); engine-93: engine-92 plus HEAD_FOLLOW (on); engine-92: engine-91 plus PERIPH_ACUITY (on); engine-91: engine-90 plus STEM_WORK (on); engine-90: engine-89 plus READ_VERTICAL_LOS and BACK_CLEAR (on); engine-89: engine-88 plus FLAT_CARRY (on); engine-88: engine-87 plus FORECAST_FINISH and QB_ROLE_PATH (on), READ_WINDOW and QB_CLOSE_BELIEF (off); engine-87: engine-86 plus HALF_KEY (on); engine-86 was engine-85 plus MUSH_MATCH (on); engine-85 was engine-84 plus FLAT_SINK (on); engine-84 was engine-83 plus DOWN_RISE_PLANT (on); engine-83 was engine-82 plus QB_DRIVE, QB_RHYTHM_THROW, QB_ALIGN, QB_BODY_FOLLOW, QB_WINDOW_ARRIVE, QB_KEY_PLANT, QB_STICK, QB_PEEK_CLOCK, QB_MOF_READ, QB_DEEP_WAIT and QB_STANCE; QB_DRIVE, QB_RHYTHM_THROW, QB_WINDOW_ARRIVE, QB_KEY_PLANT and QB_STICK on): 386 are on unless set to `0`, 93 are off unless set to `1`, and 28 are numeric scales or modes (identity value unless listed in the stack's numeric section). The rows below carry each flag's history.
++There are 510 flags read from the environment in `src` (recounted 2026-11-24, CUSHION_SPEED and CUSHION_SPEED_ALIGN (off, experimental; Flex with Coverage), with CALL_COMPOSE (off, rules/call-compose) counted: BELIEVED_BODY (off, experimental; Flex) on top of engine-97; engine-97: engine-96 plus QB_SCAN and QB_CANON_SEEN (on, leak removals; Flex; recounted from `src`, the on count also takes in engine-96's BALL_DRAG); engine-96: engine-95 plus BALL_DRAG (on); engine-95: engine-94 plus THROWAWAY_FELT (on); engine-94: engine-93 plus FLIGHT_BREAK (on) and FLIGHT_LEAD (off, parked); engine-93: engine-92 plus HEAD_FOLLOW (on); engine-92: engine-91 plus PERIPH_ACUITY (on); engine-91: engine-90 plus STEM_WORK (on); engine-90: engine-89 plus READ_VERTICAL_LOS and BACK_CLEAR (on); engine-89: engine-88 plus FLAT_CARRY (on); engine-88: engine-87 plus FORECAST_FINISH and QB_ROLE_PATH (on), READ_WINDOW and QB_CLOSE_BELIEF (off); engine-87: engine-86 plus HALF_KEY (on); engine-86 was engine-85 plus MUSH_MATCH (on); engine-85 was engine-84 plus FLAT_SINK (on); engine-84 was engine-83 plus DOWN_RISE_PLANT (on); engine-83 was engine-82 plus QB_DRIVE, QB_RHYTHM_THROW, QB_ALIGN, QB_BODY_FOLLOW, QB_WINDOW_ARRIVE, QB_KEY_PLANT, QB_STICK, QB_PEEK_CLOCK, QB_MOF_READ, QB_DEEP_WAIT and QB_STANCE; QB_DRIVE, QB_RHYTHM_THROW, QB_WINDOW_ARRIVE, QB_KEY_PLANT and QB_STICK on): 386 are on unless set to `0`, 96 are off unless set to `1`, and 28 are numeric scales or modes (identity value unless listed in the stack's numeric section). The rows below carry each flag's history.
+ 
+ **Promotion (2026-11-09):** the reference stack `run-ref-4` is now the engine's default. The 90 flags it lists `on` are read as on unless set to `0` (rows marked "promoted" below); the rest are unchanged. Decisions and evidence for each flag are in [REFERENCE_STACK.md](REFERENCE_STACK.md); `npm run ref -- --list` is the current inventory, and `npm run ref -- --off -- <command>` runs the engine as it was before. The test suites still run on the pre-promotion engine (pinned in `vitest.config.ts`) until their recorded cases are re-recorded. The counts in the paragraph above predate all of this.
+ 
+@@ -231,6 +231,8 @@ There are 508 flags read from the environment in `src` (recounted 2026-11-24, wi
+ | `QB_SCAN` | on | leak removal, on at landing (`=0` restores; Flex, 2026-11-24; QB decision plan §1.6) | quarterback | `src/sim/qbmind.ts` (`QBMind.scanned`) | his pre-snap picture is one full scan with a per-defender error drawn once per play (recognition-scaled), feeding his memory at the snap, the coverage features, the box count, the screen look and the quick check. Off: memory seeded with exact positions; four reads with independent fresh noise. |
+ | `QB_CANON_SEEN` | on | leak removal, on at landing (`=0` restores; Flex, 2026-11-24; QB decision plan §1.6) | quarterback | `src/sim/qbmind.ts` (canonical looks, `cornersSeen`) | the canonical looks use the defense's personnel slots and the front's visible alignment (front, edge, strength, mug, Sam on) only; corners are found where he sees them (on each side the widest defensive back of the visible personnel group within 12 yd of the line and 4+ yd off the ball; attempt 1's 8 yd floor and 9 yd depth cut missed 40-50% of corners on condensed trips and heavy 13 and fell to quickCheck's default; staged probe `scripts/diag/eyes/corner-find.mts`: 98-100% right in 17 looks incl. press, bunch, condensed, nub and rolled safeties, residual misses scan-only at rec <= 0.5). Off: the call object and the CB_S / CB_W labels. |
+ | `BELIEVED_BODY` | off (`=1` turns it on) | experimental (Flex, 2026-11-24; believed-body note, docs/reviews/2026-11-24-believed-body.md, step 2) | coverage (first consumers) | `src/sim/believed-body.ts` (`BeliefStore`, `believedCaps`, `lookAt`); `src/sim/behaviors/defense.ts`, `src/sim/coverage/reads.ts`; `src/game/game.ts` (one store per game, the huddle) | two reviews after it lands. A defender's read of a receiver's top speed, burst, braking and cutting is what he believes, not the man's true profile: his build seen (the engine's own build-capacity fit, `scripts/diag/belief/body-prior-fit.mts`, with one weight error per holder and man), the staff's film (truth plus one error per game, tighter with the man's snaps; none for a rookie) and his own clear looks (a plateau of seen speed held 0.6 s: a floor always, a measurement on a vertical stem; a rise from rest: his burst). Between plays the huddle passes each player's two biggest steps to his unit on the field (stated choices: 2 items, lost 0.15 - 0.13 x awareness). Consumers: man coverage (slow-play sprint test, route observation, stem acceleration, release and upfield burst, the deep cushion), zone route observation and the deep cushion, coverage/reads, the ball-reach check. Off: the man's own capacities, bit-identical. |
++| `CUSHION_SPEED` | off (`=1` turns it on) | experimental (Flex with Coverage, 2026-11-24; believed-body note §8c) | coverage (pure man) | `src/sim/behaviors/defense.ts` (`speedCushion`, ManCoverage.trackReceiver) | two reviews after it lands. "Respect his speed": a man corner's speed cushion c = clamp(1.5 s x (the q0.8 top speed he believes his man has - his own), -1, +2) yd (stated choices: H is how long he must run with him after the turn; the clamp the room he can give before the underneath throw is free, and how far he crowds a slower man), set once per play, added to his pre-release cushion target, to the cushion at which his hips turn and (positive) to CUSHION_NEED's floor. Pure man only (zone and match carries price pace through carrySpeedNeed). Staged gate (`scripts/diag/belief/cushion-speed-gate.mts`, 12 seeds): the turn moves about 0.2 s with the belief; with BELIEVED_BODY off it reads the man's true speed. |
++| `CUSHION_SPEED_ALIGN` | off (`=1` turns it on) | experimental (Flex with Coverage, 2026-11-24; Coverage's taught answer 1) | coverage (pure man) | `src/sim/playsim.ts` (after the defense is placed), `src/sim/behaviors/defense.ts` (`OFF_MAN_BAND`) | two reviews after it lands. A pure-man off corner aligns deeper by his speed cushion against his man, or shallower against a man he believes slower, within the taught band (5-8 yd, up to 10 from a deep-off alignment). Staged gate, 12 seeds: a fast X believed fast is aligned 7.8 (6.2 off), beaten deep 3/12 against 12/12, at the cost of the hitch (5.4 yd at the settle against 3.8); believed slow when fast (wrong): 5.2, beaten deep 12/12; slow believed fast (wrong): the hitch given up (5.2 yd against 2.9). Test `test/cushion-speed.test.ts`. |
+ | `QB_SEEN_OUT` | on | promoted 2026-11-14 (engine-63; `=0` restores); was experimental (QB lane, information rule, 2026-11-13; staged test `test/qb-seen-out.test.ts`; game rows near flat) | quarterback | `src/sim/behaviors/qb.ts` (`seenOut`, `checkRelease`, `breakClock`, `ready`) | Whether a check-release man is out on his route comes from the quarterback's own picture placing him on his installed release route (then he stays out), not from the man's behaviour object; gates the rhythm outlet, his readiness and his place in the hot order. A slow screen's settle is read from where the quarterback has the receiver. |
+ | `QB_SEEN_REC` | on | promoted 2026-11-14 (engine-63; `=0` restores); was experimental (QB lane, information rule, 2026-11-14; first build) | quarterback | `src/sim/behaviors/qb.ts` (`has`, `evaluate`, `orderReads`) | The remaining reads of his own receivers' true state use where he has them (his forecast, else his delayed picture): a receiver's side for the look-off and the hot side, the verticals' stems for the peek, the clear-look test, the fallback target point, and the man-coverage reorder (with his picture of the defender). A receiver is down when his delayed picture shows him off his feet; a block is the call or an unseen check-release man, not the engagement record. With `QB_BELIEVED_DEF` the reorder also uses the defender's believed speed and man coverage. |
+ | `ACC_RADIUS` | off | experimental (deep-window belief, 2026-11-13) | QB | `src/sim/behaviors/qb.ts` (`window`, pAcc) | set at first review. His accuracy belief's catchable radius grows with the flight and the receiver's ball skills (1.6 + 0.9 T yd) instead of a fixed 1.35: our own catches by aim miss keep about 0.6-0.9 of an on-target ball's completion at a 2 yd miss and 0.2-0.55 at 3 yd (short to long flights), where the fixed radius priced 0.33 and 0.08. To be carded beside Coverage's medium-flight ball defending (our defenders 4.5 yd from the ball at 1.2-1.8 s against the NFL's 2.8). docs/reviews/2026-11-13-qb-gather.md |
+diff --git a/scripts/diag/belief/cushion-speed-gate.mts b/scripts/diag/belief/cushion-speed-gate.mts
+new file mode 100644
+index 000000000..22b320caf
+--- /dev/null
++++ b/scripts/diag/belief/cushion-speed-gate.mts
+@@ -0,0 +1,65 @@
++/** CUSHION_SPEED staged gate (Flex with Coverage, 2026-11-24): one corner (CB_W, cover1_off, pure man) on X; X truly fast (forty
++ * -0.27) or truly slow (forty +0.25), no film (experience 0); the corner's belief of him set by one tight staged film entry: right
++ * (his true top speed) or wrong (the other man's). Twelve seeds on a go and on a hitch, the ball held. Per arm (medians): his speed
++ * cushion c, the cushion (corner past the receiver, yd) at 1.0 and 2.0 s, his turn time (hips open), on the go the receiver's lead
++ * at 3.0 s (+ = past him) and the share beaten by 1+ yd, on the hitch the distance at the settle (first speed under 2 yd/s after 0.8 s).
++ * usage: BELIEVED_BODY=1 [CUSHION_SPEED=1] node --import tsx scripts/diag/belief/cushion-speed-gate.mts */
++import { Rng } from '../../../src/core/rng.js';
++import { CENTER_Y } from '../../../src/core/field.js';
++import { generateTeam, pickDefense, pickOffense } from '../../../src/league/team.js';
++import { COVERAGE_BY_ID, FRONT_BY_ID } from '../../../src/playbook/defense.js';
++import { FORMATION_BY_ID } from '../../../src/playbook/formations.js';
++import type { PassConcept } from '../../../src/playbook/types.js';
++import { BELIEVED_BODY, BeliefStore } from '../../../src/sim/believed-body.js';
++import { CUSHION_SPEED, CUSHION_SPEED_ALIGN } from '../../../src/sim/behaviors/defense.js';
++import { PlaySim } from '../../../src/sim/playsim.js';
++import type { Agent } from '../../../src/sim/agent.js';
++import { derivePhysical } from '../../../src/players/physical.js';
++
++const off = generateTeam(new Rng(21), 'Offense', 'OFF', { strength: 0.6 });
++const def = generateTeam(new Rng(22), 'Defense', 'DEF', { strength: 0.6 });
++const formation = FORMATION_BY_ID.gun_doubles_11;
++const base = pickOffense(off, formation.personnel);
++const withForty = (d: number) => { const x = { ...base.X!, experience: 0, measurables: { ...base.X!.measurables, forty: base.X!.measurables.forty + d } }; return { ...base, X: x }; };
++const rosters = { fast: withForty(-0.27), slow: withForty(0.25) };
++const vtrue = { fast: derivePhysical(rosters.fast.X!).vmax, slow: derivePhysical(rosters.slow.X!).vmax };
++const defense = pickDefense(def, 'nickel');
++const med = (a: number[]) => { const b = a.filter(Number.isFinite).sort((p, q) => p - q); return b.length ? b[Math.floor(b.length / 2)] : NaN; };
++
++function rep(truth: 'fast' | 'slow', believed: 'fast' | 'slow' | null, route: 'go' | 'hitch', seed: number) {
++  const concept: PassConcept = { id: 'lab', name: 'lab', family: 'dropback', drop: 'gun5', strong: { 1: 'hitch', 2: 'hitch', 3: 'hitch', 4: 'hitch' },
++    weak: { 1: route, 2: 'hitch', 3: 'hitch', 4: 'hitch' }, back: 'block', progression: ['S1'], beats: [] };
++  const store = BELIEVED_BODY ? new BeliefStore(`gate-${seed}`) : undefined;
++  if (store && believed) store.brief(defense.CB_W!.id, rosters[truth].X!.id, { cap: 'vmax', value: vtrue[believed], sd: 0.03, kind: 'measure', source: { kind: 'film', from: 'staged', play: 0, t: 0 } });
++  const sim = new PlaySim({ offense: rosters[truth], defense, offCall: { formation, flip: false, kind: 'pass', pass: concept, label: 'lab' },
++    defCall: { personnel: 'nickel', front: FRONT_BY_ID.over, coverage: COVERAGE_BY_ID.cover1_off, pressure: null, label: 'lab' },
++    los: 40, ballY: CENTER_Y, firstDownX: 50, seed: 1000 + seed, beliefs: store });
++  sim.throwBall = () => undefined;
++  const R = sim.offense.find((o) => o.slot === 'X')!;
++  const corner = sim.defense.find((d) => (d.behavior as { target?: Agent }).target === R);
++  if (!corner) return null;
++  if (corner.player.id !== defense.CB_W!.id) return null; // the briefed corner must be the one on X
++  const out: Record<string, number> = { c1: NaN, c2: NaN, turn: NaN, lead3: NaN, settle: NaN, d0: corner.pos.x - sim.los };
++  const step = sim as unknown as { tick(): void };
++  while (sim.phase === 'live' && sim.t < 3.05) {
++    step.tick();
++    const t = sim.t;
++    if (Math.abs(t - 1.0) < sim.dt / 2) out.c1 = corner.pos.x - R.pos.x;
++    if (Math.abs(t - 2.0) < sim.dt / 2) out.c2 = corner.pos.x - R.pos.x;
++    if (!Number.isFinite(out.turn) && (corner.behavior as unknown as { hipsOpen?: boolean }).hipsOpen) out.turn = t;
++    if (Math.abs(t - 3.0) < sim.dt / 2) out.lead3 = R.pos.x - corner.pos.x;
++    if (!Number.isFinite(out.settle) && t > 0.8 && Math.hypot(R.vel.x, R.vel.y) < 2) out.settle = Math.hypot(R.pos.x - corner.pos.x, R.pos.y - corner.pos.y);
++  }
++  const tag = [...corner.tags].find((x) => x.startsWith('speed-cushion:'));
++  out.sc = tag ? Number(tag.split(':')[1]) : 0;
++  return out;
++}
++console.log(`BELIEVED_BODY=${BELIEVED_BODY ? 1 : 0} CUSHION_SPEED=${CUSHION_SPEED ? 1 : 0} CUSHION_SPEED_ALIGN=${CUSHION_SPEED_ALIGN ? 1 : 0}; X true vmax fast ${vtrue.fast.toFixed(2)}, slow ${vtrue.slow.toFixed(2)}`);
++console.log('| X truly | corner believes | route | c (yd) | aligned (yd off) | cushion 1.0 s | cushion 2.0 s | turn (s) | go: lead at 3.0 s | go: beaten 1+ yd | hitch: distance at the settle |');
++console.log('|---|---|---|---|---|---|---|---|---|---|---|');
++for (const truth of ['fast', 'slow'] as const) for (const believed of (BELIEVED_BODY ? ['fast', 'slow'] : [null]) as Array<'fast' | 'slow' | null>) for (const route of ['go', 'hitch'] as const) {
++  const R = Array.from({ length: 12 }, (_, i) => rep(truth, believed, route, i + 1)).filter((x): x is Record<string, number> => !!x);
++  const g = (k: string) => med(R.map((r) => r[k]));
++  const beaten = route === 'go' ? `${R.filter((r) => r.lead3 > 1).length}/${R.length}` : '-';
++  console.log(`| ${truth} | ${believed ?? 'truth (flag off path)'}${believed && believed !== truth ? ' (wrong)' : ''} | ${route} | ${g('sc').toFixed(2)} | ${g('d0').toFixed(2)} | ${g('c1').toFixed(2)} | ${g('c2').toFixed(2)} | ${g('turn').toFixed(2)} | ${route === 'go' ? g('lead3').toFixed(2) : '-'} | ${beaten} | ${route === 'hitch' ? g('settle').toFixed(2) : '-'} |`);
++}
+diff --git a/src/sim/behaviors/defense.ts b/src/sim/behaviors/defense.ts
+index 15024bc11..a5b02fc05 100644
+--- a/src/sim/behaviors/defense.ts
++++ b/src/sim/behaviors/defense.ts
+@@ -6,7 +6,7 @@
+  * reads the play, he executes his pre-snap job; play action can fool him into
+  * believing run for longer.
+  */
+-import { believedCaps, lookAt } from '../believed-body.js';
++import { believedCaps, believedVmaxQuantile, lookAt } from '../believed-body.js';
+ import { HANDS_CUE, handsUpAt } from '../hands-cue.js';
+ import { isOL } from './blocking.js';
+ import { KEY_REACT, KEY_STEP_SEEN, STEP_SEEN, keyScale } from '../key-read.js';
+@@ -77,6 +77,32 @@ const ZONE_SETTLE = process.env.ZONE_SETTLE !== '0';
+  * more than SINK_ENTER keeps gaining depth toward it while he reads the QB, until he is within SINK_EXIT; one at depth
+  * settles as before. His own position against his landmark is his to know. Margins: stated choices, enter and exit on
+  * opposite sides. */
++/** CUSHION_SPEED (experimental, off; Flex with Coverage, 2026-11-24; docs/reviews/2026-11-24-believed-body.md §8c): "respect his
++ * speed". A man corner's speed cushion c = clamp(edge x SPEED_HORIZON, MIN, MAX), edge = the q0.8 top speed he believes the
++ * receiver has (believed body) minus his own (fatigue-scaled), set once per play. It is added to his pre-release cushion target,
++ * to the cushion at which his hips turn, and (when positive) to CUSHION_NEED's floor, so a believed burner gets room and an
++ * earlier turn and a believed slower man less (he stays square). Pure man only. Taught: no yards-per-speed rule, but both
++ * taught answers against a burner (more depth, or the same depth with an earlier turn) follow from this edge (outside audit
++ * §4). */
++export const CUSHION_SPEED = process.env.CUSHION_SPEED === '1';
++/** z of the believed top-speed quantile he plans for (q 0.8; stated choice: being beaten deep costs more than a hitch). */
++const SPEED_Z = 0.8416;
++/** How long after his turn he must run with the man before help or the deep ball (s; stated choice: our engine's turn at
++ * 1.2-1.6 s against the deep catch at about 3.0 s). */
++const SPEED_HORIZON = 1.5;
++/** The most room he gives a burner before the underneath throw is free, and the most he crowds a slower man (yd; stated). */
++const SPEED_CUSHION_MAX = 2;
++const SPEED_CUSHION_MIN = -1;
++/** CUSHION_SPEED: his speed cushion against a man he is about to cover (yd): his believed q0.8 top-speed edge over the horizon. */
++export function speedCushion(sim: PlaySim, a: Agent, R: Agent): number {
++  const edge = believedVmaxQuantile(sim, a, R, SPEED_Z) - a.profile.vmax * fatigueFactor(a.body.energy);
++  return clamp(edge * SPEED_HORIZON, SPEED_CUSHION_MIN, SPEED_CUSHION_MAX);
++}
++/** CUSHION_SPEED_ALIGN (experimental, off; Coverage's taught answer 1, the second arm): a pure-man off corner aligns deeper by his
++ * speed cushion (or shallower against a man he believes slower), within the taught band. */
++export const CUSHION_SPEED_ALIGN = process.env.CUSHION_SPEED_ALIGN === '1';
++/** The taught off-man depth band (yd past the line; 5 is no man's land, 8-10 a deep off technique; stated, outside audit §4). */
++export const OFF_MAN_BAND: [number, number, number] = [5, 8, 10];
+ export const SETTLE_DEPTH = process.env.SETTLE_DEPTH !== '0';
+ /** FLAT_SINK (on since engine-85; FLAT_SINK=0 restores; Rules + Coaching's rule, HNFL-099/-334, Coverage built): the
+  * flat (squat / cloud) corner sinks with #1's vertical until the flat is threatened in front of him ("sink with #1 until
+@@ -1327,6 +1353,8 @@ export class ManCoverage implements Behavior {
+   readonly plastersScramble = true;
+   private readonly press: boolean;
+   private readonly initialCushion: number;
++  /** CUSHION_SPEED: his speed cushion against this man (yd), set once per play; null until then. */
++  private speedCushion: number | null = null;
+   private hipsOpen = false;
+   /** CARRY_TURN: the receiver he has turned fully on (a seen event), kept until both cues clear. */
+   private carryTurn: { full: Agent | null } = { full: null };
+@@ -1492,6 +1520,12 @@ export class ManCoverage implements Behavior {
+     // that belief (off: the man's own, as before).
+     lookAt(sim, a, R, acquired);
+     const RB = believedCaps(sim, a, R);
++    // CUSHION_SPEED: his speed cushion against this man, set once at his first look after the snap (pure man only).
++    if (CUSHION_SPEED && this.speedCushion === null && sim.defCall.coverage.man) {
++      this.speedCushion = speedCushion(sim, a, R);
++      a.tags.add(`speed-cushion:${this.speedCushion.toFixed(2)}`);
++    }
++    const sc = CUSHION_SPEED ? this.speedCushion ?? 0 : 0;
+     const seen = this.observation.read(acquired, sim.t, RB, a.profile.reactionTime,
+       a.r('anticipation') * a.r('manCoverage') * a.mind.focus);
+     if (Math.hypot(seen.vel.x, seen.vel.y) > 1.5) this.releaseObserved = true;
+@@ -1527,7 +1561,7 @@ export class ManCoverage implements Behavior {
+ 
+     // Cushion shrinks as the route develops; press plays in phase.
+     const developing = clamp(Math.max(0, deep) / 8, 0, 1);
+-    const cushion = this.press ? 0.8 : Math.max(1, Math.min(5.5, this.initialCushion) * (1 - developing) + developing);
++    const cushion = this.press ? 0.8 : Math.max(1, (Math.min(5.5, this.initialCushion) + sc) * (1 - developing) + developing);
+     // At press depth the receiver is already within 2.5 yards at the snap.
+     // That alone is not a release cue: opening immediately made the corner
+     // step downhill and turn twice while the receiver accelerated past him.
+@@ -1540,7 +1574,7 @@ export class ManCoverage implements Behavior {
+     const breakOn = CUSHION_BREAK && !sim.defCall.coverage.man, help = !o.protectDepth;
+     const broken = () => cushionBroken(a, a.pos.x - seen.pos.x, vx, help, R.profile.radius);
+     const consumed = breakOn ? broken()
+-      : a.pos.x - seen.pos.x < 1.8 + closing * flipTime + 0.25 * releaseBurst * flipTime * flipTime;
++      : a.pos.x - seen.pos.x < 1.8 + sc + closing * flipTime + 0.25 * releaseBurst * flipTime * flipTime;
+     const crossing = Math.abs(seen.vel.y) > 3 && Math.abs(seen.vel.y) > Math.abs(vx);
+     if (!this.hipsOpen && Math.hypot(seen.vel.x, seen.vel.y) > 1.5 && (consumed || crossing)) this.hipsOpen = true;
+     // CUSHION_BREAK: a receiver he is carrying throttles below his own speed
+@@ -1567,7 +1601,7 @@ export class ManCoverage implements Behavior {
+       // What he could gain upfield during the flip: his upfield speed now
+       // plus the acceleration he has left toward his top speed (1/2 a t^2).
+       const upBurst = Math.max(0, (RB.vmax - Math.max(0, vx)) / RB.tau);
+-      const need = 1.8 + closing * flipTime + 0.5 * upBurst * flipTime * flipTime;
++      const need = 1.8 + Math.max(0, sc) + closing * flipTime + 0.5 * upBurst * flipTime * flipTime;
+       const held = CUSHION_NEED && this.releaseObserved ? Math.min(cushion, need) : cushion;
+       if (held < cushion) a.tags.add('cushion-need');
+       tx = this.releaseObserved
+diff --git a/src/sim/believed-body.ts b/src/sim/believed-body.ts
+index 855ae5f8d..fac6719b8 100644
+--- a/src/sim/believed-body.ts
++++ b/src/sim/believed-body.ts
+@@ -226,6 +226,13 @@ export class BeliefStore {
+     this.play++;
+   }
+ 
++  /** A message to a holder by player id before he has met the man (a pre-game briefing; a staged belief): added to his
++   * belief when it is first made, or at once if it exists. */
++  brief(holderId: string, targetId: string, e: Entry): void {
++    const b = this.held.get(holderId)?.get(targetId);
++    if (b) b.add(e); else this.pending(holderId, targetId).push(e);
++  }
++
+   private waiting = new Map<string, Entry[]>();
+   private pending(holderId: string, targetId: string): Entry[] {
+     const k = `${holderId}|${targetId}`;
+@@ -240,6 +247,14 @@ export class BeliefStore {
+   }
+ }
+ 
++/** A quantile of the top speed `holder` believes `target` has (the believed mean + z sd; z = 0.84 for q 0.8): the fast case he
++ * plans for. With BELIEVED_BODY off, the man's own top speed (no spread), as the consumers read it before. */
++export function believedVmaxQuantile(sim: { beliefs: BeliefStore | null }, holder: Agent, target: Agent, z: number): number {
++  if (!(BELIEVED_BODY && sim.beliefs)) return target.profile.vmax;
++  const v = sim.beliefs.belief(holder, target).get('vmax');
++  return v.mean + z * (Number.isFinite(v.sd) ? v.sd : 0);
++}
++
+ /** The capacities `holder` takes `target` to have: his belief (BELIEVED_BODY), else the man's own, as before. */
+ export function believedCaps(sim: { beliefs: BeliefStore | null }, holder: Agent, target: Agent): Caps {
+   return BELIEVED_BODY && sim.beliefs ? sim.beliefs.caps(holder, target) : target.profile;
+diff --git a/src/sim/playsim.ts b/src/sim/playsim.ts
+index 9436b9e0f..da1195445 100644
+--- a/src/sim/playsim.ts
++++ b/src/sim/playsim.ts
+@@ -1,3 +1,4 @@
++import { CUSHION_SPEED_ALIGN, OFF_MAN_BAND, speedCushion } from './behaviors/defense.js';
+ import { BELIEVED_BODY, BeliefStore } from './believed-body.js';
+ import { shouldersOf } from '../physics/kinematics.js';
+ /**
+@@ -420,6 +421,20 @@ export class PlaySim {
+       if (!spot) throw new Error(`Defense lineup slot ${slot} has no alignment in ${this.defCall.front.id}`);
+       mk('D', slot, player, spot.pos, Math.PI);
+     }
++    // CUSHION_SPEED_ALIGN: a pure-man off corner aligns deeper by the speed cushion he believes he needs against his man,
++    // within the taught band (deeper still only from a deep-off alignment), before his behaviour reads his depth.
++    if (CUSHION_SPEED_ALIGN && this.defCall.coverage.man) {
++      const dir = this.attackDir('O');
++      for (const d of this.defense) {
++        const spot = this.defAlign.spots[d.slot as DefSlot];
++        if (!spot || spot.press || spot.role.kind !== 'man' || !spot.manTarget) continue;
++        const R = this.bySlot.get(spot.manTarget), depth = (d.pos.x - this.los) * dir;
++        if (!R || depth < 3) continue;
++        const [lo, hi, deepOff] = OFF_MAN_BAND, top = depth > hi ? deepOff : hi;
++        const want = clamp(depth + speedCushion(this, d, R), Math.min(depth, lo), Math.max(depth, top));
++        d.body.pos = { x: this.los + want * dir, y: d.pos.y };
++      }
++    }
+     fitPressStances(this.defAlign, this.defense.map(a => ({ slot: a.slot as DefSlot, pos: a.pos, radius: a.profile.radius })), this.los);
+     // RECEIVER_DEPTH (experimental, off): a receiver on the line who sees a
+     // press look in front of him sets deeper to have room to release.
+diff --git a/test/cushion-speed.test.ts b/test/cushion-speed.test.ts
+new file mode 100644
+index 000000000..34980304e
+--- /dev/null
++++ b/test/cushion-speed.test.ts
+@@ -0,0 +1,39 @@
++// CUSHION_SPEED / CUSHION_SPEED_ALIGN (Flex with Coverage, 2026-11-24): a man corner's room, alignment and turn follow the speed
++// edge he believes he gives up to his man. Staged on one snap (gate: scripts/diag/belief/cushion-speed-gate.mts, 12 seeds).
++import { afterEach, describe, expect, it, vi } from 'vitest';
++
++afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
++
++async function corner(flags: Record<string, string>, believedFast: boolean) {
++  for (const [k, v] of Object.entries({ BELIEVED_BODY: '1', ...flags })) vi.stubEnv(k, v);
++  vi.resetModules();
++  const { Rng } = await import('../src/core/rng.js');
++  const { CENTER_Y } = await import('../src/core/field.js');
++  const { generateTeam, pickDefense, pickOffense } = await import('../src/league/team.js');
++  const { COVERAGE_BY_ID, FRONT_BY_ID } = await import('../src/playbook/defense.js');
++  const { FORMATION_BY_ID } = await import('../src/playbook/formations.js');
++  const { BeliefStore } = await import('../src/sim/believed-body.js');
++  const { PlaySim } = await import('../src/sim/playsim.js');
++  const off = generateTeam(new Rng(21), 'O', 'O', { strength: 0.6 }), def = generateTeam(new Rng(22), 'D', 'D', { strength: 0.6 });
++  const formation = FORMATION_BY_ID.gun_doubles_11, roster = pickOffense(off, formation.personnel), defense = pickDefense(def, 'nickel');
++  const store = new BeliefStore('t');
++  store.brief(defense.CB_W!.id, roster.X!.id, { cap: 'vmax', value: believedFast ? 10.9 : 8.8, sd: 0.03, kind: 'measure', source: { kind: 'film', from: 'staged', play: 0, t: 0 } });
++  const pass = { id: 'lab', name: 'lab', family: 'dropback' as const, drop: 'gun5' as const, strong: { 1: 'hitch', 2: 'hitch', 3: 'hitch', 4: 'hitch' },
++    weak: { 1: 'go', 2: 'hitch', 3: 'hitch', 4: 'hitch' }, back: 'block', progression: ['S1' as const], beats: [] };
++  const sim = new PlaySim({ offense: roster, defense, offCall: { formation, flip: false, kind: 'pass', pass, label: 'lab' },
++    defCall: { personnel: 'nickel', front: FRONT_BY_ID.over, coverage: COVERAGE_BY_ID.cover1_off, pressure: null, label: 'lab' },
++    los: 40, ballY: CENTER_Y, firstDownX: 50, seed: 1001, beliefs: store });
++  return sim.defense.find((d) => d.slot === 'CB_W')!.pos.x - sim.los;
++}
++
++describe('CUSHION_SPEED_ALIGN: the off corner aligns by the speed edge he believes', () => {
++  it('deeper on a man he believes fast, shallower on one he believes slow, within the taught band; off, the same depth', async () => {
++    const fast = await corner({ CUSHION_SPEED_ALIGN: '1' }, true), slow = await corner({ CUSHION_SPEED_ALIGN: '1' }, false);
++    const base = await corner({ CUSHION_SPEED_ALIGN: '0' }, true), baseSlow = await corner({ CUSHION_SPEED_ALIGN: '0' }, false);
++    expect(base).toBeCloseTo(baseSlow, 9);
++    expect(fast).toBeGreaterThan(base + 1);
++    expect(slow).toBeLessThan(base); // shallower, to the band's floor at most
++    expect(fast).toBeLessThanOrEqual(8 + 1e-9);
++    expect(slow).toBeGreaterThanOrEqual(5 - 1e-9);
++  }, 60_000);
++});
+diff --git a/test/engine-pin.json b/test/engine-pin.json
+index 9525e4c6d..2e06d4527 100644
+--- a/test/engine-pin.json
++++ b/test/engine-pin.json
+@@ -226,6 +226,7 @@
+   "test/cross-over.test.ts",
+   "test/curl-flat-back.test.ts",
+   "test/cushion-need.test.ts",
++  "test/cushion-speed.test.ts",
+   "test/cut-wall.test.ts",
+   "test/cutoff-surface.test.ts",
+   "test/db-slots.test.ts",
+diff --git a/test/information-guard-allowlist.ts b/test/information-guard-allowlist.ts
+index 619f7b930..821c65a31 100644
+--- a/test/information-guard-allowlist.ts
++++ b/test/information-guard-allowlist.ts
+@@ -46,6 +46,7 @@ export const INFORMATION_DEBT: InformationDebt[] = [
+   { file: 'src/sim/behaviors/receiver.ts', key: 'capacity.profile', reads: 3, class: 'leak', owner: 'Flex', since: '2026-11-24', why: "another player's true physical capacity in a decision; read it through believed(holder, B) (believed-body note, docs/reviews/2026-11-24-believed-body.md, §8 migration)" },
+   { file: 'src/sim/believed-body.ts', key: 'capacity.profile', reads: 1, class: 'leak', owner: 'Flex', since: '2026-11-24', why: "BELIEVED_BODY off path: believedCaps returns the man's true capacities, as the consumers read them before; goes when the flag is promoted" },
+   { file: 'src/sim/believed-body.ts', key: 'capacity.profile', reads: 1, class: 'perception', owner: 'Flex', since: '2026-11-24', why: "BELIEVED_BODY's producer: the staff's film, the target's true capacities plus one error per game (seedBelief); its only reader is the belief it seeds" },
++  { file: 'src/sim/believed-body.ts', key: 'capacity.profile.vmax', reads: 1, class: 'leak', owner: 'Flex', since: '2026-11-24', why: "BELIEVED_BODY off path: believedCaps returns the man's true capacities, as the consumers read them before; goes when the flag is promoted" },
+   { file: 'src/sim/catch-choice.ts', key: 'capacity.profile', reads: 1, class: 'leak', owner: 'Flex', since: '2026-11-24', why: "another player's true physical capacity in a decision; read it through believed(holder, B) (believed-body note, docs/reviews/2026-11-24-believed-body.md, §8 migration)" },
+   { file: 'src/sim/motion.ts', key: 'capacity.profile.vmax', reads: 2, class: 'known', owner: 'Flex', since: '2026-11-24', why: "a teammate's capacity, known from practice (believed-body decision 1), or the actor's own body under another name" },
+   { file: 'src/sim/qbmind.ts', key: 'capacity.profile.reactionTime', reads: 1, class: 'known', owner: 'Flex', since: '2026-11-24', why: "a teammate's capacity, known from practice (believed-body decision 1), or the actor's own body under another name" },
