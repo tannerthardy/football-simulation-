@@ -1,0 +1,57 @@
+diff --git a/scripts/diag/information-guard-scan.ts b/scripts/diag/information-guard-scan.ts
+index 8b68293ed..7efce3157 100644
+--- a/scripts/diag/information-guard-scan.ts
++++ b/scripts/diag/information-guard-scan.ts
+@@ -72,10 +72,11 @@ export const PHYSICS: Record<string, string> = {
+  * not reported. Referee and contact-resolution files may read capacities (resolving a contact is their job).
+  */
+ export const CAPACITY = new Set(['vmax', 'tau', 'brake', 'lateral', 'power', 'press', 'turnRate', 'backpedal', 'shuffle', 'balance', 'bend',
+-  'stepSpeed', 'getUp', 'reactionTime', 'maxCatchHeight', 'reactReach']);
+-/** A man's build as seen (size, height, arm length): visible, not a hidden capacity. His catch heights are not: they carry his
+- * vertical jump (height x 1.33 + vertical; the outside audit, 2026-11-24, row 3). */
+-export const VISIBLE_BUILD = new Set(['massKg', 'heightYd', 'radius', 'reach']);
++  'stepSpeed', 'getUp', 'reactionTime', 'maxCatchHeight', 'reactReach', 'reach']);
++/** A man's build as seen (size, height, frame): visible, not a hidden capacity. His catch heights are not (they carry his
++ * vertical jump; the outside audit, 2026-11-24, row 3), nor is his reach: arm length is seen roughly with his height and
++ * frame, not to the inch, so it is believed from his build like the vertical (Integration, 2026-11-24). */
++export const VISIBLE_BUILD = new Set(['massKg', 'heightYd', 'radius']);
+ export const INTENT = new Set(['behavior', 'passSet', 'runFit', 'recog', 'mind', 'eyes', 'keyStep', 'readAt', 'snapReadyAt', 'shedBy']);
+ 
+ /** The files that own a published field: its own record may read it (the passer's windup and eyes are qb.ts's). */
+diff --git a/test/information-guard-allowlist.ts b/test/information-guard-allowlist.ts
+index 255d8d222..54a4689cb 100644
+--- a/test/information-guard-allowlist.ts
++++ b/test/information-guard-allowlist.ts
+@@ -28,20 +28,24 @@ export interface InformationDebt { file: string; key: string; reads: number; cla
+ export const INFORMATION_DEBT: InformationDebt[] = [
+   // Rule `capacity` (believed body, Flex 2026-11-24): another player's true capacities. The migration in
+   // docs/reviews/2026-11-24-believed-body.md §8 lowers the 'leak' rows one consumer at a time.
++  { file: 'src/sim/assign.ts', key: 'capacity.profile.reach', reads: 1, class: 'leak', owner: 'Flex', since: '2026-11-24', why: "another player's true physical capacity in a decision; read it through believed(holder, B) (believed-body note, docs/reviews/2026-11-24-believed-body.md, §8 migration)" },
+   { file: 'src/sim/assign.ts', key: 'capacity.profile.reactionTime', reads: 1, class: 'known', owner: 'Flex', since: '2026-11-24', why: "a teammate's capacity, known from practice (believed-body decision 1), or the actor's own body under another name" },
+   { file: 'src/sim/behaviors/blocking.ts', key: 'capacity.profile', reads: 4, class: 'known', owner: 'Flex', since: '2026-11-24', why: "a teammate's capacity, known from practice (believed-body decision 1), or the actor's own body under another name" },
+   { file: 'src/sim/behaviors/blocking.ts', key: 'capacity.profile', reads: 1, class: 'leak', owner: 'Flex', since: '2026-11-24', why: "another player's true physical capacity in a decision; read it through believed(holder, B) (believed-body note, docs/reviews/2026-11-24-believed-body.md, §8 migration)" },
+   { file: 'src/sim/behaviors/blocking.ts', key: 'capacity.profile.vmax', reads: 2, class: 'known', owner: 'Flex', since: '2026-11-24', why: "a teammate's capacity, known from practice (believed-body decision 1), or the actor's own body under another name" },
+   { file: 'src/sim/behaviors/blocking.ts', key: 'capacity.profile.vmax', reads: 1, class: 'leak', owner: 'Flex', since: '2026-11-24', why: "another player's true physical capacity in a decision; read it through believed(holder, B) (believed-body note, docs/reviews/2026-11-24-believed-body.md, §8 migration)" },
+   { file: 'src/sim/behaviors/carrier.ts', key: 'capacity.profile', reads: 1, class: 'known', owner: 'Flex', since: '2026-11-24', why: "a teammate's capacity, known from practice (believed-body decision 1), or the actor's own body under another name" },
++  { file: 'src/sim/behaviors/carrier.ts', key: 'capacity.profile.reach', reads: 2, class: 'leak', owner: 'Flex', since: '2026-11-24', why: "another player's true physical capacity in a decision; read it through believed(holder, B) (believed-body note, docs/reviews/2026-11-24-believed-body.md, §8 migration)" },
+   { file: 'src/sim/behaviors/common.ts', key: 'capacity.profile.brake', reads: 2, class: 'leak', owner: 'Flex', since: '2026-11-24', why: "another player's true physical capacity in a decision; read it through believed(holder, B) (believed-body note, docs/reviews/2026-11-24-believed-body.md, §8 migration)" },
+   { file: 'src/sim/behaviors/common.ts', key: 'capacity.profile.tau', reads: 2, class: 'leak', owner: 'Flex', since: '2026-11-24', why: "another player's true physical capacity in a decision; read it through believed(holder, B) (believed-body note, docs/reviews/2026-11-24-believed-body.md, §8 migration)" },
+   { file: 'src/sim/behaviors/common.ts', key: 'capacity.profile.vmax', reads: 3, class: 'leak', owner: 'Flex', since: '2026-11-24', why: "another player's true physical capacity in a decision; read it through believed(holder, B) (believed-body note, docs/reviews/2026-11-24-believed-body.md, §8 migration)" },
+   { file: 'src/sim/behaviors/defense.ts', key: 'capacity.profile', reads: 1, class: 'leak', owner: 'Flex', since: '2026-11-24', why: "another player's true physical capacity in a decision; read it through believed(holder, B) (believed-body note, docs/reviews/2026-11-24-believed-body.md, §8 migration)" },
+   { file: 'src/sim/behaviors/defense.ts', key: 'capacity.profile.maxCatchHeight', reads: 1, class: 'leak', owner: 'Flex', since: '2026-11-24', why: "another player's true physical capacity in a decision; read it through believed(holder, B) (believed-body note, docs/reviews/2026-11-24-believed-body.md, §8 migration)" },
++  { file: 'src/sim/behaviors/defense.ts', key: 'capacity.profile.reach', reads: 1, class: 'leak', owner: 'Flex', since: '2026-11-24', why: "another player's true physical capacity in a decision; read it through believed(holder, B) (believed-body note, docs/reviews/2026-11-24-believed-body.md, §8 migration)" },
+   { file: 'src/sim/behaviors/qb.ts', key: 'capacity.profile', reads: 1, class: 'known', owner: 'Flex', since: '2026-11-24', why: "a teammate's capacity, known from practice (believed-body decision 1), or the actor's own body under another name" },
+   { file: 'src/sim/behaviors/qb.ts', key: 'capacity.profile', reads: 11, class: 'leak', owner: 'Flex', since: '2026-11-24', why: "another player's true physical capacity in a decision; read it through believed(holder, B) (believed-body note, docs/reviews/2026-11-24-believed-body.md, §8 migration)" },
+   { file: 'src/sim/behaviors/qb.ts', key: 'capacity.profile.maxCatchHeight', reads: 1, class: 'leak', owner: 'Flex', since: '2026-11-24', why: "another player's true physical capacity in a decision; read it through believed(holder, B) (believed-body note, docs/reviews/2026-11-24-believed-body.md, §8 migration)" },
++  { file: 'src/sim/behaviors/qb.ts', key: 'capacity.profile.reach', reads: 4, class: 'leak', owner: 'Flex', since: '2026-11-24', why: "another player's true physical capacity in a decision; read it through believed(holder, B) (believed-body note, docs/reviews/2026-11-24-believed-body.md, §8 migration)" },
+   { file: 'src/sim/behaviors/qb.ts', key: 'capacity.profile.reactReach', reads: 2, class: 'leak', owner: 'Flex', since: '2026-11-24', why: "another player's true physical capacity in a decision; read it through believed(holder, B) (believed-body note, docs/reviews/2026-11-24-believed-body.md, §8 migration)" },
+   { file: 'src/sim/behaviors/qb.ts', key: 'capacity.profile.tau', reads: 1, class: 'known', owner: 'Flex', since: '2026-11-24', why: "a teammate's capacity, known from practice (believed-body decision 1), or the actor's own body under another name" },
+   { file: 'src/sim/behaviors/qb.ts', key: 'capacity.profile.vmax', reads: 3, class: 'known', owner: 'Flex', since: '2026-11-24', why: "a teammate's capacity, known from practice (believed-body decision 1), or the actor's own body under another name" },
+@@ -50,6 +54,7 @@ export const INFORMATION_DEBT: InformationDebt[] = [
+   { file: 'src/sim/believed-body.ts', key: 'capacity.profile', reads: 1, class: 'leak', owner: 'Flex', since: '2026-11-24', why: "BELIEVED_BODY off path: believedCaps returns the man's true capacities, as the consumers read them before; goes when the flag is promoted" },
+   { file: 'src/sim/believed-body.ts', key: 'capacity.profile', reads: 1, class: 'perception', owner: 'Flex', since: '2026-11-24', why: "BELIEVED_BODY's producer: the staff's film, the target's true capacities plus one error per game (seedBelief); its only reader is the belief it seeds" },
+   { file: 'src/sim/catch-choice.ts', key: 'capacity.profile', reads: 1, class: 'leak', owner: 'Flex', since: '2026-11-24', why: "another player's true physical capacity in a decision; read it through believed(holder, B) (believed-body note, docs/reviews/2026-11-24-believed-body.md, §8 migration)" },
++  { file: 'src/sim/catch-choice.ts', key: 'capacity.profile.reach', reads: 1, class: 'leak', owner: 'Flex', since: '2026-11-24', why: "another player's true physical capacity in a decision; read it through believed(holder, B) (believed-body note, docs/reviews/2026-11-24-believed-body.md, §8 migration)" },
+   { file: 'src/sim/motion.ts', key: 'capacity.profile.vmax', reads: 2, class: 'known', owner: 'Flex', since: '2026-11-24', why: "a teammate's capacity, known from practice (believed-body decision 1), or the actor's own body under another name" },
+   { file: 'src/sim/qbmind.ts', key: 'capacity.profile.reactionTime', reads: 1, class: 'known', owner: 'Flex', since: '2026-11-24', why: "a teammate's capacity, known from practice (believed-body decision 1), or the actor's own body under another name" },
+   { file: 'src/sim/run-fits.ts', key: 'capacity.profile.vmax', reads: 1, class: 'leak', owner: 'Flex', since: '2026-11-24', why: "another player's true physical capacity in a decision; read it through believed(holder, B) (believed-body note, docs/reviews/2026-11-24-believed-body.md, §8 migration)" },
