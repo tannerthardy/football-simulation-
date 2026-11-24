@@ -5,8 +5,8 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 
-async function load(side: boolean, habit: boolean) {
-  vi.stubEnv('ALIGN_SIDE', side ? '1' : '0'); vi.stubEnv('RCV_HABIT', habit ? '1' : '0');
+async function load(side: boolean, habit: boolean, lone = false) {
+  vi.stubEnv('ALIGN_SIDE', side ? '1' : '0'); vi.stubEnv('RCV_HABIT', habit ? '1' : '0'); vi.stubEnv('ALIGN_LONE', lone ? '1' : '0');
   vi.resetModules();
   const { alignOffense } = await import('../src/playbook/alignment.js');
   const { FORMATION_BY_ID } = await import('../src/playbook/formations.js');
@@ -27,6 +27,12 @@ describe('ALIGN_SIDE', () => {
     const offRooms = [lone(off, b), lone(off, f)].sort((p, q) => p - q), onRooms = [lone(on, b), lone(on, f)].sort((p, q) => p - q);
     expect(offRooms[1] - offRooms[0]).toBeLessThan(0.5);
     expect(onRooms[1] - onRooms[0]).toBeGreaterThan(4);
+  });
+  it('ALIGN_LONE: a lone #1 on a vertical sets the same split from the ball on either hash', async () => {
+    const m = await load(true, false, true);
+    const split = (ballY: number) => Math.abs(m.alignOffense(m.f, false, 40, ballY, { kind: 'pass', pass: m.pass }).spots.X.pos.y - ballY);
+    expect(split(m.hash)).toBeCloseTo(13.5, 6);
+    expect(split(m.W - m.hash)).toBeCloseTo(13.5, 6);
   });
   it('RCV_HABIT moves a detached receiver by his own habit', async () => {
     const m = await load(false, true);

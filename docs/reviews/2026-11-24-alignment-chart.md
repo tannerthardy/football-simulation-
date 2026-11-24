@@ -143,3 +143,40 @@ With others ours sit at 10.0 against the rule's 9.0: the team habit or the 8 yd 
 **RCV_HABIT** (stated choices, unchanged):
 - #1 of 2 room p25-p75: 10.5-11.8 -> 9.7-12.0 (NFL 9.2-14.9);
 - detached depth p10-p90: 0.74-1.2 -> 0.55-1.39 (NFL -0.07-1.77).
+
+## Arm: a lone #1 sets his split from the ball (ALIGN_LONE, 2026-11-24, off)
+
+Asked by Integration, one arm, stop there. The question: is the formation, not the field, a lone #1's reference?
+- **Alone**, his split is from the ball: 13.5 yd for a go, fade or slant, and 9.5 yd for everything else.
+- **With others** on his side he keeps the ALIGN_SIDE landmarks.
+
+The two numbers are stated choices (L), set from the NFL's **boundary** alone cells only. That makes the seven boundary
+alone cells in-sample; the seven field alone cells are the check. Ball on a hash; the median split from the ball for
+alone cells, the median room to the sideline for others.
+
+| route | alone boundary (split) | alone field (split) | others boundary (room) | others field (room) |
+|---|---|---|---|---|
+| go | 13.5 / 13.4 | 13.5 / 13.2 | 9.0 / 9.0 | 9.0 / 10.0 |
+| slant | 13.5 / 13.5 | (thin) | 9.0 / 9.1 | 9.0 / 9.8 |
+| hitch | 9.5 / 9.9 | 9.5 / 11.7 **-2.2** | 9.0 / 9.3 | 9.0 / 10.1 **-1.1** |
+| in | 9.5 / 9.2 | 9.5 / 11.6 **-2.1** | 9.0 / 9.5 | 9.0 / 10.1 **-1.1** |
+| post | 9.5 / 9.8 | 9.5 / 11.5 **-2.0** | 9.0 / 10.5 **-1.5** | 9.0 / 10.8 **-1.8** |
+| out | 9.5 / 9.2 | 9.5 / 10.6 **-1.1** | 16.3 / 13.0 **+3.3** | 16.3 / 16.9 |
+| corner | 9.5 / 9.1 | 9.5 / 9.3 | 16.3 / 14.1 **+2.2** | 16.3 / 16.4 |
+| cross | 9.5 / 8.2 **+1.3** | 9.5 / 9.4 | 16.3 / 14.7 **+1.6** | 16.3 / 18.9 **-2.6** |
+
+**Score: 18 of 31 cells within 1 yd, against 13 for landmarks alone.**
+- In-sample: 6 of the 7 boundary alone cells (the lone cross sits at 8.2).
+- The check: 3 of the 7 field alone cells (go, corner, cross).
+
+So the split from the ball is the right reference for a lone vertical: 13.2-13.5 yd on either side. It also fits the
+boundary non-verticals (9.1-9.9).
+
+To the field, a lone in-breaker sets about 2 yd wider than he does to the boundary (11.5-11.7 from the ball). Neither
+reference alone explains that; it is a third term. One reading is that the field's extra room lets the in-breaker widen
+the window inside him. That is a hypothesis; no source was found and nothing was built. The with-others misses are
+unchanged from the landmark rule.
+
+The sim reproduces the coded splits (24 games, all three flags on, `out/chart/lo.jsonl.gz`):
+- lone go and slant 12.5-13.5;
+- lone others 8.1-9.5. Where it is under 9.5, the team habit (wrRoom) or the 8 yd minimum split takes it.

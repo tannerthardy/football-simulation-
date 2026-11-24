@@ -373,6 +373,7 @@
     "PLAN_KEYS_3": "on",
     "ALIGN_SIDE": "off",
     "RCV_HABIT": "off",
+    "ALIGN_LONE": "off",
     "ROUTE_EFFORT": "off",
     "ROUTE_END": "on",
     "CROSS_OVER": "off",

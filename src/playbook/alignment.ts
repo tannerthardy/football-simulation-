@@ -414,6 +414,14 @@ function landmarkRoom(route: string, field: boolean): [number, number] | null {
  * Stated choices (L), not fitted: the variation the NFL shows inside a route and side class (p25-p75 about 2 yd) comes
  * first from the route and side (ALIGN_SIDE) and second from the man. Off, only the team's habit (wrRoom) varies. */
 export const RCV_HABIT = process.env.RCV_HABIT === '1';
+/** ALIGN_LONE (experimental, off; ALIGN_LONE=1, with ALIGN_SIDE): a lone #1 (no other detached receiver on his side)
+ * sets his split from the ball, not from a field landmark: the formation, not the field, is his reference. A vertical
+ * or a slant takes the wide split, 13.5 yd from the ball (room to stem outside the corner); every other route the normal
+ * split, 9.5 yd (room to break either way). With others on his side he keeps the ALIGN_SIDE landmarks. Two stated
+ * numbers (L), set from the NFL's boundary cells only (go/slant 13.4-13.5, others 9.1-9.9); the field cells are the
+ * check. Results: docs/reviews/2026-11-24-alignment-chart.md. */
+export const ALIGN_LONE = process.env.ALIGN_LONE === '1';
+const LONE_WIDE = 13.5, LONE_NORMAL = 9.5;
 const RUN_ROOM: [number, number] = [15, 10.8];
 const ANY_ROOM: [number, number] = [13.5, 11];
 
@@ -463,7 +471,9 @@ export function alignOffense(formation: Formation, flip: boolean, los: number, b
     if (!ALIGN_SIDE || !route) return base;
     // His side is the field when it has more room from the ball to the sideline than the other side.
     const mine = sideSign(side) > 0 ? FIELD_WIDTH - ballY : ballY, field = mine > FIELD_WIDTH - mine + 1e-6;
-    return landmarkRoom(route, field) ?? base;
+    const lm = landmarkRoom(route, field);
+    if (!lm || !ALIGN_LONE) return lm ?? base;
+    return [mine - (PLUS_ROUTES.has(route) ? LONE_WIDE : LONE_NORMAL), lm[1]];
   };
   const habitRoom = (slot: string): number => (ctx.style?.wrRoom ?? 0) + (RCV_HABIT ? ctx.habit?.[slot]?.room ?? 0 : 0);
   for (const [slot, a] of entries) {
