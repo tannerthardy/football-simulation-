@@ -1,0 +1,3 @@
+running: npx vitest run --project core --project core-defaults --reporter=json --outputFile=/tmp/claude-0/-home-user-football-simulation-/9210c1a2-1660-5859-9942-1af6851106a9/scratchpad/wq95/out/red-diff-result.json
+tests run: 4453; failing: 57; on the ledger: 57
+new red: 0, fixed: 0

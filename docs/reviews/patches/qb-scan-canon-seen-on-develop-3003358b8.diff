@@ -1,0 +1,418 @@
+diff --git a/config/baseline.json b/config/baseline.json
+index 26f1b159b..f2e8ac0bd 100644
+--- a/config/baseline.json
++++ b/config/baseline.json
+@@ -371,6 +371,8 @@
+     "THROW_PLATFORM": "0",
+     "QB_BELIEVED_DEF": "0",
+     "QB_SEEN_MAN": "0",
++    "QB_SCAN": "0",
++    "QB_CANON_SEEN": "0",
+     "QB_SEEN_OUT": "0",
+     "QB_SEEN_REC": "0",
+     "ACC_RADIUS": "0",
+diff --git a/config/reference-stack.json b/config/reference-stack.json
+index 1638e64b3..f68769bd1 100644
+--- a/config/reference-stack.json
++++ b/config/reference-stack.json
+@@ -334,6 +334,8 @@
+     "THROW_PLATFORM": "off",
+     "QB_BELIEVED_DEF": "on",
+     "QB_SEEN_MAN": "on",
++    "QB_SCAN": "on",
++    "QB_CANON_SEEN": "on",
+     "QB_SEEN_OUT": "on",
+     "QB_SEEN_REC": "on",
+     "ACC_RADIUS": "off",
+diff --git a/docs/FLAGS.md b/docs/FLAGS.md
+index e4d0faa97..29204b736 100644
+--- a/docs/FLAGS.md
++++ b/docs/FLAGS.md
+@@ -2,7 +2,7 @@
+ 
+ Every engine switch read from the environment, recounted from `src` at `57f50fc3` on 2026-10-22. This includes #210's promotion and #205's two additional default-on switches. Flags that are not on develop (parked, removed from a PR, or only on a side branch) are kept in [PARKED.md](PARKED.md) so the ideas are not lost. Registration rules are in [PLAN.md](PLAN.md): at most 10 experimental flags, and each expires two reviews after it lands.
+ 
+-There are 503 flags read from the environment in `src` (recounted 2026-11-24, engine-95: engine-94 plus THROWAWAY_FELT (on); engine-94: engine-93 plus FLIGHT_BREAK (on) and FLIGHT_LEAD (off, parked); engine-93: engine-92 plus HEAD_FOLLOW (on); engine-92: engine-91 plus PERIPH_ACUITY (on); engine-91: engine-90 plus STEM_WORK (on); engine-90: engine-89 plus READ_VERTICAL_LOS and BACK_CLEAR (on); engine-89: engine-88 plus FLAT_CARRY (on); engine-88: engine-87 plus FORECAST_FINISH and QB_ROLE_PATH (on), READ_WINDOW and QB_CLOSE_BELIEF (off); engine-87: engine-86 plus HALF_KEY (on); engine-86 was engine-85 plus MUSH_MATCH (on); engine-85 was engine-84 plus FLAT_SINK (on); engine-84 was engine-83 plus DOWN_RISE_PLANT (on); engine-83 was engine-82 plus QB_DRIVE, QB_RHYTHM_THROW, QB_ALIGN, QB_BODY_FOLLOW, QB_WINDOW_ARRIVE, QB_KEY_PLANT, QB_STICK, QB_PEEK_CLOCK, QB_MOF_READ, QB_DEEP_WAIT and QB_STANCE; QB_DRIVE, QB_RHYTHM_THROW, QB_WINDOW_ARRIVE, QB_KEY_PLANT and QB_STICK on): 383 are on unless set to `0`, 92 are off unless set to `1`, and 28 are numeric scales or modes (identity value unless listed in the stack's numeric section). The rows below carry each flag's history.
++There are 505 flags read from the environment in `src` (`QB_SCAN` and `QB_CANON_SEEN` on (leak removals), Flex 2026-11-24; recounted 2026-11-24, engine-95: engine-94 plus THROWAWAY_FELT (on); engine-94: engine-93 plus FLIGHT_BREAK (on) and FLIGHT_LEAD (off, parked); engine-93: engine-92 plus HEAD_FOLLOW (on); engine-92: engine-91 plus PERIPH_ACUITY (on); engine-91: engine-90 plus STEM_WORK (on); engine-90: engine-89 plus READ_VERTICAL_LOS and BACK_CLEAR (on); engine-89: engine-88 plus FLAT_CARRY (on); engine-88: engine-87 plus FORECAST_FINISH and QB_ROLE_PATH (on), READ_WINDOW and QB_CLOSE_BELIEF (off); engine-87: engine-86 plus HALF_KEY (on); engine-86 was engine-85 plus MUSH_MATCH (on); engine-85 was engine-84 plus FLAT_SINK (on); engine-84 was engine-83 plus DOWN_RISE_PLANT (on); engine-83 was engine-82 plus QB_DRIVE, QB_RHYTHM_THROW, QB_ALIGN, QB_BODY_FOLLOW, QB_WINDOW_ARRIVE, QB_KEY_PLANT, QB_STICK, QB_PEEK_CLOCK, QB_MOF_READ, QB_DEEP_WAIT and QB_STANCE; QB_DRIVE, QB_RHYTHM_THROW, QB_WINDOW_ARRIVE, QB_KEY_PLANT and QB_STICK on): 385 are on unless set to `0`, 92 are off unless set to `1`, and 28 are numeric scales or modes (identity value unless listed in the stack's numeric section). The rows below carry each flag's history.
+ 
+ **Promotion (2026-11-09):** the reference stack `run-ref-4` is now the engine's default. The 90 flags it lists `on` are read as on unless set to `0` (rows marked "promoted" below); the rest are unchanged. Decisions and evidence for each flag are in [REFERENCE_STACK.md](REFERENCE_STACK.md); `npm run ref -- --list` is the current inventory, and `npm run ref -- --off -- <command>` runs the engine as it was before. The test suites still run on the pre-promotion engine (pinned in `vitest.config.ts`) until their recorded cases are re-recorded. The counts in the paragraph above predate all of this.
+ 
+@@ -227,6 +227,8 @@ There are 503 flags read from the environment in `src` (recounted 2026-11-24, en
+ | `THROW_PLATFORM` | off | experimental (QB lane, throw mechanics, 2026-11-13; first build, not yet read) | quarterback | `src/sim/behaviors/qb.ts` (`platform`, `missSigma`, `release`) | set at first review. What moving costs a throw, continuously: stepping toward the target is free up to a stride; the rest of his velocity is carried by the ball and the share he does not correct (by throw-on-run) is a miss along his motion, growing with flight time; moving across or away from the target takes his base out (an arm throw). Replaces the 1.15-1.6x step at 2.2 yd/s. Decided by ball against aim by platform (`scripts/diag/eyes/deep-split.ts`) and the ordering set < stepping in < drifting away < across the body; a set throw is unchanged. Never fitted to completions |
+ | `QB_BELIEVED_DEF` | on | promoted 2026-11-14 (engine-63; `=0` restores); was experimental (QB lane, information rule, 2026-11-13; staged test `test/qb-believed-def.test.ts`; game rows flat) | quarterback | `src/sim/behaviors/qb.ts` (`believe`, `seenTied`, in `window`, `screenDead`, `updateRush`), `src/sim/believed.ts` | set at first review. In pricing a throw he no longer reads each defender's true physical profile and exact ball-skills rating, or the sim's engagement record: body and ball skills are the position's typical values corrected toward the man's own by how well he knows the opponent (awareness and experience), fixed for the play; tied up is an offensive body within arm's length of the defender in his pictures. Decided by its own row (his priced chance against outcomes by defender quality, completion, INT); a loss is repaired by preparation as a mechanism, not by the leak |
+ | `QB_SEEN_MAN` | on | promoted 2026-11-14 (engine-63; `=0` restores); was experimental (QB lane, information rule, 2026-11-13; staged test `test/qb-seen-man.test.ts` on its main site; no game row yet) | quarterback | `src/sim/qbmind.ts` (`expectedPos`, `quickCheck`), `src/sim/behaviors/qb.ts` (sets `receiverAt`) | set at first review. A man defender he is not looking at is remembered on his receiver where the quarterback's own forecast has that receiver, not on the receiver's true position; with no belief to place a defender he falls back to his last picture, not the true position; the check at the line reads corner depth with his alignment noise. Decided by its own row (estimate error for unseen man defenders, interceptions against man); a loss is repaired by perception, not by the leak |
++| `QB_SCAN` | on | leak removal, on at landing (`=0` restores; Flex, 2026-11-24; QB decision plan §1.6) | quarterback | `src/sim/qbmind.ts` (`QBMind.scanned`) | his pre-snap picture is one full scan with a per-defender error drawn once per play (recognition-scaled), feeding his memory at the snap, the coverage features, the box count, the screen look and the quick check. Off: memory seeded with exact positions; four reads with independent fresh noise. |
++| `QB_CANON_SEEN` | on | leak removal, on at landing (`=0` restores; Flex, 2026-11-24; QB decision plan §1.6) | quarterback | `src/sim/qbmind.ts` (canonical looks, `cornersSeen`) | the canonical looks use the defense's personnel slots and the front's visible alignment (front, edge, strength, mug, Sam on) only; corners are found where he sees them (on each side the widest defensive back of the visible personnel group within 12 yd of the line and 4+ yd off the ball; attempt 1's 8 yd floor and 9 yd depth cut missed 40-50% of corners on condensed trips and heavy 13 and fell to quickCheck's default; staged probe `scripts/diag/eyes/corner-find.mts`: 98-100% right in 17 looks incl. press, bunch, condensed, nub and rolled safeties, residual misses scan-only at rec <= 0.5). Off: the call object and the CB_S / CB_W labels. |
+ | `QB_SEEN_OUT` | on | promoted 2026-11-14 (engine-63; `=0` restores); was experimental (QB lane, information rule, 2026-11-13; staged test `test/qb-seen-out.test.ts`; game rows near flat) | quarterback | `src/sim/behaviors/qb.ts` (`seenOut`, `checkRelease`, `breakClock`, `ready`) | Whether a check-release man is out on his route comes from the quarterback's own picture placing him on his installed release route (then he stays out), not from the man's behaviour object; gates the rhythm outlet, his readiness and his place in the hot order. A slow screen's settle is read from where the quarterback has the receiver. |
+ | `QB_SEEN_REC` | on | promoted 2026-11-14 (engine-63; `=0` restores); was experimental (QB lane, information rule, 2026-11-14; first build) | quarterback | `src/sim/behaviors/qb.ts` (`has`, `evaluate`, `orderReads`) | The remaining reads of his own receivers' true state use where he has them (his forecast, else his delayed picture): a receiver's side for the look-off and the hot side, the verticals' stems for the peek, the clear-look test, the fallback target point, and the man-coverage reorder (with his picture of the defender). A receiver is down when his delayed picture shows him off his feet; a block is the call or an unseen check-release man, not the engagement record. With `QB_BELIEVED_DEF` the reorder also uses the defender's believed speed and man coverage. |
+ | `ACC_RADIUS` | off | experimental (deep-window belief, 2026-11-13) | QB | `src/sim/behaviors/qb.ts` (`window`, pAcc) | set at first review. His accuracy belief's catchable radius grows with the flight and the receiver's ball skills (1.6 + 0.9 T yd) instead of a fixed 1.35: our own catches by aim miss keep about 0.6-0.9 of an on-target ball's completion at a 2 yd miss and 0.2-0.55 at 3 yd (short to long flights), where the fixed radius priced 0.33 and 0.08. To be carded beside Coverage's medium-flight ball defending (our defenders 4.5 yd from the ball at 1.2-1.8 s against the NFL's 2.8). docs/reviews/2026-11-13-qb-gather.md |
+diff --git a/scripts/diag/eyes/corner-find.mts b/scripts/diag/eyes/corner-find.mts
+new file mode 100644
+index 000000000..ee4677ba0
+--- /dev/null
++++ b/scripts/diag/eyes/corner-find.mts
+@@ -0,0 +1,95 @@
++/** QB_CANON_SEEN corner finding (Flex, 2026-11-24): how often the passer's positional corner rule (qbmind.ts cornersSeen,
++ * called here directly: per side, the widest defensive back within 12 yd of the line and 4+ yd off the ball, in his
++ * QB_SCAN picture) names a man who is not the outside
++ * corner, on press, bunch/stack, condensed splits and rotated / inverted safeties; and what the miss does downstream (the
++ * quick-game answer he checks to, against the answer the true corners give). Staged pre-snap only: no World steps.
++ * Truth per side = the CB_S / CB_W standing widest on that side (true positions). Kinds of miss:
++ *   other  - he names a safety / nickel / backer instead
++ *   none   - he finds no one on that side; "both" = no corner on either side, so quickCheck falls back to its default
++ * "rule" = the rule on true positions already misses; "scan" = only his scan error makes it miss.
++ * usage: node --import tsx scripts/diag/eyes/corner-find.mts [seeds=60] */
++import { Rng } from '../../../src/core/rng.js';
++import { generateTeam, pickDefense, pickOffense } from '../../../src/league/team.js';
++import { PASS_BY_ID } from '../../../src/playbook/concepts.js';
++import { COVERAGE_BY_ID, FRONT_BY_ID } from '../../../src/playbook/defense.js';
++import { FORMATION_BY_ID } from '../../../src/playbook/formations.js';
++import { PlaySim } from '../../../src/sim/playsim.js';
++import { cornersSeen } from '../../../src/sim/qbmind.js';
++import { DEF_PERSONNEL } from '../../../src/playbook/types.js';
++
++type V = { x: number; y: number };
++const N = Number(process.argv[2] ?? 60);
++const off = generateTeam(new Rng(41), 'Probe O', 'PRBO', { strength: .55 });
++const def = generateTeam(new Rng(42), 'Probe D', 'PRBD', { strength: .55 });
++const CASES: { name: string; form: string; cov: string; ballY?: number; room?: number; pers?: 'nickel' | 'base43' }[] = [
++  { name: 'doubles, cover 3 (control)', form: 'gun_doubles_11', cov: 'cover3' },
++  { name: 'press: doubles, cover 1', form: 'gun_doubles_11', cov: 'cover1' },
++  { name: 'press: doubles, 2-man', form: 'gun_doubles_11', cov: 'cover2man' },
++  { name: 'press: trips, cover 0', form: 'gun_trips_11', cov: 'cover0' },
++  { name: 'bunch, cover 1 banjo', form: 'gun_bunch_11', cov: 'cover1_banjo' },
++  { name: 'bunch, cover 3', form: 'gun_bunch_11', cov: 'cover3' },
++  { name: 'stack/wing: ace 12, cover 3', form: 'ace_12', cov: 'cover3', pers: 'base43' },
++  { name: 'condensed: doubles room+6, cover 1', form: 'gun_doubles_11', cov: 'cover1', room: 6 },
++  { name: 'condensed: doubles room+6, cover 3', form: 'gun_doubles_11', cov: 'cover3', room: 6 },
++  { name: 'condensed: trips room+6, cover 4', form: 'gun_trips_11', cov: 'cover4', room: 6 },
++  { name: 'boundary hash: doubles, cover 2', form: 'gun_doubles_11', cov: 'cover2', ballY: 18.5 },
++  { name: 'heavy 13, cover 1', form: 'heavy_13', cov: 'cover1', pers: 'base43' },
++  { name: 'rolled: cover 3 buzz', form: 'gun_doubles_11', cov: 'cover3_buzz' },
++  { name: 'rolled: cover 3 cloud', form: 'gun_doubles_11', cov: 'cover3_cloud' },
++  { name: 'rolled: cover 2 invert', form: 'gun_doubles_11', cov: 'cover2_invert' },
++  { name: 'rolled: cover 6 rev', form: 'gun_doubles_11', cov: 'cover6_rev' },
++  { name: 'rolled: cover 8 trix', form: 'gun_trips_11', cov: 'cover8_trix' },
++];
++const RECS = [0.2, 0.5, 0.9];
++
++function pickIdx(P: V[], db: boolean[], los: number, by: number, side: number): number {
++  const pts = P.map((p, i) => ({ p, db: db[i] }));
++  const got = cornersSeen(pts, los, by).find((q) => (q.y - by) * side > 0);
++  return got ? P.indexOf(got) : -1;
++}
++const quick = (depth: number) => depth > 5 ? 'hitches' : depth < 2.5 ? 'slant_flat' : 'quick_outs';
++
++console.log('| case | rec | sides | right | other: rule / scan | none: rule / scan | other is | |depth err| on a right pick (yd) | quick answer differs | both missed | errors |');
++console.log('|---|---|---|---|---|---|---|---|---|---|---|');
++for (const c of CASES) {
++  const formation = FORMATION_BY_ID[c.form], coverage = COVERAGE_BY_ID[c.cov];
++  if (!formation || !coverage) { console.log(`| ${c.name} | missing ${!formation ? c.form : c.cov} |`); continue; }
++  const pers = c.pers ?? 'nickel';
++  for (const rec of RECS) {
++    let both = 0, sides = 0, right = 0, oRule = 0, oScan = 0, nRule = 0, nScan = 0, qd = 0, plays = 0, errs = 0; const who = new Map<string, number>(); const dErr: number[] = [];
++    for (let s = 0; s < N; s++) {
++      try {
++        const sim = new PlaySim({ offense: pickOffense(off, formation.personnel), defense: pickDefense(def, pers),
++          offCall: { formation, flip: s % 2 === 1, kind: 'pass', pass: PASS_BY_ID.hitches, label: 'probe' },
++          defCall: { personnel: pers, front: FRONT_BY_ID.over, coverage, pressure: null, label: 'probe' },
++          los: 40, ballY: c.ballY ?? 26.67, firstDownX: 50, seed: 1000 + s, audibles: false,
++          ...(c.room != null ? { offStyle: { wrRoom: c.room } } : {}) } as ConstructorParameters<typeof PlaySim>[0]);
++        const qb = sim.qbMind as unknown as { rec: number; scanErr: Map<unknown, V>; scanned(d: unknown): V };
++        qb.rec = rec; qb.scanErr.clear();
++        const T = sim.defense.map((d) => ({ x: d.pos.x, y: d.pos.y })), S = sim.defense.map((d) => qb.scanned(d));
++        const los = sim.los, by = sim.ballY; plays++;
++        const db = sim.defense.map((d) => { const g = DEF_PERSONNEL[pers]?.[d.slot as keyof typeof DEF_PERSONNEL['nickel']]; return g === 'CB' || g === 'S'; });
++        let found = 0;
++        const seenD: number[] = [], trueD: number[] = [];
++        for (const side of [1, -1]) {
++          let tc = -1;
++          sim.defense.forEach((d, i) => { if ((d.slot === 'CB_S' || d.slot === 'CB_W') && (T[i].y - by) * side > 0 && (tc < 0 || (T[i].y - by) * side > (T[tc].y - by) * side)) tc = i; });
++          if (tc < 0) continue;
++          sides++; trueD.push(T[tc].x - los);
++          const r = pickIdx(T, db, los, by, side), k = pickIdx(S, db, los, by, side);
++          if (k >= 0) { seenD.push(S[k].x - los); found++; }
++          if (k === tc) { right++; dErr.push(Math.abs(S[k].x - T[tc].x)); continue; }
++          if (k < 0) { if (r < 0) nRule++; else nScan++; continue; }
++          if (r === tc) oScan++; else oRule++;
++          const sl = sim.defense[k].slot; who.set(sl, (who.get(sl) ?? 0) + 1);
++        }
++        if (!found) both++;
++        const mean = (a: number[], dflt: number) => a.length ? a.reduce((x, y) => x + y, 0) / a.length : dflt;
++        if (quick(mean(seenD, 6)) !== quick(mean(trueD, 6))) qd++;
++      } catch (e) { errs++; if (errs === 1) console.error(c.name, String(e).slice(0, 200)); }
++    }
++    const pct = (n: number, d: number) => d ? (100 * n / d).toFixed(1) + '%' : '-';
++    const med = dErr.sort((a, b) => a - b)[Math.floor(dErr.length / 2)] ?? NaN;
++    console.log(`| ${c.name} | ${rec} | ${sides} | ${pct(right, sides)} | ${pct(oRule, sides)} / ${pct(oScan, sides)} | ${pct(nRule, sides)} / ${pct(nScan, sides)} | ${[...who].map(([k, v]) => `${k} ${v}`).join(', ') || '-'} | ${med.toFixed(2)} | ${pct(qd, plays)} | ${pct(both, plays)} | ${errs} |`);
++  }
++}
+diff --git a/src/sim/qbmind.ts b/src/sim/qbmind.ts
+index 2538cf2ab..971f25219 100644
+--- a/src/sim/qbmind.ts
++++ b/src/sim/qbmind.ts
+@@ -37,7 +37,7 @@ import { alignDefense, zoneLandmark, type DefenseAlignment } from '../playbook/a
+ import { PASS_BY_ID, RUN_BY_ID } from '../playbook/concepts.js';
+ import { PRESSURE_BY_ID } from '../playbook/defense.js';
+ import { COVERAGE_BY_ID, FAMILY_REPRESENTATIVE, familyOf } from '../playbook/coverages.js';
+-import type { Coverage, DefSlot, DefensivePlayCall, OffensivePlayCall, PassConcept } from '../playbook/types.js';
++import { DEF_PERSONNEL, type Coverage, type DefPersonnelId, type DefSlot, type DefensivePlayCall, type OffensivePlayCall, type PassConcept } from '../playbook/types.js';
+ import { r01 } from '../players/types.js';
+ import type { Agent } from './agent.js';
+ import type { PlaySim } from './playsim.js';
+@@ -58,6 +58,21 @@ const SCREEN_QB = process.env.SCREEN_QB === '1';
+  * front, personnel and alignment tags, all of which are what the alignment in front of him shows; only the coverage
+  * and pressure are swapped, and a disguised shell still fools him. Not changed. */
+ const QB_SEEN_MAN = process.env.QB_SEEN_MAN !== '0';
++/** QB_SCAN (on, a leak removal; QB_SCAN=0 restores; QB decision plan §1.6, 2026-11-24): what his pre-snap scan can
++ * honestly see. Before the snap he has time to survey the whole field, so every defender is in his picture (a full scan is
++ * fair); exactness is not. Each defender is placed with one error of his own, drawn once per play at the recognition-scaled
++ * size the reads already used (0.3 + 1.0 x (1 - recognition) yd deep, 0.7 of that across), and that one picture feeds
++ * everything he reads before the snap: his memory at the snap, the coverage features, the box count for his checks, the
++ * screen look and the quick check. Off: the memory was seeded with each defender's exact position, and each of the four
++ * reads drew fresh noise around the true positions, so he held four different pictures and an exact one. */
++const QB_SCAN = process.env.QB_SCAN !== '0';
++/** QB_CANON_SEEN (on, a leak removal; QB_CANON_SEEN=0 restores; QB decision plan §1.6): the looks he compares against are
++ * built only from what he can see. The defense's personnel (who is on the field) and its front's alignment (the front, the
++ * end men's edge, its strength, a mug or a Sam walked onto the line) are visible; the slot labels of the actual call and
++ * its other parts are not. The canonical looks use the personnel's slots and those visible fields only, and the corners in
++ * his features and his quick check are found where he sees them (on each side the widest defensive back, by the
++ * personnel group he sees, within 12 yd of the line and 4+ yd off the ball), not by their slot labels. Off: the corners were the defenders labelled CB_S / CB_W. */
++const QB_CANON_SEEN = process.env.QB_CANON_SEEN !== '0';
+ /** CLOUD_KILL (experimental, off; screens, 2026-11-14): "never throw a now screen against press or cloud". The now
+  * screen's installed kill (and the screen RPO's read) also takes a defender he sees squatting over the screen receiver,
+  * whoever he is (a corner, a safety rolled down, an apex walked out; QB lane review, 2026-11-14):
+@@ -200,6 +215,8 @@ export class QBMind {
+   readonly identifyAt: number;
+   private readonly canon = new Map<string, DefenseAlignment>();
+   private readonly memory = new Map<Agent, Memory>();
++  /** QB_SCAN: each defender's error in his pre-snap picture (drawn once per play). */
++  private readonly scanErr = new Map<Agent, Vec2>();
+   /** QB_SEEN_MAN: where the quarterback's own forecast has a receiver now (set by QBPass); null when he has none. */
+   receiverAt: ((r: Agent) => Vec2 | null) | null = null;
+   /** Pictures already represented in the prior or a post-snap likelihood. */
+@@ -232,14 +249,19 @@ export class QBMind {
+     this.disguiseRate = scout ? DISGUISE_RATE + (scout.disguiseRate() - DISGUISE_RATE) * (0.3 + 0.7 * this.rec) : DISGUISE_RATE;
+ 
+     // Canonical looks: how each coverage would align against this formation.
+-    const slots = sim.defense.map((d) => d.slot as DefSlot);
++    const dc = sim.defCall;
++    // QB_CANON_SEEN: the personnel he sees (its slots) and the front's visible alignment, not the call itself.
++    const slots = QB_CANON_SEEN ? Object.keys(DEF_PERSONNEL[dc.personnel] ?? {}) as DefSlot[] : sim.defense.map((d) => d.slot as DefSlot);
++    const visible: DefensivePlayCall = QB_CANON_SEEN
++      ? { label: '', personnel: dc.personnel, front: dc.front, coverage: dc.coverage, pressure: null, edge: dc.edge, strength: dc.strength, mug: dc.mug, samOn: dc.samOn }
++      : dc;
+     for (const c of COVERAGES) {
+       const pressure = c.id === 'cover0' ? PRESSURE_BY_ID.zero_6 : null;
+       const ok = !pressure || Object.keys(pressure.blitzers).every((s) => slots.includes(s as DefSlot));
+-      this.canon.set(c.id, alignDefense({ ...sim.defCall, coverage: c, pressure: ok ? pressure : null, shown: undefined }, sim.offAlign, slots));
++      this.canon.set(c.id, alignDefense({ ...visible, coverage: c, pressure: ok ? pressure : null, shown: undefined }, sim.offAlign, slots));
+     }
+-    // Everyone is visible before the snap.
+-    for (const d of sim.defense) this.memory.set(d, { pos: { ...d.pos }, vel: { x: 0, y: 0 }, facing: d.body.facing, t: 0 });
++    // Everyone is visible before the snap. QB_SCAN: where his scan put each of them; off, exactly where they stood.
++    for (const d of sim.defense) this.memory.set(d, { pos: QB_SCAN ? this.scanned(d) : { ...this.standing(d) }, vel: { x: 0, y: 0 }, facing: d.body.facing, t: 0 });
+     this.preSnapRead();
+     for (const [d, m] of this.memory) this.classifiedAt.set(d, m.t);
+     this.report = {
+@@ -279,12 +301,30 @@ export class QBMind {
+     return 0.6 + 1.4 * (1 - this.rec);
+   }
+ 
++  /** Where defender d stands before the snap: the one place his pre-snap reads take a defender's position from; the scan
++   * (QB_SCAN) or the read's own noise applies his error to it. Pre-snap only (the field is still: a full scan sees it). */
++  private standing(d: Agent): Vec2 {
++    return d.pos;
++  }
++
++  /** QB_SCAN: where his pre-snap scan puts defender d: where d stands, off by d's own error, drawn once per play. */
++  private scanned(d: Agent): Vec2 {
++    let e = this.scanErr.get(d);
++    if (!e) {
++      const sigPos = 0.3 + 1.0 * (1 - this.rec);
++      e = { x: this.sim.dice('qb-scan').normal(0, sigPos), y: this.sim.dice('qb-scan').normal(0, sigPos * 0.7) };
++      this.scanErr.set(d, e);
++    }
++    const p = this.standing(d);
++    return { x: p.x + e.x, y: p.y + e.y };
++  }
++
+   private preSnapRead(): void {
+     const sim = this.sim;
+     const sigPos = 0.3 + 1.0 * (1 - this.rec);
+     const seen = new Map<DefSlot, Vec2>();
+     for (const d of sim.defense) {
+-      seen.set(d.slot as DefSlot, { x: d.pos.x + sim.dice('qb-mind').normal(0, sigPos), y: d.pos.y + sim.dice('qb-mind').normal(0, sigPos * 0.7) });
++      seen.set(d.slot as DefSlot, QB_SCAN ? this.scanned(d) : { x: this.standing(d).x + sim.dice('qb-mind').normal(0, sigPos), y: this.standing(d).y + sim.dice('qb-mind').normal(0, sigPos * 0.7) });
+     }
+     const obs = this.preFeatures(seen);
+     const ns = this.noiseScale();
+@@ -343,7 +383,7 @@ export class QBMind {
+     }
+     depths.sort((a, b) => b.d - a.d);
+     const width = depths.length >= 2 ? Math.abs(depths[0].y - depths[1].y) / 10 : 0;
+-    const cbs = ['CB_S', 'CB_W'].map((s) => pos.get(s as DefSlot)).filter((p): p is Vec2 => !!p);
++    const cbs = QB_CANON_SEEN ? cornersSeen([...pos].map(([slot, p]) => ({ p, db: isDbSeen(sim.defCall.personnel, slot) })), los, by) : ['CB_S', 'CB_W'].map((s) => pos.get(s as DefSlot)).filter((p): p is Vec2 => !!p);
+     const cbDepth = cbs.length ? cbs.reduce((s, p) => s + (p.x - los), 0) / cbs.length / 7 : 0.8;
+     let press = 0;
+     for (const o of sim.offense) {
+@@ -606,8 +646,9 @@ export class QBMind {
+     let boxL = 0;
+     let boxR = 0;
+     for (const d of sim.defense) {
+-      const x = d.pos.x + sim.dice('qb-mind').normal(0, sigPos) - los;
+-      const y = d.pos.y + sim.dice('qb-mind').normal(0, sigPos * 0.7);
++      const sp = QB_SCAN ? this.scanned(d) : null;
++      const x = (sp ? sp.x : this.standing(d).x + sim.dice('qb-mind').normal(0, sigPos)) - los;
++      const y = sp ? sp.y : this.standing(d).y + sim.dice('qb-mind').normal(0, sigPos * 0.7);
+       if (x < 7.5 && Math.abs(y - by) < 6.5) {
+         if (y >= by) boxL++;
+         else boxR++;
+@@ -683,8 +724,9 @@ export class QBMind {
+     const sig = 0.3 + 1.0 * (1 - this.rec);
+     let press = false, cloud = false, defenders = 0;
+     for (const d of sim.defense) {
+-      const x = d.pos.x + sim.dice('qb-mind').normal(0, sig) - sim.los;
+-      const y = d.pos.y + sim.dice('qb-mind').normal(0, sig * 0.7);
++      const sp = QB_SCAN ? this.scanned(d) : null;
++      const x = (sp ? sp.x : this.standing(d).x + sim.dice('qb-mind').normal(0, sig)) - sim.los;
++      const y = sp ? sp.y : this.standing(d).y + sim.dice('qb-mind').normal(0, sig * 0.7);
+       if (x < 2.2 && Math.abs(y - r.y) < 1.5) press = true;
+       else if (x >= 2.2 && x <= 5 && (y - r.y) * side >= -0.5 && (y - r.y) * side <= 3) cloud = true;
+       // Off the line (a man on the line is a box player), outside the box, short of the deep shell.
+@@ -731,15 +773,44 @@ export class QBMind {
+   /** Quick-game answer to the look: hitches vs. off corners, slants vs. press. */
+   private quickCheck(): PassConcept | null {
+     const sim = this.sim;
+-    const cbs = sim.defense.filter((d) => d.slot === 'CB_S' || d.slot === 'CB_W');
+-    // QB_SEEN_MAN: corner depth as he sees it, with his alignment noise.
+-    const sig = QB_SEEN_MAN ? 0.3 + 1.0 * (1 - this.rec) : 0;
+-    const depth = cbs.length ? cbs.reduce((s, d) => s + d.pos.x + (sig ? sim.dice('qb-mind').normal(0, sig) : 0) - sim.los, 0) / cbs.length : 6;
++    let depth: number;
++    if (QB_SCAN || QB_CANON_SEEN) {
++      // QB_SCAN / QB_CANON_SEEN: the corners where his scan shows them (by where they stand, not their labels).
++      const seenPos = sim.defense.map((d) => QB_SCAN ? this.scanned(d) : this.standing(d));
++      const cbs = QB_CANON_SEEN ? cornersSeen(seenPos.map((p, i) => ({ p, db: isDbSeen(sim.defCall.personnel, sim.defense[i].slot) })), sim.los, sim.ballY)
++        : sim.defense.filter((d) => d.slot === 'CB_S' || d.slot === 'CB_W').map((d) => QB_SCAN ? this.scanned(d) : this.standing(d));
++      depth = cbs.length ? cbs.reduce((s, p) => s + p.x - sim.los, 0) / cbs.length : 6;
++    } else {
++      const cbs = sim.defense.filter((d) => d.slot === 'CB_S' || d.slot === 'CB_W');
++      // QB_SEEN_MAN: corner depth as he sees it, with his alignment noise.
++      const sig = QB_SEEN_MAN ? 0.3 + 1.0 * (1 - this.rec) : 0;
++      depth = cbs.length ? cbs.reduce((s, d) => s + this.standing(d).x + (sig ? sim.dice('qb-mind').normal(0, sig) : 0) - sim.los, 0) / cbs.length : 6;
++    }
+     const id = depth > 5 ? 'hitches' : depth < 2.5 ? 'slant_flat' : 'quick_outs';
+     return PASS_BY_ID[id] ?? null;
+   }
+ }
+ 
++/** QB_CANON_SEEN: the corners where he sees them. Per side of the ball, the widest defensive back (a group he sees in the
++ * personnel, not which back is which) within 12 yd of the line and outside the tackle box (4+ yd off the ball); none on a
++ * side with no such man. A condensed split or a corner over a nub end still counts; a rolled safety counts only when he
++ * stands wider than the corner, which is then the man the passer reads as the corner. */
++export function cornersSeen(pts: Array<{ p: Vec2; db: boolean }>, los: number, by: number): Vec2[] {
++  const out: Vec2[] = [];
++  for (const side of [1, -1]) {
++    let best: Vec2 | null = null;
++    for (const { p, db } of pts) if (db && p.x - los < 12 && (p.y - by) * side >= 4 && (!best || (p.y - by) * side > (best.y - by) * side)) best = p;
++    if (best) out.push(best);
++  }
++  return out;
++}
++
++/** QB_CANON_SEEN: a defensive back by the personnel he sees (CB / S slots of the visible package). */
++function isDbSeen(personnel: DefPersonnelId, slot: string): boolean {
++  const g = DEF_PERSONNEL[personnel]?.[slot as DefSlot];
++  return g === 'CB' || g === 'S';
++}
++
+ function normalize(logp: Record<string, number>): Record<string, number> {
+   const m = Math.max(...Object.values(logp));
+   const out: Record<string, number> = {};
+diff --git a/test/information-guard-allowlist.ts b/test/information-guard-allowlist.ts
+index bc2c4964a..f89cc1afa 100644
+--- a/test/information-guard-allowlist.ts
++++ b/test/information-guard-allowlist.ts
+@@ -124,7 +124,8 @@ export const INFORMATION_DEBT: InformationDebt[] = [
+   { file: 'src/sim/possession-read.ts', key: 'sim.ballPath', reads: 1, class: 'leak', owner: 'Coverage', since: '2026-11-13', why: "the ball's true future path; a defender estimates it from what he saw of the throw" },
+   { file: 'src/sim/qbmind.ts', key: 'agent.body', reads: 1, class: 'unreviewed', owner: 'QB', since: '2026-11-13', why: "another player's true body state" },
+   { file: 'src/sim/qbmind.ts', key: 'agent.mind', reads: 5, class: 'unreviewed', owner: 'QB', since: '2026-11-13', why: "another player's private decision state" },
+-  { file: 'src/sim/qbmind.ts', key: 'agent.pos', reads: 20, class: 'unreviewed', owner: 'QB', since: '2026-11-13', why: "another player's true position; read it through sim.see(a, other)" },
++  { file: 'src/sim/qbmind.ts', key: 'agent.pos', reads: 12, class: 'unreviewed', owner: 'QB', since: '2026-11-13', why: "another player's true position; read it through sim.see(a, other)" },
++  { file: 'src/sim/qbmind.ts', key: 'agent.pos', reads: 1, class: 'perception', owner: 'Flex', since: '2026-11-24', why: "QBMind.standing: where a defender stands before the snap, the one source of every pre-snap read; QB_SCAN applies the passer's own error, drawn once per play (a full pre-snap scan is fair, exactness is not). Was 8 reads: an exact memory seed and four reads each with fresh noise" },
+   { file: 'src/sim/run-fits.ts', key: 'agent.engagement', reads: 1, class: 'unreviewed', owner: 'Defense', since: '2026-11-13', why: "whether another player is engaged and with whom; he sees contact only through his own pictures" },
+   { file: 'src/sim/run-fits.ts', key: 'agent.pos', reads: 5, class: 'unreviewed', owner: 'Defense', since: '2026-11-13', why: "another player's true position; read it through sim.see(a, other)" },
+   { file: 'src/sim/run-fits.ts', key: 'sim.bond', reads: 1, class: 'unreviewed', owner: 'Defense', since: '2026-11-13', why: "the true tackle bond" },
+diff --git a/test/qb-installed-box-count.test.ts b/test/qb-installed-box-count.test.ts
+index d33682e95..74b1a92e3 100644
+--- a/test/qb-installed-box-count.test.ts
++++ b/test/qb-installed-box-count.test.ts
+@@ -23,6 +23,9 @@ function fixture(form: string, box: number, flip = false) {
+   const authority = vi.spyOn(sim.rng, 'chance').mockReturnValue(true);
+   const noise = vi.spyOn(sim.rng, 'normal').mockReturnValue(0);
+   vi.spyOn(sim.qbMind, 'pSingleHigh').mockReturnValue(.8);
++  // QB_SCAN: his pre-snap picture's errors are drawn once, at construction (before the noise mock); clear them so the
++  // check draws the picture under the mock (two draws per defender, as the fresh-noise path drew) and sees it exactly.
++  (sim.qbMind as unknown as { scanErr?: Map<unknown, unknown> }).scanErr?.clear();
+   sim.defense.forEach((d, i) => { d.body.pos = i < box
+     ? { x: sim.los + 1, y: sim.ballY + i - (box - 1) / 2 }
+     : { x: sim.los + 10, y: sim.ballY + 15 }; });
+@@ -30,7 +33,7 @@ function fixture(form: string, box: number, flip = false) {
+ }
+ /** QB_SEEN_MAN: on a check that reaches his quick look at the corners, he draws his noise on each corner's depth:
+  * two more draws (24 with the flag on, 22 off). */
+-const SEEN_MAN_DRAWS = process.env.QB_SEEN_MAN === '1' ? 2 : 0;
++const SEEN_MAN_DRAWS = process.env.QB_SEEN_MAN === '1' && process.env.QB_SCAN === '0' ? 2 : 0; // QB_SCAN: the quick look reads the same scan, no draws
+ function check(f: ReturnType<typeof fixture>, quickLook = false) {
+   const result = f.sim.qbMind.preSnapCheck(f.sim.offCall, { hurry: false, down: 1, distance: 10 });
+   expect(f.authority).toHaveBeenCalledTimes(1);
+diff --git a/test/red-ledger.json b/test/red-ledger.json
+index 39a147bfe..5e8b4f489 100644
+--- a/test/red-ledger.json
++++ b/test/red-ledger.json
+@@ -113,20 +113,6 @@
+    "flag": "PLAN_KEYS_2, PLAN_ROLES, QB_RHYTHM_THROW",
+    "class": "fixture"
+   },
+-  {
+-   "file": "test/qb-installed-box-count.test.ts",
+-   "test": "pre-snap numbers include installed fullback work once retains the nine-versus-six singleback overload control",
+-   "owner": "QB",
+-   "flag": "QB_SEEN_MAN",
+-   "class": "fixture"
+-  },
+-  {
+-   "file": "test/qb-installed-box-count.test.ts",
+-   "test": "pre-snap numbers include installed fullback work once still checks out against a genuine ten-versus-seven overload, without double-counting centered F",
+-   "owner": "QB",
+-   "flag": "QB_SEEN_MAN",
+-   "class": "fixture"
+-  },
+   {
+    "file": "test/qb-seen-out.test.ts",
+    "test": "QB_SEEN_OUT off: the man is ready the moment his behaviour changes, though the quarterback has not seen him",
+diff --git a/test/screen-install.test.ts b/test/screen-install.test.ts
+index ae0749bcb..ae4ba6cc0 100644
+--- a/test/screen-install.test.ts
++++ b/test/screen-install.test.ts
+@@ -56,11 +56,17 @@ describe('screen install (docs/football-handbook/screens.md)', () => {
+   });
+ 
+   it('a now screen with a press kill is checked out of against press, and run against off coverage', () => {
+-    for (const seed of [1, 2]) {
++    // Press is always seen and killed; Cover 3's corners are clearly off. Cover 1 Off's corners stand near 5 yd, the
++    // cloud kill's edge, so through his own scan error (QB_SCAN, drawn once per play) he sometimes reads one as a cloud
++    // corner and checks out: an honest near-margin misread (owner Flex, 2026-11-24; 26/30 seeds kept with QB_SCAN on,
++    // 28/30 off). The contract is that he mostly runs it, not that one seed's draw lands inside the margin.
++    let kept = 0;
++    for (let seed = 1; seed <= 10; seed++) {
+       expect(screen('wide_now_screen', 'gun_doubles_11', seed, 'cover1', true).offCall.pass?.id).not.toBe('wide_now_screen');
+-      expect(screen('wide_now_screen', 'gun_doubles_11', seed, 'cover1_off', true).offCall.pass?.id).toBe('wide_now_screen');
+-      expect(screen('wide_now_screen', 'gun_doubles_11', seed, 'cover3', true).offCall.pass?.id).toBe('wide_now_screen');
++      if (screen('wide_now_screen', 'gun_doubles_11', seed, 'cover1_off', true).offCall.pass?.id === 'wide_now_screen') kept++;
++      if (seed <= 2) expect(screen('wide_now_screen', 'gun_doubles_11', seed, 'cover3', true).offCall.pass?.id).toBe('wide_now_screen');
+     }
++    expect(kept).toBeGreaterThanOrEqual(7);
+   });
+ 
+   it('released linemen sell the pass, stay within a yard of the line until the throw (8-3-1), then block the screen', () => {
