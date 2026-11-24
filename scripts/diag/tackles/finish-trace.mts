@@ -11,6 +11,9 @@ const { generateTeam } = await import(`${W}/src/league/team.ts`);
 const { simulateGame } = await import(`${W}/src/game/game.ts`);
 const { compilingPlan } = await import(`${W}/src/playbook/read-compiler/runtime.ts`);
 const { writeFileSync } = await import('node:fs');
+const { deviationFraction, supportParams } = await import(`${W}/src/physics/support.ts`);
+const { fatigueFactor } = await import(`${W}/src/physics/kinematics.ts`);
+const { CONTACT_SCALE } = await import(`${W}/src/physics/world.ts`);
 const GAMES = Number(process.argv[2] ?? 2), OUT = process.argv[3], FIRST = Number(process.argv[4] ?? 201);
 const r3 = (v: number) => Math.round(v * 1000) / 1000;
 const rows: any[] = [];
@@ -57,8 +60,14 @@ proto.tick = function (this: any) {
     if (cur.fwd05 === null && el >= 0.5 - 1e-9) cur.fwd05 = r3(fwd);
     if (cur.fwd10 === null && el >= 1.0 - 1e-9) cur.fwd10 = r3(fwd);
     if (cur.trace.length < 40) {
-      const holds = sim.bond ? [...(sim.bond.holds ?? new Map())].map(([d, j]: any) => [d.player.position, d.body.support?.state?.[0], r3(sim.bond.grip?.get(d) ?? 0), r3(j.legs), r3(j.force ?? 0), j.slipping ? 1 : 0]) : [];
-      cur.trace.push([r3(el), r3(fwd), r3(Math.hypot(c.vel.x, c.vel.y)), state?.[0], holds]);
+      const holds = sim.bond ? [...(sim.bond.holds ?? new Map())].map(([d, j]: any) => {
+        const torso = c.profile.radius + d.profile.radius, centers = Math.hypot(d.pos.x - c.pos.x, d.pos.y - c.pos.y);
+        const arm = Math.min(centers, (j.hold ?? centers) + (1 - CONTACT_SCALE) * torso);
+        return [d.player.position, d.body.support?.state?.[0], r3(sim.bond.grip?.get(d) ?? 0), r3(j.legs), r3(j.force ?? 0), j.slipping ? 1 : 0, r3(arm - torso), r3(centers - torso)];
+      }) : [];
+      const sup = c.body.support, cmd = sim.cmds?.[c.idx]?.vel;
+      const dev = sup && sup.state === 'up' ? deviationFraction(sup, supportParams(c.profile), fatigueFactor(c.body.energy)) : null;
+      cur.trace.push([r3(el), r3(fwd), r3(Math.hypot(c.vel.x, c.vel.y)), state?.[0], holds, dev === null ? null : r3(dev), cmd ? r3(Math.hypot(cmd.x, cmd.y)) : null]);
     }
   }
   return out;
