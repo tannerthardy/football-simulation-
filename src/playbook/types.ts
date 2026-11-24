@@ -61,10 +61,6 @@ export interface RoutePoint {
   s?: number;
   /** ROUTE_FILLET: this point is a cut (plant, stick the foot and break): the vertex law applies, no lead. Absent: inferred as before (a lead). */
   cut?: boolean;
-  /** The route's timing point for a throw timed on it (`onBreak`) when the route has no planted break: the landmark he is
-   * thrown to on time (the flat's "landmark at 3 yd", Throw Deep). Data only; read through routes.ts `timingPoint`.
-   * Absent: the first point at or past the route's declared depth. */
-  mark?: boolean;
 }
 
 export type RouteEnd = 'continue' | 'settle' | 'sitVsZone';
@@ -84,6 +80,10 @@ export interface RouteDef {
   /** Legacy installed run-away branch. The name does not grant coverage knowledge. */
   vsMan?: RoutePoint[];
   read?: RouteRead;
+  /** The route's timing point for a throw timed on it (`onBreak`) when it has no planted break, in route coordinates:
+   * where an on-time throw is due (the flat's, 5 yd outward on its leg). Data only, not a path vertex; read through
+   * routes.ts `timingPoint`. Absent: the first point at or past the route's declared depth. */
+  timing?: { d: number; l: number };
   /** Typical target depth for the QB's timing (yards beyond LOS). */
   depth: number;
   /** Route family for defensive anticipation. */
