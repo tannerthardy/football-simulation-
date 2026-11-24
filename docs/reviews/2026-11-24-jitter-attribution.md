@@ -1,0 +1,23 @@
+# Which controllers step our tracks' speed and heading? (attribution; no change)
+
+Tools/Physics, 2026-11-24, for Integration (the open physics-vs-controller item after `2026-11-24-jitter.md`). `scripts/diag/body/sim_steps.mts` (a read-only tap on every 0.05 s tick of every player, 12 games, 1,200 pass plays snap to release, no RNG draw) and `step_rates.py`; table `data/reviews/census/step-attribution.md`. NFL on the same grid and operator: BDB 2025 dropbacks to the release.
+
+## Definition
+
+On the 0.1 s export grid, for a player moving 2 yd/s or more: a **speed step** is |speed(k+1) - speed(k)| / 0.1 over 4.1 yd/s² (the NFL's p90 of that operator); a **heading step** is the direction of travel turning over 8 degrees at 3 yd/s and over (the NFL's p99 region). Each step is charged to a cause from the controller's requested velocity (`sim.cmds`): **request jumped** (a request turned over 20 degrees between ticks, started or stopped, or changed length by over 2 yd/s, within the interval); **request moved smoothly** (the request rotated 8 degrees or changed 1.5 yd/s over the interval without a jump); **request jumped within the 0.4 s before** (he is still carrying it out: the body's response lags); **contact or joint** (in World contact or a joint on him); **neither** (the request steady and no recent jump: the body's own response).
+
+## What the NFL does and ours does
+
+Share of moving intervals with a step (NFL | ours): **heading step WR .014 | .061, TE .016 | .087, RB .020 | .096, LB .019 | .086, CB .016 | .087, S .015 | .122, DL .017 | .047, OL .008 | .017, QB .014 | .007**; **speed step WR .221 | .315, TE .172 | .226, RB .141 | .195, LB .132 | .219, CB .124 | .203, S .081 | .167, DL .092 | .174, OL .034 | .060, QB .088 | .174**. So our heading steps are 3-8 times the NFL's for every skill position and linebacker, our speed steps 1.4-2 times: the earlier note's "ours turns in steps more often" is the heading, and it is large.
+
+## Where they come from
+
+Heading steps of the skill positions and defenders (WR, TE, RB, LB, CB, S), by cause, ours: request jumped .26-.36, request moved smoothly .19-.30, still carrying out a jump in the last 0.4 s .23-.33, contact .01-.10, **neither .11-.21**. **At least 80% of our heading steps follow a controller request that jumped or turned in the interval or the 0.4 s before it; a body that steps its heading with a steady request and no contact is 11-21% of them (CB .11, S .14, LB .13, WR .19, TE .16, RB .21).** The speed steps are more evenly split because the body accelerates at over 4.1 yd/s² under a steady request in an ordinary start or a re-acceleration (WR .59, TE .40, RB .35 neither; defenders .18-.21): that is not jitter, it is the sprint curve, and the NFL's own rate (.08-.22) is the same thing. Offensive linemen's steps are contact (.57 of their speed steps, .30 of heading).
+
+By the controller running when the request moved (share of all request-driven steps): **coverage .32 of speed and .31 + .29 of heading (jumped | smooth), route .15 | .11 of speed and .14 | .13 of heading, rush .12 | .04 and .06 | .02, block .04, carrier .02, QB .02, pursuit .002**. Coverage (zone and man) is the largest single source of heading steps, about 60% of those driven by a request; routes about 27%.
+
+## What this does and does not say
+
+- The body is not jittering: with a steady request and no contact the heading steps 11-21% of the time, and the NFL itself has such steps at 1-2% of intervals; most of ours is a controller that moves its request (a re-aimed landmark or target, a trail, a mirror, a break) between ticks, and the body executing it with the lag the recent-jump category counts. The attribution is of requests, like `dither-budget`'s, not of outcomes: a request that moves 8 degrees smoothly is football (a defender mirroring a receiver turns with him), and the NFL's own 1-2% is that.
+- It does not show that a coverage controller's request is wrong; it shows where the heading steps originate. A coverage defender whose request turns 20+ degrees between ticks (the "jumped" class) is the stage `dither-core.ts` charges to a decision, containment, orientation or spacing; the audit's own per-stage table is the next read for Coverage, with this table saying which group to read it for (coverage first, then routes).
+- Caveats: 12 games, one league draw; the NFL's tracking is smoothed by the provider (a floor under its own steps), so the ratios are an upper bound on how much more often ours steps; the 20-degree jump threshold and the 8-degree heading step are chosen (the NFL's tails), not fitted; steps in plays with a throw, run plays and post-catch are not covered.
