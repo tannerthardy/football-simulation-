@@ -12,13 +12,19 @@ The break, the same both sides, on the receiver's 10 Hz track from the snap to t
   out / in / cross: the frame of his sharpest turn (heading change over +-0.2 s, moving faster than 2 yd/s both sides).
 Reported: release minus break (s; negative = thrown before the break), the share thrown before it, time to throw, air
 yards, the receiver's speed at the ball's arrival and the share under 1 yd/s.
-usage: python3 -I release_vs_break.py name=a.jsonl.gz,... [--player-play player_play.csv]"""
+Also: completion and interceptions for throws before the break and after it (NFL: plays.csv passResult).
+usage: python3 -I release_vs_break.py name=a.jsonl.gz,... [--player-play player_play.csv --plays plays.csv]"""
 import sys, os, json, gzip, csv, math
 args = sys.argv[1:]; PP = {}
 if '--player-play' in args:
     i = args.index('--player-play')
     for r in csv.DictReader(open(args[i + 1])):
         if r['wasTargettedReceiver'] == '1': PP[f"{r['gameId']}-{r['playId']}"] = (r['nflId'], r['routeRan'])
+    del args[i:i + 2]
+RES = {}
+if '--plays' in args:
+    i = args.index('--plays')
+    for r in csv.DictReader(open(args[i + 1])): RES[f"{r['gameId']}-{r['playId']}"] = r['passResult']
     del args[i:i + 2]
 NFL = {'HITCH': 'stop', 'OUT': 'out', 'CORNER': 'out', 'IN': 'in', 'SLANT': 'in', 'POST': 'in', 'CROSS': 'cross', 'GO': 'vertical'}
 SIM = {'hitch': 'stop', 'quick_hitch': 'stop', 'hook': 'stop', 'curl': 'stop', 'comeback': 'stop', 'stick': 'stop',
@@ -73,7 +79,12 @@ for arg in args:
                 fam = NFL.get(t[1]); idx = next((i for i, p in enumerate(raw['players']) if str(p.get('id')) == t[0]), None)
             if not fam or idx is None: continue
             r = one(raw, idx, fam)
-            if r: rows.append(r)
+            if r:
+                if raw.get('source') == 'sim':
+                    lb = raw.get('labels') or {}; r['int'] = bool(lb.get('interception')); r['cmp'] = not r['int'] and 'incomplete' not in (lb.get('ballEvents') or [])
+                else:
+                    pr = RES.get(raw['id']); r['int'] = pr == 'IN'; r['cmp'] = pr == 'C'
+                rows.append(r)
     print(f"== {name} (targeted, thrown: {len(rows)})")
     for fam in ('stop', 'out', 'in', 'cross', 'vertical'):
         R = [r for r in rows if r['fam'] == fam]
@@ -81,3 +92,5 @@ for arg in args:
         B = [r for r in R if r['brk'] is not None]; d = [r['rel'] - r['brk'] for r in B]
         print(f"  {fam:8s} n {len(R):5d} (break found {len(B)}) | release - break p25/50/75 {q(d, .25):+.2f}/{q(d):+.2f}/{q(d, .75):+.2f} s, before the break {sum(x < 0 for x in d) / max(1, len(d)):.0%}"
               f" | release p50 {q([r['rel'] for r in R]):.2f} s, break p50 {q([r['brk'] for r in B]):.2f} | receiver at arrival p50 {q([r['vArr'] for r in R]):.1f} yd/s, under 1: {sum(r['vArr'] < 1 for r in R) / len(R):.0%}")
+        for lab, X in (('before the break', [r for r in B if r['rel'] < r['brk']]), ('after it', [r for r in B if r['rel'] >= r['brk']])):
+            if X: print(f"           thrown {lab}: n {len(X)}, complete {sum(r['cmp'] for r in X) / len(X):.0%}, INT {sum(r['int'] for r in X)} ({sum(r['int'] for r in X) / len(X):.1%})")
