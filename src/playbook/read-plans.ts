@@ -6,6 +6,7 @@
  */
 import type { QbReadPlan } from '../sim/qbv2/plan.js';
 import { PASS_BY_ID, SCREEN_BY_ID } from './concepts.js';
+import { asBackThree } from '../game/concept-fit.js';
 import type { PassConcept, ReceiverRef } from './types.js';
 
 /** Slant-flat: key the flat defender on the plant, the flat then the slant; widens: the slant behind him; sinks under
@@ -35,7 +36,11 @@ export const STICK: QbReadPlan = {
   // No pick: stick is a one-side concept, called to its side. Ross on Leach uses the flat defender's alignment against
   // the stick receiver (inside the Y: expect the shoot; outside: expect the stick) as a lean on which throw comes, not a
   // flip of sides; the key read on the plant answers that question post-snap (Flex asked, 2026-11-24).
-  conceptId: 'stick', drop: 'gun3', readType: 'key',
+  // Drop: the quick game's, three steps under center or one from the gun ("A three-step drop under center or one step
+  // from the gun", Coaching Football Insights; Walsh's "one long and two short steps", Ross). The installed concept keeps
+  // CONCEPT_DROPS' gun3 for the old controller: PLAN_DROP_DIFFERS (QB lane, 2026-11-24: on gun3 the plant came 1.1 s
+  // after the stick's break).
+  conceptId: 'stick', drop: 'quick', readType: 'key',
   reads: [
     { step: 0, look: { kind: 'key', role: 'flat' },
       throws: [{ ref: 'S3', timing: 'onBreak' }, { ref: 'S2', timing: 'onBreak' }],
@@ -345,11 +350,36 @@ export const CONCEPT_GAPS: ReadonlyArray<{ concept: string; taught: string; whil
   { concept: 'mesh', taught: 'a corner on both sides, the better one picked (Win With The Pass)', whileOff: 'W1 runs a go: the flipped first read is a go' },
 ];
 
-/** The authored plans by concept id. */
-export const READ_PLANS: Readonly<Record<string, QbReadPlan>> = Object.fromEntries(
-  [SLANT_FLAT, STICK, HITCHES, QUICK_OUTS, CURL_FLAT, SMASH, DAGGER, MESH, Y_CROSS, FLOOD, LEVELS, FOUR_VERTS, VERTS_HITCH,
-    PA_POST_DIG, PA_SHOT, PA_FLOOD, RB_SLIP_SCREEN, TE_SCREEN, BUBBLE_SCREEN, BUNCH_NOW_SCREEN, WIDE_NOW_SCREEN, TUNNEL_SCREEN]
-    .map((p) => [p.conceptId, p]));
+/** Plans whose drop differs from the installed concept's, and why: the plan follows the taught drop, the installed
+ * concept keeps its mark for the old controller. */
+export const PLAN_DROP_DIFFERS: Readonly<Record<string, string>> = {
+  stick: 'taught quick (three steps under center, one from the gun); installed gun3 (CONCEPT_DROPS)',
+};
+
+const swapRef = (r: ReceiverRef): ReceiverRef => (r === 'S3' ? 'B' : r);
+/** BACK_AS_THREE (src/game/concept-fit.ts asBackThree): from a field with no #3 the back runs the #3's route, so the
+ * plan is the same read with the back where S3 was (stick's flat, flood's flat). Keyed `<id>+b3`, as the call is. */
+export function backThreePlan(p: QbReadPlan): QbReadPlan {
+  return {
+    ...p, conceptId: `${p.conceptId}+b3`,
+    reads: p.reads.map((r) => ({ ...r,
+      look: r.look.kind === 'receiver' ? { kind: 'receiver', ref: swapRef(r.look.ref) } : r.look,
+      throws: r.throws.map((t) => ({ ...t, ref: swapRef(t.ref) })),
+      ...(r.keyRules ? { keyRules: r.keyRules.map((k) => ({ ...k, throwTo: swapRef(k.throwTo) })) } : {}) })),
+    hot: p.hot.map((h) => ({ ...h, answer: { ...h.answer, ref: swapRef(h.answer.ref) } })),
+    checkdown: p.checkdown && p.checkdown.ref === 'B' && p.reads.some((r) => r.throws.some((t) => t.ref === 'S3')) ? null : p.checkdown,
+    source: `${p.source} Back as #3 (BACK_AS_THREE): S3's reads on the back.`,
+  };
+}
+
+const BASE_PLANS = [SLANT_FLAT, STICK, HITCHES, QUICK_OUTS, CURL_FLAT, SMASH, DAGGER, MESH, Y_CROSS, FLOOD, LEVELS, FOUR_VERTS, VERTS_HITCH,
+  PA_POST_DIG, PA_SHOT, PA_FLOOD, RB_SLIP_SCREEN, TE_SCREEN, BUBBLE_SCREEN, BUNCH_NOW_SCREEN, WIDE_NOW_SCREEN, TUNNEL_SCREEN];
+
+/** The authored plans by concept id, with the back-as-#3 version of each concept that has one (`<id>+b3`). */
+export const READ_PLANS: Readonly<Record<string, QbReadPlan>> = Object.fromEntries([
+  ...BASE_PLANS.map((p) => [p.conceptId, p] as const),
+  ...BASE_PLANS.filter((p) => PASS_BY_ID[p.conceptId]?.backThree).map((p) => [`${p.conceptId}+b3`, backThreePlan(p)] as const),
+]);
 
 /** The taught versions these plans were authored on, where they differ from the installed concept (CONCEPT_GAPS).
  * Under CALL_COMPOSE step 2 each is a setting of its concept: slant_flat's and quick_outs' back, levels' outside short
@@ -386,9 +416,12 @@ export function planRefs(plan: QbReadPlan): ReceiverRef[] {
  * the concept's strong and weak are). For the QB lane's plan lookup: a call takes the plan only when every one of these
  * matches (`planFits`). Null for a plan with no installed concept. */
 export function routesOf(plan: QbReadPlan): Map<ReceiverRef, string | null> | null {
-  const base = PASS_BY_ID[plan.conceptId] ?? SCREEN_BY_ID[plan.conceptId];
-  if (!base) return null;
-  const t = TAUGHT_ON[plan.conceptId] ?? {};
+  const b3 = plan.conceptId.endsWith('+b3');
+  const id = b3 ? plan.conceptId.slice(0, -3) : plan.conceptId;
+  const installed = PASS_BY_ID[id] ?? SCREEN_BY_ID[id];
+  if (!installed) return null;
+  const base = b3 ? asBackThree(installed) : installed;
+  const t = TAUGHT_ON[id] ?? {};
   const on = { strong: { ...base.strong, ...t.strong }, weak: { ...base.weak, ...t.weak }, back: t.back ?? base.back };
   return new Map(planRefs(plan).map((ref) => [ref, routeAt(on, ref)]));
 }

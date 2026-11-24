@@ -9,7 +9,10 @@ vi.stubEnv('CONCEPT_TAUGHT', '1');
 const { PASS_BY_ID: PASS, SCREEN_BY_ID } = await import('../src/playbook/concepts.js');
 const PASS_BY_ID = { ...PASS, ...SCREEN_BY_ID };
 // After the stub: read-plans.ts imports the concepts (routesOf), so it must load with the taught installs too.
-const { READ_PLANS } = await import('../src/playbook/read-plans.js');
+const { READ_PLANS, PLAN_DROP_DIFFERS } = await import('../src/playbook/read-plans.js');
+const { asBackThree } = await import('../src/game/concept-fit.js');
+// A back-as-#3 plan ('<id>+b3') is checked against its call: the concept with the back on the #3's route.
+for (const id of Object.keys(READ_PLANS)) if (id.endsWith('+b3')) (PASS_BY_ID as any)[id] = asBackThree(PASS[id.slice(0, -3)]);
 import type { ReceiverRef } from '../src/playbook/types.js';
 
 function routed(id: string): Set<ReceiverRef> {
@@ -26,7 +29,8 @@ describe('authored read plans', () => {
     it(`${plan.conceptId}: consistent with the installed concept`, () => {
       const c = PASS_BY_ID[plan.conceptId];
       expect(c, 'concept exists').toBeTruthy();
-      expect(plan.drop).toBe(c.drop);
+      if (PLAN_DROP_DIFFERS[plan.conceptId.replace(/\+b3$/, '')]) expect(plan.drop).not.toBe(c.drop);
+      else expect(plan.drop).toBe(c.drop);
       const has = routed(plan.conceptId);
       const refs: ReceiverRef[] = [];
       let last = -1;

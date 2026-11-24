@@ -4,6 +4,7 @@
 import { describe, expect, it } from 'vitest';
 import { PASS_BY_ID, SCREEN_BY_ID } from '../src/playbook/concepts.js';
 import { planFits, planRefs, READ_PLANS, routesOf } from '../src/playbook/read-plans.js';
+import { asBackThree } from '../src/game/concept-fit.js';
 
 const TAUGHT = new Set(['slant_flat', 'quick_outs', 'levels', 'flood', 'mesh']);
 
@@ -18,8 +19,10 @@ describe('read plans: the routes they were authored on', () => {
 
   it('the installed concept fits its plan, except where the plan follows the taught version', () => {
     for (const p of Object.values(READ_PLANS)) {
-      const c = PASS_BY_ID[p.conceptId] ?? SCREEN_BY_ID[p.conceptId];
-      const taughtDiffers = TAUGHT.has(p.conceptId) && [...routesOf(p)!].some(([ref, route]) => {
+      const id = p.conceptId.replace(/\+b3$/, '');
+      const c0 = PASS_BY_ID[id] ?? SCREEN_BY_ID[id];
+      const c = p.conceptId.endsWith('+b3') ? asBackThree(c0) : c0;
+      const taughtDiffers = TAUGHT.has(id) && [...routesOf(p)!].some(([ref, route]) => {
         const at = ref === 'B' ? (c.back === 'block' ? null : c.back) : ((ref[0] === 'S' ? c.strong : c.weak) as any)[ref.slice(1)] ?? null;
         return at !== route;
       });
@@ -35,5 +38,12 @@ describe('read plans: the routes they were authored on', () => {
     // slant-flat with a slant-go backside: the plan's backside flat (W2) is now a go
     if (planRefs(READ_PLANS.slant_flat).includes('W2'))
       expect(planFits(READ_PLANS.slant_flat, { ...sf, back: 'check', weak: { 1: 'slant', 2: 'go' } })).toBe(false);
+  });
+
+  it('stick from doubles: the back-as-#3 call fits its own plan, with the flat thrown to the back', () => {
+    const call = asBackThree(PASS_BY_ID.stick);
+    expect(planFits(READ_PLANS['stick+b3'], call)).toBe(true);
+    expect(planFits(READ_PLANS.stick, call)).toBe(false);
+    expect(READ_PLANS['stick+b3'].reads[0].throws.map((t) => t.ref)).toEqual(['B', 'S2']);
   });
 });

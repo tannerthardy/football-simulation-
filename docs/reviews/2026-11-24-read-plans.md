@@ -95,6 +95,12 @@ level" (Throw Deep).
 - Walsh: "one long and two short steps before throwing off of the flat defender's reaction" (Ross).
 - "That one step drop doesn't have enough time in it to go through a progression" (Wilhite).
 - The stick at 5 yd (Throw Deep, Shaw). The arrow's landmark at 3 yd (Throw Deep).
+- The plan's drop is `quick` (three steps under center, one from the gun), the taught drop. The installed concept keeps
+  CONCEPT_DROPS' gun3 for the old controller (`PLAN_DROP_DIFFERS`). The QB lane's staged plays had the gun3 plant 1.1 s
+  after the stick's break (2026-11-24).
+
+**From doubles (no #3):** BACK_AS_THREE puts the back on the flat, so `stick+b3` is the same read with the back where
+S3 was (`backThreePlan`; flood and pa_flood likewise). The back is then not also the checkdown.
 
 **Expected by coverage family:** the key (index 0) against Cover 3, 4 and 2, and against man, where the stick turns out
 away from his man (Stanford Daily). Cover 2 is the contested case: the corner becomes the flat defender and can
