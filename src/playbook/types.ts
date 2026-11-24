@@ -61,6 +61,8 @@ export interface RoutePoint {
   s?: number;
   /** ROUTE_FILLET: this point is a cut (plant, stick the foot and break): the vertex law applies, no lead. Absent: inferred as before (a lead). */
   cut?: boolean;
+  /** GO_STEM: the room this point keeps to his sideline (yd): an outward `l` stops this far from it, unless he started closer. */
+  side?: number;
 }
 
 export type RouteEnd = 'continue' | 'settle' | 'sitVsZone';

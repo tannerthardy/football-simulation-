@@ -11,6 +11,8 @@ import type { RouteDef } from './types.js';
 const BACK_PATHS = process.env.BACK_PATHS !== '0';
 /** SCREEN_QB (experimental, off; behaviors/qb.ts): the tunnel's route from tracking. */
 const SCREEN_QB = process.env.SCREEN_QB === '1';
+/** FLAT_SHAPE (experimental, off; src/sim/route-motion.ts): the back's flat as taught (see back_flat). */
+const FLAT_SHAPE = process.env.FLAT_SHAPE === '1';
 /** ROUTE_EFFORT (experimental, off; src/sim/route-motion.ts): every route's stem at full pace, with the break table below. */
 const ROUTE_EFFORT = process.env.ROUTE_EFFORT === '1';
 /** ROUTE_FILLET (experimental, off; src/sim/route-motion.ts): the break table's cut / roll column applies with it. */
@@ -27,6 +29,29 @@ const ROUTE_FILLET = process.env.ROUTE_FILLET !== '0';
 const CROSS_OVER = process.env.CROSS_OVER === '1';
 /** ROUTE_SHAPE (default on, engine-82; ROUTE_SHAPE=0 turns it off): the in and out breaks as rolls, as taught (see SHAPES below). */
 const ROUTE_SHAPE = process.env.ROUTE_SHAPE !== '0';
+/** GO_STEM (experimental, off): the go stems outside and stacks the corner instead of running a straight line up his
+ * alignment: an outside release, then on to the outside up to 4 yd from where he lined up, keeping 5 yd of room to the
+ * sideline (or the room he started with). Taught: stem the defender, then stack him to own the vertical leverage
+ * (Viqtory Sports, Learn to Stem & Stack at Wide Receiver); the fade's landmark "just inside the numbers" (Gridiron
+ * Strategies, Fade Route With Landmarks) (M: the 5 yd room is measured, not a quoted figure). NFL WR/TE gos (BDB 2025,
+ * PFF GO, not in motion; route_chart.py): 3.7-4.3 yd outside his start by 3.0 s from any split 6-20 yd off the sideline,
+ * ending 5.0 yd from it from a 6-10 yd split; ours 0.8 (10-14 yd split) and -0.5 (14-20). Off, the go is unchanged. */
+const GO_STEM = process.env.GO_STEM === '1';
+/** HITCH_OPEN (experimental, off; carded with the QB clock): the hitch plants at the depth of its stem and opens to the
+ * window, inside and a little upfield, instead of coming straight back a yard. NFL hitches planted at 3-7.5 yd (BDB
+ * 2025, route_chart.py) turn 42-45 deg at the plant and exit +30 to +34 deg against the line, against man (530) as
+ * against zone (1,933), coming back 0.1 yd and sliding 1.4 yd across in the second after; ours turn 82-99 deg and exit
+ * -5 to +16, coming back 0.8 yd on the drawn 6 -> 5 leg. The come-back leg is standing in for the anticipation throw
+ * (ours leaves 0.3 s after the plant, the NFL's 0.1 s before): without it hitch completion fell 70 -> 56% (HITCH_DEPTH,
+ * docs/reviews/2026-11-23-stop-route-settle.md), so this stays off until the QB clock lands. */
+const HITCH_OPEN = process.env.HITCH_OPEN === '1';
+/** SLANT_ANGLE (experimental, off): the slant leaves its break at the angle the NFL's does. NFL slants (BDB 2025, PFF
+ * SLANT, route_chart.py): break at 3.2 yd (p25-p75 2.1-4.5) at 1.7 s, exit 34 deg against the line and still climbing
+ * (2.4 yd in the second after); ours exit 48 deg on the drawn 45 deg leg and run faster after the break (6.3 vs 5.1 yd/s
+ * at +0.6 s). The coaching names both: the "skinny" slant at 45 deg and the flatter "fat" slant against zone (M: the 34 deg
+ * is measured, the mix of the two is not sourced). With the flag: the same stem and break, a 34 deg leg to 5.5 yd, easing
+ * to 24 deg. SLANT_LEAN (#858, flat at 6 yd) is superseded by this measurement: it exited at 9 deg and stopped climbing. */
+const SLANT_ANGLE = process.env.SLANT_ANGLE === '1';
 /** CROSS_FLAT (experimental, off): the shallow crossers reach their depth in the first leg and run flat across, as
  * taught ("run under the linebackers, flat across"; docs/reviews/2026-11-14-crosser-depth.md). Off, the shallow
  * climbs on a diagonal from a 2.5 yd stem to 5 yd across 22 yd: still rising at 3.0 s (4.7 yd median against zone, ball
@@ -41,7 +66,9 @@ const ROUTE_SHAPE = process.env.ROUTE_SHAPE !== '0';
 const CROSS_FLAT = process.env.CROSS_FLAT !== '0';
 const ROUTE_TABLE: Record<string, RouteDef> = {
   // Verticals
-  go: { id: 'go', family: 'deep', depth: 30, end: 'continue', points: [{ d: 4, l: 0.6 }, { d: 50, l: 1.5 }] },
+  go: { id: 'go', family: 'deep', depth: 30, end: 'continue', points: GO_STEM
+    ? [{ d: 4, l: 1.2, side: 5 }, { d: 14, l: 3.5, side: 5 }, { d: 50, l: 4, side: 5 }]
+    : [{ d: 4, l: 0.6 }, { d: 50, l: 1.5 }] },
   fade: { id: 'fade', family: 'deep', depth: 25, end: 'continue', points: [{ d: 3, l: 1.6 }, { d: 50, l: 3.5 }] },
   seam: { id: 'seam', family: 'deep', depth: 22, end: 'continue', points: [{ d: 4, l: -0.4 }, { d: 50, l: -1.2 }] },
   // A tagged near-safety read. Reserve the middle in the concept; this is not
@@ -54,13 +81,13 @@ const ROUTE_TABLE: Record<string, RouteDef> = {
       { id: 'under', end: 'continue', points: [{ d: 10, l: -.4, s: .4 }, { d: 10.5, l: -16 }] },
     ] } },
   // Quick game
-  hitch: { id: 'hitch', family: 'quick', depth: 5, end: 'settle', points: [{ d: 6, l: 0, s: 0.2 }, { d: 5, l: 0.3, s: 0 }] },
+  hitch: { id: 'hitch', family: 'quick', depth: 5, end: 'settle', points: HITCH_OPEN ? [{ d: 6, l: 0, s: 0.2 }, { d: 6.5, l: -1.4, s: 0 }] : [{ d: 6, l: 0, s: 0.2 }, { d: 5, l: 0.3, s: 0 }] },
   // QUICK_HITCH (concepts.ts): the quick game's hitch, planted at 5 yd ("every receiver is running a 5-yard hitch", the
   // quick game off a three-step, one step from the gun for "any route that breaks at 5 yards or under", Viqtory Sports);
   // the five-step hitch above stays at 6 (Throw Deep, Smash: "settle hitch route at 6 yards"). Same shape, a yard shallower.
-  quick_hitch: { id: 'quick_hitch', family: 'quick', depth: 4, end: 'settle', points: [{ d: 5, l: 0, s: 0.2 }, { d: 4.5, l: 0.3, s: 0 }] },
+  quick_hitch: { id: 'quick_hitch', family: 'quick', depth: 4, end: 'settle', points: HITCH_OPEN ? [{ d: 5, l: 0, s: 0.2 }, { d: 5.5, l: -1.4, s: 0 }] : [{ d: 5, l: 0, s: 0.2 }, { d: 4.5, l: 0.3, s: 0 }] },
   // Three-step slant: break at 45°, then flatten across the field if not thrown.
-  slant: { id: 'slant', family: 'quick', depth: 6, end: 'continue', points: [{ d: 2, l: 0, s: 0.75 }, { d: 6.5, l: -4.5 }, { d: 8.5, l: -12 }] },
+  slant: { id: 'slant', family: 'quick', depth: 6, end: 'continue', points: SLANT_ANGLE ? [{ d: 2, l: 0, s: 0.75 }, { d: 5.5, l: -5.2 }, { d: 8.5, l: -12 }] : [{ d: 2, l: 0, s: 0.75 }, { d: 6.5, l: -4.5 }, { d: 8.5, l: -12 }] },
   quick_out: { id: 'quick_out', family: 'quick', depth: 5, end: 'continue', points: [{ d: 5, l: 0, s: 0.4 }, { d: 5, l: 9, s: 0.9 }] },
   stick: {
     id: 'stick', family: 'quick', depth: 6, end: 'sitVsZone',
@@ -107,7 +134,10 @@ const ROUTE_TABLE: Record<string, RouteDef> = {
   // non-PA drop-backs, BDB 2025 weeks 1-3, n 968: depth -4.6 / -4.6 / -4.4 / -3.7 yd at 1.0 / 1.5 / 2.0 / 2.5 s, width
   // from the ball 3.6 / 5.4 / 7.7 / 10.3 yd; caught at a median -1.0 yd, 56% behind the line). Off: to the line at once.
   back_flat: BACK_PATHS
-    ? { id: 'back_flat', family: 'back', depth: -2, end: 'continue', pace: 0.55, points: [{ d: -4.5, l: 3, s: 0.9 }, { d: -4.2, l: 7, s: 0.9 }, { d: -3.5, l: 10 }, { d: -1.5, l: 13 }] }
+    ? (FLAT_SHAPE
+      // FLAT_SHAPE (route-motion.ts): the NFL back's shallow flat, no climb, at full pace (the check is its own delay).
+      ? { id: 'back_flat', family: 'back', depth: -2, end: 'continue', pace: 1, points: [{ d: -4.5, l: 3, s: 0.9 }, { d: -4.1, l: 7.5, s: 0.9 }, { d: -3.6, l: 13 }] }
+      : { id: 'back_flat', family: 'back', depth: -2, end: 'continue', pace: 0.55, points: [{ d: -4.5, l: 3, s: 0.9 }, { d: -4.2, l: 7, s: 0.9 }, { d: -3.5, l: 10 }, { d: -1.5, l: 13 }] })
     : { id: 'back_flat', family: 'back', depth: 1, end: 'continue', points: [{ d: 0, l: 4, s: 0.9 }, { d: 2, l: 12 }] },
   // Screens (docs/football-handbook/screens.md). Caught behind the line.
   // Slip: after selling his block the back drifts wide behind the traffic and
