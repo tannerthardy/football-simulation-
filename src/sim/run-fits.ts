@@ -449,6 +449,10 @@ const contradictedMesh = new WeakSet<Agent>();
  *  - otherwise, and before the ball is given: he holds his gap fit, facing the ball he sees, not the backfield.
  * Margins (stated choices): 0.5 yd between enter and exit on each boundary. Cutback and alley jobs keep their contract. */
 export const SHED_PURSUE = process.env.SHED_PURSUE === '1';
+/** SHED_PURSUE applies to defensive linemen (by position): the evidence is theirs. Linebackers' slow come-off is the body
+ * redirect (Run Game's shed-recovery trace: they command full speed at once), not this request; with linebackers
+ * included (8 games, 0226f0d3) runs of 20+ yd rose 5 -> 12 with none through a vacated DL gap. */
+const SHED_LINE = /^(DE|DT|NT|EDGE)/;
 const shedState = new WeakMap<Agent, { sim: PlaySim; engaged: boolean; shed: boolean; mode: 'press' | 'away' | 'hold' }>();
 /** SHED_PURSUE: the facing the held fit plays with this call (the seen ball), or null. */
 let shedHoldFacing: number | null = null;
@@ -787,7 +791,7 @@ function executeRunFitInner(a: Agent, sim: PlaySim, fallbackGap: Gap, fallbackSi
     declared = threat && seen.pos.x > sim.los - 1.6;
     if (threat && !declared) { a.tags.add('fit-threat-read'); threatened = true; }
   } else declared = !premesh && seen.pos.x > sim.los-1.6 && Math.abs(seen.pos.y-gy) < 2.5;
-  if (SHED_PURSUE && shedState.get(a)?.shed && job.kind !== 'cutback') {
+  if (SHED_PURSUE && SHED_LINE.test(a.player.position) && shedState.get(a)?.shed && job.kind !== 'cutback') {
     const half = Number.isFinite(gap.width) ? Math.max(.6, gap.width / 2) : 1.2;
     const m = premesh || seen.carrying !== true ? 'hold' : shedRead(a, sim, seen, gy, half);
     if (m === 'press') { a.tags.add('shed-press'); return chase(sim, a, c, 2); }
