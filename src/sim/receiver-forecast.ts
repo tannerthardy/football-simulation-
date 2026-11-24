@@ -187,6 +187,14 @@ export class ReceiverForecast {
     return c.breakStep === null ? null : c.estimate.sampledAt + c.breakStep * this.dt;
   }
 
+  /** QB_V2 (QB lane, 2026-11-24): where the route he expects breaks on the field (its cut or stop point), from the
+   * install (or the answer he expects on an option route). Null for a route without a break. */
+  breakPoint(): Readonly<Vec2> | null {
+    const c = this.build(), path = c?.route?.path ?? this.prior.path;
+    const idx = path === this.prior.path ? priorBreak(this.prior) : pathBreak(path, c!.route.end);
+    return idx === null || !path[idx] ? null : path[idx].p;
+  }
+
   /** QB_V2's timing anchor (QB lane, 2026-11-24; Integration's ruling): when his forecast has the receiver's body turn,
    * the onset of the forecast path's turn off the stem (below), up to his forecast's break and a little past it. breakAt is arrival at the route's nominal cut point,
    * which a rounded cut reaches 0.45-0.8 s after the body has turned (staged cells: the out and the flat); the stage

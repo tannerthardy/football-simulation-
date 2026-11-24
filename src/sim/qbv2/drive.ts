@@ -35,6 +35,8 @@ export interface V2Host {
   breakAt(r: Agent): number | null;
   /** His timing anchor for an on-break throw (absolute): when his forecast turns the receiver's body, else breakAt. */
   timingAt?(r: Agent): number | null;
+  /** The route's break point as installed (field position), for the seen-depth timing rule. */
+  breakPoint?(r: Agent): V | null;
   /** Whether his clear cone holds this point now (his head's direction and his focus). */
   inClear(p: V): boolean;
   /** The throw's mechanics to this receiver now (catch point, flight), or null when it cannot be thrown. */
@@ -47,6 +49,8 @@ export interface V2Host {
   /** When he plants (his set point on the drop's count) and his stride (one footwork step), absolute times. */
   plantAt: number;
   stride: number;
+  /** QB_QUICK_DRIFT bit 2: his first read starts here (the secure); absent, at the plant. */
+  readFrom?: number;
   /** His felt rush 0-1 (from the rush only: no timer), his resolve time, his confidence need, and his bar. */
   felt: number;
   tau: number;
@@ -98,6 +102,20 @@ export class V2Drive {
   private receiver(h: V2Host, ref: ReceiverRef): Agent | null {
     const slot = h.sim.offAlign.numbering[ref];
     return slot ? h.sim.slot(slot) ?? null : null;
+  }
+
+  /** QB_QUICK_DRIFT bit 2's timing rule, on what he sees (Integration's ruling, 2026-11-24: "throw it when he hits the top
+   * of his stem"; no clock): an on-break throw is not due while the receiver, where the passer sees him, is farther from
+   * his route's break point than his windup plus his anticipation lead covers at the speed he sees him run (plus half a
+   * yard): the release then leads the break by at most the lead. Once due it
+   * stays due for that receiver (he has reached the top of the stem; a later look does not take it back). */
+  private reachedBreak = new Set<string>();
+  private notAtBreak(h: V2Host, r: Agent, ref: string, lead: number): boolean {
+    if (this.reachedBreak.has(ref)) return false;
+    const bp = h.breakPoint?.(r); if (!bp) return false;
+    const e = h.estimate(r), sp = Math.hypot(e.vel.x, e.vel.y);
+    if (Math.hypot(e.pos.x - bp.x, e.pos.y - bp.y) <= lead * Math.max(sp, 1) + 0.5) { this.reachedBreak.add(ref); return false; }
+    return true;
   }
 
   /** Information-honest (outside audit 2026-11-24 §1 row 14): a defender is up unless the passer sees him down, and a
@@ -212,8 +230,7 @@ export class V2Drive {
     this.held.set(o.ref, j.roles.find((x) => x.role === 'coverer')?.id ?? null);
     // A timing throw is not started before its time: the release (now + windup) may lead his forecast of the break by at
     // most his anticipation lead. Judged all the same (the trace shows it), marked early.
-    const ta = h.timingAt ? h.timingAt(r) : bk, timeIn = o.timing === 'onBreak' && ta !== null ? ta - sim.t : null;
-    const early = h.lead !== undefined && timeIn !== null && timeIn > q.windup + h.lead;
+    const early = h.lead !== undefined && o.timing === 'onBreak' && this.notAtBreak(h, r, o.ref, q.windup + h.lead);
     const judged: Judged = { option: o, P: j.P, risk: j.risk, reachesSticks: mech.point.x >= sim.firstDownX, early };
     this.lastJudged.set(o.ref, judged);
     this.lastRoles.set(o.ref, j.roles);
@@ -224,7 +241,7 @@ export class V2Drive {
   tick(h: V2Host): Intent {
     this.remember(h);
     const senses: CycleSenses = {
-      now: h.sim.t, plantAt: h.plantAt, stride: h.stride, felt: h.felt, outside: h.outside,
+      now: h.sim.t, plantAt: h.plantAt, stride: h.stride, readFrom: h.readFrom, felt: h.felt, outside: h.outside,
       inClear: (t) => { const p = this.where(h, t); return !!p && h.inClear(p); },
       canReach: (t) => { const p = this.where(h, t); if (!p) return false; const ang = Math.atan2(p.y - h.a.pos.y, p.x - h.a.pos.x); return Math.abs(Math.atan2(Math.sin(ang - h.a.body.facing), Math.cos(ang - h.a.body.facing))) < 150 * Math.PI / 180; },
       tau: h.tau, need: h.need, bar: h.bar,

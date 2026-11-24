@@ -19,6 +19,9 @@ export interface CycleSenses {
   /** When he plants (the snap plus the called drop's time: his set point) and his stride (one footwork step). */
   plantAt: number;
   stride: number;
+  /** When his first read starts, if before the plant (QB_QUICK_DRIFT bit 2: from the secure, his eyes working on the
+   * drift); later reads keep the step clock from the plant. Absent: the plant. */
+  readFrom?: number;
   /** His felt rush, 0-1 (from the rush only; no timer). */
   felt: number;
   /** Whether his own position has him outside the pocket (with its margins, as THROWAWAY_FELT keeps them). */
@@ -106,7 +109,7 @@ export class Cycle {
     if (this.state === 'throw' && this.decision) return this.decision.intent;
     if (s.outside && this.state !== 'escape') this.state = 'escape';
     if (this.state === 'drop') {
-      if (s.now < s.plantAt) { this.looks.update(null, false, s.now, s.tau); return { kind: 'look', target: null }; }
+      if (s.now < (s.readFrom ?? s.plantAt)) { this.looks.update(null, false, s.now, s.tau); return { kind: 'look', target: null }; }
       this.state = 'read';
     }
     if (this.state === 'read') return this.onRead(s);
@@ -133,7 +136,10 @@ export class Cycle {
     const press = this.pressureResponse(s);
     if (press) return press;
     const next = this.stepAt(s, this.plan.reads[this.readIdx + 1]?.step ?? (r.step + 1));
-    if (s.now >= next) {
+    // QB_QUICK_DRIFT bit 2 (no hitch to keep the rhythm): a read resolved and answered no, with its throws due, lets the
+    // eyes go on without waiting for a step his feet do not take.
+    const answeredNo = s.readFrom !== undefined && res >= s.need && !r.throws.some((o) => s.judge(o)?.early === true);
+    if (s.now >= next || answeredNo) {
       this.looks.markDue(t, s.now);
       // Resolved and answered no: the eyes move. Unresolved: hold while the look is resolving (the stare-down), bounded
       // by the next step plus the time the look would take; a look that cannot resolve has nothing to wait for.

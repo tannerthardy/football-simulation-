@@ -355,7 +355,7 @@ index 000000000..6ce43eb69
 +  if (sim.t > 2) sim.phase = 'dead'; };
 +sim.run();
 diff --git a/src/sim/behaviors/qb.ts b/src/sim/behaviors/qb.ts
-index d6943e2dd..08cbedaf9 100644
+index d6943e2dd..1766e2cd6 100644
 --- a/src/sim/behaviors/qb.ts
 +++ b/src/sim/behaviors/qb.ts
 @@ -16,12 +16,16 @@
@@ -472,7 +472,7 @@ index d6943e2dd..08cbedaf9 100644
  
      // Look-off: veterans hold the safety with their eyes before the first read.
      if (!this.lookOffChecked) {
-@@ -2127,6 +2166,71 @@ export class QBPass implements Behavior {
+@@ -2127,6 +2166,74 @@ export class QBPass implements Behavior {
    /** QB_EYES: the man he is gating a throw to (his eyes went there for it), or null. */
    private gateFor: Agent | null = null;
    /** QB_EYES: his processing time on a man his eyes have just reached. */
@@ -494,13 +494,16 @@ index d6943e2dd..08cbedaf9 100644
 +      predict: (r, ahead) => this.receiverForecasts.get(r)?.predict(sim.t, ahead) ?? null,
 +      breakAt: (r) => this.receiverForecasts.get(r)?.breakAt() ?? null,
 +      timingAt: (r) => { const f = this.receiverForecasts.get(r); return f ? f.turnAt() ?? f.breakAt() : null; },
++      breakPoint: (r) => this.receiverForecasts.get(r)?.breakPoint() ?? null,
 +      inClear: (p) => { const eyes = a.head ?? a.body.facing; return Math.abs(wrapAngle(angleTo(a.pos, p) - eyes)) < this.mind.clearHalf * (0.65 + 0.35 * a.mind.focus); },
 +      mechanics: (r, u) => { const ev = this.evaluate(a, sim, r, u); return ev ? { point: ev.point, T: ev.T } : null; },
 +      windup: () => this.windup(a),
 +      placeSpread: (dist) => this.missSigma(a, sim, dist, this.v2h?.felt ?? 0),
 +      body: (d) => this.bodyOf(a, d),
 +      ballSkills: (d) => (QB_BELIEVED_DEF ? this.believe(a, d).ballSkills : 0.5),
-+      plantAt: this.v2Drift() ? this.snapAt : Math.min(this.setAt >= 0 ? this.setAt : Infinity, this.snapAt + this.drop.time),
++      // QB_QUICK_DRIFT bit 2: the first read from the secure; the step clock keeps the drift's planned set (the throwing step).
++      plantAt: this.v2Drift() ? this.snapAt + this.drop.time : Math.min(this.setAt >= 0 ? this.setAt : Infinity, this.snapAt + this.drop.time),
++      readFrom: this.v2Drift() ? this.snapAt : undefined,
 +      // One hitch step (s): his drop's stride, but a one-step drop's whole time is not a hitch (0.75 s on the gun quick drop
 +      // held read 2 of quick outs 0.75 s on a covered first read: staged V2, 2026-11-24). Capped at the gun three-step's stride.
 +      stride: Math.min(this.drop.time / (DROP_STEPS[this.v2?.cycle?.plan?.drop ?? this.concept.drop] ?? 5), 0.33),
@@ -544,7 +547,7 @@ index d6943e2dd..08cbedaf9 100644
    private processing(a: Agent): number { return (0.15 + 0.25 * (1 - a.r('decisionMaking'))) * (1 + 0.8 * this.narrow(a)); }
  
    /** QB_STICK: his picture when he decided the throw: each defender's distance to the catch point and to the low flight. */
-@@ -2290,6 +2394,8 @@ export class QBPass implements Behavior {
+@@ -2290,6 +2397,8 @@ export class QBPass implements Behavior {
    }
  
    private gazePoint(sim: PlaySim): Vec2 {
@@ -582,10 +585,10 @@ index 6821079d8..c78e4ea66 100644
        return gun ? { x: los - 7.3, time: 1.0 } : { x: los - 6.2, time: 1.3 };
 diff --git a/src/sim/qbv2/cycle.ts b/src/sim/qbv2/cycle.ts
 new file mode 100644
-index 000000000..ee6683630
+index 000000000..3e8a38858
 --- /dev/null
 +++ b/src/sim/qbv2/cycle.ts
-@@ -0,0 +1,180 @@
+@@ -0,0 +1,186 @@
 +/**
 + * QB_V2 module E: the cycle (QB lane, 2026-11-24; docs/reviews/2026-11-24-qb-v2-design.md §3). One state machine on
 + * one clock, his feet. This file is the decision logic only: it reads his senses through `CycleSenses` (his picture,
@@ -607,6 +610,9 @@ index 000000000..ee6683630
 +  /** When he plants (the snap plus the called drop's time: his set point) and his stride (one footwork step). */
 +  plantAt: number;
 +  stride: number;
++  /** When his first read starts, if before the plant (QB_QUICK_DRIFT bit 2: from the secure, his eyes working on the
++   * drift); later reads keep the step clock from the plant. Absent: the plant. */
++  readFrom?: number;
 +  /** His felt rush, 0-1 (from the rush only; no timer). */
 +  felt: number;
 +  /** Whether his own position has him outside the pocket (with its margins, as THROWAWAY_FELT keeps them). */
@@ -694,7 +700,7 @@ index 000000000..ee6683630
 +    if (this.state === 'throw' && this.decision) return this.decision.intent;
 +    if (s.outside && this.state !== 'escape') this.state = 'escape';
 +    if (this.state === 'drop') {
-+      if (s.now < s.plantAt) { this.looks.update(null, false, s.now, s.tau); return { kind: 'look', target: null }; }
++      if (s.now < (s.readFrom ?? s.plantAt)) { this.looks.update(null, false, s.now, s.tau); return { kind: 'look', target: null }; }
 +      this.state = 'read';
 +    }
 +    if (this.state === 'read') return this.onRead(s);
@@ -721,7 +727,10 @@ index 000000000..ee6683630
 +    const press = this.pressureResponse(s);
 +    if (press) return press;
 +    const next = this.stepAt(s, this.plan.reads[this.readIdx + 1]?.step ?? (r.step + 1));
-+    if (s.now >= next) {
++    // QB_QUICK_DRIFT bit 2 (no hitch to keep the rhythm): a read resolved and answered no, with its throws due, lets the
++    // eyes go on without waiting for a step his feet do not take.
++    const answeredNo = s.readFrom !== undefined && res >= s.need && !r.throws.some((o) => s.judge(o)?.early === true);
++    if (s.now >= next || answeredNo) {
 +      this.looks.markDue(t, s.now);
 +      // Resolved and answered no: the eyes move. Unresolved: hold while the look is resolving (the stare-down), bounded
 +      // by the next step plus the time the look would take; a look that cannot resolve has nothing to wait for.
@@ -768,10 +777,10 @@ index 000000000..ee6683630
 +}
 diff --git a/src/sim/qbv2/drive.ts b/src/sim/qbv2/drive.ts
 new file mode 100644
-index 000000000..70acc5ac7
+index 000000000..d56f7caea
 --- /dev/null
 +++ b/src/sim/qbv2/drive.ts
-@@ -0,0 +1,257 @@
+@@ -0,0 +1,274 @@
 +/**
 + * QB_V2 wiring (QB lane, 2026-11-24): drives the cycle (module E) from QBPass on a concept with an authored read plan
 + * that fits the call, with the look (C), the judgment (D), the role resolver and the pre-snap decision (B, Flex). It
@@ -809,6 +818,8 @@ index 000000000..70acc5ac7
 +  breakAt(r: Agent): number | null;
 +  /** His timing anchor for an on-break throw (absolute): when his forecast turns the receiver's body, else breakAt. */
 +  timingAt?(r: Agent): number | null;
++  /** The route's break point as installed (field position), for the seen-depth timing rule. */
++  breakPoint?(r: Agent): V | null;
 +  /** Whether his clear cone holds this point now (his head's direction and his focus). */
 +  inClear(p: V): boolean;
 +  /** The throw's mechanics to this receiver now (catch point, flight), or null when it cannot be thrown. */
@@ -821,6 +832,8 @@ index 000000000..70acc5ac7
 +  /** When he plants (his set point on the drop's count) and his stride (one footwork step), absolute times. */
 +  plantAt: number;
 +  stride: number;
++  /** QB_QUICK_DRIFT bit 2: his first read starts here (the secure); absent, at the plant. */
++  readFrom?: number;
 +  /** His felt rush 0-1 (from the rush only: no timer), his resolve time, his confidence need, and his bar. */
 +  felt: number;
 +  tau: number;
@@ -872,6 +885,20 @@ index 000000000..70acc5ac7
 +  private receiver(h: V2Host, ref: ReceiverRef): Agent | null {
 +    const slot = h.sim.offAlign.numbering[ref];
 +    return slot ? h.sim.slot(slot) ?? null : null;
++  }
++
++  /** QB_QUICK_DRIFT bit 2's timing rule, on what he sees (Integration's ruling, 2026-11-24: "throw it when he hits the top
++   * of his stem"; no clock): an on-break throw is not due while the receiver, where the passer sees him, is farther from
++   * his route's break point than his windup plus his anticipation lead covers at the speed he sees him run (plus half a
++   * yard): the release then leads the break by at most the lead. Once due it
++   * stays due for that receiver (he has reached the top of the stem; a later look does not take it back). */
++  private reachedBreak = new Set<string>();
++  private notAtBreak(h: V2Host, r: Agent, ref: string, lead: number): boolean {
++    if (this.reachedBreak.has(ref)) return false;
++    const bp = h.breakPoint?.(r); if (!bp) return false;
++    const e = h.estimate(r), sp = Math.hypot(e.vel.x, e.vel.y);
++    if (Math.hypot(e.pos.x - bp.x, e.pos.y - bp.y) <= lead * Math.max(sp, 1) + 0.5) { this.reachedBreak.add(ref); return false; }
++    return true;
 +  }
 +
 +  /** Information-honest (outside audit 2026-11-24 §1 row 14): a defender is up unless the passer sees him down, and a
@@ -986,8 +1013,7 @@ index 000000000..70acc5ac7
 +    this.held.set(o.ref, j.roles.find((x) => x.role === 'coverer')?.id ?? null);
 +    // A timing throw is not started before its time: the release (now + windup) may lead his forecast of the break by at
 +    // most his anticipation lead. Judged all the same (the trace shows it), marked early.
-+    const ta = h.timingAt ? h.timingAt(r) : bk, timeIn = o.timing === 'onBreak' && ta !== null ? ta - sim.t : null;
-+    const early = h.lead !== undefined && timeIn !== null && timeIn > q.windup + h.lead;
++    const early = h.lead !== undefined && o.timing === 'onBreak' && this.notAtBreak(h, r, o.ref, q.windup + h.lead);
 +    const judged: Judged = { option: o, P: j.P, risk: j.risk, reachesSticks: mech.point.x >= sim.firstDownX, early };
 +    this.lastJudged.set(o.ref, judged);
 +    this.lastRoles.set(o.ref, j.roles);
@@ -998,7 +1024,7 @@ index 000000000..70acc5ac7
 +  tick(h: V2Host): Intent {
 +    this.remember(h);
 +    const senses: CycleSenses = {
-+      now: h.sim.t, plantAt: h.plantAt, stride: h.stride, felt: h.felt, outside: h.outside,
++      now: h.sim.t, plantAt: h.plantAt, stride: h.stride, readFrom: h.readFrom, felt: h.felt, outside: h.outside,
 +      inClear: (t) => { const p = this.where(h, t); return !!p && h.inClear(p); },
 +      canReach: (t) => { const p = this.where(h, t); if (!p) return false; const ang = Math.atan2(p.y - h.a.pos.y, p.x - h.a.pos.x); return Math.abs(Math.atan2(Math.sin(ang - h.a.body.facing), Math.cos(ang - h.a.body.facing))) < 150 * Math.PI / 180; },
 +      tau: h.tau, need: h.need, bar: h.bar,
@@ -1950,13 +1976,21 @@ index 000000000..923769975
 +/** One-shot form (Flex's pre-snap scan). */
 +export const resolveRole = (p: RolePicture, role: KeyRole, side: 'S' | 'W' = 'S'): PicturedMan | null => pick(role, p, side);
 diff --git a/src/sim/receiver-forecast.ts b/src/sim/receiver-forecast.ts
-index 4f494a304..a5d521c30 100644
+index 4f494a304..f198236ae 100644
 --- a/src/sim/receiver-forecast.ts
 +++ b/src/sim/receiver-forecast.ts
-@@ -206,6 +206,29 @@ export class ReceiverForecast {
+@@ -206,6 +206,37 @@ export class ReceiverForecast {
      return c.breakStep === null ? null : c.estimate.sampledAt + c.breakStep * this.dt;
    }
  
++  /** QB_V2 (QB lane, 2026-11-24): where the route he expects breaks on the field (its cut or stop point), from the
++   * install (or the answer he expects on an option route). Null for a route without a break. */
++  breakPoint(): Readonly<Vec2> | null {
++    const c = this.build(), path = c?.route?.path ?? this.prior.path;
++    const idx = path === this.prior.path ? priorBreak(this.prior) : pathBreak(path, c!.route.end);
++    return idx === null || !path[idx] ? null : path[idx].p;
++  }
++
 +  /** QB_V2's timing anchor (QB lane, 2026-11-24; Integration's ruling): when his forecast has the receiver's body turn,
 +   * the onset of the forecast path's turn off the stem (below), up to his forecast's break and a little past it. breakAt is arrival at the route's nominal cut point,
 +   * which a rounded cut reaches 0.45-0.8 s after the body has turned (staged cells: the out and the flat); the stage
@@ -2061,6 +2095,56 @@ index 000000000..edf75a1b1
 +    let i: ReturnType<Cycle['tick']> = { kind: 'look', target: null };
 +    for (let t = 0; t <= 1.6 && i.kind !== 'kill'; t += 0.05) i = c.tick(senses({ now: t }, { S1: 0.2, S2: 0.3 }));
 +    expect(i).toEqual({ kind: 'kill', ref: 'S1' });
++  });
++});
+diff --git a/test/qbv2-information.test.ts b/test/qbv2-information.test.ts
+new file mode 100644
+index 000000000..770236760
+--- /dev/null
++++ b/test/qbv2-information.test.ts
+@@ -0,0 +1,44 @@
++import { readdirSync, readFileSync } from 'node:fs';
++import { join } from 'node:path';
++import { describe, expect, it } from 'vitest';
++
++// QB_V2 information guard (QB lane, 2026-11-24; Integration's ruling after the outside audit's §1 row 14). The passer's
++// modules decide from his own pictures: the seen pose, his estimates and his forecasts. They never read a body's true
++// position, its true pose (isDown), the engagement record, another player's behavior or assignment, or who holds the
++// ball. judge.ts is a pure function of SeenDefender pictures (its `.pos` is the picture) and is not scanned for
++// positions. A new read fails here; shrink a debt row when it is paid.
++const HIDDEN = /\.isDown\(|\.engagement\b|\.behavior\b|\.assignment\b|\bsim\.carrier\b|\bsim\.ball\b/g;
++/** True body positions of other agents: `x.pos` on an Agent, except the passer's own (`h.a.pos`, `a.pos` in the host). */
++const BODY_POS = /(?<![\w.])(?!h\.a\.)(?:r|d|t|s1|rc|cov|target|recv|def)\.pos\b/g;
++/** Files holding real Agents (the rest are pure over pictures and plans). */
++const AGENT_FILES = ['drive.ts', 'roles.ts', 'presnap.ts', 'cycle.ts', 'look.ts', 'plan.ts', 'ratings.ts'];
++
++const DEBT: Record<string, { reads: number; why: string }> = {
++  'drive.ts:player.position': { reads: 1, why: "a defender's roster position (DB or not) in the role picture: personnel, known pre-snap" },
++};
++
++describe('QB_V2 information guard', () => {
++  const dir = new URL('../src/sim/qbv2/', import.meta.url).pathname;
++  const files = readdirSync(dir).filter((f) => f.endsWith('.ts'));
++  const code = (f: string) => readFileSync(join(dir, f), 'utf8').split('\n').filter((l) => !/^\s*(\/\/|\*|\/\*\*)/.test(l)).join('\n');
++
++  it('reads no hidden state (true pose, engagement, behavior, assignment, the ball holder) in any module', () => {
++    const hits = files.flatMap((f) => (code(f).match(HIDDEN) ?? []).map((m) => `${f}: ${m}`));
++    expect(hits).toEqual([]);
++  });
++
++  it("reads no other body's true position in the modules that hold Agents", () => {
++    const hits = files.filter((f) => AGENT_FILES.includes(f)).flatMap((f) => (code(f).match(BODY_POS) ?? []).map((m) => `${f}: ${m}`));
++    expect(hits).toEqual([]);
++  });
++
++  it('keeps the listed debt at or below its count', () => {
++    const n = (code('drive.ts').match(/\.player\.position\b/g) ?? []).length;
++    expect(n).toBeLessThanOrEqual(DEBT['drive.ts:player.position'].reads);
++  });
++
++  it('covers every module in src/sim/qbv2 (a new file is scanned or listed as pure)', () => {
++    const pure = ['judge.ts'];
++    expect(files.filter((f) => !AGENT_FILES.includes(f) && !pure.includes(f))).toEqual([]);
 +  });
 +});
 diff --git a/test/qbv2-judge.test.ts b/test/qbv2-judge.test.ts
