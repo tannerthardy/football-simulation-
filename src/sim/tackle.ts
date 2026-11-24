@@ -311,6 +311,36 @@ function startReach(sim: PlaySim, d: Agent, c: Agent, engaged: boolean, lunged: 
   if (!engaged && !lunged) strike(sim, d, c, d.r('tackling'));
 }
 
+/** REACH_TIME: whether a reach started now meets the carrier, by his tackle-window picture (`windowPicture`) and his own
+ * body: his velocity plus, free of a block, the strike step he commits with it (`strike`'s law, toward the hip he sees),
+ * and the hands' law (from his torso to `limit` in REACH_EXTEND, accelerating). A controller read of his capability,
+ * like the lunge's (`lungeReaches`): a reach at a carrier already leaving his arms is not taken; he keeps closing, and
+ * whenever a reach would meet the man he may take it. Why (reach-trace.mts, 4 games, sourced hand law): reaches started
+ * at low closing missed 21.5%, nearly all with the carrier at the edge of reach and receding, where no hand speed gets
+ * there; open-field attempts at 1.0-1.5 yd missed 0.69 against the NFL's 0.17. */
+function reachMeets(sim: PlaySim, d: Agent, c: Agent, engaged: boolean, limit: number): boolean {
+  const p = windowPicture(sim, d, c);
+  const body = c.profile.radius + d.profile.radius;
+  const span = Number.isFinite(limit) ? limit : reachTo(d, c, 1);
+  let vx = d.vel.x, vy = d.vel.y;
+  if (!engaged) {
+    const PUSH_OFF = 0.2;
+    const gx = p.pos.x - d.pos.x + (p.vel.x - d.vel.x) * PUSH_OFF, gy = p.pos.y - d.pos.y + (p.vel.y - d.vel.y) * PUSH_OFF;
+    const g = Math.hypot(gx, gy), touch = 0.9 * body;
+    if (g > touch) {
+      const dv = Math.min(TURF_MU * G * PUSH_OFF * (0.7 + 0.3 * d.r('tackling')), (g - touch) / PUSH_OFF);
+      vx += gx / g * dv; vy += gy / g * dv;
+    }
+  }
+  const h = sim.dt / 2;
+  for (let t = h; t <= REACH_EXTEND + 1e-9; t += h) {
+    const share = t / REACH_EXTEND, hands = body + (span - body) * share * share;
+    const gap = Math.hypot(p.pos.x + p.vel.x * t - (d.pos.x + vx * t), p.pos.y + p.vel.y * t - (d.pos.y + vy * t));
+    if (gap <= hands) return true;
+  }
+  return false;
+}
+
 /** REACH_TIME: one tick of a reach in progress. True while he is in it (the caller skips him). */
 function reachStep(sim: PlaySim, d: Agent, c: Agent): boolean {
   const r = reaches.get(d);
@@ -586,7 +616,12 @@ export function whiffMargin(sim: PlaySim, d: Agent, c: Agent, limit: number, eng
 function attempt(sim: PlaySim, d: Agent, c: Agent, q: number, engaged: boolean, lunged: boolean, limit = Infinity, reached = false): void {
   const t = sim.t;
   // REACH_TIME: a reach takes time; it resolves on the bodies' actual geometry when the hands arrive (reachStep).
-  if (REACH_TIME && !reached) { startReach(sim, d, c, engaged, lunged, limit); return; }
+  if (REACH_TIME && !reached) {
+    // He commits his arms when, by his picture, they will meet the man; otherwise he keeps his feet and closes.
+    if (!lunged && !reachMeets(sim, d, c, engaged, limit)) return;
+    startReach(sim, d, c, engaged, lunged, limit);
+    return;
+  }
   const rng = sim.dice('tackle', d);
   // Arms reach and recoil: one attempt per beat, not per physics tick.
   d.nextTackleAt = t + 0.5;

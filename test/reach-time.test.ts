@@ -40,14 +40,29 @@ describe.runIf(REACH_TIME)('REACH_TIME contracts', () => {
     roll.mockRestore();
   });
 
-  it('a carrier who is out of the reach when the hands arrive is missed, and the miss costs the tackler his lean', () => {
+  it('no reach is taken at a carrier already leaving the edge of his arms: he keeps closing, and no miss is charted', () => {
     const probe = scene(1, { x: 8, y: 0 }, { x: 3, y: 0 });
     const s = scene(reachTo(probe.d, probe.c, 1) - 0.03, { x: 8, y: 0 }, { x: 3, y: 0 });
     tryTackles(s.sim);
+    expect(reachOf(s.d)).toBeUndefined();
+    expect(s.sim.events.some(e => e.type === 'missed_tackle')).toBe(false);
+  });
+
+  it('a reach the carrier escapes in the window is missed, and costs the tackler his lean', () => {
+    const probe = scene(1, { x: 2, y: 0 }, { x: 2, y: 0 });
+    const s = scene(probe.c.profile.radius + probe.d.profile.radius + 0.35, { x: 2, y: 0 }, { x: 2, y: 0 });
+    tryTackles(s.sim);
     expect(reachOf(s.d)).toBeDefined();
-    for (let k = 0; k < 8 && reachOf(s.d); k++) s.sim.tick();
-    const missed = s.sim.events.some(e => e.type === 'missed_tackle' && e.note === 'reach');
+    // He bursts away as the hands go: 9 yd/s straight from him.
+    s.c.body.vel = { x: 9, y: 0 };
+    let missed = false;
+    for (let k = 0; k < 6 && !missed; k++) {
+      tryTackles(s.sim);
+      s.c.body.pos = { x: s.c.pos.x + s.c.vel.x * s.sim.dt, y: s.c.pos.y };
+      s.sim.t += s.sim.dt; s.sim.world.time += s.sim.dt;
+      missed = s.sim.events.some(e => e.type === 'missed_tackle' && e.note === 'reach');
+    }
     expect(missed).toBe(true);
-    expect(s.sim.bond?.tacklers.includes(s.d) ?? false).toBe(false);
+    expect(s.sim.bond).toBeNull();
   });
 });
