@@ -179,7 +179,11 @@ export function pursuitPoint(sim: PlaySim, a: Agent, target: Agent, horizon = 3,
     bias = sim.rng.fork(`pursuit:${a.idx}`).normal(0, 0.12 * (1.2 - a.r('pursuit')));
     angleBias.set(a, bias);
   }
-  const meetT = PURSUIT_COMMIT ? (PURSUIT_SPOT ? commitSpot(sim, a, target, ip, path, seen, heading, V, mover, reach, horizon, request) : commitMeeting(sim, a, target, ip, path, mover, reach, horizon, request)) : ip.t;
+  const committed = PURSUIT_COMMIT ? (PURSUIT_SPOT ? commitSpot(sim, a, target, ip, path, seen, heading, V, mover, reach, horizon, request) : commitMeeting(sim, a, target, ip, path, mover, reach, horizon, request)) : ip.t;
+  // COMMIT_YIELD: the commitment gives way to tracking as the meeting closes: the committed meeting time and the fresh
+  // intercept's, blended by how far off the meeting is (fully committed from YIELD_FAR s, fully tracking inside YIELD_NEAR).
+  const wCommit = COMMIT_YIELD ? clamp((ip.t - YIELD_NEAR) / (YIELD_FAR - YIELD_NEAR), 0, 1) : 1;
+  const meetT = committed * wCommit + ip.t * (1 - wCommit);
   const biasedTime = clamp(meetT - bias, 0, horizon);
   const p = path(biasedTime);
   // Keep the support contract while approaching, then close onto the near
@@ -214,6 +218,22 @@ const angleBias = new WeakMap<Agent, number>();
  *  - it is under MEET_NEAR s away, past his horizon, or the target changed.
  * The exit is on the far side of the entry. Also: a defender playing the
  * ball holds his last approach on the flight's final tick (defense.ts). */
+/** COMMIT_YIELD (experimental, off; COMMIT_YIELD=1 turns it on; with PURSUIT_COMMIT): far, commit to a meeting; near,
+ * track the man. Taught: take your angle, then close on the near hip.
+ *
+ * Why (test/pursuit-commit.test.ts on develop ffaecd3a, engine-92; a split of its 3-8 yd band):
+ *  - with PURSUIT_COMMIT a held meeting spot is steady (2.4 -> 6.9 deg/s own ticks) but is released at close range in a
+ *    step: re-chosen ticks turn about 40 deg/s, against 9.6 for the continuous re-solve with it off;
+ *  - the band's turn rate went 7.9 off -> 10.6 on, so the contract failed;
+ *  - a spot held at close range drifts off the carrier he sees every tick, and a small lateral error is a large angle
+ *    at 4 yd.
+ * So the commitment yields to the fresh intercept continuously as the meeting time falls. It is not a smoothing of the
+ * release step; the release rules are unchanged.
+ *
+ * Stated choices (not fitted): YIELD_FAR 1.0 s (beyond it a re-solve each tick is the dither PURSUIT_COMMIT removes);
+ * YIELD_NEAR 0.4 s (about a reaction plus a stride: inside it the carrier's cut cannot be outguessed, only tracked). */
+export const COMMIT_YIELD = process.env.COMMIT_YIELD === '1';
+const YIELD_NEAR = 0.4, YIELD_FAR = 1.0;
 export const PURSUIT_COMMIT = process.env.PURSUIT_COMMIT !== '0';
 const MEET_ENTER = 0.1, MEET_EXIT = 0.15, MEET_MARGIN = 0.3, MEET_NEAR = 0.15;
 const heldMeeting = new WeakMap<Agent, { target: Agent; at: number; ok: boolean }>();
