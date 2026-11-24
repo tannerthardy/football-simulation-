@@ -210,6 +210,7 @@
     "PICTURE_AGE": "off",
     "PERIPH_ACUITY": "on",
     "CALL_COMPOSE": "off",
+    "HAND_ARMS": "off",
     "FLIGHT_BREAK": "on",
     "FLIGHT_LEAD": "off",
     "HEAD_FOLLOW": "on",

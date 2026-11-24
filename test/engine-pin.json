@@ -306,6 +306,7 @@
   "test/ground-force-allocation.test.ts",
   "test/half-key.test.ts",
   "test/half-own.test.ts",
+  "test/hand-arms.test.ts",
   "test/hand-moment.test.ts",
   "test/hand-site.test.ts",
   "test/hands-cue.test.ts",
