@@ -311,8 +311,9 @@ export const TRAIL_LEVERAGE = process.env.TRAIL_LEVERAGE === '1';
 const LEAD_ENTER = 0.5, LEAD_ANGLE_IN = Math.PI / 4, LEAD_ANGLE_OUT = Math.PI / 3, SIDE_MARGIN = 0.5;
 const trailState = new WeakMap<Agent, { target: Agent; lead: Agent | null; side: number; t: number; out: number | null }>();
 function trailShade(sim: PlaySim, a: Agent, target: Agent, seenC: { pos: Vec2 }, dA: number, contact: number): number | null {
+  // No per-tick cache: the same pictures give the same lead and side (the update is idempotent), and a repeated call
+  // reads what the first read, as the pursuit read contracts expect.
   let s = trailState.get(a);
-  if (s && s.t === sim.t && s.target === target) return s.out;
   if (!s || s.target !== target) { s = { target, lead: null, side: 0, t: -1, out: null }; trailState.set(a, s); }
   const bear = Math.atan2(seenC.pos.y - a.pos.y, seenC.pos.x - a.pos.x);
   const read = (b: Agent) => {
