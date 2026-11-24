@@ -208,10 +208,10 @@ index 000000000..6050b81d9
 +sim.run();
 diff --git a/scripts/diag/qbv2/stage.ts b/scripts/diag/qbv2/stage.ts
 new file mode 100644
-index 000000000..afada27df
+index 000000000..899d1b95a
 --- /dev/null
 +++ b/scripts/diag/qbv2/stage.ts
-@@ -0,0 +1,92 @@
+@@ -0,0 +1,95 @@
 +// QB lane 2026-11-24 (QB_V2 bring-up, the user's "start simple" set): staged plays of a quick concept against the coverage
 +// where its answer is plain, and the control that takes it away. One mid-rated passer. Run once with QB_V2 unset (the
 +// old controller) and once with QB_V2=1 on the same cells. Per play: the release (from the snap), the target and its
@@ -250,7 +250,7 @@ index 000000000..afada27df
 +}
 +for (let seed = s0; seed <= s1; seed++) {
 +  const setup: any = nativeTraceSetup({ concept, coverage, seed, roster: 3, formation, flip: false });
-+  const t = TAUGHT[concept]; if (t) setup.offCall.pass = { ...PASS_BY_ID[concept], ...t };
++  const t = process.env.NO_TAUGHT === "1" ? undefined : TAUGHT[concept]; if (t) setup.offCall.pass = { ...PASS_BY_ID[concept], ...t };
 +  const qbP = setup.offense.QB; for (const [k, v] of Object.entries(MID)) qbP.ratings[k] = v; qbP.experience = 4;
 +  const sim: any = new PlaySim(setup);
 +  let thrown: any = null, qbb: any = null, lastT = -1; const trace: any[] = []; const tr: Record<number, S[]> = {};
@@ -258,7 +258,8 @@ index 000000000..afada27df
 +  sim.throwBall = (q: any, target: any, v0: any, intended: any, arrivalT: number, ...rest: any[]) => {
 +    if (q === sim.qb && !thrown) {
 +      thrown = { t: sim.t, slot: target?.slot ?? null, idx: target?.idx ?? null, away: !target, pt: intended ? { x: intended.x, y: intended.y } : null, arr: arrivalT,
-+        dist: r2(Math.hypot((intended?.x ?? q.pos.x) - q.pos.x, (intended?.y ?? q.pos.y) - q.pos.y)), qbSpeed: r2(Math.hypot(q.vel.x, q.vel.y)) };
++        dist: r2(Math.hypot((intended?.x ?? q.pos.x) - q.pos.x, (intended?.y ?? q.pos.y) - q.pos.y)), qbSpeed: r2(Math.hypot(q.vel.x, q.vel.y)),
++        rid: target?.behavior?.route?.id ?? null, plannedBreak: target?.behavior?.breakTime != null ? r2(target.behavior.breakTime) : null, depthAtThrow: target ? r2(target.pos.x - sim.los) : null };
 +      const ref = target ? Object.entries(sim.offAlign.numbering).find(([, sl]) => sl === target.slot)?.[0] : null;
 +      const v2 = qbb?.v2;
 +      if (v2 && ref) { const j = v2.judgedFor(ref); thrown.belief = j ? { P: r2(j.P), risk: r2(j.risk) } : null; thrown.roles = (v2.lastRoles.get(ref) ?? []).map((x: any) => ({ id: x.id, role: x.role, pA: r2(x.pArrive), pPick: r2(x.pPick), ...atPass(sim, q, intended, sim.agents[x.id]) })); }
@@ -288,15 +289,17 @@ index 000000000..afada27df
 +  };
 +  try { sim.run(); } catch (e) { process.stderr.write(String((e as Error).message).slice(0, 200) + '\n'); }
 +  const snap = qbb?.snapAt ?? 0;
-+  let relBrk: number | null = null;
++  let relBrk: number | null = null; let brk: any = null;
 +  if (thrown?.idx != null) {
-+    const rid = String(sim.agents[thrown.idx]?.behavior?.route?.id ?? '').split(':').pop() ?? '';
++    const rid = String(thrown.rid ?? '');
 +    const P = (tr[thrown.idx] ?? []).filter((s) => s[0] <= thrown.t + 1.2);
 +    const b = breakAt(P, /hitch|stick|curl|hook|comeback/.test(rid)); if (b !== null) relBrk = r2(thrown.t - b);
++    // Integration's audit: where the receiver is at the break timed, from the snap (sim.t 0) and his own start.
++    if (b !== null) { const k = P.findIndex((x) => x[0] >= b - 1e-6), p0 = (tr[thrown.idx] ?? [])[0]; if (k >= 0 && p0) brk = { t: r2(b), depth: r2((P[k][1] - sim.los) * (sim.offDir ?? 1)), fromStart: r2(Math.hypot(P[k][1] - p0[1], P[k][2] - p0[2])) }; }
 +  }
 +  const ev = sim.events as any[];
-+  console.log(JSON.stringify({ concept, coverage, seed, v2: !!qbb?.v2, rel: thrown ? r2(thrown.t - snap) : null, slot: thrown?.slot ?? null, away: thrown?.away ?? null,
-+    route: thrown?.idx != null ? String(sim.agents[thrown.idx]?.behavior?.route?.id ?? '').split(':').pop() : null, relBrk,
++  console.log(JSON.stringify({ concept, coverage, seed, v2: !!qbb?.v2, rel: thrown ? r2(thrown.t - snap) : null, rel0: thrown ? r2(thrown.t) : null, secured: r2(snap), plant0: qbb?.v2h ? r2(qbb.v2h.plantAt) : null, brk, slot: thrown?.slot ?? null, away: thrown?.away ?? null,
++    route: thrown?.rid ?? null, plannedBreak: thrown?.plannedBreak ?? null, depthAtThrow: thrown?.depthAtThrow ?? null, relBrk,
 +    complete: !!sim.stats.completed, int: ev.some((e) => e.type === 'interception'), sack: ev.some((e) => e.type === 'sack'),
 +    pre: qbb?.v2?.presnap ? { flip: qbb.v2.presnap.flip, start: qbb.v2.presnap.startRead, look: qbb.v2.presnap.look ? { shell: qbb.v2.presnap.look.shell, over: Object.fromEntries(Object.entries(qbb.v2.presnap.look.over ?? {}).map(([k, v]: any) => [k, v ? { cushion: v.cushion, press: v.press, lev: v.leverage } : null])) } : null } : null,
 +    ball: thrown?.at ?? null, dist: thrown?.dist ?? null, qbSpeed: thrown?.qbSpeed ?? null,
