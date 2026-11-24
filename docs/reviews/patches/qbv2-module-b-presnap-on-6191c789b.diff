@@ -1,0 +1,300 @@
+diff --git a/src/sim/qbv2/presnap.ts b/src/sim/qbv2/presnap.ts
+new file mode 100644
+index 000000000..2b9a2872f
+--- /dev/null
++++ b/src/sim/qbv2/presnap.ts
+@@ -0,0 +1,179 @@
++/**
++ * QB_V2 module B: the passer's pre-snap plan (Flex, 2026-11-24; design note docs/reviews/2026-11-24-qb-module-b-presnap-plan.md,
++ * approved in outline by Integration). At the snap, once, it turns his own pre-snap picture into a `PreSnapState` for the
++ * plan the call carries: which side he reads (`flip`, by the plan's `pick`), whether the alert is on, his hot belief and
++ * the man he confirms. The same condition evaluator (`condHolds`) answers the alert, the call's kill / can and the
++ * pre-snap RPO rule (Rules' call-composition and RPO notes: `KillRule` and `rpo.pre` are `AlertCond | AlertCond[]`).
++ *
++ * Information: it reads only what it is handed. The picture is his scan (QB_SCAN: every defender with his own error,
++ * drawn once per play) with the visible defensive-back group; the shell is his coverage belief (P(single-high), which
++ * already carries his disguise awareness); the protection and the box width are his own call and his own alignment. No
++ * defender's slot, call, tag, assignment or rating, and no true position.
++ *
++ * Margins (§6.1): stated coaching choices, labelled here, not fitted to any number. Each pick is made once, at the snap,
++ * so a margin only separates a near-tie (he keeps the coach's side) from a clear call; nothing is re-scored, so there is
++ * no exit margin and nothing to flicker. A poorer reader's larger scan error meets the margin more often and he picks the
++ * wrong side; he commits to it and pays for it in the cycle (§6.2). No rating enters here except through that error.
++ */
++import type { AlertCond, KeyRole, PreSnapState, QbReadPlan } from './plan.js';
++import { resolveRole, type PicturedMan, type RolePicture } from './roles.js';
++import type { ReceiverRef } from '../../playbook/types.js';
++
++/** He leaves the coach's side for the softer corner only when its cushion is deeper by this much (yd): about one
++ * backpedal step; a smaller difference does not change a hitch or a quick out. */
++export const MARGIN_CUSHION = 1.0;
++/** Around P(single-high) 0.5: inside this band he has no shell read (an alert on the shell is not taken, a shell pick
++ * keeps the coach's side). */
++export const MARGIN_SHELL = 0.1;
++/** Inside / head-up / outside of a receiver: a man within this lateral distance of him is head-up (yd). */
++export const MARGIN_LEVERAGE = 0.5;
++/** The hot side: 'either' when the two sides' surpluses are within this many defenders. */
++export const MARGIN_HOT_SIDE = 0.5;
++
++/** A defender pressed on a receiver: within this depth of the line and this lateral distance of him (QBMind's press rule). */
++const PRESS_DEEP = 2.5;
++const PRESS_WIDE = 1.8;
++/** The man over a receiver who is not #1 (the corner is #1's): the nearest defender within this lateral distance of him,
++ * short of this depth (yd). */
++const OVER_WIDE = 3.0;
++const OVER_DEEP = 12;
++/** The box he counts: no deeper than this past the line (yd), within his box half-width of the ball. */
++const BOX_DEEP = 7.5;
++
++/** What his pre-snap read shows about the conditions a plan or a call can name. */
++export interface PreSnapLook {
++  /** The shell he reads, or null inside the margin. */
++  shell: 'open' | 'closed' | null;
++  /** The defenders he counts in the box, per side of the ball (a man on the ball's line counts half to each side). */
++  box: { S: number; W: number; total: number };
++  /** Per receiver ref on the field: the man over him, his depth (cushion), whether he is pressed, his leverage. */
++  over: Partial<Record<ReceiverRef, { man: PicturedMan; cushion: number; press: boolean; leverage: 'inside' | 'head' | 'outside' }>>;
++}
++
++/** The inputs B reads: his picture and his own call. */
++export interface PreSnapInputs {
++  plan: QbReadPlan;
++  /** His scan picture (t < 0), with the visible defensive-back group on each man and his receivers by the field's refs. */
++  picture: RolePicture;
++  /** His coverage belief at the snap and its single-high mass (QBMind.belief / pSingleHigh). */
++  belief: Record<string, number>;
++  pSingleHigh: number;
++  /** Half-width of the box he counts on each side (yd from the ball): his own core's edge (tackle or attached end) + 2. */
++  boxHalfWidth: { S: number; W: number };
++  /** His protection as called: blockers per side of the ball (the five linemen split by the call, plus the backs and ends
++   * it keeps in). Until Phase 3 rebuilds the protection, this is the call's own count. */
++  protectors: { S: number; W: number };
++}
++
++const sideSign = (p: RolePicture, side: 'S' | 'W') => p.strong * (side === 'S' ? 1 : -1);
++const deep = (p: RolePicture, m: { x: number }) => (m.x - p.los) * p.dir;
++/** Lateral distance from the ball toward a side (+ = toward it). */
++const out = (p: RolePicture, m: { y: number }, side: 'S' | 'W') => (m.y - p.ballY) * sideSign(p, side);
++
++/** The plan's refs mirrored (S and W swapped): a flipped plan reads the other side. */
++export function mirrorRef(r: ReceiverRef): ReceiverRef {
++  return (r[0] === 'S' ? `W${r.slice(1)}` : r[0] === 'W' ? `S${r.slice(1)}` : r) as ReceiverRef;
++}
++
++/** His read of the picture: the shell from his belief, the box by side, and the man over each of his receivers. */
++export function lookOf(p: RolePicture, pSingleHigh: number, boxHalfWidth: { S: number; W: number }): PreSnapLook {
++  const shell = pSingleHigh > 0.5 + MARGIN_SHELL ? 'closed' : pSingleHigh < 0.5 - MARGIN_SHELL ? 'open' : null;
++  const box = { S: 0, W: 0, total: 0 };
++  for (const m of p.defenders) {
++    const d = deep(p, m);
++    if (d < -1 || d > BOX_DEEP) continue;
++    const o = out(p, m, 'S');
++    if (o >= 0 ? o > boxHalfWidth.S : -o > boxHalfWidth.W) continue;
++    box.total++;
++    if (Math.abs(o) < 0.25) { box.S += 0.5; box.W += 0.5; } else if (o > 0) box.S++; else box.W++;
++  }
++  const over: PreSnapLook['over'] = {};
++  for (const [ref, r] of Object.entries(p.receivers) as Array<[ReceiverRef, PicturedMan | undefined]>) {
++    if (!r || (ref[0] !== 'S' && ref[0] !== 'W')) continue;
++    const side = ref[0] as 'S' | 'W', rOut = out(p, r, side);
++    // #1's man is the corner (one rule with module C, roles.ts); any other receiver's is the nearest man over him.
++    let man: PicturedMan | null = ref.endsWith('1') ? resolveRole(p, 'corner', side) : null;
++    if (!man) {
++      let best: PicturedMan | null = null;
++      for (const m of p.defenders) {
++        const d = deep(p, m);
++        if (d < -1 || d > OVER_DEEP || Math.abs(out(p, m, side) - rOut) > OVER_WIDE) continue;
++        if (!best || Math.hypot(d, out(p, m, side) - rOut) < Math.hypot(deep(p, best), out(p, best, side) - rOut)) best = m;
++      }
++      man = best;
++    }
++    if (!man) continue;
++    const lat = out(p, man, side) - rOut; // + = outside him
++    const cushion = deep(p, man);
++    over[ref] = {
++      man, cushion,
++      press: cushion < PRESS_DEEP && Math.abs(lat) < PRESS_WIDE,
++      leverage: lat > MARGIN_LEVERAGE ? 'outside' : lat < -MARGIN_LEVERAGE ? 'inside' : 'head',
++    };
++  }
++  return { shell, box, over };
++}
++
++/** One condition (every clause it names holds) or alternatives (any one holds); absent: always. Refs are the plan's,
++ * mirrored when he reads it flipped. A clause his read cannot answer (no man over the receiver, no shell read) fails. */
++export function condHolds(when: AlertCond | AlertCond[] | undefined, look: PreSnapLook, flip = false): boolean {
++  if (!when) return true;
++  if (Array.isArray(when)) return when.some((c) => condHolds(c, look, flip));
++  const ref = (r: ReceiverRef) => (flip ? mirrorRef(r) : r);
++  if (when.shell && look.shell !== when.shell) return false;
++  if (when.press && !look.over[ref(when.press)]?.press) return false;
++  if (when.cushion) {
++    const o = look.over[ref(when.cushion.on)];
++    if (!o) return false;
++    if (when.cushion.under != null && !(o.cushion < when.cushion.under)) return false;
++    if (when.cushion.over != null && !(o.cushion > when.cushion.over)) return false;
++  }
++  if (when.leverage && look.over[ref(when.leverage.on)]?.leverage !== when.leverage.is) return false;
++  if (when.boxAtLeast != null && !(look.box.total >= when.boxAtLeast)) return false;
++  return true;
++}
++
++/** Whether he mirrors the plan, by its pick. Near the margin he keeps the coach's (strong) side. */
++export function pickFlip(plan: QbReadPlan, look: PreSnapLook): boolean {
++  switch (plan.pick) {
++    case 'cushion': {
++      // The softer corner: the cushion of the man over each #1 (the corner).
++      const s = look.over.S1?.cushion, w = look.over.W1?.cushion;
++      return s != null && w != null && w > s + MARGIN_CUSHION;
++    }
++    case 'shell':
++      return !!plan.pickShell && look.shell != null && look.shell !== plan.pickShell;
++    case 'leverage':
++      // Pending Rules' taught rule for stick (asked 2026-11-24): until then he keeps the coach's side.
++      return false;
++    default:
++      return false;
++  }
++}
++
++/** His hot belief: by how many his box count outnumbers his protection, and from which side. */
++export function hotOf(look: PreSnapLook, protectors: { S: number; W: number }): PreSnapState['hot'] {
++  const overS = look.box.S - protectors.S, overW = look.box.W - protectors.W;
++  const over = Math.max(0, Math.round(look.box.total - (protectors.S + protectors.W)));
++  if (over <= 0) return null;
++  const side = Math.abs(overS - overW) <= MARGIN_HOT_SIDE ? 'either' : overS > overW ? 'S' : 'W';
++  return { side, over };
++}
++
++/** Module B: his pre-snap state for this plan, decided once at the snap. */
++export function decidePreSnap(inp: PreSnapInputs): PreSnapState & { look: PreSnapLook } {
++  const { plan } = inp;
++  const look = lookOf(inp.picture, inp.pSingleHigh, inp.boxHalfWidth);
++  const flip = pickFlip(plan, look);
++  const alert = plan.alert && condHolds(plan.alert.when, look, flip) ? { read: plan.alert.read } : null;
++  const confirm: KeyRole | null = plan.confirm;
++  return {
++    startRead: alert ? alert.read : 0,
++    flip,
++    alert,
++    hot: hotOf(look, inp.protectors),
++    confirm,
++    belief: { ...inp.belief },
++    look,
++  };
++}
+diff --git a/test/qbv2-presnap.test.ts b/test/qbv2-presnap.test.ts
+new file mode 100644
+index 000000000..acd0c85eb
+--- /dev/null
++++ b/test/qbv2-presnap.test.ts
+@@ -0,0 +1,109 @@
++// QB_V2 module B (Flex, 2026-11-24): the passer's pre-snap plan from his own picture. Each pick and its margin, the alert
++// (one condition or alternatives, mirrored with the plan), the hot count against his own protection, and two standing
++// contracts: the state does not change when the defenders' identities or order are permuted with every position held
++// (information honesty), and near a margin a poorer reader's scan error picks the wrong side more often, while the same
++// picture always gives the same decision (no flicker).
++import { describe, expect, it } from 'vitest';
++import { Rng } from '../src/core/rng.js';
++import type { QbReadPlan } from '../src/sim/qbv2/plan.js';
++import { condHolds, decidePreSnap, lookOf, MARGIN_CUSHION, type PreSnapInputs } from '../src/sim/qbv2/presnap.js';
++import type { PicturedMan, RolePicture } from '../src/sim/qbv2/roles.js';
++
++const LOS = 50, BY = 26.65;
++let nextId = 1;
++/** A man `d` yd past the line, `o` yd from the ball toward the strong side (+) or weak side (-). */
++const m = (d: number, o: number, db = true): PicturedMan => ({ id: nextId++, x: LOS + d, y: BY + o, vx: 0, vy: 0, db });
++const rec = (o: number): PicturedMan => ({ id: 900 + Math.round(o * 10), x: LOS - 1, y: BY + o, vx: 0, vy: 0 });
++
++/** 2x2 with #1s at 20 yd and #2s at 10; corners over the #1s at the given cushions; a box of `box` men; two safeties. */
++function picture(cS: number, cW: number, opts: { box?: number; pressS1?: boolean } = {}): RolePicture {
++  const box = opts.box ?? 6, defs: PicturedMan[] = [];
++  for (let i = 0; i < box; i++) defs.push(m(i < 4 ? 0.9 : 4.5, -3.5 + (7 * i) / Math.max(1, box - 1), false));
++  defs.push(m(opts.pressS1 ? 1.2 : cS, 20.5), m(cW, -20.5), m(12, 9), m(12, -9), m(5, 10.5));
++  return { defenders: defs, receivers: { S1: rec(20), S2: rec(10), W1: rec(-20), W2: rec(-10) }, los: LOS, dir: 1, ballY: BY, strong: 1, t: -1 };
++}
++const plan = (over: Partial<QbReadPlan>): QbReadPlan => ({
++  conceptId: 'test', drop: 'quick', readType: 'progression', reads: [{ step: 0, look: { kind: 'receiver', ref: 'S1' }, throws: [{ ref: 'S1', timing: 'onBreak' }] },
++    { step: 1, look: { kind: 'receiver', ref: 'S2' }, throws: [{ ref: 'S2', timing: 'onBreak' }] }],
++  hot: [], checkdown: null, confirm: 'mofSafety', source: 'test', ...over,
++});
++const inputs = (p: RolePicture, pl: QbReadPlan, pSingleHigh = 0.5, protectors = { S: 3, W: 3 }): PreSnapInputs =>
++  ({ plan: pl, picture: p, belief: { cover3: pSingleHigh, cover4: 1 - pSingleHigh }, pSingleHigh, boxHalfWidth: { S: 6, W: 6 }, protectors });
++
++describe('QB_V2 module B: pre-snap plan', () => {
++  it('cushion pick: he flips to the softer corner only past the margin; a near-tie keeps the coach\'s side', () => {
++    const hitches = plan({ pick: 'cushion' });
++    expect(decidePreSnap(inputs(picture(5, 7), hitches)).flip).toBe(true);
++    expect(decidePreSnap(inputs(picture(5, 5 + MARGIN_CUSHION - 0.2), hitches)).flip).toBe(false);
++    expect(decidePreSnap(inputs(picture(7, 5), hitches)).flip).toBe(false);
++  });
++
++  it('shell pick: the other shell beyond the margin flips; no read inside it keeps the authored side', () => {
++    const lion = plan({ pick: 'shell', pickShell: 'open' });
++    expect(decidePreSnap(inputs(picture(6, 6), lion, 0.8)).flip).toBe(true);
++    expect(decidePreSnap(inputs(picture(6, 6), lion, 0.55)).flip).toBe(false);
++    expect(decidePreSnap(inputs(picture(6, 6), lion, 0.2)).flip).toBe(false);
++  });
++
++  it('alert: taken when its condition holds in his picture; alternatives; refs mirror with the plan', () => {
++    const go = plan({ alert: { read: 1, when: { press: 'S1' } } });
++    const on = decidePreSnap(inputs(picture(6, 6, { pressS1: true }), go));
++    expect(on.alert).toEqual({ read: 1 });
++    expect(on.startRead).toBe(1);
++    expect(decidePreSnap(inputs(picture(6, 6), go)).alert).toBeNull();
++    // Y-cross's vertical: two-high, or single-high with #1's corner far off.
++    const when = [{ shell: 'open' as const }, { shell: 'closed' as const, cushion: { on: 'S1' as const, over: 7 } }];
++    expect(condHolds(when, lookOf(picture(5, 5), 0.2, { S: 6, W: 6 }))).toBe(true);
++    expect(condHolds(when, lookOf(picture(8, 5), 0.8, { S: 6, W: 6 }))).toBe(true);
++    expect(condHolds(when, lookOf(picture(5, 5), 0.8, { S: 6, W: 6 }))).toBe(false);
++    // Flipped, 'S1' reads the weak #1.
++    const look = lookOf(picture(5, 8), 0.8, { S: 6, W: 6 });
++    expect(condHolds({ cushion: { on: 'S1', over: 7 } }, look, false)).toBe(false);
++    expect(condHolds({ cushion: { on: 'S1', over: 7 } }, look, true)).toBe(true);
++    // Absent: peeked every time (levels' divide).
++    expect(decidePreSnap(inputs(picture(6, 6), plan({ alert: { read: 1 } }))).alert).toEqual({ read: 1 });
++  });
++
++  it('hot: his box count against his own protection, and the side the surplus is on', () => {
++    expect(decidePreSnap(inputs(picture(6, 6, { box: 6 }), plan({}))).hot).toBeNull();
++    const seven = decidePreSnap(inputs(picture(6, 6, { box: 7 }), plan({}), 0.5, { S: 3, W: 3 }));
++    expect(seven.hot?.over).toBe(1);
++    const lean = decidePreSnap(inputs(picture(6, 6, { box: 7 }), plan({}), 0.5, { S: 4, W: 2 }));
++    expect(lean.hot).toEqual({ side: 'W', over: 1 });
++  });
++
++  it('standing honesty contract: permuting the defenders\' identities and order, every position held, changes nothing', () => {
++    const pl = plan({ pick: 'cushion', alert: { read: 1, when: [{ press: 'S1' }, { boxAtLeast: 7 }] } });
++    for (const [cS, cW, box] of [[5, 7, 6], [1.2, 6, 7], [6, 6.5, 8]] as const) {
++      const base = picture(cS, cW, { box });
++      const a = decidePreSnap(inputs(base, pl, 0.62, { S: 3, W: 3 }));
++      const rng = new Rng(7);
++      for (let k = 0; k < 5; k++) {
++        const shuffled = base.defenders.map((d) => ({ ...d, id: 1000 + Math.floor(rng.next() * 1e6) }))
++          .map((d) => ({ d, r: rng.next() })).sort((u, v) => u.r - v.r).map(({ d }) => d);
++        const b = decidePreSnap(inputs({ ...base, defenders: shuffled }, pl, 0.62, { S: 3, W: 3 }));
++        expect({ ...b, look: undefined }).toEqual({ ...a, look: undefined });
++      }
++    }
++  });
++
++  it('near the margin a poorer reader picks the wrong side more often; one picture, one decision', () => {
++    // True cushions 5.0 (strong) and 6.4 (weak): the coach's answer is to flip. His scan puts each corner off by his own
++    // error (0.3 + 1.0 x (1 - rec) yd deep, QB_SCAN), drawn once per play.
++    const hitches = plan({ pick: 'cushion' });
++    const rate = (rec: number) => {
++      const rng = new Rng(`b-margin-${rec}`), sig = 0.3 + 1.0 * (1 - rec);
++      let right = 0;
++      for (let i = 0; i < 400; i++) {
++        const pic = picture(5 + rng.normal(0, sig), 6.4 + rng.normal(0, sig));
++        const d1 = decidePreSnap(inputs(pic, hitches)), d2 = decidePreSnap(inputs(pic, hitches));
++        expect(d2.flip).toBe(d1.flip);
++        if (d1.flip) right++;
++      }
++      return right / 400;
++    };
++    const poor = rate(0.2), sharp = rate(0.9);
++    expect(sharp).toBeGreaterThan(poor + 0.1);
++    expect(poor).toBeGreaterThan(0.3); // still mostly reads it; he is not scripted to fail
++  });
++});
