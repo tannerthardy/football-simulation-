@@ -2119,7 +2119,11 @@ export class ZoneCoverage implements Behavior {
       // The corner's hole shot is the ball under the safety, at the card's hole depth (row 5b: 10-12 yd); a ball beyond it
       // is the safety's, so #1's window is held to that depth on his line.
       const Hc = carry(o), Hx = sim.los + dir * Math.min((Hc.x - sim.los) * dir, SQUAT_HOLE_TOP);
-      const H = { x: Hx, y: Hc.y }, F = carry(threat), tH = flight(H), tF = flight(F);
+      // The flat is played to the catch, not beaten to the ball: he must arrive by the time the receiver secures it
+      // (DRIVE_SECURE, the securing beat the drive on the catch already uses), while the hole shot has to be denied.
+      // Measured with the plain flight (Tools, 2026-11-24): with an early flat threat he sat 2.7 yd shallower than without
+      // (NFL 1.0) and the hole-versus-flat balance overweighted a flat the NFL corner rallies to.
+      const H = { x: Hx, y: Hc.y }, F = carry(threat), tH = flight(H), tF = flight(F) + DRIVE_SECURE;
       const body = { vel: { x: 0, y: 0 }, profile: a.profile, speedScale: a.speedScale };
       let bestP = H, bestCost = Infinity;
       for (let k = 0; k <= 20; k++) {
