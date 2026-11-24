@@ -310,6 +310,7 @@
   "test/hands-cue.test.ts",
   "test/hang-airborne.test.ts",
   "test/head.test.ts",
+  "test/hitch-open.test.ts",
   "test/hold-facing.test.ts",
   "test/hold-finish.test.ts",
   "test/honest-tackle.test.ts",

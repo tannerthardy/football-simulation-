@@ -39,6 +39,14 @@ const SLANT_LEAN = process.env.SLANT_LEAN === '1';
  * PFF GO, not in motion; route_chart.py): 3.7-4.3 yd outside his start by 3.0 s from any split 6-20 yd off the sideline,
  * ending 5.0 yd from it from a 6-10 yd split; ours 0.8 (10-14 yd split) and -0.5 (14-20). Off, the go is unchanged. */
 const GO_STEM = process.env.GO_STEM === '1';
+/** HITCH_OPEN (experimental, off; carded with the QB clock): the hitch plants at the depth of its stem and opens to the
+ * window, inside and a little upfield, instead of coming straight back a yard. NFL hitches planted at 3-7.5 yd (BDB
+ * 2025, route_chart.py) turn 42-45 deg at the plant and exit +30 to +34 deg against the line, against man (530) as
+ * against zone (1,933), coming back 0.1 yd and sliding 1.4 yd across in the second after; ours turn 82-99 deg and exit
+ * -5 to +16, coming back 0.8 yd on the drawn 6 -> 5 leg. The come-back leg is standing in for the anticipation throw
+ * (ours leaves 0.3 s after the plant, the NFL's 0.1 s before): without it hitch completion fell 70 -> 56% (HITCH_DEPTH,
+ * docs/reviews/2026-11-23-stop-route-settle.md), so this stays off until the QB clock lands. */
+const HITCH_OPEN = process.env.HITCH_OPEN === '1';
 /** CROSS_FLAT (experimental, off): the shallow crossers reach their depth in the first leg and run flat across, as
  * taught ("run under the linebackers, flat across"; docs/reviews/2026-11-14-crosser-depth.md). Off, the shallow
  * climbs on a diagonal from a 2.5 yd stem to 5 yd across 22 yd: still rising at 3.0 s (4.7 yd median against zone, ball
@@ -68,11 +76,11 @@ const ROUTE_TABLE: Record<string, RouteDef> = {
       { id: 'under', end: 'continue', points: [{ d: 10, l: -.4, s: .4 }, { d: 10.5, l: -16 }] },
     ] } },
   // Quick game
-  hitch: { id: 'hitch', family: 'quick', depth: 5, end: 'settle', points: [{ d: 6, l: 0, s: 0.2 }, { d: 5, l: 0.3, s: 0 }] },
+  hitch: { id: 'hitch', family: 'quick', depth: 5, end: 'settle', points: HITCH_OPEN ? [{ d: 6, l: 0, s: 0.2 }, { d: 6.5, l: -1.4, s: 0 }] : [{ d: 6, l: 0, s: 0.2 }, { d: 5, l: 0.3, s: 0 }] },
   // QUICK_HITCH (concepts.ts): the quick game's hitch, planted at 5 yd ("every receiver is running a 5-yard hitch", the
   // quick game off a three-step, one step from the gun for "any route that breaks at 5 yards or under", Viqtory Sports);
   // the five-step hitch above stays at 6 (Throw Deep, Smash: "settle hitch route at 6 yards"). Same shape, a yard shallower.
-  quick_hitch: { id: 'quick_hitch', family: 'quick', depth: 4, end: 'settle', points: [{ d: 5, l: 0, s: 0.2 }, { d: 4.5, l: 0.3, s: 0 }] },
+  quick_hitch: { id: 'quick_hitch', family: 'quick', depth: 4, end: 'settle', points: HITCH_OPEN ? [{ d: 5, l: 0, s: 0.2 }, { d: 5.5, l: -1.4, s: 0 }] : [{ d: 5, l: 0, s: 0.2 }, { d: 4.5, l: 0.3, s: 0 }] },
   // Three-step slant: break at 45°, then flatten across the field if not thrown.
   slant: { id: 'slant', family: 'quick', depth: 6, end: 'continue', points: [{ d: 2, l: 0, s: 0.75 }, { d: 6.5, l: -4.5 }, { d: 8.5, l: -12 }] },
   quick_out: { id: 'quick_out', family: 'quick', depth: 5, end: 'continue', points: [{ d: 5, l: 0, s: 0.4 }, { d: 5, l: 9, s: 0.9 }] },
