@@ -116,7 +116,7 @@ function priorBreak(prior: InstalledReceiverRoute): number | null {
 }
 
 /** Routes timed to a point this far outward of the alignment (yd), mirroring Rules' route timing data (#925). */
-const NO_PLANT_OUTWARD: Record<string, number> = { flat: 5 };
+const NO_PLANT_OUTWARD: Record<string, number> = { flat: 6.4, back_flat: 7, swing: 7 };
 
 export function pathBreak(path: readonly PathPoint[], end: RouteEnd): number | null {
   let b: number | null = null;
@@ -194,7 +194,7 @@ export class ReceiverForecast {
    * install (or the answer he expects on an option route). Null for a route without a break. */
   breakPoint(): Readonly<Vec2> | null {
     const c = this.build(), path = c?.route?.path ?? this.prior.path;
-    // The flat's timing point (Rules, #925: RouteDef.timing {d 1.05, l 5}, on its leg): where the path is 5 yd outward of
+    // The flat's timing point (Rules, #925 e95e5dac6: RouteDef.timing, the NFL release spot: flat {d 1.54, l 6.4}, back_flat and swing l 7): where the path is that far outward of
     // his alignment. Interim mirror of that data until #925 lands and timingPoint(route) is read here instead.
     const outward = this.prior.routeId ? NO_PLANT_OUTWARD[this.prior.routeId] : undefined;
     if (outward !== undefined) {
