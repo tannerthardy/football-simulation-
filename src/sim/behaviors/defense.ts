@@ -342,6 +342,12 @@ export function pursueIfLive(sim: PlaySim, a: Agent): MoveCommand | null {
   // ball does meanwhile (a catch before his estimate's arrival is not yet in his picture).
   if ((HONEST_FLIGHT || landed) && path) return playObservedFlight(a, sim, path);
   const area = landed ? unresolvedBallArea(a) : null;
+  // FLIGHT_BREAK: the area he would rally to is where his own flight estimate brought the ball to a receiver he was
+  // breaking on (a break within 1 s): the break goes on, on that receiver as he now sees him, rather than a goTo to a
+  // catch spot the receiver has already left (Defense's overrun class: 32 of 38 unlabelled ticks after the catch were
+  // this rally, -5.1 yd/s along the carrier's line). His picture only; the possession read above takes over once the
+  // carrier is in it.
+  if (area && FLIGHT_BREAK_ON()) { const cont = continueFlightBreak(a, sim); if (cont) return br(a, sim, 'pil-rally-break', cont); }
   if (area) {
     if (sim.trace.data) sim.trace.decide({ t: sim.t, a: a.idx, kind: 'ball-rally',
       chose: 'locate ball at acquired landing area', cue: 'recognized pass; flight ended without acquired possession',
