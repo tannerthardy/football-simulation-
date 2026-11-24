@@ -1,5 +1,5 @@
 {
- "note": "Core test files that run on the engine defaults (defaults) and those still pinned to the legacy engine (pinned). A file may move from pinned to defaults, never the other way. Regenerate with scripts/diag/engine-pin-manifest.ts. Rebased 2026-11-14 on develop 45e17fcc (engine-61): ten files join the pinned start set, qb-rhythm leaves it. Refreshed 2026-11-16 on develop e90c204c (engine-71): climb-reread-passed, dl-flatten, edge-contain-flow, fangio-tree, prethrow-opi and release-seen leave the pinned set (they pass on the real engine); 55 files new since engine-61 are defaults files. Merged 2026-11-16 on develop e9023c6f (engine-72): craft-exit, hand-moment, qb-footwork-drop, release-commit, sight-pure and sight-stale are defaults files (they pass on the real engine); the nine fixtures engine-72 moved (punch-strike, rush-lean-bound, pa-drop, man-trail-carry, craft-exit, hold-facing, qb-footwork-drop, qb-tick-picture, acc-radius) stay defaults files with their in-file test-only pins, and man-trail-carry also pins BALL_EST to 0; thirteen more files that engine-72 moved carry one in-file flag pin each and pursuit-arrival pins BALL_EST (docs/reviews/2026-11-16-pin-delta-engine72.md). Engine-73 (2026-11-16): 18 files new since engine-72 are defaults files.",
+ "note": "Core test files that run on the engine defaults (defaults) and those still pinned to the legacy engine (pinned). A file may move from pinned to defaults, never the other way. Regenerate with scripts/diag/engine-pin-manifest.ts. Rebased 2026-11-14 on develop 45e17fcc (engine-61): ten files join the pinned start set, qb-rhythm leaves it. Refreshed 2026-11-16 on develop e90c204c (engine-71): climb-reread-passed, dl-flatten, edge-contain-flow, fangio-tree, prethrow-opi and release-seen leave the pinned set (they pass on the real engine); 55 files new since engine-61 are defaults files. Merged 2026-11-16 on develop e9023c6f (engine-72): craft-exit, hand-moment, qb-footwork-drop, release-commit, sight-pure and sight-stale are defaults files (they pass on the real engine); the nine fixtures engine-72 moved (punch-strike, rush-lean-bound, pa-drop, man-trail-carry, craft-exit, hold-facing, qb-footwork-drop, qb-tick-picture, acc-radius) stay defaults files with their in-file test-only pins, and man-trail-carry also pins BALL_EST to 0; thirteen more files that engine-72 moved carry one in-file flag pin each and pursuit-arrival pins BALL_EST (docs/reviews/2026-11-16-pin-delta-engine72.md). Engine-73 (2026-11-16): 18 files new since engine-72 are defaults files. Engine-92 (2026-11-23): periph-acuity is a defaults file.",
  "pinned": [
   "test/acquired-qb-continuation.test.ts",
   "test/arrival.test.ts",
@@ -308,6 +308,7 @@
   "test/hand-site.test.ts",
   "test/hands-cue.test.ts",
   "test/hang-airborne.test.ts",
+  "test/head-follow.test.ts",
   "test/head.test.ts",
   "test/hold-facing.test.ts",
   "test/hold-finish.test.ts",
@@ -385,6 +386,7 @@
   "test/penalty-enforcement.test.ts",
   "test/perceive-track.test.ts",
   "test/perception-producers.test.ts",
+  "test/periph-acuity.test.ts",
   "test/physics.test.ts",
   "test/pin-bisect.test.ts",
   "test/place-kick-execution.test.ts",

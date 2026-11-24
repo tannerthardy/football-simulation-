@@ -99,4 +99,18 @@ describe('HEAD: one head per player', () => {
     expect(back).toBeGreaterThan(0);
     expect(back * sim.dt).toBeLessThanOrEqual(Math.PI / head.HEAD_RATE + ordinary + 2 * sim.dt);
   });
+
+  it('LOOK_SIDE_HOLD: a target dead behind and a head near straight keeps one shoulder as the target crosses +-180 deg', async () => {
+    const { head } = await scene({ HEAD: '1' });
+    const who = {}, pi = Math.PI;
+    // the head within 0.2 rad of straight: the raw sign of rel flips at +-pi; with a man held it must not
+    const seq = [-170, -176, -179.5, 179.5, 176, 170, 176, -179, 179].map(d => (d * pi) / 180);
+    const out = seq.map(r => head.sideOf(r, 0.05, who));
+    expect(new Set(out.map(v => Math.sign(v))).size).toBe(1);
+    // forward again (inside the exit margin) releases the hold
+    expect(head.sideOf(0.4, 0.05, who)).toBeCloseTo(0.4, 9);
+    expect(Math.sign(head.sideOf((170 * pi) / 180, 0.05, who))).toBe(1);
+    // a head clearly turned the other way still decides
+    expect(Math.sign(head.sideOf((170 * pi) / 180, -0.5, who))).toBe(-1);
+  });
 });

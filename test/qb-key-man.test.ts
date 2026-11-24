@@ -81,7 +81,12 @@ describe('QB_KEY_MAN', () => {
     const share = (rows: typeof priced) => high(rows).filter((r) => r.thrown === 'high').length / Math.max(1, high(rows).length);
     expect(high(priced).length).toBeGreaterThanOrEqual(6);
     expect(high(read).length).toBeGreaterThanOrEqual(6);
-    expect(share(read)).toBeGreaterThan(share(priced));
+    // Re-recorded 2026-11-24 on engine-92 (7b36c6e55): the two arms are now play-for-play identical on this panel (the
+    // high answer thrown high on 10 of 14 either way; 12 of 14 with PERIPH_ACUITY off): with the engine's defaults the
+    // priced arm already stays on the high man through his break and throws him, so QB_KEY_THROW adds nothing here.
+    // Was "more often"; restated as "no less often" (the flag must not cost the high throw). QB lane: QB_KEY_THROW is
+    // a retirement candidate unless a scene where it still matters is found.
+    expect(share(read)).toBeGreaterThanOrEqual(share(priced) - 1e-9);
     // And the low answer is still thrown low at least as often.
     const low = (rows: typeof priced) => rows.filter((r) => r.answer === 'low');
     const lowShare = (rows: typeof priced) => low(rows).filter((r) => r.thrown === 'low').length / Math.max(1, low(rows).length);

@@ -60,7 +60,9 @@ describe('QB receiver acquired picture and immutable installation', () => {
     f.r.body.pos = { x: 48, y: 6 };
     expect(f.sim.qbMind.receiverLook(f.r, { x: 60, y: 6 })).toBeNull();
     const p = f.sim.qbMind.receiverLook(f.r, { x: 48, y: 45 })!;
-    expect(p.pos).toEqual({ x: 48, y: 45 });
+    // The delayed position (PERIPH_ACUITY: within his stated error for the look's small eccentricity), not the hidden one.
+    expect(Math.hypot(p.pos.x - 48, p.pos.y - 45)).toBeLessThan(4 * Math.hypot(p.sigP ?? 0, p.sigV ?? 0) + 1e-9);
+    expect(Math.hypot(p.pos.x - 48, p.pos.y - 45)).toBeLessThan(0.2);
     expect(p.acquiredAt).toBe(.4); expect(p.sampledAt).toBeLessThan(.35);
     expect(see).not.toHaveBeenCalled(); expect({ ...f.sim.rng }).toEqual(rng);
   });
@@ -151,9 +153,11 @@ describe('QB receiver acquired picture and immutable installation', () => {
     sim.t = rr.breakTime - .15 * sim.qb.r('anticipation');
     sim.qb.body.pos = { x: sim.los - 7.3, y: sim.ballY };
     r.body.pos = { x: sim.los + 8, y: r.pos.y }; r.body.vel = { x: 6, y: 0 };
-    for (const d of sim.defense) { d.body.pos = { x: 15, y: 26 }; d.body.vel = { x: 0, y: 0 }; }
+    // In his view and off the throw's path (SIGHT_PURE holds a man he never sees at his alignment; parked 25 yd behind
+    // him, out of view, they read as still in the window: Tools/Physics, 2026-11-23).
+    for (const d of sim.defense) { d.body.pos = { x: sim.los + 25, y: 50 }; d.body.vel = { x: 0, y: 0 }; }
     for (let i = 0; i < 24; i++) sim.perception.record(sim.agents);
-    sim.qbMind.observe({ x: 15, y: 26 }); // Acquire the deliberately empty window honestly.
+    sim.qbMind.observe({ x: sim.los + 25, y: 50 }); // Acquire the deliberately empty window honestly.
     const ownState = qb as unknown as { phase: string; setAt: number; readStart: number; lookOffChecked: boolean };
     ownState.phase = 'set'; ownState.setAt = sim.t; ownState.readStart = sim.t; ownState.lookOffChecked = true;
     qb.update(sim.qb, sim);

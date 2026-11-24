@@ -611,6 +611,101 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
 
 
+## engine-93: a head nobody turns follows the body (2026-11-24)
+
+On: `HEAD_FOLLOW` (Coverage C14; found auditing FLIGHT_BREAK at Integration's and the QB lane's request). An information
+leak under the user's standing rule.
+
+With HEAD off (the stack), `stepHeads` turned only zone-eyed defenders' heads and skipped the passer. A head nobody
+drove kept its last direction while the body turned under it. Perception reads the recorded head (release-evidence's
+`sawAt`, the ball estimator's samples), so such a player saw the passer or the ball through a head up to 180 deg off his
+body. The neck allows 90 deg standing and 45 at a sprint, plus up to 55 deg of trunk twist for zone eyes.
+
+Who has a head, and what drives it (HEAD off):
+
+| player | head | engine-92 | engine-93 |
+|---|---|---|---|
+| zone-eyed defender | stepHeads (his key, then the passer) | driven | unchanged |
+| defender who left zone eyes (man conversion, pursuit, return, run fit) | none | frozen | relaxes to the body |
+| passer, controller running (qb-pass, handoff, mesh, PA fake) | qb.ts (QB_HEAD) | driven | held within the neck plus trunk twist |
+| passer after the throw (blocks, pursues, carries) | none | frozen | relaxes to the body |
+| receivers, linemen, rushers, other offense | never set (body cone) | unchanged | unchanged |
+
+Head offset off the body (`scripts/diag/coverage/head-audit.mts`, one game, seed 23; sampled at the end of the tick):
+
+| cell | engine-92 p95 / max, ticks over 145 deg | engine-93 |
+|---|---|---|
+| man defender, not driven | 146 / 180, 815 of 15,451 | 19 / 103, 0 |
+| zone eyes | 74 / 176, 6 | 75 / 141, 0 |
+| downfield block / carrier (returns) | 158-162 / 178, 41 | 10-28 / 74, 0 |
+| passer after the throw | 52-69 / 180, 60 | 10-87 / 158, 17 |
+
+At the perception record itself every head is within the neck plus trunk twist by construction
+(`test/head-follow.test.ts`). The passer's few end-of-tick excesses are his body turning after the record.
+
+A man defender's head now simply follows his body. Where he should look (his man's hip, then back for the ball) is a
+later technique item, not built here.
+
+## engine-92: what the passer sees off his gaze is less exact (2026-11-23)
+
+On: `PERIPH_ACUITY` (QB lane; Integration's paired card). An information leak under the user's standing rule:
+- Off, every receiver or defender inside his peripheral cone (45–69°) was seen exactly, apart from 1.7× the delay.
+- At decisions with the target 30–60° off his head, the receiver picture was 0.13 yd off.
+- On 62–72% of decisions made 15° or more off, the target had never been near his gaze.
+- Throws decided off-gaze completed better than throws he looked at.
+
+On, each look is offset by his stable misjudgment of that player:
+- position error 0.06 × range × eccentricity (Levi, Klein & Aitsebaomo 1985);
+- velocity error 0.14 × speed × eccentricity (McKee & Nakayama 1984);
+- both scaled by 1.3 − 0.6 × vision.
+
+The clear cone for reading separation is 10–15° (Ball et al. 1988), and the periphery's edge is unchanged. There is no
+must-look rule. The window prices each picture's spread, with its growth over the picture's age, in quadrature:
+- in the contest and undercut margins;
+- in the catch-point spread;
+- in the accuracy σ.
+
+PICTURE_AGE's age spreads come on with it.
+
+The decision's picture, by head angle (receiver error p50, off → on):
+
+| head angle | receiver error, yd |
+|---|---|
+| 0–15° | 0.04 → 0.07 |
+| 15–30° | 0.05 → 0.32 |
+| 30–60° | 0.13 → 0.56 |
+| over 60° | 0.32 → 0.50 |
+
+Completion by head angle at the decision (off → on):
+
+| head angle | completion |
+|---|---|
+| 0–15° | 67% → 69% |
+| 15–30° | 72% → 66% |
+| 30–60° | 74% → 64% |
+| over 60° | 72% → 75% |
+
+Over 60° is selection, not a leak: those targets were seen come open, and within each separation band they complete no
+better than looked-at throws.
+
+Paired six-seed card (seeds 23/37/11/5/61/88, deltas against engine-91):
+
+| | mean delta |
+|---|---|
+| completion | −1.2 pts |
+| yards per attempt | −0.17 |
+| sacks | +0.1 |
+| INT | +0.1 |
+| 20+ yard plays | −0.9 |
+| YAC | +0.2 |
+| time to throw | flat |
+
+The dither budget's carrier row is re-recorded (pooled [0.3897, 785, 306], was [0.2963, 854, 253]). The QB's re-priced
+options move his head; defenders reading his eyes break on other lines; the run after the catch meets them elsewhere.
+No stage flips, and carrier / spacing stays inside its own budget.
+
+docs/reviews/2026-11-23-turned-down-open.md; test/periph-acuity.test.ts.
+
 ## engine-91: the stem worked to the defender's leverage (2026-11-18)
 
 On: `STEM_WORK` (Rules + Coaching; Integration, from Coverage's flow table). Taught: attack the defender's leverage,
