@@ -1,0 +1,208 @@
+diff --git a/src/game/call-eligibility.ts b/src/game/call-eligibility.ts
+new file mode 100644
+index 000000000..4945a1b16
+--- /dev/null
++++ b/src/game/call-eligibility.ts
+@@ -0,0 +1,71 @@
++/**
++ * Who may be handed a route on a composed call (CALL_COMPOSE step 2; Flex, 2026-11-24, for Rules' call checks). The
++ * offense as it stands at the snap, after the called motion (`fieldAlignment`, the numbering the play runs on), is put
++ * through the scrimmage snap law that already rules a play (`eligibilityAtSnap`, Rules 5-1-2 and 8-1-5): the ends of the
++ * line and every back are eligible, a covered man on the line is not, and the five linemen wear ineligible numbers.
++ *
++ * Inputs are only the offense's own call: the formation's legal positions (`OffSpot.onLine`) and the motion. No player's
++ * number is known when a call is composed, so each spot reports the number its position wears (a lineman 50-79, anyone
++ * else an eligible number); a play with real numbers and reports goes through `eligibilityAtSnap` itself.
++ */
++import type { OffenseAlignment, OffSpot } from '../playbook/alignment.js';
++import type { Formation, MotionCall, ReceiverRef } from '../playbook/types.js';
++import { fieldAlignment, type FieldContext } from './concept-fit.js';
++import { eligibilityAtSnap, type SnapEligibility, type SnapPlayerFacts } from './presnap-rules.js';
++
++const LINEMEN = new Set(['LT', 'LG', 'C', 'RG', 'RT']);
++
++/** A spot's legal position. Spots from `alignOffense` carry it; for one built elsewhere, a lineman or an attached end is on
++ * the line and everyone else is a back. */
++const onLineOf = (sp: OffSpot): boolean => sp.onLine ?? (LINEMEN.has(sp.slot) || sp.inline);
++
++/** The snap facts of an aligned offense: each spot's legal position, its lateral place and the number its position wears. */
++export function snapFactsOf(off: OffenseAlignment): SnapPlayerFacts[] {
++  return Object.values(off.spots).map((sp) => ({
++    playerId: sp.slot,
++    team: 'O' as const,
++    number: LINEMEN.has(sp.slot) ? 70 : sp.slot === 'QB' ? 12 : 20,
++    y: sp.pos.y,
++    line: onLineOf(sp) ? 'line' as const : 'backfield' as const,
++    inBounds: true,
++  }));
++}
++
++export interface CallEligibility {
++  /** The offense at the snap the check was made on. */
++  off: OffenseAlignment;
++  /** Receiver refs (S1..S4, W1..W4, B, B2) whose player is eligible at the snap. */
++  eligible: Set<ReceiverRef>;
++  /** Every ref on the field, eligible or not. */
++  refs: Set<ReceiverRef>;
++  /** The snap law's ruling per slot. */
++  bySlot: Record<string, SnapEligibility>;
++  /** Players on the line at the snap (the rule needs at least seven). */
++  onLine: number;
++  /** Why the formation itself is not legal, if it is not: fewer than seven on the line, or a ruling left unresolved. */
++  problems: string[];
++}
++
++/** The eligibility of an aligned offense (after any motion). */
++export function eligibilityOf(off: OffenseAlignment): CallEligibility {
++  const facts = snapFactsOf(off);
++  const ruling = eligibilityAtSnap(facts);
++  const bySlot: Record<string, SnapEligibility> = {};
++  for (const r of ruling) bySlot[r.playerId] = r;
++  const refs = new Set<ReceiverRef>(), eligible = new Set<ReceiverRef>();
++  for (const [ref, slot] of Object.entries(off.numbering) as Array<[ReceiverRef, string | undefined]>) {
++    if (!slot) continue;
++    refs.add(ref);
++    if (bySlot[slot]?.eligible === true) eligible.add(ref);
++  }
++  const onLine = facts.filter((f) => f.line === 'line').length;
++  const problems: string[] = [];
++  if (onLine < 7) problems.push(`${onLine} on the line (at least seven)`);
++  for (const r of ruling) if (r.eligible === null) problems.push(`${r.playerId}: ${r.reason}`);
++  return { off, eligible, refs, bySlot, onLine, problems };
++}
++
++/** Who may be handed a route on this call: the formation (flipped as called) after the called motion. */
++export function callEligibility(f: Formation, flip: boolean, ballY: number, motion: MotionCall | undefined, at: FieldContext): CallEligibility {
++  return eligibilityOf(fieldAlignment(f, flip, ballY, motion, at));
++}
+diff --git a/src/game/concept-fit.ts b/src/game/concept-fit.ts
+index fc199b697..86449297c 100644
+--- a/src/game/concept-fit.ts
++++ b/src/game/concept-fit.ts
+@@ -10,7 +10,7 @@
+  * The weights of the concepts that fit are kept as they are and renormalize among themselves by the draw (no CALL_MIX
+  * refit). The motion is drawn first, as today: the fit is judged on what it leaves.
+  */
+-import { alignOffense, type AlignContext } from '../playbook/alignment.js';
++import { alignOffense, type AlignContext, type OffenseAlignment } from '../playbook/alignment.js';
+ import type { Formation, MotionCall, OffSlot, PassConcept, ReceiverRef } from '../playbook/types.js';
+ import type { PhysicalProfile } from '../players/physical.js';
+ import { planMotion, realignOffense } from '../sim/motion.js';
+@@ -40,12 +40,18 @@ export interface FieldContext { los: number; ctx: AlignContext; bodies: Partial<
+ /** The receiver references on the field at the snap: the formation as aligned, then the called motion's set spot. A
+  * motion the planner would not run (illegal, no lane, too long) leaves the formation as aligned, as the play does. */
+ export function fieldRefs(f: Formation, flip: boolean, ballY: number, motion: MotionCall | undefined, at: FieldContext): Set<ReceiverRef> {
++  const off = fieldAlignment(f, flip, ballY, motion, at);
++  return new Set((Object.keys(off.numbering) as ReceiverRef[]).filter((r) => off.numbering[r]));
++}
++
++/** The offense at the snap as `fieldRefs` numbers it: the formation as aligned, then the called motion's set spot. */
++export function fieldAlignment(f: Formation, flip: boolean, ballY: number, motion: MotionCall | undefined, at: FieldContext): OffenseAlignment {
+   let off = alignOffense(f, flip, at.los, ballY, at.ctx);
+   const body = (slot: string) => at.bodies[slot as OffSlot] ?? NOMINAL;
+   const plan = motion ? planMotion(off, motion, body(motion.slot),
+     Object.values(off.spots).map((sp) => ({ slot: sp.slot, pos: sp.pos, radius: body(sp.slot).radius }))) : null;
+   if (plan) off = realignOffense(off, (slot) => (slot === plan.slot ? plan.snapPos : undefined));
+-  return new Set((Object.keys(off.numbering) as ReceiverRef[]).filter((r) => off.numbering[r]));
++  return off;
+ }
+ 
+ /** Whether the field has every receiver the concept's read names (an inner list: any one of them). */
+diff --git a/src/playbook/alignment.ts b/src/playbook/alignment.ts
+index 894ad14a3..f53a05afc 100644
+--- a/src/playbook/alignment.ts
++++ b/src/playbook/alignment.ts
+@@ -241,6 +241,10 @@ export interface OffSpot {
+   backfield: boolean;
+   /** Attached tight end. */
+   inline: boolean;
++  /** On the line of scrimmage at the snap (the legal-position fact Rule 5 / 7 read: the five linemen, an attached end, a
++   * receiver set on the ball); everyone else, the quarterback included, is a back. A motion man is always off the line
++   * (canMotion), so motion never changes it. Absent on a spot built elsewhere: see playbook/eligibility.ts. */
++  onLine?: boolean;
+ }
+ 
+ export interface OffenseAlignment {
+@@ -401,11 +405,11 @@ export function alignOffense(formation: Formation, flip: boolean, los: number, b
+     ? { LT: T, LG: line.cg, C: 0, RG: -line.cg, RT: -T } : { LT: 2.6, LG: 1.3, C: 0, RG: -1.3, RT: -2.6 };
+   const depthOf = olDepth(ctx);
+   for (const [slot, off] of Object.entries(olOff)) {
+-    spots[slot] = { slot: slot as OffSlot, pos: { x: los - depthOf[slot as LineSlot], y: ballY + off }, side: off > 0 ? 'L' : off < 0 ? 'R' : 'C', backfield: false, inline: false };
++    spots[slot] = { slot: slot as OffSlot, pos: { x: los - depthOf[slot as LineSlot], y: ballY + off }, side: off > 0 ? 'L' : off < 0 ? 'R' : 'C', backfield: false, inline: false, onLine: true };
+   }
+   // Under center the QB's body is ~1.7 yd behind the line (NFL tracking at the snap): the center is in between.
+   const qbDepth = formation.qb === 'under' ? 1.6 : formation.qb === 'pistol' ? PISTOL_QB_DEPTH : GUN_QB_DEPTH;
+-  spots.QB = { slot: 'QB', pos: { x: los - qbDepth, y: ballY }, side: 'C', backfield: true, inline: false };
++  spots.QB = { slot: 'QB', pos: { x: los - qbDepth, y: ballY }, side: 'C', backfield: true, inline: false, onLine: false };
+ 
+   // First pass: wide/inline/wing/fixed; second pass: slots (need #1 position).
+   const entries = Object.entries(formation.slots) as Array<[SkillSlot, NonNullable<Formation['slots'][SkillSlot]>]>;
+@@ -482,6 +486,8 @@ export function alignOffense(formation: Formation, flip: boolean, los: number, b
+       side,
+       backfield,
+       inline: a.split === 'inline' && !offEnd.has(slot),
++      // TE_OFF: an end set off the ball is a back; the wide receiver brought up outside him is on the line.
++      onLine: onLine && !offEnd.has(slot),
+     };
+   }
+ 
+diff --git a/test/call-eligibility.test.ts b/test/call-eligibility.test.ts
+new file mode 100644
+index 000000000..776a4f381
+--- /dev/null
++++ b/test/call-eligibility.test.ts
+@@ -0,0 +1,54 @@
++import { describe, expect, it } from 'vitest';
++import { callEligibility } from '../src/game/call-eligibility.js';
++import { fieldRefs } from '../src/game/concept-fit.js';
++import { FORMATION_BY_ID, FORMATIONS } from '../src/playbook/formations.js';
++import type { Formation } from '../src/playbook/types.js';
++
++const AT = { los: 35, ctx: {}, bodies: {} };
++const MID = 26.67;
++
++describe('call eligibility: who may be handed a route after motion (CALL_COMPOSE step 2)', () => {
++  it('every installed formation, either way, has seven on the line and every numbered receiver eligible', () => {
++    for (const f of FORMATIONS) for (const flip of [false, true]) {
++      const e = callEligibility(f, flip, MID, undefined, AT);
++      expect(e.problems, `${f.id} flip=${flip}`).toEqual([]);
++      expect(e.onLine, f.id).toBe(7);
++      expect([...e.eligible].sort(), f.id).toEqual([...e.refs].sort());
++    }
++  });
++
++  it('linemen are never numbered, so no tag can hand one a route', () => {
++    const e = callEligibility(FORMATION_BY_ID.gun_doubles_11, false, MID, undefined, AT);
++    for (const s of ['LT', 'LG', 'C', 'RG', 'RT']) expect(e.bySlot[s].eligible, s).toBe(false);
++    expect(Object.values(e.off.numbering)).not.toContain('LT');
++  });
++
++  it('a receiver set on the ball outside an attached end covers him: the end is ineligible', () => {
++    const base = FORMATION_BY_ID.gun_doubles_11; // Y inline right, Z off the ball outside him
++    const covered: Formation = { ...base, id: 'covered_y', slots: { ...base.slots, Z: { ...base.slots.Z!, depth: 0.6 }, H: { ...base.slots.H!, depth: 1.2 } } };
++    const e = callEligibility(covered, false, MID, undefined, AT);
++    const yRef = e.off.refOf.Y!;
++    expect(e.bySlot.Y.covered).toBe(true);
++    expect(e.eligible.has(yRef)).toBe(false);
++    expect(e.eligible.has(e.off.refOf.Z!)).toBe(true);
++  });
++
++  it('a set with six on the line is reported, not silently passed', () => {
++    const base = FORMATION_BY_ID.gun_doubles_11;
++    const six: Formation = { ...base, id: 'six_on', slots: { ...base.slots, X: { ...base.slots.X!, depth: 1.2 } } };
++    const e = callEligibility(six, false, MID, undefined, AT);
++    expect(e.onLine).toBe(6);
++    expect(e.problems.join(' ')).toMatch(/6 on the line/);
++  });
++
++  it('after motion the refs are the play\'s own numbering (fieldRefs), and the motion man stays eligible', () => {
++    const f = FORMATION_BY_ID.gun_doubles_11;
++    for (const flip of [false, true]) for (const motion of [{ slot: 'H', kind: 'across' }, { slot: 'Z', kind: 'across' }] as const) {
++      const e = callEligibility(f, flip, MID, motion, AT);
++      expect([...e.refs].sort()).toEqual([...fieldRefs(f, flip, MID, motion, AT)].sort());
++      const ref = e.off.refOf[motion.slot];
++      if (ref) expect(e.eligible.has(ref), `${motion.slot} -> ${ref}`).toBe(true);
++      expect(e.problems).toEqual([]);
++    }
++  });
++});
