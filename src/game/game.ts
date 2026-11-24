@@ -222,6 +222,16 @@ export function simulateGame(home: Team, away: Team, opts: GameOptions = {}): Ga
   return new Game(home, away, opts).play();
 }
 
+/** DRIVE_HASH (experimental, off; DRIVE_HASH=1): a drive that begins on a kick result starts on a hash, not at the
+ * field's center line. The ball is put in play where the return ended, or at the inbounds line (the hash) when it ended
+ * outside it; special teams here produce only yards, with no lateral spot, so the return's end is taken on either hash
+ * with equal chance (a dedicated stream: no other draw moves). A missed field goal goes back to the spot of the kick, the
+ * snap's own lateral spot. Off, every kick result put the ball at the center line, and it stayed there until a play ended
+ * outside the hashes: 18% of our scrimmage snaps were exactly on it, and a drive started there every time. NFL (BDB 2025
+ * weeks 1-9, the first dropback of each possession): 86% on a hash, 10% within a yard of the middle
+ * (docs/reviews/2026-11-24-alignment-chart.md). */
+const DRIVE_HASH = process.env.DRIVE_HASH === '1';
+
 export class Game {
   private readonly rng: Rng;
   /** Independent named streams so one subsystem's draws never shift another's. */
@@ -230,6 +240,8 @@ export class Game {
   private readonly kicks: Rng;
   private readonly tempo: Rng;
   private readonly calls: Rng;
+  /** DRIVE_HASH: the lateral spot of a drive begun on a kick. */
+  private readonly spots: Rng;
   /** Accepted defensive/live double-foul extension, not extra game-clock time. */
   private untimedDown = false;
   private readonly rules: GameRules;
@@ -288,6 +300,7 @@ export class Game {
     this.kicks = this.rng.fork('kicks');
     this.tempo = this.rng.fork('tempo');
     this.calls = this.rng.fork('calls');
+    this.spots = this.rng.fork('spot');
     this.teams = { home, away };
     this.oc = { home: new OffensiveCoordinator(home, this.rng.fork('oc-h'), opts.runOnly), away: new OffensiveCoordinator(away, this.rng.fork('oc-a'), opts.runOnly) };
     this.dc = { home: new DefensiveCoordinator(home, this.rng.fork('dc-h')), away: new DefensiveCoordinator(away, this.rng.fork('dc-a')) };
@@ -1280,7 +1293,8 @@ export class Game {
       yards: carry.yards, foul: entry.fouls[carry.index] });
   }
 
-  private applyKickRuling(ruling: KickRuling, kicking: Side): void {
+  /** `fromSnapSpot`: a field-goal try; a miss goes back to the spot of the kick, the snap's own lateral spot (DRIVE_HASH). */
+  private applyKickRuling(ruling: KickRuling, kicking: Side, fromSnapSpot = false): void {
     const s = this.s;
     if (ruling.fieldGoal) {
       const scoring = ruling.fieldGoal === 'kicking' ? kicking : other(kicking);
@@ -1309,7 +1323,7 @@ export class Game {
     } else {
       s.possession = other(owner);
       if (s.quarter >= 5 && s.otPossessions === 0) s.otFirst = owner;
-      this.changePossession(ruling.yardline);
+      this.changePossession(ruling.yardline, !DRIVE_HASH ? CENTER_Y : fromSnapSpot ? s.ballY : this.spots.chance(0.5) ? HASH_LEFT_Y : HASH_RIGHT_Y);
     }
     if (ruling.fairCatchKickAvailable) {
       this.fairCatchEntitlement = { side: s.possession, quarter: s.quarter, index: this.playIndex, yardline: s.yardline };
@@ -1344,7 +1358,7 @@ export class Game {
     this.runClock(5, true);
     if (result.good) { line.fgm++; line.fgLong = Math.max(line.fgLong, result.distance); this.addScore(kicking, 3);
       if (!this.otDecided(kicking)) this.kickoffAfterScore(kicking);
-    } else this.changePossession(Math.max(20, 100 - yardline));
+    } else this.changePossession(Math.max(20, 100 - yardline), DRIVE_HASH ? this.s.ballY : CENTER_Y);
   }
 
   private doPunt(): void {
@@ -1424,7 +1438,7 @@ export class Game {
       }
       line.fga++;
       if (ruling.fieldGoal === 'kicking') { line.fgm++; line.fgLong = Math.max(line.fgLong, dist); }
-      this.applyKickRuling(ruling, kicking); return;
+      this.applyKickRuling(ruling, kicking, true); return;
     }
   }
 
