@@ -220,3 +220,15 @@ cue a man turned to his receiver uses to break on the release is worth a check o
 
 The clock arm is unaffected by the price question. On engine-93 it sets him earlier and throws earlier with the same
 interception rate. Its yards per dropback (6.64 → 6.09) are within the unpaired spread, and the card decides.
+
+**Flex's underneath-defender measurement (2026-11-24)** answers the coverage question in §"What it says", 1.
+- Source: `scripts/diag/defense-film/stop_lane.py` on claude/quirky-franklin-9lbwbp; BDB 2025 weeks 1–2 against 8 of
+  our games on the #872 base.
+- Our underneath defender is in the stop and out lane at the break (within 1.5 yd of the QB-to-break segment) about as
+  often as the NFL's. At 3–7.5 yd, NFL against ours: stop #1 8% / 11%, stop #2 5% / 12%, out #1 11% / 15%, out #2
+  13% / 13%. Distances are close too: stop #1, nearest defender 4.2 / 3.9 yd from the receiver, 3.2 / 2.6 yd from the
+  lane.
+- So the remaining pre-break gap is the passer's price, not the coverage. Throws before a stop's break: NFL 59%, ours
+  38% (#1) and 54% (#2).
+- The next measurement is the window's arrival against the breaking defender, held until Coverage answers the
+  back-to-the-passer question.
