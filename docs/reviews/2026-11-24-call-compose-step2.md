@@ -154,6 +154,56 @@ the NFL's overall share must average 1.
   - The trips concepts are now near their share. The rest of their shortfall is formation frequency (Flex).
 - **Back in:** non-PA composed calls expected from the axes 14.0%, called 14.3%; all pass calls 17.3%. The NFL's back protects on about 12-23%, by family.
 
+### After the full-field room fix (operator a5736c1e9; the same 16 games' seeds)
+
+Full-field concepts now also take their share among the plays with room for them:
+- mesh, drive and hitch-cross: two receivers on each side;
+- Y-cross: three to a side;
+- post-cross: two to a side;
+- four verticals: four receivers.
+
+| composition | NFL share (of the non-PA pool) | called share | called / NFL | base weight | back in: expected / called |
+|---|---|---|---|---|---|
+| drive | 21.5% | 12.8% (122) | 0.59 | 6.23 | 0% / 0% |
+| mesh | 10.3% | 6.5% (62) | 0.63 | 2.98 | 16% / 23% |
+| fade_flat | 7.6% | 10.1% (96) | 1.32 | 2.21 | 6% / 7% |
+| curl_flat | 6.1% | 7.1% (68) | 1.16 | 1.78 | 7% / 3% |
+| slant_flat | 5.5% | 8.3% (79) | 1.50 | 1.60 | 14% / 30% |
+| stick | 5.4% | 6.9% (66) | 1.27 | 1.58 | 0% / 0% |
+| verts_hitch | 5.3% | 4.1% (39) | 0.77 | 1.54 | 23% / 21% |
+| double_slants | 4.9% | 4.0% (38) | 0.82 | 1.41 | 22% / 34% |
+| hitches | 3.4% | 6.2% (59) | 1.81 | 0.99 | 21% / 17% |
+| smash | 3.2% | 3.9% (37) | 1.23 | 0.92 | 18% / 11% |
+| corner_flat | 2.9% | 3.9% (37) | 1.32 | 0.85 | 15% / 5% |
+| y_cross | 2.6% | 1.9% (18) | 0.73 | 0.75 | 0% / 0% |
+| hitch_post | 2.6% | 2.5% (24) | 0.97 | 0.75 | 24% / 46% |
+| quick_outs | 2.5% | 3.5% (33) | 1.39 | 0.72 | 32% / 33% |
+| dagger | 2.2% | 2.4% (23) | 1.10 | 0.64 | 18% / 17% |
+| sail_corner | 2.1% | 2.4% (23) | 1.14 | 0.61 | 30% / 30% |
+| seam_hitch | 1.7% | 1.9% (18) | 1.12 | 0.49 | 24% / 17% |
+| four_verts | 1.5% | 1.7% (16) | 1.08 | 0.45 | 0% / 0% |
+| double_outs | 1.4% | 2.0% (19) | 1.42 | 0.41 | 31% / 32% |
+| comebacks | 1.3% | 2.0% (19) | 1.56 | 0.37 | 26% / 26% |
+| flood | 0.9% | 1.0% (10) | 1.12 | 0.27 | 11% / 0% |
+| trips_stick | 0.8% | 0.1% (1) | 0.12 | 0.24 | 0% / 0% |
+| levels | 0.8% | 1.4% (13) | 1.76 | 0.22 | 17% / 38% |
+| hitch_out | 0.8% | 1.3% (12) | 1.62 | 0.22 | 11% / 0% |
+| post_cross | 0.6% | 0.7% (7) | 1.14 | 0.19 | 100% / 100% |
+| seam_slant | 0.6% | 0.6% (6) | 1.05 | 0.17 | 7% / 17% |
+| trips_sail | 0.6% | 0.6% (6) | 1.05 | 0.17 | 14% / 17% |
+| hitch_cross | 0.5% | 0.2% (2) | 0.41 | 0.15 | 0% / 0% |
+| trips_outs | 0.3% | 0.2% (2) | 0.76 | 0.08 | 33% / 0% |
+
+**Reading it:**
+- **Drive and mesh:** called more (drive 8.0% → 12.8% of the pool), but their ratio stays about 0.6. Their NFL share also
+  rose, and the census rule for full-field concepts is loose: drive is any shallow and any dig on the play, so it
+  overlaps mesh. That is a limit of the operator, not a weight to raise.
+- **Run-to-run variation:** hitches is 1.81× here, against 1.17-1.25 in the two earlier runs, so a ratio's run-to-run
+  spread is wider than ±25%.
+- **Small rows:** levels (1.76×) and hitch_out (1.62×) are on 12-13 calls.
+- Nothing well sampled is at 2×.
+- **Back in:** non-PA composed calls expected from the axes 13.5%, called 15.2%; all pass calls 17.7%.
+
 ## The shares
 
 Operator: `scripts/diag/routes/call_shares.py` on rules/route-chart (#876), 2022 BDB, 7,207 non-PA dropbacks. Output:
