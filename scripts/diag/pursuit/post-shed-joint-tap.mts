@@ -32,15 +32,24 @@ proto.tick = function (this: any) {
   const sim = this;
   for (const e of before!) if (!sim.engagements.includes(e)) {
     const d = e.defender, b = e.blocker;
-    if (!d || !b || d.engagement) continue;
+    if (!d || !b) continue;
     const surv = handsOn(sim, d).find((x: any) => x.o === b);
-    s.track.push({ d, b, t0: sim.t, type: e.type, pos: d.player.position, bpos: b.player.position, survived: !!surv, wasHolding: !!e.holding, first: null, done: false });
+    // An engagement on him again at the very tick this one ended is an exchange (a new blocker, or the same one re-fit).
+    const imm = d.engagement ? { same: d.engagement.blocker === b } : null;
+    s.track.push({ d, b, t0: sim.t, type: e.type, pos: d.player.position, bpos: b.player.position, survived: !!surv, wasHolding: !!e.holding, first: null, done: false,
+      immediate: imm, bodyTicks: 0, bodyOld: 0, ticks: 0 });
   }
   for (const x of s.track) {
     if (x.done) continue;
     const el = sim.t - x.t0;
     if (el > 0.5 + 1e-9) { x.done = true; continue; }
     const d = x.d, H = handsOn(sim, d), eng = d.engagement;
+    // Body contact (no hands) in the World step: with anyone, and with his former blocker.
+    x.ticks++;
+    const cs = (sim.lastStep?.contacts ?? []).filter((h: any) => h.i === d.idx || h.j === d.idx);
+    if (cs.length) x.bodyTicks++;
+    if (cs.some((h: any) => h.i === x.b.idx || h.j === x.b.idx)) x.bodyOld++;
+    if (x.first) continue;
     if (!H.length && !eng) continue;
     const pick = H.find((h: any) => h.o === x.b) ?? H[0] ?? null;
     const o = pick?.o ?? eng?.blocker;
@@ -50,7 +59,6 @@ proto.tick = function (this: any) {
       fromFacing: zone(deg(toO - d.body.facing)), fromTravel: sp > 1 ? zone(deg(toO - Math.atan2(d.vel.y, d.vel.x))) : 'standing',
       handAngle: onD ? deg(Math.atan2(c.local.y, c.local.x)) : null, hold: j ? r2(j.hold) : null, grip: j?.grip ?? null, chosenHold: !!(eng?.holding),
       speed: r2(sp), oid: o.idx };
-    x.done = true;
   }
   for (; s.seen < sim.events.length; s.seen++) {
     const e = sim.events[s.seen];

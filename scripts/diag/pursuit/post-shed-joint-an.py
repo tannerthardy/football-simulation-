@@ -8,6 +8,9 @@ for typ in ('run', 'pass'):
         X = [r for r in R if r['type'] == typ and GRP.get(r['pos'], 'DB') == g]
         if not X: continue
         F = [r for r in X if r['first']]
+        I = [r for r in X if r.get('immediate')]
+        tk = sum(r.get('ticks', 0) for r in X)
+        print(f"{typ} {g}: immediately re-engaged at the end tick {pct(len(I), len(X))} (same blocker {sum(r['immediate']['same'] for r in I)}) | body contact (any) on {pct(sum(r.get('bodyTicks', 0) for r in X), tk)} of the next 0.5 s ticks, with the former blocker {pct(sum(r.get('bodyOld', 0) for r in X), tk)}")
         print(f"{typ} {g}: block ends {len(X)} | a joint survives the end {pct(sum(r['survived'] for r in X), len(X))} | back on him within 0.5 s {pct(len(F), len(X))}")
         if not F: continue
         c = collections.Counter
