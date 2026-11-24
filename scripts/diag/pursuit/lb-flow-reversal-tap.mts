@@ -10,6 +10,15 @@ const { generateTeam } = await import(`${W}/src/league/team.ts`);
 const { simulateGame } = await import(`${W}/src/game/game.ts`);
 const { compilingPlan } = await import(`${W}/src/playbook/read-compiler/runtime.ts`);
 const { writeFileSync } = await import('node:fs');
+const { Mind } = (await import(`${W}/src/sim/mind.ts`)) as any;
+// Read-only wrap: the run-fit landmark each backer's mind returns, and when a new one was chosen (a new beat).
+const aimLog = new WeakMap<any, { pos: any; prev: any; setAt: number }>();
+const aim0 = Mind.prototype.aim;
+Mind.prototype.aim = function (this: any, job: string, desired: any, t: number) {
+  const out = aim0.call(this, job, desired, t);
+  if (job === 'run-fit') { const l = aimLog.get(this); if (!l || l.pos !== out) aimLog.set(this, { pos: out, prev: l?.pos ?? null, setAt: t }); }
+  return out;
+};
 const GAMES = Number(process.argv[2] ?? 2), OUT = process.argv[3], FIRST = Number(process.argv[4] ?? 201);
 const LB = /^(LB|ILB|OLB|MLB)/;
 const rows: any[] = []; const srcTotal = new Map<string, number>(); const st = new WeakMap<any, any>();
@@ -41,7 +50,19 @@ proto.tick = function (this: any) {
       // Attribution: the decision itself reversed (its lateral sign flipped with it) or a later stage did; and the planner.
       const decRev = Math.abs(dv) > 1 && Math.sign(dv) === sg && l.dec !== 0 && Math.sign(l.dec) !== Math.sign(dv);
       const tagNow = [...(d.tags ?? [])].filter((t: string) => /^fit-/.test(t)).sort().join('+') || 'no fit tag';
-      const key = `${decRev ? 'decision reversed' : 'a later stage'} | ${s.pursued.has(d.idx) ? 'pursuit/chase' : 'run fit'}`;
+      let aimCls = '';
+      if (decRev && !s.pursued.has(d.idx)) {
+        const L = aimLog.get(d.mind);
+        if (!L) aimCls = ' | no run-fit aim';
+        else {
+          const newBeat = sim.t - L.setAt <= 0.15 + 1e-9;
+          const sideNow = Math.sign(L.pos.y - d.pos.y), sidePrev = L.prev ? Math.sign(L.prev.y - d.pos.y) : sideNow;
+          aimCls = newBeat && sideNow !== sidePrev ? ' | landmark re-chosen across him (a new beat)'
+            : newBeat ? ` | new beat, landmark same side (moved ${(Math.abs(L.pos.y - (L.prev?.y ?? L.pos.y))).toFixed(1)} yd)`
+            : ' | same landmark (tracking overshoot)';
+        }
+      }
+      const key = `${decRev ? 'decision reversed' : 'a later stage'} | ${s.pursued.has(d.idx) ? 'pursuit/chase' : 'run fit'}${aimCls}`;
       s.src.set(key, (s.src.get(key) ?? 0) + 1);
       const k2 = `fit tags so far: ${tagNow}`; s.src.set(k2, (s.src.get(k2) ?? 0) + 1);
     }
