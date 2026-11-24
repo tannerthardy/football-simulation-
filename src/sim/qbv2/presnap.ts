@@ -75,6 +75,32 @@ export function mirrorRef(r: ReceiverRef): ReceiverRef {
   return (r[0] === 'S' ? `W${r.slice(1)}` : r[0] === 'W' ? `S${r.slice(1)}` : r) as ReceiverRef;
 }
 
+/** The plan mirrored (S and W swapped) for a flip: every ref in the reads (looks, key sides, throws, key answers), the hot
+ * rules (side and answer), the checkdown and the alert's condition. QB lane, 2026-11-24. Give `decidePreSnap` the plan as
+ * authored (condHolds mirrors the alert's refs itself when it flips) and the Cycle the mirrored plan, so no ref is swapped
+ * twice. */
+export function mirrorPlan(plan: QbReadPlan): QbReadPlan {
+  const side = <T extends string>(x: T): T => (x === 'S' ? 'W' : x === 'W' ? 'S' : x) as T;
+  const cond = (c: AlertCond): AlertCond => ({
+    ...c,
+    ...(c.press ? { press: mirrorRef(c.press) } : {}),
+    ...(c.cushion ? { cushion: { ...c.cushion, on: mirrorRef(c.cushion.on) } } : {}),
+    ...(c.leverage ? { leverage: { ...c.leverage, on: mirrorRef(c.leverage.on) } } : {}),
+  });
+  return {
+    ...plan,
+    reads: plan.reads.map((r) => ({
+      ...r,
+      look: r.look.kind === 'receiver' ? { kind: 'receiver', ref: mirrorRef(r.look.ref) } : { ...r.look, side: side(r.look.side ?? 'S') },
+      throws: r.throws.map((o) => ({ ...o, ref: mirrorRef(o.ref) })),
+      ...(r.keyRules ? { keyRules: r.keyRules.map((k) => ({ ...k, throwTo: mirrorRef(k.throwTo) })) } : {}),
+    })),
+    hot: plan.hot.map((h) => ({ ...h, side: side(h.side), answer: { ...h.answer, ref: mirrorRef(h.answer.ref) } })),
+    checkdown: plan.checkdown ? { ...plan.checkdown, ref: mirrorRef(plan.checkdown.ref) } : null,
+    ...(plan.alert ? { alert: { ...plan.alert, ...(plan.alert.when ? { when: Array.isArray(plan.alert.when) ? plan.alert.when.map(cond) : cond(plan.alert.when) } : {}) } } : {}),
+  };
+}
+
 /** His read of the picture: the shell from his belief, the box by side, and the man over each of his receivers. */
 export function lookOf(p: RolePicture, pSingleHigh: number, boxHalfWidth: { S: number; W: number }): PreSnapLook {
   const shell = pSingleHigh > 0.5 + MARGIN_SHELL ? 'closed' : pSingleHigh < 0.5 - MARGIN_SHELL ? 'open' : null;

@@ -107,3 +107,20 @@ describe('QB_V2 module B: pre-snap plan', () => {
     expect(poor).toBeGreaterThan(0.3); // still mostly reads it; he is not scripted to fail
   });
 });
+
+describe('mirrorPlan (QB lane)', () => {
+  it('swaps S and W in every ref and side, and twice is the plan again', async () => {
+    const { mirrorPlan } = await import('../src/sim/qbv2/presnap.js');
+    const { STUB_SLANT_FLAT } = await import('../src/sim/qbv2/plan.js');
+    const p = { ...STUB_SLANT_FLAT, checkdown: { ref: 'S3' as const, fromStep: 1, timing: 'seenOpen' as const }, alert: { read: 1, when: [{ shell: 'open' as const }, { press: 'S1' as const, cushion: { on: 'S1' as const, over: 6 } }] } };
+    const m = mirrorPlan(p);
+    expect(m.reads[0].look).toEqual({ kind: 'key', role: 'flat', side: 'W' });
+    expect(m.reads[0].throws.map((o) => o.ref)).toEqual(['W1', 'W2']);
+    expect(m.reads[0].keyRules?.map((k) => k.throwTo)).toEqual(['W1', 'W2']);
+    expect(m.reads[1].look).toEqual({ kind: 'receiver', ref: 'S1' });
+    expect(m.hot.map((h) => `${h.side}:${h.answer.ref}`)).toEqual(['W:W1', 'S:S1']);
+    expect(m.checkdown?.ref).toBe('W3');
+    expect((m.alert!.when as any[])[1]).toEqual({ press: 'W1', cushion: { on: 'W1', over: 6 } });
+    expect(mirrorPlan(m)).toEqual(p);
+  });
+});
