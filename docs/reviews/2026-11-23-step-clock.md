@@ -421,3 +421,24 @@ Same 16 games, engine-94, clock off, THROWAWAY_FELT off / on (`scripts/diag/eyes
 The felt/outside decision itself never threw the ball away on these seeds: with the rush on him the existing no-throw
 path answers first (its throwaways, line 2251, are the 19). Scrambles 39 → 28 are within these games' noise; the card is
 the test.
+
+## §1.6 true-state fixes: QB_SCOUT and QB_SCREEN_SEEN (engine-96 candidate, 2026-11-24)
+
+Patch `patches/engine71-footwork/qb-scout-screen-seen-on-703fc628.patch` on develop 703fc628c (sha256 aa5dc0e0351d;
+`git apply --check` clean; typecheck clean; registry engine-96, 505 flags: 385 on, 92 off, 28 numeric).
+Red-diff (alone): tests run 4456; failing 59; on the ledger 59; new red 0, fixed 0.
+
+- QB_SCOUT: what he believes of a defender's body and ball skills is a scouting report (scoutReport): the position's
+  typical plus his share (playRecognition, experience) of a film reading that errs by 6% of typical, falling with the
+  defender's experience to a third of that; drawn from a hash of the two ids, so it is the same every play and new for
+  a different man (no cache: the first red-diff caught a stale cached report). It replaces every read of a rusher's or
+  defender's true profile and fatigue in the felt rush, the stick checks, pocket movement, the screen check and believe().
+  True fatigue reads in qb.ts 10 → 3 (decision-information scan, row lowered).
+- QB_SCREEN_SEEN: the screen check's "blocked" from his picture (seenTied), not the true engagement.
+- Tests: test/qb-scout.test.ts (fixed per pair, new for a different man; a studious passer nearer the man; film error
+  falls with snaps, never to zero). Pins, QB_SCOUT=0 with owner notes: qb-believed-def (the old contract it replaces),
+  acc-radius and arrival-lead (recorded scenes; QB to re-record). engine-pin manifest: qb-scout in defaults.
+- Same 16 games: both off / QB_SCOUT only / both on: completion 68.0 / 69.2 / 69.2%, sacks 96 / 94 / 94, INT 18 / 19 /
+  19, throwaways 19 / 17 / 17, time to throw p50 2.31 s throughout. QB_SCREEN_SEEN changes no play on these seeds.
+- Found, not fixed here: held() reads the rusher's true block (engagement) and who is winning it (engagement.win) for
+  the felt rush. It needs a model of what he sees of a block; its own item.
