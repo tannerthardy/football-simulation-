@@ -291,7 +291,7 @@ function leverageMagnitude(a: Agent, y: number): number {
   return (0.5 + 1.7 * near) * (0.55 + 0.45 * a.r('pursuit'));
 }
 
-/** TRAIL_LEVERAGE (experimental, off; TRAIL_LEVERAGE=1 turns it on). The second man to the ball does not run up the first
+/** TRAIL_LEVERAGE (on since engine-98; TRAIL_LEVERAGE=0 restores). The second man to the ball does not run up the first
  * man's back: a pursuer who sees a teammate ahead of him on the same carrier (nearer the carrier, on his own line to
  * him, closing on him and not yet on him) takes his shoulder on the side that teammate does not take, rather than
  * the same side; it fades with his distance as every pursuer's shade does, so the two men converge from either side. When that teammate is no longer ahead of him in his picture (beaten,
@@ -308,7 +308,7 @@ function leverageMagnitude(a: Agent, y: number): number {
  * past the lead, the lead down, or the lead on a stopped carrier (the tackle on). The side is decided on entry
  * (away from the lead's side of the carrier; his ordinary leverage side when the lead is square behind him) and held
  * until the lead shows 0.5 yd on that side. Magnitude: the existing leverage magnitude and distance fade (no new constant). */
-export const TRAIL_LEVERAGE = process.env.TRAIL_LEVERAGE === '1';
+export const TRAIL_LEVERAGE = process.env.TRAIL_LEVERAGE !== '0';
 const LEAD_ENTER = 0.5, LEAD_ANGLE_IN = Math.PI / 4, LEAD_ANGLE_OUT = Math.PI / 3, SIDE_MARGIN = 0.5;
 const trailState = new WeakMap<Agent, { target: Agent; lead: Agent | null; side: number; t: number; out: number | null }>();
 /** TRAIL_LEVERAGE diagnostics (read-only): his current trail lead and side, or null. Behaviour does not depend on it. */

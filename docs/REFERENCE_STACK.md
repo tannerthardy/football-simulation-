@@ -611,6 +611,29 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
 
 
+## engine-98: the second man to the ball takes the other shoulder (2026-11-24)
+
+On: `TRAIL_LEVERAGE` (Defense; `=0` restores). A pursuer who sees a teammate ahead of him on the same carrier (nearer the
+carrier, on his own line to him, closing, not yet on him) takes his pursuit shoulder on the side that teammate does not
+take, rather than the same side; the shoulder fades with his own distance as every pursuer's does, so the two converge
+from either side. All from his picture (`sim.see` of the teammate and the carrier). Lead and side are held decisions with
+margins (nearer by 0.5 yd, 45/60 deg; side held until the lead shows 0.5 yd on it). He is released on a perceived settling
+of the lead's try: the carrier past the lead by 0.5 yd, the lead down, or the lead on a carrier he sees stopped (under 2
+yd/s); or he is now nearer, the lead is off his line, or moving away. No new magnitudes. Why: in the 3-8 yd pursuit band,
+54-59% of the spacing pass's cuts were a pursuer of the same carrier, nearer to it in 92%, steering points 0.2-0.4 yd
+apart (the shade's distance fade took both men's shoulders together). Attempt 1 held the shoulder unfaded (too wide to
+finish); attempt 2 faded it but released on the lead's arrival (9% of releases); the release fix brought that to 3.5%.
+
+Defense's lead-miss operator (miss-follow-tap.mts, 6 seed sets x 4 games), off / on: catch attempts missed 7.1 / 5.1%,
+catch misses + broken holds per play 0.170 / 0.137, after a catch miss the next attempt made 50 / 54%, yards after a
+catch miss 14.5 / 11.7; run misses + broken holds per play 0.320 / 0.299. Catch rows (2 games, six coverages): first
+defender stops him 74.9 / 73.8%, YAC 5.20 / 5.07. Integration's card (e137, 5 seeds x 32 games, trail arm against the
+reference): completion +0.5 to +1.3 on every seed; yards after catch down on 4 of 5 (-0.13 to -0.76, one +0.02); 20+
+completions and yards per attempt down on 4 of 5; runs and sacks noise. Measured with `GATHER_FRONT` (Defense) it does not
+stack (both on returns catch misses to 0.173 a play); `GATHER_FRONT` stays off until that pair is explained.
+Tests: pursuit-effort's read counts restated as reads of the carrier (the trail reads teammates); dither passes; red-diff
+on the 55 pursuit files, flag on: 0 new after the restatement. Off hash = develop.
+
 ## engine-97: the passer's pre-snap picture is his own scan (2026-11-24)
 
 On: `QB_SCAN` and `QB_CANON_SEEN` (Flex; leak removals, QB decision plan §1.6; `=0` restores each). His pre-snap picture is one

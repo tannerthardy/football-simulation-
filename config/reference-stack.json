@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "engine-97",
+  "id": "engine-98",
   "runSet": {
     "commit": "1b5415de99b5b7194eff045f3c37a07a4c54c1a9",
     "seeds": [
@@ -465,6 +465,6 @@
     "ZONE_WINGS": "on",
     "PURSUIT_FIELD": "on",
     "PURSUIT_COMMIT": "on",
-    "TRAIL_LEVERAGE": "off"
+    "TRAIL_LEVERAGE": "on"
   }
 }
