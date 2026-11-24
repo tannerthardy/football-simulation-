@@ -8,7 +8,12 @@
  */
 import type { KeyRole } from './plan.js';
 
-export interface PicturedMan { id: number; x: number; y: number; vx: number; vy: number }
+export interface PicturedMan {
+  id: number; x: number; y: number; vx: number; vy: number;
+  /** In the visible defensive-back group of the personnel package (corners and safeties, not which is which); absent
+   * is read as eligible. */
+  db?: boolean;
+}
 
 /** The picture the resolver needs, in field coordinates. */
 export interface RolePicture {
@@ -40,7 +45,11 @@ const recOut = (p: RolePicture, side: 'S' | 'W', n: number): number | null => { 
 function area(role: KeyRole, p: RolePicture, side: 'S' | 'W'): Area | null {
   const two = recOut(p, side, 2) ?? 6, one = recOut(p, side, 1) ?? 14;
   switch (role) {
-    case 'corner': return { deep: [-1, 9], out: [Math.max(two, 8), 40] };
+    // Flex's measured rule (corner-find.mts, 2026-11-24; qbmind's cornersSeen): the widest defensive back within 12 yd of
+    // the line and 4+ yd off the ball. Right man 98-100% over 17 cases (press, bunch, condensed, heavy 13 with the
+    // corner over a nub end, rolled safeties); the old 9 yd / 8 yd-off (and outside-#2) rule missed 40-50% of condensed and
+    // heavy sides.
+    case 'corner': return { deep: [-1, 12], out: [4, 40] };
     case 'mofSafety': return { deep: [9, 30], out: [-6, 6] };
     case 'apex': case 'overhang': return { deep: [3, 7], out: [3.5, Math.max(4, two)] };
     // Before the snap the flat defender is the first man inside #1 outside the box (the apex or nickel; Rules +
@@ -61,7 +70,7 @@ const inArea = (p: RolePicture, a: Area, m: PicturedMan, side: 'S' | 'W', margin
  * role's landmark (the rest). Null when no one is there (a vacated flat is an answer: nobody is in it). */
 function pick(role: KeyRole, p: RolePicture, side: 'S' | 'W'): PicturedMan | null {
   const a = area(role, p, side); if (!a) return null;
-  const cand = p.defenders.filter((m) => inArea(p, a, m, side, 0));
+  const cand = p.defenders.filter((m) => inArea(p, a, m, side, 0) && (role !== 'corner' || m.db !== false));
   if (!cand.length) return null;
   if (role === 'corner') return cand.reduce((b, m) => (outOf(p, m, side) > outOf(p, b, side) ? m : b));
   if (role === 'mofSafety') return cand.reduce((b, m) => (deepOf(p, m) > deepOf(p, b) ? m : b));
