@@ -4,7 +4,8 @@
  * read exists. Nothing in the engine reads the plans yet. */
 import { describe, expect, it } from 'vitest';
 import { READ_PLANS } from '../src/playbook/read-plans.js';
-import { PASS_BY_ID } from '../src/playbook/concepts.js';
+import { PASS_BY_ID as PASS, SCREEN_BY_ID } from '../src/playbook/concepts.js';
+const PASS_BY_ID = { ...PASS, ...SCREEN_BY_ID };
 import type { ReceiverRef } from '../src/playbook/types.js';
 
 function routed(id: string): Set<ReceiverRef> {
@@ -12,7 +13,7 @@ function routed(id: string): Set<ReceiverRef> {
   const s = new Set<ReceiverRef>();
   for (const [k, v] of Object.entries(c.strong)) if (v) s.add(`S${k}` as ReceiverRef);
   for (const [k, v] of Object.entries(c.weak)) if (v) s.add(`W${k}` as ReceiverRef);
-  if (c.back !== 'block') s.add('B');
+  if (c.back !== 'block' || c.screen?.receiver === 'B') s.add('B');
   return s;
 }
 

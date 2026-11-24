@@ -89,12 +89,12 @@ export const CURL_FLAT: QbReadPlan = {
       throws: [{ ref: 'S2', timing: 'onBreak' }, { ref: 'S1', timing: 'seenOpen' }],
       keyRules: [{ cue: 'widens', throwTo: 'S1' }, { cue: 'jumps', throwTo: 'S1' }, { cue: 'sinks', throwTo: 'S2' }] },
   ],
-  // GENERIC hot.
-  hot: [{ side: 'S', over: 1, answer: { ref: 'S2', timing: 'onBreak' } }, { side: 'W', over: 1, answer: { ref: 'W2', timing: 'onBreak' } }],
+  // The sit over the ball (#3) is the blitz throw in the five-step version ours runs (Heck, "Florida 4").
+  hot: [{ side: 'either', over: 1, answer: { ref: 'S3', timing: 'onBreak' } }],
   checkdown: { ref: 'B', fromStep: 1, timing: 'seenOpen' },
   confirm: null,
   expected: { cover3: 0 },
-  source: 'docs/reviews/2026-11-24-read-plans.md#curl-flat-curl_flat (Bowen NFP; Heck GS; Hewitt USAF; FirstDown; YFO). GENERIC hot.',
+  source: 'docs/reviews/2026-11-24-read-plans.md#curl-flat-curl_flat (Bowen NFP; Heck GS "Florida 4"; Hewitt USAF; FirstDown; YFO).',
 };
 
 /** Smash: high-low the corner on the first hitch (a five-step class drop and a hitch): he sinks, the hitch on time; he
@@ -241,6 +241,88 @@ export const VERTS_HITCH: QbReadPlan = {
   source: 'docs/reviews/2026-11-24-read-plans.md#verticals-hitch-verts_hitch (concepts.ts read line; Gonzalez). GENERIC hot. Variant: hitch, seam, check down from a 0-step drop (WWTP BLUE).',
 };
 
+// ------------------------------------------------------------------ play-action (docs/reviews/2026-11-24-read-plans.md)
+// Max protection (the back and the inline end block) leaves no hot: a blitz seen before the snap goes to the underneath
+// options (Throw Deep, Yankee). Steps count from the set after the fake: the read is on the hitch ("drop back, hitch, and
+// throw", Coaches Insider, intermediate and deep passing game).
+
+/** PA post-dig (Mills): key the safety on the hitch: he drives on the dig or is caught flat-footed, the post; he stays
+ * deep on the post, the dig. Then the backside dig. (Inside The Pylon, Mills; Hoover on Spurrier; Bowen, Cover 4.) */
+export const PA_POST_DIG: QbReadPlan = {
+  conceptId: 'pa_post_dig', drop: 'pa', readType: 'key',
+  reads: [
+    { step: 1, look: { kind: 'key', role: 'mofSafety' },
+      throws: [{ ref: 'S1', timing: 'onBreak' }, { ref: 'S2', timing: 'onBreak' }],
+      keyRules: [{ cue: 'jumps', throwTo: 'S1' }, { cue: 'squats', throwTo: 'S1' }, { cue: 'sinks', throwTo: 'S2' }, { cue: 'bails', throwTo: 'S2' }] },
+    { step: 2, look: { kind: 'receiver', ref: 'W1' }, throws: [{ ref: 'W1', timing: 'seenOpen' }] },
+  ],
+  hot: [],
+  checkdown: null,
+  confirm: 'mofSafety',
+  expected: { cover4: 0, cover3: 0, cover1: 0 },
+  source: 'docs/reviews/2026-11-24-read-plans.md#pa-post-dig-pa_post_dig (ITP Mills; Hoover; Bowen BR Cover 4 and 3; Glazier Flinn; Chow via smartfootball blogspot). No hot: max protection.',
+};
+
+/** PA shot (Yankee): the free safety on the hitch: he plays low, the post; he sinks, the dig across. (Throw Deep;
+ * Inside The Pylon; USA Football.) */
+export const PA_SHOT: QbReadPlan = {
+  conceptId: 'pa_shot', drop: 'pa', readType: 'key',
+  reads: [
+    { step: 1, look: { kind: 'key', role: 'mofSafety' },
+      throws: [{ ref: 'S2', timing: 'onBreak' }, { ref: 'W2', timing: 'onBreak' }],
+      keyRules: [{ cue: 'jumps', throwTo: 'S2' }, { cue: 'squats', throwTo: 'S2' }, { cue: 'sinks', throwTo: 'W2' }, { cue: 'bails', throwTo: 'W2' }] },
+    { step: 2, look: { kind: 'receiver', ref: 'W1' }, throws: [{ ref: 'W1', timing: 'seenOpen' }, { ref: 'S1', timing: 'seenOpen' }] },
+  ],
+  hot: [],
+  checkdown: null,
+  confirm: 'mofSafety',
+  expected: { cover1: 0, cover3: 0 },
+  source: 'docs/reviews/2026-11-24-read-plans.md#pa-shot-pa_shot (Throw Deep Yankee; ITP Yankee; USA Football Yankee; Hoover). No hot: max protection. Variant: a pure progression post, cross, flat (USA Football).',
+};
+
+/** PA flood: peek the vertical, then high-low the curl-flat (strong) defender on the hitch: the sail, or the flat if he
+ * sinks under it; the backside crosser; the back in the flat. (Chow via Chris Brown, "65"; Throw Deep; Kou.) */
+export const PA_FLOOD: QbReadPlan = {
+  conceptId: 'pa_flood', drop: 'pa', readType: 'alert',
+  reads: [
+    { step: 0, look: { kind: 'receiver', ref: 'S1' }, throws: [{ ref: 'S1', timing: 'onBreak' }] },
+    { step: 1, look: { kind: 'key', role: 'curl' },
+      throws: [{ ref: 'S2', timing: 'onBreak' }, { ref: 'S3', timing: 'seenOpen' }],
+      keyRules: [{ cue: 'jumps', throwTo: 'S2' }, { cue: 'widens', throwTo: 'S2' }, { cue: 'sinks', throwTo: 'S3' }] },
+    { step: 2, look: { kind: 'receiver', ref: 'W1' }, throws: [{ ref: 'W1', timing: 'seenOpen' }] },
+  ],
+  // The flat is the hot against one-man pressure (Coaches Insider, screens and play action).
+  hot: [{ side: 'S', over: 1, answer: { ref: 'S3', timing: 'onBreak' } }],
+  checkdown: { ref: 'B', fromStep: 2, timing: 'seenOpen' },
+  confirm: null,
+  expected: { cover3: 1 },
+  source: 'docs/reviews/2026-11-24-read-plans.md#pa-flood-pa_flood (Chow "65" via smartfootball blogspot; Throw Deep Cover 3; Kou; Coaches Insider). Variant: a bootleg read low to high (DeBerry, Glazier).',
+};
+
+// ------------------------------------------------------------------ screens
+// One read: the screen's receiver, thrown when he is set (slow screens) or at once (quick screens). The decision to throw
+// it at all is the screen's own pre-snap rule (its `kill`: numbers, press), already installed. If the receiver is
+// covered or a rusher is in the lane the taught answer is to get it to him anyway, at his feet or over the rusher (not
+// expressible as a throw here; the doc lists it).
+
+const screenPlan = (conceptId: string, drop: QbReadPlan['drop'], ref: 'B' | 'S1' | 'S2' | 'S3' | 'W1', timing: 'onBreak' | 'seenOpen', source: string): QbReadPlan => ({
+  conceptId, drop, readType: 'progression',
+  reads: [{ step: 0, look: { kind: 'receiver', ref }, throws: [{ ref, timing }] }],
+  hot: [], checkdown: null, confirm: null, expected: {}, source,
+});
+export const RB_SLIP_SCREEN = screenPlan('rb_slip_screen', 'gun5', 'B', 'seenOpen',
+  'docs/reviews/2026-11-24-read-plans.md#screens (Coaches Insider screen and draw, detachment screens; Gridiron Strategies go screen; Bowen).');
+export const TE_SCREEN = screenPlan('te_screen', 'gun5', 'S3', 'seenOpen',
+  'docs/reviews/2026-11-24-read-plans.md#screens (Gridiron Strategies, TE screen: "throw the ball at the TE\'s feet").');
+export const BUBBLE_SCREEN = screenPlan('bubble_screen', 'quick', 'S2', 'onBreak',
+  'docs/reviews/2026-11-24-read-plans.md#screens (Brown; Bowen packaged plays; Coaches Insider; AFM). Pre-snap numbers: the installed kill.');
+export const BUNCH_NOW_SCREEN = screenPlan('bunch_now_screen', 'quick', 'S1', 'onBreak',
+  'docs/reviews/2026-11-24-read-plans.md#screens (Coaches Insider, screens and play action; no bunch-specific source).');
+export const WIDE_NOW_SCREEN = screenPlan('wide_now_screen', 'quick', 'W1', 'onBreak',
+  'docs/reviews/2026-11-24-read-plans.md#screens (Coaches Insider: the corner\'s cushion, yes or no; Wilhite, not into press: the installed kill).');
+export const TUNNEL_SCREEN = screenPlan('tunnel_screen', 'quick', 'S1', 'seenOpen',
+  'docs/reviews/2026-11-24-read-plans.md#screens (AFM: "at most, takes a three-step drop"; Coaches Insider, three screens).');
+
 /** Where an installed concept differs from the taught version the plan follows, so the plan carries an analogue or a
  * missing piece. These are concept-data questions (concepts.ts), listed for a decision to correct the concept, not to
  * bend the plan around it. Each also appears in docs/reviews/2026-11-24-read-plans.md, "Concept gaps". */
@@ -253,13 +335,12 @@ export const CONCEPT_GAPS: ReadonlyArray<{ concept: string; taught: string; ours
     ours: "S1 dig, S2 short_in, S3 seam: the outside on the deep in, the slot on the short", plan: 'the key keeps high = S1 dig, low = S2 short in, as installed' },
   { concept: 'flood', taught: 'the backside receiver runs a slant, hot against a blitz from his side (Miller, Gridiron Strategies)',
     ours: 'W1 dig, W2 shallow', plan: 'ANALOGUE: W2 shallow as the backside hot' },
-  { concept: 'curl_flat', taught: 'a shallow is the designated blitz throw in the five-step version (Heck, Gridiron Strategies)',
-    ours: 'no shallow (S3 hook)', plan: 'GENERIC hot: the flat on each side' },
   { concept: 'mesh', taught: 'a wheel or rail is the hot and the first read in the Holgorsen versions; the Air Raid corner, mesh, back',
     ours: 'S1 corner, W1 go, back swing', plan: 'the Air Raid order; W1 go as the hot vertical' },
 ];
 
 /** The authored plans by concept id. */
 export const READ_PLANS: Readonly<Record<string, QbReadPlan>> = Object.fromEntries(
-  [SLANT_FLAT, STICK, HITCHES, QUICK_OUTS, CURL_FLAT, SMASH, DAGGER, MESH, Y_CROSS, FLOOD, LEVELS, FOUR_VERTS, VERTS_HITCH]
+  [SLANT_FLAT, STICK, HITCHES, QUICK_OUTS, CURL_FLAT, SMASH, DAGGER, MESH, Y_CROSS, FLOOD, LEVELS, FOUR_VERTS, VERTS_HITCH,
+    PA_POST_DIG, PA_SHOT, PA_FLOOD, RB_SLIP_SCREEN, TE_SCREEN, BUBBLE_SCREEN, BUNCH_NOW_SCREEN, WIDE_NOW_SCREEN, TUNNEL_SCREEN]
     .map((p) => [p.conceptId, p]));

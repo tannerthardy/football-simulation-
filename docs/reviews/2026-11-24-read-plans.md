@@ -1,4 +1,4 @@
-# Read plans, as taught: the quick game and the dropback family (2026-11-24, Rules + Coaching)
+# Read plans, as taught: quick game, dropback, play-action and screens (2026-11-24, Rules + Coaching)
 
 Module A of the QB rebuild (docs/reviews/2026-11-24-qb-decision-plan.md §3 A, §6). Each concept's read is authored as
 data the passer receives (`src/playbook/read-plans.ts`), against the QB lane's interface (`src/sim/qbv2/plan.ts`,
@@ -258,7 +258,10 @@ source names one for the concept.
 **Drop pairing:** a five-step drop with a 12 yd curl coming back to 10, or a three-step drop with an 8 yd curl
 (Heck).
 
-**Hot:** GENERIC. Heck's designated blitz throw is a shallow, which ours does not run (concept gap).
+**Hot:** the sit over the ball, #3's hook. In Heck's five-step "Florida 4", which ours matches (curls at 12 yd coming
+back to 10, a sit at 10, the back checking then releasing), the sit is the blitz throw: "Sits down at 10 yards. Keeps
+his eyes on the QB, as he is also a blitz throw." Not a concept gap: his "Tennessee" shallow belongs to another
+version.
 
 **Expected:** Cover 3 (YouthFootballOnline).
 
@@ -419,7 +422,6 @@ The Post).
 
 - **levels:** the routes are swapped (outside on the dig, slot on the short in).
 - **flood:** the backside slant is a dig and a shallow, so the shallow is the analogue hot.
-- **curl_flat:** the taught blitz throw (a shallow) does not exist in ours.
 - **mesh:** no wheel or rail; the Air Raid order is authored with the backside go as the hot.
 
 ## Dropback: gaps
@@ -478,3 +480,101 @@ The Post).
 - Gonzalez, four verticals: https://smartfootball.blogspot.com/2009/03/getting-vertical-with-dan-gonzalez.html
 - Wilhite, levels: https://emorywilhite.substack.com/p/doing-more-with-one-concept-part
 - Win With The Pass, BLUE: https://winwiththepass.com/?p=111
+
+# Play-action
+
+Every quote was matched by script against the saved page text (`scratchpad/pages3`, 156 of 156).
+
+**Weight.** Practitioners: Bowen (BR); the Coaches Insider clinic notes; Gridiron Strategies; AFM; Chris Brown's
+blogspot, including Norm Chow's read notes. Analysts: Inside The Pylon and the Substack writers. Lower: Throw Deep and
+Glazier summaries. Lowest: FirstDown, Viqtory, cfbtrack, youth pages.
+
+**Shared rules.**
+- Max protection leaves no hot. A blitz seen before the snap goes to the underneath options ("he has 3 potential
+  underneath options if he recognizes blitz pre-snap", Throw Deep, Yankee). Our post-dig and shot keep the back and
+  the inline end in.
+- Steps count from the set after the fake. The read is on the hitch: "We want our quarterback to drop back, hitch, and
+  throw" (Coaches Insider, intermediate and deep passing game); Chow's "5 step drop and hitch".
+- "After the play fake, the QB should find the FS" (WRWR).
+
+## PA post-dig (`pa_post_dig`)
+
+**Read: key the safety on the hitch.**
+- "the quarterback reads the free safety, watching whether he drives forward on the dig route or stays deep on the
+  post" (Inside The Pylon, Mills).
+- "If the defender gets caught flat-footed, or drives downhill toward the dig, the middle of the field is completely
+  exposed".
+- So: jumps, or is caught flat (squats), throw the post; stays deep (sinks or bails), the dig.
+- Against two high, the key is the strong safety: "remove (or occupy) the strong safety underneath with the dig route
+  ... while targeting the outside leverage of the cornerback on the deep post" (Bowen, Cover 4). The role stays "the
+  safety over it".
+
+**Then:** the backside dig, seen open.
+
+**Hot:** none. Seven- or eight-man protection ("7-Man Protection (Delayed Release)", CoachDan; Glazier, Flinn).
+
+**Expected:** Cover 4 ("primarily used to attack Cover 4", ITP), single-high (Cover 3, Cover 1).
+
+## PA shot (`pa_shot`, the Yankee)
+
+**Read: the free safety on the hitch.**
+- "If the FS plays low, he can throw the post. If he sinks deep into coverage, he can look to find the dig route runner
+  over LB level" (Throw Deep).
+- "the free safety can either get depth to protect the post or drive on the crossing route, but can't take away both"
+  (USA Football).
+- The post is thrown "to the opposite hash" (Throw Deep), on the break.
+
+**Then:** the backside verticals, seen open. No back release, because it is max protection ("It is most often run with
+play action and max protection", ITP).
+
+**Expected:** Cover 1 and Cover 3, the single-high looks it is called against (ITP). Cover 4 is disputed: Throw Deep
+says "transition quickly to the underneath routes"; USA Football says "almost always throws the deep post". Left out.
+
+**Variant:** a pure progression, post, cross, flat (USA Football; one source against three for the key read).
+
+## PA flood (`pa_flood`)
+
+**Read: an alert on the vertical, then high-low the curl-flat defender on the hitch, then the backside cross, then
+the back.**
+- Chow's "65": "5 step drop and hitch. Read the S/S. Peek at Z #1; Y = #2; FB = #3" (via Chris Brown).
+- "the QB proceeds to high-low the flat defender with an out-breaking sail route at 14-16 yards, and an eligible
+  receiver stretching the flat to that same side" (Throw Deep, five plays that beat Cover 3).
+- "sneak a peak to the post (especially vs cover 4) then read the curl flat defender for the sail" (Kou).
+
+**Hot:** the flat against one-man pressure ("There is always a pattern in the flat that the quarterback can use as a hot
+throw on one-man pressure", Coaches Insider).
+
+**Expected:** Cover 3, the key read (index 1).
+
+**Variant:** a bootleg read low to high, the flat first (DeBerry via Glazier: "Primary read is the arrow/flat route ...
+Read pattern: low to high"). Ours is a dropback off an outside-zone fake, not a bootleg. Deep to shallow has 5 sources
+and low to high 3.
+
+# Screens
+
+One read: the screen's receiver. The decision to throw it is each screen's own pre-snap rule, already installed as its
+`kill` (numbers for the bubble, press for the wide now screen):
+- "QB reads are based on numbers and leverage" (Glazier).
+- Count the box; "when they do hit them with the constraint plays like bubble screens" (Brown).
+- "the number one rule for now screens is we can't throw them into cloud or press corners" (Wilhite). Two sources
+  disagree (Coaches Insider, Utah State: "we still run the now screen" against press). Three to two for the kill.
+
+**Footwork.**
+- Quick screens are catch and throw, on the break: "the quarterback is raising up and throwing as quickly as he can"
+  (Coaches Insider, screen and draw); "catch the ball and get it out as fast as he can" (Coaches Insider, three
+  screens).
+- Slow screens are thrown when the receiver is set, seen open, after drawing the rush: "Three-step drop, stop and sink,
+  stare downfield and draw defenders, find a throwing lane" (Coaches Insider, detachment screens). The drop depth
+  differs by source (3, 5, or 5 plus 2 steps).
+- The tunnel: "at most, takes a three-step drop. Other times, he will simply rise up and zip it out" (AFM).
+
+**When it is covered or a rusher is in the lane:** get it there anyway.
+- "if the QB sees any defender sitting on the TE, he must throw the ball at the TE's feet" (Gridiron Strategies, TE
+  screen).
+- "Get the ball there any way possible (sidearm, jump, bend, etc.)" (Coaches Insider, detachment).
+- The schema has no throw-at-the-feet option. It is listed for the QB lane as an execution choice, not a read.
+
+**Gaps:**
+- No bunch-specific now-screen source.
+- The bubble's post-snap overhang read ("If the over-hang commits to the box, the quarterback is going to throw the
+  bubble", Coaches Insider) belongs to an RPO, not our called screen.
