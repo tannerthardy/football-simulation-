@@ -45,6 +45,10 @@ export interface Intent extends MoveCommand {
   push?: number;
   /** Target pad level, 0 upright … 1 as low as he can get. */
   posture?: number;
+  /** HAND_ARMS: the height at which his hands meet the man he is engaged with, yd above that man's pads (negative: under them; default 0, at his pads). */
+  handDz?: number;
+  /** HAND_ARMS: 0-1 how hard he works his arms (his share of the horizontal force through the arms; default 1). */
+  armEffort?: number;
   /** How far his lean may grow past the felt load (fraction; default the
    * legs' ordinary PUSH_GROWTH). 0 is an anchor: he leans only as hard as the
    * load he feels, so nothing is left over when it is taken away. */
@@ -343,6 +347,14 @@ const LEAN_PITCH = process.env.LEAN_PITCH !== '0';
  * unchanged, and the runner's side of the row is unchanged. */
 const GRASP_ARM_MOMENT = process.env.GRASP_ARM_MOMENT !== '0';
 const POSTURE_RATE = 2.5;
+/** HAND_ARMS (experimental, off; HAND_ARMS=1; docs/reviews/2026-11-24-blocking-phase2-design.md sections 2-2b): the hands have a height. Step 1: each man's hand meets the other
+ * at `handDz` above the other's pads (Intent.handDz, default 0: at his pads) and each arm runs from the pusher's shoulder (his pad height) to that point. From the force balance
+ * of the two arms (A's arm on B along its line, B's on A along his, reactions through their owners' shoulders into their feet), the two arms' horizontal parts sum to the one horizontal force
+ * H the legs and grip set, shared in proportion to each man's arm effort (`armEffort`, default 1 each: equal shares), and the vertical on B is
+ * `H (w_A tan a_A - w_B tan a_B)` with `tan a_A = (pad_B + dz_A - pad_A) / d`, `tan a_B = (pad_A + dz_B - pad_B) / d` (each capped at LEVERAGE_SLOPE); the other man gets the opposite.
+ * With dz = 0 on both and equal effort this is exactly the single pad-to-pad line (`PAD_LEVERAGE`). The tip moment on each man is at the height of the hand on him.
+ * Not yet in this step: the arm capacity by extension (press, reach), the place across the shoulder line, grip, the punch (the design note's steps 2-4). */
+const HAND_ARMS = process.env.HAND_ARMS === '1';
 const DEFAULT_POSTURE = 0.2;
 const FALL_TIP = 3;
 const FALL_FRICTION = 0.25;
@@ -880,6 +892,9 @@ export class World {
   /** HANG_LOAD: the mass hanging on body i's holds (kg), as carried by his legs. */
   private readonly hangMass: Float64Array;
   private readonly liftFelt: Float64Array;
+  /** HAND_ARMS: each body's hand height above the opponent's pads and arm effort this step. */
+  private readonly handDz: Float64Array;
+  private readonly armEffort: Float64Array;
   private readonly v0x: Float64Array;
   private readonly v0y: Float64Array;
   private readonly facing0: Float64Array;
@@ -939,6 +954,7 @@ export class World {
     this.travelVx = f(); this.travelVy = f();
     this.travelAdjustX = f(); this.travelAdjustY = f();
     this.tipX = f(); this.tipY = f(); this.braceX = f(); this.braceY = f();
+    this.handDz = f(); this.armEffort = f();
     this.comHeight = f(); this.padHeight = f(); this.liftImp = f(); this.liftFelt = f(); this.hangCarried = f(); this.hangMass = f();
     this.v0x = f(); this.v0y = f(); this.facing0 = f(); this.amx = f(); this.amy = f(); this.alpha = f(); this.cut = f(); this.armYaw = f(); this.armYawTime = f().fill(NaN);
     this.leanX = f(); this.leanY = f();
@@ -1005,6 +1021,7 @@ export class World {
 
   step(intents: ReadonlyArray<Intent | null | undefined>, dt: number): StepReport {
     const bs = this.bodies, n = this.n;
+    if (HAND_ARMS) for (let i = 0; i < n; i++) { const it = intents[i]; this.handDz[i] = it?.handDz ?? 0; this.armEffort[i] = clamp(it?.armEffort ?? 1, 0, 1); }
     // Restored/reused bodies follow this world's explicit model. Production
     // owns the held-coordinate lifecycle below; record presence cannot select it.
     for (const b of bs) {
@@ -1833,7 +1850,7 @@ export class World {
           height ?? Math.min(this.padHeight[r.i], this.padHeight[r.j]), 0,
           Math.min(bs[r.i].profile.heightYd, bs[r.j].profile.heightYd));
         if (hypot2(r.ln, r.lt) > 0) jt.firstApplied ??= r.observed;
-        this.addLoad(r.i, r.j, r.nx, r.ny, r.ln, r.lt, height, jt.kind === 'grasp' && (jt.legs > 0 || HIP_BRACE));
+        this.addLoad(r.i, r.j, r.nx, r.ny, r.ln, r.lt, height, jt.kind === 'grasp' && (jt.legs > 0 || HIP_BRACE), jt.kind === 'hands');
         // Every joint here delivers a bounded force across h, including a
         // passive grasp. Center its achieved travel; torso impacts retain
         // their separate interval-start timing. Center-mode reels were
@@ -2589,7 +2606,7 @@ export class World {
     }
   }
 
-  private addLoad(i: number, j: number, nx: number, ny: number, ln: number, lt: number, height?: number, legHold = false): void {
+  private addLoad(i: number, j: number, nx: number, ny: number, ln: number, lt: number, height?: number, legHold = false, arms = false): void {
     const fx = nx * ln - ny * lt, fy = ny * ln + nx * lt;
     // The impulse on j is +(n·ln + t·lt); on i its opposite.
     this.impX[j] += fx; this.impY[j] += fy;
@@ -2600,15 +2617,28 @@ export class World {
       const dx = bs[j].pos.x - bs[i].pos.x, dy = bs[j].pos.y - bs[i].pos.y, d = hypot2(dx, dy);
       const press = d > 1e-6 ? (fx * dx + fy * dy) / d : 0;
       if (press > 0) {
-        const rise = clamp((this.padHeight[j] - this.padHeight[i]) / Math.max(d, .3), -LEVERAGE_SLOPE, LEVERAGE_SLOPE);
-        this.liftImp[j] += press * rise; this.liftImp[i] -= press * rise;
+        if (HAND_ARMS && arms) {
+          // Each arm's slope from its owner's shoulder to the hand on the other man; shares of the one horizontal force by arm effort; the vertical on j is H (w_i tan a_i - w_j tan a_j).
+          const dd = Math.max(d, .3), ei = this.armEffort[i], ej = this.armEffort[j], tot = ei + ej;
+          if (tot > 1e-9) {
+            const tI = clamp((this.padHeight[j] + this.handDz[i] - this.padHeight[i]) / dd, -LEVERAGE_SLOPE, LEVERAGE_SLOPE);
+            const tJ = clamp((this.padHeight[i] + this.handDz[j] - this.padHeight[j]) / dd, -LEVERAGE_SLOPE, LEVERAGE_SLOPE);
+            const lift = press * (ei * tI - ej * tJ) / tot;
+            this.liftImp[j] += lift; this.liftImp[i] -= lift;
+          }
+        } else {
+          const rise = clamp((this.padHeight[j] - this.padHeight[i]) / Math.max(d, .3), -LEVERAGE_SLOPE, LEVERAGE_SLOPE);
+          this.liftImp[j] += press * rise; this.liftImp[i] -= press * rise;
+        }
       }
     }
     const z = clamp(height ?? Math.min(this.padHeight[i], this.padHeight[j]),
       0, Math.min(bs[i].profile.heightYd, bs[j].profile.heightYd));
     const ci = this.comHeight[i], cj = this.comHeight[j];
-    const fi = -(z - ci) * ci / this.sp[i].pitchRadiusSq / this.mass[i];
-    const fj = (z - cj) * cj / this.sp[j].pitchRadiusSq / this.mass[j];
+    // HAND_ARMS: the force on j acts at the height of i's hand on him; the reaction on i at the height of j's hand on him.
+    const zJ = HAND_ARMS && arms ? clamp(this.padHeight[j] + this.handDz[i], 0, bs[j].profile.heightYd) : z, zI = HAND_ARMS && arms ? clamp(this.padHeight[i] + this.handDz[j], 0, bs[i].profile.heightYd) : z;
+    const fi = -(zI - ci) * ci / this.sp[i].pitchRadiusSq / this.mass[i];
+    const fj = (zJ - cj) * cj / this.sp[j].pitchRadiusSq / this.mass[j];
     this.tipX[i] += fx * fi; this.tipY[i] += fy * fi;
     if (legHold) {
       // A held foot cannot actively brace this moment: it pitches the body
@@ -2618,7 +2648,7 @@ export class World {
       // A hold below the knee (about half the COM height) acts on the base
       // itself and trips him in full. The force still loads his COM and his
       // recovery step in full.
-      const w = clamp((KNEE * cj + .1 - z) / .1, 0, 1);
+      const w = clamp((KNEE * cj + .1 - zJ) / .1, 0, 1);
       this.tripX[j] += fx * fj * w; this.tripY[j] += fy * fj * w;
       this.thighX[j] += fx * fj * (1 - w); this.thighY[j] += fy * fj * (1 - w);
     } else {

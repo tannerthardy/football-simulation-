@@ -11,13 +11,21 @@ import { readFileSync } from 'node:fs';
 const stack = JSON.parse(readFileSync('config/reference-stack.json', 'utf8')).flags;
 for (const [k, v] of Object.entries(stack)) if (v === 'on' && process.env[k] === undefined) process.env[k] = '1';
 const { contactFixture } = await import('../run-contact-technique.js');
-const { supportParams, legDrive, baseRadiusAt, comHeightAt } = await import('../../../src/physics/support.js');
+const { supportParams, legDrive, baseRadiusAt, comHeightAt, criticalDeviation, padHeightAt } = await import('../../../src/physics/support.js');
+// LEAN_BOUND=<k> (scratch, Integration 2026-11-24): the force-aimed lean is bounded by his posture through the engine's own geometry: the horizontal force a man can carry without a step
+// plus the step he can take is `m g x criticalDeviation(posture) / padHeight(posture)` (the capture-point deviation at which he must step or fall, over the height of the push), times k (1 = that bound).
+const LEAN_BOUND = process.env.LEAN_BOUND ? Number(process.env.LEAN_BOUND) : 0;
+const leanCapOf = (a: any) => { const su = a.body.support, sp = supportParams(a.profile); return LEAN_BOUND * a.profile.massKg * 10.73 * criticalDeviation(sp, su.posture, su.feetLock ?? 0, 1) / padHeightAt(sp, su.posture); };
 const CENTER_Y = 26.65, N = 0.9144;
 type Mod = { matched?: boolean; str?: number; mass?: number; massP?: number; press?: number; reach?: number; posture?: number; balance?: number; bend?: number; req?: number };
 type Case = { name: string; who: 'R' | 'B' | '-'; exp: 1 | -1 | 0; mod?: Mod; both?: { B: Mod; R: Mod }; note?: string };
 const mode = (process.argv[2] === 'run' || process.argv[2] === 'pass') ? process.argv[2] : 'both';
 const trace = process.argv.includes('--trace');
 const DUR = 2.0;
+// HAND_ARMS rows (env, for the world's HAND_ARMS=1): HANDZ_B / HANDZ_R = each man's hand height above the other's pads (yd); HAND_DYN=1: the lower man's hands DZ_LOW (default -0.2), the higher man's DZ_HIGH (default +0.1); EFF_B / EFF_R = arm effort 0-1.
+const HDZ = { b: Number(process.env.HANDZ_B ?? 0), r: Number(process.env.HANDZ_R ?? 0) }, HDYN = process.env.HAND_DYN === '1', DZ_LOW = Number(process.env.DZ_LOW ?? -0.2), DZ_HIGH = Number(process.env.DZ_HIGH ?? 0.1);
+const EFF = { b: Number(process.env.EFF_B ?? 1), r: Number(process.env.EFF_R ?? 1) };
+const handDzOf = (a: any, other: any, own: number) => HDYN ? (padHeightAt(supportParams(a.profile), a.body.support.posture) < padHeightAt(supportParams(other.profile), other.body.support.posture) ? DZ_LOW : DZ_HIGH) : own;
 function rep(kind: 'pass' | 'run', B: Mod, R: Mod, tr = false) {
   const f = contactFixture({ type: kind, runBlock: 60, passBlock: 60, side: 1 });
   const { sim, blocker: b, defender: d, engagement: e } = f as any;
@@ -45,8 +53,8 @@ function rep(kind: 'pass' | 'run', B: Mod, R: Mod, tr = false) {
   let first = -1;
   for (let k = 0; k < steps; k++) {
     const intents: any[] = sim.agents.map((a: any) => ({ vel: { x: 0, y: 0 }, facing: a.facing }));
-    intents[b.idx] = { vel: { x: bReq, y: 0 }, facing: 0, push: 1, posture: bPost };
-    intents[d.idx] = { vel: { x: -dReq, y: 0 }, facing: Math.PI, push: 1, posture: dPost };
+    intents[b.idx] = { vel: { x: bReq, y: 0 }, facing: 0, push: 1, posture: bPost, handDz: handDzOf(b, d, HDZ.b), armEffort: EFF.b, ...(LEAN_BOUND ? { leanCap: leanCapOf(b) } : {}) };
+    intents[d.idx] = { vel: { x: -dReq, y: 0 }, facing: Math.PI, push: 1, posture: dPost, handDz: handDzOf(d, b, HDZ.r), armEffort: EFF.r, ...(LEAN_BOUND ? { leanCap: leanCapOf(d) } : {}) };
     const sr = sim.world.step(intents, sim.dt); sim.t += sim.dt;
     const t = (k + 1) * sim.dt;
     const bind = (a: any, i: number) => {
@@ -72,7 +80,8 @@ function rep(kind: 'pass' | 'run', B: Mod, R: Mod, tr = false) {
   const spB = supportParams(b.profile), spD = supportParams(d.profile);
   const fr = (k: string, f: (x: number) => boolean) => W.filter(r => f(r[k])).length / W.length;
   const limits = { bGrip: fr('bUtil', x => x >= 0.95), dGrip: fr('dUtil', x => x >= 0.95), bLeg: fr('bLegLim', x => x > 0.5), dLeg: fr('dLegLim', x => x > 0.5), bBal: m('bBal'), dBal: m('dBal'), bBalMax: Math.max(...W.map(r => r.bBal)), dBalMax: Math.max(...W.map(r => r.dBal)), bAng: m('bAng'), dAng: m('dAng'), bLean: m('bLean'), dLean: m('dLean') };
-  return { limits, pair: m('pair'), bv: m('bv'), dv: m('dv'), hand: m('hand'), bFelt: m('bFelt'), dFelt: m('dFelt'), bLift: m('bLift'), dLift: m('dLift'),
+  const last = rows[rows.length - 1];
+  return { limits, endPost: `${(last.bPost ?? 0).toFixed(2)}/${(last.dPost ?? 0).toFixed(2)}`, pair: m('pair'), bv: m('bv'), dv: m('dv'), hand: m('hand'), bFelt: m('bFelt'), dFelt: m('dFelt'), bLift: m('bLift'), dLift: m('dLift'),
     dispB: -(b.body.pos.x - x0.b), dispD: d.body.pos.x - x0.d, fell: first,
     cap: { bPush: spB.pushForce * N, bTr: spB.traction * N, dPush: spD.pushForce * N, dTr: spD.traction * N, bKg: b.profile.massKg, dKg: d.profile.massKg } };
 }
@@ -103,6 +112,8 @@ const CASES: Case[] = [
   // The user's test: a stronger, lower man must beat a heavier, higher one (rusher = the stronger, lower man).
   { name: 'COMBO rusher stronger (+0.2) and lower (1.0) vs blocker heavier (+10%) and higher (0.6)', who: 'R', exp: 1, both: { R: { str: 0.95, posture: 1.0 }, B: { mass: 1.1, massP: 1.1, posture: 0.6 } } },
   { name: 'COMBO rusher heavier (+10%) and higher (0.6) vs blocker stronger (+0.2) and lower (1.0)', who: 'R', exp: -1, both: { R: { mass: 1.1, massP: 1.1, posture: 0.6 }, B: { str: 0.97, posture: 1.0 } } },
+  { name: 'COMBO weak-legged blocker (strength 0.05) under a rusher at posture 1.0 (stood up?)', who: 'R', exp: 1, both: { R: { posture: 1.0 }, B: { str: 0.05 } } },
+  { name: 'COMBO weak-legged rusher (strength 0.05) under a blocker at posture 1.0 (stood up?)', who: 'R', exp: -1, both: { R: { str: 0.05, posture: 0.74 }, B: { posture: 1.0 } } },
   { name: 'COMBO rusher lower (1.0) only, matched otherwise: blocker anchors at 0.45', who: 'R', exp: 1, both: { R: { posture: 1.0 }, B: { posture: 0.45 } } },
 ];
 for (const kind of (mode === 'both' ? ['pass', 'run'] : [mode]) as ('pass' | 'run')[]) {
@@ -113,7 +124,7 @@ for (const kind of (mode === 'both' ? ['pass', 'run'] : [mode]) as ('pass' | 'ru
     const r = rep(kind, Bm, Rm, trace && c.who === '-');
     if (c.who === '-') base = r.pair;
     const dv = r.pair - base, dir = c.exp === 0 ? '' : (Math.sign(dv) === c.exp || Math.abs(dv) < 0.02) ? (Math.abs(dv) < 0.02 ? ' NO EFFECT' : ' ok') : ' WRONG WAY';
-    console.log(`${c.name.padEnd(44)} pair ${r.pair.toFixed(2)} (${dv >= 0 ? '+' : ''}${dv.toFixed(2)})${dir.padEnd(11)}| gets b/d ${r.bv.toFixed(2)}/${r.dv.toFixed(2)} | hand ${r.hand.toFixed(0)} N | lift b/d ${r.bLift.toFixed(2)}/${r.dLift.toFixed(2)} bw | push cap b/d ${r.cap.bPush.toFixed(0)}/${r.cap.dPush.toFixed(0)} (traction ${r.cap.bTr.toFixed(0)}/${r.cap.dTr.toFixed(0)}) N | kg ${r.cap.bKg.toFixed(0)}/${r.cap.dKg.toFixed(0)}${r.fell > 0 ? ` | FELL at ${r.fell.toFixed(2)} s` : ''} | binds grip(util>=.95) b/d ${r.limits.bGrip.toFixed(2)}/${r.limits.dGrip.toFixed(2)}, legs below grip b/d ${r.limits.bLeg.toFixed(2)}/${r.limits.dLeg.toFixed(2)}, balance (offset/base radius mean, max) b/d ${r.limits.bBal.toFixed(2)},${r.limits.bBalMax.toFixed(2)}/${r.limits.dBal.toFixed(2)},${r.limits.dBalMax.toFixed(2)} | com offset angle b/d ${r.limits.bAng.toFixed(1)}/${r.limits.dAng.toFixed(1)} deg, lean-force angle (atan lean/weight) b/d ${r.limits.bLean.toFixed(0)}/${r.limits.dLean.toFixed(0)} deg`);
+    console.log(`${c.name.padEnd(44)} pair ${r.pair.toFixed(2)} (${dv >= 0 ? '+' : ''}${dv.toFixed(2)})${dir.padEnd(11)}| gets b/d ${r.bv.toFixed(2)}/${r.dv.toFixed(2)} | hand ${r.hand.toFixed(0)} N | lift b/d ${r.bLift.toFixed(2)}/${r.dLift.toFixed(2)} bw | push cap b/d ${r.cap.bPush.toFixed(0)}/${r.cap.dPush.toFixed(0)} (traction ${r.cap.bTr.toFixed(0)}/${r.cap.dTr.toFixed(0)}) N | kg ${r.cap.bKg.toFixed(0)}/${r.cap.dKg.toFixed(0)} | posture at 2 s b/d ${r.endPost}${r.fell > 0 ? ` | FELL at ${r.fell.toFixed(2)} s` : ''} | binds grip(util>=.95) b/d ${r.limits.bGrip.toFixed(2)}/${r.limits.dGrip.toFixed(2)}, legs below grip b/d ${r.limits.bLeg.toFixed(2)}/${r.limits.dLeg.toFixed(2)}, balance (offset/base radius mean, max) b/d ${r.limits.bBal.toFixed(2)},${r.limits.bBalMax.toFixed(2)}/${r.limits.dBal.toFixed(2)},${r.limits.dBalMax.toFixed(2)} | com offset angle b/d ${r.limits.bAng.toFixed(1)}/${r.limits.dAng.toFixed(1)} deg, lean-force angle (atan lean/weight) b/d ${r.limits.bLean.toFixed(0)}/${r.limits.dLean.toFixed(0)} deg`);
   }
 }
 
@@ -139,4 +150,29 @@ for (const kind of (mode === 'both' ? ['pass', 'run'] : [mode]) as ('pass' | 'ru
     }
   }
   console.log('\n== defender pulls directly away from a blocker with inside hands (no mechanism today: hands carry no tension at control 0)\n  ' + out.join('\n  '));
+}
+
+// Mobility cost (POSTURE_HOLD): a low man beaten across his face. The rusher bulls 4.5 and also runs 3.0 yd/s laterally (a speed move across the blocker's face); the blocker
+// anchors in front (asks 0) and mirrors laterally at 3.0 with push 1. Reported: each man's lateral velocity over 0.5-1.5 s for the blocker at posture 0.45 (tall) and 1.0 (low),
+// and how far across the rusher gets relative to the blocker (yd) at 1.5 s.
+{
+  const rows: string[] = [];
+  for (const bPost of [0.45, 0.8, 1.0]) {
+    const f = contactFixture({ type: 'pass', runBlock: 60, passBlock: 60, side: 1 });
+    const { sim, blocker: b, defender: d, engagement: e } = f as any;
+    e.control = 0;
+    b.body.pos = { x: 40, y: CENTER_Y }; b.body.vel = { x: 0, y: 0 }; b.body.facing = 0;
+    d.body.pos = { x: 40 + b.profile.radius + d.profile.radius + 0.1, y: CENTER_Y }; d.body.vel = { x: 0, y: 0 }; d.body.facing = Math.PI;
+    const y0 = { b: b.body.pos.y, d: d.body.pos.y };
+    let sb = 0, sd = 0, n = 0;
+    for (let k = 0; k < Math.round(1.5 / sim.dt); k++) {
+      const intents: any[] = sim.agents.map((a: any) => ({ vel: { x: 0, y: 0 }, facing: a.facing }));
+      intents[b.idx] = { vel: { x: 0, y: 3.0 }, facing: 0, push: 1, posture: bPost };
+      intents[d.idx] = { vel: { x: -4.5, y: 3.0 }, facing: Math.PI, push: 1, posture: 0.74 };
+      sim.world.step(intents, sim.dt); sim.t += sim.dt;
+      if ((k + 1) * sim.dt >= 0.5) { sb += b.body.vel.y; sd += d.body.vel.y; n++; }
+    }
+    rows.push(`blocker posture ${bPost}: lateral velocity blocker ${(sb / n).toFixed(2)} / rusher ${(sd / n).toFixed(2)} yd/s; at 1.5 s the rusher is ${(d.body.pos.y - y0.d - (b.body.pos.y - y0.b)).toFixed(2)} yd across of the blocker`);
+  }
+  console.log('\n== a low man beaten across his face (rusher runs 3.0 yd/s laterally, blocker mirrors at 3.0): POSTURE_HOLD ' + (process.env.POSTURE_HOLD ?? '0') + ', GRIP_MU ' + (process.env.GRIP_MU ?? 'off') + '\n  ' + rows.join('\n  '));
 }

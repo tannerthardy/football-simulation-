@@ -2684,3 +2684,7 @@ completion .677 -> .682, uncontested drop .052 -> .058, breakup .097 -> .094, in
 run share .310 -> .310. Catch roll, actual run (8 games a side): ball speed p50 22.5 -> 21.9 yd/s, share over 24 yd/s 28.9% -> 23.7%.
 Not modelled: the NFL ball's decay roughly doubles 0.3-0.6 s before arrival (tracker smoothing near the catch, or the ball's nose-over at the end
 of the arc); the catch roll's 24 yd/s step is not what the NFL ball avoids on short throws (a catch-rebuild question, not drag).
+
+## HAND_ARMS (Tools/Physics, 2026-11-24; off, experimental)
+
+Off in the stack. Step 1 of Phase 2 (docs/reviews/2026-11-24-blocking-phase2-design.md): each man's hand height above the other's pads (`Intent.handDz`) and arm effort (`Intent.armEffort`); the lift and tip derived from the force balance. With both hands at the other's pads and equal effort it is the single pad-to-pad line exactly (`test/hand-arms.test.ts`). Nothing sets `handDz` yet (a controller's choice, a later step), so on is identical to off in games until a controller does.
