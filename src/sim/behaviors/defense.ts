@@ -118,6 +118,15 @@ export const SQUAT_SINK = process.env.SQUAT_SINK === '1';
 export const C2_JAM = process.env.C2_JAM === '1';
 /** C2_JAM: his outside shade on #1 (yd) and how far he gives ground as #1 closes (catch feet). */
 const JAM_SHADE = 0.6, JAM_GIVE = 1.0;
+/** SQUAT_SIT (experimental, off; with SQUAT_SINK; Coverage C14 2026-11-24, the staged quick-outs-vs-Cover-2 case): the
+ * squat corner sinks only while #1 threatens the hole. When #1, as he sees him, turns out under the hole (his seen
+ * outward speed over max(1.5, 0.5 x his upfield speed), past 1 yd and short of the hole depth; read ahead of #1's
+ * cancel and the sink's own exits) the corner sits on it and drives:
+ * downhill to #1's depth, outside-in on where #1 will be across the field 0.5 s on, his reaction already in the seen
+ * picture. He leaves the drive only
+ * if #1 turns back up (upfield over 1.5 x outward and over 3 yd/s, the far side of the entry). Off, the sink held until
+ * #1 climbed under 1 yd/s, which a rounded out never does before the throw. */
+const SQUAT_SIT = process.env.SQUAT_SIT === '1';
 /** Is this call's flat seat played by SQUAT_SINK (every Cover 2 form, Cover 6/8 half side, cloud; not Deuce's palms or DOT)?
  * The flag is read per call (not only at import) so a diagnostic replay can switch it for one play of a game. */
 export function squatSinkCall(sim: PlaySim): boolean {
@@ -2049,6 +2058,8 @@ export class ZoneCoverage implements Behavior {
   /** C2_JAM: the receiver he is jamming (read by press-contact.ts), and whether his jam phase is over for this play. */
   jamOn: Agent | null = null;
   private jamDone = false;
+  /** SQUAT_SIT: sitting on #1's out (entered on his out-turn under the hole, left when he turns back up). */
+  private sitting = false;
   /**
    * SQUAT_SINK: the squat corner's play before the throw (see SQUAT_SINK). Null hands him to his flat zone play (the flat
    * threat early, #1 in or stopping, a run read with #1 not releasing).
@@ -2101,6 +2112,20 @@ export class ZoneCoverage implements Behavior {
       const cands = [trav + Math.min(want, SQUAT_FACE), trav - Math.min(want, SQUAT_FACE)];
       return Math.sin(cands[0]) * inSign >= Math.sin(cands[1]) * inSign ? cands[0] : cands[1];
     };
+    // SQUAT_SIT: sit on #1's out under the hole and drive (see SQUAT_SIT).
+    if (SQUAT_SIT) {
+      const outV = o.vel.y * outside;
+      if (!this.sitting) this.sitting = !believesRun(sim, a) && oDepth > 1 && oDepth < SQUAT_HOLE && outV > Math.max(1.5, 0.5 * Math.max(0, oUp));
+      else if (oUp > 3 && oUp > 1.5 * Math.max(0, outV)) this.sitting = false;
+      if (this.sitting) {
+        a.tags.add('squat-sit');
+        // Downhill to his depth (an out levels off; carrying his upfield speed kept the corner sinking), outside-in on
+        // where he will be across the field 0.5 s on.
+        const to = { x: o.pos.x, y: clamp(o.pos.y + o.vel.y * 0.5 + outside * 0.5, 0.5, FIELD_WIDTH - 0.5) };
+        return withFacingTechnique(track(a, to, { x: 0, y: o.vel.y }, { facing: angleTo(a.pos, q.pos), speed: 1, gain: 1.8 }),
+          { label: 'squat-sit-drive', key: o.vel });
+      }
+    }
     if (!this.squatSinking) {
       // Before #1 declares: read #1 and #2 from his alignment, square, no lane pick. A flat threat, #1 cancelled, or a run
       // read with #1 not releasing goes to his flat zone play (which carries the run fit).
