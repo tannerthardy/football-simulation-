@@ -51,10 +51,10 @@ index 1237d6b0c..441575093 100644
  | `FREE_BOUND` | off | experimental (QB pocket: free-rusher blind spot, 2026-11-12) | quarterback | `src/sim/behaviors/qb.ts` (`freeBound`, in `pressure`) | for a rusher he sees unblocked (no offensive body within arm's length) within 3 yd, his felt time is at most how soon that man could hit him: a typical rusher's burst (5 yd/s^2, estimated) from where he sees him to within a hand (1.0 yd) of his body, speed toward him as a head start and none of the picture's speed away or across counted against him; behind his shoulder a poor pocket presence applies it up to 0.5 s late. Off, a free end drifting past at 1.6 yd on a 0.3 s old picture read 1-2 s off (Rules + Coaching repro under READ_PLAN). Test: test/free-bound.test.ts |
 diff --git a/scripts/diag/eyes/batted.ts b/scripts/diag/eyes/batted.ts
 new file mode 100644
-index 000000000..9ece59d97
+index 000000000..b247ac932
 --- /dev/null
 +++ b/scripts/diag/eyes/batted.ts
-@@ -0,0 +1,27 @@
+@@ -0,0 +1,31 @@
 +// QB lane 2026-11-23 (QB_BAT_HEIGHT: the price should match what our rushers bat). Measurement only. League games: per
 +// pass attempt from the pass behaviour (not thrown away), whether a defender batted it at the line (catching.ts
 +// 'batted at the line') and whether the play ended in an interception; and every other deflection by a defender.
@@ -64,15 +64,19 @@ index 000000000..9ece59d97
 +import { generateTeam, leagueSample } from '../../../src/league/team.js';
 +import { PlaySim } from '../../../src/sim/playsim.js';
 +const seed = Number(process.argv[2] ?? 11), games = Number(process.argv[3] ?? 4);
-+let att = 0, bat = 0, batInt = 0, ints = 0, defl = 0;
++let att = 0, bat = 0, batInt = 0, ints = 0, defl = 0, predicted = 0, predN = 0;
++const bins = [0, 0.01, 0.03, 0.06, 1].slice(0, -1).map((lo, i, a) => ({ lo, hi: [0.01, 0.03, 0.06, 1][i], n: 0, pred: 0, bat: 0 }));
 +PlaySim.prototype.run = ((orig) => function (this: any) {
 +  const sim: any = this; if (!sim.isPass) return orig.apply(this);
-+  let thrown = false; const tb = sim.throwBall.bind(sim);
++  let thrown = false, pBat: number | null = null, hooked = false; const tb = sim.throwBall.bind(sim);
++  const t0 = sim.tick.bind(sim);
++  sim.tick = () => { const b: any = sim.qb.behavior; if (!hooked && b?.kind === 'qb-pass') { hooked = true; const st = b.startThrow.bind(b); b.startThrow = (a: any, s2: any, ev: any) => { if (pBat === null) pBat = ev?.parts?.pBat ?? null; return st(a, s2, ev); }; } t0(); };
 +  sim.throwBall = (p: any, target: any, v0: any, intended: any, arrivalT: number, away = false, ...rest: any[]) => { if (p === sim.qb && !thrown && target && !away) thrown = true; return tb(p, target, v0, intended, arrivalT, away, ...rest); };
 +  const res = orig.apply(this);
 +  if (thrown) {
 +    att++; const ev = sim.events as any[]; const b = ev.some((e) => e.type === 'deflection' && e.note === 'batted at the line'), i = ev.some((e) => e.type === 'interception');
-+    if (b) bat++; if (b && i) batInt++; if (i) ints++; defl += ev.filter((e) => e.type === 'deflection' && e.note !== 'batted at the line').length;
++    if (b) bat++; if (b && i) batInt++;
++    if (pBat !== null) { predicted += pBat; predN++; const k = bins.find((x) => pBat! >= x.lo && pBat! < x.hi); if (k) { k.n++; k.pred += pBat; if (b) k.bat++; } } if (i) ints++; defl += ev.filter((e) => e.type === 'deflection' && e.note !== 'batted at the line').length;
 +  }
 +  return res;
 +})(PlaySim.prototype.run);
@@ -81,7 +85,56 @@ index 000000000..9ece59d97
 +  const home = generateTeam(rng, 'Ironmen', 'IRN', { strength: 0.55 }), away = generateTeam(rng, 'Comets', 'COM', { strength: 0.55 });
 +  simulateGame(leagueSample(home, s), leagueSample(away, s), { seed: s });
 +}
-+console.log(JSON.stringify({ seed, games, att, bat, batRate: +(bat / Math.max(1, att)).toFixed(4), batInt, ints, otherDeflections: defl }));
++console.log(JSON.stringify({ seed, games, att, bat, batRate: +(bat / Math.max(1, att)).toFixed(4), batInt, ints, otherDeflections: defl, priced: predN, predictedBats: +predicted.toFixed(2), bins }));
+diff --git a/scripts/diag/eyes/film-record.ts b/scripts/diag/eyes/film-record.ts
+new file mode 100644
+index 000000000..78967cc35
+--- /dev/null
++++ b/scripts/diag/eyes/film-record.ts
+@@ -0,0 +1,43 @@
++// QB lane 2026-11-23: the vision-cone film (Integration + the user). The same six staged plays with one passer at three
++// levels of his mental ratings (as rating-panel.ts), recorded every tick for a film page: every player's position, the
++// ball, the passer's head angle, his clear and peripheral cone half-widths (QBMind), his current read, how resolved his
++// look at it is (QB_STEP_CLOCK), his phase, the throw. Flags from the environment.
++//   node --import tsx scripts/diag/eyes/film-record.ts > film.json
++import { PlaySim } from '../../../src/sim/playsim.js';
++import { nativeTraceSetup } from '../command-trace.js';
++
++const PLAYS = [
++  { concept: 'curl_flat', coverage: 'cover3' }, { concept: 'smash', coverage: 'cover2' }, { concept: 'dagger', coverage: 'cover4' },
++  { concept: 'mesh', coverage: 'cover1' }, { concept: 'flood', coverage: 'cover3' }, { concept: 'stick', coverage: 'cover2' },
++];
++const MENTAL = ['playRecognition', 'decisionMaking', 'awareness', 'composure', 'discipline', 'anticipation', 'consistency'];
++const r1 = (x: number) => Math.round(x * 10) / 10;
++const out: any[] = [];
++for (const p of PLAYS) for (const level of [35, 60, 88]) {
++  const setup: any = nativeTraceSetup({ ...p, seed: 1, roster: 3, formation: 'gun_doubles_11', flip: false });
++  const qbP = setup.offense.QB;
++  for (const k of MENTAL) qbP.ratings[k] = level;
++  qbP.experience = level < 50 ? 0 : level < 75 ? 4 : 10;
++  const sim: any = new PlaySim(setup);
++  const frames: any[] = []; let qbb: any = null, thrown: any = null;
++  const tb = sim.throwBall.bind(sim);
++  sim.throwBall = (q: any, target: any, ...rest: any[]) => { if (q === sim.qb && !thrown) thrown = { t: r1(sim.t * 10) / 10, slot: target?.slot ?? null }; return tb(q, target, ...rest); };
++  const t0 = sim.tick.bind(sim);
++  sim.tick = () => {
++    t0();
++    const b: any = sim.qb.behavior; if (!qbb && b?.kind === 'qb-pass') qbb = b;
++    const m: any = sim.qbMind, qb = sim.qb, holding = sim.carrier === qb && !thrown;
++    const cur = holding && qbb?.reads ? qbb.reads[qbb.readIdx] ?? null : null;
++    frames.push({ t: Math.round(sim.t * 100) / 100,
++      o: sim.offense.map((a: any) => [a.slot, r1(a.pos.x), r1(a.pos.y)]), d: sim.defense.map((a: any) => [a.slot, r1(a.pos.x), r1(a.pos.y)]),
++      ball: sim.ball.kind === 'air' ? [r1(sim.ball.flight.pos.x), r1(sim.ball.flight.pos.y)] : null,
++      head: holding ? Math.round((qb.head ?? qb.body.facing) * 1000) / 1000 : null,
++      cur: cur?.slot ?? null, res: cur && qbb?.resolved ? Math.round(qbb.resolved(cur) * 100) / 100 : null, ph: holding ? qbb?.phase ?? null : null });
++    if (sim.t > 5.5) sim.phase = 'dead';
++  };
++  try { sim.run(); } catch (e) { process.stderr.write(String((e as Error).stack).slice(0, 400) + "\n"); }
++  const m: any = sim.qbMind;
++  out.push({ ...p, level, los: setup.los, clearHalf: m.clearHalf, periphHalf: m.periphHalf, thrown, cmp: !!sim.stats.completed,
++    int: (sim.events as any[]).some((e) => e.type === 'interception'), sack: (sim.events as any[]).some((e) => e.type === 'sack'), yards: sim.stats.yards ?? null, frames });
++}
++process.stdout.write(JSON.stringify(out));
 diff --git a/scripts/diag/eyes/open-turned-down.ts b/scripts/diag/eyes/open-turned-down.ts
 index 157bb5354..6cc724137 100644
 --- a/scripts/diag/eyes/open-turned-down.ts
@@ -97,10 +150,10 @@ index 157bb5354..6cc724137 100644
  for (let g = 0; g < games; g++) {
 diff --git a/scripts/diag/eyes/rating-panel.ts b/scripts/diag/eyes/rating-panel.ts
 new file mode 100644
-index 000000000..b5ede4bcb
+index 000000000..a777a9c89
 --- /dev/null
 +++ b/scripts/diag/eyes/rating-panel.ts
-@@ -0,0 +1,45 @@
+@@ -0,0 +1,49 @@
 +// QB lane 2026-11-23 (Integration + the user: the stare-down passer, the darting passer, the good one). Measurement only.
 +// The same staged plays with one passer at three levels of his mental ratings (playRecognition, decisionMaking,
 +// awareness, composure, discipline, anticipation, consistency: 35 / 60 / 88; experience 0 / 4 / 10). Arm, accuracy and
@@ -111,7 +164,11 @@ index 000000000..b5ede4bcb
 +import { PlaySim } from '../../../src/sim/playsim.js';
 +import { nativeTraceSetup } from '../command-trace.js';
 +
-+const level = Number(process.argv[2] ?? 60), exp = level < 50 ? 0 : level < 75 ? 4 : 10;
++// A level (35 / 60 / 88: every mental rating) or a mixed profile: 'stare' (slow processing, high composure and
++// discipline) or 'dart' (fair processing, low composure and discipline).
++const arg = process.argv[2] ?? '60';
++const PROFILES: Record<string, { proc: number; calm: number; exp: number }> = { stare: { proc: 35, calm: 88, exp: 1 }, dart: { proc: 60, calm: 30, exp: 2 } };
++const level: any = PROFILES[arg] ? arg : Number(arg), exp = PROFILES[arg] ? PROFILES[arg].exp : level < 50 ? 0 : level < 75 ? 4 : 10;
 +const MENTAL = ['playRecognition', 'decisionMaking', 'awareness', 'composure', 'discipline', 'anticipation', 'consistency'];
 +const wrap = (x: number) => Math.atan2(Math.sin(x), Math.cos(x));
 +for (const concept of ['curl_flat', 'smash', 'dagger', 'mesh', 'quick_outs', 'stick', 'flood', 'y_cross']) for (const coverage of ['cover1', 'cover2', 'cover3', 'cover4'])
@@ -119,7 +176,7 @@ index 000000000..b5ede4bcb
 +    const setup: any = nativeTraceSetup({ coverage, concept, seed, roster, formation: 'gun_doubles_11', flip });
 +    const qbP = setup.offense.QB;
 +    if (!qbP) continue;
-+    for (const k of MENTAL) qbP.ratings[k] = level;
++    for (const k of MENTAL) qbP.ratings[k] = PROFILES[arg] ? (k === 'composure' || k === 'discipline' ? PROFILES[arg].calm : PROFILES[arg].proc) : level;
 +    qbP.experience = exp;
 +    let sim: any; try { sim = new PlaySim(setup); } catch { continue; }
 +    const ticks: any[] = [], track: Record<string, any[]> = {}; let release: any = null, qbb: any = null;
@@ -146,10 +203,63 @@ index 000000000..b5ede4bcb
 +      int: ev.some((e) => e.type === 'interception'), sack: ev.some((e) => e.type === 'sack'), lookLog: b?.lookLog ?? [],
 +      ticks, track: release && release.slot ? track[release.slot] : null }));
 +  }
+diff --git a/scripts/diag/eyes/stop-price.ts b/scripts/diag/eyes/stop-price.ts
+new file mode 100644
+index 000000000..3f1b95b2e
+--- /dev/null
++++ b/scripts/diag/eyes/stop-price.ts
+@@ -0,0 +1,38 @@
++// QB lane 2026-11-23 (Rules: the NFL releases a stop route about 0.2 s before the plant; ours at or after it).
++// Measurement only. Staged stop-route concepts; the first read that is a stop route (hitch, quick_hitch, curl, hook,
++// comeback, stick). From the first tick ready() is true for him, every tick until the throw or 1.2 s: the price's terms
++// (pOpen, pClear, pAcc, hands, pick terms), P and pick risk against his bar, his receiver picture's age and the
++// window's closer (the defender that sets the contest), and the receiver's true speed (so the plant is known).
++//   node --import tsx scripts/diag/eyes/stop-price.ts > rows.jsonl
++import { PlaySim } from '../../../src/sim/playsim.js';
++import { nativeTraceSetup } from '../command-trace.js';
++
++const STOP = new Set(['hitch', 'quick_hitch', 'curl', 'hook', 'comeback', 'stick']);
++for (const concept of ['curl_flat', 'stick', 'quick_hitch', 'hitch_cross', 'dagger']) for (const coverage of ['cover1', 'cover2', 'cover3', 'cover4', 'cover6'])
++  for (const roster of [2, 5, 9]) for (const seed of [1, 2]) for (const flip of [false, true]) {
++    let sim: any;
++    try { sim = new PlaySim(nativeTraceSetup({ coverage, concept, seed, roster, formation: 'gun_doubles_11', flip })); } catch { continue; }
++    let target: any = null, readyAt: number | null = null, thrown: number | null = null, plant: number | null = null, peak = 0;
++    const rows: any[] = [];
++    const tb = sim.throwBall.bind(sim);
++    sim.throwBall = (p: any, t: any, ...rest: any[]) => { if (p === sim.qb && thrown === null) thrown = +sim.t.toFixed(2) + (t === target ? 0 : 100); return tb(p, t, ...rest); };
++    for (let i = 0; i < 120 && sim.phase === 'live' && thrown === null; i++) {
++      sim.tick();
++      const b: any = sim.qb.behavior; if (b?.kind !== 'qb-pass' || !b.reads) continue;
++      if (!target) target = b.reads.find((r: any) => STOP.has(r.behavior?.route?.id)) ?? null;
++      if (!target) break;
++      const sp = Math.hypot(target.vel.x, target.vel.y); peak = Math.max(peak, sp);
++      if (plant === null && peak > 3 && sp < 0.5 * peak) plant = +sim.t.toFixed(2);
++      let ready = false; try { ready = b.ready(target, sim); } catch { /* */ }
++      if (ready && readyAt === null) readyAt = sim.t;
++      if (readyAt === null || sim.t > readyAt + 1.2) continue;
++      b.marginProbe = true; let ev: any = null; try { ev = b.evaluate(sim.qb, sim, target, b.barNow?.u ?? 0); } catch { /* */ } b.marginProbe = false;
++      if (!ev) continue;
++      const pic = b.receiverForecasts.get(target)?.lastPicture?.();
++      const top = (b.marginLast ?? []).slice().sort((p: any, q: any) => (q.contest + 5 * (q.iPath + q.iJump + q.iContest)) - (p.contest + 5 * (p.iPath + p.iJump + p.iContest)))[0];
++      rows.push({ t: +sim.t.toFixed(2), sp: +sp.toFixed(2), cur: b.reads[b.readIdx] === target, ph: b.phase, P: +ev.P.toFixed(3), iR: +ev.intRisk.toFixed(4), need: b.barNow?.thr ?? null, risk: b.barNow?.maxInt ?? null,
++        parts: Object.fromEntries(Object.entries(ev.parts ?? {}).map(([k, v]: any) => [k, +(+v).toFixed(3)])), picAge: pic ? +(sim.t - pic.sampledAt).toFixed(2) : null,
++        closer: top ? { slot: top.slot, contest: top.contest, iPath: top.iPath, dTgt: top.dTgt, blind: top.blind } : null });
++    }
++    if (target) console.log(JSON.stringify({ concept, coverage, roster, seed, flip, route: target.behavior?.route?.id, expBreak: null, plant, readyAt: readyAt && +readyAt.toFixed(2), thrown, rows }));
++  }
 diff --git a/src/sim/behaviors/qb.ts b/src/sim/behaviors/qb.ts
-index 457a9f4a8..a13cdf97c 100644
+index 457a9f4a8..7a3667701 100644
 --- a/src/sim/behaviors/qb.ts
 +++ b/src/sim/behaviors/qb.ts
+@@ -82,7 +82,7 @@ interface ThrowEval {
+   value: number;
+   depth: number;
+   /** Diagnostics: the window's factors (P = pOpen * pClear * pAcc * hands). */
+-  parts?: { pOpen: number; pClear: number; pAcc: number; hands: number; intPath?: number; intJump?: number; intContest?: number };
++  parts?: { pOpen: number; pClear: number; pAcc: number; hands: number; intPath?: number; intJump?: number; intContest?: number; pBat?: number };
+ }
+ 
+ 
 @@ -128,6 +128,17 @@ export function naturalFlightFor(armSpeed: number, d: number): number {
    return base * (1 - 0.12 * armEdge);
  }
@@ -411,19 +521,21 @@ index 457a9f4a8..a13cdf97c 100644
      // A base reset at depth: he gathers where he stands, turned to the read (his body facing follows his read). Whether
      // a hitch gains ground is a pressure decision (the climb, bit 4), not the hitch's.
      this.step = { n: k, since: sim.t, landed: false, to: { x: a.pos.x, y: a.pos.y } };
-@@ -2374,7 +2495,10 @@ export class QBPass implements Behavior {
+@@ -2374,7 +2495,12 @@ export class QBPass implements Behavior {
      return !!id && GRASS_ROUTES.has(id);
    }
    /** When a grass read is decided: his step n for it (n strides after his set; the plant for n = 0). */
 -  private grassDue(r: Agent): number { return this.setAt + (this.stepOf.get(r)?.n ?? 0) * this.stride(); }
 +  private grassDue(r: Agent): number { return this.clockAt() + (this.stepOf.get(r)?.n ?? 0) * this.stride(); }
-+  /** The origin of his footwork clock: the plant. QB_STEP_CLOCK: the drop's count from the snap (the snap plus the called
-+   * drop's time), where the plant is taught to land; off, the moment he arrived at his set point. */
-+  private clockAt(): number { return QB_STEP_CLOCK ? this.snapAt + this.drop.time : this.setAt; }
++  /** The origin of his footwork clock: the plant. QB_STEP_CLOCK: he plants when he gets to his set point or on the drop's
++   * count from the snap (the snap plus the called drop's time), whichever comes first, so the clock runs from the earlier
++   * (a play-action set reached before the fake's full count is not held to it); off, the moment he arrived at his set
++   * point, however late. */
++  private clockAt(): number { return QB_STEP_CLOCK ? Math.min(this.setAt >= 0 ? this.setAt : Infinity, this.snapAt + this.drop.time) : this.setAt; }
    private grassLanding(sim: PlaySim, r: Agent): Vec2 {
      const planned = this.grassPlan.get(r);
      if (planned) return planned;
-@@ -2932,7 +3056,12 @@ export class QBPass implements Behavior {
+@@ -2932,7 +3058,12 @@ export class QBPass implements Behavior {
        const pMan = this.mind.pMan();
        const facingBlind = THROW_REACT ? pMan * wind + (1 - pMan) * Math.max(0, wind - dp.reactionTime) : 0;
        // QB_DEEP_WAIT: a man he saw in a deep seat waits for the ball: he goes at the release, then his reaction.
@@ -437,7 +549,7 @@ index 457a9f4a8..a13cdf97c 100644
        let mover = { pos: { x: seen.pos.x + seen.vel.x * blind, y: seen.pos.y + seen.vel.y * blind }, vel: seen.vel, profile: dp, speedScale: bel ? 1 : d.speedScale };
        // DEF_BELIEF: the man on the target goes partly where the target goes.
        if (DEF_BELIEF && Math.hypot(seen.pos.x - target.x, seen.pos.y - target.y) < 4) {
-@@ -2942,7 +3071,7 @@ export class QBPass implements Behavior {
+@@ -2942,7 +3073,7 @@ export class QBPass implements Behavior {
          mover = { ...mover, pos: { x: mover.pos.x + k * (tb.x - target.x - seen.vel.x * blind), y: mover.pos.y + k * (tb.y - target.y - seen.vel.y * blind) },
            vel: { x: seen.vel.x + k * (rv.x - seen.vel.x), y: seen.vel.y + k * (rv.y - seen.vel.y) } };
        }
@@ -446,7 +558,7 @@ index 457a9f4a8..a13cdf97c 100644
        const leap = dp.reactReach + 0.5 * (dp.maxCatchHeight - dp.reactReach);
        // PICTURE_AGE: how far he could be from where the QB has him, in time.
        let spreadD = 0;
-@@ -2952,6 +3081,8 @@ export class QBPass implements Behavior {
+@@ -2952,6 +3083,8 @@ export class QBPass implements Behavior {
        }
        // PERIPH_ACUITY: his uncertainty about where this defender is: the look's eccentric error grown over its age.
        if (PERIPH_ACUITY) spreadD = Math.hypot(spreadD, this.mind.pictureSpread(d) / Math.max(dp.vmax, 1e-3));
@@ -455,7 +567,7 @@ index 457a9f4a8..a13cdf97c 100644
        return { d, dp, dBall, blind, mover, react, leap, spreadD, facingQB, tied, closeState, roof, deepBail, carryAt, seen, speedScale: mover.speedScale, estimateError: a.mind.judgment(`reach:${d.slot}`) * noise };
      });
      // A ball that arrives at `pt`: who contests it at the catch, who can get a
-@@ -2965,6 +3096,8 @@ export class QBPass implements Behavior {
+@@ -2965,6 +3098,8 @@ export class QBPass implements Behavior {
        const pic = forecast?.lastPicture() ?? null;
        if (pic) periphR = Math.hypot(pic.sigP, pic.sigV * Math.max(0, sim.t - pic.sampledAt));
      }
@@ -464,7 +576,16 @@ index 457a9f4a8..a13cdf97c 100644
      if (PICTURE_AGE) {
        const pic = forecast?.lastPicture() ?? null;
        const age = Math.max(0, sim.t - (pic ? pic.sampledAt : this.snapAt)), A = r.profile.vmax / Math.max(r.profile.tau, 1e-3);
-@@ -3018,16 +3151,34 @@ export class QBPass implements Behavior {
+@@ -2977,7 +3112,7 @@ export class QBPass implements Behavior {
+     // Diagnostics only (no effect): each defender's believed arrival margin at the aimed point, when a probe asks.
+     const marginTrace: any[] | null = this.marginProbe ? [] : null;
+     const at = (pt: Vec3) => {
+-      let pOpen = 1, pClear = 1, intRisk = 0, pSecure = 1, intPath = 0, intJump = 0, intContest = 0, noPathPick = 1, noCatchPick = 1;
++      let pOpen = 1, pClear = 1, intRisk = 0, pSecure = 1, intPath = 0, intJump = 0, intContest = 0, noPathPick = 1, noCatchPick = 1, batKeep = 1;
+       const v0 = dragFreeLaunch(from, pt, T);
+       for (const { d, dp, dBall, blind, mover, react, leap, spreadD, facingQB, tied, closeState, roof, deepBail, carryAt, seen, speedScale, estimateError } of defenders) {
+         // QB_CLOSE_BELIEF: an occupied man starts from the ball seen in the air (the release, a not-facing reaction); one
+@@ -3018,16 +3153,40 @@ export class QBPass implements Behavior {
          // Undercut risk along the flight path: a hand on the ball kills the
          // completion, and some of those become picks.
          let touch = 0;
@@ -475,14 +596,20 @@ index 457a9f4a8..a13cdf97c 100644
 +        let iBat = 0;
 +        if (rusher) {
 +          const top = tied ? dp.reactReach * 0.95 : dp.reactReach;
-+          let inWin = false;
-+          for (let tau = 0.1; tau <= Math.min(0.4, T) + 1e-9 && !inWin; tau += 0.05) {
-+            const b = arcPoint(from, v0, tau), k = tied ? 0.3 : 1;
++          // How likely the ball passes inside his raised hands, as the passer can know it: his picture of the man is
++          // uncertain (its spread), and the man keeps moving through the windup and the flight (0.4 yd/s of it he
++          // cannot predict), so the reach is a soft edge, not a yes/no.
++          let inWin = 0;
++          for (let tau = 0.1; tau <= Math.min(0.4, T) + 1e-9; tau += 0.05) {
++            const b = arcPoint(from, v0, tau), k = tied ? 0.5 : 1;
++            if (b.z < 0.1 || b.z > top) continue;
 +            const p = { x: seen.pos.x + seen.vel.x * (wind + tau) * k, y: seen.pos.y + seen.vel.y * (wind + tau) * k };
-+            if (b.z >= 0.1 && b.z <= top && Math.hypot(b.x - p.x, b.y - p.y) <= dp.reach) inWin = true;
++            const sig = Math.hypot(0.35, this.mind.pictureSpread(d), 0.4 * (wind + tau));
++            inWin = Math.max(inWin, logistic((dp.reach - Math.hypot(b.x - p.x, b.y - p.y)) / sig));
 +          }
-+          const pBat = inWin ? (tied ? 0.04 : 0.12) * (facingQB ? 1 : 0.2) : 0;
++          const pBat = inWin * (tied ? 0.04 : 0.12) * (facingQB ? 1 : 0.2);
 +          pClear *= 1 - pBat;
++          batKeep *= 1 - pBat;
 +          iBat = pBat * BAT_PICK;
 +        }
 +        for (const f of (under || carryTt !== null || rusher ? [] : [0.3, 0.45, 0.6, 0.75, 0.88])) {
@@ -502,3 +629,77 @@ index 457a9f4a8..a13cdf97c 100644
          // At the catch point: jumped routes are picks; contested balls sometimes.
          const iJump = first * (0.15 + 0.35 * dBall), iContest = Math.max(0, contest - first) * 0.08 * dBall;
          intRisk += iPath + iJump + iContest;
+@@ -3042,7 +3201,7 @@ export class QBPass implements Behavior {
+       }
+       // INT_BELIEF: the chance of a pick is one minus the chance that nobody picks it, in flight or at the catch.
+       if (INT_BELIEF) intRisk = 1 - noPathPick * noCatchPick;
+-      return { pOpen: pOpen * pSecure, pClear, intRisk, intPath, intJump, intContest };
++      return { pOpen: pOpen * pSecure, pClear, intRisk, intPath, intJump, intContest, pBat: 1 - batKeep };
+     };
+     const aimed = at(point);
+     if (marginTrace) this.marginLast = marginTrace;
+@@ -3086,7 +3245,7 @@ export class QBPass implements Behavior {
+     // An incompletion costs a down (~3 yards of value); a pick costs ~45.
+     const value = P * (gain + sticksBonus + 2) - (1 - P) * 3 - intRisk * 45;
+     return { target: r, point, T, P, intRisk: Math.min(1, intRisk), value, depth, parts: { pOpen, pClear, pAcc, hands,
+-      intPath: aimed.intPath, intJump: aimed.intJump, intContest: aimed.intContest } };
++      intPath: aimed.intPath, intJump: aimed.intJump, intContest: aimed.intContest, ...(QB_BAT_HEIGHT ? { pBat: aimed.pBat } : {}) } };
+   }
+ 
+   private bestOption(a: Agent, sim: PlaySim, urgency: number): ThrowEval | null {
+diff --git a/test/qb-stick.test.ts b/test/qb-stick.test.ts
+index c912fc29c..66c2a724f 100644
+--- a/test/qb-stick.test.ts
++++ b/test/qb-stick.test.ts
+@@ -18,7 +18,8 @@ async function pumps(flag: string) {
+   for (const concept of ['four_verts', 'dagger', 'smash', 'flood']) for (const coverage of ['cover2', 'cover3']) for (const roster of [3, 7]) for (const seed of [1, 2, 3]) {
+     const sim: any = new PlaySim(nativeTraceSetup({ coverage, concept, seed, roster, formation: 'gun_doubles_11', flip: false }));
+     let b: any = null; const tick0 = sim.tick.bind(sim);
+-    sim.tick = () => { tick0(); if (sim.qb.behavior?.kind === 'qb-pass') b = sim.qb.behavior; };
++    // The passer's QBPass (its stickPumps): after the ball is out a ConvoyCue also reports kind 'qb-pass' without them.
++    sim.tick = () => { tick0(); if (sim.qb.behavior?.kind === 'qb-pass' && sim.qb.behavior.stickPumps) b = sim.qb.behavior; };
+     try { sim.run(); } catch { /* a play that cannot finish staging */ }
+     n += sim.events.filter((e: any) => e.type === 'pump').length;
+     if (b) caused += Object.values((b.stickPumps ?? {}) as Record<string, number>).reduce((s, x) => s + x, 0);
+diff --git a/test/read-window.test.ts b/test/read-window.test.ts
+index 9217b823a..2283829a0 100644
+--- a/test/read-window.test.ts
++++ b/test/read-window.test.ts
+@@ -1,8 +1,8 @@
+ /** READ_WINDOW (behaviors/qb.ts; experimental, off) and FORECAST_FINISH (receiver-forecast.ts; on since engine-88,
+  * provisional), QB lane 2026-11-18 (docs/reviews/2026-11-18-late-cross.md, 2026-11-18-forecast-finish.md).
+  * 1. READ_WINDOW, on slant_flat from trips: no throw goes to a read his eyes have moved off (the plan's checkdown keeps
+- *    one more look); off, many do. Not asserted: that no late flat remains. With the flag on, some still come (a key
+- *    reorder puts the flat, never looked at, first after 2 s; the engine-88 section), which is why the flag is off.
++ *    one more look), and with the quick clock (each quick read decided on its footwork step, the quick drop's hitch one
++ *    of his strides) no flat is thrown late and long; off, both happen.
+  * 2. FORECAST_FINISH (quick_outs, ROUTE_FINISH): an out that finishes at its margin is forecast to stop there, as the
+  *    receiver does; off, the forecast runs him on toward the sideline. */
+ import { readFileSync } from 'node:fs';
+@@ -38,7 +38,9 @@ async function panel(rw: string, ff: string) {
+       const b: any = sim.qb.behavior;
+       if (done || b?.kind !== 'qb-pass' || !b.reads) return;
+       const cur = b.reads[b.readIdx] ?? null;
+-      if (prev && cur !== prev) movedOff.add(prev);
++      // A keyed high-low is one look: moving between its two routes is the key's answer, not a read passed.
++      const pair = b.keyPair as Set<unknown> | null;
++      if (prev && cur !== prev && !(pair?.has(prev) && pair.has(cur))) movedOff.add(prev);
+       prev = cur;
+     };
+     try { sim.run(); } catch { /* a play that cannot finish staging */ }
+@@ -82,12 +84,14 @@ async function outs(ff: string) {
+ }
+ 
+ describe('READ_WINDOW and FORECAST_FINISH', () => {
+-  it('a passed quick read is not thrown', async () => {
++  it('a passed quick read is not thrown, and no late flat', async () => {
+     const off = await panel('0', '0'), on = await panel('1', '1');
+     console.log('read-window off', JSON.stringify(off), 'on', JSON.stringify(on));
+     expect(off.reopened).toBeGreaterThan(0);
+     expect(off.lateFlat).toBeGreaterThan(0);
+     expect(on.reopened).toBe(0);
++    // The quick clock (his reads on his footwork steps, the quick drop's hitch one of his strides): no late flat.
++    expect(on.lateFlat).toBe(0);
+   }, 600_000);
+   it('an out with a finish is forecast to stop on it', async () => {
+     const off = await outs('0'), on = await outs('1');
