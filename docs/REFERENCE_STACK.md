@@ -611,6 +611,69 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
 
 
+## engine-94: one break on the throw (2026-11-24)
+
+On: `FLIGHT_BREAK` (Coverage C14 with Defense; Integration's paired card). `FLIGHT_LEAD` is present but off and
+parked: it lost to the break alone (overruns 19 -> 34; its goals missed where the carrier went by about 5 yd).
+
+Taught: plant and drive on the throw to where the receiver will be, come to balance, with the leverage the seat
+plays. Off, each path had its own rule:
+- playBelievedBall's shoulder break ran through a projected spot at 0.9 speed;
+- a man carrier kept carrying his receiver on the arm read;
+- DRIVE_CATCH ran through the hands at full speed;
+- flightApproach's nearby carry tracked the receiver;
+- the drive went to a fixed catch point, and after the window to a stale one.
+Defense measured the first defenders beaten after the catch as 6.0 yd away and 4.3 yd ahead of the catcher at the
+catch, coming downhill at -2.9 yd/s along his line.
+
+On, all of them go through one break (`flightBreakMove`):
+- the goal moves with the receiver's seen velocity and crosses his catch window at the time the defender estimates;
+- it is shaded 0.8 yd by the seat's leverage (outside-in for corners and flat / curl-flat / deep outside seats,
+  inside-out otherwise), fading inside 6 yd of contact;
+- from over the top, the goal is the receiver's upfield shoulder;
+- he closes only as fast as he can brake from, to a through speed of 2.5 + 2 x (1 - tackling) yd/s.
+Once the flight lands by his estimate, he keeps the same receiver for up to 1 s, until pursuit's possession read takes
+him. His picture only. The replaced paths stay behind `FLIGHT_BREAK=0`.
+
+Defense's first-defender table (two seeds, CATCH_STRIDE on):
+
+| | first defender stops him | YAC |
+|---|---|---|
+| off | 62.3% | 8.46 |
+| on | 67.7% | 6.50 |
+
+Integration's paired card (seeds 23 / 37 / 11 / 5, deltas against engine-92 (before HEAD_FOLLOW)):
+
+| | per seed | mean |
+|---|---|---|
+| YAC | -1.07*, -1.35*, -0.98*, -0.31 | -0.93 |
+| yards per attempt | -0.94*, -0.78*, -0.69, -0.25 | -0.67 |
+| completion, pts | -0.9, -0.8, -2.0, +0.5 | -0.8 |
+| INT | +0.5, +0.8*, +0.3, +0.1 | +0.4 |
+| 20+ yard plays | -3.7*, -1.6*, -1.3, -0.6 | -1.8 |
+| sacks | | about +0.1 |
+
+Interceptions (`scripts/diag/coverage/int-census.mts`; 11 seeds x 2 games per arm, both arms with HEAD_FOLLOW):
+
+| | throws | INT | per throw |
+|---|---|---|---|
+| off | 1,957 | 31 | 1.6% |
+| on | 1,891 | 33 | 1.7% |
+
+Of the 33 with the break on, 22 were by a defender breaking on that throw (19 on the targeted receiver): defenders
+arriving at the catch point with the ball. Before HEAD_FOLLOW the same census read 26 -> 44; most of that rise was
+defenders seeing the arm or the ball through a frozen head (engine-93).
+
+Information audit (`scripts/diag/coverage/break-perception.mts`): every break had a cue inside his recorded head's cone
+at the cue's sample time (arm p50 0 deg off the head, ball p50 4 deg); nothing in FLIGHT_BREAK reads the true ball. The
+hold after the flight lands requires his release belief to stand, so a pump he has seen pulled down ends it.
+
+Tools' census (24 games, both arms with HEAD_FOLLOW), wide-open share at 10-15 yd, fixed times: Cover 6 .206 -> .225,
+Cover 2 .465 -> .427 (NFL .096 / .177), at the release Cover 6 .163 -> .121, Cover 2 .364 -> .330. Paired staged plays
+(`prerelease-diverge.mts`): the break moves no defender before the release on 189 of 192 Cover 6/8 plays.
+
+scripts/diag/coverage/int-census.mts (here); the staged and traced evidence is on coverage/C14-cards
+(docs/reviews/2026-11-23-coverage-cards-engine.md, scripts/diag/coverage/flat-staged.mts).
 ## engine-93: a head nobody turns follows the body (2026-11-24)
 
 On: `HEAD_FOLLOW` (Coverage C14; found auditing FLIGHT_BREAK at Integration's and the QB lane's request). An information
