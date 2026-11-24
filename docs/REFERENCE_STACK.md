@@ -611,6 +611,66 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
 
 
+## engine-93: one break on the throw (2026-11-23)
+
+On: `FLIGHT_BREAK` (Coverage C14 with Defense; Integration's paired card). `FLIGHT_LEAD` is present but off and
+parked: it lost to the break alone (overruns 19 -> 34; its goals missed where the carrier went by about 5 yd).
+
+Taught: plant and drive on the throw to where the receiver will be, come to balance, with the leverage the seat
+plays. Off, each path had its own rule:
+- playBelievedBall's shoulder break ran through a projected spot at 0.9 speed;
+- a man carrier kept carrying his receiver on the arm read;
+- DRIVE_CATCH ran through the hands at full speed;
+- flightApproach's nearby carry tracked the receiver;
+- the drive went to a fixed catch point, and after the window to a stale one.
+Defense measured the first defenders beaten after the catch as 6.0 yd away and 4.3 yd ahead of the catcher at the
+catch, coming downhill at -2.9 yd/s along his line.
+
+On, all of them go through one break (`flightBreakMove`):
+- the goal moves with the receiver's seen velocity and crosses his catch window at the time the defender estimates;
+- it is shaded 0.8 yd by the seat's leverage (outside-in for corners and flat / curl-flat / deep outside seats,
+  inside-out otherwise), fading inside 6 yd of contact;
+- from over the top, the goal is the receiver's upfield shoulder;
+- he closes only as fast as he can brake from, to a through speed of 2.5 + 2 x (1 - tackling) yd/s.
+Once the flight lands by his estimate, he keeps the same receiver for up to 1 s, until pursuit's possession read takes
+him. His picture only. The replaced paths stay behind `FLIGHT_BREAK=0`.
+
+Defense's first-defender table (two seeds, CATCH_STRIDE on):
+
+| | first defender stops him | YAC |
+|---|---|---|
+| off | 62.3% | 8.46 |
+| on | 67.7% | 6.50 |
+
+Integration's paired card (seeds 23 / 37 / 11 / 5, deltas against engine-92):
+
+| | per seed | mean |
+|---|---|---|
+| YAC | -1.07*, -1.35*, -0.98*, -0.31 | -0.93 |
+| yards per attempt | -0.94*, -0.78*, -0.69, -0.25 | -0.67 |
+| completion, pts | -0.9, -0.8, -2.0, +0.5 | -0.8 |
+| INT | +0.5, +0.8*, +0.3, +0.1 | +0.4 |
+| 20+ yard plays | -3.7*, -1.6*, -1.3, -0.6 | -1.8 |
+| sacks | | about +0.1 |
+
+Interceptions (`scripts/diag/coverage/int-census.mts`; 11 seeds x 2 games per arm, Tools' game set):
+
+| | throws | INT | per throw |
+|---|---|---|---|
+| off | 1,840 | 26 | 1.4% |
+| on | 1,899 | 44 | 2.3% |
+
+Of the 44 with the break on, 22 were made by a defender breaking on that throw, 18 of them on the targeted receiver:
+- 14 man defenders, 3 curl-flat, 2 deep middle;
+- 12 off a tipped ball, 8 alone at the ball, 2 in a contested catch;
+- median 2.7 yd from the target at the release.
+Those defenders arrive at the catch point with the ball, which is the mechanism working. Seven more are passes batted at
+the line by rushers (1 off). Rushers never run the break, so these are game divergence, not this change. The rest
+match the off arm's mix.
+
+scripts/diag/coverage/int-census.mts (here); the staged and traced evidence is on coverage/C14-cards
+(docs/reviews/2026-11-23-coverage-cards-engine.md, scripts/diag/coverage/flat-staged.mts).
+
 ## engine-92: what the passer sees off his gaze is less exact (2026-11-23)
 
 On: `PERIPH_ACUITY` (QB lane; Integration's paired card). An information leak under the user's standing rule:
