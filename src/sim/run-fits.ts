@@ -430,7 +430,7 @@ const contradictedMesh = new WeakSet<Agent>();
 /** Explicit null means unresolved possession: keep the installed fit, without
  * falling through to the authoritative holder. Undefined preserves older
  * direct callers; defense.runFit always supplies its acquired interpretation. */
-/** SHED_PURSUE (experimental, off; SHED_PURSUE=1 turns it on): a run defender who has come free of a block plays the
+/** SHED_PLAY (experimental, off; SHED_PLAY=1 turns it on; named apart from engagement.ts's default-on SHED_PURSUE): a run defender who has come free of a block plays the
  * ball from his own picture, as taught (shed, find the ball, then squeeze or press it at his gap, pursue it once it has
  * declared away), instead of re-landmarking square to the line.
  *
@@ -448,23 +448,23 @@ const contradictedMesh = new WeakSet<Agent>();
  *    him laterally on that side; exit back inside + 1.5): he pursues (chase, with the pursuit leverage);
  *  - otherwise, and before the ball is given: he holds his gap fit, facing the ball he sees, not the backfield.
  * Margins (stated choices): 0.5 yd between enter and exit on each boundary. Cutback and alley jobs keep their contract. */
-export const SHED_PURSUE = process.env.SHED_PURSUE === '1';
-/** SHED_PURSUE applies to defensive linemen (by position): the evidence is theirs. Linebackers' slow come-off is the body
+export const SHED_PLAY = process.env.SHED_PLAY === '1';
+/** SHED_PLAY applies to defensive linemen (by position): the evidence is theirs. Linebackers' slow come-off is the body
  * redirect (Run Game's shed-recovery trace: they command full speed at once), not this request; with linebackers
  * included (8 games, 0226f0d3) runs of 20+ yd rose 5 -> 12 with none through a vacated DL gap. */
 const SHED_LINE = /^(DE|DT|NT|EDGE)/;
 const shedState = new WeakMap<Agent, { sim: PlaySim; engaged: boolean; shed: boolean; mode: 'press' | 'away' | 'hold' }>();
-/** SHED_PURSUE: the facing the held fit plays with this call (the seen ball), or null. */
+/** SHED_PLAY: the facing the held fit plays with this call (the seen ball), or null. */
 let shedHoldFacing: number | null = null;
-/** SHED_PURSUE: a behaviour that plays its own engagement before reaching the fit (the pass rusher) reports it here. */
+/** SHED_PLAY: a behaviour that plays its own engagement before reaching the fit (the pass rusher) reports it here. */
 export function noteEngaged(a: Agent, sim: PlaySim): void {
-  if (!SHED_PURSUE) return;
+  if (!SHED_PLAY) return;
   const s = shedState.get(a);
   if (!s || s.sim !== sim) shedState.set(a, { sim, engaged: true, shed: false, mode: 'hold' });
   else { s.engaged = true; s.shed = false; s.mode = 'hold'; }
 }
 export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallbackSide: number, input?: RunFitRead | null) {
-  if (!SHED_PURSUE) return executeRunFitInner(a, sim, fallbackGap, fallbackSide, input);
+  if (!SHED_PLAY) return executeRunFitInner(a, sim, fallbackGap, fallbackSide, input);
   if (a.engagement) noteEngaged(a, sim);
   let s = shedState.get(a);
   if (!s || s.sim !== sim) { s = { sim, engaged: false, shed: false, mode: 'hold' }; shedState.set(a, s); }
@@ -474,7 +474,7 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
   const face = shedHoldFacing; shedHoldFacing = null;
   return face === null ? cmd : { ...cmd, facing: face };
 }
-/** SHED_PURSUE's read of the carrier's path against his gap, with enter/exit margins on each boundary. */
+/** SHED_PLAY's read of the carrier's path against his gap, with enter/exit margins on each boundary. */
 function shedRead(a: Agent, sim: PlaySim, seen: Perceived, gy: number, half: number): 'press' | 'away' | 'hold' {
   const s = shedState.get(a)!;
   const dirX = sim.attackDir(sim.offense[0].team);
@@ -791,7 +791,7 @@ function executeRunFitInner(a: Agent, sim: PlaySim, fallbackGap: Gap, fallbackSi
     declared = threat && seen.pos.x > sim.los - 1.6;
     if (threat && !declared) { a.tags.add('fit-threat-read'); threatened = true; }
   } else declared = !premesh && seen.pos.x > sim.los-1.6 && Math.abs(seen.pos.y-gy) < 2.5;
-  if (SHED_PURSUE && SHED_LINE.test(a.player.position) && shedState.get(a)?.shed && job.kind !== 'cutback') {
+  if (SHED_PLAY && SHED_LINE.test(a.player.position) && shedState.get(a)?.shed && job.kind !== 'cutback') {
     const half = Number.isFinite(gap.width) ? Math.max(.6, gap.width / 2) : 1.2;
     const m = premesh || seen.carrying !== true ? 'hold' : shedRead(a, sim, seen, gy, half);
     if (m === 'press') { a.tags.add('shed-press'); return chase(sim, a, c, 2); }
