@@ -28,7 +28,9 @@ export type ThrowTiming = 'onBreak' | 'seenOpen';
 export type KeyRole = 'flat' | 'curl' | 'hook' | 'apex' | 'corner' | 'mofSafety' | 'overhang' | (string & {});
 
 /** What the key defender does, as the passer sees it (from his movement in the passer's picture). */
-export type KeyCue = 'sinks' | 'widens' | 'squats' | 'carries' | 'bails' | 'jumps' | 'blitzes';
+/** `jumps`: drives on a route (pass side); `fills`: steps downhill into his run fit (an RPO's conflict defender; told
+ * apart by direction in his picture, toward the line and the mesh against toward a receiver). */
+export type KeyCue = 'sinks' | 'widens' | 'squats' | 'carries' | 'bails' | 'jumps' | 'blitzes' | 'fills';
 
 export interface ThrowOption {
   ref: ReceiverRef;

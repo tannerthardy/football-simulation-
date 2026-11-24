@@ -48,7 +48,9 @@ export type Intent =
   | { kind: 'escape' }
   | { kind: 'away' }
   /** Thrown at this receiver's feet to end the play (a covered read marked onCovered: 'kill'). */
-  | { kind: 'kill'; ref: string };
+  | { kind: 'kill'; ref: string }
+  /** An RPO's key read answered no by the mesh deadline: give the ball to the back (Run Game's mesh). */
+  | { kind: 'handoff' };
 
 /** Pressure states' entry and exit on his felt rush (chosen: each exit well under its entry; `felt` as THROWAWAY_FELT). */
 const PRESSURE: Array<{ s: PressureState; enter: number; exit: number }> = [
