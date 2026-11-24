@@ -15,10 +15,8 @@
  * says so; what it buys is the body's reach and the loss of the feet, which `startFall` and the grasp's extended reach carry.
  *
  * Stated choices (nothing here is fitted to an outcome):
- *  - DIVE_STANCE_S = 0.12 s. Ground contact in sprinting runs about 0.2 s in the first steps and falls to about 0.09-0.11 s at top speed; the take-off
- *    foot of a running jump is on the ground about 0.1-0.15 s. A planted push-off to leave the feet sits between: 0.12 s (a range 0.10-0.15 s).
- *    These contact times are recalled from the sprint and long-jump biomechanics literature (Mero and Komi 1992; Rabita et al. 2015; Hay 1993),
- *    not re-derived here; the search tool could not confirm them and they should be checked before the number is relied on.
+ *  - DIVE_STANCE_S = 0.12 s is a stated choice (range 0.10-0.15 s), confidence low. It is not taken from a measurement: no source read for this change gives the
+ *    ground-contact time of a push-off to leave the feet, so none is cited. It is chosen between a sprint stride's contact and a short plant; the gain is close to linear in it.
  *  - The horizontal force law is the sprint stride's: no jump-style loading (a real push-off loads the foot to two or three body weights and so can
  *    use more friction), and no elastic return. Both would add to the impulse; they are left out so the lunge does not get strength the stride does not.
  *  - The leg is the same leg: the force-velocity factor uses his speed along the dive line, so a diver already at top speed along it gets none. */
