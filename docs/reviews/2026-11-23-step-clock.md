@@ -325,3 +325,12 @@ down, the step pacing the clock exists to give him. At 16 games an arm the total
 resolvable here; Integration's six-seed card (about 7,000 dropbacks) is the test. Release against the break, the same
 seeds (release_vs_break.py), repaired against off: stop +0.30 / +0.30 s, out +0.60 / +0.60, in +0.50 / +0.70
 (NFL -0.10, +0.30, +0.40).
+
+### Refreshed landing with the repair (engine-94, r2)
+
+`patches/engine71-footwork/step-clock-landing-on-c9e6c3f8-r2.patch` on develop c9e6c3f89 (sha256 db5a038a6178; `git apply
+--check` clean; typecheck clean): the engine-94 landing plus the repair above. The first red-diff of the repair caught
+an information leak in it (decision-information-scan: the head-turn allowance read the receiver's true position);
+the allowance now turns toward his picture of the man (`this.mind.estimate(read).pos`). The sack runs above were taken
+before that change; it moves only the head-turn allowance. Red-diff (alone): tests run 4453; failing 59; on the ledger 59;
+new red 0, fixed 0.
