@@ -1,7 +1,8 @@
 // Staged trail x gather (2026-11-24; the user's practice: stage the simple case first). One carrier on a fixed straight
 // path, a lead pursuer and a trail pursuer on the same line to him, no blockers; run per flag combination via env
 // (TRAIL_LEVERAGE, GATHER_FRONT). Stage 'straight': the carrier runs 7 yd/s straight. Stage 'cut': he cuts 45 deg away
-// from the lead when the lead is 1.5 yd away (to stage the lead's miss).
+// from the lead when the lead is CUT_AT (2.5) yd away, to stage the lead's miss. 'behind' / 'behind-cut': the same with
+// the trail man chasing from behind the carrier instead of following the lead's line.
 // Per rep: the first attempt (lead / trail, made / missed), whether the trail attempts after a lead miss and makes it,
 // the trail's distance and lateral offset from the carrier when the lead's attempt happens, yards from the start.
 // Usage (repo root, a build with the flags): node --import tsx trail-gather-lab.mts STAGE SEEDS REPS
@@ -14,6 +15,7 @@ const { FORMATION_BY_ID } = await import(`${W}/src/playbook/formations.ts`);
 const { PlaySim } = await import(`${W}/src/sim/playsim.ts`);
 const { Pursuit } = await import(`${W}/src/sim/behaviors/defense.ts`);
 const [STAGE = 'straight', SEEDS = '12', REPS = '10'] = process.argv.slice(2);
+const CUT_AT = Number(process.env.CUT_AT ?? 2.5);
 const r2 = (v: number) => Math.round(v * 100) / 100;
 const out: any[] = [];
 for (let seed = 1; seed <= Number(SEEDS); seed++) {
@@ -35,11 +37,14 @@ for (let seed = 1; seed <= Number(SEEDS); seed++) {
       d.downUntil = -1; d.body.pos = { x: 56 + 4 * 0.77 * k, y: 25 + 4 * 0.64 * k }; d.body.vel = { x: -2, y: -4 }; d.body.facing = Math.atan2(-4, -2);
       d.readAt = 0; d.behavior = new Pursuit();
     }
+    // 'behind' stages: the trail man chases from behind the carrier and inside (3 yd back, 2 yd inside, at 7 yd/s), the
+    // geometry GATHER_FRONT changes (a pursuer beside or behind keeps his intercept to his last arm's length).
+    if (STAGE.startsWith('behind')) { trail.body.pos = { x: 47, y: 22 }; trail.body.vel = { x: 7, y: 0 }; trail.body.facing = 0; }
     for (const a of sim.agents) if (a.downUntil === 99) a.behavior = { kind: 'idle', update: () => ({ vel: { x: 0, y: 0 } }) };
     for (let k = 0; k < 10; k++) sim.perception.record(sim.agents.map((a: any) => a.body));
     let seen = 0, first: any = null, leadMiss = false, trailAfter: any = null, atLead: any = null;
     while (sim.phase === 'live' && sim.t < 6) {
-      if (STAGE === 'cut' && !cut && Math.hypot(lead.pos.x - c.pos.x, lead.pos.y - c.pos.y) < 1.5) cut = true;
+      if (STAGE.endsWith('cut') && !cut && Math.hypot(lead.pos.x - c.pos.x, lead.pos.y - c.pos.y) < CUT_AT) cut = true;
       sim.tick();
       for (; seen < sim.events.length; seen++) {
         const e = sim.events[seen];
