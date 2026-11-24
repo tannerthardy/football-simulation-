@@ -108,20 +108,16 @@ const FLAT_SINK_DEPTH = 18;
  * hip turn (orientation.ts `sharp`). No jam (a follow-up: zone
  * corners have no press contact). */
 export const SQUAT_SINK = process.env.SQUAT_SINK === '1';
-/** C2_JAM (experimental, off; with SQUAT_SINK; Coverage C14 2026-11-24, docs/reviews/2026-11-24-cover2-jam-design.md):
- * the Cover 2 hard corner jams #1 before he sinks. From his alignment he holds outside shade on #1 as he sees him and
- * plays catch feet (holds his depth, gives ground only as #1 closes to a yard, never past 5 yd), facing him; within his
- * reach the palm goes on (press-contact.ts: the same World hands joint, palm-follow and swipe as press man; from his
- * outside shade it pushes #1 inside). The jam ends when #1 is level with him or by him, past 5 yd, cancels, on a run read
- * or a throw; then the sink (whose hole-only spot is now C2_CONCEDE, split out to attribute it). */
-export const C2_JAM = process.env.C2_JAM === '1';
-/** C2_JAM: his outside shade on #1 (yd) and how far he gives ground as #1 closes (catch feet). */
-const JAM_SHADE = 0.6, JAM_GIVE = 1.0;
-/** C2_JAM_STEP (attempt 2, with C2_JAM): on #1's release as he sees it (past the line, climbing over 1.5 yd/s), the corner
- * commits to stepping up to meet him so the hands meet inside the legal 5 yd (about 3 yd), not at his 4.5 yd alignment
- * where only the last half-yard was left: his catch depth becomes #1's seen depth plus his reach, floored at 2 yd. A
- * release he reads late beats him (the technique's cost). Kept once entered. */
-const C2_JAM_STEP = process.env.C2_JAM_STEP === '1';
+/** SQUAT_HOLD (experimental, off; with SQUAT_SINK; Coverage C14 2026-11-24, from the jam staging): the squat corner holds
+ * his depth until #1 is level with him, then sinks. On #1's release as he sees it (past the line, climbing over 1.5 yd/s)
+ * he steps up on #1's seen line, outside shade, to his reach of him (floored at 2 yd, never past 5), facing him: the
+ * taught squat ("sink only once #1 pushes past"). No hands: the jam's contact added nothing beyond what our press
+ * release-around already costs (Rules' press table), so it was dropped. The phase ends when #1 is level or by him, past
+ * 5 yd, cancels, on a run read or a throw. Staged (Cover 2, 768 plays with SQUAT_SINK + SQUAT_SIT): incompletions
+ * 131 -> 158, yards a play 9.45 -> 8.34 (with C2_CONCEDE 169, 8.19); quick outs 4 of 12 caught. */
+export const SQUAT_HOLD = process.env.SQUAT_HOLD === '1';
+/** SQUAT_HOLD: his outside shade on #1 (yd). */
+const HOLD_SHADE = 0.6;
 /** SQUAT_SIT (experimental, off; with SQUAT_SINK; Coverage C14 2026-11-24, the staged quick-outs-vs-Cover-2 case): the
  * squat corner sinks only while #1 threatens the hole. When #1, as he sees him, turns out under the hole (his seen
  * outward speed over max(1.5, 0.5 x his upfield speed) with his upfield speed falling, under 3.5 yd/s, or exceeded by
@@ -132,7 +128,7 @@ const C2_JAM_STEP = process.env.C2_JAM_STEP === '1';
  * if #1 turns back up (upfield over 1.5 x outward and over 3 yd/s, the far side of the entry). Off, the sink held until
  * #1 climbed under 1 yd/s, which a rounded out never does before the throw. */
 const SQUAT_SIT = process.env.SQUAT_SIT === '1';
-/** C2_CONCEDE (experimental, off; with SQUAT_SINK; split from C2_JAM 2026-11-24 to attribute it): the sink plays the hole
+/** C2_CONCEDE (experimental, off; with SQUAT_SINK; split out 2026-11-24 to attribute it): the sink plays the hole
  * only; the flat is conceded until the ball is thrown there (FLIGHT_BREAK) or #1 stops climbing and a flat threat takes
  * him to his flat zone play (SQUAT_SINK's exits). Off, the sink's spot is SQUAT_SINK v2's minimax between the hole and
  * flat windows. Taught Cover 2 (Bowen; Ratledge): the corner does not cover the flat before the ball. */
@@ -2065,11 +2061,9 @@ export class ZoneCoverage implements Behavior {
 
   /** SQUAT_SINK: sinking under #1 (entered on his vertical stem, left when he cancels). */
   private squatSinking = false;
-  /** C2_JAM: the receiver he is jamming (read by press-contact.ts), and whether his jam phase is over for this play. */
-  jamOn: Agent | null = null;
-  private jamDone = false;
-  /** C2_JAM_STEP: committed to stepping up on #1's seen release. */
-  private jamStep = false;
+  /** SQUAT_HOLD: whether his hold phase is over for this play, and whether he has stepped up on #1's seen release. */
+  private holdDone = false;
+  private holdStep = false;
   /** SQUAT_SIT: sitting on #1's out (entered on his out-turn under the hole, left when he turns back up). */
   private sitting = false;
   /**
@@ -2091,19 +2085,18 @@ export class ZoneCoverage implements Behavior {
     // leave when #1 cancels (FLAT_CARRY's read) or stops climbing (under 1 yd/s upfield), far inside the entry.
     // Rules' hard-corner card (rows 3, 5b): on a pass read (the high hat) he zone-turns and sinks off #1's release, within
     // the first 5 yd of it; not after #1 has passed him.
-    // C2_JAM: the jam phase, before the sink (see C2_JAM).
-    if (C2_JAM && !this.jamDone) {
+    // SQUAT_HOLD: hold his depth until #1 is level, stepping up on his release (see SQUAT_HOLD).
+    if (SQUAT_HOLD && !this.holdDone) {
       if (oDepth > myDepth - 0.3 || oDepth >= 5 || this.oneCancelled || believesRun(sim, a) || sim.ball.kind !== 'held'
-        || (sim.ball.kind === 'held' && sim.ball.carrier !== sim.qb)) { this.jamDone = true; this.jamOn = null; }
+        || (sim.ball.kind === 'held' && sim.ball.carrier !== sim.qb)) this.holdDone = true;
       else {
-        this.jamOn = one;
-        a.tags.add('jam');
-        if (C2_JAM_STEP && !this.jamStep && oDepth > 0 && oUp > 1.5) this.jamStep = true;
+        if (!this.holdStep && oDepth > 0 && oUp > 1.5) this.holdStep = true;
         const reachYd = a.profile.radius + one.profile.radius + a.player.measurables.armIn / 36 * 0.45;
-        const tx = this.jamStep ? sim.los + dir * Math.max(2, Math.min(myDepth, oDepth + reachYd))
-          : sim.los + dir * Math.min(5, Math.max(myDepth, oDepth + JAM_GIVE)), ty = o.pos.y + outside * JAM_SHADE;
+        const tx = this.holdStep ? sim.los + dir * Math.max(2, Math.min(myDepth, oDepth + reachYd)) : a.pos.x;
+        const ty = o.pos.y + outside * HOLD_SHADE;
+        a.tags.add('squat-hold');
         return withFacingTechnique(track(a, { x: tx, y: clamp(ty, 0.5, FIELD_WIDTH - 0.5) }, { x: 0, y: o.vel.y },
-          { facing: angleTo(a.pos, o.pos), speed: this.jamStep ? 0.9 : 0.7, gain: 1.6 }), { label: this.jamStep ? 'jam-step' : 'jam-catch', key: o.vel });
+          { facing: angleTo(a.pos, o.pos), speed: this.holdStep ? 0.9 : 0.7, gain: 1.6 }), { label: this.holdStep ? 'squat-step' : 'squat-hold-feet', key: o.vel });
       }
     }
     if (!this.squatSinking) this.squatSinking = !this.oneCancelled && !believesRun(sim, a) && oDepth >= 0.5 && oUp > 2.5 && oUp > 1.5 * oAcross;
