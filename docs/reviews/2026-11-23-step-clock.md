@@ -342,3 +342,28 @@ typecheck clean). The r2 code and test hunks apply unchanged; registration redon
 (baseline "0", stack "on"), READ_WINDOW "on", stack id engine-95, docs/FLAGS.md 503 flags (384 on, 91 off, 28 numeric),
 REFERENCE_STACK engine-95 section (with the resolving-look line). Red-diff (alone): tests run 4453; failing 58; on the
 ledger 58; new red 0, fixed 0.
+
+## Where the completions go on FLIGHT_BREAK (Integration's card, engine-94, 2026-11-24)
+
+Integration's card of the repaired clock on develop e5c6db5c9 (engine-94, FLIGHT_BREAK on): sacks flat (5.74% → 5.79%),
+completion down in 5 of 6 seeds and yards per attempt down in all six; INT, YAC and time to throw flat. Operator
+`scripts/diag/eyes/throw-outcome.ts` + `throw_outcome_table.py` on the e5c6db5c landing patch, 16 games per arm, the
+same seeds, QB_STEP_CLOCK on and =0. Every pass thrown (throwaways counted):
+
+| | clock on (1348) | clock off (1303) |
+|---|---|---|
+| complete | 65.1% | 65.8% |
+| contested (a defender's pbu or deflection) | 9.6% | 10.4% |
+| off target (no touch) / miss / drop | 11.2 / 2.2 / 5.5% | 12.5 / 1.8 / 5.4% |
+| thrown away | 4.7% (63) | 2.6% (34) |
+| intercepted | 1.8% | 1.4% |
+| thrown within 0.3 s of a hold releasing | 30, of them 29 away | 0 |
+| thrown away with his reads run out (4/4, 5/5) | 19 | 3 |
+
+Completion by read (read 1 69.6/69.8%, read 2 68.5/66.2, read 3 61.8/60.8) and by release minus break moves little;
+contested and off-target balls fall. The lost completions are throwaways, not windows the breaking defender closes.
+Of the 30 after-hold throws: 11 on quick concepts, through READ_WINDOW's out-of-reads branch (a passed read is dead; the
+keyed pair had expired on 10), and 19 on the rest, through QB_RELOOK. There nothing had expired and the ball went away
+when his internal clock ran out (thrown p50 3.66 s). Most were not stalled looks: the read he left was resolved past
+0.5 on 22 of 30 and he left it sure. So the cost is the hold's time against his internal clock, plus quick-game expiry,
+not the price.
