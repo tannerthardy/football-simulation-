@@ -64,11 +64,19 @@ export function wantAt(a: Agent, t: number): { reason: string; since: number } |
 
 /** The turn (rad, relative to body facing) toward a target `rel` off his body, given where his head already points
  * (`headRel`): the short way, except for a target behind him, which goes over the shoulder already turned to. */
-export function sideOf(rel: number, headRel: number): number {
-  if (Math.abs(rel) <= BEHIND || Math.abs(headRel) < 0.2) return rel;
-  const side = Math.sign(headRel);
+export function sideOf(rel: number, headRel: number, who?: object): number {
+  // LOOK_SIDE_HOLD: a target near dead behind him is reached over one shoulder, chosen once and held. Without the hold, a
+  // target within 0.2 rad of straight behind (`headRel` near 0) took the raw sign of `rel`, which flips at +-pi, so the
+  // look, and the turn priced off its side (lookJoints), swung to the other shoulder between ticks. The side is kept per
+  // man until the target is well forward again (EXIT) and a head clearly turned the other way (over HEAD_PICK) still decides.
+  if (Math.abs(rel) <= BEHIND) { if (who && Math.abs(rel) < BEHIND_EXIT) lastSide.delete(who); return rel; }
+  const prev = who ? lastSide.get(who) : undefined;
+  const side = Math.abs(headRel) >= 0.2 ? Math.sign(headRel) : (prev ?? (Math.sign(rel) || 1));
+  if (who) lastSide.set(who, side);
   return Math.sign(rel) === side ? rel : side * (2 * Math.PI - Math.abs(rel));
 }
+const BEHIND_EXIT = (130 * Math.PI) / 180;
+const lastSide = new WeakMap<object, number>();
 
 /** Turn every head for this tick (before the perception record). */
 export function stepHeads(sim: PlaySim): void {
@@ -101,7 +109,7 @@ export function stepHeads(sim: PlaySim): void {
  * stepHeads turns every head with it; the QB lane turns the passer's with it (QB_HEAD). */
 export function turnHead(a: Agent, head: number, toward: number, step: number, base = a.body.facing): number {
   const facing = base, neck = neckRange(a);
-  const lim = facing + Math.max(-neck, Math.min(neck, sideOf(angDiff(toward, facing), angDiff(head, facing))));
+  const lim = facing + Math.max(-neck, Math.min(neck, sideOf(angDiff(toward, facing), angDiff(head, facing), a)));
   head = head + Math.max(-step, Math.min(step, angDiff(lim, head)));
   return facing + Math.max(-neck, Math.min(neck, angDiff(head, facing)));
 }
