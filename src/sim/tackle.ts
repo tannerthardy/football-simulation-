@@ -400,7 +400,7 @@ function reachStep(sim: PlaySim, d: Agent, c: Agent): boolean {
   // first tick after REACH_EXTEND, 0.15 s rather than 0.12).
   const T = r.arrive - r.t0, t1 = sim.t - r.t0, t0 = r.prev.t - r.t0, N = 10;
   let inside = false, at = 1;
-  if (!occluded(sim, d, c) && d.body.support?.state !== 'down') {
+  if (!occluded(sim, d, c, true) && d.body.support?.state !== 'down') {
     for (let k = 1; k <= N; k++) {
       const u = k / N, tau = t0 + (t1 - t0) * u;
       if (tau > T + 1e-9) break;
@@ -673,13 +673,17 @@ export function tryTackles(sim: PlaySim): void {
 }
 
 /** Is another body between the tackler and the carrier? */
-function occluded(sim: PlaySim, d: Agent, c: Agent): boolean {
+/** `holdersClear`: a teammate holding the carrier (in the bond) is on him, not between them, so he does not block the
+ * reach (REACH_TIME's executor; miss-why.mts, 3 games: 9 of 31 free reach misses had the carrier inside the hands with
+ * a teammate in the corridor, 8 of them holding him: an assist scored a miss). */
+function occluded(sim: PlaySim, d: Agent, c: Agent, holdersClear = false): boolean {
   const sx = c.pos.x - d.pos.x;
   const sy = c.pos.y - d.pos.y;
   const l2 = sx * sx + sy * sy;
   if (l2 < 0.36) return false;
   for (const o of sim.agents) {
     if (o === d || o === c) continue;
+    if (holdersClear && o.team === d.team && sim.bond?.carrier === c && sim.bond.tacklers.includes(o)) continue;
     const t = ((o.pos.x - d.pos.x) * sx + (o.pos.y - d.pos.y) * sy) / l2;
     if (t <= 0.15 || t >= 0.85) continue;
     const px = d.pos.x + sx * t - o.pos.x;
