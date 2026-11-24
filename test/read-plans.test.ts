@@ -1,6 +1,6 @@
 /** Read plans (src/playbook/read-plans.ts; data only, module A): each authored plan is consistent with its concept as
  * installed. Every receiver it names runs a route in the concept (the back only when he releases), its drop is the
- * concept's, steps start on the plant and do not go backward, a key's answers are among its throws, and each expected
+ * concept's, steps start on the plant or the first hitch (smash: the corner read on the hitch) and do not go backward, a key's answers are among its throws, and each expected
  * read exists. Nothing in the engine reads the plans yet. */
 import { describe, expect, it } from 'vitest';
 import { READ_PLANS } from '../src/playbook/read-plans.js';
@@ -26,7 +26,8 @@ describe('authored read plans', () => {
       const refs: ReceiverRef[] = [];
       let last = -1;
       expect(plan.reads.length).toBeGreaterThan(0);
-      expect(plan.reads[0].step).toBe(0);
+      expect(plan.reads[0].step).toBeGreaterThanOrEqual(0);
+      expect(plan.reads[0].step).toBeLessThanOrEqual(1);
       for (const r of plan.reads) {
         expect(r.step).toBeGreaterThanOrEqual(last); last = r.step;
         if (r.look.kind === 'receiver') refs.push(r.look.ref);

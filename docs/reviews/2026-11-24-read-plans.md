@@ -1,4 +1,4 @@
-# Read plans, as taught: the quick game (2026-11-24, Rules + Coaching)
+# Read plans, as taught: the quick game and the dropback family (2026-11-24, Rules + Coaching)
 
 Module A of the QB rebuild (docs/reviews/2026-11-24-qb-decision-plan.md §3 A, §6). Each concept's read is authored as
 data the passer receives (`src/playbook/read-plans.ts`), against the QB lane's interface (`src/sim/qbv2/plan.ts`,
@@ -230,3 +230,251 @@ Not readable: Smart Football (403), X&O Labs (403), Weekly Spiral (403). No prim
   hitches and quick outs, "on the final step" is the family rule.
 - Quick outs and slant-flat have no back in the route here, so the sources' checkdown is missing. That is a concept
   question, not a read question.
+
+# The dropback family
+
+Same conventions. Every quote was matched by script against the saved page text
+(`scratchpad/pages2`, checked with `verify.py`).
+
+**Source weight.**
+- Higher: Matt Bowen (National Football Post, Bleacher Report); Jimbo Fisher (American Football Monthly); Chris
+  Brown's smartfootball blogspot; the coaches' own Gridiron Strategies articles.
+- Middle: Black41, Wesley Ross and Alert The Post, which summarise clinics.
+- Lower: Throw Deep, Win With The Pass, FirstDown PlayBook and YouthFootballOnline; footballnationusa is the weakest.
+
+**GENERIC hot** marks a hot answer that follows the replacement rule (the route on the blitz side; Hewitt) because no
+source names one for the concept.
+
+## Curl-flat (`curl_flat`)
+
+**Read: key the flat defender on the plant; the flat, then the curl, the back last.**
+- "If the SS or Will hang on the curl, throw the flat. If they are quick to jump on the flat route, then target the
+  curl. Simple high to low read with the check down (R) as a final option" (Bowen, NFP).
+- "If the flat defender widens at the snap, the QB must be a little patient to let the curl open up. If the flat
+  defender sinks under the curl, the QB must quickly hit the speed out" (Heck, Gridiron Strategies).
+- So the flat is on the break, and the curl is seen open: "QBs will hold the ball until the defender breaks to the
+  flat to throw the curl route" (Bowen, NFP, Cover 3).
+
+**Drop pairing:** a five-step drop with a 12 yd curl coming back to 10, or a three-step drop with an 8 yd curl
+(Heck).
+
+**Hot:** GENERIC. Heck's designated blitz throw is a shallow, which ours does not run (concept gap).
+
+**Expected:** Cover 3 (YouthFootballOnline).
+
+## Smash (`smash`)
+
+**Read: high-low the corner on the first hitch.**
+- "If the corner gains depth and honors the corner route, the quarterback will throw the hitch on time. If the corner
+  plays low and honors the hitch, the quarterback will throw the corner route" (Throw Deep).
+- Fisher (AFM): "If the coverage is a hard corner coverage such as coverage 2, the QB will hold the safety on the hash
+  with his eyes and read the corner".
+- A corner in between is "baiting the QB into throwing the smash. The QB should keep his eyes high and throw the
+  hitch". So the default is the hitch.
+- "be patient and content with throwing the hitch, do not force the smash" (Fisher).
+
+**Drop pairing:** "a 5-step drop from underneath the center. If he is in the shotgun formation, he will take a 3-step
+drop. This will also include a hitch at the end of the drop" (Fisher). The read is on step 1.
+
+**Checkdown:** the back, "if the QB's read is unclear" (Throw Deep).
+
+**Hot:** GENERIC; none found.
+
+**Expected:**
+- Cover 2: the corner route ("should also be open almost every time", Win With The Pass).
+- Cover 4: the hitch.
+- Cover 3: the hitch on time.
+- Man: the corner route ("Versus man, we will almost always throw the Corner route", WWTP; Throw Deep).
+- All of these are answered by the one key read.
+
+**Variant:** a three-step drop with the corner first, on the third step (Win With The Pass, one source).
+
+## Dagger (`dagger`)
+
+**Read: the seam clears; the dig is primary, high-low with the shallow on the alley (curl) defender, on the plant.**
+- The dig is "the primary read on the play" (Bowen, NFP). "most teams have the deep dig route from the outside
+  receiver as the primary read" (Bullock).
+- "read the alley player (curl, flat defender). You read the dig to the shallow" (Kou).
+- "As long as the alley/nickel defender doesn't get depth and an inside position, the quarterback should have a
+  throwing window open for the dig" (Longo via Ross).
+- The dig is thrown "before he gets to the hash" (Longo), on the break.
+
+**Drop pairing:** none sourced. The five-step drop with the 15 yd dig is the family rule.
+
+**Hot:** GENERIC.
+
+**Expected:** Cover 2, Cover 1 and Cover 3 (Bowen, BR: "beats Cover 2 ... and Cover 1/Cover 3").
+
+**Variant:** the seam first, then the in, then the shallow (Longo; FirstDown; 2 sources against 4).
+
+## Mesh (`mesh`)
+
+**Read: a progression. The corner on the fifth step, the mesh point on the reset, the back.**
+- "As he takes his five step drop, his eyes go to that corner route ... If that grass is open he throws the ball on his
+  5th".
+- "If the Z is covered or there is a safety sitting in that grass, he resets and looks the mesh point to see which
+  receiver breaks open ... he finds his back in the flat" (Win With The Pass).
+- "With the corner route the first read, the X's crosser the second read, and the back the third read" (Black41 on
+  Mumme and Leach).
+- The sit is the zone answer ("should never get the ball when facing man coverage", Ross on Holgorsen). It is last on
+  the reset.
+
+**Hot:** the backside vertical. "exists purely as a 'hot' read ... in the case of a big blitz or pressure from the
+defense with no safety deep" (Black41).
+
+**Expected:** none sourced by family.
+
+**Variants:** the wheel or rail first (Holgorsen); the flare first (Throw Deep base); the Z's choice route
+pre-snap (Glazier).
+
+## Y-cross (`y_cross`)
+
+**Read: deep to short.**
+- "Leach and Mumme taught their QBs to read deep to short" (Black41).
+- The post on the plant: "Post-snap, the QB should identify whether the FS freezes his feet or plays downhill, in this
+  case, the QB should look to take the home-run shot to the post runner" (Throw Deep).
+- On the first hitch, the Will: "If the Will LB fails to gain significant depth, the QB should look to hit the crosser
+  ... If the Will sinks ... the RB on his check-down, or the dig from the backside become the 3rd option" (Throw Deep).
+- In ours, the 3rd option is the flat, then the back. The confirm on the drop is the middle-of-field safety.
+
+**Drop pairing:** a five-step drop (BYU; Kentucky from under center took seven). From the gun, "1 long step, then two
+short steps with their eyes on grass" (Ross).
+
+**Hot:** front-side pressure, the flat; back-side pressure, the back stays in (Kolste, Chip Kelly's version).
+
+**Expected:**
+- Cover 4 and man: the post (Throw Deep).
+- Cover 3 and Cover 2: the crosser read. A two-high shell closes the vertical (Black41). Against Cover 3 the
+  defense takes the vertical and the flat (Kolste).
+
+## Flood (`flood`)
+
+**Read: key the curl-flat defender on the plant between the out and the flat; the backside on the first hitch.**
+- "The primary read, though, is the flat route. If it is open, hit it immediately. If the flat defender squeezes the
+  flat right, then look to hit Y out of his break on his speed cut. If the coverage is rotated strong, work the
+  backside route" (Miller, Gridiron Strategies).
+- "The offense is looking for the SS to shorten his drop or jump the FB in the flat so they can target the TE on the 7"
+  (Bowen, NFP).
+
+**Hot:**
+- "This route is hot vs. blitz": the flat (Miller).
+- The taught backside hot is a slant ("the hot receiver vs. blitz from his side"). Ours runs a dig and a shallow, so
+  the shallow stands in. ANALOGUE.
+
+**Expected:** Cover 3 (Bowen, BR: "targets Cover 3").
+
+**Variants:** the sail first (YouthFootballOnline, one source); peek the vertical first, against Cover 4 (Kou).
+
+## Levels (`levels`)
+
+**Read: an alert on the divide route at the end of the drop, then short to deep on the defender between the levels.**
+- "The quarterback begins by 'peeking' or getting an 'alert' read of the divide route. If that route comes open ... the
+  quarterback throws the ball on rhythm at the end of his drop ... If it is not open, he goes into his normal 1-2-3
+  progression".
+- "this play is read short-to-deep".
+- "if he stays home to attack that quick in, the square-in comes open in the void behind him. If he drops back to follow
+  the slot man ... the quick five-yard in should be open" (Brown).
+- "if the middle linebacker ... flows over to take away either the square-in or the quick-in, then the quarterback will
+  drop it off to the runningback underneath" (Brown).
+
+**Concept gap:** taught, the outside man runs the 5 yd in and the slot the 10-12 yd square-in (Brown). Ours runs the
+dig with the outside man (S1) and the short in with the slot (S2). The key keeps high = dig, low = short in, as
+installed. Listed for a concept decision.
+
+**Hot:** GENERIC.
+
+**Expected:** Cover 2 ("the play is designed to attack Cover 2", Brown; "first and foremost a two-high safety
+beater", Wilhite). Cover 2 Man is "a horrible coverage to run levels into" (Wilhite).
+
+## Four verticals (`four_verts`)
+
+**Read: the locked seam on the plant, the seam reader and the backside streak on the first hitch, the back on the
+second.**
+- "The QB starts his eyes on the locked seam, timed up with a quick five-step drop (from shotgun, a quick
+  three-steps)".
+- "If he has to hitch, his eyes must move from the locked seam to the other slot, the 'seam reader'".
+- "If he hitches again he has to move his eyes to the back" (Dan Gonzalez via Chris Brown).
+- "the first read must be thrown as soon as the back foot hits. It is what is known as a rhythm throw".
+
+**Hot:** GENERIC. The seam reader looks at once against a blitz (Gonzalez).
+
+**Expected:** Cover 3. The seams attack the free safety (Bowen, BR). "When an offense calls Four Verticals, they are
+hoping for single high coverage" (Alert The Post).
+
+**Variants:** a shell read (Bullock); the side by handedness (Mumme via A.J. Smith); matchup or pure progression (Alert
+The Post).
+
+## Verticals-hitch (`verts_hitch`)
+
+**Read: key the middle-of-field safety on the plant.**
+- The concept's own read line: "he stays middle: #2 seam; he shades to #2: #3 hitch under the seam, then the backside".
+- Gonzalez's hitch steps put the backside on the first hitch and the back on the second.
+- The drop is the installed gun three-step ("from shotgun, a quick three-steps", Gonzalez).
+
+**Hot:** GENERIC.
+
+**Variant:** hitch, seam, check down from a 0-step drop (Win With The Pass, BLUE).
+
+## Dropback: concept gaps (in `CONCEPT_GAPS`)
+
+- **levels:** the routes are swapped (outside on the dig, slot on the short in).
+- **flood:** the backside slant is a dig and a shallow, so the shallow is the analogue hot.
+- **curl_flat:** the taught blitz throw (a shallow) does not exist in ours.
+- **mesh:** no wheel or rail; the Air Raid order is authored with the backside go as the hot.
+
+## Dropback: gaps
+
+- No source ties a drop step to dagger's dig, flood or levels' dig. The family rule (the plant) is used.
+- Hot triggers by rusher are rare. Named ones are used where they exist: Y-cross (Kolste), flood (Miller) and mesh
+  (Black41). The rest are GENERIC.
+- Expected-by-family is sparse for mesh, curl-flat and flood. Only sourced families are listed.
+
+**Dropback sources (URLs):**
+- Bowen, NFP:
+  - curl-flat: https://www.nationalfootballpost.com/expect-to-see-the-curlflat-route-this-weekend
+  - Cover 3: https://www.nationalfootballpost.com/inside-the-playbook-cover-3
+  - dagger: https://www.nationalfootballpost.com/2026/05/29/breaking-down-the-basics-of-the-dagger-route
+  - beating Cover 3: https://www.nationalfootballpost.com/how-do-you-beat-cover-3
+  - levels: https://www.nationalfootballpost.com/playbook-breaking-down-the-levels-concept
+- Bowen, BR, route combinations: https://bleacherreport.com/articles/2024638-nfl-101-introducing-the-basic-route-combinations
+- Heck, Gridiron Strategies: https://gridironstrategies.com/article/proven-methods-for-integrating-the-curl-route-into-the-passing-game
+- Miller, Gridiron Strategies: https://gridironstrategies.com/article/flood-series-drowns-defenses
+- Hewitt, USA Football: https://blogs.usafootball.com/blog/7291/basic-knowledge-about-reads
+- A.J. Smith, USA Football: https://blogs.usafootball.com/blog/7368/podcast-review-aj-smith-talks-all-things-about-4-verticals
+- Fisher, AFM: https://www.americanfootballmonthly.com/Arena/NS_Magazine/Current/smash.html
+- Throw Deep:
+  - smash: https://throwdeeppublishing.com/blogs/football-glossary/smash-concept
+  - mesh: https://throwdeeppublishing.com/blogs/football-glossary/mesh-concept
+  - y-cross: https://throwdeeppublishing.com/blogs/football-glossary/y-cross
+  - four verts: https://throwdeeppublishing.com/blogs/football-glossary/4-verts-concept
+- Win With The Pass:
+  - smash: https://winwiththepass.com/smash/
+  - mesh: https://winwiththepass.com/mesh/
+- Troxler, Glazier: https://glazierclinics.com/football-coach-resources/basic-passing-concepts-smash-concept
+- Ross:
+  - smash: https://wesleyrossfootball.wordpress.com/2019/12/24/breaking-down-the-smash-concept-part-1/
+  - Longo's dagger: https://wesleyrossfootball.substack.com/p/breaking-down-phil-longos-dagger
+  - Holgorsen's mesh: https://wesleyrossfootball.wordpress.com/2021/02/14/dana-holgersen-and-the-return-of-mesh/
+  - y-cross: https://wesleyrossfootball.wordpress.com/2019/01/17/history-and-evolution-of-y-cross/
+- Kou:
+  - dagger: https://coachkoufootball.substack.com/p/dagger
+  - sail/flood: https://coachkoufootball.substack.com/p/nfl-pass-concepts-4-sailflood-route
+- Alert The Post:
+  - Lions dagger: https://alertthepost.substack.com/p/concept-cutup-2022-lions-dagger-drop
+  - Monken four verts: https://alertthepost.substack.com/p/todd-monkens-four-vertical-concept
+- Bullock: https://markbullock.substack.com/p/breaking-down-scott-turners-passing
+- Inside The Pylon, dagger: https://scoutingacademy.com/itp-glossary-dagger-concept/
+- FirstDown, dagger: https://firstdown.playbooktech.com/coaches-community/94-or-dagger-concept-cuts-the-d-either-way
+- Black41:
+  - mesh: https://black41flashreverse.substack.com/p/learn-a-holgorsen-play-mesh-and-shallow
+  - y-cross: https://black41flashreverse.substack.com/p/learn-a-holgorsen-play-y-cross
+- Kolste, Chip Kelly's y-cross: https://rileykolstefootball.com/2018/02/23/chip-kellys-y-cross-concept/
+- Stanford Daily, y-cross: https://stanforddaily.com/2022/09/27/stanford-film-study-y-cross/
+- YouthFootballOnline:
+  - curl-flat: https://youthfootballonline.com/curl-flat-passing-concept
+  - flood: https://youthfootballonline.com/flood-passing-concept/
+- Wide Zone Warriors: https://widezonewarriors.substack.com/p/a-new-way-to-run-flood
+- Brown, levels: https://smartfootball.blogspot.com/2009/01/peytons-favorite-pass-play-levels.html
+- Gonzalez, four verticals: https://smartfootball.blogspot.com/2009/03/getting-vertical-with-dan-gonzalez.html
+- Wilhite, levels: https://emorywilhite.substack.com/p/doing-more-with-one-concept-part
+- Win With The Pass, BLUE: https://winwiththepass.com/?p=111
