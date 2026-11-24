@@ -12,14 +12,15 @@
  *
  * Install with `instrument(PlaySim)` once per module instance, then `watch(sim, acc)` on each play before running it. */
 import type { PlaySim as PlaySimT } from '../../../src/sim/playsim.js';
+import { QB_STAGES } from '../../../src/sim/qb-trace.js';
 
 export const GROUP: Record<string, string> = { 'qb-pass': 'QB', 'qb-handoff': 'QB', mesh: 'QB', 'pa-fake': 'QB', 'pass-pro': 'block',
   'run-block': 'block', 'screen-block': 'block', 'downfield-block': 'block', 'block-look': 'block', rush: 'rush', blitz: 'rush',
   zone: 'coverage', man: 'coverage', pursuit: 'pursuit', 'run-fit': 'run fit', track: 'pursuit', route: 'route', carrier: 'carrier',
   'scramble-ball': 'loose ball' };
 /** Pipeline stages in order (PlaySim.decide, then tick's technique and spacing passes), as the ledger names them. */
-export const ORDER = ['decision', 'containment', 'coverage-orientation', 'open-to-ball', 'technique-intents', 'engagement', 'tackle-bond', 'spacing', 'snap-guard'];
-export const STAGE_NAME: Record<string, string> = { decision: 'behaviour', containment: 'containment', 'coverage-orientation': 'orientation',
+export const ORDER = [...QB_STAGES, 'decision', 'containment', 'coverage-orientation', 'open-to-ball', 'technique-intents', 'engagement', 'tackle-bond', 'spacing', 'snap-guard'];
+export const STAGE_NAME: Record<string, string> = { 'qb-plan': 'qb plan', 'qb-look': 'qb look', 'qb-judgment': 'qb judgment', 'qb-cycle': 'qb cycle', 'qb-pressure': 'qb pressure', 'qb-pocket': 'qb pocket', decision: 'behaviour', containment: 'containment', 'coverage-orientation': 'orientation',
   'open-to-ball': 'open-to-ball', 'technique-intents': 'dive/lunge', engagement: 'engagement', 'tackle-bond': 'tackle bond', spacing: 'spacing',
   'snap-guard': 'snap guard' };
 
@@ -56,15 +57,39 @@ export function instrument(PlaySim: typeof PlaySimT): void {
 type Row = { req: { x: number; y: number }; ac: number; mode: string; g: string; st: Record<string, { x: number; y: number }>; settle?: string | null;
   change?: { before: { x: number; y: number }; t: number; src: string; g: string; done?: boolean } };
 
+/** The passer's reads as decisions (src/sim/qb-trace.ts `qbRead`): a change of the read he is on is the read being LEFT, charged to the stage that decided it; a return to the read he just left within 0.3 s is a
+ * reversal. Counted in the group 'QB reads' (moving time = the seconds he reports a read), by stage, so `rates()` carries it beside the velocity and facing groups. A pure accumulator (unit-tested). */
+export function readDither(acc: Acc) {
+  const last = new Map<object, { read: number; t: number; left?: { read: number; t: number; stage: string; done?: boolean }[] }>();
+  return (a: object, t: number, dt: number, r: { read: number; stage: string }) => {
+    const G = grp(acc, 'QB reads'); G.moving += dt;
+    const p = last.get(a);
+    if (!p) { last.set(a, { read: r.read, t }); return; }
+    if (p.read !== r.read) {
+      const src = STAGE_NAME[r.stage] ?? r.stage;
+      G.reaims++; (G.src[src] ??= { n: 0, reversed: 0, dv: [] }).n++;
+      // a reversal: he comes back to the read he left within 0.3 s
+      const lefts = (p.left ??= []);
+      const back = lefts.find((q) => !q.done && q.read === r.read && t - q.t <= 0.3 + 1e-9);
+      if (back) { back.done = true; G.reversed++; G.src[back.stage].reversed++; }
+      lefts.push({ read: p.read, t, stage: src });
+      p.read = r.read;
+    }
+    p.t = t;
+  };
+}
+
 /** Account one play's re-aims into `acc` while it runs. Call before sim.run(). */
 export function watch(sim: PlaySimT, acc: Acc): void {
   const s = sim as unknown as { agents: { idx: number; vel: { x: number; y: number }; behavior?: { kind?: string } }[]; intents?: { vel: { x: number; y: number } }[];
     phase: string; t: number; dt: number; tick: () => void; responsibility?: unknown };
+  const readNote = readDither(acc);
   const stv = new Map<object, Record<string, { x: number; y: number }>>();
   const put = (a: object, k: string, c?: { vel?: { x: number; y: number } }) => { if (!c?.vel) return; const m = stv.get(a) ?? {}; m[k] = { ...c.vel }; stv.set(a, m); };
   // A passive stub of the responsibility ledger: it only records each stage's velocity.
   s.responsibility = new Proxy({}, { get: (_o, k) => k === 'decision' ? (a: object, _b: unknown, c: { vel?: { x: number; y: number } }) => put(a, 'decision', c)
     : k === 'stage' ? (st: string, a: object, c: { vel?: { x: number; y: number } }) => put(a, st, c)
+    : k === 'read' ? (a: object, r: { read: number; stage: string }) => readNote(a, s.t, s.dt, r)
     : k === 'stageAll' ? (st: string, I: { vel?: { x: number; y: number } }[]) => I.forEach((c, i) => put(s.agents[i], st, c))
     : () => undefined });
   const hist = new Map<object, Row[]>();

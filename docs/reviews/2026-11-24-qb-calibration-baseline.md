@@ -33,3 +33,9 @@ What this does and does not say. The belief is one number per throw (P = pOpen x
 - One league draw of 24 games and one staged panel; role cells under 100 throws have standard errors of .04-.09.
 - A defender "within 8 yd facing the passer" is a proxy for one who can drive on the throw (his body's facing, not a measured gaze); the engine's perception of the passer's arm is the defense's own information, not read here.
 - The league passers are 'mid' and 'high' bands; 'low' is empty in league and exists only in the staged panel (rating panel, item 2).
+
+## Harness items 2-4 (same branch)
+
+- (2) Rating panel on the old controller: `docs/reviews/2026-11-24-qb-rating-panel-baseline.md`.
+- (3) Release minus break and what is thrown when, with Rules' operators: `docs/reviews/2026-11-24-qb-gates-baseline.md`.
+- (4) The per-stage trace hook: `src/sim/qb-trace.ts` (`qbStage`, `qbRead`, `QB_STAGES`), read by `scripts/diag/effective-mass/dither-core.ts` (the stages ahead of `decision` in its ORDER; a new group 'QB reads' counts a read being left, by the stage that decided it, and a return to the read he just left within 0.3 s as a reversal); `test/qb-trace.test.ts` (4 tests); the existing `test/dither-budget.test.ts` passes unchanged (a recorder that is never called adds no group). The QB lane's new controller calls `qbStage` once per tick per stage and `qbRead` each tick with the read he is on; no behaviour changes.
