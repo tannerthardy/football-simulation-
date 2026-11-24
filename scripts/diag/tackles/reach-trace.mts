@@ -9,7 +9,7 @@ const { Rng } = await import(`${W}/src/core/rng.ts`);
 const { generateTeam } = await import(`${W}/src/league/team.ts`);
 const { simulateGame } = await import(`${W}/src/game/game.ts`);
 const { compilingPlan } = await import(`${W}/src/playbook/read-compiler/runtime.ts`);
-const { reachOf } = await import(`${W}/src/sim/tackle.ts`);
+const { reachOf, aimOf } = await import(`${W}/src/sim/tackle.ts`);
 const { writeFileSync } = await import('node:fs');
 const GAMES = Number(process.argv[2] ?? 2), OUT = process.argv[3], FIRST = Number(process.argv[4] ?? 201);
 const r3 = (v: number) => Math.round(v * 1000) / 1000;
@@ -44,6 +44,8 @@ proto.event = function (this: any, type: string, a: any, b: any, note?: string) 
   if (s && a && s.has(a) && (type === 'tackle_wrap' || (type === 'missed_tackle' && note === 'reach'))) {
     const x = s.get(a); s.delete(a);
     x.end = type === 'tackle_wrap' ? 'grab' : 'miss';
+    x.aim = aimOf ? (aimOf(a)?.region ?? null) : null;
+    x.legs = type === 'tackle_wrap' ? (this.bond?.holds?.get(a)?.legs ?? null) : null;
     x.final = b ? snap(this, a, b) : null;
     const T = x.ticks.length ? x.ticks : [x.final];
     x.closing0 = T[0]?.[2] ?? null; x.closest = Math.min(...T.map((t: any) => t[1]));

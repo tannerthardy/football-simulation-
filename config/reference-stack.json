@@ -139,6 +139,7 @@
     "LUNGE_FLIGHT": "off",
     "REACH_TIME": "off",
     "GATHER_ATTACK": "off",
+    "HOLD_AIM": "off",
     "CARRY_POSTURE": "on",
     "CORNER_DROP": "on",
     "CARRY_TURN": "on",

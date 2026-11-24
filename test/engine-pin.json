@@ -309,6 +309,7 @@
   "test/hands-cue.test.ts",
   "test/hang-airborne.test.ts",
   "test/head.test.ts",
+  "test/hold-aim.test.ts",
   "test/hold-facing.test.ts",
   "test/hold-finish.test.ts",
   "test/honest-tackle.test.ts",

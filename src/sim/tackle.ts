@@ -371,6 +371,56 @@ function reachStep(sim: PlaySim, d: Agent, c: Agent): boolean {
   return true;
 }
 
+/** HOLD_AIM (experimental, off; HOLD_AIM=1 turns it on): where his hands go on the man is his choice, the taught aim
+ * for the situation he sees, executed with error, and a lower aim costs reach. Off, the hold's height (legs share: 0
+ * shoulder line, 0.5 waist, 1 legs) is a draw centred by situation (gripReach: free and square 0.2 + 0.45 form, about
+ * 0.4 for an average tackler), and the reach is the same at any height. finish-trace.mts (package, 3 games): a tight,
+ * locked mid-torso hold (legs 0.45-0.52) left the carrier's balance at a third of critical and his legs free to step, so
+ * he walked the holder until help came (65% of light holds); solo holds at legs >= 0.7 put him down in 0.15 s.
+ * Taught (Rules + Coaching, 2026-11-24, CHECKED): square or in front, the thighs ("contact point on the THIGHS", the
+ * Seahawks-style handout; World Rugby: shoulder on the thighs, squeeze the legs, drive); angled, the near hip (Quinn:
+ * "the ballcarrier's near hip ... hit that hip with your related shoulder"); from behind, the hips or legs (World Rugby);
+ * at full stretch, the feet (the tap). Stated choice: those regions as legs shares: thigh 0.7, near hip 0.5, hips/legs
+ * 0.6, feet 1; off a block, what one arm reaches (gripReach's 0.35). Execution: about that mean with gripReach's own
+ * spread for the situation, widened by lost balance and narrowed by skill (WHIFF_MARGIN's law: x (2 - availability) x
+ * (1.3 - 0.6 tackling)). The cost of a low aim is not yet built: he bends to strike low, and that bend's speed and
+ * balance cost belongs to the World's posture (step 2: request it with the reach). A first build charged the reach
+ * instead (the arm coming down from his crouched shoulder line, `aimReach`), which made the waist all but unreachable:
+ * the World's crouch lowers the centre of mass by a quarter and does not model the trunk lean that brings the shoulders
+ * down and forward. No height is forbidden. */
+export const HOLD_AIM = process.env.HOLD_AIM === '1';
+type Aim = { mean: number; sd: number; region: 'thigh' | 'near hip' | 'hips/legs' | 'feet' | 'free arm' };
+const aimFor = new WeakMap<Agent, Aim>();
+function chooseAim(d: Agent, cp: Vec2, cv: Vec2, engaged: boolean, lunging: boolean): Aim {
+  const sup = d.body.support, a = sup ? availability(sup, supportParams(d.profile), fatigueFactor(d.body.energy)) : 1;
+  const err = (2 - a) * (1.3 - 0.6 * d.r('tackling'));
+  if (engaged) return { mean: 0.35, sd: 0.12 * err, region: 'free arm' };
+  if (lunging) return { mean: 1, sd: 0.15 * err, region: 'feet' };
+  const cs = Math.hypot(cv.x, cv.y), rx = cp.x - d.pos.x, ry = cp.y - d.pos.y, rd = Math.hypot(rx, ry) || 1;
+  // +1: the carrier running at him; -1: he is behind the carrier (attempt's cosA, from his picture).
+  const cosA = cs > 0.5 ? -(cv.x * rx + cv.y * ry) / (cs * rd) : 1;
+  if (cosA < -0.3) return { mean: 0.6, sd: 0.18 * err, region: 'hips/legs' };
+  if (cosA > 0.3) return { mean: 0.7, sd: 0.12 * err, region: 'thigh' };
+  return { mean: 0.5, sd: 0.12 * err, region: 'near hip' };
+}
+/** HOLD_AIM: the reach to a target at legs share `legs`: his arm's horizontal reach is shortened by the drop from his
+ * shoulder line (his posture now) to the target's height on the carrier (the World's hold heights). */
+export function aimReach(d: Agent, c: Agent, share: number, legs: number): number {
+  const full = reachTo(d, c, share);
+  const arm = Math.max(0, d.profile.reach - 0.25) * share;
+  // He bends to strike (pad level): his shoulder line comes down toward the target as far as his crouch goes (posture 1,
+  // the World's comHeightAt); the arm covers only what is left below that, or above his shoulders as he stands now.
+  const sp = supportParams(d.profile), posture = d.body.support?.posture ?? 0;
+  const shoulderAt = (p: number) => SHOULDER * d.profile.heightYd * (comHeightAt(sp, p) / sp.comHeight);
+  const csp = supportParams(c.profile), cpost = c.body.support?.posture ?? 0;
+  const target = upperHoldHeight(c, legs) ?? comHeightAt(csp, cpost) * (1 - 0.55 * clamp(legs, 0, 1));
+  const shoulder = clamp(target, shoulderAt(1), shoulderAt(posture));
+  const drop = Math.min(arm, Math.abs(shoulder - target));
+  return full - (arm - Math.sqrt(Math.max(0, arm * arm - drop * drop)));
+}
+/** Diagnostics: the aim chosen for tackler `d`'s last attempt (HOLD_AIM). */
+export function aimOf(d: Agent): Readonly<Aim> | undefined { return aimFor.get(d); }
+
 export function tryTackles(sim: PlaySim): void {
   const c = sim.carrier;
   if (!c || sim.ball.kind !== 'held') return;
@@ -403,7 +453,15 @@ export function tryTackles(sim: PlaySim): void {
     const body = c.profile.radius + d.profile.radius;
     const freeArm = freeSide ? 0.7 - 0.3 * clamp(d.engagement!.control, 0, 1) : 0.4;
     // TACKLE_REACH: from his centre, his reach to the carrier's surface (tackle-reach.ts); off, the legacy double count.
-    const arms = reachTo(d, c, engaged ? freeArm : 1.0);
+    let arms = reachTo(d, c, engaged ? freeArm : 1.0);
+    if (HOLD_AIM) {
+      const aim = chooseAim(d, cp, cv, engaged, false);
+      aimFor.set(d, aim);
+      // The reach is not shortened by a low aim here: he bends to strike, and the World's crouch is not the whole bend
+      // (the trunk lean that also brings the shoulders forward is not modelled; anatomical detail is paused), so
+      // aimReach's arm-only drop overstated the cost. Kept for diagnostics; the bend's cost is step 2.
+      void aimReach;
+    }
     // A free tackler can lunge for the last half yard by committing his body;
     // a miss then leaves him off his base.
     const range = arms + (engaged ? 0 : 0.45);
@@ -692,7 +750,10 @@ function attempt(sim: PlaySim, d: Agent, c: Agent, q: number, engaged: boolean, 
   // Where: good tacklers wrap the thighs; from behind they take the legs; a
   // reach off a block gets jersey; a lunge goes for the legs.
   const fromBehind = cosA < -0.3 ? 1 : 0;
-  const legs = lunged ? clamp(0.75 + rng.normal(0, 0.15), 0.4, 1)
+  const aim = HOLD_AIM ? (lunged ? chooseAim(d, c.pos, c.vel, false, true) : aimFor.get(d)) : undefined;
+  if (aim) aimFor.set(d, aim);
+  const legs = aim ? clamp(aim.mean + rng.normal(0, aim.sd), 0, 1)
+    : lunged ? clamp(0.75 + rng.normal(0, 0.15), 0.4, 1)
     : GRIP_REACH ? gripReach(rng, engaged, fromBehind === 1, d.r('tackling') * q)
     : clamp(0.1 + 0.55 * d.r('tackling') * q + 0.25 * fromBehind - (engaged ? 0.3 : 0) + rng.normal(0, 0.15), 0, 1);
   // Out of standing reach he has to lay out to get there. Within it he
