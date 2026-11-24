@@ -67,7 +67,8 @@ const ROUTE_TABLE: Record<string, RouteDef> = {
     points: [{ d: 6, l: 0, s: 0.25 }, { d: 5.5, l: -0.6, s: 0 }],
     vsMan: [{ d: 6, l: 0, s: 0.4 }, { d: 6, l: 9, s: 0.9 }],
   },
-  flat: { id: 'flat', family: 'flat', depth: 3, end: 'continue', points: [{ d: 0, l: 2, s: 0.9 }, { d: 3.5, l: 12 }] },
+  // The flat's timing point is its landmark ("The arrow's landmark at 3 yd", Throw Deep, Stick): thrown on time there.
+  flat: { id: 'flat', family: 'flat', depth: 3, end: 'continue', points: [{ d: 0, l: 2, s: 0.9 }, { d: 3.5, l: 12, mark: true }] },
   arrow: { id: 'arrow', family: 'flat', depth: 4, end: 'continue', points: [{ d: 4, l: 5, s: 0.9 }, { d: 6, l: 14 }] },
   // Intermediate
   out: { id: 'out', family: 'intermediate', depth: 10, end: 'continue', points: [{ d: 10, l: 0, s: 0.4 }, { d: 9.5, l: 12, s: 0.9 }] },
@@ -219,6 +220,16 @@ export const ROUTES: Record<string, RouteDef> = BREAK_CUTS
     }) }
     : r]))
   : SHAPED;
+
+/** The point a throw timed on the route (`onBreak`) is due at, for a route without a planted break: its marked point
+ * (RoutePoint.mark), else the first point at or past its declared depth, else its last point. An index into
+ * `route.points`. The QB lane's forecast reads it for the seen-depth gate (it replaces a set of route ids). */
+export function timingPoint(route: RouteDef): number {
+  const m = route.points.findIndex((p) => p.mark);
+  if (m >= 0) return m;
+  const d = route.points.findIndex((p) => p.d >= route.depth - 0.25);
+  return d >= 0 ? d : route.points.length - 1;
+}
 
 export function getRoute(id: string): RouteDef {
   const r = ROUTES[id];

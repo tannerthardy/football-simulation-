@@ -61,6 +61,10 @@ export interface RoutePoint {
   s?: number;
   /** ROUTE_FILLET: this point is a cut (plant, stick the foot and break): the vertex law applies, no lead. Absent: inferred as before (a lead). */
   cut?: boolean;
+  /** The route's timing point for a throw timed on it (`onBreak`) when the route has no planted break: the landmark he is
+   * thrown to on time (the flat's "landmark at 3 yd", Throw Deep). Data only; read through routes.ts `timingPoint`.
+   * Absent: the first point at or past the route's declared depth. */
+  mark?: boolean;
 }
 
 export type RouteEnd = 'continue' | 'settle' | 'sitVsZone';

@@ -491,6 +491,7 @@
   "test/route-finish.test.ts",
   "test/route-landmark.test.ts",
   "test/route-shape.test.ts",
+  "test/route-timing-point.test.ts",
   "test/run-anchor.test.ts",
   "test/run-block-fit.test.ts",
   "test/run-contact-span.test.ts",
