@@ -95,26 +95,51 @@ Tables: `docs/reviews/data/2026-11-24-alignment/alignment-tables.md`.
 For the route items: our wide receivers are not 4 yd too tight, so GO_STEM's 5 yd room rule stands as built. The
 flat's width (item b) does not come from alignment: the #2 and #3 match (room 17.6-21.9 against 17.6-21.9 NFL).
 
-## Built: ALIGN_SIDE and RCV_HABIT (2026-11-24, both off)
+## Built: ALIGN_SIDE as a landmark rule, and RCV_HABIT (2026-11-24, both off)
 
-Integration's order: the route table with a field/boundary axis first, and the habit variation second.
+Integration's objection to the first form was right: a table of the NFL's medians reproduces them by construction and
+cannot generalize. ALIGN_SIDE now codes the rule the cells follow, in landmarks a receiver uses. All distances are
+room to his own sideline:
+- the top of the numbers, 9 yd;
+- the hash, 23.58 yd;
+- normal: halfway between them, 16.3 yd;
+- reduced: halfway between normal and the hash, 19.9 yd. From positions; no source.
 
-**Splitting by class reverses the pooled side effect.** With others on his side the boundary #1 sets nearer his
-sideline (go 9.0 boundary vs 10.0 field), and a lone #1 to the field takes a big reduced split (16.5-20 yd of room).
-The pooled "boundary keeps more room" was the mix: lone #1s are mostly to the boundary.
+**The rule:**
+- A vertical or a slant (go, fade, slant) takes the plus split, at the top of the numbers.
+- An in-breaker (hitch, curl, stick, hook, short in, dig, post) takes the plus split with others on his side and the
+  normal split alone.
+- A route that breaks out or across (quick out, out, deep out, corner, crossers) takes the normal split.
+- To the field, a lone #1 moves one landmark toward the ball (plus -> normal -> reduced).
 
-Room to the sideline (median yd), 24 games, engine-92:
+Sources: Bleacher Report NFL 101 (plus split); a pattern-reading guide (normal, halfway between the numbers and the
+hash; M); a staff's rules (the field split depends on the QB's arm; M).
 
-| route | default, boundary / field | ALIGN_SIDE + RCV_HABIT | NFL |
-|---|---|---|---|
-| go, alone | 12.1 / 12.1 | 11.3 / 16.5 | 10.3 / 16.5 |
-| go, with others | 10.1 / 10.9 | 10.0 / 11.0 | 9.0 / 10.0 |
-| hitch, alone | 14.1 / 15.2 | 13.8 / 18.0 | 13.8 / 18.0 |
-| out, alone | 15.6 / 14.8 | 15.2 / 19.1 | 14.5 / 19.1 |
-| out, with others | - / 15.9 | 14.0 / 17.9 | 13.0 / 16.9 |
+**Cells: rule against the NFL's medians** (room yd, ball on a hash; a miss is over 1 yd):
 
-- With others on his side ours stay about 1 yd roomier, both sides. That is most likely the two test teams' `wrRoom`
-  habit; not checked.
-- Spread: #1 of 2, p25-p75 10.5-11.8 -> 9.7-12.0 (NFL 9.2-14.9).
-- Depth of detached receivers, p10-p90: 0.74-1.2 -> 0.55-1.39 (NFL -0.07-1.77).
-- The flags are separable. ALIGN_SIDE is a table read; RCV_HABIT is stated choices.
+| route | alone boundary | alone field | others boundary | others field |
+|---|---|---|---|---|
+| go | 9.0 / 10.3 **-1.3** | 16.3 / 16.5 | 9.0 / 9.0 | 9.0 / 10.0 |
+| slant | 9.0 / 10.2 **-1.2** | 16.3 / (thin) | 9.0 / 9.1 | 9.0 / 9.8 |
+| hitch | 16.3 / 13.8 **+2.5** | 19.9 / 18.0 **+1.9** | 9.0 / 9.3 | 9.0 / 10.1 **-1.1** |
+| in | 16.3 / 14.5 **+1.8** | 19.9 / 18.3 **+1.6** | 9.0 / 9.5 | 9.0 / 10.1 **-1.1** |
+| post | 16.3 / 13.9 **+2.4** | 19.9 / 17.9 **+2.0** | 9.0 / 10.5 **-1.5** | 9.0 / 10.8 **-1.8** |
+| out | 16.3 / 14.5 **+1.8** | 19.9 / 19.1 | 16.3 / 13.0 **+3.3** | 16.3 / 16.9 |
+| corner | 16.3 / 14.6 **+1.7** | 19.9 / 20.2 | 16.3 / 14.1 **+2.2** | 16.3 / 16.4 |
+| cross | 16.3 / 15.4 | 19.9 / 20.3 | 16.3 / 14.7 **+1.6** | 16.3 / 18.9 **-2.6** |
+
+13 of 31 cells are within 1 yd. The misses are information:
+1. **A lone #1 to the boundary on any non-vertical** sets about 14 yd off the sideline, 2 yd short of normal.
+   - In split from the ball he is 9-10 yd out on either side, which may be the real rule for a lone #1: a split from
+     the ball or tackle, not a landmark.
+   - A lone go is 13.3 yd from the ball on both sides.
+2. **With others,** posts and field-side in-breakers sit about a yard wider than the top of the numbers (10-11).
+3. **Boundary outs and corners with others** are about 2-3 yd less reduced than normal (13-14). The boundary's
+   short field makes the reduced split smaller.
+
+The sim reproduces the rule as coded (24 games): lone go 9.0 / 16.2, lone in-breakers 15.6 / 20.0, outs 15.6 / 20.3.
+With others ours sit at 10.0 against the rule's 9.0: the team habit or the 8 yd minimum split from the ball.
+
+**RCV_HABIT** (stated choices, unchanged):
+- #1 of 2 room p25-p75: 10.5-11.8 -> 9.7-12.0 (NFL 9.2-14.9);
+- detached depth p10-p90: 0.74-1.2 -> 0.55-1.39 (NFL -0.07-1.77).

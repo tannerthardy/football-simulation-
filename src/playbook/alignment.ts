@@ -380,22 +380,35 @@ const ROUTE_ROOM: Record<string, [number, number]> = {
 // SCREEN_QB: the tunnel screen's #1 keeps the room of a vertical stem, to come back under it: 10.9 yd to his sideline
 // (BDB 2025 WR-in screens, n 23, all with another receiver on his side; screen_tunnel_path.py). Off: the default room.
 if (process.env.SCREEN_QB === '1') ROUTE_ROOM.tunnel = [10.9, 10.9];
-/** ALIGN_SIDE (experimental, off; ALIGN_SIDE=1): the #1's room to his sideline also follows the side of the ball he is
- * on, as the split rules teach (a plus split into the boundary, the field split reduced by the room the QB's arm needs:
- * "stack to the boundary - bottom of the numbers; stack to the field is + two yards from the hash"; a displaced #1 is
- * "normal" halfway between the top of the numbers and the hash; M, coaching blogs and an unattributed pattern guide).
- * The table is the NFL's own median room by PFF route x [alone on his side: boundary, field, with others: boundary,
- * field], ball on a hash (BDB 2025 weeks 1-9, alignment_chart.py; docs/reviews/2026-11-24-alignment-chart.md), for the
- * routes whose PFF label maps onto ours one to one. A cell with under 12 NFL rows keeps ROUTE_ROOM's value; routes not
- * listed keep ROUTE_ROOM. Off, the room ignores the side of the ball (ours: 0.0-1.1 yd between sides, NFL 0.7-4 yd). */
+/** ALIGN_SIDE (experimental, off; ALIGN_SIDE=1): the #1's split by field landmarks, the split rules as taught, in place
+ * of the per-route room table. Landmarks, as room to his own sideline: the top of the numbers (9 yd, NFL field), the hash
+ * (70 ft 9 in = 23.58 yd) and the point halfway between them (16.3 yd). The rule:
+ * - a vertical or a slant (go, fade, slant) takes the plus split: the top of the numbers ("a plus split ... a few yards
+ *   outside the top of the numbers", Bleacher Report NFL 101);
+ * - an in-breaker (hitch, curl, stick, hook, short in, dig, post) takes the plus split with others on his side (his #2
+ *   keeps the spacing inside him), and the normal split alone ("a displaced #1 is normal if he aligns half-way between
+ *   the top of the numbers and the hash", a pattern-reading guide, Scribd, unattributed; M);
+ * - a route that breaks outside or across (quick out, out, deep out, corner, the crossers) takes the normal split, so he
+ *   has room to break toward the sideline;
+ * - to the field, a lone #1 moves one landmark toward the ball: plus -> normal, normal -> reduced, reduced being halfway
+ *   between normal and the hash (19.9 yd; from positions, no source), the field split shortened by the room the QB's
+ *   throw needs ("the split into the field depends on the quarterback's arm strength", a staff's rules; M).
+ * Other routes keep ROUTE_ROOM. Cells it reproduces and misses: docs/reviews/2026-11-24-alignment-chart.md. */
 export const ALIGN_SIDE = process.env.ALIGN_SIDE === '1';
-const SIDE_ROOM: Record<string, [number | null, number | null, number | null, number | null]> = {
-  go: [10.3, 16.5, 9.0, 10.0], fade: [10.3, 16.5, 9.0, 10.0], slant: [10.2, null, 9.1, 9.8],
-  hitch: [13.8, 18.0, 9.3, 10.1], quick_hitch: [13.8, 18.0, 9.3, 10.1], curl: [13.8, 18.0, 9.3, 10.1], stick: [13.8, 18.0, 9.3, 10.1], hook: [13.8, 18.0, 9.3, 10.1],
-  short_in: [14.5, 18.3, 9.5, 10.1], dig: [14.5, 18.3, 9.5, 10.1], post: [13.9, 17.9, 10.5, 10.8],
-  quick_out: [14.5, 19.1, 13.0, 16.9], out: [14.5, 19.1, 13.0, 16.9], deep_out: [14.5, 19.1, 13.0, 16.9], corner: [14.6, 20.2, 14.1, 16.4],
-  shallow: [15.4, 20.3, 14.7, 18.9], shallow_high: [15.4, 20.3, 14.7, 18.9], mesh_under: [15.4, 20.3, 14.7, 18.9], cross: [15.4, 20.3, 14.7, 18.9],
-};
+const TOP_NUMBERS = 9, HASH_ROOM = 70.75 / 3, NORMAL_ROOM = (TOP_NUMBERS + HASH_ROOM) / 2, REDUCED_ROOM = (NORMAL_ROOM + HASH_ROOM) / 2;
+const PLUS_ROUTES = new Set(['go', 'fade', 'slant']);
+const IN_ROUTES = new Set(['hitch', 'quick_hitch', 'curl', 'stick', 'hook', 'short_in', 'dig', 'post']);
+const OUT_ROUTES = new Set(['quick_out', 'out', 'deep_out', 'corner', 'shallow', 'shallow_high', 'mesh_under', 'cross']);
+/** ALIGN_SIDE: the landmark room [alone, with others] for his route on his side, or null for a route the rule leaves. */
+function landmarkRoom(route: string, field: boolean): [number, number] | null {
+  const step = (r: number) => r === TOP_NUMBERS ? NORMAL_ROOM : REDUCED_ROOM;
+  let alone: number, others: number;
+  if (PLUS_ROUTES.has(route)) { alone = TOP_NUMBERS; others = TOP_NUMBERS; }
+  else if (IN_ROUTES.has(route)) { alone = NORMAL_ROOM; others = TOP_NUMBERS; }
+  else if (OUT_ROUTES.has(route)) { alone = NORMAL_ROOM; others = NORMAL_ROOM; }
+  else return null;
+  return [field ? step(alone) : alone, others];
+}
 /** RCV_HABIT (experimental, off; RCV_HABIT=1): each detached receiver's own split and depth habit, from his own seed (as
  * ALIGN_HABIT's defenders): room to his sideline +-0.6 yd (sd, clamped 1.2) and depth off the ball +-0.2 yd (clamped 0.4).
  * Stated choices (L), not fitted: the variation the NFL shows inside a route and side class (p25-p75 about 2 yd) comes
@@ -447,12 +460,10 @@ export function alignOffense(formation: Formation, flip: boolean, los: number, b
     if (ctx.kind === 'run') return RUN_ROOM;
     const route = (side === early ? ctx.pass?.strong : ctx.pass?.weak)?.[1];
     const base = (route && ROUTE_ROOM[route]) || ANY_ROOM;
-    const t = ALIGN_SIDE && route ? SIDE_ROOM[route] : undefined;
-    if (!t) return base;
+    if (!ALIGN_SIDE || !route) return base;
     // His side is the field when it has more room from the ball to the sideline than the other side.
     const mine = sideSign(side) > 0 ? FIELD_WIDTH - ballY : ballY, field = mine > FIELD_WIDTH - mine + 1e-6;
-    const alone = field ? t[1] : t[0], others = field ? t[3] : t[2];
-    return [alone ?? base[0], others ?? base[1]];
+    return landmarkRoom(route, field) ?? base;
   };
   const habitRoom = (slot: string): number => (ctx.style?.wrRoom ?? 0) + (RCV_HABIT ? ctx.habit?.[slot]?.room ?? 0 : 0);
   for (const [slot, a] of entries) {
