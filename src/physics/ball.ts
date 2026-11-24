@@ -1,12 +1,28 @@
 /**
  * Football flight: 3-D projectile with quadratic drag relative to the wind.
- * Drag constant k = ½ρC_dA/m converted to yards: a spiral (C_d ≈ 0.10,
- * nose-on area 0.0227 m², 0.42 kg) gives k ≈ 0.0030 /yd.
+ * Drag constant k = ½ρC_dA/m converted to yards: k = 0.0306·C_d /yd for the rulebook ball (end-on area 0.0226–0.0232 m², mass 0.397–0.425 kg, rho 1.2 kg/m³).
+ *
+ * BALL_DRAG (experimental, off; BALL_DRAG=1 turns it on): the spiral's k is the NFL ball's measured in-flight deceleration.
+ * Off, k = 0.003027 /yd (C_d 0.099), the figure the engine was built with: a recalled spiral value, not measured on a thrown NFL ball.
+ * On, k = 0.0050 /yd (interval 0.0045–0.0057; C_d about 0.16, 0.15–0.19), from BDB 2025 weeks 1–9 ball tracking: the horizontal speed of each 0.1 s interval of a pass
+ * (pass_forward to pass_arrived), the first two intervals (the release frames, noisy) and the last 0.6 s dropped, k = -d ln(speed)/d(distance) by least squares within each
+ * pass, pooled by air-distance band (20–35 yd 0.0057 (0.0050–0.0065), 35+ yd 0.0047 (0.0043–0.0051); tables and operator in
+ * docs/reviews/2026-11-24-ball-drag-reconciliation.md and scripts/diag/ball/drag_fit.py). It is a measured physical quantity of the ball (a path-averaged C_d·A),
+ * not fitted to a completion, drop or interception rate. The literature does not fix it: end-on wind-tunnel C_d disagree (Watts and Moore, Am. J. Phys. 71:791–793,
+ * 2003: 0.05–0.06 on a smooth foam ball, about one-third of Rae and Streit's) and angle of attack raises a real ball's drag (Price, Moss and Gay, Am. J. Phys.
+ * 88:704–710, doi 10.1119/10.0001388, on how the axis follows the path). No attitude law is modelled: the one k is the average over the throw's flight.
+ *
+ * The flight time is the QB's chosen quantity (QB_DRIVE's fitted T(d)) and solveLaunch re-derives the release for it, so hang time and apex by distance do not move; what
+ * moves is the release speed (higher, to make up the decay) and the speed the ball arrives with (lower). What the tracking shows and the model does not: the NFL ball's
+ * decay roughly doubles 0.3–0.6 s before arrival, the same for completions and incompletions. It could be tracker smoothing near the catch, or the ball's nose-over at the
+ * end of the arc; it is not modelled, and it is why the last 0.6 s are left out of k. The catch roll's 24 yd/s step is not what the NFL ball avoids on short throws
+ * (it carries over 24 yd/s on 30–41% of throws under 20 yd 0.6–0.8 s before arrival); that belongs to the catch rebuild, not to drag.
  */
 import { G } from '../core/units.js';
 import type { Vec2, Vec3 } from '../core/vec.js';
 
-export const DRAG_SPIRAL = 0.003027;
+export const BALL_DRAG = process.env.BALL_DRAG === '1';
+export const DRAG_SPIRAL = BALL_DRAG ? 0.005 : 0.003027;
 /** End-over-end kicks present more area. */
 export const DRAG_KICK = 0.0042;
 /** Wobbly/tumbling ball (deflections, fumbles). */

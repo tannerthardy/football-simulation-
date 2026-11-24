@@ -134,6 +134,7 @@
     "BREAK_LOOK": "on",
     "SEEN_EMPTY": "on",
     "DIR_CAP": "on",
+    "BALL_DRAG": "off",
     "CARRY_POSTURE": "on",
     "CORNER_DROP": "on",
     "CARRY_TURN": "on",
