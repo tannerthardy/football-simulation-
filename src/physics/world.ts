@@ -410,6 +410,15 @@ export const RUSH_HANDS = process.env.RUSH_HANDS === '1';
  * 160 kg lineman), so one arm pulled with two arms' force. The share is the arms' count, not a fitted constant. */
 export const ONE_ARM_SHARE = process.env.ONE_ARM_SHARE === '1';
 const armShare = (jt: { arms?: number }): number => ONE_ARM_SHARE && jt.arms === 1 ? 0.5 : 1;
+/** ONE_ARM_PULL (experimental, off; ONE_ARM_PULL=1 turns it on, with ONE_ARM_SHARE; Integration 2026-11-24): a one-armed
+ * hold pulls with what one arm pulls at its extension. Seo, Armstrong & Young 2010 (Ergonomics; seated, one hand, n 8,
+ * verified by the outside review): the extended pull is 29% over the flexed. Stated choice: the World's one-arm share
+ * (armCap / 2) is the extended pull, falling linearly to 1/1.29 of it with the hand at the torso; extension is the
+ * hold's centre distance past the torsos as a share of his arm span (reach - radius). Range: the flexed figure is
+ * Seo's only; Das & Wang 2004 (standing, general students) give a 400 N one-hand pull, so a 160 kg lineman's 713 N
+ * extended share is an athlete's 1.8x. The hand's own limit, cloth slipping, is the capacity tackle.ts gives. */
+export const ONE_ARM_PULL = process.env.ONE_ARM_PULL === '1';
+const PULL_EXTENDED_GAIN = 0.29;
 export const ARM_MASS = 0.05;
 /** RUSH_HANDS: with one hand off, the share of the remaining hand's steer left to resist the man toward the vacated
  * side (his body has to turn on the remaining hand to stop him there: most of it is lost). */
@@ -1211,7 +1220,14 @@ export class World {
     const structural=Math.min(3.36*this.sp[i].armForce,Math.max(0,...holds.map(j=>j.capacity)));
     const cap=Math.max(0,jt.capacity)*Math.min(1,structural/Math.max(1e-9,total))*(jt.a.support!.state==='up'?1:.7);
     // ONE_ARM_SHARE: one arm holds with one arm's share of his arm capacity (armCap carries fatigue and off-feet).
-    return armShare(jt)<1?Math.min(cap,this.armCap[i]*armShare(jt)):cap;
+    if (armShare(jt)>=1) return cap;
+    let arm=this.armCap[i]*armShare(jt);
+    if (ONE_ARM_PULL) {
+      const torso=jt.a.profile.radius+jt.b.profile.radius, span=Math.max(1e-6,jt.a.profile.reach-jt.a.profile.radius);
+      const ext=clamp((hypot2(jt.b.pos.x-jt.a.pos.x,jt.b.pos.y-jt.a.pos.y)-torso)/span,0,1);
+      arm*=(1+PULL_EXTENDED_GAIN*ext)/(1+PULL_EXTENDED_GAIN);
+    }
+    return Math.min(cap,arm);
   }
 
   /** Apply internal impulse and record its exact planar kinetic work.

@@ -29,7 +29,7 @@ import { G } from '../core/units.js';
 import { clamp, type Vec2 } from '../core/vec.js';
 import { availability, comHeightAt, fallTime, supportParams, TURF_MU } from '../physics/support.js';
 import { fatigueFactor, shouldersOf } from '../physics/kinematics.js';
-import { CONTACT_SCALE, GROUND_STRETCH, type GraspJoint, type Intent } from '../physics/world.js';
+import { CONTACT_SCALE, GROUND_STRETCH, ONE_ARM_PULL, type GraspJoint, type Intent } from '../physics/world.js';
 import { DIVE_STANCE, DIVE_STANCE_S, diveSpeedGain } from '../physics/dive.js';
 import type { Agent } from './agent.js';
 import type { PlaySim } from './playsim.js';
@@ -126,8 +126,20 @@ const SECOND_ARM_CLOSE = 0.15;
 /** `lock`: how much of the wrap the arms' geometry still locks (default
  * the hold's quality). A wrap that slides out to arm's length is a hand hold
  * again; the hands keep the grip they acquired (GRIP_HOLD). */
+/** ONE_ARM_PULL (see world.ts): one hand closed on a jersey holds until the cloth slips through it: the squeeze times
+ * the friction on both faces of the cloth (fingers and palm), not the squeeze itself, which is a closed-grip isometric
+ * force on a dynamometer handle (Tools, 2026-11-24). Stated choices, with ranges: squeeze 45-55 kg (Division I
+ * dynamometer per hand, the existing assumption, now by strength rating and not scaled by body mass); hand-on-cloth
+ * friction 0.61 (Seo et al. 2010: cotton on rubber; their range by material 0.40-1.10, verified by the outside
+ * review), on two faces; a handful by quality as handHold (a pinch at q 0 is 0.3 of it). A 50 kg squeeze holds
+ * 2 x 0.61 x 50 kg-force = 61 kg-force (range 40-121 kg-force over the friction range). The arm's pull at its
+ * extension is the World's limit (gripCapacity). */
+function clothSlip(d: Agent, q: number): number {
+  return 2 * 0.61 * (45 + 10 * d.r('strength')) * G * clamp(0.3 + 1.4 * q, 0, 1);
+}
 export function gripForce(d: Agent, quality: number, lock = quality, hands = 2): number {
   const q = clamp(quality, 0, 1), l = clamp(lock, 0, 1);
+  if (ONE_ARM_PULL && hands < 2) return clothSlip(d, q);
   // One arm pulls with its own share of the arms' force and cannot lock.
   const wrap = supportParams(d.profile).armForce * (hands < 2 ? 0.15 : 0.3 + 2.5 * l * l) * (0.6 + 0.6 * d.r('tackling'));
   return GRIP_HOLD ? Math.max(wrap, handHold(d, q, hands)) : wrap;

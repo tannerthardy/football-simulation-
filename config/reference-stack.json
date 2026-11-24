@@ -143,6 +143,7 @@
     "FREE_ARM_2D": "off",
     "FREE_ARM_FULL": "off",
     "ONE_ARM_SHARE": "off",
+    "ONE_ARM_PULL": "off",
     "CARRY_POSTURE": "on",
     "CORNER_DROP": "on",
     "CARRY_TURN": "on",
