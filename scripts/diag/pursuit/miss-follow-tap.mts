@@ -31,7 +31,11 @@ proto.tick = function (this: any) {
     // Every attempt (missed_tackle / initial wrap; broken holds are outcomes of a wrap): was the tackler trail-tagged?
     if (e.type !== 'broken_tackle') {
       const rx = c.pos.x - d.pos.x, ry = c.pos.y - d.pos.y;
-      attempts.push({ ptype: sim.isPass && !sim.scrambled ? 'catch' : 'run', missed: e.type === 'missed_tackle', trail: (s.trailAt.get(d) ?? -9) >= sim.t - 0.3,
+      const since = s.trailAt.has(d) ? r2(sim.t - s.trailAt.get(d)) : null;
+      // approach angle between the two velocities (0 chase, 180 head-on), as Rules' operator
+      const dv = Math.hypot(d.vel.x, d.vel.y), cv = Math.hypot(c.vel.x, c.vel.y);
+      const appr = dv > 0.5 && cv > 0.5 ? Math.round(Math.acos(Math.max(-1, Math.min(1, (d.vel.x * c.vel.x + d.vel.y * c.vel.y) / (dv * cv)))) * 180 / Math.PI) : null;
+      attempts.push({ ptype: sim.isPass && !sim.scrambled ? 'catch' : 'run', missed: e.type === 'missed_tackle', trail: (s.trailAt.get(d) ?? -9) >= sim.t - 0.3, since, appr, pos: d.player.position,
         dist: r2(Math.hypot(rx, ry)), detail: e.note ?? null });
     }
     // A pending miss's next attempt is this one.

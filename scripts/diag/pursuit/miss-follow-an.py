@@ -18,3 +18,7 @@ for arg in sys.argv[1:]:
         for tr in (False, True):
             X = [r for r in A if r['ptype'] == pt and r['trail'] == tr]
             if X: print(f"{lab:<6} {pt:<5} attempts {'trail-tagged' if tr else 'other':<12} n {len(X):>4} | missed {100*sum(r['missed'] for r in X)/len(X):.0f}% | distance p50 {q([r['dist'] for r in X])} | dives {sum(1 for r in X if r['detail']=='dive')}")
+    for pt in ('catch', 'run'):
+        for lab2, keep in [('never trail', lambda r: r.get('since') is None), ('released 0.3-1.5 s before', lambda r: r.get('since') is not None and 0.3 < r['since'] <= 1.5), ('trail within 0.3 s', lambda r: r['trail'])]:
+            X = [r for r in A if r['ptype'] == pt and keep(r)]
+            if X: print(f"{lab:<6} {pt:<5} {lab2:<26} n {len(X):>4} | missed {100*sum(r['missed'] for r in X)/len(X):.0f}% | distance p50 {q([r['dist'] for r in X])} | approach p50 {q([r.get('appr') for r in X])} | 56+ deg {100*sum(1 for r in X if (r.get('appr') or 0) >= 56)/len(X):.0f}%")
