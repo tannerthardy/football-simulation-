@@ -218,3 +218,23 @@ A worse statistic is not a veto; an unexplained one, or one caused by a bug in t
 
 Reports stay short and come when an item is done. Where the football as coached and a fine-grained measured number
 disagree, say so; the number is as likely to be wrong.
+
+## 7. Amendments after the QB lane's design note (2026-11-24)
+
+The QB lane's note (`docs/reviews/2026-11-24-qb-v2-design.md` on `claude/exciting-cori-hc8l4u`) is approved. Where it
+differs from §3, the note governs:
+1. A read's look target may be a key defender, with the read's candidate throws each judged by module D.
+2. The driver starts on the cue he can see: the passer's load for a defender with eyes on him, the release otherwise.
+   Coverage confirms which techniques use which.
+3. The stare-down is a hold: a look that is resolving but not yet resolved to his need holds past the step, bounded by
+   the time it would take to resolve, and pre-empted by pressure. A look that cannot resolve does not hold.
+4. The pressure response is keyed on a pressure state with enter and exit margins (clean, felt, imminent, contact),
+   one response chosen and kept, not an order evaluated each tick.
+5. No per-passer timer. Urgency comes from the felt rush and from the structure being used up.
+6. The calibration contract uses one mid-rated passer and resolved looks only; rating effects are the panel's.
+7. The quick-game gate needs slants split out on the NFL side of release minus break.
+
+Added by Integration in review: a stated rule for choosing among candidates that clear the bar (taught order, then
+down and distance; none of the old `value` constants); zone holes judged as two drivers on the picture now; the
+scouting report's film adjustment carries its own error and is fixed before the game; ball placement away from the
+coverer's leverage is a later item, not folded into D's risk term.
