@@ -263,3 +263,13 @@ and c0c4bdd70.
   - tackle-set: the throw moves, so the tackler meets a different play; Defense to re-record.
 - **red-diff** (quiet machine, on 7689bc4e7 + patch): **new red: 0, fixed: 1** (qb-stick, owner Coverage). The ledger is
   updated (59 entries).
+
+## Clock-only landing refreshed at engine-94 (2026-11-24)
+
+Rebased on develop c9e6c3f89 (engine-93, HEAD_FOLLOW on). The code and test hunks of
+`step-clock-landing-on-7689bc4e.patch` apply unchanged; the registration was redone on engine-93's files:
+QB_STEP_CLOCK (baseline "0", stack "on"), READ_WINDOW promoted to "on" (it acts only with the clock), stack id
+engine-94, docs/FLAGS.md 501 flags (383 on, 90 off, 28 numeric), REFERENCE_STACK engine-94 section.
+Patch: `patches/engine71-footwork/step-clock-landing-on-c9e6c3f8.patch` (17 files, +363/-38, sha256 6ff9d2123a9e),
+`git apply --check` clean on c9e6c3f89. Typecheck clean. Red-diff (alone): tests run 4453; failing 59; on the
+ledger 59; new red 0, fixed 0.
