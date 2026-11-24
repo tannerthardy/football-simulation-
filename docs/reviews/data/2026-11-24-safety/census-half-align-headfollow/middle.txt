@@ -1,0 +1,18 @@
+| sample | Cover 2 plays | band | moment | between-hash receiver-moments | wide-open share | throws there per team-game | completion |
+|---|---|---|---|---|---|---|---|
+| NFL | 1351 | 10-15 | release | 142 | 0.085 | 0.08 | 0.57 (n 21) |
+| NFL | 1351 | 10-15 | fixed | 210 | 0.067 | - | - |
+| NFL | 1351 | 15-20 | release | 65 | 0.092 | 0.02 | 0.40 (n 5) |
+| NFL | 1351 | 15-20 | fixed | 34 | 0.029 | - | - |
+| HALF_ALIGN off, HALF_SEAT off | 287 | 10-15 | release | 24 | 0.000 | 0.00 | nan (n 0) |
+| HALF_ALIGN off, HALF_SEAT off | 287 | 10-15 | fixed | 14 | 0.000 | - | - |
+| HALF_ALIGN off, HALF_SEAT off | 287 | 15-20 | release | 3 | 0.000 | 0.00 | nan (n 0) |
+| HALF_ALIGN off, HALF_SEAT on | 317 | 10-15 | release | 29 | 0.069 | 0.00 | nan (n 0) |
+| HALF_ALIGN off, HALF_SEAT on | 317 | 10-15 | fixed | 25 | 0.040 | - | - |
+| HALF_ALIGN off, HALF_SEAT on | 317 | 15-20 | release | 8 | 0.000 | 0.00 | nan (n 0) |
+| HALF_ALIGN on, HALF_SEAT off | 294 | 10-15 | release | 25 | 0.000 | 0.00 | nan (n 0) |
+| HALF_ALIGN on, HALF_SEAT off | 294 | 10-15 | fixed | 14 | 0.143 | - | - |
+| HALF_ALIGN on, HALF_SEAT off | 294 | 15-20 | release | 2 | 0.500 | 0.00 | nan (n 0) |
+| HALF_ALIGN on, HALF_SEAT on | 269 | 10-15 | release | 20 | 0.000 | 0.00 | nan (n 0) |
+| HALF_ALIGN on, HALF_SEAT on | 269 | 10-15 | fixed | 19 | 0.053 | - | - |
+| HALF_ALIGN on, HALF_SEAT on | 269 | 15-20 | release | 2 | 0.000 | 0.00 | nan (n 0) |
