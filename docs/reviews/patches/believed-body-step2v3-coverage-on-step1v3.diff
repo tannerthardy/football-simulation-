@@ -1,0 +1,762 @@
+diff --git a/config/baseline.json b/config/baseline.json
+index d63863f2e..e0947d033 100644
+--- a/config/baseline.json
++++ b/config/baseline.json
+@@ -374,6 +374,7 @@
+     "QB_SEEN_MAN": "0",
+     "QB_SCAN": "0",
+     "QB_CANON_SEEN": "0",
++    "BELIEVED_BODY": "0",
+     "QB_SEEN_OUT": "0",
+     "QB_SEEN_REC": "0",
+     "ACC_RADIUS": "0",
+diff --git a/config/reference-stack.json b/config/reference-stack.json
+index 2f0268805..01653a1ed 100644
+--- a/config/reference-stack.json
++++ b/config/reference-stack.json
+@@ -337,6 +337,7 @@
+     "QB_SEEN_MAN": "on",
+     "QB_SCAN": "on",
+     "QB_CANON_SEEN": "on",
++    "BELIEVED_BODY": "off",
+     "QB_SEEN_OUT": "on",
+     "QB_SEEN_REC": "on",
+     "ACC_RADIUS": "off",
+diff --git a/docs/FLAGS.md b/docs/FLAGS.md
+index ea0471ead..83465976f 100644
+--- a/docs/FLAGS.md
++++ b/docs/FLAGS.md
+@@ -2,7 +2,7 @@
+ 
+ Every engine switch read from the environment, recounted from `src` at `57f50fc3` on 2026-10-22. This includes #210's promotion and #205's two additional default-on switches. Flags that are not on develop (parked, removed from a PR, or only on a side branch) are kept in [PARKED.md](PARKED.md) so the ideas are not lost. Registration rules are in [PLAN.md](PLAN.md): at most 10 experimental flags, and each expires two reviews after it lands.
+ 
+-There are 506 flags read from the environment in `src` (recounted 2026-11-24, engine-97: engine-96 plus QB_SCAN and QB_CANON_SEEN (on, leak removals; Flex; recounted from `src`, the on count also takes in engine-96's BALL_DRAG); engine-96: engine-95 plus BALL_DRAG (on); engine-95: engine-94 plus THROWAWAY_FELT (on); engine-94: engine-93 plus FLIGHT_BREAK (on) and FLIGHT_LEAD (off, parked); engine-93: engine-92 plus HEAD_FOLLOW (on); engine-92: engine-91 plus PERIPH_ACUITY (on); engine-91: engine-90 plus STEM_WORK (on); engine-90: engine-89 plus READ_VERTICAL_LOS and BACK_CLEAR (on); engine-89: engine-88 plus FLAT_CARRY (on); engine-88: engine-87 plus FORECAST_FINISH and QB_ROLE_PATH (on), READ_WINDOW and QB_CLOSE_BELIEF (off); engine-87: engine-86 plus HALF_KEY (on); engine-86 was engine-85 plus MUSH_MATCH (on); engine-85 was engine-84 plus FLAT_SINK (on); engine-84 was engine-83 plus DOWN_RISE_PLANT (on); engine-83 was engine-82 plus QB_DRIVE, QB_RHYTHM_THROW, QB_ALIGN, QB_BODY_FOLLOW, QB_WINDOW_ARRIVE, QB_KEY_PLANT, QB_STICK, QB_PEEK_CLOCK, QB_MOF_READ, QB_DEEP_WAIT and QB_STANCE; QB_DRIVE, QB_RHYTHM_THROW, QB_WINDOW_ARRIVE, QB_KEY_PLANT and QB_STICK on): 386 are on unless set to `0`, 92 are off unless set to `1`, and 28 are numeric scales or modes (identity value unless listed in the stack's numeric section). The rows below carry each flag's history.
++There are 507 flags read from the environment in `src` (recounted 2026-11-24: BELIEVED_BODY (off, experimental; Flex) on top of engine-97; engine-97: engine-96 plus QB_SCAN and QB_CANON_SEEN (on, leak removals; Flex; recounted from `src`, the on count also takes in engine-96's BALL_DRAG); engine-96: engine-95 plus BALL_DRAG (on); engine-95: engine-94 plus THROWAWAY_FELT (on); engine-94: engine-93 plus FLIGHT_BREAK (on) and FLIGHT_LEAD (off, parked); engine-93: engine-92 plus HEAD_FOLLOW (on); engine-92: engine-91 plus PERIPH_ACUITY (on); engine-91: engine-90 plus STEM_WORK (on); engine-90: engine-89 plus READ_VERTICAL_LOS and BACK_CLEAR (on); engine-89: engine-88 plus FLAT_CARRY (on); engine-88: engine-87 plus FORECAST_FINISH and QB_ROLE_PATH (on), READ_WINDOW and QB_CLOSE_BELIEF (off); engine-87: engine-86 plus HALF_KEY (on); engine-86 was engine-85 plus MUSH_MATCH (on); engine-85 was engine-84 plus FLAT_SINK (on); engine-84 was engine-83 plus DOWN_RISE_PLANT (on); engine-83 was engine-82 plus QB_DRIVE, QB_RHYTHM_THROW, QB_ALIGN, QB_BODY_FOLLOW, QB_WINDOW_ARRIVE, QB_KEY_PLANT, QB_STICK, QB_PEEK_CLOCK, QB_MOF_READ, QB_DEEP_WAIT and QB_STANCE; QB_DRIVE, QB_RHYTHM_THROW, QB_WINDOW_ARRIVE, QB_KEY_PLANT and QB_STICK on): 386 are on unless set to `0`, 93 are off unless set to `1`, and 28 are numeric scales or modes (identity value unless listed in the stack's numeric section). The rows below carry each flag's history.
+ 
+ **Promotion (2026-11-09):** the reference stack `run-ref-4` is now the engine's default. The 90 flags it lists `on` are read as on unless set to `0` (rows marked "promoted" below); the rest are unchanged. Decisions and evidence for each flag are in [REFERENCE_STACK.md](REFERENCE_STACK.md); `npm run ref -- --list` is the current inventory, and `npm run ref -- --off -- <command>` runs the engine as it was before. The test suites still run on the pre-promotion engine (pinned in `vitest.config.ts`) until their recorded cases are re-recorded. The counts in the paragraph above predate all of this.
+ 
+@@ -230,6 +230,7 @@ There are 506 flags read from the environment in `src` (recounted 2026-11-24, en
+ | `QB_SEEN_MAN` | on | promoted 2026-11-14 (engine-63; `=0` restores); was experimental (QB lane, information rule, 2026-11-13; staged test `test/qb-seen-man.test.ts` on its main site; no game row yet) | quarterback | `src/sim/qbmind.ts` (`expectedPos`, `quickCheck`), `src/sim/behaviors/qb.ts` (sets `receiverAt`) | set at first review. A man defender he is not looking at is remembered on his receiver where the quarterback's own forecast has that receiver, not on the receiver's true position; with no belief to place a defender he falls back to his last picture, not the true position; the check at the line reads corner depth with his alignment noise. Decided by its own row (estimate error for unseen man defenders, interceptions against man); a loss is repaired by perception, not by the leak |
+ | `QB_SCAN` | on | leak removal, on at landing (`=0` restores; Flex, 2026-11-24; QB decision plan §1.6) | quarterback | `src/sim/qbmind.ts` (`QBMind.scanned`) | his pre-snap picture is one full scan with a per-defender error drawn once per play (recognition-scaled), feeding his memory at the snap, the coverage features, the box count, the screen look and the quick check. Off: memory seeded with exact positions; four reads with independent fresh noise. |
+ | `QB_CANON_SEEN` | on | leak removal, on at landing (`=0` restores; Flex, 2026-11-24; QB decision plan §1.6) | quarterback | `src/sim/qbmind.ts` (canonical looks, `cornersSeen`) | the canonical looks use the defense's personnel slots and the front's visible alignment (front, edge, strength, mug, Sam on) only; corners are found where he sees them (on each side the widest defensive back of the visible personnel group within 12 yd of the line and 4+ yd off the ball; attempt 1's 8 yd floor and 9 yd depth cut missed 40-50% of corners on condensed trips and heavy 13 and fell to quickCheck's default; staged probe `scripts/diag/eyes/corner-find.mts`: 98-100% right in 17 looks incl. press, bunch, condensed, nub and rolled safeties, residual misses scan-only at rec <= 0.5). Off: the call object and the CB_S / CB_W labels. |
++| `BELIEVED_BODY` | off (`=1` turns it on) | experimental (Flex, 2026-11-24; believed-body note, docs/reviews/2026-11-24-believed-body.md, step 2) | coverage (first consumers) | `src/sim/believed-body.ts` (`BeliefStore`, `believedCaps`, `lookAt`); `src/sim/behaviors/defense.ts`, `src/sim/coverage/reads.ts`; `src/game/game.ts` (one store per game, the huddle) | two reviews after it lands. A defender's read of a receiver's top speed, burst, braking and cutting is what he believes, not the man's true profile: his build seen (the engine's own build-capacity fit, `scripts/diag/belief/body-prior-fit.mts`, with one weight error per holder and man), the staff's film (truth plus one error per game, tighter with the man's snaps; none for a rookie) and his own clear looks (a plateau of seen speed held 0.6 s: a floor always, a measurement on a vertical stem; a rise from rest: his burst). Between plays the huddle passes each player's two biggest steps to his unit on the field (stated choices: 2 items, lost 0.15 - 0.13 x awareness). Consumers: man coverage (slow-play sprint test, route observation, stem acceleration, release and upfield burst, the deep cushion), zone route observation and the deep cushion, coverage/reads, the ball-reach check. Off: the man's own capacities, bit-identical. |
+ | `QB_SEEN_OUT` | on | promoted 2026-11-14 (engine-63; `=0` restores); was experimental (QB lane, information rule, 2026-11-13; staged test `test/qb-seen-out.test.ts`; game rows near flat) | quarterback | `src/sim/behaviors/qb.ts` (`seenOut`, `checkRelease`, `breakClock`, `ready`) | Whether a check-release man is out on his route comes from the quarterback's own picture placing him on his installed release route (then he stays out), not from the man's behaviour object; gates the rhythm outlet, his readiness and his place in the hot order. A slow screen's settle is read from where the quarterback has the receiver. |
+ | `QB_SEEN_REC` | on | promoted 2026-11-14 (engine-63; `=0` restores); was experimental (QB lane, information rule, 2026-11-14; first build) | quarterback | `src/sim/behaviors/qb.ts` (`has`, `evaluate`, `orderReads`) | The remaining reads of his own receivers' true state use where he has them (his forecast, else his delayed picture): a receiver's side for the look-off and the hot side, the verticals' stems for the peek, the clear-look test, the fallback target point, and the man-coverage reorder (with his picture of the defender). A receiver is down when his delayed picture shows him off his feet; a block is the call or an unseen check-release man, not the engagement record. With `QB_BELIEVED_DEF` the reorder also uses the defender's believed speed and man coverage. |
+ | `ACC_RADIUS` | off | experimental (deep-window belief, 2026-11-13) | QB | `src/sim/behaviors/qb.ts` (`window`, pAcc) | set at first review. His accuracy belief's catchable radius grows with the flight and the receiver's ball skills (1.6 + 0.9 T yd) instead of a fixed 1.35: our own catches by aim miss keep about 0.6-0.9 of an on-target ball's completion at a 2 yd miss and 0.2-0.55 at 3 yd (short to long flights), where the fixed radius priced 0.33 and 0.08. To be carded beside Coverage's medium-flight ball defending (our defenders 4.5 yd from the ball at 1.2-1.8 s against the NFL's 2.8). docs/reviews/2026-11-13-qb-gather.md |
+diff --git a/scripts/diag/belief/game-belief.mts b/scripts/diag/belief/game-belief.mts
+new file mode 100644
+index 000000000..e43b12eb9
+--- /dev/null
++++ b/scripts/diag/belief/game-belief.mts
+@@ -0,0 +1,37 @@
++/** Believed body, gate 1 (Flex, 2026-11-24): what the defenders on the field believe of the offense's skill players over a game,
++ * against the truth, by play index (BELIEVED_BODY=1). Per (defender, skill player) pair on the field at the end of each play:
++ * |believed - true| and the believed sd of top speed and burst, and the share of pairs with a seen floor / a measurement.
++ * usage: BELIEVED_BODY=1 node --import tsx scripts/diag/belief/game-belief.mts [games=2] [seed=901] */
++import { Rng } from '../../../src/core/rng.js';
++import { simulateGame } from '../../../src/game/game.js';
++import { generateTeam, leagueSample } from '../../../src/league/team.js';
++import { BELIEVED_BODY } from '../../../src/sim/believed-body.js';
++if (!BELIEVED_BODY) throw new Error('run with BELIEVED_BODY=1');
++const games = Number(process.argv[2] ?? 2), seed0 = Number(process.argv[3] ?? 901);
++const rng = new Rng(seed0);
++const home = generateTeam(rng, 'Ironmen', 'IRN', { strength: 0.55 }), away = generateTeam(rng, 'Comets', 'COM', { strength: 0.55 });
++const buckets = [[0, 20], [20, 40], [40, 70], [70, 999]] as const;
++const acc = buckets.map(() => ({ n: 0, errV: 0, sdV: 0, errA: 0, sdA: 0, floor: 0, measure: 0, rookieN: 0, rookieErr: 0 }));
++for (let g = 0; g < games; g++) {
++  let play = 0;
++  simulateGame(leagueSample(home, seed0 + g), leagueSample(away, seed0 + g), { seed: seed0 + g, hooks: {
++    playResult: (sim) => {
++      const r = sim.run();
++      const store = sim.beliefs!;
++      const k = buckets.findIndex(([a, b]) => play >= a && play < b), A = acc[k];
++      for (const d of sim.defense) for (const o of sim.offense) {
++        if (['LT', 'LG', 'C', 'RG', 'RT', 'QB'].includes(o.slot)) continue;
++        const b = store.belief(d, o), v = b.get('vmax'), a = b.get('accel');
++        A.n++; A.errV += Math.abs(v.mean - o.profile.vmax); A.sdV += v.sd; A.errA += Math.abs(a.mean - o.profile.vmax / o.profile.tau); A.sdA += a.sd;
++        if (b.entries.some((e) => (e.source.kind === 'saw' || e.source.kind === 'told') && e.kind === 'floor')) A.floor++;
++        if (b.entries.some((e) => (e.source.kind === 'saw' || e.source.kind === 'told') && e.kind === 'measure')) A.measure++;
++        if (o.player.experience === 0) { A.rookieN++; A.rookieErr += Math.abs(v.mean - o.profile.vmax); }
++      }
++      play++;
++      return r;
++    } } });
++}
++console.log('| plays | pairs | vmax abs err | vmax sd | burst abs err | burst sd | with a seen/told floor | with a measurement | rookies: vmax abs err |');
++console.log('|---|---|---|---|---|---|---|---|---|');
++buckets.forEach(([a, b], i) => { const A = acc[i]; if (!A.n) return;
++  console.log(`| ${a}-${b === 999 ? 'end' : b} | ${A.n} | ${(A.errV / A.n).toFixed(2)} | ${(A.sdV / A.n).toFixed(2)} | ${(A.errA / A.n).toFixed(2)} | ${(A.sdA / A.n).toFixed(2)} | ${(100 * A.floor / A.n).toFixed(0)}% | ${(100 * A.measure / A.n).toFixed(0)}% | ${A.rookieN ? (A.rookieErr / A.rookieN).toFixed(2) + ` (n ${A.rookieN})` : '-'} |`); });
+diff --git a/scripts/diag/belief/staged-cushion.mts b/scripts/diag/belief/staged-cushion.mts
+new file mode 100644
+index 000000000..425253cd4
+--- /dev/null
++++ b/scripts/diag/belief/staged-cushion.mts
+@@ -0,0 +1,68 @@
++/** Believed body, gate 3 (Flex, 2026-11-24; docs/reviews/2026-11-24-believed-body.md §10): an off corner in man coverage on a
++ * receiver who is truly faster than his build says (his forty lowered; no film: experience 0). The same scene, seed and bodies
++ * each rep; the receiver runs a go and the ball is held. Per rep: what the corner believes of the receiver's top speed at the
++ * snap and at the end, and the cushion (corner's depth past the receiver, yd) through the rep.
++ *   rep 1: build only.  rep 2: the same corner after his own look on rep 1.
++ *   teammate: the corners' players swapped so the other man has him, after the huddle (told) or with no huddle (not told).
++ * Run it twice: BELIEVED_BODY=1 and without (the corner reads the man's true capacities).
++ * usage: [BELIEVED_BODY=1] node --import tsx scripts/diag/belief/staged-cushion.mts */
++import { Rng } from '../../../src/core/rng.js';
++import { CENTER_Y } from '../../../src/core/field.js';
++import { generateTeam, pickDefense, pickOffense } from '../../../src/league/team.js';
++import { COVERAGE_BY_ID, FRONT_BY_ID } from '../../../src/playbook/defense.js';
++import { FORMATION_BY_ID } from '../../../src/playbook/formations.js';
++import type { PassConcept } from '../../../src/playbook/types.js';
++import { BELIEVED_BODY, BeliefStore, PRIOR_FIT } from '../../../src/sim/believed-body.js';
++import { PlaySim } from '../../../src/sim/playsim.js';
++import type { Agent } from '../../../src/sim/agent.js';
++
++const off = generateTeam(new Rng(21), 'Offense', 'OFF', { strength: 0.6 });
++const def = generateTeam(new Rng(22), 'Defense', 'DEF', { strength: 0.6 });
++const formation = FORMATION_BY_ID.gun_doubles_11;
++const roster = pickOffense(off, formation.personnel);
++const fast = roster.X!;
++fast.experience = 0;
++fast.measurables = { ...fast.measurables, forty: fast.measurables.forty - 0.27 };
++const concept: PassConcept = { id: 'lab', name: 'lab', family: 'dropback', drop: 'gun5', strong: { 1: 'hitch', 2: 'hitch', 3: 'hitch', 4: 'hitch' },
++  weak: { 1: 'go', 2: 'hitch', 3: 'hitch', 4: 'hitch' }, back: 'block', progression: ['S1'], beats: [] };
++
++const defense = pickDefense(def, 'nickel');
++const swapped = { ...defense, CB_S: defense.CB_W, CB_W: defense.CB_S };
++function rep(store: BeliefStore | undefined, flip: boolean, teammate = false) {
++  const sim = new PlaySim({
++    offense: roster, defense: teammate ? swapped : defense,
++    offCall: { formation, flip, kind: 'pass', pass: { ...concept, ...(flip ? { strong: concept.weak, weak: concept.strong } : {}) }, label: 'lab' },
++    defCall: { personnel: 'nickel', front: FRONT_BY_ID.over, coverage: COVERAGE_BY_ID.cover1_off, pressure: null, label: 'lab' },
++    los: 40, ballY: CENTER_Y, firstDownX: 50, seed: 5, beliefs: store,
++  });
++  sim.throwBall = () => undefined;
++  const R = sim.offense.find((o) => o.player === fast)!;
++  const corner = sim.defense.find((d) => (d.behavior as { target?: Agent }).target === R);
++  const bel = () => (BELIEVED_BODY && sim.beliefs && corner ? sim.beliefs.belief(corner, R).get('vmax') : null);
++  const at0 = bel();
++  const cushion: Record<string, string> = {};
++  const step = sim as unknown as { tick(): void };
++  while (sim.phase === 'live' && sim.t < 4.6) {
++    step.tick();
++    for (const t of [1.0, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5]) if (Math.abs(sim.t - t) < sim.dt / 2 && corner) cushion[t.toFixed(2)] = (corner.pos.x - R.pos.x).toFixed(2);
++  }
++  return { sim, corner: corner ? `${corner.slot} (${corner.player.lastName})` : '-', truth: R.profile.vmax, at0, end: bel(), cushion };
++}
++const fmt = (b: { mean: number; sd: number; floor: number } | null) => (b ? `${b.mean.toFixed(2)} ± ${b.sd.toFixed(2)}${Number.isFinite(b.floor) ? ` (floor ${b.floor.toFixed(2)})` : ''}` : 'truth');
++const m = fast.measurables, u = (m.weightLb - 250) / 50, h = (m.heightIn - 74) / 2, c = PRIOR_FIT.vmax.c;
++console.log(`BELIEVED_BODY=${BELIEVED_BODY ? 1 : 0}; receiver ${m.weightLb} lb ${m.heightIn} in, build prior vmax ${(c[0] + c[1] * u + c[2] * u * u + c[3] * h).toFixed(2)}`);
++const row = (name: string, r: ReturnType<typeof rep>) =>
++  console.log(`| ${name} | ${r.corner} | ${r.truth.toFixed(2)} | ${fmt(r.at0)} | ${fmt(r.end)} | ${Object.entries(r.cushion).map(([t, v]) => `${t}s ${v}`).join(', ')} |`);
++console.log('| rep | corner | true vmax | believed at snap | believed at end | cushion (corner past receiver, yd) |');
++console.log('|---|---|---|---|---|---|');
++const store = BELIEVED_BODY ? new BeliefStore('stage') : undefined;
++const r1 = rep(store, false); row('1: build only', r1);
++const huddle = (s: BeliefStore | undefined, sim: PlaySim) => s?.huddle([sim.defense.map((a) => ({ id: a.player.id, awareness01: 1 }))]);
++huddle(store, r1.sim);
++row('2: same corner, after his look', rep(store, false));
++// The teammate: rep 2 with the corners' players swapped, so the other man has him; after the huddle (told) or with none.
++const told = BELIEVED_BODY ? new BeliefStore('stage-t') : undefined, untold = BELIEVED_BODY ? new BeliefStore('stage-u') : undefined;
++const t1 = rep(told, false); huddle(told, t1.sim);
++rep(untold, false); untold?.huddle([]);
++row('teammate, told in the huddle', rep(told, false, true));
++row('teammate, not told', rep(untold, false, true));
+diff --git a/src/game/game.ts b/src/game/game.ts
+index 4c14b52cd..42a819e8a 100644
+--- a/src/game/game.ts
++++ b/src/game/game.ts
+@@ -25,6 +25,7 @@ import { deriveOfficialPossessionStats } from './possession-stats.js';
+ import { deriveOfficialPlayStats, type OfficialPlayCredit, type OfficialStatsTreatment } from './official-play-stats.js';
+ import type { OffSlot, OffensivePlayCall, DefensivePlayCall } from '../playbook/types.js';
+ import { routeOfAgent } from '../sim/behaviors/receiver.js';
++import { BELIEVED_BODY, BeliefStore } from '../sim/believed-body.js';
+ 
+ export type Side = 'home' | 'away';
+ const other = (s: Side): Side => (s === 'home' ? 'away' : 'home');
+@@ -240,6 +241,8 @@ export class Game {
+   private readonly log: PlayLog[] = [];
+   /** Fast energy pool at the next snap, by player id. */
+   private readonly energy = new Map<string, number>();
++  /** BELIEVED_BODY: every player's beliefs about the opponents' capacities over this game (null with the flag off). */
++  private readonly beliefs: BeliefStore | null;
+   /** Slow game reserve by player id: the ceiling the fast pool refills to. */
+   private readonly reserve = new Map<string, number>();
+   /** Who was on the field for the last snap and how long it lasted: the
+@@ -282,6 +285,7 @@ export class Game {
+     private readonly opts: GameOptions,
+   ) {
+     this.rng = new Rng(opts.seed ?? 1);
++    this.beliefs = BELIEVED_BODY ? new BeliefStore(`game|${opts.seed ?? 1}`) : null;
+     this.rules = { edition: 'NFL-2026', postseason: false, ...opts.rules };
+     this.coin = this.rng.fork('coin');
+     this.snaps = this.rng.fork('snaps');
+@@ -686,6 +690,7 @@ export class Game {
+       record: this.opts.record,
+       recordLevel: this.opts.recordLevel,
+       energy: this.energy,
++      beliefs: this.beliefs ?? undefined,
+       manPrefs: prefs,
+       hurry: sit.hurry,
+       down: s.down,
+@@ -710,6 +715,9 @@ export class Game {
+     const r = this.opts.hooks?.playResult?.(sim, 'scrimmage') ?? sim.run();
+     // Fatigue: write back both pools of players who were on the field.
+     this.writeBackEnergy(sim, r.duration);
++    // BELIEVED_BODY: the huddle before the next snap; each unit on the field tells its own men what it saw.
++    if (this.beliefs) this.beliefs.huddle((['O', 'D'] as const).map((side) => sim.agents.filter((a) => a.team === side)
++      .map((a) => ({ id: a.player.id, awareness01: a.r('awareness') }))));
+     this.lastUnits = { offense: offTeam.abbr, off: new Set(sim.agents.filter((a) => a.team === 'O').map((a) => a.player.id)),
+       def: new Set(sim.agents.filter((a) => a.team === 'D').map((a) => a.player.id)) };
+     for (const a of sim.agents) this.box.line(a.player, a.team === 'O' ? offTeam.abbr : defTeam.abbr).snaps++;
+diff --git a/src/sim/behaviors/defense.ts b/src/sim/behaviors/defense.ts
+index 7942cc65d..15024bc11 100644
+--- a/src/sim/behaviors/defense.ts
++++ b/src/sim/behaviors/defense.ts
+@@ -6,6 +6,7 @@
+  * reads the play, he executes his pre-snap job; play action can fool him into
+  * believing run for longer.
+  */
++import { believedCaps, lookAt } from '../believed-body.js';
+ import { HANDS_CUE, handsUpAt } from '../hands-cue.js';
+ import { isOL } from './blocking.js';
+ import { KEY_REACT, KEY_STEP_SEEN, STEP_SEEN, keyScale } from '../key-read.js';
+@@ -1451,7 +1452,7 @@ export class ManCoverage implements Behavior {
+     // Wide receivers only: a man on a slot is an inside run supporter, who triggers.
+     const spot = sim.offAlign.spots[R.slot]?.pos;
+     if (!spot || Math.abs(spot.y - sim.ballY) < SLOW_WIDTH) return null;
+-    if (speed > SLOW_SPRINT * R.profile.vmax) return null;
++    if (speed > SLOW_SPRINT * believedCaps(sim, a, R).vmax) return null;
+     if (a.pos.x - cue.pos.x <= SLOW_MIN) return null;
+     const inside = Math.sign(sim.ballY - cue.pos.y) || 1, o = this.opts;
+     const lev = (o.trail ? 0.9 : 0.7) * (o.lev === 'outside' ? -inside : o.lev === 'head' ? 0 : inside);
+@@ -1487,10 +1488,14 @@ export class ManCoverage implements Behavior {
+     } else if (sim.t - this.stableSince > 0.35 + 0.35 * (1 - a.r('playRecognition') * a.mind.focus)) this.routeRead = true;
+     const delayScale = this.routeRead ? 0.65 : 1;
+     const acquired = sim.see(a, R, delayScale);
+-    const seen = this.observation.read(acquired, sim.t, R.profile, a.profile.reactionTime,
++    // BELIEVED_BODY: his own look at his man feeds what he believes of him; every read of the man's capacities below is
++    // that belief (off: the man's own, as before).
++    lookAt(sim, a, R, acquired);
++    const RB = believedCaps(sim, a, R);
++    const seen = this.observation.read(acquired, sim.t, RB, a.profile.reactionTime,
+       a.r('anticipation') * a.r('manCoverage') * a.mind.focus);
+     if (Math.hypot(seen.vel.x, seen.vel.y) > 1.5) this.releaseObserved = true;
+-    if (OFF_PEDAL) this.stemAccel.observe(acquired, R.profile, sim.t);
++    if (OFF_PEDAL) this.stemAccel.observe(acquired, RB, sim.t);
+     const inside = Math.sign(sim.ballY - seen.pos.y) || 1;
+     const o = this.opts;
+     // PRESS_MIRROR: in press, while the receiver is still releasing at the
+@@ -1528,7 +1533,7 @@ export class ManCoverage implements Behavior {
+     // step downhill and turn twice while the receiver accelerated past him.
+     const closing = Math.max(0, vx - Math.max(0, a.vel.x));
+     const flipTime = Math.PI / a.profile.turnRate + 0.15 * (1 - a.r('anticipation') * a.mind.focus);
+-    const releaseBurst = Math.max(0, (R.profile.vmax - Math.hypot(seen.vel.x, seen.vel.y)) / R.profile.tau);
++    const releaseBurst = Math.max(0, (RB.vmax - Math.hypot(seen.vel.x, seen.vel.y)) / RB.tau);
+     // CUSHION_BREAK applies inside zone calls (match carries and deep zones);
+     // pure man keeps its trigger. Help: a carry with no installed deep
+     // responsibility has a deep player behind it.
+@@ -1561,7 +1566,7 @@ export class ManCoverage implements Behavior {
+       // CUSHION_NEED: once released, keep only the cushion his threat needs.
+       // What he could gain upfield during the flip: his upfield speed now
+       // plus the acceleration he has left toward his top speed (1/2 a t^2).
+-      const upBurst = Math.max(0, (R.profile.vmax - Math.max(0, vx)) / R.profile.tau);
++      const upBurst = Math.max(0, (RB.vmax - Math.max(0, vx)) / RB.tau);
+       const need = 1.8 + closing * flipTime + 0.5 * upBurst * flipTime * flipTime;
+       const held = CUSHION_NEED && this.releaseObserved ? Math.min(cushion, need) : cushion;
+       if (held < cushion) a.tags.add('cushion-need');
+@@ -1629,7 +1634,7 @@ export class ManCoverage implements Behavior {
+     // CUSHION_BREAK: square in his pedal until the cushion is broken; when the
+     // pedal cannot keep it but it is not broken, he carries side-on (QB still
+     // in view) at the speed the depth check asks for.
+-    const selected = this.depth.choose(a, seen, acquired, R.profile, base, command, sim.t, sim.world.handContact);
++    const selected = this.depth.choose(a, seen, acquired, RB, base, command, sim.t, sim.world.handContact);
+     if (breakOn && CARRY_POSTURE) {
+       // CARRY_POSTURE 3b: short of CUSHION_BREAK's turn (hipsOpen, his seen cushion and closing), one half-open posture
+       // within his head's reach of the QB, look on the QB, at a pace bounded by what that posture gives.
+@@ -2123,7 +2128,8 @@ export class ZoneCoverage implements Behavior {
+       let observation = this.observations.get(r);
+       if (!observation) { observation = new RouteObservation(); this.observations.set(r, observation); }
+       const cue = sim.see(a, r);
+-      const seen = observation.read(cue, sim.t, r.profile, a.profile.reactionTime,
++      lookAt(sim, a, r, cue);
++      const seen = observation.read(cue, sim.t, believedCaps(sim, a, r), a.profile.reactionTime,
+         a.r('anticipation') * a.r('zoneCoverage') * a.mind.focus);
+       const fut = { x: seen.pos.x + seen.vel.x * 0.7, y: seen.pos.y + seen.vel.y * 0.7 };
+       if (HALF_KEY) seenAll.set(r, { r, pos: seen.pos, vel: seen.vel, fut, cue });
+@@ -2277,7 +2283,7 @@ export class ZoneCoverage implements Behavior {
+       if (!depth) { depth = new DeepCoverage(); this.depthReads.set(deepest.r, depth); }
+       // CUSHION_BREAK: square in his pedal until the cushion is broken; side-on
+       // when the pedal cannot keep it.
+-      const selected = depth.choose(a, deepest, deepest.cue, deepest.r.profile, cushion, command, sim.t, sim.world.handContact);
++      const selected = depth.choose(a, deepest, deepest.cue, believedCaps(sim, a, deepest.r), cushion, command, sim.t, sim.world.handContact);
+       if (CUSHION_BREAK && CARRY_POSTURE) {
+         // CARRY_POSTURE 3b: short of CUSHION_BREAK's turn (turnedWith: his seen cushion broken), one half-open posture
+         // within his head's reach of the QB, look on the QB, at a pace bounded by what that posture gives.
+@@ -3258,7 +3264,7 @@ function observedCatchWindow(a: Agent, sim: PlaySim, path: PlaySim['ballPath']):
+       if (s.z > r.profile.maxCatchHeight * 0.92) continue;
+       const p = { x: s.x, y: s.y };
+       const reach = r.profile.reach + TRACKING_REACH_BONUS;
+-      if (Math.hypot(p.x - seen.pos.x, p.y - seen.pos.y) > r.profile.vmax * remaining + reach) continue;
++      if (Math.hypot(p.x - seen.pos.x, p.y - seen.pos.y) > believedCaps(sim, a, r).vmax * remaining + reach) continue;
+       // Catching does not require stopping at the ball point. A receiver's
+       // observed path can carry his hands through it even when a point-arrival
+       // estimate charges for braking/redirecting. Use the same maximum hand
+diff --git a/src/sim/believed-body.ts b/src/sim/believed-body.ts
+new file mode 100644
+index 000000000..855ae5f8d
+--- /dev/null
++++ b/src/sim/believed-body.ts
+@@ -0,0 +1,251 @@
++/**
++ * BELIEVED_BODY (experimental, off; Flex, 2026-11-24; docs/reviews/2026-11-24-believed-body.md): what a player believes about
++ * an opponent's physical capacities, held by him (a holder), made of evidence entries each with a source (his build seen,
++ * the staff's film, what he saw), shared only by explicit messages over a channel (the huddle between plays). Decisions read
++ * `believedCaps(sim, holder, target)`; with the flag off it returns the target's true capacities, as the code read them before.
++ *
++ * Step 2 (coverage): the capacities a coverage decision reads of a receiver: top speed, burst (vmax / tau), braking and
++ * cutting. This file is the producer: it reads a target's true capacities only for the staff's film (truth + one error per
++ * game, never truth times a rating) and on the flag's off path.
++ */
++import { Rng } from '../core/rng.js';
++import type { PhysicalProfile } from '../players/physical.js';
++import type { Agent } from './agent.js';
++import type { Perceived } from './perception.js';
++
++export const BELIEVED_BODY = process.env.BELIEVED_BODY === '1';
++
++/** The capacities a decision may hold a belief about (step 2). `tau` is derived from vmax and accel. */
++export type Caps = Pick<PhysicalProfile, 'vmax' | 'tau' | 'brake' | 'lateral'>;
++type Cap = 'vmax' | 'accel' | 'brake' | 'lateral';
++const CAPS: readonly Cap[] = ['vmax', 'accel', 'brake', 'lateral'];
++
++export interface Source { kind: 'appearance' | 'film' | 'saw' | 'told'; from?: string; channel?: 'own' | 'huddle'; play: number; t: number }
++export interface Entry { cap: Cap; value: number; sd: number; kind: 'floor' | 'measure'; source: Source }
++
++/** The engine's own population relation between visible build and capacity (scripts/diag/belief/body-prior-fit.mts, 64 teams,
++ * 3264 players; OLS on u = (weight - 250) / 50, u^2 and h = (height - 74) / 2): coefficients and the sd left after build. */
++const PRIOR: Record<Cap, { c: [number, number, number, number]; sd: number }> = {
++  vmax: { c: [8.921, -0.850, -0.053, -0.020], sd: 0.217 },
++  accel: { c: [7.042, -0.717, -0.154, -0.053], sd: 0.806 },
++  brake: { c: [6.281, -0.522, -0.086, -0.049], sd: 0.379 },
++  lateral: { c: [6.379, -0.568, -0.139, -0.020], sd: 0.419 },
++};
++export const PRIOR_FIT = PRIOR;
++/** His sight of a man's weight is off by one draw per (holder, man, game) (lb; stated choice). */
++const APPEAR_WEIGHT_SD = 8;
++/** The staff's film (stated choices): sd at no snaps, snaps per season, and the snaps the staff needs per unit of study. */
++const FILM_SD0: Record<Cap, number> = { vmax: 0.30, accel: 0.8, brake: 0.4, lateral: 0.4 };
++const SNAPS_PER_YEAR = 500;
++const N0_PER_STUDY = 150;
++const STUDY = 0.5;
++/** A clear look (stated choices): a plateau of seen speed held this long (s) at under this seen acceleration (yd/s^2), above
++ * this speed (yd/s); its sd at one plateau's length; the effort sd added when the context says full speed. */
++const LOOK_SECONDS = 0.6;
++const LOOK_FLAT = 1.0;
++const LOOK_MIN_SPEED = 4;
++const LOOK_SD = 0.2;
++/** A burst look: from under this speed to 60% of his believed top speed; the sight error of its mean acceleration (yd/s^2). */
++const BURST_FROM = 1.5;
++const BURST_SD = 1.0;
++/** The huddle channel (stated choices, not measured): items per player per play, loss by the receiver's awareness, and the
++ * sd a told value carries on top of the teller's. */
++const HUDDLE_ITEMS = 2;
++const huddleLost = (awareness01: number) => 0.15 - 0.13 * awareness01;
++const TOLD_SD = 0.1;
++
++const normPdf = (x: number) => Math.exp(-0.5 * x * x) / Math.sqrt(2 * Math.PI);
++/** Standard normal CDF (Abramowitz-Stegun 7.1.26 erf). */
++const normCdf = (x: number) => { const z = Math.abs(x) / Math.SQRT2, t = 1 / (1 + 0.3275911 * z);
++  const erf = 1 - (((((1.061405429 * t - 1.453152027) * t) + 1.421413741) * t - 0.284496736) * t + 0.254829592) * t * Math.exp(-z * z);
++  return 0.5 * (1 + Math.sign(x) * erf); };
++const prior = (cap: Cap, weightLb: number, heightIn: number) => {
++  const u = (weightLb - 250) / 50, h = (heightIn - 74) / 2, c = PRIOR[cap].c;
++  return c[0] + c[1] * u + c[2] * u * u + c[3] * h;
++};
++
++/** One holder's belief about one man: his evidence and its combination. */
++export class Belief {
++  readonly entries: Entry[] = [];
++  private cache: Partial<Record<Cap, { mean: number; sd: number; floor: number }>> = {};
++  add(e: Entry): void { this.entries.push(e); delete this.cache[e.cap]; }
++  get(cap: Cap): { mean: number; sd: number; floor: number } {
++    const hit = this.cache[cap];
++    if (hit) return hit;
++    let w = 0, wm = 0, floor = -Infinity;
++    for (const e of this.entries) {
++      if (e.cap !== cap) continue;
++      if (e.kind === 'floor') floor = Math.max(floor, e.value);
++      else { const p = 1 / (e.sd * e.sd); w += p; wm += p * e.value; }
++    }
++    const mean = w > 0 ? wm / w : 0, sd = w > 0 ? 1 / Math.sqrt(w) : Infinity;
++    // A seen floor truncates the estimate (he can do at least this): the mean and sd of the prior-and-film normal above it.
++    if (Number.isFinite(floor) && Number.isFinite(sd) && sd > 0) {
++      const a = (floor - mean) / sd;
++      if (a > 6) return (this.cache[cap] = { mean: floor, sd: sd / a, floor });
++      const lam = normPdf(a) / Math.max(1e-12, 1 - normCdf(a));
++      return (this.cache[cap] = { mean: mean + sd * lam, sd: sd * Math.sqrt(Math.max(1e-6, 1 + a * lam - lam * lam)), floor });
++    }
++    return (this.cache[cap] = { mean: Math.max(mean, floor), sd, floor });
++  }
++  caps(): Caps {
++    const vmax = this.get('vmax').mean, accel = Math.max(1, this.get('accel').mean);
++    return { vmax, tau: vmax / accel, brake: this.get('brake').mean, lateral: this.get('lateral').mean };
++  }
++}
++
++interface Track { since: number; lastT: number; lastSpeed: number; sum: number; n: number; emitted: number | null;
++  burstFrom: number | null; burstV0: number }
++
++/** A game's beliefs: every holder's, by player id, about every man he has evidence on. One store per game; a play without
++ * one gets a fresh store (its beliefs start from build and film). */
++export class BeliefStore {
++  play = 0;
++  private held = new Map<string, Map<string, Belief>>();
++  private tracks = new Map<string, Track>();
++  /** This play's own looks, for the huddle: holder id -> target id -> the step his look made in vmax. */
++  private seenThisPlay = new Map<string, Map<string, number>>();
++  constructor(readonly seed: number | string) {}
++
++  belief(holder: Agent, target: Agent): Belief {
++    let mine = this.held.get(holder.player.id);
++    if (!mine) this.held.set(holder.player.id, mine = new Map());
++    let b = mine.get(target.player.id);
++    if (!b) {
++      mine.set(target.player.id, b = this.seedBelief(holder, target));
++      this.flushPending(holder.player.id, target.player.id, b);
++    }
++    return b;
++  }
++
++  private seedBelief(holder: Agent, target: Agent): Belief {
++    const b = new Belief(), m = target.player.measurables;
++    // Appearance: his build as this holder sees it (one weight error per holder, man and game).
++    const wSeen = m.weightLb + new Rng(`bb-appear|${this.seed}|${holder.player.id}|${target.player.id}`).normal(0, APPEAR_WEIGHT_SD);
++    for (const cap of CAPS) {
++      const slope = (prior(cap, wSeen + 1, m.heightIn) - prior(cap, wSeen - 1, m.heightIn)) / 2;
++      b.add({ cap, value: prior(cap, wSeen, m.heightIn), sd: Math.hypot(PRIOR[cap].sd, slope * APPEAR_WEIGHT_SD), kind: 'measure',
++        source: { kind: 'appearance', play: this.play, t: 0 } });
++    }
++    // Film: the opposing staff's report on him (every holder of a belief about him is on the other team), truth plus one
++    // error per game, tighter for a man with more snaps on film. A man with none has no film.
++    const n = SNAPS_PER_YEAR * target.player.experience;
++    if (n > 0) {
++      const rng = new Rng(`bb-film|${this.seed}|${target.player.id}`), p = target.profile;
++      const truth: Record<Cap, number> = { vmax: p.vmax, accel: p.vmax / p.tau, brake: p.brake, lateral: p.lateral };
++      for (const cap of CAPS) {
++        const sd = FILM_SD0[cap] / Math.sqrt(1 + n / (N0_PER_STUDY * STUDY));
++        b.add({ cap, value: truth[cap] + rng.normal(0, sd), sd, kind: 'measure', source: { kind: 'film', from: 'staff', play: this.play, t: 0 } });
++      }
++    }
++    return b;
++  }
++
++  /** What the holder believes the man's capacities are. */
++  caps(holder: Agent, target: Agent): Caps { return this.belief(holder, target).caps(); }
++
++  /**
++   * His own look at the man this tick, from the picture his decision already holds (only attended men are fed). What he sees a
++   * man do is a lower bound on what he can do, never a sample of it: most of what he sees is a man not at full effort (a route
++   * runs below top speed: staged go, 2026-11-24, seen 8.7 yd/s at 4.5 s of a true 10.9). A plateau of seen speed held
++   * LOOK_SECONDS is a floor on his top speed; a rise from near rest is a floor on his burst. The belief is the build-and-film
++   * estimate truncated at the floor (Belief.get), so seeing 9.2 proves at least 9.2 at once and seeing 6 proves nothing. Each look is
++   * one entry, made once per plateau; nothing is re-estimated per tick.
++   */
++  look(holder: Agent, target: Agent, cue: Perceived, t: number, awareness01: number): void {
++    if (cue.stale) return;
++    const key = `${holder.player.id}|${target.player.id}`, speed = Math.hypot(cue.vel.x, cue.vel.y);
++    let tr = this.tracks.get(key);
++    if (!tr) this.tracks.set(key, tr = { since: t, lastT: t, lastSpeed: speed, sum: 0, n: 0, emitted: null, burstFrom: null, burstV0: 0 });
++    const dt = t - tr.lastT;
++    if (speed < BURST_FROM) { tr.burstFrom = t; tr.burstV0 = speed; }
++    const flat = dt > 0 && Math.abs(speed - tr.lastSpeed) / dt < LOOK_FLAT;
++    if (dt > 0 && (!flat || speed < LOOK_MIN_SPEED)) { tr.since = t; tr.sum = 0; tr.n = 0; tr.emitted = null; }
++    if (speed >= LOOK_MIN_SPEED && (dt === 0 || flat)) {
++      tr.sum += speed; tr.n++;
++    }
++    const b = this.belief(holder, target);
++    // Burst: his mean acceleration over a rise from near rest to 60% of the top speed he believes. A man's acceleration only
++    // falls as his speed rises, so the mean over the rise is a lower bound on his burst from rest (vmax / tau), whatever his
++    // effort; less the sight error of the two speeds.
++    if (tr.burstFrom !== null && speed >= 0.6 * b.get('vmax').mean) {
++      const dt60 = t - tr.burstFrom;
++      if (dt60 > 0.1 && this.registers(key, 'burst', awareness01)) {
++        b.add({ cap: 'accel', value: (speed - tr.burstV0) / dt60 - BURST_SD, sd: BURST_SD, kind: 'floor', source: { kind: 'saw', channel: 'own', play: this.play, t } });
++      }
++      tr.burstFrom = null;
++    }
++    if (tr.n > 0 && t - tr.since >= LOOK_SECONDS && tr.emitted === null) {
++      tr.emitted = t;
++      if (this.registers(key, `look${tr.since.toFixed(2)}`, awareness01)) {
++        const before = b.get('vmax').mean, v = tr.sum / tr.n, sd = LOOK_SD * (1.25 - 0.5 * awareness01);
++        b.add({ cap: 'vmax', value: v - 2 * sd, sd, kind: 'floor', source: { kind: 'saw', channel: 'own', play: this.play, t } });
++        let mine = this.seenThisPlay.get(holder.player.id);
++        if (!mine) this.seenThisPlay.set(holder.player.id, mine = new Map());
++        mine.set(target.player.id, Math.max(mine.get(target.player.id) ?? 0, Math.abs(b.get('vmax').mean - before)));
++      }
++    }
++    tr.lastT = t; tr.lastSpeed = speed;
++  }
++
++  /** Whether he takes a clear look in at all (0.7 + 0.3 x awareness; stated choice), drawn on the store's own stream. */
++  private registers(key: string, what: string, awareness01: number): boolean {
++    return new Rng(`bb-reg|${this.seed}|${this.play}|${key}|${what}`).next() < 0.7 + 0.3 * awareness01;
++  }
++
++  /**
++   * The huddle, between plays: each player on the field tells his unit's men on the field about the opponents he took the
++   * biggest steps on this play (HUDDLE_ITEMS), as `told` entries carrying his own evidence plus TOLD_SD; a message is lost by
++   * the receiver's awareness. Only that unit hears it (the defense does not pass to its own offense).
++   */
++  huddle(units: Array<Array<{ id: string; awareness01: number }>>): void {
++    for (const unit of units) {
++      for (const teller of unit) {
++        const seen = this.seenThisPlay.get(teller.id);
++        if (!seen) continue;
++        const top = [...seen].sort((p, q) => q[1] - p[1]).slice(0, HUDDLE_ITEMS);
++        for (const [targetId] of top) {
++          // He tells what he saw, not what he believes: his own looks from this play, re-sourced as told. His build prior
++          // and the staff's film are the hearer's too already; passing them on would count them twice.
++          const saw = (this.held.get(teller.id)?.get(targetId)?.entries ?? []).filter((e) => e.source.kind === 'saw' && e.source.play === this.play);
++          if (!saw.length) continue;
++          for (const hearer of unit) {
++            if (hearer.id === teller.id) continue;
++            if (new Rng(`bb-huddle|${this.seed}|${this.play}|${teller.id}|${hearer.id}|${targetId}`).next() < huddleLost(hearer.awareness01)) continue;
++            const told: Entry[] = saw.map((e) => ({ ...e, sd: Math.hypot(e.sd, TOLD_SD), value: e.kind === 'floor' ? e.value - TOLD_SD : e.value,
++              source: { kind: 'told', from: teller.id, channel: 'huddle', play: this.play, t: 0 } }));
++            // A man he has not met yet: kept until his belief of him is first made.
++            const b = this.held.get(hearer.id)?.get(targetId);
++            if (b) for (const e of told) b.add(e); else this.pending(hearer.id, targetId).push(...told);
++          }
++        }
++      }
++    }
++    this.seenThisPlay.clear();
++    this.tracks.clear();
++    this.play++;
++  }
++
++  private waiting = new Map<string, Entry[]>();
++  private pending(holderId: string, targetId: string): Entry[] {
++    const k = `${holderId}|${targetId}`;
++    let l = this.waiting.get(k);
++    if (!l) this.waiting.set(k, l = []);
++    return l;
++  }
++  /** Entries told to a holder about a man before he had a belief of him are added when the belief is first made. */
++  private flushPending(holderId: string, targetId: string, b: Belief): void {
++    const k = `${holderId}|${targetId}`, l = this.waiting.get(k);
++    if (l) { for (const e of l) b.add(e); this.waiting.delete(k); }
++  }
++}
++
++/** The capacities `holder` takes `target` to have: his belief (BELIEVED_BODY), else the man's own, as before. */
++export function believedCaps(sim: { beliefs: BeliefStore | null }, holder: Agent, target: Agent): Caps {
++  return BELIEVED_BODY && sim.beliefs ? sim.beliefs.caps(holder, target) : target.profile;
++}
++
++/** Feed a decision's own picture of a man to the holder's belief (BELIEVED_BODY; a no-op off). */
++export function lookAt(sim: { beliefs: BeliefStore | null; t: number }, holder: Agent, target: Agent, cue: Perceived): void {
++  if (BELIEVED_BODY && sim.beliefs) sim.beliefs.look(holder, target, cue, sim.t, Math.min(1, Math.max(0, holder.r('awareness'))));
++}
+diff --git a/src/sim/coverage-leverage.ts b/src/sim/coverage-leverage.ts
+index 0c398b435..31b41a772 100644
+--- a/src/sim/coverage-leverage.ts
++++ b/src/sim/coverage-leverage.ts
+@@ -18,7 +18,7 @@ export class StemAcceleration {
+   private acceleration = 0;
+   get value(): number { return this.acceleration; }
+   /** Fold in this tick's sight of him (no change unless it is a newer sample). */
+-  observe(cue: Perceived, receiver: PhysicalProfile, now: number): number {
++  observe(cue: Perceived, receiver: Pick<PhysicalProfile, 'vmax' | 'tau' | 'brake'>, now: number): number {
+     const stamp = now - (cue.age ?? 0), previous = this.previous;
+     if (!previous || stamp > previous.stamp + 1e-9) {
+       const dt = previous ? stamp - previous.stamp : 0;
+@@ -47,7 +47,7 @@ export class DeepCoverage {
+   /** The receiver's upfield acceleration in this defender's picture (the last estimate choose made). */
+   get seenAcceleration(): number { return this.stem.value; }
+ 
+-  choose(a: Agent, seen: Pick<Perceived, 'pos' | 'vel'>, cue: Perceived, receiver: PhysicalProfile,
++  choose(a: Agent, seen: Pick<Perceived, 'pos' | 'vel'>, cue: Perceived, receiver: Pick<PhysicalProfile, 'vmax' | 'tau' | 'brake'>,
+     cushion: number, original: MoveCommand, now: number,
+     model: Parameters<typeof previewFreeMovement>[4]): MoveCommand {
+     this.stem.observe(cue, receiver, now);
+diff --git a/src/sim/coverage-read.ts b/src/sim/coverage-read.ts
+index 153378bef..e964751db 100644
+--- a/src/sim/coverage-read.ts
++++ b/src/sim/coverage-read.ts
+@@ -9,7 +9,7 @@ import type { Perceived } from './perception.js';
+ export class RouteObservation {
+   private previous: { t: number; speed: number } | null = null;
+ 
+-  read(cue: Perceived, t: number, profile: PhysicalProfile, horizon: number, confidence: number): Perceived {
++  read(cue: Perceived, t: number, profile: Pick<PhysicalProfile, 'brake' | 'lateral'>, horizon: number, confidence: number): Perceived {
+     const speed = Math.hypot(cue.vel.x, cue.vel.y);
+     const previous = this.previous;
+     this.previous = { t, speed };
+diff --git a/src/sim/coverage/reads.ts b/src/sim/coverage/reads.ts
+index e5d0e3d66..59cbef49c 100644
+--- a/src/sim/coverage/reads.ts
++++ b/src/sim/coverage/reads.ts
+@@ -10,6 +10,7 @@
+  * which is how real exchanges bust. Nothing here knows the route that was
+  * called; it only sees movement.
+  */
++import { believedCaps, lookAt } from '../believed-body.js';
+ import { clamp, type Vec2 } from '../../core/vec.js';
+ import type { ReceiverRef } from '../../playbook/types.js';
+ import type { Agent } from '../agent.js';
+@@ -103,7 +104,9 @@ export class ReleaseReader {
+     const m = this.memory.get(r);
+     if (!m) return null;
+     const a = this.a;
+-    const seen = m.obs.read(sim.see(a, r), sim.t, r.profile, a.profile.reactionTime, a.r('anticipation') * a.mind.focus);
++    const cue = sim.see(a, r);
++    lookAt(sim, a, r, cue);
++    const seen = m.obs.read(cue, sim.t, believedCaps(sim, a, r), a.profile.reactionTime, a.r('anticipation') * a.mind.focus);
+     // A back declares his side when he releases.
+     if (m.outSign === 0 && Math.abs(seen.vel.y) > 1.5) m.outSign = Math.sign(seen.vel.y);
+     const outSign = m.outSign || 1;
+diff --git a/src/sim/playsim.ts b/src/sim/playsim.ts
+index e53e9dab2..9436b9e0f 100644
+--- a/src/sim/playsim.ts
++++ b/src/sim/playsim.ts
+@@ -1,3 +1,4 @@
++import { BELIEVED_BODY, BeliefStore } from './believed-body.js';
+ import { shouldersOf } from '../physics/kinematics.js';
+ /**
+  * The play simulator: 22 agents on a continuous field, ticked at 20 Hz.
+@@ -101,6 +102,8 @@ export interface PlaySetup {
+   recordLevel?: ReplayLevel;
+   /** Energy at the snap by player id (0–1). */
+   energy?: Map<string, number>;
++  /** BELIEVED_BODY: the game's beliefs about opponents' capacities (one store per game; absent, the play makes its own). */
++  beliefs?: BeliefStore;
+   manPrefs?: ManPreference;
+   /** Ball carriers try to get out of bounds (2-minute drill). */
+   hurry?: boolean;
+@@ -200,6 +203,8 @@ const outOfField = (p: { x: number; y: number }): boolean => p.x <= 0 || p.x >=
+ export class PlaySim {
+   readonly dt = DT;
+   readonly rng: Rng;
++  /** BELIEVED_BODY: what each player believes of the opponents' capacities (null with the flag off). */
++  readonly beliefs: BeliefStore | null;
+   private readonly streams = new Map<string, Rng>();
+   t = 0;
+   readonly agents: Agent[] = [];
+@@ -358,6 +363,7 @@ export class PlaySim {
+     // Normalize once before alignment, actor indices and any ordered consumer.
+     const offense = orderedOffense(setup.offense), defense = orderedDefense(setup.defense);
+     this.rng = typeof setup.seed === 'number' ? new Rng(setup.seed) : setup.seed;
++    this.beliefs = BELIEVED_BODY ? setup.beliefs ?? new BeliefStore(typeof setup.seed === 'number' ? setup.seed : 'play') : null;
+     this.stagedThrow = setup.stagedThrow ?? null;
+     this.coverageScouting = setup.coverageScouting;
+     this.los = setup.los;
+diff --git a/test/believed-body.test.ts b/test/believed-body.test.ts
+new file mode 100644
+index 000000000..2f7a94b9e
+--- /dev/null
++++ b/test/believed-body.test.ts
+@@ -0,0 +1,77 @@
++// BELIEVED_BODY (Flex, 2026-11-24; docs/reviews/2026-11-24-believed-body.md): a holder's belief of an opponent's capacities
++// from his build seen, the staff's film and his own looks; the huddle passes what a player saw, not what he believes.
++import { describe, expect, it } from 'vitest';
++import { Rng } from '../src/core/rng.js';
++import { generateTeam } from '../src/league/team.js';
++import { derivePhysical } from '../src/players/physical.js';
++import { BeliefStore, PRIOR_FIT } from '../src/sim/believed-body.js';
++import type { Agent } from '../src/sim/agent.js';
++import type { Perceived } from '../src/sim/perception.js';
++
++const team = generateTeam(new Rng(77), 'T', 'T', { strength: 0.5 });
++const wr = team.roster.find((p) => p.position === 'WR')!, cb = team.roster.find((p) => p.position === 'CB')!, s = team.roster.find((p) => p.position === 'S')!;
++const agent = (p: typeof wr, experience = p.experience): Agent =>
++  ({ player: { ...p, experience }, profile: derivePhysical(p), slot: p.position } as unknown as Agent);
++const cue = (vx: number, carrying = false): Perceived => ({ pos: { x: 0, y: 0 }, vel: { x: vx, y: 0 }, stance: null, facing: 0, carrying });
++
++describe('BELIEVED_BODY: the believed body', () => {
++  it('the build prior is the engine\'s own population relation (re-fitted here on 16 generated teams)', () => {
++    const rows: Array<[number, number, number]> = [];
++    for (let t = 0; t < 16; t++) for (const p of generateTeam(new Rng(9000 + t), 'x', 'x', { strength: 0.5 }).roster) {
++      if (p.position === 'K' || p.position === 'P') continue;
++      rows.push([p.measurables.weightLb, p.measurables.heightIn, derivePhysical(p).vmax]);
++    }
++    const c = PRIOR_FIT.vmax.c;
++    const resid = rows.map(([w, h, v]) => { const u = (w - 250) / 50, hh = (h - 74) / 2; return v - (c[0] + c[1] * u + c[2] * u * u + c[3] * hh); });
++    const mean = resid.reduce((a, b) => a + b, 0) / resid.length, sd = Math.sqrt(resid.reduce((a, b) => a + b * b, 0) / resid.length);
++    expect(Math.abs(mean)).toBeLessThan(0.05);
++    expect(Math.abs(sd - PRIOR_FIT.vmax.sd)).toBeLessThan(0.05);
++  });
++
++  it('a rookie starts at his build (sd about 0.26); a veteran with film starts tight', () => {
++    const store = new BeliefStore('t1');
++    const rookie = store.belief(agent(cb), agent(wr, 0)).get('vmax');
++    expect(rookie.sd).toBeGreaterThan(0.22);
++    expect(rookie.sd).toBeLessThan(0.30);
++    const vet = new BeliefStore('t2').belief(agent(cb), agent(wr, 6)).get('vmax');
++    expect(vet.sd).toBeLessThan(0.07);
++  });
++
++  it('what he sees is a lower bound: seeing 10.4 proves at least about 10.1 at once; seeing 6 proves nothing', () => {
++    const run = (v: number, carrying = false) => {
++      const store = new BeliefStore('t3'), h = agent(cb), r = agent(wr, 0);
++      const before = store.belief(h, r).get('vmax');
++      for (let t = 0; t <= 0.8 + 1e-9; t += 0.05) store.look(h, r, cue(v, carrying), t, 1);
++      return { before, after: store.belief(h, r).get('vmax') };
++    };
++    const fast = run(10.4);
++    expect(fast.after.floor).toBeGreaterThan(10);
++    expect(fast.after.mean).toBeGreaterThan(fast.after.floor);
++    expect(fast.after.sd).toBeLessThan(fast.before.sd);
++    const slow = run(6);
++    expect(slow.after.mean).toBeCloseTo(slow.before.mean, 6);
++    expect(slow.after.sd).toBeCloseTo(slow.before.sd, 6);
++    // Carrying or not, a plateau is a floor: he is seldom at full effort.
++    expect(run(9.6, true).after.floor).toBeCloseTo(run(9.6, false).after.floor, 9);
++  });
++
++  it('one look is one entry: a held plateau does not re-score every tick', () => {
++    const store = new BeliefStore('t4'), h = agent(cb), r = agent(wr, 0);
++    for (let t = 0; t <= 2.0 + 1e-9; t += 0.05) store.look(h, r, cue(9.4, true), t, 1);
++    expect(store.belief(h, r).entries.filter((e) => e.source.kind === 'saw').length).toBe(1);
++  });
++
++  it('the huddle passes what he saw, not his prior or film: the hearer gets the floor, nothing else', () => {
++    const store = new BeliefStore('t5'), teller = agent(cb), hearer = agent(s), r = agent(wr, 0);
++    store.belief(hearer, r);
++    for (let t = 0; t <= 0.8 + 1e-9; t += 0.05) store.look(teller, r, cue(10.4), t, 1);
++    store.huddle([[{ id: teller.player.id, awareness01: 1 }, { id: hearer.player.id, awareness01: 1 }]]);
++    const b = store.belief(hearer, r), told = b.entries.filter((e) => e.source.kind === 'told');
++    expect(told.length).toBe(1);
++    expect(told[0].kind).toBe('floor');
++    expect(told[0].source.from).toBe(teller.player.id);
++    expect(b.entries.filter((e) => e.source.kind === 'appearance' || e.source.kind === 'film').length).toBe(4); // his own, once
++    expect(b.get('vmax').floor).toBeGreaterThan(9.9);
++    expect(b.get('vmax').mean).toBeGreaterThan(b.get('vmax').floor);
++  });
++});
+diff --git a/test/information-guard-allowlist.ts b/test/information-guard-allowlist.ts
+index 1b7ec49fc..255d8d222 100644
+--- a/test/information-guard-allowlist.ts
++++ b/test/information-guard-allowlist.ts
+@@ -37,10 +37,8 @@ export const INFORMATION_DEBT: InformationDebt[] = [
+   { file: 'src/sim/behaviors/common.ts', key: 'capacity.profile.brake', reads: 2, class: 'leak', owner: 'Flex', since: '2026-11-24', why: "another player's true physical capacity in a decision; read it through believed(holder, B) (believed-body note, docs/reviews/2026-11-24-believed-body.md, §8 migration)" },
+   { file: 'src/sim/behaviors/common.ts', key: 'capacity.profile.tau', reads: 2, class: 'leak', owner: 'Flex', since: '2026-11-24', why: "another player's true physical capacity in a decision; read it through believed(holder, B) (believed-body note, docs/reviews/2026-11-24-believed-body.md, §8 migration)" },
+   { file: 'src/sim/behaviors/common.ts', key: 'capacity.profile.vmax', reads: 3, class: 'leak', owner: 'Flex', since: '2026-11-24', why: "another player's true physical capacity in a decision; read it through believed(holder, B) (believed-body note, docs/reviews/2026-11-24-believed-body.md, §8 migration)" },
+-  { file: 'src/sim/behaviors/defense.ts', key: 'capacity.profile', reads: 6, class: 'leak', owner: 'Flex', since: '2026-11-24', why: "another player's true physical capacity in a decision; read it through believed(holder, B) (believed-body note, docs/reviews/2026-11-24-believed-body.md, §8 migration)" },
++  { file: 'src/sim/behaviors/defense.ts', key: 'capacity.profile', reads: 1, class: 'leak', owner: 'Flex', since: '2026-11-24', why: "another player's true physical capacity in a decision; read it through believed(holder, B) (believed-body note, docs/reviews/2026-11-24-believed-body.md, §8 migration)" },
+   { file: 'src/sim/behaviors/defense.ts', key: 'capacity.profile.maxCatchHeight', reads: 1, class: 'leak', owner: 'Flex', since: '2026-11-24', why: "another player's true physical capacity in a decision; read it through believed(holder, B) (believed-body note, docs/reviews/2026-11-24-believed-body.md, §8 migration)" },
+-  { file: 'src/sim/behaviors/defense.ts', key: 'capacity.profile.tau', reads: 2, class: 'leak', owner: 'Flex', since: '2026-11-24', why: "another player's true physical capacity in a decision; read it through believed(holder, B) (believed-body note, docs/reviews/2026-11-24-believed-body.md, §8 migration)" },
+-  { file: 'src/sim/behaviors/defense.ts', key: 'capacity.profile.vmax', reads: 4, class: 'leak', owner: 'Flex', since: '2026-11-24', why: "another player's true physical capacity in a decision; read it through believed(holder, B) (believed-body note, docs/reviews/2026-11-24-believed-body.md, §8 migration)" },
+   { file: 'src/sim/behaviors/qb.ts', key: 'capacity.profile', reads: 1, class: 'known', owner: 'Flex', since: '2026-11-24', why: "a teammate's capacity, known from practice (believed-body decision 1), or the actor's own body under another name" },
+   { file: 'src/sim/behaviors/qb.ts', key: 'capacity.profile', reads: 11, class: 'leak', owner: 'Flex', since: '2026-11-24', why: "another player's true physical capacity in a decision; read it through believed(holder, B) (believed-body note, docs/reviews/2026-11-24-believed-body.md, §8 migration)" },
+   { file: 'src/sim/behaviors/qb.ts', key: 'capacity.profile.maxCatchHeight', reads: 1, class: 'leak', owner: 'Flex', since: '2026-11-24', why: "another player's true physical capacity in a decision; read it through believed(holder, B) (believed-body note, docs/reviews/2026-11-24-believed-body.md, §8 migration)" },
+@@ -49,8 +47,9 @@ export const INFORMATION_DEBT: InformationDebt[] = [
+   { file: 'src/sim/behaviors/qb.ts', key: 'capacity.profile.vmax', reads: 3, class: 'known', owner: 'Flex', since: '2026-11-24', why: "a teammate's capacity, known from practice (believed-body decision 1), or the actor's own body under another name" },
+   { file: 'src/sim/behaviors/qb.ts', key: 'capacity.profile.vmax', reads: 2, class: 'leak', owner: 'Flex', since: '2026-11-24', why: "another player's true physical capacity in a decision; read it through believed(holder, B) (believed-body note, docs/reviews/2026-11-24-believed-body.md, §8 migration)" },
+   { file: 'src/sim/behaviors/receiver.ts', key: 'capacity.profile', reads: 3, class: 'leak', owner: 'Flex', since: '2026-11-24', why: "another player's true physical capacity in a decision; read it through believed(holder, B) (believed-body note, docs/reviews/2026-11-24-believed-body.md, §8 migration)" },
++  { file: 'src/sim/believed-body.ts', key: 'capacity.profile', reads: 1, class: 'leak', owner: 'Flex', since: '2026-11-24', why: "BELIEVED_BODY off path: believedCaps returns the man's true capacities, as the consumers read them before; goes when the flag is promoted" },
++  { file: 'src/sim/believed-body.ts', key: 'capacity.profile', reads: 1, class: 'perception', owner: 'Flex', since: '2026-11-24', why: "BELIEVED_BODY's producer: the staff's film, the target's true capacities plus one error per game (seedBelief); its only reader is the belief it seeds" },
+   { file: 'src/sim/catch-choice.ts', key: 'capacity.profile', reads: 1, class: 'leak', owner: 'Flex', since: '2026-11-24', why: "another player's true physical capacity in a decision; read it through believed(holder, B) (believed-body note, docs/reviews/2026-11-24-believed-body.md, §8 migration)" },
+-  { file: 'src/sim/coverage/reads.ts', key: 'capacity.profile', reads: 1, class: 'leak', owner: 'Flex', since: '2026-11-24', why: "another player's true physical capacity in a decision; read it through believed(holder, B) (believed-body note, docs/reviews/2026-11-24-believed-body.md, §8 migration)" },
+   { file: 'src/sim/motion.ts', key: 'capacity.profile.vmax', reads: 2, class: 'known', owner: 'Flex', since: '2026-11-24', why: "a teammate's capacity, known from practice (believed-body decision 1), or the actor's own body under another name" },
+   { file: 'src/sim/qbmind.ts', key: 'capacity.profile.reactionTime', reads: 1, class: 'known', owner: 'Flex', since: '2026-11-24', why: "a teammate's capacity, known from practice (believed-body decision 1), or the actor's own body under another name" },
+   { file: 'src/sim/run-fits.ts', key: 'capacity.profile.vmax', reads: 1, class: 'leak', owner: 'Flex', since: '2026-11-24', why: "another player's true physical capacity in a decision; read it through believed(holder, B) (believed-body note, docs/reviews/2026-11-24-believed-body.md, §8 migration)" },
