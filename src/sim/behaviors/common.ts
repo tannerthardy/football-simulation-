@@ -126,16 +126,35 @@ function bendTarget(sim: PlaySim, a: Agent, target: Agent, seen: import('../perc
   return rate > 0 ? { heading, rate } : null;
 }
 /** The forecast polyline: heading turns from h0 toward hT at `rate`, distance along it from `dist(t)`. */
-function bentPath(p0: Vec2, h0: number, hT: number, rate: number, dist: (t: number) => number, horizon: number): Vec2[] {
+function bentPath(p0: Vec2, h0: number, hT: number, rate: number, dist: (t: number) => number, horizon: number, upX = 1): Vec2[] {
   const out: Vec2[] = [{ x: p0.x, y: p0.y }];
   let h = h0, x = p0.x, y = p0.y, last = 0;
   for (let t = BEND_STEP; t <= horizon + 1e-9; t += BEND_STEP) {
     const dh = angleDiff(h, hT); h += Math.sign(dh) * Math.min(Math.abs(dh), rate * BEND_STEP);
     const d = dist(t), step = d - last; last = d;
-    x += Math.cos(h) * step; y = clamp(y + Math.sin(h) * step, 0, FIELD_WIDTH);
+    if (BOUNDARY_BEND) { const q = alongBoundary({ x, y }, Math.cos(h), Math.sin(h), step, upX); x = q.x; y = q.y; }
+    else { x += Math.cos(h) * step; y = clamp(y + Math.sin(h) * step, 0, FIELD_WIDTH); }
     out.push({ x, y });
   }
   return out;
+}
+
+/** BOUNDARY_BEND (experimental, off; BOUNDARY_BEND=1 turns it on). A forecast carrier who meets the sideline turns
+ * along it and keeps his pace: the boundary bends his path, it does not shorten it. Before, the forecast clamped his
+ * lateral motion at the line and kept only its along-field component, so a carrier angling to the sideline at 30-50
+ * deg was forecast at 0.6-0.8 of his speed there.
+ * Why (Rules' tackle geometry operator, 16 default games, 0226f0d3): attempts within 3 yd of the sideline missed 8/24;
+ * on 6 of the 8 the tackler was 3-9 yd upfield and 3-7 yd inside the carrier 1.0 s before, running flat at the line at
+ * 6-8 yd/s; the carrier reached it and ran upfield past him, and he crossed behind. Every defender can see the
+ * sideline; no new constant. Along the line: his along-field direction, or upfield when he has none. */
+export const BOUNDARY_BEND = process.env.BOUNDARY_BEND === '1';
+function alongBoundary(p: Vec2, ux: number, uy: number, d: number, upX: number): Vec2 {
+  const y1 = p.y + uy * d;
+  if (y1 >= 0 && y1 <= FIELD_WIDTH) return { x: p.x + ux * d, y: y1 };
+  const edge = y1 < 0 ? 0 : FIELD_WIDTH;
+  const toEdge = Math.abs(uy) > 1e-9 ? clamp((edge - p.y) / uy, 0, d) : 0;
+  const sx = Math.abs(ux) > 1e-6 ? Math.sign(ux) : upX;
+  return { x: p.x + ux * toEdge + sx * (d - toEdge), y: edge };
 }
 
 export function pursuitPoint(sim: PlaySim, a: Agent, target: Agent, horizon = 3,
@@ -158,13 +177,15 @@ export function pursuitPoint(sim: PlaySim, a: Agent, target: Agent, horizon = 3,
   // speed throughout the horizon. Reassess as new motion becomes visible.
   const tau = 0.3 + 0.3 * a.r('anticipation');
   const V = clamp(sp + acceleration * tau, 0, target.profile.vmax);
+  const upX = sim.attackDir(target.team);
   const straight = (t: number): Vec2 => {
     const d = V * t - (V - sp) * tau * (1 - Math.exp(-t / tau));
+    if (BOUNDARY_BEND) return alongBoundary(seen.pos, heading.x, heading.y, d, upX);
     return { x: seen.pos.x + heading.x * d, y: clamp(seen.pos.y + heading.y * d, 0, FIELD_WIDTH) };
   };
   const bend = BEND_FORECAST && sp > 1 && seen.carrying === true && hasObservedFlight(a)
     ? bendTarget(sim, a, target, seen, Math.atan2(seen.vel.y, seen.vel.x)) : null;
-  const curve = bend ? bentPath(seen.pos, Math.atan2(seen.vel.y, seen.vel.x), bend.heading, bend.rate, (t) => V * t - (V - sp) * tau * (1 - Math.exp(-t / tau)), horizon) : null;
+  const curve = bend ? bentPath(seen.pos, Math.atan2(seen.vel.y, seen.vel.x), bend.heading, bend.rate, (t) => V * t - (V - sp) * tau * (1 - Math.exp(-t / tau)), horizon, upX) : null;
   if (curve) curveOf.set(a, curve); else curveOf.delete(a);
   const path = curve ? (t: number): Vec2 => curve[Math.min(curve.length - 1, Math.max(0, Math.round(t / BEND_STEP)))] : straight;
   const reach = a.profile.radius + target.profile.radius + a.profile.reach * 0.75;
