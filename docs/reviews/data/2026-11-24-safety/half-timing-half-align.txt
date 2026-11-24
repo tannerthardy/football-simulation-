@@ -1,0 +1,92 @@
+
+## NFL, #1 go: halves with #1 vertical and #2 under at 2.5 s: 23
+  #2 release t: 1.20 (1.20-1.40) n 23
+  #2 under/out break t: 1.70 (1.50-2.10) n 20
+  half's first committed move toward #1 t: 1.40 (1.20-1.70) n 21 (none by 2.5 s: 2)
+  move minus #2 break: -0.25 (-0.60--0.03) n 18
+  move minus #2 release: 0.10 (-0.20-0.40) n 21
+  outward speed from the move to 2.5 s (yd/s): 2.46 (1.82-3.07) n 21
+  outward change by 1.0 / 1.5 / 2.0 / 2.5 s: +0.5 / +1.2 / +2.2 / +3.5; to #1 at 2.5 s -8.7
+  decomposition (medians): to #1 at the snap -7.7 + his outward +3.5 - #1's outward +5.5; at the snap #1 15.1 and he 7.9 yd from the ball
+
+## NFL, #1 post/dig/corner/other: halves with #1 vertical and #2 under at 2.5 s: 72
+  #2 release t: 1.30 (1.12-1.68) n 70
+  #2 under/out break t: 1.60 (1.30-2.20) n 61
+  half's first committed move toward #1 t: 1.25 (0.88-1.60) n 40 (none by 2.5 s: 32)
+  move minus #2 break: -0.40 (-1.02-0.10) n 36
+  move minus #2 release: -0.20 (-0.60-0.10) n 39
+  outward speed from the move to 2.5 s (yd/s): 1.38 (1.03-2.22) n 40
+  outward change by 1.0 / 1.5 / 2.0 / 2.5 s: +0.5 / +1.0 / +1.6 / +2.0; to #1 at 2.5 s -1.6
+  decomposition (medians): to #1 at the snap -3.8 + his outward +2.0 - #1's outward -1.4; at the snap #1 10.6 and he 6.4 yd from the ball
+
+## ours HALF_SEAT, #1 go: halves with #1 vertical and #2 under at 2.5 s: 15
+  #2 release t: 1.25 (1.20-1.30) n 12
+  #2 under/out break t: 1.30 (1.30-1.40) n 9
+  half's first committed move toward #1 t: 0.90 (0.80-1.00) n 9 (none by 2.5 s: 6)
+  move minus #2 break: -0.35 (-0.42--0.30) n 4
+  move minus #2 release: -0.30 (-0.45--0.20) n 7
+  HALF_SEAT declaration t: 1.80 (1.50-1.90) n 9 (none by 2.5 s: 6)
+  move minus declaration: -0.70 (-1.00--0.50) n 5
+  outward speed from the move to 2.5 s (yd/s): 2.68 (2.22-2.98) n 9
+  outward change by 1.0 / 1.5 / 2.0 / 2.5 s: +0.6 / +1.6 / +1.6 / +3.1; to #1 at 2.5 s -9.8
+  decomposition (medians): to #1 at the snap -10.1 + his outward +3.1 - #1's outward +3.2; at the snap #1 16.6 and he 6.5 yd from the ball
+
+## ours HALF_SEAT, #1 post/dig/corner/other: halves with #1 vertical and #2 under at 2.5 s: 28
+  #2 release t: 1.30 (1.20-1.40) n 27
+  #2 under/out break t: 1.60 (1.20-2.30) n 23
+  half's first committed move toward #1 t: 0.80 (0.70-1.45) n 19 (none by 2.5 s: 9)
+  move minus #2 break: -0.50 (-1.43-0.05) n 16
+  move minus #2 release: -0.30 (-0.48-0.20) n 18
+  HALF_SEAT declaration t: 1.60 (1.42-1.77) n 14 (none by 2.5 s: 14)
+  move minus declaration: -0.80 (-0.90--0.20) n 9
+  outward speed from the move to 2.5 s (yd/s): 1.43 (0.99-2.57) n 19
+  outward change by 1.0 / 1.5 / 2.0 / 2.5 s: +0.4 / +1.2 / +1.9 / +2.3; to #1 at 2.5 s -5.0
+  decomposition (medians): to #1 at the snap -7.6 + his outward +2.3 - #1's outward +0.1; at the snap #1 13.4 and he 5.7 yd from the ball
+
+## ours HALF_SEAT + HALF_ALIGN, #1 go: halves with #1 vertical and #2 under at 2.5 s: 18
+  #2 release t: 1.30 (1.23-1.30) n 18
+  #2 under/out break t: 1.30 (1.30-2.10) n 15
+  half's first committed move toward #1 t: 1.50 (1.20-1.70) n 12 (none by 2.5 s: 6)
+  move minus #2 break: 0.20 (-0.18-0.37) n 10
+  move minus #2 release: 0.25 (0.02-0.40) n 12
+  HALF_SEAT declaration t: 1.70 (1.52-1.77) n 10 (none by 2.5 s: 8)
+  move minus declaration: -0.10 (-0.22-0.25) n 8
+  outward speed from the move to 2.5 s (yd/s): 2.54 (1.75-2.97) n 12
+  outward change by 1.0 / 1.5 / 2.0 / 2.5 s: +0.1 / +0.8 / +1.8 / +3.0; to #1 at 2.5 s -6.5
+  decomposition (medians): to #1 at the snap -7.6 + his outward +3.0 - #1's outward +1.1; at the snap #1 14.3 and he 7.4 yd from the ball
+
+## ours HALF_SEAT + HALF_ALIGN, #1 post/dig/corner/other: halves with #1 vertical and #2 under at 2.5 s: 43
+  #2 release t: 1.30 (1.20-1.30) n 43
+  #2 under/out break t: 1.40 (1.30-2.20) n 37
+  half's first committed move toward #1 t: 1.60 (1.23-1.95) n 22 (none by 2.5 s: 21)
+  move minus #2 break: 0.15 (-0.03-0.33) n 20
+  move minus #2 release: 0.30 (0.00-0.60) n 22
+  HALF_SEAT declaration t: 1.70 (1.50-1.90) n 23 (none by 2.5 s: 20)
+  move minus declaration: -0.20 (-0.40-0.00) n 17
+  outward speed from the move to 2.5 s (yd/s): 2.16 (1.34-2.76) n 21
+  outward change by 1.0 / 1.5 / 2.0 / 2.5 s: +0.1 / -0.0 / +0.4 / +0.9; to #1 at 2.5 s -5.2
+  decomposition (medians): to #1 at the snap -6.0 + his outward +0.9 - #1's outward +0.4; at the snap #1 13.5 and he 6.7 yd from the ball
+
+## ours HALF_ALIGN only, #1 go: halves with #1 vertical and #2 under at 2.5 s: 14
+  #2 release t: 1.20 (1.10-1.30) n 12
+  #2 under/out break t: 1.35 (1.30-1.58) n 10
+  half's first committed move toward #1 t: 1.40 (1.23-1.60) n 10 (none by 2.5 s: 4)
+  move minus #2 break: 0.00 (-0.33-0.33) n 8
+  move minus #2 release: 0.15 (-0.13-0.55) n 8
+  HALF_SEAT declaration t: - (none by 2.5 s: 14)
+  move minus declaration: -
+  outward speed from the move to 2.5 s (yd/s): 2.04 (0.95-3.13) n 9
+  outward change by 1.0 / 1.5 / 2.0 / 2.5 s: -0.2 / +0.8 / +1.8 / +1.5; to #1 at 2.5 s -7.5
+  decomposition (medians): to #1 at the snap -7.6 + his outward +1.5 - #1's outward +2.4; at the snap #1 15.6 and he 6.8 yd from the ball
+
+## ours HALF_ALIGN only, #1 post/dig/corner/other: halves with #1 vertical and #2 under at 2.5 s: 30
+  #2 release t: 1.30 (1.20-1.30) n 29
+  #2 under/out break t: 2.00 (1.30-2.20) n 29
+  half's first committed move toward #1 t: 1.10 (0.85-1.25) n 19 (none by 2.5 s: 11)
+  move minus #2 break: -0.85 (-1.10--0.20) n 18
+  move minus #2 release: -0.10 (-0.42-0.00) n 18
+  HALF_SEAT declaration t: - (none by 2.5 s: 30)
+  move minus declaration: -
+  outward speed from the move to 2.5 s (yd/s): 2.50 (1.20-3.47) n 19
+  outward change by 1.0 / 1.5 / 2.0 / 2.5 s: +0.6 / +1.5 / +1.8 / +2.1; to #1 at 2.5 s -4.7
+  decomposition (medians): to #1 at the snap -7.4 + his outward +2.1 - #1's outward -0.7; at the snap #1 14.3 and he 5.9 yd from the ball
