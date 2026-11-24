@@ -23,6 +23,9 @@ function fixture(form: string, box: number, flip = false) {
   const authority = vi.spyOn(sim.rng, 'chance').mockReturnValue(true);
   const noise = vi.spyOn(sim.rng, 'normal').mockReturnValue(0);
   vi.spyOn(sim.qbMind, 'pSingleHigh').mockReturnValue(.8);
+  // QB_SCAN: his pre-snap picture's errors are drawn once, at construction (before the noise mock); clear them so the
+  // check draws the picture under the mock (two draws per defender, as the fresh-noise path drew) and sees it exactly.
+  (sim.qbMind as unknown as { scanErr?: Map<unknown, unknown> }).scanErr?.clear();
   sim.defense.forEach((d, i) => { d.body.pos = i < box
     ? { x: sim.los + 1, y: sim.ballY + i - (box - 1) / 2 }
     : { x: sim.los + 10, y: sim.ballY + 15 }; });
@@ -30,7 +33,7 @@ function fixture(form: string, box: number, flip = false) {
 }
 /** QB_SEEN_MAN: on a check that reaches his quick look at the corners, he draws his noise on each corner's depth:
  * two more draws (24 with the flag on, 22 off). */
-const SEEN_MAN_DRAWS = process.env.QB_SEEN_MAN === '1' ? 2 : 0;
+const SEEN_MAN_DRAWS = process.env.QB_SEEN_MAN === '1' && process.env.QB_SCAN === '0' ? 2 : 0; // QB_SCAN: the quick look reads the same scan, no draws
 function check(f: ReturnType<typeof fixture>, quickLook = false) {
   const result = f.sim.qbMind.preSnapCheck(f.sim.offCall, { hurry: false, down: 1, distance: 10 });
   expect(f.authority).toHaveBeenCalledTimes(1);

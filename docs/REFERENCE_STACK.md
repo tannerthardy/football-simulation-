@@ -611,6 +611,20 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
 
 
+## engine-97: the passer's pre-snap picture is his own scan (2026-11-24)
+
+On: `QB_SCAN` and `QB_CANON_SEEN` (Flex; leak removals, QB decision plan §1.6; `=0` restores each). His pre-snap picture is one
+full scan, every defender off by his own error drawn once per play (0.3 + 1.0 x (1 - recognition) yd deep, 0.7 of that across),
+and the coverage features, the box count, the screen look and the quick check all read that one picture (off: exact positions
+in memory and four reads with fresh noise each). The canonical looks are built from the personnel and the front's visible
+alignment, not the call object, and the corners are found where he sees them: per side the widest defensive back of the visible
+personnel group within 12 yd of the line and 4+ yd off the ball (off: the CB_S / CB_W labels). Staged corner probe
+(`scripts/diag/eyes/corner-find.mts`, 17 looks incl. press, bunch, condensed, a nub end and rolled safeties): right man 98-100%,
+no side missed; the first rule (9 yd deep, 8+ yd off) missed 40-50% of condensed and heavy sides and fell to quickCheck's default.
+Tests: the box-count check adapted; screen-install's press kill re-recorded as an honest near-margin misread (an off corner at
+5.2 yd seen inside the 5 yd cloud edge; off coverage keeps the screen 26/30 seeds on, 28/30 off; press killed 30/30 either way).
+Red-diff on engine-95: 0 new, 0 fixed. Off hash = develop. Card: Integration's (both on vs both off).
+
 ## engine-95: the ball goes away on what he perceives (2026-11-24)
 
 On: `THROWAWAY_FELT` (QB lane with Integration). Off, a fixed per-passer timer from the set (2.5 + 1.0 composure + 0.6
