@@ -79,6 +79,11 @@ export interface QbReadPlan {
    * (hitches, quick outs), shell = open or closed middle (dragon against lion), leverage = where the key defender lines
    * up (Rules + Coaching, 2026-11-24). */
   pick?: 'cushion' | 'shell' | 'leverage';
+  /** For `pick: 'shell'`: the shell the authored (strong) side is for; the other shell flips it (Flex, 2026-11-24). */
+  pickShell?: 'open' | 'closed';
+  /** An alert and its pre-snap condition, as taught ("alert the go against single-high press"): the read he takes first
+   * when the condition holds in his own pre-snap picture (Flex's module B decides it; Rules authors it). */
+  alert?: { read: number; when: { shell?: 'open' | 'closed'; press?: ReceiverRef; cushionUnder?: number } };
   /** The defender he confirms on the drop (structure picks and most progressions: the middle-of-field safety). */
   confirm: KeyRole | null;
   /** Per coverage family (QBMind's families: cover0, cover1, cover2, tampa2, cover2man, cover3, cover4, cover6), the
