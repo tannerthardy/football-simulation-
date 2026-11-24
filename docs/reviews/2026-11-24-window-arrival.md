@@ -98,3 +98,35 @@ The window's arrival should run the defender as the engine moves him, and start 
 - Then price the coverer through the receiver's forecast, his phase taken from those cues, not a mean.
 - The path terms' pre-break shut is separate (the undercut price, reach-and-release §4) and needs its own check, with
   the same operator on path points.
+
+## Leak control before the build (Integration, 2026-11-24)
+
+Question: does the thrown receiver's coverer close on the spot earlier than coverers of receivers who are not thrown
+to, at the same route phase? If so, a cue reaches him improperly and it goes to Coverage before any QB build.
+Operator `scripts/diag/eyes/leak-control.ts` (+ `leak_control_table.py`, `leak_control_boot.py`), on Coverage's
+aa952b84d (HEAD_FOLLOW + FLIGHT_BREAK; FLIGHT_BREAK exists only there), 16 league games per arm (seeds 11-18, 19-26),
+FLIGHT_BREAK on and =0. At the decision every receiver on a route gets a coverer (nearest defender within 4 yd, the
+DEF_BELIEF definition); the spot is that receiver's own position at the ball's real arrival (same horizon for thrown
+and not); closing is the coverer's velocity toward the spot. Matched on route family and decision-minus-break in 0.2 s
+bins (vertical excluded: no break). Sight: the coverer's head within 100 deg of the passer at the decision.
+
+Raw closing is confounded by the passer's choice: he throws to the man whose coverer is not closing (baseline over
+the 0.3 s before the decision: thrown +0.30 yd/s, not thrown +1.02, FLIGHT_BREAK on). The test is therefore each
+coverer's change from his own baseline, thrown minus not thrown, matched (bootstrap over plays, 95%):
+
+| arm | coverer | windup (decision to release) | first 0.3 s after release |
+|---|---|---|---|
+| FLIGHT_BREAK on | all (557 thrown in cells) | +0.06 [-0.09, +0.20] | +0.40 [+0.19, +0.60] |
+| | sees the passer | +0.02 [-0.10, +0.16] | +0.32 [+0.08, +0.53] |
+| | cannot see him (66) | +0.20 [-0.43, +0.87] | +0.83 [-0.14, +1.93] |
+| FLIGHT_BREAK=0 | all (605) | +0.20 [+0.04, +0.35] | +0.54 [+0.28, +0.71] |
+| | sees the passer | +0.22 [+0.07, +0.35] | +0.53 [+0.31, +0.73] |
+| | cannot see him (85) | +0.01 [-0.59, +0.49] | +0.42 [-0.54, +1.17] |
+
+Reading. In the windup, under FLIGHT_BREAK, the thrown target's coverer does not close earlier than matched
+coverers: the closing he shows there is the route, so the anticipation build (price the coverer through the
+receiver's forecast) is the right repair, not a cue fix. The old paths (FLIGHT_BREAK=0) did show a windup gain, only
+among coverers who see the passer (+0.22: the load/shoulder read, a seen cue), which FLIGHT_BREAK removed. After the
+release the gain (+0.40) is the ball. Open, not a finding: blind coverers after the release, +0.83 on against +0.42
+off, interval through zero (66 throws). A blind man defender may legitimately read his receiver's hands and head;
+whether the engine's cue is that or direct is Coverage's question if they want it.
