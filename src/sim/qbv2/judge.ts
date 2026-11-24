@@ -97,13 +97,19 @@ export const PLAY_BREAKUP = 0.6;
 /** Calibrated on the staged cells (2026-11-24): our engine's defenders who arrive at the catch point pick it about 0.06 of
  * the time (5 picks in 110 arrivals: drivers 0.065, lane 0.04, coverers 0 of 14), against the 0.35 first stated. Scaled by
  * ball skills about the typical (0.5 + skills). The calibration contract keeps checking it. */
-export const PICK_IN_FRONT = 0.06;
+export const PICK_IN_FRONT = 0.06; // superseded by PICK_OF_PLAY; kept for reference in the probes
+/** The share of a defender's plays on the ball that he catches, the same for every role and scaled by his ball skills
+ * about the typical (0.5 + skills). Measured on the staged cells (cal12 + cal14, 2026-11-24): 18 picks in 103 plays on the
+ * ball, 0.17; arrival at the point was the wrong base (most plays come from 1.5-5 yd off it). */
+export const PICK_OF_PLAY = 0.18;
 /** A rusher this close to the line (yd) is a lane man by his hands, not by getting there (chosen). */
 export const RUSH_LINE = 1.5;
 /** A rusher's hands in the ball's low path: the batted ball, typical by role (the engine's batting: 0.04 engaged, 0.12
  * free, scaled by whether he sees the throw; the passer does not know which, so the middle), and the share of those
  * that are caught (a tip to himself or a teammate). Stated choices pending the calibration contract. */
-export const RUSH_BAT = 0.08;
+/** Measured on the staged cells (cal12, 2026-11-24): 7 throws batted by rushers in 377 rusher-in-the-lane cases, 0.019 each
+ * (believed 0.063 of throws at 0.08, actual 0.015; the NFL's is 1-2%). */
+export const RUSH_BAT = 0.02;
 export const BAT_PICK = 0.15;
 /** The ball's first yards out of his hand are climbing: no lane before this far from the passer (yd; chosen). */
 export const LANE_CLEAR = 3;
@@ -143,15 +149,19 @@ export function arriveTime(d: Pick<SeenDefender, 'pos' | 'vel' | 'facing' | 'vma
     if (Math.hypot(to.x - at.x, to.y - at.y) <= r) return s;
     at = { x: at.x + d.vel.x * Math.min(0.05, delay - s), y: at.y + d.vel.y * Math.min(0.05, delay - s) };
   }
-  const dx = to.x - at.x, dy = to.y - at.y, L = Math.hypot(dx, dy) - r;
-  if (L <= 0) return delay;
-  const ux = dx / (L + r), uy = dy / (L + r), along = Math.max(0, d.vel.x * ux + d.vel.y * uy);
+  const dx = to.x - at.x, dy = to.y - at.y, L0 = Math.hypot(dx, dy) - r;
+  if (L0 <= 0) return delay;
+  const ux = dx / (L0 + r), uy = dy / (L0 + r), vu = d.vel.x * ux + d.vel.y * uy, along = Math.max(0, vu);
+  // A man running away from the point first has to stop: his speed away from it takes away/accel to kill, and he covers
+  // away^2/(2 accel) more ground the wrong way while he does (staged V2, 2026-11-24: a safety widening to the flat at 4
+  // yd/s was judged to turn back onto the slant from a standing start, at no cost, and the slant was never thrown).
+  const away = Math.max(0, -vu), stopT = away / Math.max(d.accel, 1e-3), L = L0 + away * stopT / 2;
   const ang = Math.abs(Math.atan2(Math.sin(Math.atan2(uy, ux) - d.facing), Math.cos(Math.atan2(uy, ux) - d.facing)));
   const turn = turnQ * (ang / (Math.PI / 2)) * (1 - along / Math.max(d.vmax, 1e-3));
   const v0 = along, a = Math.max(d.accel, 1e-3), vmax = Math.max(d.vmax, v0);
   const tAcc = (vmax - v0) / a, dAcc = v0 * tAcc + 0.5 * a * tAcc * tAcc;
   const run = L <= dAcc ? (-v0 + Math.sqrt(v0 * v0 + 2 * a * L)) / a : tAcc + (L - dAcc) / vmax;
-  return delay + turn + run;
+  return delay + stopT + turn + run;
 }
 
 /** Which defender, if any, his picture shows covering the receiver: within COVER_RADIUS of where the receiver is now, the
@@ -190,10 +200,10 @@ export function judge(q: ThrowQuestion, defs: SeenDefender[]): Judgment {
   const tBall = q.windup + q.flight, roles: RoleJudged[] = [];
   const recvSig = Math.hypot(q.receiverSpread, LOOK_SEP * (1 - q.res));
   const cov = findCoverer(q, defs);
-  const add = (d: SeenDefender, role: Role, tArr: number, inFront: boolean) => {
+  const add = (d: SeenDefender, role: Role, tArr: number) => {
     const sigma = arriveSigma(d, recvSig, tArr);
     const margin = tBall - tArr, pArrive = phi(margin / sigma);
-    roles.push({ id: d.id, role, margin, sigma, pArrive, pPlay: pArrive * PLAY_BREAKUP, pPick: inFront ? pArrive * PICK_IN_FRONT * (0.5 + d.ballSkills) : 0 });
+    roles.push({ id: d.id, role, margin, sigma, pArrive, pPlay: pArrive * PLAY_BREAKUP, pPick: pArrive * PLAY_BREAKUP * PICK_OF_PLAY * (0.5 + d.ballSkills) });
   };
   if (cov) {
     // Two phases (Coverage's review): he knows the receiver's line, which he sees, not the catch point, until the ball is
@@ -226,8 +236,7 @@ export function judge(q: ThrowQuestion, defs: SeenDefender[]): Judgment {
       }
     }
     const tArr = cue + arriveTime({ ...cov, pos: at, vel }, q.catchAt, cov.reach + PLAY_CLEAR, 0);
-    const towardQB = hyp(cov.pos, q.path[0] ?? cov.pos) < hyp(q.catchAt, q.path[0] ?? q.catchAt);
-    add(cov, 'coverer', tArr, towardQB);
+    add(cov, 'coverer', tArr);
   }
   const laneOf = (d: SeenDefender): { margin: number; sigma: number; pArrive: number; rusher: boolean; pNear?: number } | null => {
     const origin = q.path[0], n = q.path.length - 1;
@@ -249,25 +258,25 @@ export function judge(q: ThrowQuestion, defs: SeenDefender[]): Judgment {
   // The coverer can also undercut the route and take the ball on its line, short of the catch point: the higher of the two.
   if (cov) {
     const lc = laneOf(cov), cr = roles[0];
-    if (lc && !lc.rusher && cr && lc.pArrive > cr.pArrive) roles[0] = { ...cr, margin: lc.margin, sigma: lc.sigma, pArrive: lc.pArrive, pPlay: lc.pArrive * PLAY_BREAKUP, pPick: lc.pArrive * PICK_IN_FRONT * (0.5 + cov.ballSkills) };
+    if (lc && !lc.rusher && cr && lc.pArrive > cr.pArrive) roles[0] = { ...cr, margin: lc.margin, sigma: lc.sigma, pArrive: lc.pArrive, pPlay: lc.pArrive * PLAY_BREAKUP, pPick: lc.pArrive * PLAY_BREAKUP * PICK_OF_PLAY * (0.5 + cov.ballSkills) };
   }
   for (const d of defs) {
     if (d === cov) continue;
     // Lane: under the ball's path where it passes low enough for his leap. A rusher at the line by his hands (the batted
     // ball); a dropper only if he gets there before the ball passes (the body law).
     const lane = laneOf(d);
-    if (lane?.rusher) { roles.push({ id: d.id, role: 'lane', margin: 0, sigma: ARRIVE_SIGMA0, pArrive: 1, pPlay: RUSH_BAT, pPick: RUSH_BAT * BAT_PICK }); continue; }
+    if (lane?.rusher) { roles.push({ id: d.id, role: 'lane', margin: 0, sigma: ARRIVE_SIGMA0, pArrive: 1, pPlay: RUSH_BAT, pPick: RUSH_BAT * PICK_OF_PLAY * (0.5 + d.ballSkills) }); continue; }
     if (lane) {
       // In front of the receiver near the catch: the catch-point model; farther back, our batting rule. The larger.
       const bat = lane.pArrive * LANE_PLAY * (d.facesPasser ? 1 : LANE_PLAY_BLIND) * (0.5 + d.ballSkills), pn = lane.pNear ?? 0;
-      const front = { play: pn * PLAY_BREAKUP, pick: pn * PICK_IN_FRONT * (0.5 + d.ballSkills) }, useFront = front.play > bat;
-      roles.push({ id: d.id, role: 'lane', margin: lane.margin, sigma: lane.sigma, pArrive: lane.pArrive, pPlay: useFront ? front.play : bat, pPick: useFront ? front.pick : bat * LANE_PICK });
+      const front = { play: pn * PLAY_BREAKUP, pick: pn * PLAY_BREAKUP * PICK_OF_PLAY * (0.5 + d.ballSkills) }, useFront = front.play > bat;
+      roles.push({ id: d.id, role: 'lane', margin: lane.margin, sigma: lane.sigma, pArrive: lane.pArrive, pPlay: useFront ? front.play : bat, pPick: (useFront ? front.play : bat) * PICK_OF_PLAY * (0.5 + d.ballSkills) });
       continue;
     }
     if (hyp(d.pos, q.catchAt) > DRIVE_RANGE) continue;
     const start = q.windup + (d.facesPasser ? 0 : ARM_LEAD);
     const tArr = arriveTime(d, q.catchAt, d.reach + PLAY_CLEAR, start);
-    add(d, 'driver', tArr, hyp(d.pos, q.path[0] ?? d.pos) < hyp(q.catchAt, q.path[0] ?? q.catchAt));
+    add(d, 'driver', tArr);
   }
   const notPlayed = roles.reduce((p, r) => p * (1 - r.pPlay), 1), notPicked = roles.reduce((p, r) => p * (1 - r.pPick), 1);
   return { P: q.catchClean * notPlayed, risk: 1 - notPicked, roles };

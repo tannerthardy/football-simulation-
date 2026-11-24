@@ -55,7 +55,9 @@ export interface V2Host {
 }
 
 /** The catch belief with no defender near (stated, Phase 1: the catch model's clean rate stands in until it is wired). */
-export const CATCH_CLEAN = 0.9;
+/** A throw no defender plays is caught this often in our engine (cal14 staged cells, 2026-11-24: 165 of 202; the rest land
+ * uncaught or are dropped). To be replaced by the catch model's own estimate once Tools' catching fix lands. */
+export const CATCH_CLEAN = 0.82;
 /** A key's cue from his picture of the man's velocity (yd/s) relative to the read's side: enter and exit (chosen). */
 const CUE_ENTER = 1.5, CUE_EXIT = 0.8;
 
