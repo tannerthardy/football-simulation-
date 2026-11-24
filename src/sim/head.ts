@@ -25,7 +25,7 @@ export const HEAD = process.env.HEAD === '1';
  * through a head up to 180 deg off his body (scripts/diag/coverage/head-audit.mts, one game: man defenders 815 of
  * 15,451 ticks past 145 deg; the neck allows 45-90 off the body, 145 with the trunk's twist for zone eyes). On, a head
  * nobody turns relaxes to his body facing at the head rate within the neck range (this file's stated model), and the
- * passer's controller-driven head is held within the neck plus the trunk's twist of his body. A man defender's look
+ * passer's head, while a passer's controller runs him, is held within the neck plus the trunk's twist of his body. A man defender's look
  * (his man's hip, then back for the ball) is a later technique; here his head simply follows his body. */
 export const HEAD_FOLLOW = process.env.HEAD_FOLLOW !== '0';
 /** Head turn rate (rad/s) and the view cone about the head: GAZE's. */
@@ -91,8 +91,10 @@ export function stepHeads(sim: PlaySim): void {
       // blocks, pursues or carries), it relaxes to his body like anyone's. Either way it is never further off his body
       // than the neck and the trunk's twist allow (a body that turns inside a tick does not leave his eyes behind him).
       if (HEAD_FOLLOW && a.head !== null && a.head !== undefined) {
-        const k = (a.behavior as { kind?: string } | undefined)?.kind;
-        const driven = k === 'qb-pass' || k === 'qb-handoff' || k === 'mesh' || k === 'pa-fake';
+        // Driven while a passer's controller runs him (any qb-* behaviour, the mesh, the PA fake: they set his head each
+        // tick); once he blocks, pursues, carries or chases a loose ball, nothing does.
+        const k = (a.behavior as { kind?: string } | undefined)?.kind ?? '';
+        const driven = k.startsWith('qb') || k === 'mesh' || k === 'pa-fake';
         a.head = driven ? bodyBound(a, a.head) : turnHead(a, a.head, a.body.facing, step, a.body.facing);
       }
       continue;
