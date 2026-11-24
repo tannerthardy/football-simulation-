@@ -13,7 +13,7 @@ import type { Vec2 } from '../../core/vec.js';
 import type { Agent, Behavior } from '../agent.js';
 import type { PlaySim } from '../playsim.js';
 import { angleTo, track } from '../behaviors/common.js';
-import { believesRun, infoHonest, ManCoverage, OPEN_CARRY, openCarryFacing, playBall, pursueIfLive, runFit, sawThrow, playsThrow, unsureFactor } from '../behaviors/defense.js';
+import { believesRun, continueFlightBreak, infoHonest, ManCoverage, OPEN_CARRY, openCarryFacing, playBall, pursueIfLive, runFit, sawThrow, playsThrow, unsureFactor } from '../behaviors/defense.js';
 import type { ReleaseReader } from './reads.js';
 import { withFacingTechnique } from './orientation.js';
 import { RELEASE_BELIEF } from '../release-belief.js';
@@ -41,6 +41,9 @@ abstract class Technique implements Behavior {
     const live = pursueIfLive(sim, a);
     if (live) return live;
     if (playsThrow(a, sim, null)) return playBall(a, sim, null, TECH_CONT && RELEASE_BELIEF ? () => this.move(a, sim) : undefined);
+    // FLIGHT_BREAK: his flight has landed by his own estimate and the possession read has not yet seen a carrier: the
+    // break keeps its receiver instead of the technique (wall, read, trap) resuming (Defense's overrun class).
+    if (process.env.FLIGHT_BREAK !== '0') { const cont = continueFlightBreak(a, sim); if (cont) return cont; }
     if (believesRun(sim, a)) return runFit(a, sim, this.gap, this.gapSign);
     return this.move(a, sim);
   }
