@@ -1,0 +1,372 @@
+From 0085935c1c31bc708366bad1dab20d38237c837e Mon Sep 17 00:00:00 2001
+From: Gemini <gemini@local>
+Date: Tue, 24 Nov 2026 18:19:29 +0000
+Subject: [PATCH] BLOCK_ANGLE, HOLD_PERSIST, SHED_EXIT, HELPER_HAND_FIGHT,
+ FREE_ARM_2D (off): blocking, holding, shed-exit, and 2D free-arm repairs
+
+---
+ config/baseline.json        |   7 ++-
+ config/reference-stack.json |  77 +++++++++++++++++++++-----
+ src/sim/contact-holding.ts  |   5 +-
+ src/sim/engagement.ts       | 107 +++++++++++++++++++++++++++++++-----
+ src/sim/tackle.ts           |  15 ++++-
+ 5 files changed, 176 insertions(+), 35 deletions(-)
+
+diff --git a/config/baseline.json b/config/baseline.json
+index 26f1b159b..b3466dc82 100644
+--- a/config/baseline.json
++++ b/config/baseline.json
+@@ -508,7 +508,12 @@
+     "RELEASE_BELIEF": "0",
+     "HONEST_TACKLE": "0",
+     "QB_RELEASE": "0",
+-    "OPEN_FIELD": "0"
++    "OPEN_FIELD": "0",
++    "BLOCK_ANGLE": "0",
++    "HOLD_PERSIST": "0",
++    "SHED_EXIT": "0",
++    "HELPER_HAND_FIGHT": "0",
++    "FREE_ARM_2D": "0"
+   },
+   "worldDefaults": {
+     "handContact": "center",
+diff --git a/config/reference-stack.json b/config/reference-stack.json
+index 1638e64b3..6a73c084c 100644
+--- a/config/reference-stack.json
++++ b/config/reference-stack.json
+@@ -41,20 +41,62 @@
+     "note": "Captured 2026-11-13 on the engine-55 default engine (develop 2478e998) with new seeds; not a benchmark any flag was promoted on. Use for run-set deltas (ref:report --set fresh); runSet stays for continuity."
+   },
+   "numeric": {
+-    "INFO_HONEST": { "default": 63, "legacy": 0 },
+-    "SIGHT_STALE": { "default": 7, "legacy": 0 },
+-    "BALL_EST": { "default": 6145, "legacy": 0 },
+-    "APEX_LEVERAGE": { "default": 7, "legacy": 0 },
+-    "END_KEY": { "default": 2, "legacy": 0 },
+-    "ZONE_HOLD": { "default": 114, "legacy": 0 },
+-    "BEND_FORECAST": { "default": 1, "legacy": 0 },
+-    "HAND_MOMENT_CAP": { "default": 150, "legacy": 0 },
+-    "OFF_PEDAL": { "default": 3, "legacy": 0 },
+-    "QB_FOOTWORK": { "default": 3, "legacy": 0 },
+-    "QCORNER": { "default": 0, "legacy": 0 },
+-    "ROB_COMMIT": { "default": 7, "legacy": 0 },
+-    "ARM_BREAK": { "default": 1, "legacy": 0 },
+-    "ZONE_EYES_KEY": { "default": 9, "legacy": 0 }
++    "INFO_HONEST": {
++      "default": 63,
++      "legacy": 0
++    },
++    "SIGHT_STALE": {
++      "default": 7,
++      "legacy": 0
++    },
++    "BALL_EST": {
++      "default": 6145,
++      "legacy": 0
++    },
++    "APEX_LEVERAGE": {
++      "default": 7,
++      "legacy": 0
++    },
++    "END_KEY": {
++      "default": 2,
++      "legacy": 0
++    },
++    "ZONE_HOLD": {
++      "default": 114,
++      "legacy": 0
++    },
++    "BEND_FORECAST": {
++      "default": 1,
++      "legacy": 0
++    },
++    "HAND_MOMENT_CAP": {
++      "default": 150,
++      "legacy": 0
++    },
++    "OFF_PEDAL": {
++      "default": 3,
++      "legacy": 0
++    },
++    "QB_FOOTWORK": {
++      "default": 3,
++      "legacy": 0
++    },
++    "QCORNER": {
++      "default": 0,
++      "legacy": 0
++    },
++    "ROB_COMMIT": {
++      "default": 7,
++      "legacy": 0
++    },
++    "ARM_BREAK": {
++      "default": 1,
++      "legacy": 0
++    },
++    "ZONE_EYES_KEY": {
++      "default": 9,
++      "legacy": 0
++    }
+   },
+   "flags": {
+     "ALIGN_HABIT": "on",
+@@ -459,6 +501,11 @@
+     "ZONE_SCOOP": "on",
+     "ZONE_WINGS": "on",
+     "PURSUIT_FIELD": "on",
+-    "PURSUIT_COMMIT": "on"
++    "PURSUIT_COMMIT": "on",
++    "BLOCK_ANGLE": "off",
++    "HOLD_PERSIST": "off",
++    "SHED_EXIT": "off",
++    "HELPER_HAND_FIGHT": "off",
++    "FREE_ARM_2D": "off"
+   }
+ }
+diff --git a/src/sim/contact-holding.ts b/src/sim/contact-holding.ts
+index 918ccafdf..37d2794b8 100644
+--- a/src/sim/contact-holding.ts
++++ b/src/sim/contact-holding.ts
+@@ -14,7 +14,7 @@ import { OPEN_HANDS, type HandJoint, type Joint, type StepReport } from '../phys
+ import type { Agent, Engagement, TeamSide } from './agent.js';
+ import type { PlaySim } from './playsim.js';
+ import type { FoulRecord } from './types.js';
+-import { axisOf, PAST_ALONG_PATH, pastAlongPath } from './engagement.js';
++import { axisOf, HOLD_PERSIST, PAST_ALONG_PATH, pastAlongPath } from './engagement.js';
+ import { officiateChance } from './pass-interference.js';
+ 
+ /** 12-1-3(c) restricts grabbing an opponent, not blocking one. While the
+@@ -516,7 +516,8 @@ export function holdStage(sim: PlaySim, start: HoldingIntervalStart, h: HoldStar
+   const material = (poa || next) && toward && notDouble;
+   const traffic = sim.agents.filter(a => a !== v && a !== h.actor
+     && Math.hypot(a.pos.x - v.pos.x, a.pos.y - v.pos.y) <= HOLD_TRAFFIC_RADIUS).length;
+-  const effectYdPerS = effect * 1.0936;
++  // World impulse/mass is already in yd/s; HOLD_PERSIST fixes the legacy m/s -> yd/s conversion.
++  const effectYdPerS = HOLD_PERSIST ? effect : effect * 1.0936;
+   const pSeen = officiateChance(effectYdPerS) / (1 + traffic);
+   let looks = holdLooks.get(sim);
+   if (!looks) { looks = new Map(); holdLooks.set(sim, looks); }
+diff --git a/src/sim/engagement.ts b/src/sim/engagement.ts
+index cd280ff18..5e32919f3 100644
+--- a/src/sim/engagement.ts
++++ b/src/sim/engagement.ts
+@@ -83,6 +83,29 @@ export interface TrenchTraits {
+  * exception, the ordinary growth back while walked back past his set, raised
+  * falls (10.9% -> 15.6% of dropbacks) and bought no pocket depth. */
+ const PASS_ANCHOR = process.env.PASS_ANCHOR !== '0';
++
++/** BLOCK_ANGLE (experimental, off; BLOCK_ANGLE=1 turns it on): do not clamp e.phi to [-0.95, 0.95] at formation.
++ * A blocker already past the defender's hip (|phi| >= 1.05) cannot form a legal front-side block; undisciplined
++ * blockers may instead attempt a cloth grab from behind (if HOLD_PERSIST=1), otherwise no block forms. Also includes
++ * hand control in e.win so a defender who has physically won the hands is recognized as winning the rep. */
++export const BLOCK_ANGLE = process.env.BLOCK_ANGLE === '1';
++/** HOLD_PERSIST (experimental, off; HOLD_PERSIST=1 turns it on): a declared cloth hold persists while within hold
++ * reach until holdUntil expires (~0.20-0.35 s by discipline) instead of being disengaged on the next tick (0.05 s)
++ * by `if (e.holding) return false;`; triggers on frame loss while still within reach and removes the e.control < -0.4
++ * lockout so beaten blockers can actually grab cloth for contact-holding.ts to adjudicate. */
++export const HOLD_PERSIST = process.env.HOLD_PERSIST === '1';
++/** SHED_EXIT (experimental, off; SHED_EXIT=1 turns it on): while shedding (`workOff`), open the defender's hips
++ * toward his exit travel instead of locking facing 90 deg off travel onto the blocker, and scale exit speed with
++ * blockShedding once hands clear. */
++export const SHED_EXIT = process.env.SHED_EXIT === '1';
++/** HELPER_HAND_FIGHT (experimental, off; HELPER_HAND_FIGHT=1 turns it on): replace raw rating+RNG drift in
++ * advanceRunHelperHands and pass createEngagement swipe dice rolls with the physical handLeverage / firstHands laws
++ * (ratings act through arm reach, hand speed, balance, and strength rather than awarding outcomes). */
++export const HELPER_HAND_FIGHT = process.env.HELPER_HAND_FIGHT === '1';
++const holdUntil = new WeakMap<Engagement, number>();
++const holdReachOf = (b: Agent, d: Agent): number =>
++  b.profile.radius + d.profile.radius + b.player.measurables.armIn / 36 + 0.25;
++
+ const cache = new WeakMap<Agent, TrenchTraits>();
+ const runCache = new WeakMap<Agent, TrenchTraits>();
+ 
+@@ -399,7 +422,28 @@ export function createEngagement(sim: PlaySim, blocker: Agent, defender: Agent,
+   }
+   const axis = axisOf(sim, e);
+   const lat = latOf(axis);
+-  e.phi = clamp(measurePhi(axis, defender, blocker), -0.95, 0.95);
++  const rawPhi = measurePhi(axis, defender, blocker);
++  if (BLOCK_ANGLE && Math.abs(rawPhi) >= 1.05) {
++    if (HOLD_PERSIST && blocker.body.support?.state === 'up') {
++      const pGrab = (0.08 + 0.22 * (1 - blocker.r('discipline'))) * (type === 'pass' ? 1 : 0.7);
++      if (sim.dice('hold', blocker).chance(pGrab)) {
++        e.phi = clamp(rawPhi, -2, 2);
++        e.side = Math.sign(rawPhi) || 1;
++        e.control = -0.3;
++        e.holding = true;
++        holdUntil.set(e, t + 0.20 + 0.15 * (1 - blocker.r('discipline')));
++        blocker.tags.add('held');
++        blocker.engagement = e;
++        defender.engagement = e;
++        sim.engagements.push(e);
++        syncJoints(sim, e);
++        sim.event('holding_attempt', blocker, defender, 'grab from behind');
++        return e;
++      }
++    }
++    return null;
++  }
++  e.phi = BLOCK_ANGLE ? clamp(rawPhi, -2, 2) : clamp(rawPhi, -0.95, 0.95);
+ 
+   // Working side: edge rushers work outside; interior/run defenders toward
+   // their gap / the ball; a defender who is already beside the blocker keeps
+@@ -419,7 +463,9 @@ export function createEngagement(sim: PlaySim, blocker: Agent, defender: Agent,
+   if (type === 'pass') {
+     const plan = planMove(sim, e, defender, blocker);
+     e.move = plan;
+-    if (plan === 'swim' || plan === 'club' || plan === 'rip' || plan === 'speed') {
++    if (HELPER_HAND_FIGHT && HAND_FIGHT) {
++      e.control = firstHands(blocker, defender, tb, td, rng);
++    } else if (plan === 'swim' || plan === 'club' || plan === 'rip' || plan === 'speed') {
+       // Swipe/chop the punch: a miss leaves the blocker reaching at air.
+       const swipe = td.hands + 0.15 * td.bend + rng.normal(0, 0.18);
+       if (swipe - punchB > 0.18) {
+@@ -745,7 +791,14 @@ function advanceRunHelperHands(sim: PlaySim, e: Engagement): void {
+     const joint = e.helperHands?.get(h), state = joint && runHands.get(joint);
+     if (!state) continue;
+     const tb = traits(h, 'run');
+-    state.control = clamp(state.control + sim.dt * (0.5 * (tb.hands - td.hands) + 0.08 * ((tb.arm - td.arm) / 3) + sim.dice('help', h, e.defender).normal(0, 0.25)), -1, 1);
++    if (HELPER_HAND_FIGHT && HAND_FIGHT) {
++      const lb = handLeverage(h, e.defender), ld = handLeverage(e.defender, h);
++      const target = lb + ld > 1e-9 ? (lb - ld) / (lb + ld) : 0;
++      const tau = 0.25 + 0.5 * (1 - (target > state.control ? tb.hands : td.hands));
++      state.control = clamp(state.control + (target - state.control) * (1 - Math.exp(-sim.dt / tau)) + sim.dice('help', h, e.defender).normal(0, 0.2) * sim.dt, -1, 1);
++    } else {
++      state.control = clamp(state.control + sim.dt * (0.5 * (tb.hands - td.hands) + 0.08 * ((tb.arm - td.arm) / 3) + sim.dice('help', h, e.defender).normal(0, 0.25)), -1, 1);
++    }
+   }
+ }
+ 
+@@ -1887,7 +1940,7 @@ function stepPassRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
+   const lat = latOf(axis);
+   // Leverage is where the bodies are, relative to the QB, every tick.
+   e.phi = measurePhi(axis, d, b);
+-  e.win = Math.max(Math.abs(e.phi), 1 - e.baseB);
++  e.win = BLOCK_ANGLE ? Math.max(Math.abs(e.phi), 1 - e.baseB, clamp(-e.control, 0, 1) * 0.8) : Math.max(Math.abs(e.phi), 1 - e.baseB);
+   // PAST_ALONG_PATH: beaten means past the blocker along the man's own path
+   // of travel; past but still within reach, the rep goes on as a ride.
+   let riding = false;
+@@ -1905,8 +1958,12 @@ function stepPassRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
+     // he has him.
+     const past = pastOf(d, e.phi), feltPast = ENGAGE_FELT ? pastOf(dK, measurePhi(axis, dK, b)) : past;
+     if (past) {
++      const dist = Math.hypot(d.pos.x - b.pos.x, d.pos.y - b.pos.y);
+       const reach = b.profile.radius + d.profile.radius + b.player.measurables.armIn / 36;
+-      if (Math.hypot(d.pos.x - b.pos.x, d.pos.y - b.pos.y) > reach && !canRidePassContact(e, t)) {
++      if (HOLD_PERSIST && !e.holding && dist <= holdReachOf(b, d) && dist > reach * 0.75 && !canRidePassContact(e, t)) {
++        tryHold(sim, e);
++      }
++      if (dist > (HOLD_PERSIST && e.holding ? holdReachOf(b, d) : reach) && !canRidePassContact(e, t)) {
+         if (tryHold(sim, e)) return;
+         beat(sim, e, axis, lat, false, 'past him');
+         return;
+@@ -2427,7 +2484,7 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
+   const contactAxis = localBlocker ? norm(sub(localBlocker, d.pos)) : axis;
+   const contactLat = latOf(contactAxis);
+   e.phi = measurePhi(axis, d, b);
+-  e.win = Math.max(Math.abs(e.phi), 1 - e.baseB);
++  e.win = BLOCK_ANGLE ? Math.max(Math.abs(e.phi), 1 - e.baseB, clamp(-e.control, 0, 1) * 0.8) : Math.max(Math.abs(e.phi), 1 - e.baseB);
+ 
+   // The defender keeps the called fit/shoulder and can answer a declared
+   // runner at his next decision. The blocker still seeks his seal surface.
+@@ -2985,10 +3042,13 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
+   const routeSide = routeLat && read.threat ? Math.sign((read.threat.pos.x - d.pos.x) * routeLat.x + (read.threat.pos.y - d.pos.y) * routeLat.y) : 0;
+   const workAxis = acrossFace ? contactAxis : routeAxis ?? axis, workLat = acrossFace ? contactLat : routeLat ?? lat;
+   const workSide = acrossFace ? shed!.contactSide! : (routeSide || (shed?.side ?? e.side));
++  const shedSpeed = SHED_EXIT && (handsClear || shed?.runner)
++    ? d.profile.vmax * (0.75 + 0.25 * d.r('blockShedding'))
++    : Math.hypot(td.lateral, .6);
+   const workOff = shedding ? exit
+-    ? { x: exit.x * Math.hypot(td.lateral, .6), y: exit.y * Math.hypot(td.lateral, .6) }
+-    : { x: workLat.x * workSide * td.lateral + workAxis.x * .6,
+-      y: workLat.y * workSide * td.lateral + workAxis.y * .6 } : null;
++    ? { x: exit.x * shedSpeed, y: exit.y * shedSpeed }
++    : { x: workLat.x * workSide * (SHED_EXIT && handsClear ? shedSpeed : td.lateral) + workAxis.x * .6,
++      y: workLat.y * workSide * (SHED_EXIT && handsClear ? shedSpeed : td.lateral) + workAxis.y * .6 } : null;
+   // Diagnostic counterfactual defenses (docs/reviews/counterfactual-defense.md).
+   let cf: Vec2 | null = null;
+   if (CF_FLOW && !read.declared) {
+@@ -3010,7 +3070,13 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
+   intents[d.idx] = {
+     vel: workOff ?? cf ?? (read.stack ? { x: zoneRun ? -sim.attackDir(b.team) * (RACE_LEAN ? FLAT_PRESS_STEP : 1.5) : depth, y: lateralFlow } : legacy),
+     // Running the line he opens his hips halfway toward it, off square.
+-    facing: zoneRun && !workOff && !cf ? (() => {
++    facing: SHED_EXIT && workOff ? (() => {
++      const toB = Math.atan2(bK.pos.y - d.pos.y, bK.pos.x - d.pos.x);
++      const toGo = Math.atan2(workOff.y, workOff.x);
++      if (handsClear || shed?.runner) return toGo;
++      const diff = ((toGo - toB + 3 * Math.PI) % (2 * Math.PI)) - Math.PI;
++      return toB + diff * 0.6;
++    })() : zoneRun && !workOff && !cf ? (() => {
+       // ENGAGE_TRUNK: square is to the line of scrimmage (his hips), not to the blocker.
+       const sq = ENGAGE_TRUNK ? (sim.attackDir(b.team) > 0 ? Math.PI : 0) : Math.atan2(bK.pos.y - d.pos.y, bK.pos.x - d.pos.x), run = Math.atan2(zoneRun, 0);
+       const turn = ((run - sq + 3 * Math.PI) % (2 * Math.PI)) - Math.PI;
+@@ -3155,13 +3221,24 @@ const legacyHoldVisible = new WeakSet<PlaySim>();
+ /** A beaten blocker may attempt a cloth grab. This changes the bounded hand
+  * technique, not the official ruling. Only achieved illegal restraint is a foul. */
+ function tryHold(sim: PlaySim, e: Engagement): boolean {
+-  if (e.holding) return false;
+-  const b = e.blocker;
+-  // Only possible with hands on him.
+-  if (e.control < -0.4) return false;
+-  const pHold = (0.04 + 0.13 * (1 - b.r('discipline'))) * (e.type === 'pass' ? 1 : 0.6);
++  const b = e.blocker, d = e.defender;
++  if (e.holding) {
++    if (!HOLD_PERSIST) return false;
++    const dist = Math.hypot(d.pos.x - b.pos.x, d.pos.y - b.pos.y);
++    if (sim.t < (holdUntil.get(e) ?? 0) && dist <= holdReachOf(b, d) && b.body.support?.state === 'up') {
++      setHands(sim, e);
++      return true;
++    }
++    return false;
++  }
++  if (e.control < (HOLD_PERSIST ? -0.85 : -0.4)) return false;
++  if (HOLD_PERSIST && Math.hypot(d.pos.x - b.pos.x, d.pos.y - b.pos.y) > holdReachOf(b, d)) return false;
++  const pHold = HOLD_PERSIST
++    ? (0.08 + 0.24 * (1 - b.r('discipline'))) * (e.type === 'pass' ? 1 : 0.65)
++    : (0.04 + 0.13 * (1 - b.r('discipline'))) * (e.type === 'pass' ? 1 : 0.6);
+   if (!sim.dice('hold', b).chance(pHold)) return false;
+   e.holding = true;
++  if (HOLD_PERSIST) holdUntil.set(e, sim.t + 0.20 + 0.15 * (1 - b.r('discipline')));
+   b.tags.add('held');
+   setHands(sim, e);
+   const id = `legacy-hold:${b.idx}:${e.defender.idx}:${sim.t}`;
+diff --git a/src/sim/tackle.ts b/src/sim/tackle.ts
+index ee5db55c4..222013196 100644
+--- a/src/sim/tackle.ts
++++ b/src/sim/tackle.ts
+@@ -23,6 +23,8 @@
+  * defender who leaves his base to reach pays for it physically.
+  */
+ import { TRACK_TACKLE } from './behaviors/common.js';
++/** FREE_ARM_2D (experimental, off; FREE_ARM_2D=1 turns it on): 2D free-side geometry (> 60 deg clear of the blocker's body line from the defender, covering head-up blocks) and blockShedding-scaled free-arm reach. */
++const FREE_ARM_2D = process.env.FREE_ARM_2D === '1';
+ import { OPP_GOAL_X, OWN_GOAL_X } from '../core/field.js';
+ import { G } from '../core/units.js';
+ import { clamp, type Vec2 } from '../core/vec.js';
+@@ -164,10 +166,19 @@ export function tryTackles(sim: PlaySim): void {
+     // A blocked defender can only reach out for the carrier once he's clearly
+     // working off the block (tracking: linemen make a third of run tackles).
+     const blockerY = engaged ? d.engagement!.blocker.pos.y - d.pos.y : 0;
+-    const freeSide = engaged && BLOCKED_REACH && Math.abs(blockerY) >= 0.25 && blockerY * dy < 0;
++    const freeSide = engaged && BLOCKED_REACH && (FREE_ARM_2D ? (() => {
++      const b = d.engagement!.blocker;
++      const bx = b.pos.x - d.pos.x, by = b.pos.y - d.pos.y;
++      const bl = Math.hypot(bx, by);
++      if (bl < 1e-6 || dd < 1e-6) return false;
++      return (bx * dx + by * dy) / (bl * dd) < 0.5;
++    })() : (Math.abs(blockerY) >= 0.25 && blockerY * dy < 0));
+     if (engaged && !freeSide && d.engagement!.win < 0.6) continue;
+     const body = c.profile.radius + d.profile.radius;
+-    const freeArm = freeSide ? 0.7 - 0.3 * clamp(d.engagement!.control, 0, 1) : 0.4;
++    const freeArm = freeSide
++      ? (FREE_ARM_2D ? clamp(0.55 + 0.20 * d.r('blockShedding') - 0.25 * clamp(d.engagement!.control, 0, 1), 0.35, 0.80)
++        : 0.7 - 0.3 * clamp(d.engagement!.control, 0, 1))
++      : 0.4;
+     const arms = body + d.profile.reach * (engaged ? freeArm : 1.0);
+     // A free tackler can lunge for the last half yard by committing his body;
+     // a miss then leaves him off his base.
+-- 
+2.39.5
+

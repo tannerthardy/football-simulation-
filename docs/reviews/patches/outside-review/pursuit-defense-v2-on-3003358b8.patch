@@ -1,0 +1,227 @@
+From 45499a8d0e1ca91f8a1e21f8c1c9e5e9b0727264 Mon Sep 17 00:00:00 2001
+From: Gemini <gemini@local>
+Date: Tue, 24 Nov 2026 18:16:35 +0000
+Subject: [PATCH] PURSUIT_ACCEL, PURSUIT_OBLIQUE_GATHER, PURSUIT_BEND (off):
+ leak-free, smooth-blended pursuit primitives for Defense
+
+---
+ config/baseline.json        |  5 ++-
+ config/reference-stack.json | 75 +++++++++++++++++++++++++++++--------
+ src/sim/behaviors/common.ts | 34 +++++++++++++++--
+ src/sim/spacing.ts          | 10 ++++-
+ 4 files changed, 103 insertions(+), 21 deletions(-)
+
+diff --git a/config/baseline.json b/config/baseline.json
+index 26f1b159b..1c1c29b2c 100644
+--- a/config/baseline.json
++++ b/config/baseline.json
+@@ -508,7 +508,10 @@
+     "RELEASE_BELIEF": "0",
+     "HONEST_TACKLE": "0",
+     "QB_RELEASE": "0",
+-    "OPEN_FIELD": "0"
++    "OPEN_FIELD": "0",
++    "PURSUIT_ACCEL": "0",
++    "PURSUIT_OBLIQUE_GATHER": "0",
++    "PURSUIT_BEND": "0"
+   },
+   "worldDefaults": {
+     "handContact": "center",
+diff --git a/config/reference-stack.json b/config/reference-stack.json
+index 1638e64b3..309cd4143 100644
+--- a/config/reference-stack.json
++++ b/config/reference-stack.json
+@@ -41,20 +41,62 @@
+     "note": "Captured 2026-11-13 on the engine-55 default engine (develop 2478e998) with new seeds; not a benchmark any flag was promoted on. Use for run-set deltas (ref:report --set fresh); runSet stays for continuity."
+   },
+   "numeric": {
+-    "INFO_HONEST": { "default": 63, "legacy": 0 },
+-    "SIGHT_STALE": { "default": 7, "legacy": 0 },
+-    "BALL_EST": { "default": 6145, "legacy": 0 },
+-    "APEX_LEVERAGE": { "default": 7, "legacy": 0 },
+-    "END_KEY": { "default": 2, "legacy": 0 },
+-    "ZONE_HOLD": { "default": 114, "legacy": 0 },
+-    "BEND_FORECAST": { "default": 1, "legacy": 0 },
+-    "HAND_MOMENT_CAP": { "default": 150, "legacy": 0 },
+-    "OFF_PEDAL": { "default": 3, "legacy": 0 },
+-    "QB_FOOTWORK": { "default": 3, "legacy": 0 },
+-    "QCORNER": { "default": 0, "legacy": 0 },
+-    "ROB_COMMIT": { "default": 7, "legacy": 0 },
+-    "ARM_BREAK": { "default": 1, "legacy": 0 },
+-    "ZONE_EYES_KEY": { "default": 9, "legacy": 0 }
++    "INFO_HONEST": {
++      "default": 63,
++      "legacy": 0
++    },
++    "SIGHT_STALE": {
++      "default": 7,
++      "legacy": 0
++    },
++    "BALL_EST": {
++      "default": 6145,
++      "legacy": 0
++    },
++    "APEX_LEVERAGE": {
++      "default": 7,
++      "legacy": 0
++    },
++    "END_KEY": {
++      "default": 2,
++      "legacy": 0
++    },
++    "ZONE_HOLD": {
++      "default": 114,
++      "legacy": 0
++    },
++    "BEND_FORECAST": {
++      "default": 1,
++      "legacy": 0
++    },
++    "HAND_MOMENT_CAP": {
++      "default": 150,
++      "legacy": 0
++    },
++    "OFF_PEDAL": {
++      "default": 3,
++      "legacy": 0
++    },
++    "QB_FOOTWORK": {
++      "default": 3,
++      "legacy": 0
++    },
++    "QCORNER": {
++      "default": 0,
++      "legacy": 0
++    },
++    "ROB_COMMIT": {
++      "default": 7,
++      "legacy": 0
++    },
++    "ARM_BREAK": {
++      "default": 1,
++      "legacy": 0
++    },
++    "ZONE_EYES_KEY": {
++      "default": 9,
++      "legacy": 0
++    }
+   },
+   "flags": {
+     "ALIGN_HABIT": "on",
+@@ -459,6 +501,9 @@
+     "ZONE_SCOOP": "on",
+     "ZONE_WINGS": "on",
+     "PURSUIT_FIELD": "on",
+-    "PURSUIT_COMMIT": "on"
++    "PURSUIT_COMMIT": "on",
++    "PURSUIT_ACCEL": "off",
++    "PURSUIT_OBLIQUE_GATHER": "off",
++    "PURSUIT_BEND": "off"
+   }
+ }
+diff --git a/src/sim/behaviors/common.ts b/src/sim/behaviors/common.ts
+index e91adcd89..715f26ce8 100644
+--- a/src/sim/behaviors/common.ts
++++ b/src/sim/behaviors/common.ts
+@@ -13,6 +13,22 @@ import type { PlaySim } from '../playsim.js';
+ 
+ export const STAND: MoveCommand = { vel: { x: 0, y: 0 } };
+ 
++/** PURSUIT_ACCEL (experimental, off; PURSUIT_ACCEL=1 turns it on): in open space, a pursuer forecasting a live,
++ * unheld carrier moving slowly (out of a catch or post-miss cut) smoothly relaxes his forecast speed toward a
++ * position-typical running pace (no private carrier rating, preserving the pursuer's own anticipation tau). */
++export const PURSUIT_ACCEL = process.env.PURSUIT_ACCEL === '1';
++/** PURSUIT_OBLIQUE_GATHER (experimental, off; PURSUIT_OBLIQUE_GATHER=1 turns it on): smoothly blends the close-gather
++ * distance and short closing-time lead on oblique/crossing approaches by (1 - headOn) and incoming speed (no hard switch). */
++export const PURSUIT_OBLIQUE_GATHER = process.env.PURSUIT_OBLIQUE_GATHER === '1';
++
++function typicalCruiseSpeed(pos: string): number {
++  if (pos === 'WR' || pos === 'CB' || pos === 'FS' || pos === 'SS') return 7.0;
++  if (pos === 'RB') return 6.6;
++  if (pos === 'TE' || pos === 'FB' || pos === 'LB' || pos === 'QB') return 5.8;
++  return 4.8;
++}
++
++
+ export function stand(facing?: number): MoveCommand {
+   return { vel: { x: 0, y: 0 }, facing };
+ }
+@@ -157,7 +173,16 @@ export function pursuitPoint(sim: PlaySim, a: Agent, target: Agent, horizon = 3,
+   // Recent acceleration is evidence for a short burst, not a promise of full
+   // speed throughout the horizon. Reassess as new motion becomes visible.
+   const tau = 0.3 + 0.3 * a.r('anticipation');
+-  const V = clamp(sp + acceleration * tau, 0, target.profile.vmax);
++  const baseV = clamp(sp + acceleration * tau, 0, target.profile.vmax);
++  let V = baseV;
++  if (PURSUIT_ACCEL && seen.carrying === true && !seen.held) {
++    const cruise = typicalCruiseSpeed(target.player.position);
++    if (cruise > baseV) {
++      const wSpeed = clamp((sp - 0.3) / 1.2, 0, 1);
++      const wOpen = hasObservedFlight(a) ? 1 : clamp(((seen.pos.x - sim.los) * sim.attackDir(target.team) - 0.5) / 2.0, 0, 1);
++      V = baseV + (cruise - baseV) * wSpeed * wOpen;
++    }
++  }
+   const straight = (t: number): Vec2 => {
+     const d = V * t - (V - sp) * tau * (1 - Math.exp(-t / tau));
+     return { x: seen.pos.x + heading.x * d, y: clamp(seen.pos.y + heading.y * d, 0, FIELD_WIDTH) };
+@@ -328,11 +353,14 @@ export function gatheringApproach(a: Agent, seen: import('../perception.js').Per
+     const pathMiss = dist * Math.abs(ux * seen.vel.y - uy * seen.vel.x) / Math.max(.1, carrierSpeed);
+     const headOn = clamp((contact + .5 - pathMiss) / .75, 0, 1)
+       * clamp((incoming - 1.5) / 1.5, 0, 1);
+-    const close = clamp((contact + Math.max(2.5, stopping) - dist) / .75, 0, 1);
++    const wOblique = PURSUIT_OBLIQUE_GATHER ? (1 - headOn) * clamp((1.5 - incoming) / 1.5, 0, 1) : 0;
++    const closeReach = Math.max(2.5, stopping) * (1 - wOblique) + Math.max(1.2, 0.5 * stopping) * wOblique;
++    const close = clamp((contact + closeReach - dist) / .75, 0, 1);
+     gather = Math.max(headOn, close);
+     if (gather > 0) {
+       // OPEN_FIELD: `upfield` (yd along x) keeps the arrival on top of the runner, shrinking to nothing at contact.
+-      const goal = { x: seen.pos.x + upfield, y: clamp(seen.pos.y + offset, .3, FIELD_WIDTH - .3) };
++      const leadT = wOblique * clamp((dist - contact) / Math.max(2.5, a.speed + carrierSpeed), 0, 0.22);
++      const goal = { x: seen.pos.x + seen.vel.x * leadT + upfield, y: clamp(seen.pos.y + seen.vel.y * leadT + offset, .3, FIELD_WIDTH - .3) };
+       const vel=movingArrivalVelocity(a.body,goal,seen.vel,a.profile.vmax*a.speedScale,
+         contact,through,cutSkill,capacity);
+       // A front tackler keeps driving through the near hip, rather than
+diff --git a/src/sim/spacing.ts b/src/sim/spacing.ts
+index 6619b44f3..d452f6a7d 100644
+--- a/src/sim/spacing.ts
++++ b/src/sim/spacing.ts
+@@ -17,13 +17,17 @@ import type { Agent } from './agent.js';
+ import type { Vec2 } from '../core/vec.js';
+ import type {Perceived} from './perception.js';
+ import { movementObjective } from './movement-objective.js';
+-import { containCoverage } from './coverage-space.js';
++import { containCoverage, isCarrierPursuit } from './coverage-space.js';
+ import { localTrafficRoute } from './traffic-route.js';
+ 
+ /** RB_STEER (default off): a ball carrier (or a lead back) whose held
+  * request runs into a teammate first tries bending the same request around him at speed; only
+  * when no bend clears does he slow down or gather. */
+ export const RB_STEER = process.env.RB_STEER !== '0';
++/** PURSUIT_BEND (experimental, off; PURSUIT_BEND=1 turns it on): free carrier-pursuing defenders bend around
++ * obstructing teammates at speed (the same `bender` path ball carriers use) and skip hard radial headway braking
++ * for a teammate perceived down on the ground (`seen.pose === 'down'`) while still keeping him as a path obstacle. */
++export const PURSUIT_BEND = process.env.PURSUIT_BEND === '1';
+ /** SPACING_HOLD (experimental, off; SPACING_HOLD=1): a carrier who bends around a teammate keeps that bend. The bend was re-chosen from scratch every
+  * tick: once it cleared, the held request was clear on the next forecast and was handed back (he ran at the teammate again), and the first feasible of
+  * +-0.2..+-0.8 rad changed size and side tick to tick (docs/reviews/2026-11-15-carrier-spacing-dither.md). With the flag he keeps his side and size while the
+@@ -202,7 +206,7 @@ function forecastPeers(a:Agent, original:Intent, peers:readonly PeerPicture[], c
+ }
+ 
+ function gatherForMotion(a:Agent, original:Intent, peers:readonly PeerPicture[], forecast:MotionForecast, context?:SpacingContext):Intent {
+-  const bender=RB_STEER&&(a.behavior.kind==='carrier'||(a.behavior as {plan?:{kind?:string}}).plan?.kind==='lead');
++  const bender=RB_STEER&&(a.behavior.kind==='carrier'||(a.behavior as {plan?:{kind?:string}}).plan?.kind==='lead'||(PURSUIT_BEND&&isCarrierPursuit(original)));
+   if(SPACING_HOLD&&bender){
+     const hold=bendHolds.get(a);
+     if(hold){
+@@ -405,6 +409,8 @@ export function spaceTeammates(agents: readonly Agent[], intents: Intent[],
+       const d = hypot2(dx, dy);
+       const touch = TOUCH * (a.profile.radius + b.profile.radius);
+       peers.push({key:b.idx,pos:seen.pos,vel:seen.vel,touch,age:(seen as Perceived).age});
++      // PURSUIT_BEND: keep a perceived-down teammate as a path obstacle in `peers`, but skip hard radial braking for him.
++      if (PURSUIT_BEND && isCarrierPursuit(ia) && (seen as Perceived).pose === 'down') continue;
+       const gap = d - touch;
+       if (d < 1e-6) continue;
+       const nx = dx / d, ny = dy / d;
+-- 
+2.39.5
+
