@@ -304,7 +304,8 @@ function leverageMagnitude(a: Agent, y: number): number {
  *
  * All from his picture (sim.see of the teammate and of the carrier); never the teammate's assignment or target. The
  * lead is a decision with margins: enter nearer by 0.5 yd, within 45 deg of his own line to the carrier; exit when no
- * longer nearer, beyond 60 deg, moving away from the carrier, or on him (within contact). The side is decided on entry
+ * longer nearer, beyond 60 deg, or moving away from the carrier, or when he sees the lead's try settled: the carrier
+ * past the lead, the lead down, or the lead on a stopped carrier (the tackle on). The side is decided on entry
  * (away from the lead's side of the carrier; his ordinary leverage side when the lead is square behind him) and held
  * until the lead shows 0.5 yd on that side. Magnitude: the existing leverage magnitude and distance fade (no new constant). */
 export const TRAIL_LEVERAGE = process.env.TRAIL_LEVERAGE === '1';
@@ -314,7 +315,10 @@ const trailState = new WeakMap<Agent, { target: Agent; lead: Agent | null; side:
 export function trailStateOf(a: Agent): { lead: Agent | null; side: number } | null {
   const s = trailState.get(a); return s ? { lead: s.lead, side: s.side } : null;
 }
-function trailShade(sim: PlaySim, a: Agent, target: Agent, seenC: { pos: Vec2 }, dA: number, contact: number): number | null {
+/** TRAIL_LEVERAGE release margins (stated choices): the carrier must be past the lead by half a yard along his travel;
+ * a carrier under 2 yd/s with the lead on him is stopped in the tackle. */
+const RELEASE_PAST = 0.5, STOPPED = 2;
+function trailShade(sim: PlaySim, a: Agent, target: Agent, seenC: { pos: Vec2; vel: Vec2 }, dA: number, contact: number): number | null {
   // No per-tick cache: the same pictures give the same lead and side (the update is idempotent), and a repeated call
   // reads what the first read, as the pursuit read contracts expect.
   let s = trailState.get(a);
@@ -329,7 +333,15 @@ function trailShade(sim: PlaySim, a: Agent, target: Agent, seenC: { pos: Vec2 },
   };
   if (s.lead) {
     const r = read(s.lead);
-    if (dA - r.dB < 0 || r.off > LEAD_ANGLE_OUT || r.closing < 0 || r.dB <= contact) s.lead = null;
+    // Released on what he sees settle the lead's try, not on the lead's arrival: the carrier past the lead (along the
+    // carrier's travel, by RELEASE_PAST), the lead down, or the lead on the carrier with the carrier stopped (the tackle
+    // is on: he comes in to finish it). Or the trail's other perceived exits: he is now nearer, the lead is off his
+    // line, or the lead is moving away. (Attempt 2 also released at the lead's arrival within contact: 9% of releases,
+    // 145 of 1561, came with the lead up, within 1.2 yd and the carrier not past him.)
+    const cv = seenC.vel, cs = Math.hypot(cv.x, cv.y);
+    const past = cs > 1 && ((r.sb.pos.x - seenC.pos.x) * cv.x + (r.sb.pos.y - seenC.pos.y) * cv.y) / cs < -RELEASE_PAST;
+    const tackleOn = r.dB <= contact && cs < STOPPED;
+    if (dA - r.dB < 0 || r.off > LEAD_ANGLE_OUT || r.closing < 0 || past || s.lead.isDown(sim.t) || tackleOn) s.lead = null;
     else {
       const lat = r.sb.pos.y - seenC.pos.y;
       if (Math.sign(lat) === s.side && Math.abs(lat) > SIDE_MARGIN) s.side = -s.side;
