@@ -38,3 +38,14 @@ Completion per throw, all: .761 | .742 | .732. With the fix Cover 6's breakup ra
 | Cover 2 | .484 \| .420 \| .459 (.177) | .514 \| .391 \| .460 (139) (.164) | .547 \| .482 \| .494 (87) (.181) | .467 \| .545 \| .586 (58) (.176) | .280 \| .240 \| .222 (45) (.212) |
 
 So the Cover 6 rise over off is **not in the last 0.5 s before the throw** (.286 off, .279 on at 2de8a3c98) and sits in moments more than 0.6 s before it and on plays with no throw in the window (.169 -> .278, .238 -> .364, .236 -> .342; cells of 38-79, standard errors .05-.07, so none is individually significant). It cannot be defenders leaving receivers after the ball is out, because no moment here is after the release; whether a defender who has seen a pump or a looked-off throw leaves early, before it, is what the "no release" and earlier cells would show, and they are the cells that moved. After-release moments are not in the open census (the sim export stops at the release, and the full-track export holds completions of the default arm only); that would be a new measurement.
+
+## Both arms at aa952b84d (HEAD_FOLLOW on: an undriven head follows the body), FLIGHT_BREAK=0 vs on (Coverage's follow-up)
+
+Same 24 games, seeds and operators; two new independent draws (`hf0` / `hf1`; plays diverge, not paired). `data/reviews/census/flight-break-headfollow.md`.
+
+| 10-15 yd, wide-open share (off \| on; NFL) | fixed times | at the release |
+|---|---|---|
+| Cover 6 | .206 (253) \| .225 (289); .096 | .163 (141) \| .121 (190); .097 |
+| Cover 2 | .465 (374) \| .427 (368); .177 | .364 (239) \| .330 (221); .188 |
+
+**With the head leak fixed, FLIGHT_BREAK no longer adds to the 10-15 yd window:** Cover 6 fixed .206 -> .225 (+.02, the earlier arms had +.07 to +.09), Cover 2 .465 -> .427 (-.04); at the release both are lower with it on (Cover 6 .163 -> .121, Cover 2 .364 -> .330). By the gap to the release (off \| on): Cover 6 within 0.5 s .157 \| .184, 0.6-1.0 s .176 \| .233, over 1.0 s .275 \| .351, no throw .258 \| .222; Cover 2 .409 \| .459, .571 \| .402, .593 \| .438, .333 \| .396 (cells 37-159; standard errors .04-.08, none significant). The earlier excess was therefore compatible with composition plus the frozen-head leak; both arms stay well above the NFL (.096, .177), which belongs to the sink, not the break. Each arm is its own draw, and the off arm itself dropped with HEAD_FOLLOW (Cover 6 .235 -> .206).
