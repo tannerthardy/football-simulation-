@@ -157,3 +157,31 @@ python3 -I scripts/diag/routes/route_chart.py NFL=out/chart/nfl-routes.jsonl.gz 
 ```
 
 `sim_plays.mts` is Tools' (tools/open-census 0a0c86fa5); it is not on develop.
+
+## QB gates: release - break and what is thrown when (2026-11-24)
+
+The NFL side of the passer's gates (docs/reviews/2026-11-24-qb-decision-plan.md, section 4), with the same operator on
+ours: `scripts/diag/routes/qb_gates.py`, table `data/2026-11-24-qb-gates/gates.md`. Dropbacks without play action,
+targets only. Release - break uses this chart's break rule. Classes: screen, back, flat, quick (break under 7.5 yd),
+intermediate, deep. `--check N` lists plays to check by hand; 25 per side were checked.
+
+**Release - break, p50.** Negative means the ball is out before the break.
+
+| route | NFL | ours |
+|---|---|---|
+| stops, 3-7.5 yd | -0.1 | +0.3 |
+| stops, 7.5-12 yd | 0.0 | +0.5 |
+| outs, 3-7.5 yd | +0.2 | +0.5 |
+| ins, 7.5-12 yd | +0.2 | +0.6 |
+| slants, 3-7.5 yd | +0.3 | +0.8 |
+
+The NFL figures are biased late. A planted route caught within about 0.6 s of its break has no detectable break,
+because the track ends at the ball's arrival. That drops 221 NFL stops, 163 slants and 146 outs, the earliest throws.
+
+**What is thrown when, share of targets by release time.**
+- 1.5-2.0 s: the NFL throws quick routes on 49% of these, ours 9%; screens are 13% NFL, 73% ours.
+- 2.0-2.5 s: quick routes 44% NFL, 62% ours.
+- 2.5-3.0 s: quick routes 19% NFL, 54% ours; intermediate 31% NFL, 13% ours; deep 24% NFL, 4% ours.
+- Backs are 16-19% of NFL targets in every band from 1.5 s; ours rise from 5% at 1.5-2.0 s to 32% at 3.5+ s, the
+  last resort.
+- Median release time by class: quick 2.2 NFL, 2.6 ours; back 2.5 NFL, 3.0 ours; flat 2.2 NFL, 2.8 ours.
