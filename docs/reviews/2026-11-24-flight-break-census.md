@@ -29,3 +29,12 @@ The pump fix moves Cover 6 at the fixed times from .329 to .301 (-.03, about one
 | all families | 1,970 \| 1,883 \| 1,988 | .083 (163) \| .097 (182) \| **.103 (205)** | .018 (35) \| .018 (33) \| .018 (35) |
 
 Completion per throw, all: .761 | .742 | .732. With the fix Cover 6's breakup rate falls back from .103 to .077 (16 against 21 on a similar number of throws) and its interceptions go to none (0 of 208, against 4 | 4); Cover 2's breakups rise to .133 (30 of 226, against 19 | 19), the largest move of the three arms and about 2 standard errors above off. These cells hold 13-30 events; read as direction only. The all-family breakup rate keeps rising (.083 -> .097 -> .103, 163 -> 182 -> 205), the interception rate does not move.
+
+**Split by the gap to the release (Coverage's follow-up; `fixed_split.py`, `data/reviews/census/flight-break-split.md`).** The census's fixed moments (1.5 / 2.0 / 2.5 / 3.0 s) are taken only while the ball is still held (frame before the release), so **every fixed moment is before the release by construction; none is after it**. Split by release minus the moment, 10-15 yd, off | a771ec841 | 2de8a3c98 (NFL):
+
+| | all | 0.5 s or less before the release | 0.6-1.0 s | over 1.0 s | no release in the window |
+|---|---|---|---|---|---|
+| Cover 6 | .235 \| .329 \| .301 (.096) | .286 (98) \| .318 (85) \| .279 (111) (.075) | .169 \| .357 \| .278 (79) (.103) | .238 \| .300 \| .364 (44) (.120) | .236 \| .367 \| .342 (38) (.089) |
+| Cover 2 | .484 \| .420 \| .459 (.177) | .514 \| .391 \| .460 (139) (.164) | .547 \| .482 \| .494 (87) (.181) | .467 \| .545 \| .586 (58) (.176) | .280 \| .240 \| .222 (45) (.212) |
+
+So the Cover 6 rise over off is **not in the last 0.5 s before the throw** (.286 off, .279 on at 2de8a3c98) and sits in moments more than 0.6 s before it and on plays with no throw in the window (.169 -> .278, .238 -> .364, .236 -> .342; cells of 38-79, standard errors .05-.07, so none is individually significant). It cannot be defenders leaving receivers after the ball is out, because no moment here is after the release; whether a defender who has seen a pump or a looked-off throw leaves early, before it, is what the "no release" and earlier cells would show, and they are the cells that moved. After-release moments are not in the open census (the sim export stops at the release, and the full-track export holds completions of the default arm only); that would be a new measurement.
