@@ -162,3 +162,27 @@ first diagnosis ("the crossers are late") overstated it: ours are about 0.3 s la
 **Verdict:** cell 5 still does not appear. The first cause to remove is mine: why the high crosser climbs against press
 man (the route's craft against a man defender, or the nickel's jam at 2.0 s). Until then the pick question cannot be
 asked of mesh. Cell 1 asks it already (bunch: bodies within 1.2 yd, no obstruction), and that item stands for Coverage.
+
+### The high crosser's climb against man: what is ruled out (scripts/diag/calls/mesh_hdepth.mts, mesh_hprobe.mts)
+
+H's depth at 2.5 s, 3 seeds:
+
+| run | H's depth at 2.5 s |
+|---|---|
+| Cover 1 press, default | 6.34 / 6.13 / 6.30 yd |
+| ROUTE_CRAFT=0 | 6.34 / 6.13 / 6.25 yd |
+| RELEASE_THROUGH=0 | 6.34 / 6.13 / 6.28 yd |
+| RELEASE_SEEN=0 | 6.14 / 6.03 / 6.32 yd |
+| STEM_WORK=0 | 6.34 / 6.13 / 6.30 yd |
+| Cover 3 | 4.52 / 4.50 / 4.69 yd |
+
+None of the four receiver rules drives it. What the trace shows:
+- The nickel shadows H 0.3-1.0 yd deeper and 0.8 yd on his outside hip from 1.5 s, and jams him at 2.0 s.
+- H's upfield speed rises from 1.5 s, before the jam: depth 3.3 / 4.6 / 5.7 yd at 1.75 / 2.0 / 2.25 s, against
+  3.0 / 3.8 / 4.3 against zone.
+- receiver.ts's own note names this case: "the mesh crosser's nickel ... the held bend sent the shallow 73 degrees
+  upfield". CRAFT_EXIT was its fix.
+
+Next, mine: trace H's commanded velocity against his route's point. The candidates are the route's own leg logic against
+a man on his hip (a man-specific path), the contact resolution at the jam, or another adjustment upstream of
+ROUTE_CRAFT. The matrix's mesh cells re-run after the fix.
