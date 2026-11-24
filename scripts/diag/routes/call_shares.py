@@ -13,6 +13,9 @@ Outputs (JSON):
     at (#1, or #2 behind a clear-out); a final FLAT may be the back's on that side; a play can count for several halves;
   - for each half, what the other side matches (our halves, or 'unmatched');
   - for each half, the back's job on the play;
+  - core_share_given_room: the core share among plays whose formation has room for it (a side with receivers up to
+    the core's last number), so a trips half is not diluted by the 2x2 plays that cannot run it; room: that share of
+    plays;
   - core_partner / core_back: on a side with the half's core, which halves' cores are on the other side (equal split;
     'unmatched' if none), and the back's job on the play;
   - the share of plays per full concept; on mesh plays, each side's #1 route and the back's job.
@@ -120,6 +123,7 @@ def run(path, nfl, H):
     N = 0; side = collections.Counter(); partner = collections.defaultdict(collections.Counter)
     back = collections.defaultdict(collections.Counter); full = collections.Counter(); core = collections.Counter()
     cpartner = collections.defaultdict(collections.Counter); cback = collections.defaultdict(collections.Counter)
+    possible = collections.Counter()
     meshout = collections.Counter(); meshback = collections.Counter()
     for ball, R in plays(path, nfl):
         N += 1
@@ -143,6 +147,11 @@ def run(path, nfl, H):
                 if core_on(S[s], st, c, any(tag(b) == 'FLAT' and (b['y'] - ball) * s > 0 for b in backs), h in EXACT): on[s].append(h)
         for h in set(on[1]) | set(on[-1]):
             if len(CORE.get(h, (1, H[h]))[1]) >= 2: core[h] += 1
+        # Plays whose formation could carry the core: a side with receivers up to its last number (one fewer when the
+        # core ends in a flat and a back is there to run it).
+        for h, t in H.items():
+            st, c = CORE.get(h, (1, t)); need = st - 1 + len(c)
+            if any(len(S[s]) >= need or (c[-1] == 'FLAT' and backs and len(S[s]) >= need - 1) for s in (1, -1)): possible[h] += 1
         for s in (1, -1):
             for h in on[s]:
                 cpartner[h].update({o: 1 / len(on[-s]) for o in on[-s]} if on[-s] else {'unmatched': 1})
@@ -151,6 +160,8 @@ def run(path, nfl, H):
     return dict(plays=N, sides=2 * N, side_share={h: round(side[h] / (2 * N), 4) for h in H},
                 partner={h: norm(partner[h]) for h in H if partner[h]}, back={h: norm(back[h]) for h in H if back[h]},
                 core_share={h: round(core[h] / N, 4) for h in H if len(CORE.get(h, (1, H[h]))[1]) >= 2},
+                core_share_given_room={h: round(core[h] / possible[h], 4) for h in H if possible[h] and len(CORE.get(h, (1, H[h]))[1]) >= 2},
+                room={h: round(possible[h] / N, 4) for h in H},
                 core_partner={h: norm(cpartner[h]) for h in H if cpartner[h]}, core_back={h: norm(cback[h]) for h in H if cback[h]},
                 mesh_outside=norm(meshout), mesh_back=norm(meshback),
                 full_share={f: round(full[f] / N, 4) for f in ('mesh', 'drive', 'y_cross', 'hitch_cross', 'post_cross', 'four_verts')})
