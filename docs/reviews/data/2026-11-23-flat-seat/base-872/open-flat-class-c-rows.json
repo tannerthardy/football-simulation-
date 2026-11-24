@@ -1,0 +1,665 @@
+[
+ {
+  "nearest_lm": null,
+  "id": "101-0-37",
+  "cls": "c",
+  "why": "on it but too deep",
+  "owner": "NB",
+  "snap": {
+   "slot": "NB",
+   "kind": "zone",
+   "lm": [
+    8.5,
+    35.58
+   ],
+   "style": "match",
+   "target": null,
+   "tags": []
+  },
+  "throw": {
+   "slot": "NB",
+   "kind": "zone",
+   "lm": [
+    8.5,
+    35.58
+   ],
+   "style": "match",
+   "target": "H",
+   "tags": [
+    "open-carry",
+    "open-carry-help"
+   ]
+  },
+  "receiver": "H",
+  "recv_type": "TE",
+  "catch": [
+   4.0,
+   43.0
+  ],
+  "d1": 11.5,
+  "yac": 18.2,
+  "cov": "cover3",
+  "concept": "fade_flat+pa",
+  "form": "ace_12",
+  "motion": true,
+  "pa": true,
+  "rel": 34,
+  "catch_frame": 46
+ },
+ {
+  "nearest_lm": null,
+  "id": "101-1-8",
+  "cls": "c",
+  "why": "on it but too deep",
+  "owner": "SS",
+  "snap": {
+   "slot": "SS",
+   "kind": "zone",
+   "lm": [
+    4,
+    44.33
+   ],
+   "style": "match",
+   "target": null,
+   "tags": []
+  },
+  "throw": {
+   "slot": "SS",
+   "kind": "zone",
+   "lm": [
+    4,
+    44.33
+   ],
+   "style": "match",
+   "target": "Y",
+   "tags": [
+    "squat-sink",
+    "readArm",
+    "arm-bite",
+    "open-carry"
+   ]
+  },
+  "receiver": "Y",
+  "recv_type": "TE",
+  "catch": [
+   2.6,
+   42.4
+  ],
+  "d1": 8.7,
+  "yac": 4.4,
+  "cov": "cover2_invert",
+  "concept": "curl_flat",
+  "form": "offset_i_21",
+  "motion": true,
+  "pa": false,
+  "rel": 25,
+  "catch_frame": 37
+ },
+ {
+  "nearest_lm": null,
+  "id": "101-2-6",
+  "cls": "c",
+  "why": "on it but too deep",
+  "owner": "CB_W",
+  "snap": {
+   "slot": "CB_W",
+   "kind": "zone",
+   "lm": [
+    4,
+    9
+   ],
+   "style": "match",
+   "target": null,
+   "tags": []
+  },
+  "throw": {
+   "slot": "CB_W",
+   "kind": "zone",
+   "lm": [
+    4,
+    9
+   ],
+   "style": "match",
+   "target": null,
+   "tags": [
+    "squat-sink",
+    "readArm",
+    "arm-bite",
+    "shoulder-break",
+    "flight-break"
+   ]
+  },
+  "receiver": "RB",
+  "recv_type": "back",
+  "catch": [
+   -2.1,
+   12.0
+  ],
+  "d1": 10.7,
+  "yac": 8.0,
+  "cov": "cover6",
+  "concept": "dagger",
+  "form": "gun_spread_10",
+  "motion": false,
+  "pa": false,
+  "rel": 27,
+  "catch_frame": 36
+ },
+ {
+  "nearest_lm": null,
+  "id": "101-2-38",
+  "cls": "c",
+  "why": "on it but too deep",
+  "owner": "NB",
+  "snap": {
+   "slot": "NB",
+   "kind": "zone",
+   "lm": [
+    8.5,
+    38.51
+   ],
+   "style": "match",
+   "target": null,
+   "tags": []
+  },
+  "throw": {
+   "slot": "NB",
+   "kind": "zone",
+   "lm": [
+    8.5,
+    38.51
+   ],
+   "style": "match",
+   "target": "Z",
+   "tags": [
+    "curl-flat-back",
+    "open-carry",
+    "open-carry-help",
+    "plant",
+    "readArm",
+    "arm-bite"
+   ]
+  },
+  "receiver": "Z",
+  "recv_type": "wide",
+  "catch": [
+   3.4,
+   42.0
+  ],
+  "d1": 10.5,
+  "yac": 7.2,
+  "cov": "cover3_trips",
+  "concept": "smash",
+  "form": "gun_trips_10",
+  "motion": false,
+  "pa": false,
+  "rel": 29,
+  "catch_frame": 40
+ },
+ {
+  "nearest_lm": null,
+  "id": "101-5-39",
+  "cls": "c",
+  "why": "on it but too deep",
+  "owner": "CB_W",
+  "snap": {
+   "slot": "CB_W",
+   "kind": "zone",
+   "lm": [
+    4,
+    44.33
+   ],
+   "style": "match",
+   "target": null,
+   "tags": []
+  },
+  "throw": {
+   "slot": "CB_W",
+   "kind": "zone",
+   "lm": [
+    4,
+    44.33
+   ],
+   "style": "match",
+   "target": "RB",
+   "tags": [
+    "squat-sink",
+    "readArm",
+    "arm-bite",
+    "open-carry"
+   ]
+  },
+  "receiver": "RB",
+  "recv_type": "back",
+  "catch": [
+   -2.5,
+   44.4
+  ],
+  "d1": 11.1,
+  "yac": 7.3,
+  "cov": "cover2_match",
+  "concept": "four_verts",
+  "form": "gun_trips_11",
+  "motion": true,
+  "pa": false,
+  "rel": 27,
+  "catch_frame": 35
+ },
+ {
+  "nearest_lm": null,
+  "id": "303-1-41",
+  "cls": "c",
+  "why": "on it but too deep",
+  "owner": "CB_S",
+  "snap": {
+   "slot": "CB_S",
+   "kind": "zone",
+   "lm": [
+    4,
+    9
+   ],
+   "style": "match",
+   "target": null,
+   "tags": []
+  },
+  "throw": {
+   "slot": "CB_S",
+   "kind": "zone",
+   "lm": [
+    4,
+    9
+   ],
+   "style": "match",
+   "target": "Y",
+   "tags": [
+    "squat-sink",
+    "readArm",
+    "arm-bite",
+    "open-carry",
+    "shoulder-break",
+    "flight-break"
+   ]
+  },
+  "receiver": "Y",
+  "recv_type": "TE",
+  "catch": [
+   3.8,
+   13.7
+  ],
+  "d1": 9.8,
+  "yac": 8.7,
+  "cov": "cover8_trix",
+  "concept": "pa_flood",
+  "form": "gun_wing_12",
+  "motion": true,
+  "pa": true,
+  "rel": 31,
+  "catch_frame": 41
+ },
+ {
+  "nearest_lm": null,
+  "id": "303-3-52",
+  "cls": "c",
+  "why": "on it but too deep",
+  "owner": "CB_W",
+  "snap": {
+   "slot": "CB_W",
+   "kind": "zone",
+   "lm": [
+    4,
+    9
+   ],
+   "style": "match",
+   "target": null,
+   "tags": []
+  },
+  "throw": {
+   "slot": "CB_W",
+   "kind": "zone",
+   "lm": [
+    4,
+    9
+   ],
+   "style": "match",
+   "target": "RB",
+   "tags": [
+    "squat-sink",
+    "readArm",
+    "arm-bite",
+    "open-carry"
+   ]
+  },
+  "receiver": "RB",
+  "recv_type": "back",
+  "catch": [
+   -0.4,
+   4.0
+  ],
+  "d1": 11.6,
+  "yac": 4.2,
+  "cov": "cover2_wild",
+  "concept": "four_verts",
+  "form": "gun_trips_10",
+  "motion": false,
+  "pa": false,
+  "rel": 38,
+  "catch_frame": 52
+ },
+ {
+  "nearest_lm": null,
+  "id": "404-0-8",
+  "cls": "c",
+  "why": "on it but too deep",
+  "owner": "SS",
+  "snap": {
+   "slot": "SS",
+   "kind": "zone",
+   "lm": [
+    11,
+    38.4
+   ],
+   "style": "spot",
+   "target": null,
+   "tags": []
+  },
+  "throw": {
+   "slot": "SS",
+   "kind": "zone",
+   "lm": [
+    11,
+    38.4
+   ],
+   "style": "spot",
+   "target": null,
+   "tags": [
+    "settled",
+    "plant",
+    "readArm",
+    "arm-bite"
+   ]
+  },
+  "receiver": "Y",
+  "recv_type": "TE",
+  "catch": [
+   2.5,
+   36.6
+  ],
+  "d1": 8.3,
+  "yac": 5.7,
+  "cov": "cover3",
+  "concept": "fade_flat",
+  "form": "ace_12",
+  "motion": false,
+  "pa": false,
+  "rel": 26,
+  "catch_frame": 33
+ },
+ {
+  "nearest_lm": null,
+  "id": "404-1-44",
+  "cls": "c",
+  "why": "on it but too deep",
+  "owner": "CB_W",
+  "snap": {
+   "slot": "CB_W",
+   "kind": "zone",
+   "lm": [
+    5.5,
+    44.33
+   ],
+   "style": "spot",
+   "target": null,
+   "tags": []
+  },
+  "throw": {
+   "slot": "CB_W",
+   "kind": "zone",
+   "lm": [
+    5.5,
+    44.33
+   ],
+   "style": "spot",
+   "target": null,
+   "tags": [
+    "squat-sink",
+    "readArm",
+    "arm-bite",
+    "settled",
+    "shoulder-break",
+    "flight-break"
+   ]
+  },
+  "receiver": "RB",
+  "recv_type": "back",
+  "catch": [
+   -0.9,
+   46.5
+  ],
+  "d1": 8.7,
+  "yac": 5.6,
+  "cov": "cover2",
+  "concept": "dagger",
+  "form": "gun_wing_12",
+  "motion": true,
+  "pa": false,
+  "rel": 45,
+  "catch_frame": 57
+ },
+ {
+  "nearest_lm": null,
+  "id": "404-1-58",
+  "cls": "c",
+  "why": "on it but too deep",
+  "owner": "CB_S",
+  "snap": {
+   "slot": "CB_S",
+   "kind": "zone",
+   "lm": [
+    5.5,
+    44.33
+   ],
+   "style": "spot",
+   "target": null,
+   "tags": []
+  },
+  "throw": {
+   "slot": "CB_S",
+   "kind": "zone",
+   "lm": [
+    5.5,
+    44.33
+   ],
+   "style": "spot",
+   "target": null,
+   "tags": [
+    "squat-sink",
+    "readArm",
+    "arm-bite",
+    "settled",
+    "shoulder-break",
+    "flight-break"
+   ]
+  },
+  "receiver": "RB",
+  "recv_type": "back",
+  "catch": [
+   2.1,
+   42.7
+  ],
+  "d1": 10.9,
+  "yac": 12.1,
+  "cov": "cover2",
+  "concept": "pa_flood+b3",
+  "form": "ace_12",
+  "motion": false,
+  "pa": true,
+  "rel": 38,
+  "catch_frame": 50
+ },
+ {
+  "nearest_lm": null,
+  "id": "404-2-64",
+  "cls": "c",
+  "why": "on it but too deep",
+  "owner": "SS",
+  "snap": {
+   "slot": "SS",
+   "kind": "man",
+   "target": "Y",
+   "tech": {
+    "press": false,
+    "hipsOpen": false,
+    "cushion": 12.804008245408681,
+    "lev": null,
+    "trail": false,
+    "overTop": false,
+    "routeRead": false
+   },
+   "tags": []
+  },
+  "throw": {
+   "slot": "SS",
+   "kind": "man",
+   "target": "Y",
+   "tech": {
+    "press": false,
+    "hipsOpen": false,
+    "cushion": 12.804008245408681,
+    "lev": null,
+    "trail": false,
+    "overTop": false,
+    "routeRead": false
+   },
+   "tags": [
+    "cushion-need"
+   ]
+  },
+  "receiver": "Y",
+  "recv_type": "TE",
+  "catch": [
+   -0.7,
+   13.5
+  ],
+  "d1": 8.1,
+  "yac": 5.7,
+  "cov": "cover1",
+  "concept": "fade_flat",
+  "form": "gun_doubles_11",
+  "motion": true,
+  "pa": false,
+  "rel": 22,
+  "catch_frame": 29
+ },
+ {
+  "nearest_lm": null,
+  "id": "404-3-26",
+  "cls": "c",
+  "why": "on it but too far inside",
+  "owner": "NB",
+  "snap": {
+   "slot": "NB",
+   "kind": "man",
+   "target": "H",
+   "tech": {
+    "press": false,
+    "hipsOpen": false,
+    "cushion": 11.322019166347076,
+    "lev": null,
+    "trail": false,
+    "overTop": false,
+    "routeRead": false
+   },
+   "tags": []
+  },
+  "throw": {
+   "slot": "NB",
+   "kind": "man",
+   "target": "H",
+   "tech": {
+    "press": false,
+    "hipsOpen": true,
+    "cushion": 11.322019166347076,
+    "lev": null,
+    "trail": false,
+    "overTop": false,
+    "routeRead": false
+   },
+   "tags": [
+    "man-back",
+    "fell"
+   ]
+  },
+  "receiver": "H",
+  "recv_type": "slot",
+  "catch": [
+   2.2,
+   47.7
+  ],
+  "d1": 11.6,
+  "yac": 15.8,
+  "cov": "cover1",
+  "concept": "post_cross",
+  "form": "gun_split_11",
+  "motion": false,
+  "pa": false,
+  "rel": 35,
+  "catch_frame": 47
+ },
+ {
+  "nearest_lm": null,
+  "id": "505-0-34",
+  "cls": "c",
+  "why": "on it but too far inside",
+  "owner": "LB_M",
+  "snap": {
+   "slot": "LB_M",
+   "kind": "man",
+   "target": "RB",
+   "tech": {
+    "press": false,
+    "hipsOpen": false,
+    "cushion": 4.889169560476834,
+    "lev": null,
+    "trail": false,
+    "overTop": false,
+    "routeRead": false
+   },
+   "tags": [
+    "fell"
+   ]
+  },
+  "throw": {
+   "slot": "LB_M",
+   "kind": "man",
+   "target": "RB",
+   "tech": {
+    "press": false,
+    "hipsOpen": true,
+    "cushion": 4.889169560476834,
+    "lev": null,
+    "trail": false,
+    "overTop": false,
+    "routeRead": true
+   },
+   "tags": [
+    "fell",
+    "cushion-need"
+   ]
+  },
+  "receiver": "RB",
+  "recv_type": "back",
+  "catch": [
+   3.3,
+   8.3
+  ],
+  "d1": 11.0,
+  "yac": 13.1,
+  "cov": "cover1",
+  "concept": "fade_flat",
+  "form": "gun_empty_11",
+  "motion": true,
+  "pa": false,
+  "rel": 22,
+  "catch_frame": 33
+ }
+]
