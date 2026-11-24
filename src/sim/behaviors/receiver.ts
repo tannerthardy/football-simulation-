@@ -4,6 +4,7 @@
  * vs. man/zone), tracking the ball in flight, and blocking after the catch.
  */
 import { jamWanted } from '../press-contact.js';
+import { C2_JAM } from './defense.js';
 import { FIELD_WIDTH, OPP_GOAL_X } from '../../core/field.js';
 import { neckRange } from '../head.js';
 import { servoCommand, servoEngaged } from '../ball-servo.js';
@@ -733,6 +734,12 @@ export class RouteRunner implements Behavior {
     const p = this.pressContact;
     if (!p) return;
     this.recordJam(sim, p);
+    // C2_JAM (Rules, 2026-11-24): the side he released to is the side he actually took round the jam when the hand came
+    // off (his own body against the corner's), not the side he planned, so RELEASE_THROUGH holds from there.
+    if (C2_JAM) {
+      const me = sim.offense.find((o) => o.body === p.hands.b);
+      if (me) this.releaseSide = Math.sign(me.pos.y - p.corner.pos.y) || this.releaseSide;
+    }
     sim.world.joints = sim.world.joints.filter((j) => j !== p.hands);
     this.releasedCorners.add(p.corner);
     this.pressContact = null;
