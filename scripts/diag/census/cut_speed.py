@@ -61,13 +61,13 @@ table('By cut angle (all entry speeds 3 yd/s and over)', lambda r: True, ['30-60
 table('Breaks of 60-110 degrees by entry speed', lambda r: 60 <= r['ang'] < 110, ['3-5', '5-7', '7+'], lambda r: entb(r['ent']))
 table('Speed cuts of 30-60 degrees by entry speed', lambda r: r['ang'] < 60, ['3-5', '5-7', '7+'], lambda r: entb(r['ent']))
 table('Breaks of 60-110 degrees at 5-7 yd/s entry, by receiver group', lambda r: 60 <= r['ang'] < 110 and 5 <= r['ent'] < 7, ['WR', 'TE', 'back'], lambda r: r['grp'])
-for lab, sel in (('Out / in / dig / comeback-type breaks of 60-110 degrees at 5-7 yd/s entry, by route', lambda r: 60 <= r['ang'] < 110 and 5 <= r['ent'] < 7),):
-    P(f'### {lab}\n'); P('| sample | route | n | min / entry | time back (s) | +0.6 s / entry |'); P('|---|---|---|---|---|---|')
+for lab, sel in (('Out / in / dig / comeback-type breaks of 60-110 degrees at 5-7 yd/s entry, by route', lambda r: 60 <= r['ang'] < 110 and 5 <= r['ent'] < 7), ('Speed cuts of 30-60 degrees at 5-7 yd/s entry, by route (the pooled cell is a mix of routes: read the route shares)', lambda r: r['ang'] < 60 and 5 <= r['ent'] < 7), ('Breaks and speed cuts together (30-110 degrees) at 5-7 yd/s entry, by route', lambda r: r['ang'] < 110 and 5 <= r['ent'] < 7)):
+    P(f'### {lab}\n'); P('| sample | route | n | share of the cell | min / entry | min speed (yd/s) | braking into it (yd/s2) | time back (s) | +0.6 s / entry |'); P('|---|---|---|---|---|---|---|---|---|')
     for name, R in data.items():
-        c = collections.Counter(str(r['route']).lower() for r in R if sel(r))
-        for rt, n in c.most_common(6):
+        c = collections.Counter(str(r['route']).lower() for r in R if sel(r)); tot = sum(c.values())
+        for rt, n in c.most_common(9):
             S = [r for r in R if sel(r) and str(r['route']).lower() == rt]
-            if n >= 10: P(f'| {name} | {rt} | {n} | {m([r["mn"] for r in S]):.2f} | {m([r["t90"] for r in S]):.2f} | {m([r["f6"] for r in S]):.2f} |')
+            if n >= 10: P(f'| {name} | {rt} | {n} | {n / tot:.2f} | {m([r["mn"] for r in S]):.2f} | {m([r["mn_abs"] for r in S]):.1f} | {m([r["dec"] for r in S]):.1f} | {m([r["t90"] for r in S]):.2f} | {m([r["f6"] for r in S]):.2f} |')
     P('')
 txt = '\n'.join(lines)
 if OUT: open(OUT, 'w').write(txt)
