@@ -5,6 +5,7 @@
 //    bounce = crossed outside the playside surface (outermost core lineman at the snap, + 1 yd);
 //  - vacated gap: at the crossing, a defensive lineman (by position) whose run-fit gap (gapY at the snap alignment) is
 //    within 1.0 yd of the crossing and who is himself more than 2.5 yd laterally from it and not engaged;
+//  - every defender within 6 yd of the carrier at the crossing, with his SHED_PURSUE mode tags;
 //  - 10 Hz frames from the snap (release-op.py play format) for the live release table.
 // Usage: node --import tsx run-cost-tap.mts GAMES OUT.json [FIRST_SEED=201]
 const W = process.cwd();
@@ -41,7 +42,11 @@ proto.tick = function (this: any) {
   if (car && !s.cross && car.pos.x > sim.los) {
     const vac = [...s.gaps.entries()].filter(([d, gy]) => Math.abs(gy - car.pos.y) < 1.0 && Math.abs(d.pos.y - gy) > 2.5 && !d.engagement)
       .map(([d]) => ({ pos: d.player.position, tags: [...(d.tags ?? [])].filter((t: string) => /^shed-(press|pursue|hold)/.test(t)) }));
-    s.cross = { t: r2(sim.t), y: car.pos.y, vacated: vac };
+    // Every defender within 6 yd of the carrier at the crossing, with his shed mode tags this tick (SHED_PURSUE).
+    const near = sim.defense.filter((d: any) => Math.hypot(d.pos.x - car.pos.x, d.pos.y - car.pos.y) < 6)
+      .map((d: any) => ({ pos: d.player.position, dist: r2(Math.hypot(d.pos.x - car.pos.x, d.pos.y - car.pos.y)), engaged: !!d.engagement,
+        tags: [...(d.tags ?? [])].filter((t: string) => /^shed-(press|pursue|hold)/.test(t)) }));
+    s.cross = { t: r2(sim.t), y: car.pos.y, vacated: vac, near };
   }
   if (sim.t >= s.next - 1e-9) {
     s.next += 0.1;
@@ -61,7 +66,7 @@ proto.run = function (this: any) {
     const off = s.cross ? (s.cross.y - s.ballY) * side : null;
     const surf = side > 0 ? s.surface.hi : s.surface.lo;
     const bounce = s.cross ? (s.cross.y - surf) * side > 1 : null;
-    runs.push({ concept: this.offCall.run?.id ?? this.offCall.label ?? null, yards, stuff: yards !== null && yards <= 0, crossed: !!s.cross,
+    runs.push({ concept: this.offCall.run?.id ?? this.offCall.label ?? null, yards, stuff: yards !== null && yards <= 0, crossed: !!s.cross, near: s.cross?.near ?? [],
       crossOff: off !== null ? r2(off) : null, cutback: off !== null ? off < -0.5 : null, bounce, vacated: s.cross?.vacated ?? [] });
     if (s.frames.length >= 8) plays.push({ ptype: 'run', dpos: Object.fromEntries(this.defense.map((d: any) => [d.slot, d.player.position])), frames: s.frames });
   }
