@@ -287,7 +287,11 @@ export function pursueIfLive(sim: PlaySim, a: Agent): MoveCommand | null {
     const drive = catchDrive.get(a) ?? catchOpportunity(a);
     if (drive) {
       const seen = sim.see(a, drive.receiver);
-      const refuted = seen.carrying === false && seen.age !== undefined && sim.t - seen.age > drive.t;
+      // HONEST_FLIGHT: a picture without the ball refutes the catch only once it was taken after the securing beat of
+      // his own estimated arrival (a receiver securing it is not carrying it yet), not any picture after the drive began.
+      const opp = HONEST_FLIGHT ? catchOpportunity(a) : null;
+      const after = HONEST_FLIGHT && opp ? Math.max(drive.t, opp.t + DRIVE_SECURE) : drive.t;
+      const refuted = seen.carrying === false && seen.age !== undefined && sim.t - seen.age > after;
       const on = Math.hypot(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y) <= CATCH_CARRY_RANGE;
       if (!refuted && on) {
         a.tags.add('catch-carry');
@@ -3157,7 +3161,9 @@ function flightApproach(a: Agent, sim: PlaySim, path: PlaySim['ballPath'], acqui
     ? (opportunity && sim.t >= opportunity.t - DRIVE_LEAD && sim.t <= opportunity.t + DRIVE_SECURE ? opportunity.receiver : null)
     : (sim.ball.kind === 'air' && sim.ball.securing ? sim.ball.securing.receiver : null);
   // HONEST_FLIGHT: a receiver he sees without the ball after the arrival is not securing it.
-  const droppedSeen = (R: Agent) => { const q = sim.see(a, R); return !!opportunity && q.carrying === false && q.age !== undefined && sim.t - q.age > opportunity.t; };
+  // Only a picture taken after the securing beat (his estimated arrival + DRIVE_SECURE) can show the receiver without the
+  // ball: during the beat a receiver securing it is not yet carrying it in anyone's picture.
+  const droppedSeen = (R: Agent) => { const q = sim.see(a, R); return !!opportunity && q.carrying === false && q.age !== undefined && sim.t - q.age > opportunity.t + DRIVE_SECURE; };
   if (DRIVE_CATCH && securing && !(HONEST_FLIGHT && droppedSeen(securing))) {
     const R = securing, seen = sim.see(a, R);
     if (Math.hypot(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y) <= 4) {
