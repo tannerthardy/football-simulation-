@@ -53,7 +53,7 @@ PlaySim.prototype.run = function (this: any) {
       last = sim.t;
       const dir = sim.attackDir(sim.offense[0].team), xy: number[] = [];
       for (const a of sim.agents) xy.push(+((a.pos.x - sim.los) * dir).toFixed(2), +a.pos.y.toFixed(2));
-      frames.push({ t: sim.t, xy, lab: sim.agents.map((a: any) => a.team === 'D' ? (lab.get(a) ?? '') : '') } as any);
+      frames.push({ t: sim.t, xy, lab: sim.agents.map((a: any) => a.team === 'D' ? (lab.get(a) ?? '') + (a.tags?.has?.('half-two-declared') ? '|D' : '') : '') } as any);
     }
     for (const a of sim.agents) {
       if (rel >= 0.3 && !k0.has(a.idx)) { k0.set(a.idx, a.behavior?.kind ?? ''); rid.set(a.idx, a.behavior?.route?.id ?? null); }
