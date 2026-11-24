@@ -69,6 +69,16 @@ export interface CheckdownRule {
   timing: ThrowTiming;
 }
 
+/** One pre-snap condition for an alert; every clause present must hold. */
+export interface AlertCond {
+  shell?: 'open' | 'closed';
+  press?: ReceiverRef;
+  /** The cushion over this receiver, under and/or over these yards. */
+  cushion?: { on: ReceiverRef; under?: number; over?: number };
+  leverage?: { on: ReceiverRef; is: 'inside' | 'head' | 'outside' };
+  boxAtLeast?: number;
+}
+
 /** A concept's read, as taught (module A). One standard version per concept. */
 export interface QbReadPlan {
   conceptId: string;
@@ -90,16 +100,11 @@ export interface QbReadPlan {
    * when the condition holds in his own pre-snap picture (Flex's module B decides it; Rules authors it). */
   alert?: {
     read: number;
-    /** Every clause present must hold, in scan-visible terms only (Flex, 2026-11-24). Absent: the alert is peeked every
-     * time (levels' divide, Brown). */
-    when?: {
-      shell?: 'open' | 'closed';
-      press?: ReceiverRef;
-      cushionUnder?: number;
-      cushionOver?: number;
-      leverage?: { on: ReceiverRef; is: 'inside' | 'head' | 'outside' };
-      boxAtLeast?: number;
-    };
+    /** When the alert is taken, in scan-visible terms only (Flex, 2026-11-24): one condition (every clause it holds must
+     * hold) or a list of alternatives (any one holds; Y-cross's vertical: two-high, or single-high with the corner far
+     * off). Absent: peeked every time (levels' divide, Brown). */
+    when?: AlertCond | AlertCond[];
+  };
   };
   /** The defender he confirms on the drop (structure picks and most progressions: the middle-of-field safety). */
   confirm: KeyRole | null;
