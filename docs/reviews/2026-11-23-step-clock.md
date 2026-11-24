@@ -367,3 +367,26 @@ keyed pair had expired on 10), and 19 on the rest, through QB_RELOOK. There noth
 when his internal clock ran out (thrown p50 3.66 s). Most were not stalled looks: the read he left was resolved past
 0.5 on 22 of 30 and he left it sure. So the cost is the hold's time against his internal clock, plus quick-game expiry,
 not the price.
+
+### What throws the ball away (Integration, 2026-11-24)
+
+Operator `scripts/diag/eyes/throwaway-probe.ts` (throw-outcome.ts plus a hook on his throwAway: the calling line, his
+best option against the out-of-reads bar (P >= thr - 0.1, int risk <= maxInt + 0.03), the best over every read
+including ones READ_WINDOW killed, his felt pressure `urgency` (from the rush, apart from the timer), the timer's urgency,
+the outlet). It calls bestOption/evaluate; every outcome is identical to throw-outcome.ts's (1348/1348, 1303/1303).
+Same 16 seeds, e5c6db5c patch:
+
+| path (qb.ts) | clock on | of them felt < 0.5 (= 0) | a man cleared his bar | clock off | felt < 0.5 | cleared |
+|---|---|---|---|---|---|---|
+| internal timer (2148) | 33 | 32 (26) | 21 | 24 | 24 | 19 |
+| READ_WINDOW out of reads, quick (2087) | 13 | 12 (9) | 0 (7 counting reads it killed) | 0 | | |
+| no throw under pressure (2320) | 17 | 0 (felt p50 0.76) | 5 | 10 | 0 | 2 |
+
+The 29 after-hold throwaways: timer 15 (all felt < 0.5, 11 at zero; a man cleared on 6), READ_WINDOW 11 (all
+clean; none live cleared, 5 counting killed reads), pressure 3. So 26 of 29 were clean-pocket throwaways.
+
+The "internal clock" is a fixed per-passer timer from the set: clock = 2.5 + 1.0 composure + 0.6 pocketPresence +
+N(0, 0.25) s; past it (over > 0.8 by a per-tick chance, or over > 2.2) it throws the ball away (qb.ts 2147-2148) without
+asking whether anyone is open or whether he feels pressure. It predates the clock (24 clean-pocket throwaways off, 19 with
+a man clearing his bar); the clock's holds send more plays past it (33). READ_WINDOW's quick-game out-of-reads branch
+throws away from a clean pocket at 1.75 s after the set when no live read clears.
