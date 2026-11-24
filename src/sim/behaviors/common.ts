@@ -367,6 +367,33 @@ export function blendApproach(far: MoveCommand, near: MoveCommand | null, gather
  * (`PlaySim.track`) instead of a scaled `see()` (0.12-0.24 s by awareness, plus the focus and stress terms added after
  * the scale). Who he tackles (observedHolder) and the commit reads are Defense's. */
 export const TRACK_TACKLE = process.env.TRACK_TACKLE !== '0' || process.env.PERCEIVE_TRACK === '1';
+/** GATHER_FRONT (experimental, off; GATHER_FRONT=1 turns it on). The close gather (square up, brake the closing to the
+ * through speed, face the man) is the tackler's technique in front of a runner. From beside or behind him the taught
+ * technique is to run through the near hip, side-on, at speed: there the gather comes in only over his last arm's
+ * length (contact to contact + his reach; a labeled choice) and he keeps the intercept until then.
+ * Why (gather-tap.mts, develop 7689bc4e, 4 games): pursuers beside or behind a catch carrier entered the close gather
+ * at 2.8-2.9 yd (contact + 2.5 yd) at 6.0-6.3 yd/s and lost 1.3-1.7 yd/s in the next 0.5 s; in front they entered at
+ * 4.0 yd (6.5 yd when fast), where breaking down is right.
+ * In front is a held decision on his bearing from the carrier's seen travel: enter under 60 deg, exit over 75 deg; a
+ * carrier he sees under 1 yd/s counts as in front (breaking down on a stopped man is right). */
+export const GATHER_FRONT = process.env.GATHER_FRONT === '1';
+const FRONT_IN = Math.PI / 3, FRONT_OUT = (75 * Math.PI) / 180;
+const frontState = new WeakMap<Agent, { target: Agent; front: boolean }>();
+function frontGather(a: Agent, target: Agent, seen: { pos: Vec2; vel: Vec2 }, dist: number, contact: number): number {
+  const cs = Math.hypot(seen.vel.x, seen.vel.y);
+  let s = frontState.get(a);
+  if (!s || s.target !== target) { s = { target, front: true }; frontState.set(a, s); }
+  if (cs < 1) s.front = true;
+  else {
+    const bear = Math.abs(angleDiff(Math.atan2(a.pos.y - seen.pos.y, a.pos.x - seen.pos.x), Math.atan2(seen.vel.y, seen.vel.x)));
+    if (s.front && bear > FRONT_OUT) s.front = false;
+    else if (!s.front && bear < FRONT_IN) s.front = true;
+  }
+  if (s.front) return 1;
+  a.tags.add('gather-side');
+  return clamp((contact + a.profile.reach - dist) / Math.max(0.1, a.profile.reach), 0, 1);
+}
+
 export function chase(sim: PlaySim, a: Agent, target: Agent, horizon = 3, opts: { onTop?: boolean } = {}): MoveCommand {
   sim.lookAt(a, target);
   const look = (0.12 + 0.12 * (1 - a.r('awareness'))) / Math.max(0.1, a.profile.reactionTime);
@@ -386,7 +413,9 @@ export function chase(sim: PlaySim, a: Agent, target: Agent, horizon = 3, opts: 
   // and the gather's arrival stays on top of him (onTopCushion), so it mirrors him.
   const top = opts.onTop ? onTopPoint(sim, a, target, seen, offset) : null;
   const topShift = opts.onTop ? onTopCushion(sim, a, target, seen, dist, contact) : 0;
-  const { near, gather } = gatheringApproach(a, seen, contact, offset, topShift);
+  const gathered = gatheringApproach(a, seen, contact, offset, topShift);
+  const near = gathered.near;
+  const gather = GATHER_FRONT ? gathered.gather * frontGather(a, target, seen, dist, contact) : gathered.gather;
   const trace = sim.commandTraceFor?.(a);
   if (gather >= 1 && !sim.bond?.tacklers.includes(a)) {
     const command = ownApproach(near!);
