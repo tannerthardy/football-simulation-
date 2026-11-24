@@ -105,7 +105,6 @@ export interface QbReadPlan {
      * off). Absent: peeked every time (levels' divide, Brown). */
     when?: AlertCond | AlertCond[];
   };
-  };
   /** The defender he confirms on the drop (structure picks and most progressions: the middle-of-field safety). */
   confirm: KeyRole | null;
   /** Per coverage family (QBMind's families: cover0, cover1, cover2, tampa2, cover2man, cover3, cover4, cover6), the
