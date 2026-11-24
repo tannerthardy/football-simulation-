@@ -176,6 +176,7 @@
   "test/box-align.test.ts",
   "test/box-in.test.ts",
   "test/c2-apex.test.ts",
+  "test/call-compose.test.ts",
   "test/called-motion.test.ts",
   "test/carrier-boundary.test.ts",
   "test/carrier-crease.test.ts",
