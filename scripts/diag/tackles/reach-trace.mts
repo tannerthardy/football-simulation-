@@ -9,7 +9,7 @@ const { Rng } = await import(`${W}/src/core/rng.ts`);
 const { generateTeam } = await import(`${W}/src/league/team.ts`);
 const { simulateGame } = await import(`${W}/src/game/game.ts`);
 const { compilingPlan } = await import(`${W}/src/playbook/read-compiler/runtime.ts`);
-const { reachOf, aimOf, reachDiag } = await import(`${W}/src/sim/tackle.ts`);
+const { reachOf, aimOf, reachDiag, reachForecast } = await import(`${W}/src/sim/tackle.ts`);
 const { writeFileSync } = await import('node:fs');
 const GAMES = Number(process.argv[2] ?? 2), OUT = process.argv[3], FIRST = Number(process.argv[4] ?? 201);
 const r3 = (v: number) => Math.round(v * 1000) / 1000;
@@ -33,7 +33,7 @@ proto.tick = function (this: any) {
     const r = reachOf(d);
     if (r && r.sim === this) {
       let x = s.get(d);
-      if (!x) { x = { t0: r.t0, arrive: r3(r.arrive - r.t0), limit: r3(r.limit), engaged: r.engaged, def: d.player.position, car: c.player.position, ticks: [] }; s.set(d, x); }
+      if (!x) { const f = reachForecast?.get(d); x = { t0: r.t0, arrive: r3(r.arrive - r.t0), limit: r3(r.limit), engaged: r.engaged, def: d.player.position, car: c.player.position, fgap: f ? r3(f.gap) : null, fcs: f ? r3(f.cs) : null, seenErr: f ? r3(Math.hypot(f.seen.x - c.pos.x, f.seen.y - c.pos.y)) : null, ticks: [] }; s.set(d, x); }
       x.ticks.push(snap(this, d, c));
     }
   }

@@ -298,6 +298,9 @@ type Reach = { sim: PlaySim; carrier: Agent; t0: number; arrive: number; engaged
   /** The bodies at the last check (its time and both centres): the next check sweeps the path between. */
   prev: { t: number; d: Vec2; c: Vec2 } };
 const reaches = new WeakMap<Agent, Reach>();
+/** Diagnostics (REACH_TIME): the forecast behind tackler `d`'s last reach decision (closest predicted gap to the hands, yd;
+ * his picture of the carrier's speed and position). */
+export const reachForecast = new WeakMap<Agent, { gap: number; cs: number; seen: Vec2 }>();
 /** Diagnostics (REACH_TIME): reaches met between two checks that the end-of-tick distance alone would not have met. */
 export const reachDiag = { sweptMeets: 0 };
 /** Diagnostics: tackler `d`'s reach in progress (REACH_TIME), read-only. */
@@ -338,11 +341,14 @@ function reachMeets(sim: PlaySim, d: Agent, c: Agent, engaged: boolean, limit: n
   }
   // The executor's law (reachStep): the same accelerating hands, sampled finely, through full extension at REACH_EXTEND.
   const h = REACH_EXTEND / 12;
+  let best = Infinity;
   for (let t = h; t <= REACH_EXTEND + 1e-9; t += h) {
     const share = t / REACH_EXTEND, hands = body + (span - body) * share * share;
     const gap = Math.hypot(p.pos.x + p.vel.x * t - (d.pos.x + vx * t), p.pos.y + p.vel.y * t - (d.pos.y + vy * t));
-    if (gap <= hands) return true;
+    best = Math.min(best, gap - hands);
+    if (gap <= hands) { reachForecast.set(d, { gap: best, cs: Math.hypot(p.vel.x, p.vel.y), seen: { ...p.pos } }); return true; }
   }
+  reachForecast.set(d, { gap: best, cs: Math.hypot(p.vel.x, p.vel.y), seen: { ...p.pos } });
   return false;
 }
 
