@@ -1,157 +1,221 @@
 # The believed body: what a player believes about an opponent's physical capacities (design note)
 
 Flex with the QB lane, 2026-11-24, for Integration's review with the user. Design only; no code. It generalises the QB
-lane's `QB_SCOUT` (and replaces develop's `QB_BELIEVED_DEF`) into one shared belief that every decision reading another
-player's capacities goes through. The user's brief and correction are the requirements:
+lane's `QB_SCOUT` (and replaces develop's `QB_BELIEVED_DEF`) into one belief that every decision reading another player's
+capacities goes through. The requirements are the user's:
 - speed comes from build, then film, then watching him move;
-- learning is fast and step-like on a clear look ("oh, that guy can run");
-- teammates and coaches share what they learn.
+- strength is learned by feel, in contact;
+- learning is fast and step-like on a clear look or one rep ("that guy can run", "strong as an ox");
+- teammates and coaches tell each other.
+- The structure must carry the later information-and-communication system (coaches watching, noticing and relaying, with
+  real friction) without a rewrite.
 
-Numbers marked *measured* come from the engine's own generated population (§3.1); numbers marked *chosen* are stated
-design choices, to be checked by the gates in §8, not fitted to any outcome.
+Numbers marked *measured* come from the engine's own generated population (§4.1); numbers marked *chosen* are stated
+design choices, to be checked by the gates in §10, not fitted to any outcome.
 
-## 1. What it is
+## 1. The structure: holders, sources, channels
 
-For each team T and each opponent B in the game, one record `belief[T][B]`, holding for each capacity c:
-- `mean`, his best estimate;
-- `sd`, how unsure he is;
-- `floor`, what he has seen B do at least.
+Nothing is known by "the defense" as one mind. Every belief has a **holder** and every piece of it a **source**. Sharing
+is an explicit **message** over a **channel**.
 
-Capacities, in the order we need them: top speed `vmax`, burst `accel` (= vmax / tau), `brake`, `lateral` (cutting),
-`power`, and later `reach`.
+- **Holder:** whoever believes it. In the first build, a player. Later, a coach (head coach, coordinators, position coaches
+  and assistants), who watches different things and relays to others.
+- **Belief** `belief[holder][B]`: per capacity c, a `mean`, an `sd` and a `floor` (what B has been seen or felt to do at
+  least), and the list of evidence entries that produced it.
+- **Evidence entry:** `{ capacity, value, sd, kind: 'floor' | 'measure', source, at }`. The source is one of:
+  - `appearance`: his build, seen;
+  - `film`: a pre-game report, and from whom;
+  - `saw`: his own picture, which play and when;
+  - `felt`: his own body in contact, which play and which rep;
+  - `told`: by whom, over which channel, at what time, carrying the teller's entry.
 
-Each player keeps his own copy. It is the team record as of the last time he heard it (§5), plus whatever he has seen
-himself during the current play.
-
-Decisions read the copy through one accessor, `believed(observer, B)`, which returns:
-- `mean(c)`, `sd(c)` and `floor(c)`;
-- `q(c, p)`, a quantile, so a decision can plan for the fast case (a corner's cushion) or the likely one (a pursuit
-  angle). How cautious to be is the player's choice.
-- `asProfile()`, a PhysicalProfile of the means, each raised to its floor, for code that takes a profile.
+  The belief is the precision-weighted combination of its entries, and the floor is their maximum. Keeping entries rather
+  than only a running mean is what lets a later system answer "who told you that" and drop or reweight a bad source.
+- **Message:** `{ from, to, about B, entries, channel, sentAt }`.
+- **Channel:** `{ name, delay, capacity (items per send), pLost, pWrong }`. A message arrives after the channel's delay,
+  or not at all (pLost), or with its value distorted (pWrong; *chosen*: a told value carries the teller's sd plus a
+  telling sd of 0.1 yd/s for speed, and is marked `told`).
+- **Accessor:** decisions read only `believed(holder, B)`, which returns:
+  - `mean(c)`, `sd(c)` and `floor(c)`;
+  - `q(c, p)`, a quantile, so a decision can plan for the fast or strong case (a corner's cushion, a tackle's set) or the
+    likely one (a pursuit angle). How cautious to be is the player's choice.
+  - `asProfile()`, the means raised to their floors, for code that takes a PhysicalProfile.
 
 No decision reads B's true profile.
 
-## 2. What is not a belief
+## 2. The minimal first build, and what it leaves open
 
-- **Visible build:** height, weight / frame, and so body radius and size. These are appearance, seen directly (with a
-  small error, §3.1).
-- **His own body:** proprioception.
-- **His teammates' capacities:** known from practice. We propose truth here; the user should confirm (§9).
+**Built first:**
+- Holders are players only.
+- Two channels:
+  1. **own**, the player's own observation (saw, felt): no delay, nothing lost;
+  2. **unit between plays** (the huddle): each player on the field who added a `saw` or `felt` entry this play sends it
+     to every teammate on the field.
+     - Delay: until the next snap.
+     - Capacity: 2 items per player per huddle (*chosen*: the opponents he noticed most, by the size of the step).
+     - pLost = 0.15 − 0.13 × the receiver's awareness (*chosen*).
+     - pWrong = 0 in the first build.
+- **Pre-game film** enters each player's belief at kickoff as a `film` entry from "the staff": one report per (team, B,
+  game), the same for every player on the team (§4.2). It is not a runtime channel yet. It is the coaches' message,
+  delivered without friction until coaches are holders.
+- **Between series:** the players coming on get the unit's entries over the same huddle channel, run once on the sideline.
+  This stands in until the sideline is its own channel.
+
+**Left open for the communication system** (it sits on these types with no rewrite):
+- **Coaches as holders**, each watching a part of the field, with their own notice rate and their own errors.
+- **Channels:** the sideline between series (its own delay and capacity), at the line (calls and alerts before the snap),
+  the headset (coordinator to the green-dot player), and coach-to-player.
+- **Friction:** finite capacity, lost and wrong messages, and a message's value decaying with its age.
+- **Choosing what to say** (which opponent and which capacity is worth a slot), and **trust per source** (a holder
+  weighting a teller by his record).
+- **The same structure for things that are not bodies.** A recount of the receivers after motion is a message on the
+  "at the line" channel. Today's stale numbering after motion is that message not yet modelled. A coverage check, a
+  protection slide call and a run-fit adjustment are the same.
+
+## 3. What is not a belief
+
+- **His own body:** proprioception. What he feels of his own effort in contact is exact.
+- **Visible build:** height, weight / frame, and so size and radius. This is appearance, seen with a small error (§4.1).
+- **His teammates' capacities:** known from practice (proposed; §11).
 - **Physics and officials:** contact resolution (tackle.ts, engagement.ts force terms) is not a decision. Officials
-  (contact-holding.ts 506/511 reads true vmax) are a separate question (§9).
+  (contact-holding.ts 506/511 reads true vmax) are a separate question (§11).
 
-## 3. The three sources
+## 4. Sources of evidence
 
-### 3.1 Appearance prior (everyone, from the first snap)
+### 4.1 Appearance prior (every holder, from the first sight)
 
-The prior is the engine's own population relation between build and capacity: a regression over a generated league
-(64 teams, 3264 players; generator + `derivePhysical`; `scripts/diag/belief/body-prior-fit.mts`). There is no position table, so it works for anyone, a ball
-carrier included. *Measured*, with u = (weight − 250) / 50 and h = (height − 74) / 2:
+The prior is the engine's own population relation between build and capacity: an OLS fit over a generated league (64
+teams, 3264 players; generator + `derivePhysical`; `scripts/diag/belief/body-prior-fit.mts`). There is no position table,
+so it works for anyone, a ball carrier included. *Measured*, with u = (weight − 250) / 50 and h = (height − 74) / 2:
 
-| capacity | mean | sd of the residual | sd across all players |
+| capacity | prior mean | sd left after build | sd across all players |
 |---|---|---|---|
 | vmax (yd/s) | 8.92 − 0.85u − 0.053u² − 0.02h | 0.22 (0.17–0.25 by weight band) | 0.87 |
-| accel (yd/s²) | 7.04 − 0.72u − 0.15u² − 0.05h | 0.81 | 1.12 |
+| accel = vmax/tau (yd/s²) | 7.04 − 0.72u − 0.15u² − 0.05h | 0.81 | 1.12 |
+| brake (yd/s²) | 6.28 − 0.52u − 0.086u² − 0.05h | 0.38 | 0.68 |
+| lateral (yd/s²) | 6.38 − 0.57u − 0.14u² − 0.02h | 0.42 | 0.73 |
+| power (kg-g) | 113.2 + 38.3u + 0.8u² − 2.0h | 9.1 | 36.0 |
+| power per kg | 1.00 + 0.145u − 0.017u² − 0.019h | 0.081 | 0.143 |
 
-Build tells a lot about top speed (it explains three quarters of the spread) and little about burst. So what stays
-uncertain after appearance is mostly how quick a man is out of a stance or a cut, not how fast he runs. That is the
-user's point in numbers.
-
-`brake`, `lateral` and `power` get the same fit (shuttle / cone / bench drive them); we fit those at build time.
+**What the numbers say:**
+- Build tells a holder most of a man's top speed and most of his raw power, because both are largely mass.
+- It tells him little about burst and cutting.
+- It leaves about ±8% (1 sd) of strength for his size. A man two sd strong for his frame is the surprise "strong as an
+  ox" describes.
 
 The coefficients are constants in code. A test re-fits them on a generated league and fails if they drift beyond
-tolerance, so the prior follows the generator if it changes.
+tolerance, so the prior follows the generator.
 
-**Appearance error:** each team sees B's weight off by one draw (sd 8 lb, *chosen*), fixed per (team, B, game). Through
-the slope (≈ 0.017 yd/s per lb) that adds about 0.14 yd/s, so the vmax prior's sd is about 0.26.
+**Appearance error:** each holder sees B's weight off by one draw (sd 8 lb, *chosen*), fixed per (holder, B, game). That
+adds about 0.14 yd/s to vmax's sd (≈ 0.26 in all) and about 6 kg-g to power's.
 
-### 3.2 Film: the coaches' pre-game report (per team, shared by the unit)
+### 4.2 Film: the staff's pre-game report
 
-What film may be derived from: B's true in-pads capacities (the same profile he plays with) for vmax, accel, brake and
-lateral. Power is left vague. Nothing else.
+What film may be derived from: B's true in-pads vmax, accel, brake and lateral, and his power only vaguely (film shows a
+man moving people, not the force). Nothing else.
 
-How: one measurement per (team, B, game), `film = true + e`, with e ~ N(0, σ_film(n)), drawn once from the game's seeded
-stream. It is combined with the prior by precision weighting. It is never truth × rating.
+How: one report per (team, B, game), `film = true + e`, e ~ N(0, σ_film), drawn once from the game's seeded stream. It is
+never truth × rating.
 
-- n = B's snaps on film. The engine has no snap count yet, so until the management layer tracks one, we use
-  experience: n ≈ 500 × years (*chosen*).
-- σ_film(n) = σ₀ / √(1 + n / n₀), with σ₀ = 0.30 yd/s, n₀ = 150 × study (*chosen*).
-- study = the staff's scouting quality. This is a new coach attribute, 0.5 by default; it is a management-layer knob.
+- σ_film = σ₀ / √(1 + n / n₀).
+- n = B's snaps on film. Until the management layer counts snaps, n ≈ 500 × experience years (*chosen*).
+- n₀ = 150 × the staff's `study` (a new coach attribute, default 0.5; a management knob).
+- σ₀ (*chosen*): vmax 0.30 yd/s, accel 0.8, brake / lateral 0.4, power per kg 0.08 (no better than appearance until
+  many snaps).
 
-| B | film sd on vmax | unit starts at (with the appearance prior) |
+| B | film sd on vmax | belief at kickoff (with appearance) |
 |---|---|---|
 | rookie | none | appearance only, about 0.26 |
 | one season (n ≈ 500) | 0.11 | about 0.10 |
 | veteran (n ≈ 2500) | 0.05 | about 0.05 |
 
-This is the user's "coaches warn the unit about a known burner": a veteran's speed is known going in, a rookie's only
-by his build. Film on acceleration uses the same form with σ₀ = 0.8. It tightens a little; most of what film shows is
-straight-line speed.
+This is "coaches warn the unit about a known burner": a veteran's speed is known going in, a rookie's only by his build.
 
-### 3.3 In-game observation: step updates on clear looks
+A holder who studies more could later hold a sharper copy of his own (a quarterback's film work). That is a per-holder
+film entry, which the structure allows; the first build has only the staff's report.
 
-**Observations** come only from the observer's own perceived picture of B: `sim.see` / `sim.track`, delayed, noisy, with
-acuity worse off his gaze (PERIPH_ACUITY). Ratings act through that picture's quality and through whether he registers
-the look. They never act on the truth.
+### 4.3 Saw: clear looks at speed and burst (in-game)
+
+**Observations** come only from the holder's own perceived picture: `sim.see` / `sim.track`, delayed, noisy, with acuity
+worse off his gaze (PERIPH_ACUITY).
 
 **A clear look at top speed:**
-- B runs near-straight for at least 0.6 s with his seen speed on a plateau (seen acceleration under 1 yd/s²);
-- B is within the observer's useful view (foveal, or near it);
-- the observer is not engaged with someone else.
+- B runs near-straight for at least 0.6 s, his seen speed on a plateau (seen acceleration under 1 yd/s²);
+- B is within the holder's useful view;
+- the holder is not engaged with someone else.
 
-That gives one measurement v̂ (the plateau's mean seen speed) with sd σ_obs = his velocity noise / √samples.
+That gives a measurement v̂ with sd σ_obs = his velocity noise / √samples.
 
-- **Always a floor:** floor_vmax = max(floor, v̂ − 2σ_obs). He has seen B do at least this. It never goes down.
-- **A full-effort context makes it a measurement of vmax**, not just a floor. The contexts are: B carrying in the open
-  and chased; B on a vertical route; B chasing a carrier. Then the belief updates by precision weighting, with the
-  measurement's sd √(σ_obs² + σ_effort²), σ_effort = 0.15 yd/s (*chosen*: a man in a full-effort context is not always
-  at 100%).
-- **One or two clear looks bring vmax's sd to about 0.1–0.15.** That is the step the user describes. There is no
-  per-tick drift and no slow learning over a half.
-- **Being outrun on a fair angle** is the strongest case. The observer knows his own speed exactly; if B gains ground
-  while he runs at 90%+ of his own top speed on a closing angle, then B's speed ≥ his own plus the gain rate. That is a
-  floor from his own body.
+- **Always a floor:** max(floor, v̂ − 2σ_obs). He has seen B do at least this. It never goes down.
+- **A full-effort context makes it a measurement,** not just a floor. The contexts are: B carrying in the open and
+  chased; B on a vertical route; B chasing a carrier. The measurement's sd is √(σ_obs² + σ_effort²), σ_effort = 0.15
+  yd/s (*chosen*).
+- **One or two clear looks bring vmax's sd to about 0.1–0.15.** That is the step the user describes; there is no drift.
+- **Being outrun on a fair angle:** while the holder runs at 90%+ of his own known top speed on a closing angle, B
+  gaining ground is a floor from his own body. B's speed ≥ his own plus the gain rate.
 
-**A clear look at burst:** B's seen speed rising out of a near-stop or a cut (a release from a stance, out of a break, a
-carrier out of a cut). It gives a measurement of accel with sd from the same noise model. Until burst has been seen,
-accel stays at its prior and film value. "What he has not shown stays uncertain."
+**A clear look at burst:** B's seen speed rising out of a near-stop or a cut gives a measurement of accel. Until then,
+accel stays at its prior and film value. What he has not shown stays uncertain.
 
-**Ratings act only here:**
-- the observer's perception quality (existing acuity and reaction) sets σ_obs;
-- awareness sets the chance he registers a clear look at all (*chosen*: 0.7 + 0.3 × awareness).
+**Ratings act only here:** perception quality (existing acuity and reaction) sets σ_obs; awareness sets the chance he
+registers a clear look at all (*chosen*: 0.7 + 0.3 × awareness).
 
-**Memory:** within a game, nothing decays. Across games is the management layer's question.
+### 4.4 Felt: strength in contact (in-game; the user's addition)
 
-## 4. Commitment
+Strength is learned by feel, faster and more reliably than speed by sight. The evidence is the holder's own body in
+contact, which he knows exactly: his own effort and his own displacement. It is not B's force, which he cannot sense.
 
-A belief changes only on a clear look, a step, or at the huddle sync (§5). Both are perceived changes. A decision that
-re-plans because the belief stepped is a decision on a new picture, which the commit rule allows. Nothing is
+**A rep is an engagement or a tackle contact lasting at least 0.3 s** (*chosen*). Over the rep he knows:
+- his own push effort as a share of his own capacity;
+- his own displacement, and its direction relative to where he was driving;
+- whether his anchor held: he did not give more than 0.5 yd against B's drive.
+
+**What a rep says:**
+- **"Moved me while I gave full effort":** the outcome he felt, set against what his belief of B's power predicted for
+  that effort. Put through the same contact relation the engine uses, it gives a measurement of B's effective power
+  relative to his own.
+  - sd: 0.06 power-per-kg units for a full rep (*chosen*: tighter than one clear look at speed, so one rep almost
+    settles it).
+- **"My anchor held / he could not move me":** a ceiling-side measurement of B's drive. **"I moved him":** a floor-side
+  one of his anchor.
+- **Contact is noisy evidence** of power, mixed with leverage, footing and technique. So only reps in which the holder
+  himself was square and set count as full; others count at double the sd. That is his judgment of the rep, from his
+  own body.
+
+**What he learns is what the physics delivers.** The belief estimates B's effective strength as felt, whatever the
+engine's contact law produces.
+- Dependency: today the push contest is traction-capped (Flex's anchor diagnosis, engine-69; mass decides, strength
+  barely does). Until that is resolved, "felt" will mostly confirm mass and rarely surprise. The belief is still right;
+  the surprise arrives when the physics does.
+
+**Consumers of felt strength** (each a decision a player makes on what he believes):
+- the pass blocker's set and the rusher's choice of move (a tackle walked back once sets deeper and anchors earlier; a
+  rusher who felt a soft anchor goes to power);
+- the run blocker's and the defender's choice to stack or to escape;
+- the tackler's aim (high and wrap against a man he felt run through him, low against one he can stand up);
+- the carrier's choice to run through or around a man.
+
+## 5. Commitment
+
+A belief changes only by an entry: a clear look, a rep, or a message at the huddle. All are perceived changes. A decision
+that re-plans because its belief stepped is deciding on a new picture, which the commit rule allows. Nothing is
 re-estimated per tick, so it adds no dither. It goes through the dither-budget test as a gate.
 
-## 5. Sharing (the user's correction)
+## 6. Memory
 
-- **Pre-game:** the coaches' film goes to the whole unit, so `belief[T][B]` starts as appearance plus film, shared.
-- **Within a play:** a player's own clear looks update his own copy at once. He reacts to "that guy can run" on the
-  same play.
-- **Between plays (the huddle):** what any player saw goes into the team record at the play's end. Each player on the
-  field picks up the team record before the next snap, with probability p_comm = 0.85 + 0.13 × awareness (*chosen*).
-  Otherwise his copy stays one play behind; he missed the message.
-- **Between series:** everyone, including players coming on, syncs on the sideline.
+Within a game, entries do not decay. Across games is the management layer's question. The first build drops all entries
+at the end of a game except the staff's film.
 
-**One record per team, not per unit or per pair.** The defense and special teams on the same sideline share it; the
-per-player copies give the realistic lag.
+## 7. Cost
 
-## 6. Cost
+- **Beliefs:** one per (holder, opponent the holder has an entry about). In practice each player holds entries about the
+  few opponents he saw, felt or was told about. That is about 22 × 11 at most, and far fewer actually filled.
+- **Entries:** a handful per belief. The combination is cached and recomputed only when an entry is added.
+- **Observation checks:** only for opponents he attends to (his man, his key, the carrier, the man he is engaged with).
+- **Huddle:** at most 2 items per player per play.
+- **Expected overhead:** under 1% of tick time. A one-game profile is a gate.
 
-- **Records:** one per (team, opponent player who has been on the field): at most about 2 × 53 per game. Each holds 6
-  capacities × 3 numbers.
-- **Per-player copies:** only the version index he last synced, plus his within-play deltas, kept sparse for the few
-  opponents he looked at.
-- **Observation checks:** only for opponents he is attending to (his man, his key, the carrier, a rusher on him). That
-  is O(1) per observer per tick and runs only while a plateau or burst is being tracked.
-- **Expected overhead:** under 1% of tick time. A profile of one game is a gate.
-
-## 7. Consumers: the current true-state reads this replaces (migration)
+## 8. Consumers: the current true-state reads this replaces (migration)
 
 The decision-information scan has no `profile` rows today, so these reads are not tracked. Step 1 of the migration adds
 a scan key for reads of another agent's capacity, `X.profile.(vmax|tau|brake|lateral|power|press)` with X not the
@@ -165,51 +229,89 @@ actor. These are the reads it finds in decision code (develop d31271e42):
 | `behaviors/defense.ts` 1632, 2280 to `coverage-leverage.ts` 21–27, 50–76 | R.profile, as `receiver: PhysicalProfile` | DeepCoverage.observe / choose clamp to receiver.vmax / tau: the cushion |
 | `behaviors/defense.ts` 3261 | r.profile.vmax | which receivers can reach a ball in the air |
 | `behaviors/qb.ts` 874 | mover.profile.vmax | a defender's reaction lag in his interception estimate |
-| `behaviors/qb.ts` 1521, 2643, 2911, 3134–3150 | QB_BELIEVED_DEF `believe` / `bodyOf` | his belief of a defender: `believedProfile(truth, typicalAt(position), k(awareness, experience))`. A blend of truth by a rating, keyed on position, which this note replaces |
+| `behaviors/qb.ts` 1521, 2643, 2911, 3134–3150 | QB_BELIEVED_DEF / QB_SCOUT `believe`, `bodyFor` | his belief of a defender (§12) |
 | `behaviors/blocking.ts` 612 | r.profile.vmax | a rusher's forecast path in the protection |
-| QB lane's `QB_SCOUT` (claude/exciting-cori-hc8l4u) | defender beliefs, a per-pair per-game draw | becomes `believed(qb, d)`. The QB lane maps its fields (§10) |
+| strength consumers (§4.4) | engagement / blocking / tackle decision code | set, move choice, aim, through-or-around: the reads are listed as each is migrated (most use the actor's own power today and an implicit guess of the opponent's) |
 
 Reads that stay:
 - radius, massKg and heightYd of others (visible build);
-- reach (arm length is roughly visible; we keep truth for now and list it as a later capacity);
+- reach (roughly visible; truth for now, a later capacity);
 - the actor's own profile;
 - a teammate's (practice), e.g. `qb.ts` 3000–3001 for his own receiver.
 
 Out of scope as non-decisions: tackle.ts 366/376 (physics), engagement.ts' own-body reads.
 
 The migration runs one consumer per step, each behind its own flag, with the scan rows falling as each lands. The
-order: coverage first (the cushion is the user's example), then pursuit, then the QB.
+order: coverage (the cushion, the user's example), then pursuit, then the QB (QB_SCOUT onto the shared type), then the
+strength consumers. The strength consumers follow the anchor physics fix, or measure what felt learns before it.
 
-## 8. Gates
+## 9. Example of the same structure: the receiver recount after motion
 
-1. **Belief error over a game:** per capacity, |mean − true| and sd by play index, on 8 games.
+Today a defender's numbering of the receivers (who is #2, #3) is not updated as a communication event after motion. In
+this structure:
+- a recount is an entry (`saw` for the man who sees the motion), followed by a message on the "at the line" channel to
+  the defenders whose assignment depends on it;
+- its delay is the time left before the snap, its capacity is one call, and its loss is real (the busted coverage after
+  late motion).
+
+The first build does not add this channel; it is the template for it.
+
+## 10. Gates
+
+1. **Belief error over a game:** per capacity, |mean − true| and sd by play index, per holder, on 8 games.
    - vmax starts near 0.26 for rookies and 0.05–0.10 with film.
    - It steps to about 0.1–0.15 after the first clear looks.
    - accel stays wide until a burst has been seen.
-   - The fraction of opponents with a clear vmax look by the end of Q1 is a reported number, not a target.
+   - Power per kg steps to about 0.06 after one full rep.
+   - The share of opponents with a clear look or rep by the end of Q1 is reported, not targeted.
 2. **No true-state read:** the new scan key's rows fall to zero for the migrated consumers.
-   - **Permutation test:** swap the true profiles of two opponents with the same build. Before either has been seen
-     (film off), no belief and no decision changes.
+   - **Permutation test:** swap the true profiles of two opponents with the same build. Before either has been seen or
+     felt (film off), no belief and no decision changes.
 3. **Staged cushion:** an off corner against a receiver whose true vmax is 0.6 yd/s above his build's prior.
    - Rep 1 (go route): the cushion is planned on the prior.
-   - Rep 2, after he has run by the corner once (a clear look): the corner's cushion and bail point grow.
-   - The same with the corner's teammate as the next rep's man: it grows one play later if the huddle sync reaches him,
-     and not if p_comm misses.
-4. **The mis-scouted fast player:** a staged series. He gains more separation on his first deep route than on later ones
-   (under-covered early, adjusted to later). We report the gap; we do not tune it.
-5. **Dither:** a dither-budget pass. **Cost:** a one-game profile, under 1% tick overhead.
+   - Rep 2, after he has run by the corner once: the corner's cushion and bail point grow.
+   - A teammate's grows one play later if the huddle message reaches him, and not if it is lost.
+4. **Staged anchor:** a tackle against a rusher two sd strong for his size. After one bull rep that walks him back, the
+   tackle's next set is deeper and he anchors earlier; a teammate guard told in the huddle shades his help.
+5. **The mis-scouted fast player:** a staged series. He gains more separation on his first deep route than on later ones.
+   We report the gap; we do not tune it.
+6. **Dither:** a dither-budget pass. **Cost:** a one-game profile, under 1% tick overhead.
 
-## 9. Questions for the user
+## 11. Questions for the user
 
 1. Teammates' capacities known exactly (practice)? Proposed yes.
-2. One record per team, shared through the huddle and the sideline with a per-player lag, as §5 proposes. Or keep the
-   defense and special teams apart?
+2. The first build: players as holders, own observation plus the huddle channel, and film as the staff's kickoff message.
+   Enough, or should the sideline between series be its own channel from the start?
 3. Officials' judgements that read true speed today (contact-holding.ts 506/511): in this scope, or a separate officials
    note?
 4. Snaps on film from experience years until the management layer counts snaps; a new staff `study` attribute at 0.5
    default. Acceptable?
 
-## 10. QB_SCOUT (QB lane to complete)
+## 12. QB_SCOUT today and how it maps (QB lane)
 
-The QB lane fills this in: what QB_SCOUT holds per (QB, defender) today, which of its fields map to §3.2 (its draw:
-fixed per pair per game) and §3.3, and which QB decisions read it.
+**What it is.** QB_SCOUT is the QB lane's per (passer, defender) report: `scoutReport(a, d)` in `src/sim/behaviors/qb.ts`
+(patch `docs/reviews/patches/engine71-footwork/qb-scout-screen-seen-on-703fc628.patch`, e0731a3a8; `test/qb-scout.test.ts`).
+- report = typical(position) + k · (truth + film error − typical);
+- k = clamp(SCOUT0 + SCOUT_AWARE · playRecognition + SCOUT_EXP · min(1, experience / 8));
+- film error sd = FILM_ERR · |typical| · √(FLOOR² + (1 − FLOOR²) / (1 + defender experience / FILM_YEARS)), drawn from
+  Rng(hash(passer | defender)): fixed per pair and game, new for a substituted man;
+- ballSkills and manCoverage the same way, with an absolute error;
+- `bodyFor(a, d)` is the helper every reach estimate uses.
+
+**What carries over:**
+- The per-pair seeded draw becomes the staff film entry and the holder's appearance error. Both are seeded per (team or
+  holder, B, game) the same way.
+- The film error shrinking with the defender's experience is §4.2's σ_film(n).
+- `bodyFor` becomes `believed(qb, d).asProfile()`.
+
+**What changes:**
+- The typical-by-position mean becomes the appearance prior from build (§4.1). This also removes its fallback to truth
+  for a position with no typical entry, which the QB lane flagged as a weak spot.
+- The k-weighted blend toward truth by the passer's ratings goes. A rating may not scale the truth. The passer's
+  recognition and experience act instead on his own perception (σ_obs, registering a look) and, later, on a film entry
+  of his own (§4.2).
+- In-game looks (§4.3) now update what he believes about a defender's speed. Today it is fixed for the game.
+
+**Skills, not bodies.** ballSkills and manCoverage are skills; the same holder / source / channel types carry them later
+(film, then what he sees the man do). This note covers bodies; QB_SCOUT's skill fields stay as they are until a skills
+note.
