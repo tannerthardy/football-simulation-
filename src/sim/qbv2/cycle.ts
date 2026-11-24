@@ -150,7 +150,9 @@ export class Cycle {
     // No hitch to keep the rhythm (bit 2): a read resolved and answered no, with the throw he times due, lets the eyes go
     // on without waiting for a step his feet do not take.
     // (c) and a timed throw is refused only once its window has been seen (at or after his break, a windup on).
-    const answeredNo = s.readFrom !== undefined && res >= s.need && !notDue && timed.every((o) => s.judge(o)?.seenBreak !== false);
+    //     On a key read only: the key named the throw he is timing (on a receiver read the eyes stay free to move on once
+    //     he has answered no; holding them there made the quick out's hitch late, 2.05 -> 2.45 s, staged control).
+    const answeredNo = s.readFrom !== undefined && res >= s.need && !notDue && (r.look.kind !== 'key' || timed.every((o) => s.judge(o)?.seenBreak !== false));
     if (s.now >= next || answeredNo) {
       this.looks.markDue(t, s.now);
       // Resolved and answered no: the eyes move. Unresolved: hold while the look is resolving (the stare-down), bounded
