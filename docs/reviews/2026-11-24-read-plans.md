@@ -169,12 +169,25 @@ concept owner: a back release would restore the taught outlet.
 
 **Variants:** #1 fade with an inside quick out (Win With The Pass, "Brown"); fade conversion against press.
 
-## What the schema needed (agreed with the QB lane)
+## The schema additions (agreed with the QB lane)
 
-Three additions to `plan.ts`. Proposed to the QB lane on 2026-11-24; see their reply:
-1. `side?: 'S' | 'W'` on a key look: whose flat defender, for the backside reset.
+The QB lane accepted all three, in `plan.ts` at 9a8a3902 (claude/exciting-cori-hc8l4u), which this branch carries
+verbatim:
+1. `side?: 'S' | 'W'` on a key look: whose defender, for the backside reset.
 2. `hot: HotRule[]`: one hot answer per side.
 3. `pick?: 'cushion' | 'shell' | 'leverage'`: what decides the flip.
+
+## Concept gaps
+
+Where our installed concept differs from the taught version, the plan carries an analogue or a missing piece.
+`CONCEPT_GAPS` in `read-plans.ts` is the list, kept so that a decision can correct the concept rather than bend the
+plan around it:
+- **slant_flat.** Taught, the back releases and is the checkdown ("throw the ball to the tailback", Klatt; the back in
+  the flat in Dunn's install). Ours has `back: 'block'`. The plan uses #3's hook (S3) as the checkdown from the first
+  hitch. ANALOGUE.
+- **quick_outs.** Taught, the back's shoot route is the outlet ("Back - Shoot route ... will always be an outlet",
+  Kratzer). Ours has `back: 'block'`. The plan has no checkdown.
+- **All four.** The hot answer is the generic replacement rule. No source names the rusher.
 
 ## Sources
 

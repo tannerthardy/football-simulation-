@@ -39,9 +39,8 @@ export interface ThrowOption {
 export interface PlanRead {
   /** Footwork step it is thrown from: 0 = the plant (the last step of the drop), 1 = the first hitch, 2 = the second. */
   step: number;
-  /** Where his eyes go: a receiver, or a key defender by role. */
-  /** A key's `side` (PROPOSED, Rules + Coaching, 2026-11-24, pending the QB lane): whose defender, S or W of the plan as
-   * authored; absent = S. */
+  /** Where his eyes go: a receiver, or a key defender by role on a side (S: the read's own side, the default; W the
+   * other), e.g. the backside flat defender on slant-flat's reset (Rules + Coaching, 2026-11-24). */
   look: { kind: 'receiver'; ref: ReceiverRef } | { kind: 'key'; role: KeyRole; side?: 'S' | 'W' };
   /** Candidate throws in taught order (for a key read, both routes of the pair). */
   throws: ThrowOption[];
@@ -71,14 +70,15 @@ export interface QbReadPlan {
   conceptId: string;
   drop: PassConcept['drop'];
   readType: ReadType;
-  /** PROPOSED (Rules + Coaching, 2026-11-24, pending the QB lane): what decides PreSnapState.flip (plans are authored
-   * on the strong side): the softer corner (`cushion`), open vs closed middle (`shell`), or where the key defender
-   * lines up (`leverage`). Absent: no taught flip; he starts on the strong side. */
-  pick?: 'cushion' | 'shell' | 'leverage';
   reads: PlanRead[];
-  /** PROPOSED (Rules + Coaching, 2026-11-24, pending the QB lane): one hot answer per side. */
+  /** A hot per side: the route that replaces the area the blitz comes from (USA Football, Hewitt). */
   hot: HotRule[];
   checkdown: CheckdownRule | null;
+  /** A structure pick: the plan is authored on the strong side, and what decides whether he flips it (mirrors S and W)
+   * before the snap, from his own picture (Flex's module B sets PreSnapState.flip): cushion = the softer corner
+   * (hitches, quick outs), shell = open or closed middle (dragon against lion), leverage = where the key defender lines
+   * up (Rules + Coaching, 2026-11-24). */
+  pick?: 'cushion' | 'shell' | 'leverage';
   /** The defender he confirms on the drop (structure picks and most progressions: the middle-of-field safety). */
   confirm: KeyRole | null;
   /** Per coverage family (QBMind's families: cover0, cover1, cover2, tampa2, cover2man, cover3, cover4, cover6), the
@@ -90,7 +90,7 @@ export interface QbReadPlan {
 
 /** What he decides before the snap (module B), from his own pre-snap read only. */
 export interface PreSnapState {
-  /** For a structure pick: which side or read he starts on (index into `reads`), and whether the picture says flip. */
+  /** Which read he starts on (index into `reads`), and whether he mirrors the plan (S and W swapped) by its `pick`. */
   startRead: number;
   flip: boolean;
   /** The alert, if its condition held in his pre-snap read. */
@@ -114,7 +114,7 @@ export const STUB_SLANT_FLAT: QbReadPlan = {
   readType: 'key',
   reads: [{
     step: 0,
-    look: { kind: 'key', role: 'flat' },
+    look: { kind: 'key', role: 'flat', side: 'S' },
     throws: [{ ref: 'S1', timing: 'onBreak' }, { ref: 'S2', timing: 'seenOpen' }],
     keyRules: [{ cue: 'widens', throwTo: 'S1' }, { cue: 'sinks', throwTo: 'S2' }],
   }, {
@@ -122,7 +122,7 @@ export const STUB_SLANT_FLAT: QbReadPlan = {
     look: { kind: 'receiver', ref: 'W1' },
     throws: [{ ref: 'W1', timing: 'onBreak' }, { ref: 'W2', timing: 'seenOpen' }],
   }],
-  hot: [{ side: 'either', over: 1, answer: { ref: 'S1', timing: 'onBreak' } }],
+  hot: [{ side: 'S', over: 1, answer: { ref: 'S1', timing: 'onBreak' } }, { side: 'W', over: 1, answer: { ref: 'W1', timing: 'onBreak' } }],
   checkdown: null,
   confirm: null,
   source: 'QB lane stub for interface work; not authored',

@@ -20,10 +20,11 @@ export const SLANT_FLAT: QbReadPlan = {
       keyRules: [{ cue: 'widens', throwTo: 'W1' }, { cue: 'jumps', throwTo: 'W1' }, { cue: 'sinks', throwTo: 'W2' }] },
   ],
   hot: [{ side: 'S', over: 1, answer: { ref: 'S1', timing: 'onBreak' } }, { side: 'W', over: 1, answer: { ref: 'W1', timing: 'onBreak' } }],
+  // ANALOGUE (concept gap, CONCEPT_GAPS): taught, the back is the checkdown; ours blocks, so #3's hook stands in.
   checkdown: { ref: 'S3', fromStep: 1, timing: 'seenOpen' },
   confirm: null,
   expected: { cover0: 0, cover1: 0, cover2: 0, tampa2: 0, cover2man: 0, cover3: 0, cover4: 0, cover6: 0 },
-  source: 'docs/reviews/2026-11-24-read-plans.md#slant-flat-slant_flat (Klatt; Football Playbook Designer; Bowen, NFP; Bleacher Report slant; Hewitt; Browns cut-up). Checkdown #3 hook: analogue for the back.',
+  source: 'docs/reviews/2026-11-24-read-plans.md#slant-flat-slant_flat (Klatt; Football Playbook Designer; Bowen, NFP; Bleacher Report slant; Hewitt; Browns cut-up). ANALOGUE: the checkdown (#3 hook for the back).',
 };
 
 /** Stick: key the flat defender outside-in on the plant: he fails to widen: the flat; widens: the stick. First hitch: the
@@ -68,11 +69,22 @@ export const QUICK_OUTS: QbReadPlan = {
     { step: 1, look: { kind: 'receiver', ref: 'S2' }, throws: [{ ref: 'S2', timing: 'onBreak' }] },
   ],
   hot: [{ side: 'S', over: 1, answer: { ref: 'S2', timing: 'onBreak' } }, { side: 'W', over: 1, answer: { ref: 'W2', timing: 'onBreak' } }],
+  // Concept gap (CONCEPT_GAPS): taught, the back's shoot route is the outlet; ours blocks, so there is none.
   checkdown: null,
   confirm: null,
   expected: { cover2: 1, tampa2: 1, cover3: 0, cover4: 0 },
   source: 'docs/reviews/2026-11-24-read-plans.md#quick-outs-quick_outs (Kratzer; Shaw; The QB Stable; Win With The Pass Cover 2 beaters; Brown, Grantland). Gap: no outlet (the back blocks).',
 };
+
+/** Where an installed concept differs from the taught version the plan follows, so the plan carries an analogue or a
+ * missing piece. These are concept-data questions (concepts.ts), listed for a decision to correct the concept, not to
+ * bend the plan around it. Each also appears in docs/reviews/2026-11-24-read-plans.md, "Concept gaps". */
+export const CONCEPT_GAPS: ReadonlyArray<{ concept: string; taught: string; ours: string; plan: string }> = [
+  { concept: 'slant_flat', taught: 'the back releases as the checkdown ("throw the ball to the tailback", Klatt; the back in the flat in Dunn\'s install)',
+    ours: "back: 'block'", plan: 'ANALOGUE: #3 (S3) hook as the checkdown from the first hitch' },
+  { concept: 'quick_outs', taught: 'the back\'s shoot route is the outlet ("Back - Shoot route ... will always be an outlet", Kratzer)',
+    ours: "back: 'block'", plan: 'no checkdown (null)' },
+];
 
 /** The authored plans by concept id. */
 export const READ_PLANS: Readonly<Record<string, QbReadPlan>> = Object.fromEntries(
