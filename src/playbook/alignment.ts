@@ -102,6 +102,16 @@ export function scatterSide(off: Pick<OffenseAlignment, 'ballY' | 'strongSign'>,
  * in the middle 14.5 deep, a man-free safety shades 0.34 toward the ball.
  * Off: the installed spots. */
 const DEF_ALIGN = process.env.DEF_ALIGN !== '0';
+/** HALF_ALIGN (off; HALF_ALIGN=1 turns it on; Coverage C14, 2026-11-24): a two-high halves safety aligns off the receivers
+ * on his side, as taught, not off the field. With a detached #2 on his side he stands on #2's line (inside-out on him);
+ * with none, he splits the difference between #1 and the ball. Read from the alignment he sees (the formation's spots),
+ * per call. Measured before (Flex, half_align.py, NFL PFF 2L/2R weeks 1-2 n 955 vs ours n 317): the NFL half stands
+ * within about a yard of #2's line in every #1-split bin (width minus #2's split -0.7 to +0.9), which is how he cheats
+ * toward a tight #1 (72-74% of #1's split) and stays inside a wide one (46-52%); with no #2 he is at 43-62% of #1's
+ * split. Ours sat on the field-centred spot (centre 6.9 yd plus 0.36 of the ball's offset), 1.5-3 yd inside #2 when #1
+ * was wide (wide #1 to the field: NFL 10.2 yd from the ball, ours 7.2), and the half reached #1's vertical 4 yd late
+ * from the snap alone (half_timing.py). Quarters seats and the depth are unchanged. */
+const HALF_ALIGN = () => process.env.HALF_ALIGN === '1';
 /** Default on (WR_ALIGN=0 turns it off): receivers align as tracked
  * (scripts/diag/align/nfl_scheme.py, 2022 tracking at the snap). The #1's room
  * to his sideline follows his route (ROUTE_ROOM: wide to run vertical or
@@ -1055,7 +1065,16 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
         const r = cov.roles[slot], quarters = r?.kind === 'zone' && r.zone.startsWith('quarter');
         const [depth, width, follow] = quarters ? [12, 6.65, 0.45] : [14, 6.9, 0.36];
         const sit = situationDepth(quarters ? 'quarter' : 'half', style.situation);
-        return { x: los + depth + (style.safetyDepth ?? 0) + sit, y: CENTER_Y + follow * (off.ballY - CENTER_Y) + sign * width };
+        const x = los + depth + (style.safetyDepth ?? 0) + sit;
+        if (HALF_ALIGN() && !quarters) {
+          // HALF_ALIGN: off the receivers on his side (see HALF_ALIGN): on a detached #2's line, else halfway to #1.
+          const side = sign === s ? 'S' : 'W';
+          const two = off.numbering[`${side}2` as ReceiverRef], one = off.numbering[`${side}1` as ReceiverRef];
+          const twoPos = two && !off.spots[two].inline ? off.spots[two].pos : null, onePos = one ? off.spots[one].pos : null;
+          const y = twoPos ? twoPos.y : onePos ? (off.ballY + onePos.y) / 2 : null;
+          if (y !== null) return { x, y: clamp(y, 2, FIELD_WIDTH - 2) };
+        }
+        return { x, y: CENTER_Y + follow * (off.ballY - CENTER_Y) + sign * width };
       };
       if (has('SS')) spots.SS = { slot: 'SS', pos: deep('SS', s), role: { kind: 'rush' }, gap: 'D', gapSign: s };
       if (has('FS')) spots.FS = { slot: 'FS', pos: deep('FS', -s), role: { kind: 'rush' }, gap: 'D', gapSign: -s };
