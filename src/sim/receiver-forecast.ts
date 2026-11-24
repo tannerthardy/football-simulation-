@@ -115,6 +115,9 @@ function priorBreak(prior: InstalledReceiverRoute): number | null {
   return prior.breakIdx !== undefined ? prior.breakIdx : pathBreak(prior.path, prior.end);
 }
 
+/** Routes timed to a point this far outward of the alignment (yd), mirroring Rules' route timing data (#925). */
+const NO_PLANT_OUTWARD: Record<string, number> = { flat: 5 };
+
 export function pathBreak(path: readonly PathPoint[], end: RouteEnd): number | null {
   let b: number | null = null;
   const last = end === 'settle' ? path.length - 1 : path.length;
@@ -191,6 +194,18 @@ export class ReceiverForecast {
    * install (or the answer he expects on an option route). Null for a route without a break. */
   breakPoint(): Readonly<Vec2> | null {
     const c = this.build(), path = c?.route?.path ?? this.prior.path;
+    // The flat's timing point (Rules, #925: RouteDef.timing {d 1.05, l 5}, on its leg): where the path is 5 yd outward of
+    // his alignment. Interim mirror of that data until #925 lands and timingPoint(route) is read here instead.
+    const outward = this.prior.routeId ? NO_PLANT_OUTWARD[this.prior.routeId] : undefined;
+    if (outward !== undefined) {
+      const s0 = this.prior.start, side = Math.sign((path[path.length - 1]?.p.y ?? s0.y) - s0.y) || 1;
+      let prev: Vec2 = s0;
+      for (const pt of path) {
+        const a = (prev.y - s0.y) * side, b = (pt.p.y - s0.y) * side;
+        if (b >= outward && b > a) { const f = (outward - a) / (b - a); return { x: prev.x + (pt.p.x - prev.x) * f, y: prev.y + (pt.p.y - prev.y) * f }; }
+        prev = pt.p;
+      }
+    }
     const idx = path === this.prior.path ? priorBreak(this.prior) : pathBreak(path, c!.route.end);
     return idx === null || !path[idx] ? null : path[idx].p;
   }
