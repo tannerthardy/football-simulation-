@@ -74,10 +74,11 @@ export interface QbReadPlan {
   /** A hot per side: the route that replaces the area the blitz comes from (USA Football, Hewitt). */
   hot: HotRule[];
   checkdown: CheckdownRule | null;
-  /** A structure pick: which of these reads he starts on is chosen before the snap by this cue (Flex's module B resolves
-   * it from his own picture: cushion = the softest corner, shell = open or closed, leverage = the defender's side of the
-   * receiver) (Rules + Coaching, 2026-11-24). */
-  pick?: { by: 'cushion' | 'shell' | 'leverage'; reads: number[] };
+  /** A structure pick: the plan is authored on the strong side, and what decides whether he flips it (mirrors S and W)
+   * before the snap, from his own picture (Flex's module B sets PreSnapState.flip): cushion = the softer corner
+   * (hitches, quick outs), shell = open or closed middle (dragon against lion), leverage = where the key defender lines
+   * up (Rules + Coaching, 2026-11-24). */
+  pick?: 'cushion' | 'shell' | 'leverage';
   /** The defender he confirms on the drop (structure picks and most progressions: the middle-of-field safety). */
   confirm: KeyRole | null;
   /** Per coverage family (QBMind's families: cover0, cover1, cover2, tampa2, cover2man, cover3, cover4, cover6), the
@@ -89,7 +90,7 @@ export interface QbReadPlan {
 
 /** What he decides before the snap (module B), from his own pre-snap read only. */
 export interface PreSnapState {
-  /** For a structure pick: which side or read he starts on (index into `reads`), and whether the picture says flip. */
+  /** Which read he starts on (index into `reads`), and whether he mirrors the plan (S and W swapped) by its `pick`. */
   startRead: number;
   flip: boolean;
   /** The alert, if its condition held in his pre-snap read. */
