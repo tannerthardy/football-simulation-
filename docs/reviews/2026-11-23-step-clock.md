@@ -298,3 +298,30 @@ where the hold's pressure exit is. So the confidence hold and the unresolved-loo
 look that cannot resolve, past the checkdown/throwaway he took without the clock: a missed pressure response caused
 by the new mechanism, not the intended cost of holding a read he is unsure of. Repair (controller): a hold lasts only
 while the look is resolving (the man in his clear cone); with nothing resolving there is nothing to wait for.
+
+### The repair and what remains (2026-11-24)
+
+Repair (QB_STEP_CLOCK, controller): a hold waits only on a look that is resolving: the man in his clear cone, or his
+head still on its way there (the turn left at the head rate, plus 0.1 s). Past that, a look that cannot resolve has
+nothing to wait for and he moves on (the stare-down is intact: a look inside his cone still resolves at his rating).
+Same seeds, 16 games per arm (sack-cause.ts; sack-probe.ts, which leaves all 1486 outcomes unchanged):
+
+| | clock off | clock on | repaired |
+|---|---|---|---|
+| sacks | 5.62% | 6.30% | 6.26% |
+| on his last read: thrown / sacked | 85.6 / 11.9% | 80.8 / 15.4% | 83.4 / 13.7% |
+| holds on at the sack | 0 | 24 | 15 |
+| sacked at 4.5 s or later | 0.35% | 0.47% | 0.13% |
+| last-read sacks: time on the read p50 | 0.75 s | | 0.65 s |
+| last-read sacks with the back in protection | 10 | | 13 |
+| sacks on earlier reads | 2.36% | | 2.76% |
+| time from the set to the sack p50 | 1.35 s | | 1.60 s |
+
+The repair halves the last-read gap, but the total does not move. What remains is not on a stalled look, and not on a back
+in protection; he does not wait longer there (0.65 s against 0.75 s). The probe found the last-read sacks mostly on a
+back who is not throwable (P null on 34 of 52), in both arms alike, and pricing the look as resolved gives the same
+P: the unresolved-look spread is not the cause either. The residue is diffuse: he reaches each read about 0.25 s later in the
+down, the step pacing the clock exists to give him. At 16 games an arm the total is +0.64 ± 0.87 points, not
+resolvable here; Integration's six-seed card (about 7,000 dropbacks) is the test. Release against the break, the same
+seeds (release_vs_break.py), repaired against off: stop +0.30 / +0.30 s, out +0.60 / +0.60, in +0.50 / +0.70
+(NFL -0.10, +0.30, +0.40).
