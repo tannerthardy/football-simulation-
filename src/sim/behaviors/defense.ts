@@ -293,7 +293,7 @@ export function pursueIfLive(sim: PlaySim, a: Agent): MoveCommand | null {
       if (sim.trace.data) sim.trace.decide({ t: sim.t, a: a.idx, kind: 'possession-pursuit', chose: target.slot,
         cue: 'carrying=true in this observer\'s acquired body picture',
         detail: `Sample age ${cue.age ?? 'unknown'} s; acquired x=${cue.pos.x}; installed ${a.runFit?.kind ?? 'fallback'} boundary. No authoritative holder/catch flag.` });
-      return asCarrierPursuit(chase(sim, a, target, 3, { onTop: OPEN_FIELD }));
+      return br(a, sim, 'pil-carrier', asCarrierPursuit(chase(sim, a, target, 3, { onTop: OPEN_FIELD })));
     }
   }
   // CATCH_CARRY: the ball reached a receiver he is on (he drove on the catch,
@@ -317,9 +317,9 @@ export function pursueIfLive(sim: PlaySim, a: Agent): MoveCommand | null {
       if (!refuted && on) {
         a.tags.add('catch-carry');
         // OPEN_FIELD: the ball is there; he approaches the receiver as a runner in space.
-        if (OPEN_FIELD) return asCarrierPursuit(chase(sim, a, drive.receiver, 3, { onTop: true }));
+        if (OPEN_FIELD) return br(a, sim, 'pil-catch-carry', asCarrierPursuit(chase(sim, a, drive.receiver, 3, { onTop: true })));
         const f = seen.facing;
-        return asCarrierPursuit(runThrough(a, f === undefined ? seen.pos : { x: seen.pos.x + Math.cos(f) * 0.35, y: seen.pos.y + Math.sin(f) * 0.35 }, { speed: 1 }));
+        return br(a, sim, 'pil-catch-carry-runThrough', asCarrierPursuit(runThrough(a, f === undefined ? seen.pos : { x: seen.pos.x + Math.cos(f) * 0.35, y: seen.pos.y + Math.sin(f) * 0.35 }, { speed: 1 })));
       }
       if (refuted) catchDrive.delete(a);
     }
@@ -333,7 +333,7 @@ export function pursueIfLive(sim: PlaySim, a: Agent): MoveCommand | null {
     if (sim.trace.data) sim.trace.decide({ t: sim.t, a: a.idx, kind: 'catch-anticipation', chose: anticipated.target.slot,
       cue: 'first acquired catch opportunity; result not yet acquired',
       detail: 'Keep working with the possible catcher; an empty picture after the opportunity refutes it. No confirmed possession.' });
-    return track(a, anticipated.cue.pos, anticipated.cue.vel);
+    return br(a, sim, 'pil-anticipated-track', track(a, anticipated.cue.pos, anticipated.cue.vel));
   }
   if ((HONEST_FLIGHT || landed) && path && sim.trace.data) sim.trace.decide({ t: sim.t, a: a.idx, kind: 'flight-continuation',
     chose: 'continue acquired catch opportunity', cue: 'recognized trajectory; no newer acquired holder',
@@ -346,7 +346,7 @@ export function pursueIfLive(sim: PlaySim, a: Agent): MoveCommand | null {
     if (sim.trace.data) sim.trace.decide({ t: sim.t, a: a.idx, kind: 'ball-rally',
       chose: 'locate ball at acquired landing area', cue: 'recognized pass; flight ended without acquired possession',
       detail: 'Keep ball responsibility instead of reopening route coverage. No holder is inferred.' });
-    return goTo(a, area);
+    return br(a, sim, 'pil-rally', goTo(a, area));
   }
   return null;
 }
@@ -3118,22 +3118,22 @@ function flightBreakMove(a: Agent, sim: PlaySim, R: Agent, seen: Perceived, catc
 
 function playBelievedBall(a: Agent, sim: PlaySim, man: Agent | null, continueCoverage?: () => MoveCommand): MoveCommand {
   const fallback = (): MoveCommand => {
-    if (continueCoverage) return continueCoverage();
+    if (continueCoverage) return br(a, sim, 'pbb-1', continueCoverage());
     if (man) {
       const s = sim.see(a, man);
       const inside = Math.sign(sim.ballY - s.pos.y) || 1;
-      return track(a, { x: s.pos.x, y: s.pos.y + inside * 0.7 }, s.vel, { cutSkill: 0.85 + 0.35 * a.r('manCoverage') });
+      return br(a, sim, 'pbb-2', track(a, { x: s.pos.x, y: s.pos.y + inside * 0.7 }, s.vel, { cutSkill: 0.85 + 0.35 * a.r('manCoverage') }));
     }
-    return { vel: a.vel };
+    return br(a, sim, 'pbb-3', { vel: a.vel });
   };
-  if (!sawThrow(a, sim, man)) return fallback();
+  if (!sawThrow(a, sim, man)) return br(a, sim, 'pbb-4', fallback());
   const rb = releaseBelief(sim, a);
   // BALL_EST (with bit 128): a ball seen once is not yet a flight he can play: with fewer than two samples his own
   // estimate is empty, and he plays as on the arm alone until it is not (not an empty path to playObservedFlight).
   const noFlight = rb.ballAt !== undefined && estimatesFor(a) && !hasObservedFlight(a) && !sim.ballEstimates?.estimate(a, sim).length;
   if (rb.ballAt === undefined || noFlight) {
     // Bit 256: a man defender who has not found the ball judges his phase and, in phase (or undisciplined), looks.
-    if (man && BALL_EST_MAN_LOOK && estimatesFor(a) && !hasObservedFlight(a) && manLooks(a, sim, man, rb.releasedAt)) return manLook(a, sim, fallback());
+    if (man && BALL_EST_MAN_LOOK && estimatesFor(a) && !hasObservedFlight(a) && manLooks(a, sim, man, rb.releasedAt)) return br(a, sim, 'pbb-5', manLook(a, sim, fallback()));
     a.tags.add('arm-bite');
     // FLIGHT_BREAK: a man or match carrier whose read of the passer's shoulders puts the ball on his own receiver breaks
     // on that receiver's catch window (the shared break) instead of carrying him: a carry runs with a receiver coming
@@ -3144,13 +3144,13 @@ function playBelievedBall(a: Agent, sim: PlaySim, man: Agent | null, continueCov
       if (pick.R === man && sim.t - rb.releasedAt >= react - 1e-9) {
         const r = sim.see(a, man), left = Math.max(0, Math.min(SHOULDER_FLIGHT_MAX,
           Math.hypot(r.pos.x - pick.from.x, r.pos.y - pick.from.y) / SHOULDER_BALL_SPEED - (sim.t - rb.releasedAt)));
-        return flightBreakMove(a, sim, man, r, sim.t + left, { x: r.pos.x + r.vel.x * left, y: r.pos.y + r.vel.y * left });
+        return br(a, sim, 'pbb-6', flightBreakMove(a, sim, man, r, sim.t + left, { x: r.pos.x + r.vel.x * left, y: r.pos.y + r.vel.y * left }));
       }
     }
-    if (!continueCoverage) return fallback();
+    if (!continueCoverage) return br(a, sim, 'pbb-7', fallback());
     // DEEP_GATE: a deep-third, deep-middle, deep-half or Tampa-middle player holds his coverage on the arm alone (a pump
     // moves him nothing); he breaks once he has seen the ball out. Quarter seats keep their route triggers.
-    if (DEEP_GATE && !man && heldDeepSeat(a)) { a.tags.add('deep-hold'); return continueCoverage(); }
+    if (DEEP_GATE && !man && heldDeepSeat(a)) { a.tags.add('deep-hold'); return br(a, sim, 'pbb-8', continueCoverage()); }
     // A zone defender breaks on the passer's shoulders at the delivery (the arm coming through; on the load alone he
     // plants): toward the receiver they point at, read through the tracking channel of the passer he is watching,
     // chosen once for this belief, with his reaction time after the choice. With none lined up, he plants (stops his
@@ -3163,10 +3163,10 @@ function playBelievedBall(a: Agent, sim: PlaySim, man: Agent | null, continueCov
         if (lp.R) {
           const r = sim.see(a, lp.R);
           a.tags.add('arm-load');
-          return stopDrop(sim, goTo(a, r.pos, { speed: ARM_LOAD_PACE, facing: angleTo(a.pos, r.pos) }));
+          return br(a, sim, 'pbb-9', stopDrop(sim, goTo(a, r.pos, { speed: ARM_LOAD_PACE, facing: angleTo(a.pos, r.pos) })));
         }
       }
-      return stopDrop(sim, continueCoverage());
+      return br(a, sim, 'pbb-10', stopDrop(sim, continueCoverage()));
     }
     const pick = shoulderTarget(a, sim, rb.releasedAt);
     const react = a.profile.reactionTime * (1 - 0.4 * a.r('anticipation'));
@@ -3180,10 +3180,10 @@ function playBelievedBall(a: Agent, sim: PlaySim, man: Agent | null, continueCov
       // rule-of-thumb ball speed). One receiver per belief; his projected spot updates as his picture does.
       const r = sim.see(a, pick.R), left = !SHOULDER_LEAD ? 0 : Math.max(0, Math.min(SHOULDER_FLIGHT_MAX,
         Math.hypot(r.pos.x - pick.from.x, r.pos.y - pick.from.y) / SHOULDER_BALL_SPEED - (sim.t - rb.releasedAt)));
-      if (FLIGHT_BREAK_ON()) return flightBreakMove(a, sim, pick.R, r, sim.t + left, { x: r.pos.x + r.vel.x * left, y: r.pos.y + r.vel.y * left });
-      return runThrough(a, { x: r.pos.x + r.vel.x * left, y: r.pos.y + r.vel.y * left }, { speed: 0.9 });
+      if (FLIGHT_BREAK_ON()) return br(a, sim, 'pbb-11', flightBreakMove(a, sim, pick.R, r, sim.t + left, { x: r.pos.x + r.vel.x * left, y: r.pos.y + r.vel.y * left }));
+      return br(a, sim, 'pbb-12', runThrough(a, { x: r.pos.x + r.vel.x * left, y: r.pos.y + r.vel.y * left }, { speed: 0.9 }));
     }
-    return stopDrop(sim, continueCoverage());
+    return br(a, sim, 'pbb-13', stopDrop(sim, continueCoverage()));
   }
   a.tags.add('onBall');
   const path = hasObservedFlight(a) ? rememberedFlight(a, sim.t) : null;
