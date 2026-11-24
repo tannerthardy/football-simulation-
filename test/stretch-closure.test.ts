@@ -14,6 +14,8 @@ function fit(side:number,dx:number,dy:number){
  f.defender.body.vel={x:0,y:0};f.blocker.body.vel={x:0,y:0};
  f.blocker.body.facing=Math.atan2(side*dy,dx);
  f.blocker.body.support!.felt={x:0,y:0};
+ // The blocker reads the defender through his delayed picture (ENGAGE_FELT); the teleport above must be in it.
+ for(let k=0;k<24;k++)f.sim.perception.record(f.sim.agents);
  let movement:any;
  runContactObservers.set(f.sim,(_e,phase,data)=>{if(phase==='movement')movement=data;});
  return{...f,read:()=>{const commands=contactCommands(f);return{commands,movement};}};

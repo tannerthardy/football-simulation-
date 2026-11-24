@@ -72,6 +72,13 @@
    "class": "fixture"
   },
   {
+   "file": "test/concept-menu.test.ts",
+   "test": "CONCEPT_MENU against the coverage it is drawn to beat, the quarterback throws most balls to the first two reads",
+   "owner": "Rules + Coaching",
+   "flag": "",
+   "class": "env"
+  },
+  {
    "file": "test/coverage-run-support.test.ts",
    "test": "installed support survives a coverage target replacement expires positive support through advancing sensing snapshots, alley=false",
    "owner": "Coverage",
@@ -111,20 +118,6 @@
    "test": "OUTLET_LAST / PLAN_KEYS the coached keys and installs",
    "owner": "QB",
    "flag": "PLAN_KEYS_2, PLAN_ROLES, QB_RHYTHM_THROW",
-   "class": "fixture"
-  },
-  {
-   "file": "test/qb-installed-box-count.test.ts",
-   "test": "pre-snap numbers include installed fullback work once retains the nine-versus-six singleback overload control",
-   "owner": "QB",
-   "flag": "QB_SEEN_MAN",
-   "class": "fixture"
-  },
-  {
-   "file": "test/qb-installed-box-count.test.ts",
-   "test": "pre-snap numbers include installed fullback work once still checks out against a genuine ten-versus-seven overload, without double-counting centered F",
-   "owner": "QB",
-   "flag": "QB_SEEN_MAN",
    "class": "fixture"
   },
   {
@@ -202,139 +195,6 @@
    "test": "screen install (docs/football-handbook/screens.md) a run-pass option hands off against press and throws two-on-two off coverage, the line run-blocking within a yard until the throw",
    "owner": "QB",
    "flag": "CLOUD_KILL",
-   "class": "fixture"
-  },
-  {
-   "file": "test/stretch-closure.test.ts",
-   "test": "stretch connection footwork closes the actual separation does not increase normal separation after reaching above the defender, mirror=-1",
-   "owner": "Trenches",
-   "flag": "ENGAGE_FELT, ENGAGE_TRUNK",
-   "class": "fixture"
-  },
-  {
-   "file": "test/stretch-closure.test.ts",
-   "test": "stretch connection footwork closes the actual separation does not increase normal separation after reaching above the defender, mirror=1",
-   "owner": "Trenches",
-   "flag": "ENGAGE_FELT, ENGAGE_TRUNK",
-   "class": "fixture"
-  },
-  {
-   "file": "test/stretch-closure.test.ts",
-   "test": "stretch connection footwork closes the actual separation does not turn purely lateral separation into an upfield step, mirror=-1",
-   "owner": "Trenches",
-   "flag": "ENGAGE_FELT, ENGAGE_TRUNK",
-   "class": "fixture"
-  },
-  {
-   "file": "test/stretch-closure.test.ts",
-   "test": "stretch connection footwork closes the actual separation does not turn purely lateral separation into an upfield step, mirror=1",
-   "owner": "Trenches",
-   "flag": "ENGAGE_FELT, ENGAGE_TRUNK",
-   "class": "fixture"
-  },
-  {
-   "file": "test/stretch-closure.test.ts",
-   "test": "stretch connection footwork closes the actual separation retains forward closure on the ordinary aligned contact",
-   "owner": "Trenches",
-   "flag": "ENGAGE_FELT, ENGAGE_TRUNK",
-   "class": "fixture"
-  },
-  {
-   "file": "test/stretch-closure.test.ts",
-   "test": "stretch connection footwork closes the actual separation uses the normal distance to contact without sacrificing the existing lateral offset, mirror=-1",
-   "owner": "Trenches",
-   "flag": "ENGAGE_FELT, ENGAGE_TRUNK",
-   "class": "fixture"
-  },
-  {
-   "file": "test/stretch-closure.test.ts",
-   "test": "stretch connection footwork closes the actual separation uses the normal distance to contact without sacrificing the existing lateral offset, mirror=1",
-   "owner": "Trenches",
-   "flag": "ENGAGE_FELT, ENGAGE_TRUNK",
-   "class": "fixture"
-  },
-  {
-   "file": "test/stretch-normal-follow.test.ts",
-   "test": "stretch connection follows velocity in the acquired normal frame does not turn pure lateral opponent motion into normal drive, side=-1",
-   "owner": "Trenches",
-   "flag": "ENGAGE_FELT, ENGAGE_TRUNK",
-   "class": "fixture"
-  },
-  {
-   "file": "test/stretch-normal-follow.test.ts",
-   "test": "stretch connection follows velocity in the acquired normal frame does not turn pure lateral opponent motion into normal drive, side=1",
-   "owner": "Trenches",
-   "flag": "ENGAGE_FELT, ENGAGE_TRUNK",
-   "class": "fixture"
-  },
-  {
-   "file": "test/stretch-normal-follow.test.ts",
-   "test": "stretch connection follows velocity in the acquired normal frame follows attainable normal opponent velocity -0.5 without attenuating it twice",
-   "owner": "Trenches",
-   "flag": "ENGAGE_FELT, ENGAGE_TRUNK",
-   "class": "fixture"
-  },
-  {
-   "file": "test/stretch-normal-follow.test.ts",
-   "test": "stretch connection follows velocity in the acquired normal frame follows attainable normal opponent velocity 0.7 without attenuating it twice",
-   "owner": "Trenches",
-   "flag": "ENGAGE_FELT, ENGAGE_TRUNK",
-   "class": "fixture"
-  },
-  {
-   "file": "test/stretch-normal-follow.test.ts",
-   "test": "stretch connection follows velocity in the acquired normal frame keeps normal following in a rotated acquired surface frame",
-   "owner": "Trenches",
-   "flag": "ENGAGE_FELT, ENGAGE_TRUNK",
-   "class": "fixture"
-  },
-  {
-   "file": "test/stretch-normal-follow.test.ts",
-   "test": "stretch connection follows velocity in the acquired normal frame keeps projected normal bounds for opponent velocity -3",
-   "owner": "Trenches",
-   "flag": "ENGAGE_FELT, ENGAGE_TRUNK",
-   "class": "fixture"
-  },
-  {
-   "file": "test/stretch-normal-follow.test.ts",
-   "test": "stretch connection follows velocity in the acquired normal frame keeps projected normal bounds for opponent velocity 3",
-   "owner": "Trenches",
-   "flag": "ENGAGE_FELT, ENGAGE_TRUNK",
-   "class": "fixture"
-  },
-  {
-   "file": "test/stretch-normal-follow.test.ts",
-   "test": "stretch connection follows velocity in the acquired normal frame preserves signed closure and bounded following for a reversed normal drive",
-   "owner": "Trenches",
-   "flag": "ENGAGE_FELT, ENGAGE_TRUNK",
-   "class": "fixture"
-  },
-  {
-   "file": "test/stretch-normal-follow.test.ts",
-   "test": "stretch connection follows velocity in the acquired normal frame preserves the explicitly selected legacy non-component request",
-   "owner": "Trenches",
-   "flag": "ENGAGE_FELT, ENGAGE_TRUNK",
-   "class": "fixture"
-  },
-  {
-   "file": "test/stretch-normal-follow.test.ts",
-   "test": "stretch connection follows velocity in the acquired normal frame retains stationary oblique gap closure, side=-1",
-   "owner": "Trenches",
-   "flag": "ENGAGE_FELT, ENGAGE_TRUNK",
-   "class": "fixture"
-  },
-  {
-   "file": "test/stretch-normal-follow.test.ts",
-   "test": "stretch connection follows velocity in the acquired normal frame retains stationary oblique gap closure, side=1",
-   "owner": "Trenches",
-   "flag": "ENGAGE_FELT, ENGAGE_TRUNK",
-   "class": "fixture"
-  },
-  {
-   "file": "test/stretch-normal-follow.test.ts",
-   "test": "stretch connection follows velocity in the acquired normal frame retains straight-drive following and closure despite lateral flow",
-   "owner": "Trenches",
-   "flag": "ENGAGE_FELT, ENGAGE_TRUNK",
    "class": "fixture"
   },
   {

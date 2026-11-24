@@ -611,6 +611,64 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
 
 
+## engine-100: the offense scouts the coverage from what its passer saw (2026-11-24)
+
+`SCOUT_SEEN` on (Flex; `=0` restores). The offense's in-game coverage scouting was fed the defense's true call after
+every pass play, with whether it was disguised (an outside review's finding, confirmed by Integration). It now learns
+from its passer's belief at the end of the play, each coverage by its share, weighted by how settled that belief was;
+a disguise counts when the shell he read before the snap differs from the one he believed after. Coaches upstairs
+naming the coverage between plays is a real second channel, left for the information-flow work.
+
+What it changes, measured in advance (Flex, 8 team-games): the offense's learned coverage mix against the defense's
+true mix, as total-variation distance, is 0.45 / 0.33 / 0.22 / 0.17 after 5 / 10 / 20 / 40 pass plays, against
+0.36 / 0.22 / 0.11 / 0.07 from the true call; it holds a disguise rate of 0.11-0.15 against a true 0.23-0.27.
+
+Card e138 (5 seeds x 32 games, on against off): completion -2.6 to +1.4, yards per attempt -0.31 to +0.10, sack rate
+-0.4 to +0.9, INT rate -0.3 to +0.3; no row moves the same way across seeds.
+
+## engine-99: what he believes of a defender is a scouting report (2026-11-24)
+
+Card e138 (5 seeds x 32 games, QB_SCOUT on against off): completion -1.7 to +3.2, yards per attempt -0.38 to +0.62, sack rate -0.4 to +1.1, INT rate -0.2 to +0.6; no row moves the same way across seeds. QB_SCREEN_SEEN was on in every arm of that card, so it is not isolated by it.
+
+On: `QB_SCOUT` and `QB_SCREEN_SEEN` (QB lane, plan of record §1.6: true-state reads in the passer's decision).
+
+- `QB_SCOUT`: what he believes of a defender's body and ball skills is a scouting report, fixed before the game per
+  passer and defender. It is the position's typical plus his share (playRecognition, experience) of a film reading. Film
+  errs: 6% of typical on each trait at no snaps on film, falling with the defender's experience to a floor of a third
+  of that (chosen). Off, the belief was the man's truth pulled toward the typical by a rating. The felt rush, the stick
+  checks, pocket movement and the screen check read rushers' and defenders' true profile and fatigue outright; on,
+  they all read the report, with no fatigue (he cannot see it). True fatigue reads in qb.ts fall 10 → 3
+  (decision-information scan).
+- `QB_SCREEN_SEEN`: the screen check's "blocked" is whether he sees one of his men on the defender, not the true
+  engagement.
+
+Same 16 games (seeds 11-18, 19-26), `scripts/diag/eyes/dropback-outcome.ts`:
+
+| | both off | QB_SCOUT only | both on |
+|---|---|---|---|
+| dropbacks | 1417 | 1444 | 1444 |
+| completion | 68.0% | 69.2% | 69.2% |
+| sacks | 96 (6.77%) | 94 (6.51%) | 94 (6.51%) |
+| INT | 18 | 19 | 19 |
+| thrown away | 19 | 17 | 17 |
+| time to throw p50 | 2.31 s | 2.31 s | 2.31 s |
+
+QB_SCREEN_SEEN changes no play on these seeds (the screen check's engaged case is rare); it removes the read.
+
+## engine-97: the passer's pre-snap picture is his own scan (2026-11-24)
+
+On: `QB_SCAN` and `QB_CANON_SEEN` (Flex; leak removals, QB decision plan §1.6; `=0` restores each). His pre-snap picture is one
+full scan, every defender off by his own error drawn once per play (0.3 + 1.0 x (1 - recognition) yd deep, 0.7 of that across),
+and the coverage features, the box count, the screen look and the quick check all read that one picture (off: exact positions
+in memory and four reads with fresh noise each). The canonical looks are built from the personnel and the front's visible
+alignment, not the call object, and the corners are found where he sees them: per side the widest defensive back of the visible
+personnel group within 12 yd of the line and 4+ yd off the ball (off: the CB_S / CB_W labels). Staged corner probe
+(`scripts/diag/eyes/corner-find.mts`, 17 looks incl. press, bunch, condensed, a nub end and rolled safeties): right man 98-100%,
+no side missed; the first rule (9 yd deep, 8+ yd off) missed 40-50% of condensed and heavy sides and fell to quickCheck's default.
+Tests: the box-count check adapted; screen-install's press kill re-recorded as an honest near-margin misread (an off corner at
+5.2 yd seen inside the 5 yd cloud edge; off coverage keeps the screen 26/30 seeds on, 28/30 off; press killed 30/30 either way).
+Red-diff on engine-95: 0 new, 0 fixed. Off hash = develop. Card: Integration's (both on vs both off).
+
 ## engine-95: the ball goes away on what he perceives (2026-11-24)
 
 On: `THROWAWAY_FELT` (QB lane with Integration). Off, a fixed per-passer timer from the set (2.5 + 1.0 composure + 0.6
@@ -2670,3 +2728,13 @@ completion .677 -> .682, uncontested drop .052 -> .058, breakup .097 -> .094, in
 run share .310 -> .310. Catch roll, actual run (8 games a side): ball speed p50 22.5 -> 21.9 yd/s, share over 24 yd/s 28.9% -> 23.7%.
 Not modelled: the NFL ball's decay roughly doubles 0.3-0.6 s before arrival (tracker smoothing near the catch, or the ball's nose-over at the end
 of the arc); the catch roll's 24 yd/s step is not what the NFL ball avoids on short throws (a catch-rebuild question, not drag).
+
+## engine-98: three catching defects (Tools, 2026-11-24)
+
+On: `HANDS_ON_ARMS`, `SECURE_SPLIT`, `SECURE_FACE_GEOM` (`=0` restores each). Plain defect fixes in `src/sim/catching.ts`, reported by the user and verified by Integration on develop 3003358b.
+
+- **HANDS_ON_ARMS (A).** `contestHands` returned `add`, declared `let add = 0` in the first CATCH_HANDS commit (f26fc0611) and never written, so `diffHands` was 0 under default-on CATCH_HANDS and the difficulty term in `receiverContest` was dead: a defender who reached the receiver's arms and lost his rake roll added nothing to the catch (the legacy path at least applied `pCatch *= 0.82 + 0.18 contestedCatch`). The history gives no formula (the docstring says "the difficulty his hands on the receiver's arms add to the catch (0 when nobody reaches them)"), so the restored term uses only quantities the rake roll already uses: `add += depth x technique`, depth = how far into his arm reach the arms are, technique = his arm technique (0.45 + 0.35 manCoverage + 0.2 strength); `diffHands` is then scaled where it is applied by the receiver's hands and contested-catch skill. No new constant.
+- **SECURE_SPLIT (B).** `secureStep` marked a defender `tried` when `toBall <= handReach` OR `toBody <= bodyTouch`; the hand condition is met a tick or two before the body arrives (hit = 0), and `S.tried.has(D)` then skipped the body's dislodge. Now the hand play and the body arrival are separate events, each tried once.
+- **SECURE_FACE_GEOM (C).** `facingBall` in the securing window dotted the defender's shoulders with the ball's velocity, which `pinToHands` sets to the receiver's; a trailing defender running with him and looking at the ball scored c = -1 and took the 0.6 penalty on his hand play. During securing "facing the ball" is now geometric: his shoulders toward the ball's position (same -0.35 threshold).
+
+Same-seed numbers, 8 games per arm (seeds 101-108; arms diverge after the first changed play; `scripts/diag/catch/catch_fixes_card.mts`), base | A | B | C | all three: attempts 673 | 673 | 690 | 673 | 690; completion .750 | .750 | .746 | .750 | .746; drops 28 | 28 | 32 | 28 | 32 (contested 5 | 5 | 7 | 5 | 7, uncontested 23 | 23 | 25 | 23 | 25); breakups 47 | 47 | 48 | 47 | 48; interceptions 11 | 11 | 12 | 11 | 12; securing dislodges by hand 4 | 4 | 3 | 4 | 3, by the hit 0 | 0 | 1 | 0 | 1. A and C changed nothing in 8 games: the events are rare. Counted over 16 games with all three on (a tap on the same code): A fires 26 times (1.6 per game), lowering the catch chance by 0.079 on average (from a mean .861: about 2.1 expected completions in 16 games); B gives 19 body arrivals after a hand play (of 118 first attempts); C changes the facing test on 51 of 118 hand attempts (geometric sees, velocity did not) and 2 the other way, restoring the full hand factor for a trailing defender who is looking at the ball. Expect contested completions to fall slightly (A), more dislodges on the body's arrival (B), and more hand dislodges against a trailing defender (C); none is distinguishable from noise at this sample, and none is offset. The QB's believed drop rate (DROP_BELIEF 0.165 - 0.13 hands) was fitted with these defects in; flagged for the QB lane's calibration contract, not refitted.
