@@ -91,6 +91,31 @@ export const FLAT_SINK = process.env.FLAT_SINK !== '0';
  * capped (ZoneCoverage.flatCarry); with #1 vertical he sinks with #1 as before. */
 export const FLAT_CARRY = process.env.FLAT_CARRY !== '0';
 const FLAT_SINK_DEPTH = 18;
+/** SQUAT_SINK (off; SQUAT_SINK=1 turns it on; Coverage C14, 2026-11-23): one flat-corner rule for every Cover 2 form, the
+ * Cover 6 / Cover 8 half side and the cloud corner (Cover 3 Cloud, inverted Cover 2), in place of FLAT_SINK, FLAT_CARRY
+ * and the sink_corner / cloud_corner rules (squatTopDown), which become this zone seat. Rules' standard card, cover2 x
+ * CB_S rows 1, 4, 5, 6, 8 ([TD Cover 2], [Bowen C2], [TD Trap]): he reads #1 and #2 from his alignment; #1's vertical stem
+ * with no flat threat means sink at 45 degrees under #1 (on a pass read, the high hat, he zone-turns and sinks off #1's
+ * release within its first 5 yd, as Rules' hard-corner card rows 3 and 5b teach; not after #2/#3 declare); stay under and
+ * level-to-outside of #1, to the hole-shot depth (10-12 yd, card row 5b), where he holds until the throw; a flat threat in front of him brings him down top-down (early: the flat is his; late: he
+ * squeezes down between the flat and #1); #1 in or stopping releases him to his flat area; a #2 flat that turns up is
+ * carried until capped (FLAT_CARRY's rule). The sink is a side-on run with the hips open and the eyes on the QB (facing
+ * at most 70 degrees off his line of travel, so the body model's speed cap for that angle applies, not the backpedal's).
+ * Measured before (docs/reviews/2026-11-23-coverage-cards-engine.md F6): the match lane pick pulled him forward and inside
+ * until 1.5 s, the sink waited for a pass read, and he sank facing the QB at 2.5-3.6 yd/s against #1's 6.7; NFL corner
+ * at 3.0 s against a vertical #1 is 9.4 yd deep, 4.0 under #1 and 0.7 yd outside him (Tools' half_window.py). The depth
+ * is the taught hole depth (SQUAT_HOLE); before it, his relation to #1 and the flat threat. The zone turn is one quick
+ * hip turn (orientation.ts `sharp`). No jam (a follow-up: zone
+ * corners have no press contact). */
+export const SQUAT_SINK = process.env.SQUAT_SINK === '1';
+/** Is this call's flat seat played by SQUAT_SINK (every Cover 2 form, Cover 6/8 half side, cloud; not Deuce's palms or DOT)?
+ * The flag is read per call (not only at import) so a diagnostic replay can switch it for one play of a game. */
+export function squatSinkCall(sim: PlaySim): boolean {
+  const c = sim.defCall.coverage;
+  if (!(process.env.SQUAT_SINK === '1') || c.id.startsWith('deuce')) return false;
+  return c.family === 'cover2' || c.family === 'tampa2' || c.family === 'cover6' || c.id === 'cover3_cloud';
+}
+const SQUAT_UNDER = 2, SQUAT_HOLE = 11, SQUAT_HOLE_TOP = 12, SQUAT_FACE = (70 * Math.PI) / 180;
 const SINK_ENTER = 2, SINK_EXIT = 1;
 /** SEEN_EYES (default on; SEEN_EYES=0 restores the QB's internal read target): a zone defender
  * reads the QB's look from what he sees of him, not from the QB's internal
@@ -1939,10 +1964,15 @@ export class ZoneCoverage implements Behavior {
       if (cont) return cont;
     }
     if (playsThrow(a, sim, null)) return playBall(a, sim, null, RELEASE_BELIEF ? () => this.zonePlay(a, sim) : undefined);
-    if (FLAT_CARRY && !this.deep && (this.zone === 'flat_s' || this.zone === 'flat_w') && knowsPass(sim, a) && !believesRun(sim, a)) {
+    const squat = !this.deep && (this.zone === 'flat_s' || this.zone === 'flat_w') && squatSinkCall(sim);
+    if (squat) {
+      const sq = this.squatCorner(a, sim);
+      if (sq) return sq;
+    }
+    if (!squat && FLAT_CARRY && !this.deep && (this.zone === 'flat_s' || this.zone === 'flat_w') && knowsPass(sim, a) && !believesRun(sim, a)) {
       const carry = this.flatCarry(a, sim); if (carry) return carry;
     }
-    if (FLAT_SINK && !this.deep && (this.zone === 'flat_s' || this.zone === 'flat_w') && knowsPass(sim, a) && !believesRun(sim, a)) {
+    if (!squat && FLAT_SINK && !this.deep && (this.zone === 'flat_s' || this.zone === 'flat_w') && knowsPass(sim, a) && !believesRun(sim, a)) {
       const sink = this.flatSink(a, sim);
       if (sink) return sink;
     }
@@ -2003,6 +2033,107 @@ export class ZoneCoverage implements Behavior {
   private flatRoute: Agent | null = null;
   private flatCarrying = false;
   private oneCancelled = false;
+
+  /** SQUAT_SINK: sinking under #1 (entered on his vertical stem, left when he cancels). */
+  private squatSinking = false;
+  /**
+   * SQUAT_SINK: the squat corner's play before the throw (see SQUAT_SINK). Null hands him to his flat zone play (the flat
+   * threat early, #1 in or stopping, a run read with #1 not releasing).
+   */
+  private squatCorner(a: Agent, sim: PlaySim): MoveCommand | null {
+    const dir = sim.attackDir(sim.offense[0].team), [ylo, yhi] = this.band, myDepth = (a.pos.x - sim.los) * dir;
+    const side = this.zone === 'flat_s' ? 'S' : 'W';
+    const oneSlot = sim.offAlign.numbering[`${side}1` as 'S1' | 'W1'];
+    const one = oneSlot ? sim.offense.find((r) => r.slot === oneSlot) : undefined;
+    if (!one) return null;
+    // A #2 flat that turns up after #1 cancels is carried (FLAT_CARRY's rule; it also keeps the #1-cancelled read).
+    if (!believesRun(sim, a)) { const carry = this.flatCarry(a, sim); if (carry) return carry; }
+    const o = sim.see(a, one), oDepth = (o.pos.x - sim.los) * dir, oUp = o.vel.x * dir, oAcross = Math.abs(o.vel.y);
+    const outside = Math.sign(o.pos.y - sim.ballY) || 1;
+    const q = sim.see(a, sim.qb), toQB = angleTo(a.pos, q.pos);
+    // #1's stem, as he sees it: enter on a vertical release (past 1.5 yd, over 3.5 yd/s and clearly more up than across);
+    // leave when #1 cancels (FLAT_CARRY's read) or stops climbing (under 1 yd/s upfield), far inside the entry.
+    // Rules' hard-corner card (rows 3, 5b): on a pass read (the high hat) he zone-turns and sinks off #1's release, within
+    // the first 5 yd of it; not after #1 has passed him.
+    if (!this.squatSinking) this.squatSinking = !this.oneCancelled && !believesRun(sim, a) && oDepth >= 0.5 && oUp > 2.5 && oUp > 1.5 * oAcross;
+    else if (this.oneCancelled || oUp < 1) this.squatSinking = false;
+    // The flat threat: another receiver in or entering his area, 6 yd deep or less, moving toward the sideline.
+    const inArea = (p: Vec2) => p.y >= ylo - 2 && p.y <= yhi + 2;
+    let flat: Perceived | null = null;
+    for (const r of sim.offense) {
+      if (r === sim.qb || r === one || isOL(r)) continue;
+      const c = sim.see(a, r), d = (c.pos.x - sim.los) * dir;
+      if (inArea(c.pos) && d <= 6 && d > -3 && c.vel.y * outside > 2 && Math.abs(c.vel.y) > Math.abs(c.vel.x) * 0.7) { flat = c; break; }
+    }
+    // Hips open to the field: off his line of travel toward the inside (the ball's side), never more than SQUAT_FACE, so
+    // a sink straight away from the QB does not flip between the two hips.
+    const inSign = Math.sign(sim.ballY - a.pos.y) || -outside;
+    const face = (to: Vec2) => {
+      const tv = Math.hypot(to.x - a.pos.x, to.y - a.pos.y);
+      if (tv < 0.4) return toQB;
+      const trav = Math.atan2(to.y - a.pos.y, to.x - a.pos.x);
+      const want = Math.abs(angleDiff(toQB, trav));
+      const cands = [trav + Math.min(want, SQUAT_FACE), trav - Math.min(want, SQUAT_FACE)];
+      return Math.sin(cands[0]) * inSign >= Math.sin(cands[1]) * inSign ? cands[0] : cands[1];
+    };
+    if (!this.squatSinking) {
+      // Before #1 declares: read #1 and #2 from his alignment, square, no lane pick. A flat threat, #1 cancelled, or a run
+      // read with #1 not releasing goes to his flat zone play (which carries the run fit).
+      if (flat || this.oneCancelled || believesRun(sim, a) || oDepth >= 6) return null;
+      return withFacingTechnique(stand(toQB), { label: 'squat-read' });
+    }
+    // Deep to short (Rules' hard-corner card row 5b; Tools: the NFL corner is still 6.8 yd deep at 3.0 s with #2 in the
+    // flat): with the shared break on the throw (FLIGHT_BREAK) a flat threat does not bring him off the sink; the throw
+    // does. Without it (measured: keeping the sink with no working break gave up the flat), an early flat is his and a
+    // late one brings him down between the flat and #1.
+    if (flat && !FLIGHT_BREAK_ON()) {
+      const fDepth = (flat.pos.x - sim.los) * dir;
+      if (myDepth < 7) { this.squatSinking = false; return null; }
+      const tx = sim.los + dir * Math.max(fDepth + 3, 4), ty = (flat.pos.y + o.pos.y) / 2;
+      const to = { x: tx, y: ty };
+      return withFacingTechnique(track(a, to, { x: 0, y: 0 }, { facing: face(to), speed: 1, gain: 1.6 }), { label: 'squat-down', key: flat.vel });
+    }
+    // The sink, deep to short (Rules' hard-corner card row 5b): he plays two throws, the hole shot to #1 and the flat, so he
+    // sits where he can still play either in time, not on #1. Each throw's window is that receiver as he sees him carried
+    // on his seen velocity for the throw's flight (the passer's distance at a rule-of-thumb ball speed); the flat threat is
+    // the nearest other receiver he sees on his side within 6 yd of the line (#2 or a back, released or not). His spot is
+    // on the line between the two windows where his own time to each, standing (timeToReach), minus that throw's flight
+    // is smallest at its worst (a minimax on his body): a fast flat threat pulls him shallow (the squat), none lets him
+    // sink under #1. Measured before (Tools' census, 2026-11-24; Integration): the fixed 2 yd under #1 left him 2.1 yd
+    // from #1 at the break (NFL 4.2), the 10-15 yd window over-closed (Cover 2 .057 vs NFL .177) and the flat opened.
+    // With no flat threat on his side, the hole alone: under #1 to the hole depth, as before.
+    const flight = (w: Vec2) => Math.hypot(w.x - q.pos.x, w.y - q.pos.y) / SHOULDER_BALL_SPEED;
+    const carry = (c: Perceived) => { const t = flight(c.pos); return { x: c.pos.x + c.vel.x * t, y: clamp(c.pos.y + c.vel.y * t, 1, FIELD_WIDTH - 1) }; };
+    let threat: Perceived | null = null, best = Infinity;
+    for (const r of sim.offense) {
+      if (r === sim.qb || r === one || isOL(r)) continue;
+      const c = sim.see(a, r), d = (c.pos.x - sim.los) * dir;
+      if (d > 6 || Math.sign(c.pos.y - sim.ballY) !== outside) continue;
+      const gap = Math.abs(c.pos.y - (ylo + yhi) / 2);
+      if (gap < best) { best = gap; threat = c; }
+    }
+    let to: Vec2;
+    const holeT = { x: sim.los + dir * Math.min(oDepth - SQUAT_UNDER, SQUAT_HOLE), y: o.pos.y + outside * 0.5 };
+    if (!threat) to = { x: sim.los + dir * Math.max((holeT.x - sim.los) * dir, myDepth - 0.5), y: holeT.y };
+    else {
+      // The corner's hole shot is the ball under the safety, at the card's hole depth (row 5b: 10-12 yd); a ball beyond it
+      // is the safety's, so #1's window is held to that depth on his line.
+      const Hc = carry(o), Hx = sim.los + dir * Math.min((Hc.x - sim.los) * dir, SQUAT_HOLE_TOP);
+      const H = { x: Hx, y: Hc.y }, F = carry(threat), tH = flight(H), tF = flight(F);
+      const body = { vel: { x: 0, y: 0 }, profile: a.profile, speedScale: a.speedScale };
+      let bestP = H, bestCost = Infinity;
+      for (let k = 0; k <= 20; k++) {
+        const P = { x: F.x + (H.x - F.x) * k / 20, y: F.y + (H.y - F.y) * k / 20 };
+        const cost = Math.max(timeToReach({ ...body, pos: P }, H, a.profile.reach) - tH, timeToReach({ ...body, pos: P }, F, a.profile.reach) - tF);
+        if (cost < bestCost) { bestCost = cost; bestP = P; }
+      }
+      to = bestP;
+    }
+    const held = !threat && myDepth >= SQUAT_HOLE - 0.5;
+    a.tags.add('squat-sink');
+    return withFacingTechnique(track(a, to, held ? { x: 0, y: o.vel.y } : { x: o.vel.x, y: o.vel.y }, { facing: face(to), speed: 1, gain: 1.8 }),
+      { label: held ? 'squat-hold' : 'squat-sink', key: o.vel, sharp: true });
+  }
 
   private flatSink(a: Agent, sim: PlaySim): MoveCommand | null {
     const dir = sim.attackDir(sim.offense[0].team), [ylo, yhi] = this.band, myDepth = (a.pos.x - sim.los) * dir;

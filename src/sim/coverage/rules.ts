@@ -16,7 +16,7 @@ import type { Agent } from '../agent.js';
 import type { Vec2 } from '../../core/vec.js';
 import { zoneLandmark } from '../../playbook/alignment.js';
 import type { ManOptions } from '../behaviors/defense.js';
-import { believesRun, knowsPass } from '../behaviors/defense.js';
+import { believesRun, knowsPass, squatSinkCall } from '../behaviors/defense.js';
 import type { PlaySim } from '../playsim.js';
 import { isQuickOut, type ReceiverRead, type ReleaseReader } from './reads.js';
 import { hasVisibleCap } from './judgment.js';
@@ -640,6 +640,8 @@ function palmsSafety(c: RuleCtx): Directive {
 export const SQUAT_TOPDOWN = process.env.SQUAT_TOPDOWN !== '0';
 
 function squatTopDown(c: RuleCtx, sink: boolean): Directive {
+  // SQUAT_SINK: the squat corner is one zone-seat rule (ZoneCoverage.squatCorner) for every Cover 2 form.
+  if (squatSinkCall(c.sim)) return zoneOf(c);
   const st = c.state;
   const one = ref(c, 1), two = ref(c, 2), three = ref(c, 3), back = backTo(c);
   const runners = [two, three, back].filter((rd): rd is ReceiverRead => !!rd);
@@ -666,6 +668,7 @@ function squatTopDown(c: RuleCtx, sink: boolean): Directive {
 }
 
 function cloudCorner(c: RuleCtx, sink: boolean): Directive {
+  if (squatSinkCall(c.sim)) return zoneOf(c);
   if (SQUAT_TOPDOWN) return squatTopDown(c, sink);
   const one = ref(c, 1);
   const flat = [ref(c, 2), ref(c, 3), backTo(c)].find((rd) => rd && (rd.release === 'flat' || (rd.release === 'out' && rd.depth < 6)));

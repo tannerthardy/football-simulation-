@@ -33,6 +33,9 @@ export interface FacingTechnique {
   readonly label: string;
   /** Acquired velocity of the receiver he is playing, if any. */
   readonly key?: Vec2;
+  /** A deliberate hip turn the technique teaches as one quick move (the squat corner's zone turn into his sink): the new
+   * facing is taken at once and turned at the body's full rate, not after the hold or at the rounded half rate. */
+  readonly sharp?: boolean;
 }
 
 const technique = Symbol('coverage facing technique');
@@ -115,10 +118,10 @@ export class CoverageOrientation {
       : recent + angleDiff(recent, key) * (1 - Math.exp(-dt / KEY_TAU));
     if (transition) {
       const hold = 0.3 + 0.2 * (1 - a.r('anticipation') * a.mind.focus);
-      if (broke || now - this.since >= hold) {
+      if (broke || request.sharp || now - this.since >= hold) {
         this.mode = mode;
         this.since = now;
-        this.fast = broke;
+        this.fast = broke || !!request.sharp;
         if (broke) this.keyHeading = key;
         this.label = request.label;
         if (mode === 'face') this.faceTarget = wanted;

@@ -210,6 +210,7 @@
     "PERIPH_ACUITY": "on",
     "FLIGHT_BREAK": "on",
     "FLIGHT_LEAD": "off",
+    "SQUAT_SINK": "off",
     "HEAD_FOLLOW": "on",
     "POCKET_CLIMB": "off",
     "BLOCK_SEEN": "on",
