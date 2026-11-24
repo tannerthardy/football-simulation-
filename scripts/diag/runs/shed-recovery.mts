@@ -29,7 +29,7 @@ proto.tick = function (this: any) {
       runContactObservers.set(this, (e: any, ph: string, data: any) => { prev?.(e, ph, data); if (ph === 'end') s.reasons.set(e, data?.reason ?? '?'); });
     }
   }
-  const before = s ? new Set(this.engagements.filter((e: any) => e.type === 'run')) : null;
+  const before: Set<any> | null = s ? new Set<any>(this.engagements.filter((e: any) => e.type === 'run')) : null;
   const out = tick.call(this);
   if (!s) return out;
   const sim = this, bc = sim.ball.kind === 'held' ? sim.ball.carrier : null;
