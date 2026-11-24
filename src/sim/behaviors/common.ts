@@ -182,7 +182,7 @@ export function pursuitPoint(sim: PlaySim, a: Agent, target: Agent, horizon = 3,
   const committed = PURSUIT_COMMIT ? (PURSUIT_SPOT ? commitSpot(sim, a, target, ip, path, seen, heading, V, mover, reach, horizon, request) : commitMeeting(sim, a, target, ip, path, mover, reach, horizon, request)) : ip.t;
   // COMMIT_YIELD: as the carrier nears the spot he holds, the aim moves from it to the fresh intercept, so the release
   // (under MEET_NEAR) is not a step: fully held from YIELD_FAR s of the carrier's time to it, fully fresh at MEET_NEAR.
-  const wCommit = COMMIT_YIELD ? clamp((committed - MEET_NEAR) / (YIELD_FAR - MEET_NEAR), 0, 1) : 1;
+  const wCommit = COMMIT_YIELD ? clamp((committed - MEET_NEAR) / yieldWindow(a, path(ip.t), ip.t), 0, 1) : 1;
   const meetT = committed * wCommit + ip.t * (1 - wCommit);
   const biasedTime = clamp(meetT - bias, 0, horizon);
   const p = path(biasedTime);
@@ -229,10 +229,19 @@ const angleBias = new WeakMap<Agent, number>();
  *    spot is then re-chosen in one step. The others: an earlier meeting 32, late 22, a new target 17, off the path 12.
  * The blend is by the carrier's time to the held spot, so it is complete exactly when that release would fire.
  *
- * Stated choice: YIELD_FAR 0.5 s (about a reaction and a stride before the carrier reaches the spot). */
+ * The window is yieldWindow (his reaction plus his redirect at braking capacity); v2's stated 0.5 s is replaced.
+ * Measured with the stated window: 3-8 yd band 0.5 s -> 9.45 deg/s, 1.0 s -> 7.43; off 7.9; contract < 6.3. */
 export const COMMIT_YIELD = process.env.COMMIT_YIELD === '1';
-/** YIELD_FAR may be overridden by env for diagnosis only (the 3-8 yd band: 0.5 s -> 9.45 deg/s, 1.0 s -> 7.43; off 7.9). */
-const YIELD_FAR = Number(process.env.YIELD_FAR ?? 0.5);
+/** COMMIT_YIELD's window, from the pursuer himself (no constant): the time his body needs to take the fresh line,
+ * his reaction time plus the velocity change from his current velocity onto the fresh intercept (toward its spot, at
+ * the speed that reaches it in time, up to his top speed) at his braking capacity. Continuous in his state: it widens
+ * as the turn grows, so a pursuer far off the fresh line starts handing over earlier. */
+function yieldWindow(a: Agent, spot: Vec2, t: number): number {
+  const dx = spot.x - a.pos.x, dy = spot.y - a.pos.y, d = Math.hypot(dx, dy);
+  const s = d > 1e-6 ? Math.min(a.profile.vmax * a.speedScale, d / Math.max(t, 0.1)) / d : 0;
+  const dv = Math.hypot(dx * s - a.vel.x, dy * s - a.vel.y);
+  return Math.max(0.1, a.profile.reactionTime) + dv / Math.max(0.1, a.profile.brake);
+}
 export const PURSUIT_COMMIT = process.env.PURSUIT_COMMIT !== '0';
 const MEET_ENTER = 0.1, MEET_EXIT = 0.15, MEET_MARGIN = 0.3, MEET_NEAR = 0.15;
 const heldMeeting = new WeakMap<Agent, { target: Agent; at: number; ok: boolean }>();
