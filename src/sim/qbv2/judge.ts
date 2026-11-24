@@ -51,6 +51,11 @@ export interface ThrowQuestion {
   /** How resolved his look at the receiver is (0-1) and his picture spread on the receiver (yd). */
   res: number;
   receiverSpread: number;
+  /** The coverer he held for this receiver last time (kept unless another is nearer by COVER_SWAP), and the defenders his
+   * picture had within the coverage radius of this receiver 0.2 s ago too (only they can be the coverer: a relation held
+   * over his picture's own history, not one sample; Coverage's review). Absent: no history yet (no restriction). */
+  heldCoverer?: number | null;
+  coverEligible?: ReadonlySet<number>;
 }
 
 export type Role = 'coverer' | 'driver' | 'lane';
@@ -66,6 +71,8 @@ export const SETTLE_COVER = 2.5;
 /** A defender this close to the receiver in his picture is on him whatever his speed so far: a press or tight man (yd;
  * Coverage's note: man cushion about 1.3 yd at the break). A rusher driving at the passer is not. Chosen. */
 export const TIGHT_COVER = 3;
+/** A new coverer replaces the held one only when nearer the receiver by this (yd): no swap tick to tick (chosen). */
+export const COVER_SWAP = 1;
 /** Arrival within his reach plus this of the catch point plays the ball (yd): his hand reaches the ball off the
  * receiver's frame (chosen; Coverage's note: the man coverer about 1.7 yd from the receiver at the catch holds completion
  * to .54). The calibration contract checks it by role. */
@@ -125,14 +132,16 @@ export function arriveTime(d: Pick<SeenDefender, 'pos' | 'vel' | 'facing' | 'vma
 export function findCoverer(q: ThrowQuestion, defs: SeenDefender[]): SeenDefender | null {
   const atLine = (d: SeenDefender) => d.pos.x - q.los <= RUSH_LINE;
   const r0 = q.receiverAt(0), r1 = q.receiverAt(0.2), rv = { x: (r1.x - r0.x) / 0.2, y: (r1.y - r0.y) / 0.2 }, rs = Math.hypot(rv.x, rv.y);
-  let best: SeenDefender | null = null, bd = COVER_RADIUS;
-  for (const d of defs) {
+  const onHim = (d: SeenDefender): boolean => {
     const dist = hyp(d.pos, r0);
-    if (dist > bd) continue;
-    const rushing = d.vel.x < -3 || atLine(d); // driving back at the passer, or a rusher at the line (downfield is +x)
-    const withHim = !rushing && (dist <= TIGHT_COVER || (rs < 1 ? dist <= SETTLE_COVER && Math.hypot(d.vel.x, d.vel.y) < 2 : (d.vel.x * rv.x + d.vel.y * rv.y) / rs > 0.5 * rs));
-    if (withHim) { best = d; bd = dist; }
-  }
+    if (dist > COVER_RADIUS || d.vel.x < -3 || atLine(d)) return false; // a rusher driving at the passer, or at the line
+    if (q.coverEligible && !q.coverEligible.has(d.id)) return false;
+    return dist <= TIGHT_COVER || (rs < 1 ? dist <= SETTLE_COVER && Math.hypot(d.vel.x, d.vel.y) < 2 : (d.vel.x * rv.x + d.vel.y * rv.y) / rs > 0.5 * rs);
+  };
+  let best: SeenDefender | null = null;
+  for (const d of defs) if (onHim(d) && (!best || hyp(d.pos, r0) < hyp(best.pos, r0))) best = d;
+  const held = q.heldCoverer != null ? defs.find((d) => d.id === q.heldCoverer) : undefined;
+  if (held && onHim(held) && (!best || hyp(best.pos, r0) > hyp(held.pos, r0) - COVER_SWAP)) return held;
   return best;
 }
 
@@ -156,15 +165,36 @@ export function judge(q: ThrowQuestion, defs: SeenDefender[]): Judgment {
     roles.push({ id: d.id, role, margin, sigma, pArrive, pPlay: pArrive * PLAY_BREAKUP, pPick: inFront ? pArrive * PICK_IN_FRONT * (0.5 + d.ballSkills) : 0 });
   };
   if (cov) {
-    // Carried with the receiver to the break (his seen offset kept), then his reaction, then the body law from there.
-    const tb = q.breakIn !== null && q.breakIn < tBall ? Math.max(0, q.breakIn) : null;
-    let tArr: number;
-    if (tb === null) tArr = arriveTime(cov, q.catchAt, cov.reach + PLAY_CLEAR, 0);
-    else {
-      const r0 = q.receiverAt(0), rb = q.receiverAt(tb), off = { x: cov.pos.x - r0.x, y: cov.pos.y - r0.y };
-      const atBreak = { ...cov, pos: { x: rb.x + off.x, y: rb.y + off.y } };
-      tArr = tb + arriveTime(atBreak, q.catchAt, cov.reach + PLAY_CLEAR, coverReact(q, cov));
+    // Two phases (Coverage's review): he knows the receiver's line, which he sees, not the catch point, until the ball is
+    // out. Until the break he is carried with the receiver (his seen offset kept); for his reaction after it he keeps his
+    // pre-break line; then he tracks the receiver's new line, offset kept. Only from his release cue (the arm if he faces
+    // the passer, the ball otherwise) does he run to the catch point, by the body law from where that puts him.
+    const r0 = q.receiverAt(0), off = { x: cov.pos.x - r0.x, y: cov.pos.y - r0.y };
+    const cue = q.windup + (cov.facesPasser ? 0 : ARM_LEAD);
+    const tb = q.breakIn !== null && q.breakIn > 0 && q.breakIn < cue ? q.breakIn : null;
+    const recvVel = (t: number) => { const a = q.receiverAt(Math.max(0, t - 0.1)), b = q.receiverAt(t + 0.1); return { x: (b.x - a.x) / 0.2, y: (b.y - a.y) / 0.2 }; };
+    let at: V2, vel: V2;
+    if (tb === null) {
+      // No break before his cue: carried with the receiver, his seen offset kept; if the break is already behind them, he
+      // is chasing, and closes the offset at his speed over the receiver's.
+      const rc = q.receiverAt(cue), rv = recvVel(cue), broke = q.breakIn !== null && q.breakIn <= 0, L0 = Math.hypot(off.x, off.y);
+      const k = broke && L0 > 1e-6 ? Math.max(0, L0 - Math.max(0, cov.vmax - Math.hypot(rv.x, rv.y)) * cue) / L0 : 1;
+      at = { x: rc.x + off.x * k, y: rc.y + off.y * k }; vel = rv;
     }
+    else {
+      const react = coverReact(q, cov), rb = q.receiverAt(tb), v0 = recvVel(Math.max(0, tb - 0.15));
+      const tr = Math.min(cue, tb + react);
+      const straight = { x: rb.x + off.x + v0.x * (tr - tb), y: rb.y + off.y + v0.y * (tr - tb) };
+      if (cue <= tr) { at = straight; vel = v0; }
+      else {
+        // Chasing the receiver's new line, he closes the gap the break opened at his speed over the receiver's (a man
+        // defender trails, then runs him down), down to nothing (staged V2: holding the gap put him 0.3-0.4 s late).
+        const rr = q.receiverAt(tr), rc = q.receiverAt(cue), lag0 = { x: straight.x - rr.x, y: straight.y - rr.y }, L0 = Math.hypot(lag0.x, lag0.y);
+        const rv = recvVel(cue), close = Math.max(0, cov.vmax - Math.hypot(rv.x, rv.y)) * (cue - tr), k = L0 > 1e-6 ? Math.max(0, L0 - close) / L0 : 0;
+        at = { x: rc.x + lag0.x * k, y: rc.y + lag0.y * k }; vel = rv;
+      }
+    }
+    const tArr = cue + arriveTime({ ...cov, pos: at, vel }, q.catchAt, cov.reach + PLAY_CLEAR, 0);
     const towardQB = hyp(cov.pos, q.path[0] ?? cov.pos) < hyp(q.catchAt, q.path[0] ?? q.catchAt);
     add(cov, 'coverer', tArr, towardQB);
   }

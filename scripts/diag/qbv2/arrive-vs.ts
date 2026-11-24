@@ -7,6 +7,7 @@ const [concept, coverage, seeds] = process.argv.slice(2);
 for (const seed of seeds.split(',').map(Number)) {
   const setup: any = nativeTraceSetup({ concept, coverage, seed, roster: 3, formation: 'gun_doubles_11', flip: false });
   if (concept === 'slant_flat') setup.offCall.pass = { ...PASS_BY_ID[concept], back: 'check' };
+  if (concept === 'quick_outs') setup.offCall.pass = { ...PASS_BY_ID[concept], back: 'back_flat' };
   for (const k of ['playRecognition', 'decisionMaking', 'awareness', 'composure', 'discipline']) setup.offense.QB.ratings[k] = 60;
   const sim: any = new PlaySim(setup); let rel: any = null, b: any = null; const path: Record<number, string[]> = {};
   const tb = sim.throwBall.bind(sim);

@@ -32,12 +32,22 @@ for (let seed = s0; seed <= s1; seed++) {
   const sim: any = new PlaySim(setup);
   let thrown: any = null, qbb: any = null, lastT = -1; const trace: any[] = []; const tr: Record<number, S[]> = {};
   const tb = sim.throwBall.bind(sim);
-  sim.throwBall = (q: any, target: any, ...rest: any[]) => { if (q === sim.qb && !thrown) thrown = { t: sim.t, slot: target?.slot ?? null, idx: target?.idx ?? null, away: !target }; return tb(q, target, ...rest); };
+  sim.throwBall = (q: any, target: any, v0: any, intended: any, arrivalT: number, ...rest: any[]) => {
+    if (q === sim.qb && !thrown) {
+      thrown = { t: sim.t, slot: target?.slot ?? null, idx: target?.idx ?? null, away: !target, pt: intended ? { x: intended.x, y: intended.y } : null, arr: arrivalT };
+      const ref = target ? Object.entries(sim.offAlign.numbering).find(([, sl]) => sl === target.slot)?.[0] : null;
+      const v2 = qbb?.v2;
+      if (v2 && ref) { const j = v2.judgedFor(ref); thrown.belief = j ? { P: r2(j.P), risk: r2(j.risk) } : null; thrown.roles = (v2.lastRoles.get(ref) ?? []).map((x: any) => ({ id: x.id, role: x.role, pA: r2(x.pArrive) })); }
+    }
+    return tb(q, target, v0, intended, arrivalT, ...rest);
+  };
   const t0 = sim.tick.bind(sim);
   sim.tick = () => {
     t0();
     const b = sim.qb.behavior; if (b?.kind === 'qb-pass' && typeof b.throwAway === 'function') qbb = b;
     if (sim.t - lastT >= 0.099) { lastT = sim.t; for (const a of sim.offense) (tr[a.idx] ??= []).push([sim.t, a.pos.x, a.pos.y, a.vel.x, a.vel.y]); }
+    // Calibration: did each judged defender get within his reach + 0.5 of the throw's point by the ball's arrival?
+    if (thrown?.roles && thrown.pt && sim.t <= thrown.arr + 1e-6) for (const r of thrown.roles) { const d = sim.agents[r.id]; if (Math.hypot(d.pos.x - thrown.pt.x, d.pos.y - thrown.pt.y) <= d.profile.reach + 0.5) r.arrived = true; }
     const v2 = qbb?.v2, h = qbb?.v2h;
     if (v2 && h && !thrown && sim.t >= h.plantAt - 1e-6 && Math.round(sim.t * 20) % 1 === 0 && trace.length < 60) {
       const c = v2.cycle, look = c.looks.current, r = c.plan.reads[c.readIdx];
@@ -59,5 +69,6 @@ for (let seed = s0; seed <= s1; seed++) {
   console.log(JSON.stringify({ concept, coverage, seed, v2: !!qbb?.v2, rel: thrown ? r2(thrown.t - snap) : null, slot: thrown?.slot ?? null, away: thrown?.away ?? null,
     route: thrown?.idx != null ? String(sim.agents[thrown.idx]?.behavior?.route?.id ?? '').split(':').pop() : null, relBrk,
     complete: !!sim.stats.completed, int: ev.some((e) => e.type === 'interception'), sack: ev.some((e) => e.type === 'sack'),
+    belief: thrown?.belief ?? null, roles: (thrown?.roles ?? []).map((r: any) => ({ ...r, arrived: !!r.arrived || ev.some((e) => ['pbu', 'deflection', 'interception'].includes(e.type) && e.a === r.id), slot: sim.agents[r.id].slot })),
     intents: qbb?.v2Intents ?? null, trace }));
 }

@@ -12,7 +12,7 @@ import type { ReceiverRef } from '../../playbook/types.js';
 import type { PhysicalProfile } from '../../players/physical.js';
 import { arcPoint, dragFreeLaunch } from '../../physics/ball.js';
 import { Cycle, type CycleSenses, type Intent, type Judged } from './cycle.js';
-import { judge, type SeenDefender, type ThrowQuestion } from './judge.js';
+import { COVER_RADIUS, judge, type SeenDefender, type ThrowQuestion } from './judge.js';
 import type { LookTarget } from './look.js';
 import type { QbReadPlan, ThrowOption } from './plan.js';
 import { RoleResolver, type RolePicture } from './roles.js';
@@ -25,6 +25,8 @@ export interface V2Host {
   a: Agent;
   sim: PlaySim;
   estimate(d: Agent): { pos: V; vel: V; facing: number };
+  /** The head direction he sees on this man (perception records it), null where not seen. */
+  seenHead(d: Agent): number | null;
   pictureAge(d: Agent): number;
   pictureSpread(d: Agent): number;
   /** His receiver's predicted position `ahead` s from now (his forecast), and the forecast's break (absolute time). */
@@ -61,6 +63,10 @@ export class V2Drive {
   private roles = new RoleResolver();
   private cue = new Map<string, string>();
   private lastJudged = new Map<string, Judged>();
+  /** His picture over the last half second (defenders and his receivers by ref), for relations held over time. */
+  private hist: Array<{ t: number; defs: Map<number, V>; recv: Map<string, V> }> = [];
+  /** The coverer he holds for each receiver (kept unless another is nearer by COVER_SWAP). */
+  private held = new Map<string, number | null>();
   /** Diagnostics (no effect): the roles behind the last judgment of each receiver. */
   readonly lastRoles = new Map<string, ReturnType<typeof judge>['roles']>();
 
@@ -108,6 +114,26 @@ export class V2Drive {
     return best;
   }
 
+  /** Keep his picture's history (one sample a tick, the last 0.5 s). */
+  private remember(h: V2Host): void {
+    const t = h.sim.t; if (this.hist.length && this.hist[this.hist.length - 1].t === t) return;
+    const defs = new Map<number, V>(), recv = new Map<string, V>();
+    for (const d of h.sim.defense) if (!d.isDown(t)) defs.set(d.idx, h.estimate(d).pos);
+    for (const ref of ['S1', 'S2', 'S3', 'W1', 'W2', 'W3', 'B'] as ReceiverRef[]) { const r = this.receiver(h, ref); if (r) { const p = h.predict(r, 0); if (p) recv.set(ref, p); } }
+    this.hist.push({ t, defs, recv });
+    while (this.hist.length && this.hist[0].t < t - 0.5) this.hist.shift();
+  }
+
+  /** Defenders his picture had within the coverage radius of this receiver 0.2 s ago (and so may be its coverer now). */
+  private eligible(h: V2Host, ref: string): ReadonlySet<number> | undefined {
+    const past = this.hist.find((x) => x.t >= h.sim.t - 0.2 - 1e-6);
+    if (!past || h.sim.t - past.t < 0.15) return undefined;
+    const rp = past.recv.get(ref); if (!rp) return undefined;
+    const out = new Set<number>();
+    for (const [id, p] of past.defs) if (Math.hypot(p.x - rp.x, p.y - rp.y) <= COVER_RADIUS) out.add(id);
+    return out;
+  }
+
   /** D on one candidate throw, on his picture. */
   private judgeOption(h: V2Host, o: ThrowOption): Judged | null {
     const r = this.receiver(h, o.ref); if (!r) return null;
@@ -122,15 +148,18 @@ export class V2Drive {
       receiverAt: (t) => (o.timing === 'seenOpen' ? (() => { const e = h.estimate(r), p = h.predict(r, 0) ?? e.pos; return { x: p.x + e.vel.x * t, y: p.y + e.vel.y * t }; })() : h.predict(r, t) ?? r.pos),
       breakIn: o.timing === 'onBreak' && bk !== null ? bk - sim.t : null,
       ballHeightAt: (p) => { let bi = -1, bd = Infinity; path.forEach((q2, i) => { const d = Math.hypot(q2.x - p.x, q2.y - p.y); if (d < bd) { bd = d; bi = i; } }); return bi >= 0 && bd < 1.5 ? heights[bi] : null; },
+      heldCoverer: this.held.get(o.ref) ?? null, coverEligible: this.eligible(h, o.ref),
       path: [{ x: from.x, y: from.y }, ...path], los: sim.los, catchClean: CATCH_CLEAN, res: look ? this.cycle.looks.resolved(look) : 0, receiverSpread: h.pictureSpread(r),
     };
     const defs: SeenDefender[] = sim.defense.filter((d) => !d.isDown(sim.t) && h.pictureAge(d) < 1.5).map((d) => {
-      const e = h.estimate(d), b = h.body(d), toQB = Math.atan2(h.a.pos.y - e.pos.y, h.a.pos.x - e.pos.x);
-      const faces = Math.abs(Math.atan2(Math.sin(e.facing - toQB), Math.cos(e.facing - toQB))) < Math.PI / 3;
+      const e = h.estimate(d), b = h.body(d), toQB = Math.atan2(h.a.pos.y - e.pos.y, h.a.pos.x - e.pos.x), eyes = h.seenHead(d) ?? e.facing;
+      // His eyes on the passer: the head he sees on the man where perception records it, else the body (Coverage's review).
+      const faces = Math.abs(Math.atan2(Math.sin(eyes - toQB), Math.cos(eyes - toQB))) < Math.PI / 3;
       return { id: d.idx, pos: e.pos, vel: e.vel, facing: e.facing, spread: h.pictureSpread(d), facesPasser: faces,
         vmax: b.vmax, accel: b.vmax / Math.max(b.tau, 1e-3), reach: b.reach, leap: b.reactReach + 0.5 * (b.maxCatchHeight - b.reactReach), ballSkills: h.ballSkills(d) };
     });
     const j = judge(q, defs);
+    this.held.set(o.ref, j.roles.find((x) => x.role === 'coverer')?.id ?? null);
     const judged: Judged = { option: o, P: j.P, risk: j.risk, reachesSticks: mech.point.x >= sim.firstDownX };
     this.lastJudged.set(o.ref, judged);
     this.lastRoles.set(o.ref, j.roles);
@@ -139,6 +168,7 @@ export class V2Drive {
 
   /** One tick: the cycle on his senses now. */
   tick(h: V2Host): Intent {
+    this.remember(h);
     const senses: CycleSenses = {
       now: h.sim.t, plantAt: h.plantAt, stride: h.stride, felt: h.felt, outside: h.outside,
       inClear: (t) => { const p = this.where(h, t); return !!p && h.inClear(p); },
@@ -154,6 +184,7 @@ export class V2Drive {
   /** On the drop: his eyes are on the first read (module C: the eyes go to what the next step calls for), and that look
    * resolves while his cone holds it, so a read thrown off the plant has been seen. No decision is made here. */
   watch(h: V2Host): void {
+    this.remember(h);
     const r = this.plan.reads[this.cycle.readIdx]; if (!r) return;
     const t: LookTarget = r.look.kind === 'receiver' ? { kind: 'receiver', ref: r.look.ref } : { kind: 'key', role: `${r.look.side ?? 'S'}:${r.look.role}` };
     const p = this.where(h, t);

@@ -9,11 +9,11 @@ const def = (id: number, x: number, y: number, vx = 0, vy = 0, over: Partial<See
   id, pos: { x, y }, vel: { x: vx, y: vy }, facing: Math.PI, spread: 0.3, facesPasser: true, vmax: 9, accel: 8, reach: 1, leap: 3.2, ballSkills: 0.5, ...over,
 });
 /** A stop route: the receiver runs upfield (+x) at 8 yd/s from x=5 and plants at x=12 (0.875 s), then sits. Release at
- * 0.95 s, flight 0.55 s. The passer is at x=-5. */
+ * 0.6 s (on the break, as taught), flight 0.5 s. The passer is at x=-5. */
 function stop(res = 1): ThrowQuestion {
   const at = (t: number) => ({ x: Math.min(5 + 8 * t, 12), y: 20 });
   return {
-    windup: 0.35, flight: 0.55 + 0.6, catchAt: { x: 11.5, y: 20 }, receiverAt: at, breakIn: 0.875,
+    windup: 0.6, flight: 0.5, catchAt: { x: 11.8, y: 20 }, receiverAt: at, breakIn: 0.875,
     ballHeightAt: () => 3.5, path: [{ x: -5, y: 20 }, { x: 3, y: 20 }, { x: 11.5, y: 20 }], los: 0, catchClean: 0.9, res, receiverSpread: 0.3,
   };
 }
