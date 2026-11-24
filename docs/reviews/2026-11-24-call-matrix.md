@@ -28,6 +28,33 @@ The operator reads the defense's call to say who was assigned to whom. No player
 | 7 | tight vs wide splits, drive | Deferred: there is no split axis yet (§B1). | |
 | 8 | motion vs man | Deferred: the harness sets no motion. This needs the motion call, and the QB lane's or Flex's seen-motion response. | |
 
+## Added before the runs (19:58 UTC): the defense's check per cell, and the reviewer's pick cells
+
+The outside reviewer's coverage audit (docs/reviews/2026-11-24-defense-outside-audit.md, #915, §2) gives the taught
+checks. Its sources are being re-verified, and the predictions below rest on them only once checked. Our coverages
+carry the checks as called variants: cover1_banjo, cover1_lurk_trips, cover3_mable, cover3_clue, cover9_clue.
+
+| # | the defense's check, as taught |
+|---|---|
+| 1 | Cover 1 press against bunch, with no check: plain man. The point man's defender is the one picked. |
+| 2 | Banjo: the outside defender takes the first man out, the inside defender the first in. The exchange shows in who covered whom (ours: the defender's covered receiver differs from his pre-snap man). |
+| 3 | Mable against 3x1: the strong corner bails to his third; the apex is man on #2 unless #2 goes under; the weak corner is man on #1 (X); the safety drops to the passing strength. That is X one-on-one, no safety over him. |
+| 4 | Cover 2 against 2x2: each half safety has #1 and #2 vertical in his half. |
+| 5 | Cover 1 against mesh: no check (plain man). |
+| 6 | Cover 2 corner: #1 climbs while #2 goes to the flat; the corner sits with outside leverage on the first man to the flat. |
+
+**Cell 5a and 5b** (the reviewer's §3B, confirmed in code at spacing.ts:402: a man defender never sees an offensive
+player in his path). Mesh vs cover1 press, with the crossers set to cross 0.4 yd apart (5a) and 1.2 yd apart (5b)
+(`MESH_GAP`).
+
+**Prediction from the code, which differs from the teaching:**
+- At 0.4 yd, a man defender's torso overlaps the other crosser: a collision. Both lose speed, and the crosser he is not
+  covering is slowed too.
+- At 1.2 yd, he passes at full speed with no delay. Traffic ticks may be counted, but there is no extra path length.
+
+**As taught:** a crosser 1.2 yd from a man defender's path still forces him over or under, so he loses a step. If 5b
+shows no delay, the missing mechanism (the man defender seeing and avoiding an offensive body) goes to Coverage.
+
 A cell whose prediction does not appear goes to its owner through Integration, as a named missing mechanism:
 - traffic in man and the banjo: Coverage;
 - the trips checks: Coverage;

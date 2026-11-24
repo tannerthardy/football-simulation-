@@ -7,8 +7,17 @@
 //   [QB_V2=1] node --import tsx scripts/diag/calls/matrix.ts <concept> <coverage> <seedFrom-seedTo> <formation> [press|off]
 import { PlaySim } from '../../../src/sim/playsim.js';
 import { nativeTraceSetup } from '../command-trace.js';
+import { ROUTES } from '../../../src/playbook/routes.js';
 
 const [concept, coverage, seedArg = '1-12', formation = 'gun_doubles_11', pressArg] = process.argv.slice(2);
+// MESH_GAP=<yd>: mesh's under crosser flattens this far under the high one (the reviewer's 0.4 / 1.2 yd sub-cases).
+const MESH_GAP = process.env.MESH_GAP ? Number(process.env.MESH_GAP) : null;
+if (MESH_GAP !== null) {
+  const hi = ROUTES.shallow_high, lo = ROUTES.mesh_under;
+  const flat = (r: any) => r.points[r.points.length - 1].d;
+  const shift = flat(hi) - MESH_GAP - flat(lo);
+  (ROUTES as any).mesh_under_gap = { ...lo, id: 'mesh_under_gap', depth: lo.depth + shift, points: lo.points.map((q: any) => ({ ...q, d: q.d + shift })) };
+}
 const [s0, s1] = seedArg.split('-').map(Number);
 const MID = { playRecognition: 60, decisionMaking: 60, awareness: 60, composure: 60, discipline: 60, anticipation: 60, consistency: 60 };
 const r2 = (x: number) => Math.round(x * 100) / 100;
@@ -18,6 +27,7 @@ for (let seed = s0; seed <= s1; seed++) {
   const setup: any = nativeTraceSetup({ concept, coverage, seed, roster: 3, formation, flip: false });
   // press / off: the corners' alignment as called; set on the coverage the defense was given (beside MID in stage.ts).
   if (pressArg === 'press' || pressArg === 'off') setup.defCall = { ...setup.defCall, coverage: { ...setup.defCall.coverage, press: pressArg === 'press' } };
+  if (MESH_GAP !== null && setup.offCall.pass) setup.offCall.pass = { ...setup.offCall.pass, strong: { ...setup.offCall.pass.strong, 2: 'mesh_under_gap' } };
   const qbP = setup.offense.QB; for (const [k, v] of Object.entries(MID)) qbP.ratings[k] = v; qbP.experience = 4;
   const sim: any = new PlaySim(setup);
   const tr: Record<number, Array<{ t: number; x: number; y: number }>> = {};
@@ -69,10 +79,23 @@ for (let seed = s0; seed <= s1; seed++) {
     }
     return { slot: d.slot, role: spot?.role?.kind ?? null, man, covered: top ? top[0] : null, traffic };
   });
+  // Mesh: how close the two crossers came, and how close each one's man defender came to the other crosser.
+  let mesh: any = null;
+  const S2 = recv.find((r) => r.ref === 'S2')?.a, W2 = recv.find((r) => r.ref === 'W2')?.a;
+  if (S2 && W2) {
+    let gap = 99; for (let t = t0s; t <= t0s + 2.5; t += 0.05) gap = Math.min(gap, dist(at(S2.idx, t), at(W2.idx, t)));
+    const nearOther = (mine: any, other: any) => {
+      const d = defs.find((x) => { const sp = sim.defAlign.spots[x.slot]; return sp?.role?.kind === 'man' && sp.manTarget === mine.slot; });
+      if (!d) return null;
+      let m = 99; for (let t = t0s; t <= t0s + 2.5; t += 0.05) m = Math.min(m, dist(at(d.idx, t), at(other.idx, t)));
+      return r2(m);
+    };
+    mesh = { gap: r2(gap), s2DefToW2: nearOther(S2, W2), w2DefToS2: nearOther(W2, S2) };
+  }
   const ev = sim.events as any[];
   const targetRef = thrown?.slot ? Object.entries(numbering).find(([, s]) => s === thrown.slot)?.[0] ?? null : null;
   console.log(JSON.stringify({ concept, coverage, formation, press: pressArg ?? null, seed, v2: process.env.QB_V2 === '1',
     rel: thrown ? r2(thrown.t - t0s) : null, target: targetRef, complete: !!sim.stats.completed,
     int: ev.some((e) => e.type === 'interception'), sack: ev.some((e) => e.type === 'sack'),
-    jams: ev.filter((e) => e.type === 'jam').length, receivers, defense: covered }));
+    jams: ev.filter((e) => e.type === 'jam').length, meshGap: MESH_GAP, mesh, receivers, defense: covered }));
 }
