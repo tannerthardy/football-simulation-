@@ -10,7 +10,7 @@ const { generateTeam } = await import(`${W}/src/league/team.ts`);
 const { simulateGame } = await import(`${W}/src/game/game.ts`);
 const { compilingPlan } = await import(`${W}/src/playbook/read-compiler/runtime.ts`);
 const { writeFileSync } = await import('node:fs');
-const { Mind } = (await import(`${W}/src/sim/mind.ts`)) as any;
+const { SnapMind: Mind } = (await import(`${W}/src/sim/mind.ts`)) as any;
 // Read-only wrap: the run-fit landmark each backer's mind returns, and when a new one was chosen (a new beat).
 const aimLog = new WeakMap<any, { pos: any; prev: any; setAt: number }>();
 const aim0 = Mind.prototype.aim;
