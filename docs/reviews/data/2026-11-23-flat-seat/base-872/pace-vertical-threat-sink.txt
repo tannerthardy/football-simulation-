@@ -1,0 +1,15 @@
+== fs/nfl.jsonl
+t 1.0: pace with a vertical in his area 0.58 (n 5840) | without 0.26 (n 10727) | deepest receiver 2+ yd past him -2.02 (n 32)
+t 1.5: pace with a vertical in his area 1.28 (n 11378) | without 0.84 (n 4022) | deepest receiver 2+ yd past him 0.12 (n 439)
+t 2.0: pace with a vertical in his area 1.90 (n 9833) | without 1.18 (n 2790) | deepest receiver 2+ yd past him 0.96 (n 1843)
+t 2.5: pace with a vertical in his area 2.08 (n 6442) | without 0.92 (n 1984) | deepest receiver 2+ yd past him 1.40 (n 2921)
+== zp/pk-*.jsonl
+t 1.0: pace with a vertical in his area 1.16 (n 147) | without 1.10 (n 1080) | deepest receiver 2+ yd past him -
+t 1.5: pace with a vertical in his area 0.92 (n 940) | without 1.64 (n 261) | deepest receiver 2+ yd past him -2.40 (n 2)
+t 2.0: pace with a vertical in his area 1.70 (n 912) | without 1.91 (n 178) | deepest receiver 2+ yd past him -0.34 (n 42)
+t 2.5: pace with a vertical in his area 2.22 (n 530) | without 1.25 (n 196) | deepest receiver 2+ yd past him 0.28 (n 127)
+== zp/ts2-*.jsonl
+t 1.0: pace with a vertical in his area 1.08 (n 98) | without 0.85 (n 1246) | deepest receiver 2+ yd past him -
+t 1.5: pace with a vertical in his area 0.64 (n 1010) | without 0.44 (n 303) | deepest receiver 2+ yd past him -2.12 (n 1)
+t 2.0: pace with a vertical in his area 1.18 (n 970) | without 0.41 (n 210) | deepest receiver 2+ yd past him 0.21 (n 76)
+t 2.5: pace with a vertical in his area 1.55 (n 562) | without 0.42 (n 233) | deepest receiver 2+ yd past him 0.78 (n 213)
