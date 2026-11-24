@@ -357,6 +357,10 @@ function baseOf(a: Agent): number {
  * Initial fits (a defender not yet released this play) are unchanged. */
 export const BLOCK_FRAME = process.env.BLOCK_FRAME === '1';
 const engagedBefore = new WeakMap<Agent, PlaySim>();
+/** BLOCK_FRAME diagnostics (read-only; behaviour does not depend on it): called at each re-block outside the frame with
+ * the blocker's choice (true = a grab, false = no block). */
+let blockFrameSink: ((sim: PlaySim, b: Agent, d: Agent, type: 'pass' | 'run', grab: boolean) => void) | null = null;
+export function setBlockFrameSink(f: typeof blockFrameSink): void { blockFrameSink = f; }
 const frameChoice = new WeakMap<Agent, { sim: PlaySim; by: Map<Agent, boolean> }>();
 function inFrameToBlock(_axis: Vec2, d: Agent, b: Agent): boolean {
   // In front of HIS path (the defender's travel; his facing when he is nearly still) and inside his frame (his facing).
@@ -434,6 +438,7 @@ export function createEngagement(sim: PlaySim, blocker: Agent, defender: Agent, 
     if (!pair || pair.sim !== sim) { pair = { sim, by: new Map() }; frameChoice.set(blocker, pair); }
     let grab = pair.by.get(defender);
     if (grab === undefined) { grab = sim.dice('frame-hold', blocker, defender).chance(holdChance(blocker, type)); pair.by.set(defender, grab); }
+    blockFrameSink?.(sim, blocker, defender, type, grab);
     if (!grab) return null;
     e.holding = true;
     blocker.tags.add('held'); blocker.tags.add('frame-grab');
