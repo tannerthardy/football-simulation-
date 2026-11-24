@@ -186,3 +186,23 @@ None of the four receiver rules drives it. What the trace shows:
 Next, mine: trace H's commanded velocity against his route's point. The candidates are the route's own leg logic against
 a man on his hip (a man-specific path), the contact resolution at the jam, or another adjustment upstream of
 ROUTE_CRAFT. The matrix's mesh cells re-run after the fix.
+
+### Cause found and fixed behind a flag: RELEASE_ZONE (#919, rules/release-zone f3f4101ef)
+
+The press release (`handleRelease`) held while the man seen tight at the snap stayed 0-5 yd ahead and in his lane. The
+nickel trailing H a little deeper kept him releasing upfield past his route's first point, at about 7.5 yd/s. Only
+PRESS_MIRROR=0 removed the climb. RELEASE_ZONE ends the release at the route's first point.
+
+| cell (12 seeds, HOLD 3.2, RELEASE_ZONE=1) | crossers' closest approach p50 | man defender to the other crosser p25 / p50 | traffic | S2 / W2 sep at 2.5 s |
+|---|---|---|---|---|
+| 5, press man | 1.45 yd (3.18 off) | 1.7 / 3.1 yd | 3 of 24 | 1.93 / 1.37 (1.87 / 1.46 off) |
+| 5a, 0.4 yd gap set | 1.08 yd | 2.4 / 2.7 yd | 4 of 24 | 2.05 / 1.59 |
+| 5b, 1.2 yd gap set | 1.78 yd | 1.4 / 3.3 yd | 4 of 24 | 1.98 / 1.05 |
+| zone | 1.01 yd | – | – | 1.67 / 1.01 |
+
+**Verdict on cell 5, with the crossers meeting:**
+- **Still does not appear.** The crossers come within about 1-1.8 yd, NFL-like (2.8), but their man defenders gain
+  nothing from it: separation is unchanged.
+- **The defenders were never close enough to be picked.** No man defender came within torso range of the other crosser
+  (p25 1.4-2.4 yd), so the 0.4 yd sub-case could not test the code's collision either.
+- Coverage (a), no obstruction, now stands on cells 1 and 5.
