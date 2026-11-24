@@ -1,6 +1,7 @@
 # Call composition: building a pass call from its parts (2026-11-24, Rules + Coaching, design only)
 
-Status: **proposal for review.** Nothing is restructured until Integration and the user have reviewed it. No code, no
+Status: **approved by the user 2026-11-24 ("yes to both, go ahead and build it")**; being built in steps, each its own draft PR.
+Original status: proposal for review. Nothing is restructured until Integration and the user have reviewed it. No code, no
 flag and no games in this note. Concept and variant authoring, and #896's re-cut, are on hold until the shape is agreed.
 
 ## 1. Why
@@ -178,7 +179,9 @@ Notes on the shape:
   sense together.
 - **The back has one choice.** His route and his release word are chosen together. The protection's count follows from
   it.
-- **Tags cover named variants.** "Levels X Dig" or "Mesh Z Post" is the core plus a tag, which is how coaches name them.
+- **Tags cover named variants.** "Mesh Z Post" is the concept plus a tag, which is how coaches name them. Where two real
+  versions of a half exist (levels: outside short in, or outside deep in), both are named versions and neither is the
+  core. They are called by NFL share (user decision, 2026-11-24).
   - A tag on a receiver the plan reads must say which read it plays (`asRead`).
   - Otherwise the tag only moves clear-out or backside routes.
 - **Two fields carry no behaviour yet.**
@@ -301,7 +304,7 @@ Nothing is deleted. Each concept becomes a composition:
 | comebacks | comeback-dig × comeback-seam | check |
 | flood | flood × dig-shallow (variant: slant backside) | check, `backAs` 3 |
 | dagger | dagger × go-hook | check |
-| levels | levels, inside-short version (core: outside short, §7) × go-hook | check |
+| levels | levels, outside-deep-in version × go-hook | check |
 | double_slants | double slants (+flat) × go-hitch | stay |
 | fade_flat | fade-flat × hitch-go | check |
 | hitch_post | hitch-post × go-hitch | angle |
@@ -321,7 +324,7 @@ Nothing is deleted. Each concept becomes a composition:
 
 | concept | #896 change | becomes |
 |---|---|---|
-| levels | outside receiver on the short in | the `levels` half's core is the outside short in, the NFL's 69% version. Ours (outside on the dig) is "Levels X Dig". Both are callable. |
+| levels | outside receiver on the short in | two named versions of the `levels` half: outside-short-in (NFL 69%) and outside-deep-in (ours, 31%). Neither is the core. Both are called by NFL share. |
 | slant_flat | back check-releases | a back-axis setting (`check` → flat) beside `stay` |
 | quick_outs | back runs the shoot | a back-axis setting (release → shoot) beside `stay` |
 | flood | backside slant | a different weak half (slant) beside today's dig-shallow. The NFL backside has a dig 36% and a slant 12%. |

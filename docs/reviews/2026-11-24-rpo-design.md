@@ -1,6 +1,6 @@
 # RPO design: a run call with a throw attached (2026-11-24, Rules + Coaching, design only)
 
-Status: **proposal for review**, with Run Game and the QB lane. No code, flag or games. It builds on the call shape in
+Status: **approved by the user 2026-11-24**; built after the call composition (step 4). Originally a proposal, with Run Game and the QB lane. No code, flag or games. It builds on the call shape in
 docs/reviews/2026-11-24-call-composition.md (§3): an RPO is a `RunCall` that carries a half-field throw.
 
 ## 1. Why
