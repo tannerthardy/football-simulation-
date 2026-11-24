@@ -1,0 +1,32 @@
+
+## t 1.0 s (5847 dropper-moments)
+  drop shown (no play action): gun pace 0.38, gain 0.21 (n 4151) | under centre pace -0.23, gain -0.20 (n 162)
+  dropbackDistance (no PA): < 2.5 pace 0.30, gain 0.15 (n 1528) | 2.5-4 pace 0.41, gain 0.23 (n 1986) | 4+ pace 0.40, gain 0.21 (n 799)
+  play action: yes pace -0.54, gain -0.39 (n 1534) | no pace 0.36, gain 0.20 (n 4313)
+  threat in front (no PA): none within 6 yd pace 0.42, gain 0.25 (n 159) | deepest 2+ shallower pace 0.36, gain 0.20 (n 3575) | within 2 pace 0.44, gain 0.19 (n 578) | 2+ deeper pace -2.20, gain -1.66 (n 1)
+  vertical in his area (deepest there climbing > 3 yd/s): yes pace 0.60, gain 0.35 (n 1392) | no pace 0.26, gain 0.13 (n 2921)
+  least squares (n 4154): drop shown R2 0.027 (gun +0.17, dropback distance +0.10); threat R2 0.017 (its depth over him +0.07, its upfield speed +0.09); both R2 0.045
+
+## t 1.5 s (5569 dropper-moments)
+  drop shown (no play action): gun pace 1.18, gain 0.84 (n 3953) | under centre pace 0.52, gain -0.03 (n 155)
+  dropbackDistance (no PA): < 2.5 pace 1.04, gain 0.74 (n 1330) | 2.5-4 pace 1.24, gain 0.85 (n 1979) | 4+ pace 1.20, gain 0.85 (n 799)
+  play action: yes pace -0.40, gain -0.59 (n 1461) | no pace 1.16, gain 0.80 (n 4108)
+  threat in front (no PA): none within 6 yd pace 1.24, gain 0.81 (n 193) | deepest 2+ shallower pace 1.18, gain 0.86 (n 2477) | within 2 pace 1.16, gain 0.76 (n 1340) | 2+ deeper pace 0.24, gain -0.41 (n 98)
+  vertical in his area (deepest there climbing > 3 yd/s): yes pace 1.26, gain 0.89 (n 2919) | no pace 0.94, gain 0.58 (n 1189)
+  least squares (n 3915): drop shown R2 0.018 (gun +0.20, dropback distance +0.12); threat R2 0.018 (its depth over him -0.06, its upfield speed +0.22); both R2 0.034
+
+## t 2.0 s (4780 dropper-moments)
+  drop shown (no play action): gun pace 1.74, gain 1.69 (n 3330) | under centre pace 1.48, gain 0.86 (n 116)
+  dropbackDistance (no PA): < 2.5 pace 1.48, gain 1.42 (n 837) | 2.5-4 pace 1.80, gain 1.73 (n 1836) | 4+ pace 1.88, gain 1.74 (n 773)
+  play action: yes pace 0.58, gain -0.33 (n 1334) | no pace 1.73, gain 1.66 (n 3446)
+  threat in front (no PA): none within 6 yd pace 1.82, gain 1.92 (n 177) | deepest 2+ shallower pace 1.66, gain 1.70 (n 1307) | within 2 pace 1.90, gain 1.84 (n 1492) | 2+ deeper pace 1.00, gain 0.81 (n 470)
+  vertical in his area (deepest there climbing > 3 yd/s): yes pace 1.84, gain 1.78 (n 2553) | no pace 1.32, gain 1.27 (n 893)
+  least squares (n 3269): drop shown R2 0.013 (gun +0.18, dropback distance +0.17); threat R2 0.091 (its depth over him -0.51, its upfield speed +0.65); both R2 0.096
+
+## t 2.5 s (3511 dropper-moments)
+  drop shown (no play action): gun pace 1.74, gain 2.60 (n 2228) | under centre pace 1.76, gain 1.86 (n 98)
+  dropbackDistance (no PA): < 2.5 pace 1.30, gain 2.13 (n 433) | 2.5-4 pace 1.82, gain 2.61 (n 1195) | 4+ pace 1.96, gain 2.77 (n 698)
+  play action: yes pace 1.82, gain 0.62 (n 1185) | no pace 1.74, gain 2.56 (n 2326)
+  threat in front (no PA): none within 6 yd pace 1.80, gain 2.59 (n 110) | deepest 2+ shallower pace 1.62, gain 2.48 (n 632) | within 2 pace 2.35, gain 3.37 (n 812) | 2+ deeper pace 1.32, gain 1.91 (n 772)
+  vertical in his area (deepest there climbing > 3 yd/s): yes pace 2.04, gain 2.92 (n 1687) | no pace 1.00, gain 1.74 (n 639)
+  least squares (n 2216): drop shown R2 0.013 (gun +0.15, dropback distance +0.21); threat R2 0.236 (its depth over him -0.88, its upfield speed +1.08); both R2 0.236
