@@ -132,7 +132,8 @@ docs/FLAGS.md.
 - Ours start pushing at ~0.05 s (the mind's snapDelay), with a full start force from rest.
 - Tools cited sprint-start figures for this: stance about 0.10-0.15 s (Mero and Komi 1992, Rabita et al. 2015,
   Hay 1993). **Checked 2026-11-23 (abstracts only; full texts were blocked): none supports it.**
-  - Mero, Komi and Gregor (Sports Med 1992, 13(6):376-392) is a sprint *reaction-time* review. The abstract gives no
+  - Mero, Komi and Gregor (Sports Med 1992, 13(6):376-392) is a general sprint-biomechanics review; reaction time is
+    one of its topics (corrected 2026-11-24: first described here as a reaction-time review). The abstract gives no
     numbers; secondary summaries quote a mean of about 120 ms from the gun to pressure on the blocks. That is reaction
     latency, not the time a set stance costs.
   - Rabita et al. (Scand J Med Sci Sports 2015, 25(5):583-594) is about force, power and force direction against
