@@ -541,6 +541,7 @@
   "test/sight.test.ts",
   "test/sim-pressures.test.ts",
   "test/sink-lead.test.ts",
+  "test/snap-flight.test.ts",
   "test/snap-mesh-and-pull.test.ts",
   "test/spacing-forecast-reuse.test.ts",
   "test/spacing-hold-side.test.ts",
