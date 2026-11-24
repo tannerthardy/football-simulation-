@@ -67,11 +67,11 @@ const ROUTE_TABLE: Record<string, RouteDef> = {
     points: [{ d: 6, l: 0, s: 0.25 }, { d: 5.5, l: -0.6, s: 0 }],
     vsMan: [{ d: 6, l: 0, s: 0.4 }, { d: 6, l: 9, s: 0.9 }],
   },
-  // The flat's timing point (`timing`): where an on-time flat is thrown. NFL WR/TE flats are 5.2 yd outward and 0.6 yd
-  // deep at 2.0 s, released at about 1.9 s (flat_pace.py on #876); ours 4.6 / 1.2. The point lies on the flat's leg 5 yd
-  // outward (collinear, between its two points); it is data, not a vertex, because an added vertex changes the path built
-  // for the trips flat (stick, flood: up to 0.45 yd).
-  flat: { id: 'flat', family: 'flat', depth: 3, end: 'continue', timing: { d: 1.05, l: 5 }, points: [{ d: 0, l: 2, s: 0.9 }, { d: 3.5, l: 12 }] },
+  // The flat's timing point (`timing`): where an on-time flat is thrown. NFL flats thrown to WR/TE (non-PA, n 281) are
+  // released at a median 2.1 s, 6.4 yd outward and 0.6 yd past the line; on our leg that is 1.54 yd deep (ours reaches it
+  // at about 2.2 s; flat_pace.py on #876). It is data, not a vertex: an added vertex changes the path built for the trips
+  // flat (stick, flood: up to 0.45 yd).
+  flat: { id: 'flat', family: 'flat', depth: 3, end: 'continue', timing: { d: 1.54, l: 6.4 }, points: [{ d: 0, l: 2, s: 0.9 }, { d: 3.5, l: 12 }] },
   arrow: { id: 'arrow', family: 'flat', depth: 4, end: 'continue', points: [{ d: 4, l: 5, s: 0.9 }, { d: 6, l: 14 }] },
   // Intermediate
   out: { id: 'out', family: 'intermediate', depth: 10, end: 'continue', points: [{ d: 10, l: 0, s: 0.4 }, { d: 9.5, l: 12, s: 0.9 }] },
@@ -100,7 +100,9 @@ const ROUTE_TABLE: Record<string, RouteDef> = {
     ? { id: 'cross', family: 'cross', depth: 14, end: 'continue', points: [{ d: 4, l: -3, s: 0.9 }, { d: 11, l: -10 }, { d: 17, l: -20 }, { d: 21, l: -34 }] }
     : { id: 'cross', family: 'cross', depth: 14, end: 'continue', points: [{ d: 6, l: -1, s: 0.9 }, { d: 14, l: -16, s: 0.85 }, { d: 18, l: -34 }] },
   // Backs
-  swing: { id: 'swing', family: 'back', depth: 0, end: 'continue', points: [{ d: -1.5, l: 4, s: 0.9 }, { d: -0.5, l: 9, s: 0.9 }, { d: 3, l: 13 }] },
+  // Backs' timing points: NFL flats thrown to backs (n 559) go at a median 2.3 s, 6.9 yd outward (on the leg at 7). BDB
+  // labels no swing; the swing takes the back's flat width (an inference). Unset, both would time to 13 yd wide.
+  swing: { id: 'swing', family: 'back', depth: 0, end: 'continue', timing: { d: -0.9, l: 7 }, points: [{ d: -1.5, l: 4, s: 0.9 }, { d: -0.5, l: 9, s: 0.9 }, { d: 3, l: 13 }] },
   checkdown: { id: 'checkdown', family: 'back', depth: 4, end: 'settle', points: [{ d: 0.5, l: 1, s: 0.8 }, { d: 4.5, l: -1, s: 0 }] },
   // BACK_PATHS: NFL backs' ANGLE (n 429) is still 3.6 yd behind the line at 1.5 s and at it by 2.5 s, 2.4-3.0 yd wide,
   // caught at a median +3 yd; off, the break is 1.5 yd past the line and the catch +4.4.
@@ -111,8 +113,8 @@ const ROUTE_TABLE: Record<string, RouteDef> = {
   // non-PA drop-backs, BDB 2025 weeks 1-3, n 968: depth -4.6 / -4.6 / -4.4 / -3.7 yd at 1.0 / 1.5 / 2.0 / 2.5 s, width
   // from the ball 3.6 / 5.4 / 7.7 / 10.3 yd; caught at a median -1.0 yd, 56% behind the line). Off: to the line at once.
   back_flat: BACK_PATHS
-    ? { id: 'back_flat', family: 'back', depth: -2, end: 'continue', pace: 0.55, points: [{ d: -4.5, l: 3, s: 0.9 }, { d: -4.2, l: 7, s: 0.9 }, { d: -3.5, l: 10 }, { d: -1.5, l: 13 }] }
-    : { id: 'back_flat', family: 'back', depth: 1, end: 'continue', points: [{ d: 0, l: 4, s: 0.9 }, { d: 2, l: 12 }] },
+    ? { id: 'back_flat', family: 'back', depth: -2, end: 'continue', pace: 0.55, timing: { d: -4.2, l: 7 }, points: [{ d: -4.5, l: 3, s: 0.9 }, { d: -4.2, l: 7, s: 0.9 }, { d: -3.5, l: 10 }, { d: -1.5, l: 13 }] }
+    : { id: 'back_flat', family: 'back', depth: 1, end: 'continue', timing: { d: 0.725, l: 6.9 }, points: [{ d: 0, l: 4, s: 0.9 }, { d: 2, l: 12 }] },
   // Screens (docs/football-handbook/screens.md). Caught behind the line.
   // Slip: after selling his block the back drifts wide behind the traffic and
   // settles outside the screen-side tackle, ~3.5 yd behind the line. NFL slip
