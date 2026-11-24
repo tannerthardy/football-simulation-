@@ -13,7 +13,7 @@ import { COVERAGE_BY_ID, FRONT_BY_ID } from '../src/playbook/defense.js';
 import { FORMATION_BY_ID } from '../src/playbook/formations.js';
 import type { Engagement } from '../src/sim/agent.js';
 import { PlaySim } from '../src/sim/playsim.js';
-import { tackleNow } from './helpers/tackle-now.js';
+import { recordPicture, tackleNow } from './helpers/tackle-now.js';
 import { reachTo } from '../src/sim/tackle-reach.js';
 
 /** The carrier passes a blocked tackle 0.55 of an arm beyond body contact. */
@@ -45,7 +45,7 @@ async function reach(enabled: boolean, control: number, blocker: 'free' | 'cover
   const f = stage(control, blocker);
   const chance = vi.spyOn(f.sim.rng, 'chance').mockReturnValue(true);
   const strike = vi.spyOn(f.sim, 'lungeAt');
-  tackleNow(f.sim, T);
+  recordPicture(f.sim); tackleNow(f.sim, T);
   return { reached: chance.mock.calls.length > 0 || strike.mock.calls.length > 0 || !!f.sim.bond, ...f };
 }
 afterEach(() => { vi.restoreAllMocks(); vi.unstubAllEnvs(); vi.resetModules(); });

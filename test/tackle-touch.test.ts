@@ -34,6 +34,9 @@ function stage(distance: number, speed: number) {
 }
 async function acquire(enabled: boolean, distance: number, speed: number) {
   vi.stubEnv('TACKLE_TOUCH', enabled ? '1' : '0'); vi.stubEnv('REACH_CONTACT', '0');
+  // TACKLE_TOUCH acquires a hold at standing reach at once: an experiment defined on the legacy reach and the instant
+  // attempt, which TACKLE_REACH / REACH_TIME replace; it is measured against that tackle (the package's flags off).
+  vi.stubEnv('TACKLE_REACH', '0'); vi.stubEnv('REACH_TIME', '0'); vi.stubEnv('LUNGE_FLIGHT', '0');
   vi.resetModules();
   const T = await import('../src/sim/tackle.js'); const { tryTackles } = T;
   const f = stage(distance, speed);

@@ -52,8 +52,12 @@ function stage(side = 1) {
     const distance = arms - .03;
     carrier.body.pos = { x: defender.pos.x + distance, y: defender.pos.y + side * .01 };
     const q = contactQuality(Math.hypot(distance, .01), body, arms);
-    expect(q).toBeLessThan(.85 - .15 * defender.r('tackling'));
-    expect(contactQuality(Math.hypot(distance - .6, .01), body, arms)).toBeGreaterThan(q + .1);
+    // The scene is an extended reach only when the arms reach past contact quality's full band (torsos + 0.25 yd);
+    // under TACKLE_REACH a blocked arm's 0.4 share does not, and any grab with it is near full quality.
+    if (arms - body > .25 + .2) {
+      expect(q).toBeLessThan(.85 - .15 * defender.r('tackling'));
+      expect(contactQuality(Math.hypot(distance - .6, .01), body, arms)).toBeGreaterThan(q + .1);
+    }
     picture();
   }
   return { sim, carrier, defender, body, picture, withinReach };
