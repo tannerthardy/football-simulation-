@@ -151,6 +151,7 @@
   "test/actuation.test.ts",
   "test/agap-align.test.ts",
   "test/align-fixes.test.ts",
+  "test/align-side.test.ts",
   "test/align-style.test.ts",
   "test/alignment.test.ts",
   "test/apex-leverage.test.ts",

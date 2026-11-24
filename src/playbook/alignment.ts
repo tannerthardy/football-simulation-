@@ -326,6 +326,8 @@ export interface AlignContext {
   style?: AlignStyle;
   /** The run called, when one is (STRETCH_OFFSET). */
   run?: { scheme: string; direction: 'strong' | 'weak' };
+  /** RCV_HABIT: each skill slot's own room and depth habit (yd). */
+  habit?: Partial<Record<string, { room: number; depth: number }>>;
 }
 
 /** STRETCH_OFFSET (default off): on a stretch call (outside/wide zone) from
@@ -378,6 +380,27 @@ const ROUTE_ROOM: Record<string, [number, number]> = {
 // SCREEN_QB: the tunnel screen's #1 keeps the room of a vertical stem, to come back under it: 10.9 yd to his sideline
 // (BDB 2025 WR-in screens, n 23, all with another receiver on his side; screen_tunnel_path.py). Off: the default room.
 if (process.env.SCREEN_QB === '1') ROUTE_ROOM.tunnel = [10.9, 10.9];
+/** ALIGN_SIDE (experimental, off; ALIGN_SIDE=1): the #1's room to his sideline also follows the side of the ball he is
+ * on, as the split rules teach (a plus split into the boundary, the field split reduced by the room the QB's arm needs:
+ * "stack to the boundary - bottom of the numbers; stack to the field is + two yards from the hash"; a displaced #1 is
+ * "normal" halfway between the top of the numbers and the hash; M, coaching blogs and an unattributed pattern guide).
+ * The table is the NFL's own median room by PFF route x [alone on his side: boundary, field, with others: boundary,
+ * field], ball on a hash (BDB 2025 weeks 1-9, alignment_chart.py; docs/reviews/2026-11-24-alignment-chart.md), for the
+ * routes whose PFF label maps onto ours one to one. A cell with under 12 NFL rows keeps ROUTE_ROOM's value; routes not
+ * listed keep ROUTE_ROOM. Off, the room ignores the side of the ball (ours: 0.0-1.1 yd between sides, NFL 0.7-4 yd). */
+export const ALIGN_SIDE = process.env.ALIGN_SIDE === '1';
+const SIDE_ROOM: Record<string, [number | null, number | null, number | null, number | null]> = {
+  go: [10.3, 16.5, 9.0, 10.0], fade: [10.3, 16.5, 9.0, 10.0], slant: [10.2, null, 9.1, 9.8],
+  hitch: [13.8, 18.0, 9.3, 10.1], quick_hitch: [13.8, 18.0, 9.3, 10.1], curl: [13.8, 18.0, 9.3, 10.1], stick: [13.8, 18.0, 9.3, 10.1], hook: [13.8, 18.0, 9.3, 10.1],
+  short_in: [14.5, 18.3, 9.5, 10.1], dig: [14.5, 18.3, 9.5, 10.1], post: [13.9, 17.9, 10.5, 10.8],
+  quick_out: [14.5, 19.1, 13.0, 16.9], out: [14.5, 19.1, 13.0, 16.9], deep_out: [14.5, 19.1, 13.0, 16.9], corner: [14.6, 20.2, 14.1, 16.4],
+  shallow: [15.4, 20.3, 14.7, 18.9], shallow_high: [15.4, 20.3, 14.7, 18.9], mesh_under: [15.4, 20.3, 14.7, 18.9], cross: [15.4, 20.3, 14.7, 18.9],
+};
+/** RCV_HABIT (experimental, off; RCV_HABIT=1): each detached receiver's own split and depth habit, from his own seed (as
+ * ALIGN_HABIT's defenders): room to his sideline +-0.6 yd (sd, clamped 1.2) and depth off the ball +-0.2 yd (clamped 0.4).
+ * Stated choices (L), not fitted: the variation the NFL shows inside a route and side class (p25-p75 about 2 yd) comes
+ * first from the route and side (ALIGN_SIDE) and second from the man. Off, only the team's habit (wrRoom) varies. */
+export const RCV_HABIT = process.env.RCV_HABIT === '1';
 const RUN_ROOM: [number, number] = [15, 10.8];
 const ANY_ROOM: [number, number] = [13.5, 11];
 
@@ -423,14 +446,21 @@ export function alignOffense(formation: Formation, flip: boolean, los: number, b
     if (side === 'C' || !ctx.kind) return ANY_ROOM;
     if (ctx.kind === 'run') return RUN_ROOM;
     const route = (side === early ? ctx.pass?.strong : ctx.pass?.weak)?.[1];
-    return (route && ROUTE_ROOM[route]) || ANY_ROOM;
+    const base = (route && ROUTE_ROOM[route]) || ANY_ROOM;
+    const t = ALIGN_SIDE && route ? SIDE_ROOM[route] : undefined;
+    if (!t) return base;
+    // His side is the field when it has more room from the ball to the sideline than the other side.
+    const mine = sideSign(side) > 0 ? FIELD_WIDTH - ballY : ballY, field = mine > FIELD_WIDTH - mine + 1e-6;
+    const alone = field ? t[1] : t[0], others = field ? t[3] : t[2];
+    return [alone ?? base[0], others ?? base[1]];
   };
+  const habitRoom = (slot: string): number => (ctx.style?.wrRoom ?? 0) + (RCV_HABIT ? ctx.habit?.[slot]?.room ?? 0 : 0);
   for (const [slot, a] of entries) {
     const side = fside(a.side);
     const sign = side === 'C' ? 0 : sideSign(side);
     let off: number | null = null;
     if (typeof a.split === 'number') off = a.split * (sign || 1) * (side === 'C' ? 0 : 1);
-    else if (a.split === 'wide') off = wideOffset(ballY, sign, detachedOn(side), roomOn(side), ctx.style?.wrRoom) * sign;
+    else if (a.split === 'wide') off = wideOffset(ballY, sign, detachedOn(side), roomOn(side), habitRoom(slot)) * sign;
     else if (a.split === 'inline') off = inlineOf(line) * sign;
     else if (a.split === 'wing') off = wingOf(line) * sign;
     else if (a.split === 'core') off = 0;
@@ -476,9 +506,12 @@ export function alignOffense(formation: Formation, flip: boolean, los: number, b
       : RECEIVER_DEPTH && onLine ? (a.split === 'inline' ? TE_LINE_DEPTH : WR_LINE_DEPTH)
       : upWide.has(slot) ? Math.min(a.depth, 0.6)
       : OL_STAGGER && a.split === 'inline' ? INLINE_DEPTH : a.depth + (!backfield ? 0 : formation.qb === 'gun' ? GUN_QB_DEPTH - 5.0 : formation.qb === 'under' && a.depth >= 6 ? UNDER_TAILBACK_EXTRA : 0);
+    // RCV_HABIT: a detached receiver's own depth off the ball (never onto or past the line).
+    const detachedSlot = a.split === 'wide' || a.split === 'slot' || a.split === 'slot2';
+    const dHabit = RCV_HABIT && detachedSlot && !backfield ? ctx.habit?.[slot]?.depth ?? 0 : 0;
     spots[slot] = {
       slot,
-      pos: { x: los - depth, y: clamp(ballY + off, 1, FIELD_WIDTH - 1) },
+      pos: { x: los - Math.max(0.3, depth + dHabit), y: clamp(ballY + off, 1, FIELD_WIDTH - 1) },
       side,
       backfield,
       inline: a.split === 'inline' && !offEnd.has(slot),

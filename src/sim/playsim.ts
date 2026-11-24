@@ -37,7 +37,7 @@ import { containCoverage } from './coverage-space.js';
 import { openToBall } from './open-to-ball.js';
 import { derivePhysical } from '../players/physical.js';
 import type { Player } from '../players/types.js';
-import { alignDefense, alignOffense, fitPressStances, formationKey, gapY, MIRROR_SCATTER, PRESS_BACKOFF, RECEIVER_DEPTH, scatterSide, type AlignStyle, type DefenseAlignment, type ManPreference, type OffenseAlignment } from '../playbook/alignment.js';
+import { alignDefense, alignOffense, fitPressStances, formationKey, gapY, MIRROR_SCATTER, RCV_HABIT, PRESS_BACKOFF, RECEIVER_DEPTH, scatterSide, type AlignStyle, type DefenseAlignment, type ManPreference, type OffenseAlignment } from '../playbook/alignment.js';
 import { installCoverage } from '../playbook/coverages.js';
 import type { DefSlot, DefensivePlayCall, OffensivePlayCall, OffSlot } from '../playbook/types.js';
 import { Agent, type Behavior, type Engagement, type RunContactSurface, type TeamSide } from './agent.js';
@@ -374,8 +374,13 @@ export class PlaySim {
     this.recordEvery = setup.recordEvery ?? 2;
     this.trace = new ReplayTrace(setup.recordLevel ?? 'light', this.recordEvery, this.record);
 
+    // RCV_HABIT (alignment.ts): each skill player's own split and depth habit, from his own seed.
+    const habit = RCV_HABIT ? Object.fromEntries(offense.map(([slot, player]) => {
+      const h = new Rng(`rcv-habit:${player.id}`);
+      return [slot, { room: h.normalClamped(0, .6, -1.2, 1.2), depth: h.normalClamped(0, .2, -.4, .4) }];
+    })) : undefined;
     this.offAlign = alignOffense(setup.offCall.formation, setup.offCall.flip, this.los, this.ballY,
-      { kind: setup.offCall.kind, pass: setup.offCall.pass, run: setup.offCall.run, down: setup.down, distance: Math.abs(setup.firstDownX - setup.los), style: setup.offStyle });
+      { kind: setup.offCall.kind, pass: setup.offCall.pass, run: setup.offCall.run, down: setup.down, distance: Math.abs(setup.firstDownX - setup.los), style: setup.offStyle, habit });
     // The secondary checks its call to the receiver distribution it sees.
     this.defCall = installCoverage(setup.defCall, this.offAlign);
     const defSlots = defense.map(([slot]) => slot);

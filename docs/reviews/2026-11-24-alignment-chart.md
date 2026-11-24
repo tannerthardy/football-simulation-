@@ -94,3 +94,27 @@ Tables: `docs/reviews/data/2026-11-24-alignment/alignment-tables.md`.
 
 For the route items: our wide receivers are not 4 yd too tight, so GO_STEM's 5 yd room rule stands as built. The
 flat's width (item b) does not come from alignment: the #2 and #3 match (room 17.6-21.9 against 17.6-21.9 NFL).
+
+## Built: ALIGN_SIDE and RCV_HABIT (2026-11-24, both off)
+
+Integration's order: the route table with a field/boundary axis first, and the habit variation second.
+
+**Splitting by class reverses the pooled side effect.** With others on his side the boundary #1 sets nearer his
+sideline (go 9.0 boundary vs 10.0 field), and a lone #1 to the field takes a big reduced split (16.5-20 yd of room).
+The pooled "boundary keeps more room" was the mix: lone #1s are mostly to the boundary.
+
+Room to the sideline (median yd), 24 games, engine-92:
+
+| route | default, boundary / field | ALIGN_SIDE + RCV_HABIT | NFL |
+|---|---|---|---|
+| go, alone | 12.1 / 12.1 | 11.3 / 16.5 | 10.3 / 16.5 |
+| go, with others | 10.1 / 10.9 | 10.0 / 11.0 | 9.0 / 10.0 |
+| hitch, alone | 14.1 / 15.2 | 13.8 / 18.0 | 13.8 / 18.0 |
+| out, alone | 15.6 / 14.8 | 15.2 / 19.1 | 14.5 / 19.1 |
+| out, with others | - / 15.9 | 14.0 / 17.9 | 13.0 / 16.9 |
+
+- With others on his side ours stay about 1 yd roomier, both sides. That is most likely the two test teams' `wrRoom`
+  habit; not checked.
+- Spread: #1 of 2, p25-p75 10.5-11.8 -> 9.7-12.0 (NFL 9.2-14.9).
+- Depth of detached receivers, p10-p90: 0.74-1.2 -> 0.55-1.39 (NFL -0.07-1.77).
+- The flags are separable. ALIGN_SIDE is a table read; RCV_HABIT is stated choices.

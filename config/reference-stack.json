@@ -371,6 +371,8 @@
     "ROUTE_LANDMARK": "on",
     "CROSS_FLAT": "on",
     "PLAN_KEYS_3": "on",
+    "ALIGN_SIDE": "off",
+    "RCV_HABIT": "off",
     "ROUTE_EFFORT": "off",
     "ROUTE_END": "on",
     "CROSS_OVER": "off",
