@@ -13,10 +13,21 @@
 import type { Vec2 } from '../core/vec.js';
 import type { Agent } from './agent.js';
 import type { PlaySim } from './playsim.js';
-import { shouldersOf } from '../physics/kinematics.js';
+import { shouldersOf, TRUNK_RANGE } from '../physics/kinematics.js';
 import { ZONE_EYES, zoneEyesFor, zoneEyesTarget } from './zone-eyes.js';
 
 export const HEAD = process.env.HEAD === '1';
+/** HEAD_FOLLOW (default on since engine-93; HEAD_FOLLOW=0 restores; Coverage C14, 2026-11-24, an information leak under
+ * the user's standing rule): with HEAD off, stepHeads turned only zone-eyed defenders' heads and skipped the passer, so a
+ * player whose head nobody drove kept the head he last had while his body turned under it: a match defender converted
+ * to man, a zone defender handed to pursuit or a return, the passer once he blocks or pursues after the throw.
+ * Perception reads that recorded head (release-evidence's sawAt, the ball estimator), so he saw the passer or the ball
+ * through a head up to 180 deg off his body (scripts/diag/coverage/head-audit.mts, one game: man defenders 815 of
+ * 15,451 ticks past 145 deg; the neck allows 45-90 off the body, 145 with the trunk's twist for zone eyes). On, a head
+ * nobody turns relaxes to his body facing at the head rate within the neck range (this file's stated model), and the
+ * passer's controller-driven head is held within the neck plus the trunk's twist of his body. A man defender's look
+ * (his man's hip, then back for the ball) is a later technique; here his head simply follows his body. */
+export const HEAD_FOLLOW = process.env.HEAD_FOLLOW !== '0';
 /** Head turn rate (rad/s) and the view cone about the head: GAZE's. */
 export const HEAD_RATE = 6;
 export const HEAD_CONE = Math.PI / 2;
@@ -75,10 +86,24 @@ export function stepHeads(sim: PlaySim): void {
   if (!HEAD && !ZONE_EYES) return;
   const step = HEAD_RATE * sim.dt;
   for (const a of sim.agents) {
-    if (a === sim.qb) continue;
+    if (a === sim.qb) {
+      // HEAD_FOLLOW: the passer's head is his controller's while it drives it; once it does not (after the throw he
+      // blocks, pursues or carries), it relaxes to his body like anyone's. Either way it is never further off his body
+      // than the neck and the trunk's twist allow (a body that turns inside a tick does not leave his eyes behind him).
+      if (HEAD_FOLLOW && a.head !== null && a.head !== undefined) {
+        const k = (a.behavior as { kind?: string } | undefined)?.kind;
+        const driven = k === 'qb-pass' || k === 'qb-handoff' || k === 'mesh' || k === 'pa-fake';
+        a.head = driven ? bodyBound(a, a.head) : turnHead(a, a.head, a.body.facing, step, a.body.facing);
+      }
+      continue;
+    }
     // ZONE_EYES: a zone defender's head turns with HEAD off too, on his shoulders (the neck sits on the trunk).
     const zone = zoneEyesFor(a);
-    if (!HEAD && !zone) continue;
+    if (!HEAD && !zone) {
+      // HEAD_FOLLOW: an undriven head relaxes to his body facing, within the neck range (never frozen while he turns).
+      if (HEAD_FOLLOW && a.head !== null && a.head !== undefined) a.head = turnHead(a, a.head, a.body.facing, step, a.body.facing);
+      continue;
+    }
     const facing = a.body.facing;
     let head = a.head ?? facing;
     const w = wants.get(a);
@@ -94,6 +119,13 @@ export function stepHeads(sim: PlaySim): void {
     }
     a.head = turnHead(a, head, toward, step, zone ? shouldersOf(a.body) : facing);
   }
+}
+
+/** HEAD_FOLLOW: a head no further off his body facing than the neck's range plus the trunk's twist (the furthest any look
+ * reaches: zone eyes turn the neck off the shoulders). */
+function bodyBound(a: Agent, head: number): number {
+  const lim = neckRange(a) + TRUNK_RANGE, off = angDiff(head, a.body.facing);
+  return a.body.facing + Math.max(-lim, Math.min(lim, off));
 }
 
 /** The one head turn: from `head` toward the bearing `toward` (rad, field frame) by at most `step` rad, within the
