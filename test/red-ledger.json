@@ -121,20 +121,6 @@
    "class": "fixture"
   },
   {
-   "file": "test/qb-installed-box-count.test.ts",
-   "test": "pre-snap numbers include installed fullback work once retains the nine-versus-six singleback overload control",
-   "owner": "QB",
-   "flag": "QB_SEEN_MAN",
-   "class": "fixture"
-  },
-  {
-   "file": "test/qb-installed-box-count.test.ts",
-   "test": "pre-snap numbers include installed fullback work once still checks out against a genuine ten-versus-seven overload, without double-counting centered F",
-   "owner": "QB",
-   "flag": "QB_SEEN_MAN",
-   "class": "fixture"
-  },
-  {
    "file": "test/qb-seen-out.test.ts",
    "test": "QB_SEEN_OUT off: the man is ready the moment his behaviour changes, though the quarterback has not seen him",
    "owner": "QB",
