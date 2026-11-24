@@ -273,3 +273,28 @@ engine-94, docs/FLAGS.md 501 flags (383 on, 90 off, 28 numeric), REFERENCE_STACK
 Patch: `patches/engine71-footwork/step-clock-landing-on-c9e6c3f8.patch` (17 files, +363/-38, sha256 6ff9d2123a9e),
 `git apply --check` clean on c9e6c3f89. Typecheck clean. Red-diff (alone): tests run 4453; failing 59; on the
 ledger 59; new red 0, fixed 0.
+
+## Why the clock adds sacks (Integration's card, 2026-11-24)
+
+Integration's card of the clock landing on engine-93: sack rate up in every seed (pooled 5.15% → 5.83%), completion,
+yards, INT and YAC flat. Operator `scripts/diag/eyes/sack-cause.ts` + `sack_cause_table.py`, on the engine-94 landing
+(wtClock94), 16 league games per arm, QB_STEP_CLOCK on and =0, the same seeds (11-18, 19-26):
+
+| | clock on | clock off |
+|---|---|---|
+| dropbacks, sacks | 1476, 93 (6.30%) | 1440, 81 (5.62%) |
+| sacked < 2.5 s / 2.5-3.5 / 3.5-4.5 / >= 4.5 | 1.29 / 3.59 / 0.95 / 0.47% | 2.08 / 2.50 / 0.69 / 0.35% |
+| sacked on his last read | 61 (4.13%) | 47 (3.26%) |
+| sacked on an earlier read / out of reads | 2.03% / 2 | 1.81% / 8 |
+| keyed pair expired / quick family | 3 / 4 | 0 / 10 |
+| felt (u >= 0.5) over 1 s before, still in the pocket behaviour | 2.57% | 1.32% |
+| dropbacks ending on his last read: share, thrown, sacked | 26.8%, 80.8%, 15.4% | 27.4%, 85.6%, 11.9% |
+
+Not the keyed pair (3 sacks), not READ_WINDOW (quick-family sacks fell 10 → 4), not a hold on a read he is working
+(earlier-read sacks +0.2 points). The excess is on his last read: +0.87 points, against fewer early and out-of-reads
+sacks. There he throws less (85.6% → 80.8%) and is sacked more. In 25 of the 61 the look at the last read had never
+resolved (resolution 0: the man never inside his clear cone), and 33 of 61 were sacked with felt pressure under 0.8,
+where the hold's pressure exit is. So the confidence hold and the unresolved-look spread in the price keep him on a
+look that cannot resolve, past the checkdown/throwaway he took without the clock: a missed pressure response caused
+by the new mechanism, not the intended cost of holding a read he is unsure of. Repair (controller): a hold lasts only
+while the look is resolving (the man in his clear cone); with nothing resolving there is nothing to wait for.
