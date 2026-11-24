@@ -44,7 +44,7 @@ index f69966527..c3e7c13e9 100644
  | `QB_SEEN_REC` | on | promoted 2026-11-14 (engine-63; `=0` restores); was experimental (QB lane, information rule, 2026-11-14; first build) | quarterback | `src/sim/behaviors/qb.ts` (`has`, `evaluate`, `orderReads`) | The remaining reads of his own receivers' true state use where he has them (his forecast, else his delayed picture): a receiver's side for the look-off and the hot side, the verticals' stems for the peek, the clear-look test, the fallback target point, and the man-coverage reorder (with his picture of the defender). A receiver is down when his delayed picture shows him off his feet; a block is the call or an unseen check-release man, not the engagement record. With `QB_BELIEVED_DEF` the reorder also uses the defender's believed speed and man coverage. |
  | `ACC_RADIUS` | off | experimental (deep-window belief, 2026-11-13) | QB | `src/sim/behaviors/qb.ts` (`window`, pAcc) | set at first review. His accuracy belief's catchable radius grows with the flight and the receiver's ball skills (1.6 + 0.9 T yd) instead of a fixed 1.35: our own catches by aim miss keep about 0.6-0.9 of an on-target ball's completion at a 2 yd miss and 0.2-0.55 at 3 yd (short to long flights), where the fixed radius priced 0.33 and 0.08. To be carded beside Coverage's medium-flight ball defending (our defenders 4.5 yd from the ball at 1.2-1.8 s against the NFL's 2.8). docs/reviews/2026-11-13-qb-gather.md |
 diff --git a/src/sim/behaviors/common.ts b/src/sim/behaviors/common.ts
-index e91adcd89..f89ded4bc 100644
+index e91adcd89..9b76b56ed 100644
 --- a/src/sim/behaviors/common.ts
 +++ b/src/sim/behaviors/common.ts
 @@ -10,7 +10,12 @@ import { chooseApproach } from '../approach-control.js';
@@ -60,7 +60,7 @@ index e91adcd89..f89ded4bc 100644
  export const STAND: MoveCommand = { vel: { x: 0, y: 0 } };
  
  export function stand(facing?: number): MoveCommand {
-@@ -147,17 +152,20 @@ export function pursuitPoint(sim: PlaySim, a: Agent, target: Agent, horizon = 3,
+@@ -147,17 +152,21 @@ export function pursuitPoint(sim: PlaySim, a: Agent, target: Agent, horizon = 3,
    const seen = TRACK_PURSUIT ? sim.track(a, target, 1, true) : sim.see(a, target, delay);
    const sp = Math.hypot(seen.vel.x, seen.vel.y);
    const heading = sp > 0.1 ? norm(seen.vel) : { x: 0, y: 0 };
@@ -79,11 +79,12 @@ index e91adcd89..f89ded4bc 100644
    // speed throughout the horizon. Reassess as new motion becomes visible.
    const tau = 0.3 + 0.3 * a.r('anticipation');
 -  const V = clamp(sp + acceleration * tau, 0, target.profile.vmax);
-+  const V = clamp(sp + acceleration * tau, 0, TB.vmax);
++  // BELIEVED_PURSUIT: what he sees the carrier run is proven at once: the cap is never below the speed in his picture (Defense's review).
++  const V = clamp(sp + acceleration * tau, 0, BELIEVED_PURSUIT ? Math.max(sp, TB.vmax) : TB.vmax);
    const straight = (t: number): Vec2 => {
      const d = V * t - (V - sp) * tau * (1 - Math.exp(-t / tau));
      return { x: seen.pos.x + heading.x * d, y: clamp(seen.pos.y + heading.y * d, 0, FIELD_WIDTH) };
-@@ -192,7 +200,7 @@ export function pursuitPoint(sim: PlaySim, a: Agent, target: Agent, horizon = 3,
+@@ -192,7 +201,7 @@ export function pursuitPoint(sim: PlaySim, a: Agent, target: Agent, horizon = 3,
      pursuer: { position: mover.pos, velocity: mover.vel, speedScale: mover.speedScale,
        capacity: { vmax: a.profile.vmax, tau: a.profile.tau, brake: a.profile.brake, lateral: a.profile.lateral } }, observed: seen, older,
      forecast: { model: 'fixed-observed-heading-relaxing-speed', heading, initialSpeed: sp, acceleration,
@@ -126,10 +127,10 @@ index 536b61b27..9b496a3ac 100644
        const held = retainedForceTrack(a,desired,sim.t);
 diff --git a/test/believed-pursuit.test.ts b/test/believed-pursuit.test.ts
 new file mode 100644
-index 000000000..558d8def2
+index 000000000..bdca47f88
 --- /dev/null
 +++ b/test/believed-pursuit.test.ts
-@@ -0,0 +1,33 @@
+@@ -0,0 +1,53 @@
 +// BELIEVED_PURSUIT (Flex with Defense, 2026-11-24; outside audit #7's staged case): a pursuer's forecast of the carrier does not
 +// move when only the carrier's hidden top speed changes; it reads what he believes of him (with BELIEVED_BODY), not the truth.
 +import { afterEach, describe, expect, it, vi } from 'vitest';
@@ -161,6 +162,26 @@ index 000000000..558d8def2
 +    const off = await aimSpread({ BELIEVED_BODY: '1', BELIEVED_PURSUIT: '0', TRACK_PURSUIT: '0' });
 +    expect(on).toBeLessThan(1e-9);
 +    expect(off).toBeGreaterThan(0.05); // off, the true top speed moves it
++  }, 60_000);
++
++  it('a belief below the speed he sees never slows the forecast: seen speed is proven at once (Defense\'s case)', async () => {
++    const aim = async (flags: Record<string, string>, briefed: boolean) => {
++      for (const [k, v] of Object.entries(flags)) vi.stubEnv(k, v);
++      vi.resetModules();
++      const { sceneSim } = await import('../src/lab/coverage-scene.js');
++      const { pursuitPoint } = await import('../src/sim/behaviors/common.js');
++      const sim = sceneSim({ formation: 'gun_doubles_11', coverage: 'cover3', strong: { 1: 'go' } });
++      const step = sim as unknown as { tick(): void };
++      while (sim.t < 2.0) step.tick();
++      const carrier = sim.offense.find((o) => o.slot === 'Z')!, d = sim.defense.find((x) => x.slot === 'FS')!;
++      // A belief far below what he is watching the man run (a staged briefing).
++      if (briefed && sim.beliefs) sim.beliefs.belief(d, carrier).add({ cap: 'vmax', value: 4, sd: 0.01, kind: 'measure', source: { kind: 'film', from: 'staged', play: 0, t: 0 } });
++      return pursuitPoint(sim, d, carrier);
++    };
++    const truth = await aim({ BELIEVED_BODY: '1', BELIEVED_PURSUIT: '0' }, false);
++    const low = await aim({ BELIEVED_BODY: '1', BELIEVED_PURSUIT: '1' }, true);
++    // TRACK_PURSUIT (default on): no acceleration term, so both forecast at the speed he sees.
++    expect(Math.hypot(low.x - truth.x, low.y - truth.y)).toBeLessThan(1e-9);
 +  }, 60_000);
 +});
 diff --git a/test/engine-pin.json b/test/engine-pin.json
