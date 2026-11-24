@@ -1,0 +1,34 @@
+
+## NFL (BDB weeks 1-2): deep halves at the snap 955
+| #1 split | #2 on his side | side | n | his width p50 (p25-p75) | #1 split p50 | his width minus #1 | his share of #1 split | #2 split p50 | his width minus #2 |
+|---|---|---|---|---|---|---|---|---|---|
+| tight <10 | yes | field | 56 | 6.4 (5.2-7.3) | 8.9 | -2.4 | 0.74 | 5.0 | +0.9 |
+| tight <10 | yes | boundary | 115 | 5.8 (5.0-6.8) | 8.6 | -2.3 | 0.72 | 5.1 | +0.5 |
+| tight <10 | no | field | 11 | 6.7 (4.9-7.3) | 9.7 | -1.5 | 0.83 | - | - |
+| tight <10 | no | boundary | 105 | 4.7 (3.5-5.8) | 8.0 | -2.8 | 0.62 | - | - |
+| normal 10-15 | yes | field | 120 | 8.1 (6.3-9.4) | 11.8 | -4.1 | 0.67 | 9.3 | -0.7 |
+| normal 10-15 | yes | boundary | 78 | 7.0 (5.8-7.9) | 14.1 | -6.8 | 0.51 | 6.5 | +0.3 |
+| normal 10-15 | no | field | 8 | 5.7 (4.3-7.8) | 11.2 | -5.5 | 0.51 | - | - |
+| normal 10-15 | no | boundary | 84 | 5.9 (4.8-7.0) | 13.4 | -7.3 | 0.46 | - | - |
+| wide 15+ | yes | field | 289 | 10.2 (8.3-11.8) | 19.8 | -9.3 | 0.52 | 11.3 | -0.6 |
+| wide 15+ | yes | boundary | 61 | 7.6 (6.3-8.4) | 16.4 | -8.9 | 0.46 | 8.4 | -0.6 |
+| wide 15+ | no | field | 10 | 8.1 (6.5-9.7) | 17.1 | -9.3 | 0.45 | - | - |
+| wide 15+ | no | boundary | 18 | 6.6 (5.4-7.5) | 15.5 | -9.0 | 0.43 | - | - |
+  ball on a hash: n 853, his width p50 7.3; field side 9.3, boundary 5.9
+  ball in the middle: n 102, his width p50 7.4; field side 7.7, boundary 6.8
+  least squares (n 719): his width = -0.86 + 0.18 x #1 split + 0.30 x #2 split + 0.14 x room to his sideline; R2 0.31
+
+## ours (#872 base + package, SEAM_LANDMARK, HALF_SEAT off): deep halves at the snap 317
+| #1 split | #2 on his side | side | n | his width p50 (p25-p75) | #1 split p50 | his width minus #1 | his share of #1 split | #2 split p50 | his width minus #2 |
+|---|---|---|---|---|---|---|---|---|---|
+| tight <10 | yes | field | 18 | 6.8 (2.3-8.4) | 9.0 | -1.7 | 0.79 | 6.8 | -0.4 |
+| tight <10 | yes | boundary | 28 | 5.0 (4.3-5.3) | 9.0 | -3.7 | 0.57 | 5.1 | -0.5 |
+| normal 10-15 | yes | field | 25 | 7.3 (6.6-8.5) | 13.3 | -5.5 | 0.59 | 6.0 | +0.9 |
+| normal 10-15 | yes | boundary | 63 | 5.0 (4.5-5.3) | 12.6 | -7.8 | 0.39 | 7.2 | -2.2 |
+| normal 10-15 | no | boundary | 22 | 5.2 (5.0-5.5) | 12.8 | -7.4 | 0.41 | - | - |
+| wide 15+ | yes | field | 101 | 7.2 (4.8-8.9) | 18.7 | -10.7 | 0.43 | 9.6 | -2.5 |
+| wide 15+ | yes | boundary | 18 | 6.7 (6.3-7.1) | 15.9 | -9.5 | 0.41 | 7.7 | -1.6 |
+| wide 15+ | no | field | 22 | 8.2 (2.4-9.1) | 18.8 | -10.8 | 0.44 | - | - |
+  ball on a hash: n 232, his width p50 5.2; field side 8.5, boundary 5.0
+  ball in the middle: n 85, his width p50 6.7; field side 6.8, boundary 6.6
+  least squares (n 253): his width = -2.31 + 0.05 x #1 split + 0.09 x #2 split + 0.26 x room to his sideline; R2 0.12
