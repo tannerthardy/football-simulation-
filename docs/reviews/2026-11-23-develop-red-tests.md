@@ -68,3 +68,22 @@ Pass/fail by class, not by the size of the assertion: none of these is a measure
 
 - It does not say any landing broke football. It says the suite is red on develop in 32 files, that 22 were red and ledgered before, and that four landings (#834, #840, #845, #851) added 8 more that nobody saw because landings verified registry tests and their own tests, not the whole suite.
 - Re-recording is the owners'. The cheapest check that would have caught the new 8: run `npm test` on the landing merge and diff the failing set against the ledger. The pin-bisect and the per-file first-parent scan are in `scripts/diag/pin-bisect.ts` and the method above.
+
+## Update 2026-11-24 (develop ffaecd3a2, after #875 and #877)
+
+A full core run (`vitest run --project core --project core-defaults`, 588 files, 4,451 tests) on develop ffaecd3a2 plus this branch: **25 files, 61 tests failing** (was 32 files / 71 tests). #875 fixed qb-receiver-forecast, #877 fixed acc-radius, qb-key-man, quick-hitch and qb-rhythm (and arrival-lead passes on engine-92); qb-peek-clock passes in the full run (it failed alone on 0226f0d3; Rules finds it passes alone on ffaecd3a2: the fix is theirs). pursuit-commit (Defense) and qb-stick (Coverage) stay red. The 25 are the ledger below plus baseline-runner (env).
+
+- **chest-shoulders** (mine): its two "off" arms relied on the flag being unset = off. CHEST_SHOULDERS has been on by default since engine-68, so unset = on; the off arms now set `CHEST_SHOULDERS=0`. Fixed in this PR (test only).
+- **cut-wall** (Coverage): same premise, "off: the unset path on every tick" compares the unset path to `'0'`, and CUT_WALL is on by default now. The one-line repair is to compare `trace('1')` against the unset path (or the `'0'` arm against a legacy expectation). Left to Coverage.
+- **Moving these two to the pinned list is not a pure config move.** `test/engine-pin-manifest.test.ts` ("only ever shrinks the pinned set") fails any file that joins `pinned` that was not in `PINNED_AT_START`; both are default-engine files. The repair is the test edit above, not the manifest.
+
+### The landing check
+
+`node scripts/red-diff.mjs` runs both core projects and diffs the failing set against `test/red-ledger.json` (one entry per failing test: file, test, owner, culprit flag, class); it prints `new red: N, fixed: M` with the names and exits non-zero on any new red. `--from result.json` diffs a vitest JSON result already in hand; `--files a,b` runs only those files (a quick check; "fixed" covers only them); `--update` rewrites the ledger from the run, keeping the owner / flag / class of tests already on it and marking new reds `?` for the owner to be named. Checked here: on the run above it reports `new red: 0, fixed: 0`; on the empty ledger `new red: 61`; with `--files test/chest-shoulders.test.ts` it reports `fixed: 1` after the repair.
+
+**Proposal for the procedure.**
+1. A landing runs `node scripts/red-diff.mjs` in full on the merge result, on a quiet machine (about 23 minutes wall on four cores for 588 files; the sum of file times is about 66 minutes), and the PR states `new red: 0` or lists what is new and who owns it. A landing that makes tests red either re-records them in the same PR or adds them to the ledger with an owner and a reason; it does not land with unnamed red.
+2. A landing that changes a default (a promotion) additionally runs the pin bisect (`scripts/diag/pin-bisect.ts --pool <the promoted flags>`) on every file that goes red, so the ledger names the culprit flag.
+3. The ledger is committed and edited only by `--update` plus an owner; a fix removes its entries; `fixed: M` in a landing is the fix list.
+4. Do not run it alongside a scorecard or another suite on the same machine (timed tests: a 69 s test timed out at 146 s under load); a failure that appears only in the full run is an order or load effect, run it alone before ledgering it. The Node pin (22.23.3) matters for baseline-runner only.
+5. The shorter check for a PR that touches few files is `--files` on those files plus the registry tests (`engine-pin-manifest`, `reference-stack`, `scorecard-provenance`), seconds to minutes.
