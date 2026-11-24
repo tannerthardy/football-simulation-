@@ -140,6 +140,7 @@
     "REACH_TIME": "off",
     "GATHER_ATTACK": "off",
     "HOLD_AIM": "off",
+    "FREE_ARM_2D": "off",
     "CARRY_POSTURE": "on",
     "CORNER_DROP": "on",
     "CARRY_TURN": "on",

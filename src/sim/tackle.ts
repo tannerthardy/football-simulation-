@@ -496,6 +496,29 @@ export function reachIntents(sim: PlaySim, intents: Intent[]): void {
 /** Diagnostics: the aim chosen for tackler `d`'s last attempt (HOLD_AIM). */
 export function aimOf(d: Agent): Readonly<Aim> | undefined { return aimFor.get(d); }
 
+/** FREE_ARM_2D (experimental, off; FREE_ARM_2D=1 turns it on): a blocked defender's free side is judged in 2D. Off, it is
+ * lateral only: the blocker at least 0.25 yd to one side of him and the carrier on the other side in y, so on a head-up
+ * block (|blocker y - his y| < 0.25) it is never free, and with the block not yet lost (e.win < 0.6) he makes no attempt
+ * at all, whatever side the carrier passes (review 2026-11-24; never-grasped designed runs: the nearest defender still
+ * blocked in 14 of 23). On, the carrier is on his free side when, as he sees him, he is off the line to his blocker by
+ * more than FREE_ARM_ENTER (60 deg, the reviewer's: the blocker's body covers the arm on that side within it), and stays
+ * so until he comes back within FREE_ARM_EXIT (50 deg; stated choice: a 10 deg exit margin so the arm does not switch
+ * each tick on the edge). The blocker is felt (in contact), the carrier is his picture. The free arm's reach share is
+ * the existing law (0.7 - 0.3 control), so this changes only which side is free. */
+export const FREE_ARM_2D = process.env.FREE_ARM_2D === '1';
+const FREE_ARM_ENTER = Math.cos(60 * Math.PI / 180), FREE_ARM_EXIT = Math.cos(50 * Math.PI / 180);
+const freeArmOpen = new WeakMap<Agent, { e: object; open: boolean }>();
+function freeArmSide(d: Agent, cp: Vec2): boolean {
+  const e = d.engagement!, b = e.blocker;
+  const bx = b.pos.x - d.pos.x, by = b.pos.y - d.pos.y, cx = cp.x - d.pos.x, cy = cp.y - d.pos.y;
+  const cos = (bx * cx + by * cy) / ((Math.hypot(bx, by) * Math.hypot(cx, cy)) || 1);
+  const st = freeArmOpen.get(d);
+  const was = st && st.e === e ? st.open : false;
+  const open = was ? cos < FREE_ARM_EXIT : cos < FREE_ARM_ENTER;
+  freeArmOpen.set(d, { e, open });
+  return open;
+}
+
 export function tryTackles(sim: PlaySim): void {
   const c = sim.carrier;
   if (!c || sim.ball.kind !== 'held') return;
@@ -523,7 +546,8 @@ export function tryTackles(sim: PlaySim): void {
     // A blocked defender can only reach out for the carrier once he's clearly
     // working off the block (tracking: linemen make a third of run tackles).
     const blockerY = engaged ? d.engagement!.blocker.pos.y - d.pos.y : 0;
-    const freeSide = engaged && BLOCKED_REACH && Math.abs(blockerY) >= 0.25 && blockerY * dy < 0;
+    const freeSide = engaged && BLOCKED_REACH && (FREE_ARM_2D ? freeArmSide(d, cp)
+      : Math.abs(blockerY) >= 0.25 && blockerY * dy < 0);
     if (engaged && !freeSide && d.engagement!.win < 0.6) continue;
     const body = c.profile.radius + d.profile.radius;
     const freeArm = freeSide ? 0.7 - 0.3 * clamp(d.engagement!.control, 0, 1) : 0.4;

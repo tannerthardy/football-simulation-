@@ -61,6 +61,9 @@ describe('a blocked defender reaches with his free arm', () => {
     expect((await reach(true, 1)).reached).toBe(false);
   });
   it.each(['covered', 'square'] as const)('on: a blocker %s occupies that arm', async blocker => {
-    expect((await reach(true, 0, blocker)).reached).toBe(false);
+    // FREE_ARM_2D: a square blocker in front of him does not cover a runner passing 90 deg to his side (the review's
+    // point); only a blocker within 60 deg of the runner's line ('covered') occupies that arm.
+    const free2d = process.env.FREE_ARM_2D === '1' && blocker === 'square';
+    expect((await reach(true, 0, blocker)).reached).toBe(free2d);
   });
 });
