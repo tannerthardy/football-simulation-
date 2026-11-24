@@ -46,6 +46,34 @@ behind which flags, and what proves it.
 with the arm budget per man shared (`allocateArms` already allocates the arm budget per body; the new allocation is per arm). Momentum and **angular momentum** close because every impulse is applied as an equal and opposite pair at its point
 (the open defect in `pass-rush-hands.md` is an unclosed couple at an off-centre contact): the test asserts the sum of both men's linear and angular momentum change equals the external (ground) impulses, per tick, in every staged case.
 
+## 2b. The force balance (the lift is derived, not chosen)
+
+Integration's ruling (20:41): the lift cannot rest on a count of arms. Here is the accounting, and what the existing single pad-to-pad line is in its terms. A stands at x < 0 and B at x > 0; one arm each (two arms a man sum the same way).
+
+**Forces.** A's arm: shoulder point `S_A` (height `s_A`, his pad height), hand point `H_A` on B's chest at height `z_A`; unit direction `u_A = (cos a_A, sin a_A)` from `S_A` to `H_A` (`a_A > 0` when the hand is above the shoulder), force `F_A >= 0` along it.
+B's arm: `S_B`, `H_B` on A's chest at `z_B`, direction `u_B = (-cos a_B, sin a_B)`, force `F_B`.
+
+| Where | Force |
+|---|---|
+| on B at `H_A` (A's hand) | `F_A u_A = (F_A cos a_A, F_A sin a_A)` |
+| on A at `S_A` (the reaction of A's own arm) | `-F_A u_A` |
+| on A at `H_B` (B's hand) | `F_B u_B = (-F_B cos a_B, F_B sin a_B)` |
+| on B at `S_B` (the reaction of B's own arm) | `-F_B u_B = (F_B cos a_B, -F_B sin a_B)` |
+
+**Horizontal.** The total on B from both arms is `H = F_A cos a_A + F_B cos a_B`; on A it is `-H`. Each man's ground supplies `H` (A's ground `+H`, B's `-H`, for a pair at rest; `+-` the pair's inertia when it moves).
+So the two arms' horizontal parts sum to **one** horizontal force `H` between the bodies, and `H` is bounded by what the legs and grip set, `H <= min(G_A, G_B)`; it is **not** `F` for each arm. (My scratch test gave each arm the full `H`: a double count, withdrawn in the hand-height note.)
+How `H` splits between the two arms, `h_A = F_A cos a_A` and `h_B = F_B cos a_B` with `h_A + h_B = H`, is the one statically indeterminate quantity: it is set by how hard each man actually pushes through his arms (his arm effort within his arm capacity at that extension), not by a count.
+
+**Vertical.** The load on each man's feet is `N_B = W_B - F_A sin a_A + F_B sin a_B` and `N_A = W_A + F_A sin a_A - F_B sin a_B`: the lift on B is `L = F_A sin a_A - F_B sin a_B = h_A tan a_A - h_B tan a_B`, and on A it is `-L`. The pair's total vertical load `W_A + W_B` is conserved
+(every force acts as an equal and opposite pair at its point), the lifter's arm pushes **him** into his feet by the same `F sin a`, and a man whose arm slopes down (hand below shoulder: a high man pushing on a low man's shoulders) loads the other's feet.
+
+**Moments.** Each force at a hand or shoulder point about each body's centre gives the tip (the World's `tip`, at the point's height, already) and the yaw from an off-centre point; with equal and opposite pairs at points, linear and angular momentum close by construction and the per-tick test asserts it.
+
+**What the single pad-to-pad line is.** Today `liftImp[j] = press x (pad_j - pad_i)/d`, applied once, with `press` the net compressive force between the pads, i.e. `H`. In the accounting above, with each arm's hand on the other man's pad height (`z_A = pad_B`, `z_B = pad_A`), `tan a_A = (pad_B - pad_A)/d = s` and `tan a_B = (pad_A - pad_B)/d = -s`, so
+`L = h_A s + h_B s = H s`: the single line is **exactly the accounting with the hands at the other's pad height, whatever the split**; it is not a blend and not half of anything. (Checked: the corrected scratch with arm shares 1/2 each and dz = 0 reproduces the reference in every bench row, both reps.) Moving a hand off the pad height changes `tan a` by `dz / d`: `L = H s + h_A dz_A / d - h_B dz_B / d`;
+the pad gap `Delta = pad_B - pad_A` enters as `H Delta / d`, and the hands' placement as `(h_A dz_A - h_B dz_B)/d`.
+For equal split and the lower man's hands under his opponent's pads (`dz_A = -0.2`) against the higher man's on the lower man's shoulders (`dz_B = +0.1`): `L = H (Delta + (-0.2 - 0.1)/2)/d = H (Delta - 0.15)/d`: a pad gap of 0.15 yd or less is cancelled. That is the scratch test's finding 2 (corrected), now derived.
+
 ## 3. What the arm adds that the legs and the pad line do not
 
 1. **A force with an arm behind it.** The contest force between two men is whatever the legs and grips transmit (1.0-1.5 kN here), but each man's arm can carry up to `press` (2.1-2.3 kN) at lockout. Phase 2 lets the arm's
@@ -70,7 +98,7 @@ multiplier, and the staged benches run with the hands fitted and `control` froze
 - **Open hand versus grip:** agreed in form. Open hand: friction `mu_hand x F_n`; the open-hand value on a jersey over pads is unknown (Seo's materials: 0.40 aluminium to 1.10 rubber, cotton glove 0.40-0.61); Run Game's cloth limit (250-444 N) is the pull side.
 - **The chop displacement condition** (the outside spec's explanation of why `RUSH_HANDS` let clubs beat set hands): `lambda x F_chop > mu x F_n + grip + tau/d` is the right shape; check it against the `RUSH_HANDS` record in Phase 3 (a displacement with a loaded inside hand in tight should be hard). Not a Phase 2 build.
 - **Re-fit time = travel / hand speed:** acceptable, plus the latency to feel the displacement (25-100 ms).
-- **Questions I would add:** (a) is the lift one arm's worth or two? (the scratch test: doubling the lift decides the pad lever; physically each man's arms push the other's chest and each arm's reaction goes into its owner's feet, so both are real; the existing single pad-to-pad line is the half); (b) should the contact surface be the chest plane (a normal that depends on his torso's yaw) or the pad line? The chest plane is the physical choice and is what gives an off-centre hand its turn; (c) does the pair solve add rows only for the engaged pair, or for every contact (a hand-fight on a third man)? Phase 2: the engaged pair only.
+- **Questions I would add:** (a) [answered in section 2b: the lift is derived from the force balance; the doubled lift of the first scratch was a double count]; (b) should the contact surface be the chest plane (a normal that depends on his torso's yaw) or the pad line? The chest plane is the physical choice and is what gives an off-centre hand its turn; (c) does the pair solve add rows only for the engaged pair, or for every contact (a hand-fight on a third man)? Phase 2: the engaged pair only.
 
 ## 5. Order of work and flags (all off until the card)
 
@@ -91,7 +119,7 @@ multiplier, and the staged benches run with the hands fitted and `control` froze
 
 ## 7. Decisions I need
 
-1. **One arm's worth of lift or two** (section 4 question (a)): I recommend two, built from the per-arm geometry; the existing line is replaced, and this is what restores the pad lever.
+1. **(Resolved by the accounting in section 2b: not a choice.)** The lift is `h_A tan a_A - h_B tan a_B`, the arm effort shares set by the pair solve; the existing single line is the special case with the hands at the other's pad height. The pad lever is the reference's (+0.09 at grip 1.3), and hand height difference is what moves it.
 2. The contact surface as the chest plane (a normal from his torso's yaw), with hands on chest-patch points across the shoulder line.
 3. `HAND_ARMS` as the first flag, its bench gate as above; `HAND_GRIP` and `HAND_PUNCH` later.
 4. Whether `POSTURE_HOLD` (#916) is closed in favour of folding its hold into `HAND_ARMS`, and `GRIP_MU` kept as its own small PR (still not landing alone; Integration's ruling stands).
