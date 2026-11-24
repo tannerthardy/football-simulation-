@@ -8,7 +8,7 @@ T = [t for r in R for t in r['ticks'] if not t['engaged']]
 print('releases', len(R), 'ticks (free of a block)', len(T), '| jobs', dict(collections.Counter((r['job'] or {}).get('kind') for r in R).most_common()))
 src = collections.Counter(t['src'] for t in T); print('request source', {k: f'{100*v/len(T):.0f}%' for k, v in src.items()})
 print('behaviour', dict(collections.Counter(t['beh'] for t in T).most_common(4)))
-print('fit tags (any, * = new this tick)', dict(collections.Counter(g.rstrip('*') for t in T for g in t['tags']).most_common(6)))
+print('fit/shed tags (any, * = new this tick)', dict(collections.Counter(g.rstrip('*') for t in T for g in t['tags']).most_common(6)))
 for lab, X in [('fit', [t for t in T if t['src'] == 'fit']), ('pursuit', [t for t in T if t['src'] == 'pursuit'])]:
     if not X: continue
     print(f"  {lab:<8} n {len(X):>5} | commanded speed / vmax p50 {q([t['cmdFrac'] for t in X])} | his speed p50 {q([t['speed'] for t in X])}"

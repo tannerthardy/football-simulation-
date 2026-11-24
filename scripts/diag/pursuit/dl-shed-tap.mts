@@ -50,7 +50,7 @@ proto.tick = function (this: any) {
     const d = x.d, cmd = sim.cmds?.[d.idx];
     const cv = cmd?.vel ?? { x: 0, y: 0 }, cs = Math.hypot(cv.x, cv.y);
     // Run-fit tags are added when issued and may persist: report those present, marking the ones new this tick.
-    const tags = [...(d.tags ?? [])].filter((t: string) => /^fit-|end-chase|edge-reach|run-blitz/.test(t)).map((t: string) => tagsBefore.get(d)?.has(t) ? t : `${t}*`);
+    const tags = [...(d.tags ?? [])].filter((t: string) => /^fit-|^shed-|end-chase|edge-reach|run-blitz/.test(t)).map((t: string) => tagsBefore.get(d)?.has(t) ? t : `${t}*`);
     const toC = carrier ? Math.atan2(carrier.pos.y - d.pos.y, carrier.pos.x - d.pos.x) : null;
     let gy: number | null = null;
     try { if (gapY && d.runFit) gy = gapY(sim.offAlign, d.runFit.gap, d.runFit.side); } catch { gy = null; }
