@@ -290,6 +290,7 @@
     "PAST_ALONG_PATH": "0",
     "PUNCH": "0",
     "HOLD_CALL": "0",
+    "BLOCK_FRAME": "0",
     "TACKLE_BRAKE": "0",
     "TACKLE_RESET": "0",
     "RUSH_HANDS": "0",

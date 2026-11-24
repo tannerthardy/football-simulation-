@@ -238,6 +238,7 @@
     "PAST_ALONG_PATH": "on",
     "PUNCH": "on",
     "HOLD_CALL": "off",
+    "BLOCK_FRAME": "off",
     "TACKLE_BRAKE": "off",
     "TACKLE_RESET": "off",
     "RUSH_HANDS": "off",
