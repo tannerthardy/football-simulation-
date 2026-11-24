@@ -25,7 +25,7 @@ import { creepPace } from '../backer-creep.js';
 import { ARC_PAST, EDGE_ARC, arcLandmark, seenOverset, traits } from '../engagement.js';
 import { catchSpot } from './receiver.js';
 import { observedBlocking, showsBlock } from '../coverage-cues.js';
-import { executeRunFit, guardStep, lineRead, pullers, type RunFitRead } from '../run-fits.js';
+import { executeRunFit, guardStep, lineRead, noteEngaged, pullers, type RunFitRead } from '../run-fits.js';
 import { linePicture } from '../live-gaps.js';
 import { RouteObservation } from '../coverage-read.js';
 import { movingCatchApproach } from '../catch-approach.js';
@@ -510,6 +510,7 @@ export class PassRusher implements Behavior {
     if (a.engagement) {
       const { blocker } = a.engagement;
       if (['LT', 'LG', 'C', 'RG', 'RT'].includes(blocker.slot)) this.workedLineBlock = true;
+      noteEngaged(a, sim);
       return stand();
     }
     const live = pursueIfLive(sim, a);
