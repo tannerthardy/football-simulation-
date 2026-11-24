@@ -67,7 +67,8 @@ proto.tick = function (this: any) {
     x.ticks.push({ el: r2(el), beh: d.behavior?.constructor?.name ?? null, kind: d.behavior?.kind ?? null, tech: s.tech.get(d) ?? null,
       vOff: sp(d.vel) > 0.3 && fin && sp(fin.vel) > 0.3 ? ang(head(d.vel) - head(fin.vel)) : null, speed: r2(sp(d.vel)), req: fin ? r2(sp(fin.vel)) : null,
       decOff, finOff, setter, bodyOffTravel: sp(d.vel) > 0.3 ? ang(d.body.facing - head(d.vel)) : null, bodyOffReq: fin?.facing !== undefined ? ang(d.body.facing - fin.facing) : null,
-      engaged: !!d.engagement });
+      engaged: !!d.engagement, read: d.recog?.read ?? null, sawBall: d.recog?.sawBall?.() ?? null,
+      tags: [...(d.tags ?? [])].filter((t: string) => /^fit-|^shed-|end-chase|edge-reach|run-blitz|possession|pursu|rally|chase/.test(t)) });
   }
   return out;
 };
