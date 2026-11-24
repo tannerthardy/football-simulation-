@@ -185,7 +185,8 @@ export function pursuitPoint(sim: PlaySim, a: Agent, target: Agent, horizon = 3,
   // Keep the support contract while approaching, then close onto the near
   // hip. A permanent two-yard sideline shade is outside tackling reach.
   const dist = Math.hypot(seen.pos.x-a.pos.x, seen.pos.y-a.pos.y);
-  const lev = pursuitLeverage(a,p.y) * clamp((dist-reach)/6,0,1);
+  const trail = TRAIL_LEVERAGE ? trailShade(sim, a, target, seen, dist, reach) : null;
+  const lev = trail ?? pursuitLeverage(a,p.y) * clamp((dist-reach)/6,0,1);
   const point = { x: p.x, y: p.y + lev };
   trace?.pursuit(target, { kind: 'intercept', prediction: ip,
     estimateAppliesTo: 'sampled-point-before-bias-and-leverage', steeringPointEstimate: 'not-evaluated',
@@ -290,6 +291,64 @@ function leverageMagnitude(a: Agent, y: number): number {
   return (0.5 + 1.7 * near) * (0.55 + 0.45 * a.r('pursuit'));
 }
 
+/** TRAIL_LEVERAGE (experimental, off; TRAIL_LEVERAGE=1 turns it on). The second man to the ball does not run up the first
+ * man's back: a pursuer who sees a teammate ahead of him on the same carrier (nearer the carrier, on his own line to
+ * him, closing on him and not yet on him) keeps a full shoulder on the side that teammate does not take, instead of
+ * the shade fading to nothing as he closes. When that teammate is no longer ahead of him in his picture (beaten,
+ * passed, off the line, or on the carrier), the trail is released and the ordinary fading shade brings him in.
+ *
+ * Why (test/pursuit-commit.test.ts's 3-8 yd band on #882 2de8a3c98, intents before/after the spacing pass): the
+ * spacing pass changed 170 band requests (commitment off) and 136 (on); 54-59% were cut off a pursuer of the same
+ * carrier, the one nearer the carrier in 92%, the two steering points p50 0.2-0.4 yd apart. The shade's distance fade
+ * (lev x clamp((dist - reach) / 6)) takes both men's shoulders away together in exactly that band.
+ *
+ * All from his picture (sim.see of the teammate and of the carrier); never the teammate's assignment or target. The
+ * lead is a decision with margins: enter nearer by 0.5 yd, within 45 deg of his own line to the carrier; exit when no
+ * longer nearer, beyond 60 deg, moving away from the carrier, or on him (within contact). The side is decided on entry
+ * (away from the lead's side of the carrier; his ordinary leverage side when the lead is square behind him) and held
+ * until the lead shows 0.5 yd on that side. Magnitude: the existing leverage magnitude (no new constant). */
+export const TRAIL_LEVERAGE = process.env.TRAIL_LEVERAGE === '1';
+const LEAD_ENTER = 0.5, LEAD_ANGLE_IN = Math.PI / 4, LEAD_ANGLE_OUT = Math.PI / 3, SIDE_MARGIN = 0.5;
+const trailState = new WeakMap<Agent, { target: Agent; lead: Agent | null; side: number; t: number; out: number | null }>();
+function trailShade(sim: PlaySim, a: Agent, target: Agent, seenC: { pos: Vec2 }, dA: number, contact: number): number | null {
+  let s = trailState.get(a);
+  if (s && s.t === sim.t && s.target === target) return s.out;
+  if (!s || s.target !== target) { s = { target, lead: null, side: 0, t: -1, out: null }; trailState.set(a, s); }
+  const bear = Math.atan2(seenC.pos.y - a.pos.y, seenC.pos.x - a.pos.x);
+  const read = (b: Agent) => {
+    const sb = sim.see(a, b), dB = Math.hypot(sb.pos.x - seenC.pos.x, sb.pos.y - seenC.pos.y);
+    const off = Math.abs(angleDiff(Math.atan2(sb.pos.y - a.pos.y, sb.pos.x - a.pos.x), bear));
+    const toC = { x: seenC.pos.x - sb.pos.x, y: seenC.pos.y - sb.pos.y }, n = Math.hypot(toC.x, toC.y) || 1;
+    const closing = (sb.vel.x * toC.x + sb.vel.y * toC.y) / n;
+    return { sb, dB, off, closing };
+  };
+  if (s.lead) {
+    const r = read(s.lead);
+    if (dA - r.dB < 0 || r.off > LEAD_ANGLE_OUT || r.closing < 0 || r.dB <= contact) s.lead = null;
+    else {
+      const lat = r.sb.pos.y - seenC.pos.y;
+      if (Math.sign(lat) === s.side && Math.abs(lat) > SIDE_MARGIN) s.side = -s.side;
+    }
+  }
+  if (!s.lead) {
+    let best: { b: Agent; dB: number; lat: number } | null = null;
+    for (const b of sim.teammates(a)) {
+      if (b === a) continue;
+      const r = read(b);
+      if (dA - r.dB > LEAD_ENTER && r.off < LEAD_ANGLE_IN && r.closing > 0 && r.dB > contact && (!best || r.dB < best.dB))
+        best = { b, dB: r.dB, lat: r.sb.pos.y - seenC.pos.y };
+    }
+    if (best) {
+      s.lead = best.b;
+      s.side = Math.abs(best.lat) > 0.25 ? -Math.sign(best.lat) : (Math.sign(leverage(a, seenC.pos.y)) || 1);
+    }
+  }
+  s.t = sim.t;
+  s.out = s.lead ? s.side * leverageMagnitude(a, seenC.pos.y) : null;
+  if (s.lead) a.tags.add('trail-leverage');
+  return s.out;
+}
+
 function pursuitLeverage(a: Agent, y: number): number {
   const force = a.runFit?.kind === 'force' || (a.runFit?.kind === 'edge' && a.runFit.edge === 'box');
   // A called outside shoulder is unambiguous at midfield. Only the generic
@@ -374,7 +433,8 @@ export function chase(sim: PlaySim, a: Agent, target: Agent, horizon = 3, opts: 
   const dist = Math.hypot(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y);
   const tackle = a.r('tackling');
   const contact = a.profile.radius + target.profile.radius + a.profile.reach * .65;
-  const offset = pursuitLeverage(a, seen.pos.y)
+  const trail = TRAIL_LEVERAGE ? trailShade(sim, a, target, seen, dist, contact) : null;
+  const offset = trail ?? pursuitLeverage(a, seen.pos.y)
     * clamp((dist - contact) / 6, 0, 1);
   // Teammate navigation needs the responsibility this request serves. This
   // picture is already acquired and dead-reckoned to now; the intercept below
