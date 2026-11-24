@@ -108,6 +108,10 @@ const FLAT_SINK_DEPTH = 18;
  * hip turn (orientation.ts `sharp`). No jam (a follow-up: zone
  * corners have no press contact). */
 export const SQUAT_SINK = process.env.SQUAT_SINK === '1';
+/** SQUAT_FLAT_FIRST (experimental, off; with SQUAT_SINK; Coverage C14 2026-11-24): the squat corner's sink spot with a
+ * flat threat is the deepest point toward #1's hole window from which he still reaches the flat window by the catch
+ * (the flat is his first responsibility, the hole only as far as that allows), not the minimax between the two. */
+const SQUAT_FLAT_FIRST = process.env.SQUAT_FLAT_FIRST === '1';
 /** Is this call's flat seat played by SQUAT_SINK (every Cover 2 form, Cover 6/8 half side, cloud; not Deuce's palms or DOT)?
  * The flag is read per call (not only at import) so a diagnostic replay can switch it for one play of a game. */
 export function squatSinkCall(sim: PlaySim): boolean {
@@ -2306,7 +2310,16 @@ export class ZoneCoverage implements Behavior {
       const H = { x: Hx, y: Hc.y }, F = carry(threat), tH = flight(H), tF = flight(F) + DRIVE_SECURE;
       const body = { vel: { x: 0, y: 0 }, profile: a.profile, speedScale: a.speedScale };
       let bestP = H, bestCost = Infinity;
-      for (let k = 0; k <= 20; k++) {
+      if (SQUAT_FLAT_FIRST) {
+        // SQUAT_FLAT_FIRST: the flat is his first responsibility; he sinks toward the hole only as far as he can still
+        // reach the flat window by the catch (standing start, timeToReach on his own body), the deepest such point on
+        // the line between the windows. If even the flat window itself is late, he plays the flat window.
+        bestP = F;
+        for (let k = 20; k >= 0; k--) {
+          const P = { x: F.x + (H.x - F.x) * k / 20, y: F.y + (H.y - F.y) * k / 20 };
+          if (timeToReach({ ...body, pos: P }, F, a.profile.reach) - tF <= 0) { bestP = P; break; }
+        }
+      } else for (let k = 0; k <= 20; k++) {
         const P = { x: F.x + (H.x - F.x) * k / 20, y: F.y + (H.y - F.y) * k / 20 };
         const cost = Math.max(timeToReach({ ...body, pos: P }, H, a.profile.reach) - tH, timeToReach({ ...body, pos: P }, F, a.profile.reach) - tF);
         if (cost < bestCost) { bestCost = cost; bestP = P; }
