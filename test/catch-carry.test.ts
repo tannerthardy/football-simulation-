@@ -14,6 +14,11 @@ async function plays(flag: string, opts: { dropPicture?: boolean; airProbe?: boo
   // The suite pins the pre-promotion engine; the securing window and the drive on it are what this builds on.
   vi.stubEnv('CATCH_SECURE', '1');
   vi.stubEnv('DRIVE_CATCH', '1');
+  // Pinned to FLIGHT_BREAK=0 (engine-93, Coverage C14): with the break on, the off arm's rally continues the break on the
+  // same receiver through the catch (pursueIfLive), so both arms close on him at about 4 yd/s 0.15 s after the secure
+  // (off 4.03, on 3.98) and the comparison no longer isolates the carry. Retire with the replaced paths, or re-find the
+  // carry's own case with the break on.
+  vi.stubEnv('FLIGHT_BREAK', '0');
   const { Rng } = await import('../src/core/rng.js');
   const { generateTeam, pickDefense, pickOffense } = await import('../src/league/team.js');
   const { PASS_BY_ID } = await import('../src/playbook/concepts.js');
