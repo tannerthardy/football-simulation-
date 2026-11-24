@@ -90,8 +90,9 @@ export interface QbReadPlan {
    * when the condition holds in his own pre-snap picture (Flex's module B decides it; Rules authors it). */
   alert?: {
     read: number;
-    /** Every clause present must hold, in scan-visible terms only (Flex, 2026-11-24). */
-    when: {
+    /** Every clause present must hold, in scan-visible terms only (Flex, 2026-11-24). Absent: the alert is peeked every
+     * time (levels' divide, Brown). */
+    when?: {
       shell?: 'open' | 'closed';
       press?: ReceiverRef;
       cushionUnder?: number;
