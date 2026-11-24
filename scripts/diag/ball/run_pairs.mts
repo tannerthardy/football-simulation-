@@ -15,7 +15,7 @@ const home = generateTeam(rng, 'Ironmen', 'IRN', { strength: 0.55 }), away = gen
 const all: any[] = [];
 for (let i = 0; i < games; i++) {
   const res = simulateGame(home, away, { seed: seed + first + i, record: true, recordLevel: 'light' } as any);
-  const plays = (res.log as any[]).map((q, n) => ({ n, key: [q.offense, q.quarter, q.clock, q.down, q.distance, q.yardline, q.call, q.defense, q.plan?.family ?? q.plan?.coverage ?? '', q.plan?.concept ?? q.plan?.id ?? ''].join('|'), kind: q.kind, yards: q.yards, text: q.text, call: q.call, duration: q.duration }));
+  const plays = (res.log as any[]).map((q, n) => ({ n, key: [q.offense, q.quarter, q.clock, q.down, q.distance, q.yardline, q.call, q.defense, q.plan?.family ?? q.plan?.coverage ?? '', q.plan?.concept ?? q.plan?.id ?? ''].join('|'), kind: q.kind, yards: q.yards, text: q.text, call: q.call, duration: q.duration, st: q.stats ? { c: q.stats.completed ? 1 : 0, d: q.stats.dropped ? 1 : 0, s: q.stats.sacked ? 1 : 0, t: q.stats.throwaway ? 1 : 0, p: q.stats.pressured ? 1 : 0, pbu: q.stats.passDefendedBy ? 1 : 0, i: q.stats.interceptedBy ? 1 : 0, a: q.stats.attempted ? 1 : 0, qr: q.stats.qbRead ?? null } : null, q: q.quarter }));
   all.push({ seed: seed + first + i, plays });
   console.error(`game ${i + 1}/${games}: ${plays.length} plays`);
 }
