@@ -169,7 +169,7 @@ export class V2Drive {
       const e = h.estimate(d), b = h.body(d), toQB = Math.atan2(h.a.pos.y - e.pos.y, h.a.pos.x - e.pos.x), eyes = h.seenHead(d) ?? e.facing;
       // His eyes on the passer: the head he sees on the man where perception records it, else the body (Coverage's review).
       const faces = Math.abs(Math.atan2(Math.sin(eyes - toQB), Math.cos(eyes - toQB))) < Math.PI / 3;
-      return { id: d.idx, pos: e.pos, vel: e.vel, facing: e.facing, spread: h.pictureSpread(d), facesPasser: faces,
+      return { id: d.idx, pos: e.pos, vel: e.vel, facing: e.facing, spread: h.pictureSpread(d), age: h.pictureAge(d), facesPasser: faces,
         vmax: b.vmax, accel: b.vmax / Math.max(b.tau, 1e-3), reach: b.reach, leap: b.reactReach + 0.5 * (b.maxCatchHeight - b.reactReach), ballSkills: h.ballSkills(d) };
     });
     const j = judge(q, defs);

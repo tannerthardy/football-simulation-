@@ -21,6 +21,8 @@ export interface SeenDefender {
   facing: number;
   /** His picture's spread on this man (yd), from the cones and age. */
   spread: number;
+  /** How old his picture of this man is (s): what the man did since is unknown to him, within what a body can do. */
+  age?: number;
   /** Whether the passer sees him facing the passer (eyes on him), so he can take the arm cue. */
   facesPasser: boolean;
   /** Scouting report: top speed (yd/s), acceleration (yd/s^2), reach (yd) and leap height (yd), ball skills (0-1). */
@@ -92,7 +94,10 @@ export const LOOK_SEP = 0.5;
 /** Of a defender who plays the ball, the share who break it up (rather than miss it) and, in front of the hands on the
  * throw side, who catch it (scaled by ball skills). Stated choices pending the calibration contract. */
 export const PLAY_BREAKUP = 0.6;
-export const PICK_IN_FRONT = 0.35;
+/** Calibrated on the staged cells (2026-11-24): our engine's defenders who arrive at the catch point pick it about 0.06 of
+ * the time (5 picks in 110 arrivals: drivers 0.065, lane 0.04, coverers 0 of 14), against the 0.35 first stated. Scaled by
+ * ball skills about the typical (0.5 + skills). The calibration contract keeps checking it. */
+export const PICK_IN_FRONT = 0.06;
 /** A rusher this close to the line (yd) is a lane man by his hands, not by getting there (chosen). */
 export const RUSH_LINE = 1.5;
 /** A rusher's hands in the ball's low path: the batted ball, typical by role (the engine's batting: 0.04 engaged, 0.12
@@ -115,6 +120,17 @@ export const LANE_PICK = 0.3;
 export const LANE_NEAR = 3;
 
 const hyp = (a: V2, b: V2) => Math.hypot(a.x - b.x, a.y - b.y);
+/** His spread on a man's arrival (s): the picture's own spread, plus what the man may have done since he was last seen
+ * (an aged picture: he can have changed his velocity by up to his acceleration times the age, and that carries to the
+ * point over the time it takes), plus the receiver's spread; over the man's speed. Information-honest: a man last seen
+ * widening 0.6 s ago is a wide belief, not a certain one (staged V2, 2026-11-24, the field nickel). */
+/** How fast an unseen man's velocity typically changes (yd/s^2): not his top acceleration, which assumes he spent the
+ * whole unseen time accelerating at the point (chosen; staged V2: top acceleration made every belief too wide). */
+export const UNSEEN_DRIFT = 2.5;
+function arriveSigma(d: SeenDefender, recvSig: number, horizon: number): number {
+  const age = d.age ?? 0, unknown = 0.5 * UNSEEN_DRIFT * age * age + UNSEEN_DRIFT * age * Math.max(0, horizon);
+  return Math.hypot(ARRIVE_SIGMA0, Math.hypot(d.spread + unknown, recvSig) / Math.max(d.vmax, 1e-3));
+}
 const phi = (z: number) => 0.5 * (1 + Math.tanh(0.7978845608 * (z + 0.044715 * z * z * z)));
 
 /** Body law: time for a man at `pos` moving `vel`, facing `facing`, to get within `r` of `to`, starting after `delay`:
@@ -175,7 +191,7 @@ export function judge(q: ThrowQuestion, defs: SeenDefender[]): Judgment {
   const recvSig = Math.hypot(q.receiverSpread, LOOK_SEP * (1 - q.res));
   const cov = findCoverer(q, defs);
   const add = (d: SeenDefender, role: Role, tArr: number, inFront: boolean) => {
-    const sigma = Math.hypot(ARRIVE_SIGMA0, Math.hypot(d.spread, recvSig) / Math.max(d.vmax, 1e-3));
+    const sigma = arriveSigma(d, recvSig, tArr);
     const margin = tBall - tArr, pArrive = phi(margin / sigma);
     roles.push({ id: d.id, role, margin, sigma, pArrive, pPlay: pArrive * PLAY_BREAKUP, pPick: inFront ? pArrive * PICK_IN_FRONT * (0.5 + d.ballSkills) : 0 });
   };
@@ -227,7 +243,7 @@ export function judge(q: ThrowQuestion, defs: SeenDefender[]): Judgment {
       if (hyp(p, q.catchAt) <= LANE_NEAR && (near === null || m > near)) near = m;
     });
     if (best === null || best <= -0.3) return null;
-    const sigma = Math.hypot(ARRIVE_SIGMA0, d.spread / Math.max(d.vmax, 1e-3));
+    const sigma = arriveSigma(d, 0, q.windup + q.flight);
     return { margin: best, sigma, pArrive: phi(best / sigma), rusher: false, pNear: near === null ? 0 : phi(near / sigma) };
   };
   // The coverer can also undercut the route and take the ball on its line, short of the catch point: the higher of the two.
