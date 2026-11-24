@@ -43,7 +43,7 @@ const MEASURED: { controller: Record<string, [number, number, number]>; stage: R
   stage: {
     'QB / spacing': [0.0283, 882, 25], 'block / spacing': [0.0683, 4361, 298], 'block / engagement': [0.1456, 4361, 635],
     'rush / mode switch': [0.0589, 2787, 164], 'rush / spacing': [0.0736, 2787, 205], 'rush / engagement': [0.0415, 7756, 322],
-    'rush / tackle bond': [0.0055, 7756, 43], 'coverage / spacing': [0.1056, 4149, 438], 'coverage / mode switch': [0.0277, 11522, 319],
+    'rush / tackle bond': [0.0055, 7756, 43], 'coverage / spacing': [0.1283, 4005, 514], // re-recorded engine-94 (FLIGHT_BREAK on; Coverage C14, scripts/diag/coverage/dither-cov-spacing.mts): develop 7b36c6e5 reads [0.1166, 3919, 457] with FLIGHT_BREAK=0. Every added reversal is teammate spacing between coverage defenders in pursuit after the catch (1.5-3.5 s after the throw), on plays where the break brings more of them to the carrier together: slant_flat 3 0 -> 16, the three flood plays +31, tunnel_screen 3 +12, curl_flat 1 20 -> 4; no flight-phase reversal is added and the spacing stage is unchanged. Was [0.1056, 4149, 438] 'coverage / mode switch': [0.0277, 11522, 319],
     'coverage / tackle bond': [0.0080, 11522, 92], 'coverage / containment': [0.0020, 11522, 23], 'carrier / spacing': [0.1230, 789, 97], // re-recorded engine-77 (ZONE_EYES on; the same with ZONE_EYES=0 on this head). On engine-75 the flag added 5 reversals, all in one play (mesh seed 1, +2/+3 in the +100/+200 draws) whose carrier ran a different course with the zone defenders' eyes moved; no stage flipped; ARM_BREAK (engine-76) absorbed it
     'carrier / mode switch': [0.0070, 854, 6],
     'route / spacing': [0.0090, 4011, 36],

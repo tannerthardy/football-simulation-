@@ -1,4 +1,4 @@
-/** BALL_DRAG: the spiral's drag constant is the measured in-flight deceleration (0.0050 /yd) with the flag on and the engine's 0.003027 off; the QB's launch is re-derived
+/** BALL_DRAG (on by default since engine-97, =0 restores): the spiral's drag constant is the measured in-flight deceleration (0.0050 /yd) on and the engine's old 0.003027 off; the QB's launch is re-derived
  * for the same flight time, so hang time and apex by distance do not move. The module reads the flag at import, so each arm loads it fresh. */
 import { describe, it, expect, vi, afterEach } from 'vitest';
 
@@ -12,14 +12,15 @@ const T = (d: number) => 0.0731 + 0.03945 * d + 0.00022 * d * d;
 afterEach(() => { delete process.env.BALL_DRAG; });
 
 describe('BALL_DRAG', () => {
-  it('is off by default: the spiral keeps 0.003027 /yd', async () => {
-    const m = await load(undefined);
+  it('=0 restores the old spiral constant, 0.003027 /yd', async () => {
+    const m = await load('0');
     expect(m.BALL_DRAG).toBe(false);
     expect(m.DRAG_SPIRAL).toBe(0.003027);
   });
 
-  it('on, the spiral is 0.0050 /yd (C_d about 0.16 on the rulebook ball) and kicks and tumbles keep theirs', async () => {
-    const m = await load('1');
+  it('is on by default: the spiral is 0.0050 /yd (C_d about 0.16 on the rulebook ball) and kicks and tumbles keep theirs', async () => {
+    const m = await load(undefined);
+    expect(m.BALL_DRAG).toBe(true);
     expect(m.DRAG_SPIRAL).toBe(0.005);
     // k = rho C_d A / (2 m) per yd, with the rulebook ball's A 0.0226-0.0232 m2, m 0.397-0.425 kg, rho 1.2: 0.0306 C_d
     const cd = (k: number, A: number, mass: number) => (k * 2 * mass) / (1.2 * A * 0.9144);
@@ -30,7 +31,7 @@ describe('BALL_DRAG', () => {
   });
 
   it('the same flight time and arc at every distance: apex and hang time unchanged; the release is faster and the arrival slower', async () => {
-    const off = await load(undefined), on = await load('1');
+    const off = await load('0'), on = await load(undefined);
     for (const d of [10, 20, 30, 40]) {
       const from = { x: 0, y: 0, z: 1.8 }, to = { x: d, y: 0, z: 1.0 }, t = T(d);
       const run = (m: typeof off) => {

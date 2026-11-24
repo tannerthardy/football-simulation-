@@ -2,8 +2,8 @@
  * Football flight: 3-D projectile with quadratic drag relative to the wind.
  * Drag constant k = ½ρC_dA/m converted to yards: k = 0.0306·C_d /yd for the rulebook ball (end-on area 0.0226–0.0232 m², mass 0.397–0.425 kg, rho 1.2 kg/m³).
  *
- * BALL_DRAG (experimental, off; BALL_DRAG=1 turns it on): the spiral's k is the NFL ball's measured in-flight deceleration.
- * Off, k = 0.003027 /yd (C_d 0.099), the figure the engine was built with: a recalled spiral value, not measured on a thrown NFL ball.
+ * BALL_DRAG (default since engine-97, BALL_DRAG=0 restores; was experimental, off; BALL_DRAG=1): the spiral's k is the NFL ball's measured in-flight deceleration.
+ * Off (BALL_DRAG=0), k = 0.003027 /yd (C_d 0.099), the figure the engine was built with: a recalled spiral value, not measured on a thrown NFL ball.
  * On, k = 0.0050 /yd (interval 0.0045–0.0057; C_d about 0.16, 0.15–0.19), from BDB 2025 weeks 1–9 ball tracking: the horizontal speed of each 0.1 s interval of a pass
  * (pass_forward to pass_arrived), the first two intervals (the release frames, noisy) and the last 0.6 s dropped, k = -d ln(speed)/d(distance) by least squares within each
  * pass, pooled by air-distance band (20–35 yd 0.0057 (0.0050–0.0065), 35+ yd 0.0047 (0.0043–0.0051); tables and operator in
@@ -21,7 +21,7 @@
 import { G } from '../core/units.js';
 import type { Vec2, Vec3 } from '../core/vec.js';
 
-export const BALL_DRAG = process.env.BALL_DRAG === '1';
+export const BALL_DRAG = process.env.BALL_DRAG !== '0';
 export const DRAG_SPIRAL = BALL_DRAG ? 0.005 : 0.003027;
 /** End-over-end kicks present more area. */
 export const DRAG_KICK = 0.0042;
