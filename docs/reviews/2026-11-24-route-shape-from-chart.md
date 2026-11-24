@@ -70,6 +70,28 @@ claimed: these are route-shape measurements. The completion cost of HITCH_OPEN i
    - Kept for the flat's rebuild (#870 closed): its finish at the sideline margin (he stops in bounds, facing the
      quarterback, instead of climbing) is still taught and is worth keeping. The full-pace lateral run is what fails.
 
+## The flat, second attempt (FLAT_LOOK, not kept)
+
+Taught: the flat gets his width looking for the ball over the inside shoulder, and stops in bounds at the sideline.
+FLAT_LOOK ran him turned to the QB from his release point on (flat, arrow, back_flat), so that the body's facing
+caps would price the look, and finished the flat at the margin.
+
+24 games, engine-92, WR/TE flats:
+
+| measure | default | FLAT_LOOK | NFL |
+|---|---|---|---|
+| speed at 2.0 / 2.5 / 3.0 s (yd/s) | 5.5 / 6.1 / 6.0 | 5.7 / 6.1 / 5.7 | 4.8 / 5.2 / 5.3 |
+| depth at 3.0 s (yd) | 3.2 | 3.3 | 1.0 |
+| width at 3.0 s (yd) | 10.4 | 10.7 | 7.8 |
+
+Only the finish changed: speed at 4.0 s fell 4.4 -> 2.6, so he stopped. Flat completion rose 73% -> 79% and the catch
+speed fell 3.2 -> 2.3. The facing request does not reach the speed, either because a later stage of the route
+command (the craft or the stem work) re-sets the facing, or because the caps do not bite on a lateral run. With
+FLAT_SHAPE, this is the second attempt at the flat, so it is stopped and reverted.
+
+Re-diagnose before a third attempt. Trace one staged flat's commanded facing against its body facing and speed
+through the run.
+
 ## Flags
 
 | flag | default | status |
