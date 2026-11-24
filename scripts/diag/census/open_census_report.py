@@ -12,11 +12,11 @@ Formation label (both sides, from the snap positions): receivers each side of th
 import gzip, json, sys, math, collections
 import numpy as np
 
-_skip = {i + 1 for i, a in enumerate(sys.argv) if a in ('--out', '--wide', '--check')}
+_skip = {i + 1 for i, a in enumerate(sys.argv) if a in ('--out', '--wide', '--check', '--rows')}
 args = [a for i, a in enumerate(sys.argv) if i > 0 and not a.startswith('--') and i not in _skip]
 opt = lambda n, d=None: sys.argv[sys.argv.index(n) + 1] if n in sys.argv else d
 NFL = args[0]; SIMS = args[1:]
-OUT = opt('--out'); WIDE = opt('--wide'); NCHECK = int(opt('--check', '12'))
+OUT = opt('--out'); WIDE = opt('--wide'); ROWS = opt('--rows'); NCHECK = int(opt('--check', '12'))
 OL = {'T', 'G', 'C', 'OT', 'OG'}; BACK = {'RB', 'FB', 'HB'}
 FIXED = (15, 20, 25, 30)
 BANDS = [(-99, 0, 'behind LOS'), (0, 5, '0-5'), (5, 10, '5-10'), (10, 15, '10-15'), (15, 20, '15-20'), (20, 99, '20+')]
@@ -89,7 +89,7 @@ def census(plays, src):
                 rate = (d[o[0]] - dprev) / (0.1 * (f - f0)) if f > f0 else 0.0
                 cl = 'closing' if rate < -0.5 else 'opening' if rate > 0.5 else 'steady'
                 rows.append(dict(play=p['id'], kind=kind, f=f, slot=pl[i].get('slot') or pl[i].get('id'), depth=float(rx), side=float(min(ry, 53.33 - ry)), d1=float(d[o[0]]), d2=float(d[o[1]]), rel=relpos, io=io, cl=cl, lev=lev, rclass=rclass,
-                                 target=bool(pl[i].get('target')), band=band(float(rx)), **{k: meta[k] for k in ('fam', 'man', 'align', 'empty', 'motion', 'motion_empty', 'pa')}, j1=pl[j1].get('slot') or pl[j1].get('id')))
+                                 target=bool(pl[i].get('target')), route=(pl[i].get('routeRan') if src == 'nfl' else ((p.get('routes') or {}).get(str(i)) or {}).get('id')), band=band(float(rx)), **{k: meta[k] for k in ('fam', 'man', 'align', 'empty', 'motion', 'motion_empty', 'pa')}, j1=pl[j1].get('slot') or pl[j1].get('id')))
     return rows, plays_meta
 
 def pct(v, q): return float(np.percentile(v, q)) if len(v) else float('nan')
@@ -186,10 +186,12 @@ def tables(rows, meta, name):
         P('')
 
 tables(nfl_rows, nfl_meta, 'NFL')
+rows_export = {'NFL': [dict(fam=r['fam'], kind=r['kind'], band=r['band'], d1=r['d1'], wide=bool(wide(r)), route=r['route'], slot=r['slot'], target=r['target'], depth=r['depth']) for r in nfl_rows]}
 wide_export = []
 for sp in SIMS:
     sim_plays = load(sp); rows, meta = census(sim_plays, 'sim')
     tables(rows, meta, 'Ours: ' + sp.split('/')[-1])
+    rows_export[sp.split('/')[-1]] = [dict(fam=r['fam'], kind=r['kind'], band=r['band'], d1=r['d1'], wide=bool(wide(r)), route=r['route'], slot=r['slot'], target=r['target'], depth=r['depth']) for r in rows]
     simd = {p['id']: p for p in sim_plays}
     for r in rows:
         if wide(r):
@@ -197,6 +199,7 @@ for sp in SIMS:
             wide_export.append(dict(play=r['play'], concept=p.get('concept'), cov=p.get('cov'), fam=p.get('fam'), form=p.get('form'), t=r['f'] / 10, kind=r['kind'], receiver=r['slot'], depth=round(r['depth'], 1), d1=round(r['d1'], 2), d2=round(r['d2'], 2),
                                     nearest=r['j1'], rel=r['rel'], io=r['io'], cl=r['cl'], target=r['target'], defenders=p['def'].get(key)))
     if WIDE: json.dump(wide_export, open(WIDE, 'w'))
+if ROWS: json.dump(rows_export, open(ROWS, 'w'))
 
 P('## Does the Cover-2 / Cover-6 10-15 yd excess hold? (wide-open share of receiver-moments, NFL p90 threshold; each sim file on its own)\n')
 P('| sample | Cover-2 fixed n | Cover-2 fixed wide | Cover-6 fixed n | Cover-6 fixed wide | Cover-2 release n | wide | Cover-6 release n | wide |'); P('|---|---|---|---|---|---|---|---|---|')
