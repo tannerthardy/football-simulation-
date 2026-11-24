@@ -260,6 +260,7 @@
     "PERIPH_ACUITY": "0",
     "FLIGHT_BREAK": "0",
     "FLIGHT_LEAD": "0",
+    "SPOT_LEAN": "0",
     "HEAD_FOLLOW": "0",
     "POCKET_CLIMB": "0",
     "BLOCK_SEEN": "0",
