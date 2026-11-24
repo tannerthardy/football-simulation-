@@ -1,0 +1,5 @@
+# QB_SCAN / QB_CANON_SEEN: the passer pre-snap read, 8 games per arm (seeds 101-108), develop 77603a532
+off plays 1080 pre==actual 0.493 pre==shown look 0.632 blitz expected 0.078 audibles {'rpo:': 41, 'none': 1003, 'check': 11, 'flip': 25}
+scan plays 1051 pre==actual 0.469 pre==shown look 0.618 blitz expected 0.069 audibles {'none': 972, 'flip': 21, 'check': 6, 'rpo:': 50, 'kill': 2}
+canon plays 1042 pre==actual 0.463 pre==shown look 0.639 blitz expected 0.062 audibles {'none': 962, 'rpo:': 42, 'flip': 25, 'check': 13}
+both plays 1071 pre==actual 0.487 pre==shown look 0.630 blitz expected 0.076 audibles {'none': 987, 'rpo:': 54, 'kill': 2, 'flip': 21, 'check': 7}
