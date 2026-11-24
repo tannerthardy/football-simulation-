@@ -203,3 +203,67 @@ Everything is behind flags until its phase clears. The old engagement code stays
 
 Line play has had no owner since the trenches lane ended; the 22 failing blocking tests in the ledger are still
 under that name. This plan needs one. Until the user decides, Tools starts Phase 0 and Defense carries the defects.
+
+## 7. Amendments from the outside review (2026-11-24)
+
+An outside reviewer (Gemini) read this plan cold, searched the literature and derived the two-man statics
+independently. Its points below are accepted into the plan unless marked. Every citation is to be re-opened by Tools
+before it is quoted; several of the reviewer's links did not obviously match the paper named, so treat the figures as
+leads, not facts, until checked.
+
+**7.1 Which limit binds: tipping before slipping.** For a man pushed back with force F at height z, with his rear
+foot a distance b behind his centre, hands x ahead of it, and a pad slope s (s > 0 when the opponent is lower, so the
+push carries a lift sF):
+- load on his feet: N = W − sF (the lower man's: W + sF);
+- he slides at F = min(leg force, μW / (1 + μs));
+- he tips back over his rear foot at F = W·b / (z + s(b + x)).
+For matched 140 kg men at μ 1.2 the reviewer gets a slide limit near 1.2 body weights and a tip limit near 0.6 (0.3
+with no stagger). A 20 cm pad edge roughly doubles the lower man's tip limit against the higher man's (about 0.96
+against 0.49). If that holds, the rep is decided by balance and recovery, with grip the limit only for a man who is
+deeply staggered, being lifted, or on a wet field. **Phase 0 must therefore report, per tick, which limit is binding
+on each man: leg force, grip, or balance.** The push-contest diagnosis ("strength is hidden behind the grip cap") is
+to be re-checked against this; both can be true at different moments of a rep.
+- Caution on the statics: both men lean into each other and step, so a static tip limit is a bound, not the
+  outcome. The bench decides.
+
+**7.2 Sourced leads (to verify).** Cleat traction at a 2.8 kN preload: natural grass 1.0–1.5 (the sod tears, which
+limits force); infill turf ≥ 1.7. Our 1.1 is at the bottom of grass. Sustained individual scrum push about 1.0–1.8
+body weights, best near 60° knee flexion; sprint horizontal force 0.76–0.97 body weights at zero speed, falling
+linearly with speed. Arm: weakest near 90° elbow, strongest toward lockout; pull about a quarter stronger than push.
+Punch speed: boxing 8–9 m/s; no study of a lineman's punch, so 4–6 m/s is a stated choice. No study measures
+linemen's sustained push or two-handed push by elbow angle; say so where we choose.
+
+**7.3 Why the shaped base failed.** Three causes, to confirm from the removed commits: (a) most of a man's fall
+threshold is his recovery step (about 0.95 of 1.16 yd), not his base radius, and the shaped base multiplied that
+recovery by the open-field backpedal and shuffle penalty, so a blocker hopping back in his set lost a third or more
+of his margin; (b) the ellipse kept the circle's area, so lengthening one axis shrank the other; (c) a staggered set
+stance has more support area than a stride, and its cost is mobility across it, not balance. Phase 1's base adds
+length along the brace axis without shrinking width, charges mobility, and does not apply the open-field backpedal
+penalty to a set lineman's recovery step.
+
+**7.4 The arm is not a pure strut.** A strut carries force only along its line, so it cannot steer a rusher past the
+arc, take or give a sideways club, or make wide elbows cost anything. Each arm has an axial capacity (by extension
+and by how far the elbow is flared) and a transverse capacity bounded by shoulder torque over the arm's length
+(stronger inside the frame, weaker extended or wide).
+
+**7.5 Two kinds of hand contact.** An open hand pushes only (no tension) and holds sideways by friction on the pad up
+to a limit set by how hard it presses; past that it slides off. A closed grip adds tension and sideways hold without
+pressure, and breaks at a grip limit, under a strike on the forearm, or past arm's length. A hold is then sustained
+grip tension outside the frame or on a man who is leaving.
+
+**7.6 The punch is an impulse.** A hand arriving at speed transfers the arm's momentum in a few hundredths of a
+second; a steady force limit alone will not produce the jolt. Phase 2 includes it, bounded by the arm.
+
+**7.7 Knee bend.** Our deepest posture today is already near the knee angle where legs are strongest, so "a deep
+bend costs force" would do nothing as written. §2A is corrected: either the posture range extends to where a man can
+over-crouch, or the cost of playing low is mobility (first step, change of direction), or both. Tools proposes which
+from the sources.
+
+**7.8 Solver.** With four hands and the torsos in contact, the pair is solved together each substep so momentum and
+angular momentum close. This is a Phase 2 design requirement and its cost is measured.
+
+**7.9 Predicted sensitivity directions, for the bench to be compared against.** Stronger legs: more walk-back only
+when not limited by grip, balance or arms. Longer arms: large when he can lock out beyond the other's reach, small
+once chest to chest. Lower pads: the strongest single lever. Hands inside: roughly a sixth to a quarter more push
+along the line, plus control of the other man's turn. A disagreement between these and the bench is a bug in one of
+them; find which.
