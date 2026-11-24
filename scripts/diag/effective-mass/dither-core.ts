@@ -110,11 +110,13 @@ export function watch(sim: PlaySimT, acc: Acc): void {
       G.reaims++; (G.src[src] ??= { n: 0, reversed: 0, dv: [] }).n++;
       r.settle = src; r.change = { before: p.req, t: s.t, src, g: r.g };
     }
-    for (const H of hist.values()) {
+    for (const [who, H] of hist) {
       const r = H[H.length - 1];
       for (const q of H.slice(0, -1)) {
         if (!q.change || q.change.done || s.t - q.change.t > 0.3 + 1e-9) continue;
-        if (sp(r.req) > 1 && ang(q.change.before, r.req) <= 20) { q.change.done = true; const Q = grp(acc, q.change.g); Q.reversed++; Q.src[q.change.src].reversed++; }
+        if (sp(r.req) > 1 && ang(q.change.before, r.req) <= 20) { q.change.done = true; const Q = grp(acc, q.change.g); Q.reversed++; Q.src[q.change.src].reversed++;
+          // Optional diagnostic log (a caller sets acc.__log = []): who reversed, when, from which stage.
+          (acc as { __log?: unknown[] }).__log?.push({ who, t: q.change.t, src: q.change.src, g: q.change.g }); }
       }
     }
   };

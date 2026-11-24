@@ -38,12 +38,12 @@ const MEASURED: { controller: Record<string, [number, number, number]>; stage: R
   controller: { // budget = rate x 1.10 + 2 sqrt(events) / moving s
     QB: [0.0782, 882, 69], 'QB facing': [0.1665, 847, 141], // facing: dither-core's facing reader (QB lane, 2026-11-16), recorded on engine-71
     block: [0.3195, 4361, 1393], rush: [0.2871, 2787, 800], coverage: [0.3825, 4149, 1587],
-    carrier: [0.2963, 854, 253], route: [0.1648, 1311, 216], pursuit: [0.5950, 333, 198],
+    carrier: [0.3897, 785, 306], // re-recorded engine-92 (PERIPH_ACUITY on; pooled, three draws): the QB's re-priced options move his head (curl_flat seed 5: 0.003 rad at 1.90 s, same throw and catch), defenders reading his eyes break on other lines, and the run after the catch meets them elsewhere; 148 of 285 pass plays change course; no stage flips (carrier / spacing 27 -> 33, mode switch 0 -> 3 on the pass plays; carrier / spacing 0.1312 inside its own budget); as ZONE_EYES on engine-75. Was [0.2963, 854, 253] route: [0.1648, 1311, 216], pursuit: [0.5950, 333, 198],
   },
   stage: {
     'QB / spacing': [0.0283, 882, 25], 'block / spacing': [0.0683, 4361, 298], 'block / engagement': [0.1456, 4361, 635],
     'rush / mode switch': [0.0589, 2787, 164], 'rush / spacing': [0.0736, 2787, 205], 'rush / engagement': [0.0415, 7756, 322],
-    'rush / tackle bond': [0.0055, 7756, 43], 'coverage / spacing': [0.1056, 4149, 438], 'coverage / mode switch': [0.0277, 11522, 319],
+    'rush / tackle bond': [0.0055, 7756, 43], 'coverage / spacing': [0.1283, 4005, 514], // re-recorded engine-94 (FLIGHT_BREAK on; Coverage C14, scripts/diag/coverage/dither-cov-spacing.mts): develop 7b36c6e5 reads [0.1166, 3919, 457] with FLIGHT_BREAK=0. Every added reversal is teammate spacing between coverage defenders in pursuit after the catch (1.5-3.5 s after the throw), on plays where the break brings more of them to the carrier together: slant_flat 3 0 -> 16, the three flood plays +31, tunnel_screen 3 +12, curl_flat 1 20 -> 4; no flight-phase reversal is added and the spacing stage is unchanged. Was [0.1056, 4149, 438] 'coverage / mode switch': [0.0277, 11522, 319],
     'coverage / tackle bond': [0.0080, 11522, 92], 'coverage / containment': [0.0020, 11522, 23], 'carrier / spacing': [0.1230, 789, 97], // re-recorded engine-77 (ZONE_EYES on; the same with ZONE_EYES=0 on this head). On engine-75 the flag added 5 reversals, all in one play (mesh seed 1, +2/+3 in the +100/+200 draws) whose carrier ran a different course with the zone defenders' eyes moved; no stage flipped; ARM_BREAK (engine-76) absorbed it
     'carrier / mode switch': [0.0070, 854, 6],
     'route / spacing': [0.0090, 4011, 36],

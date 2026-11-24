@@ -5,8 +5,16 @@
  * route run the side's default (#1 go, #2+ seam) as clear-outs.
  */
 import type { PassConcept, RunConcept } from './types.js';
+import { BASE_COMPOSITIONS, compileComposition, MENU_COMPOSITIONS } from './calls/compositions.js';
 
-const BASE_PASS_CONCEPTS: PassConcept[] = [
+/** CALL_COMPOSE (experimental, off; docs/reviews/2026-11-24-call-composition.md, approved 2026-11-24; step 1): the pool
+ * concepts are built from compositions (src/playbook/calls: a half-field concept per side or one full-field concept,
+ * tags and the back's job) instead of the literals below. Each composition compiles to exactly its literal
+ * (test/call-compose.test.ts), so on changes nothing yet. The literals stay as the off path. */
+export const CALL_COMPOSE = process.env.CALL_COMPOSE === '1';
+
+/** Today's concepts as literals: the off path, and the golden reference for CALL_COMPOSE's compositions. */
+export const legacyBaseConcepts = (): PassConcept[] => [
   // ------------------------------------------------------------ quick game
   {
     id: 'slant_flat', name: 'Slant-Flat', family: 'quick', drop: 'quick',
@@ -98,6 +106,8 @@ const BASE_PASS_CONCEPTS: PassConcept[] = [
   },
 ];
 
+const BASE_PASS_CONCEPTS: PassConcept[] = CALL_COMPOSE ? BASE_COMPOSITIONS.map(compileComposition) : legacyBaseConcepts();
+
 /**
  * CONCEPT_MENU (experimental, off; CONCEPT_MENU=1): the drop-back combinations the NFL runs most that our
  * concepts never produced (docs/reviews/2026-11-11-playbook-coverage.md, BDB 2025 routeRan on drop-back
@@ -107,7 +117,7 @@ const BASE_PASS_CONCEPTS: PassConcept[] = [
  * intended key and rule; `progression` is ordered to match it. CALL_MIX weights them from their route classes like the rest.
  */
 export const CONCEPT_MENU = process.env.CONCEPT_MENU !== '0';
-export const MENU_CONCEPTS: PassConcept[] = [
+export const legacyMenuConcepts = (): PassConcept[] => [
   {
     id: 'double_slants', name: 'Double Slants', family: 'quick', drop: 'quick',
     strong: { 1: 'slant', 2: 'slant', 3: 'flat' }, weak: { 1: 'go', 2: 'hitch' }, back: 'block',
@@ -201,6 +211,8 @@ export const MENU_CONCEPTS: PassConcept[] = [
     read: 'the middle-of-field safety: he stays middle: #2 seam; he shades to #2: #3 hitch under the seam, then the backside seam',
   },
 ];
+
+export const MENU_CONCEPTS: PassConcept[] = CALL_COMPOSE ? MENU_COMPOSITIONS.map(compileComposition) : legacyMenuConcepts();
 
 /** CONCEPT_DROPS (experimental, off; read plans, 2026-11-14; the QB lane owns the drops' depths and times in
  * `dropSpec`): each pool concept's coached drop class, so its first read's route is ready on its step. Our gun drops

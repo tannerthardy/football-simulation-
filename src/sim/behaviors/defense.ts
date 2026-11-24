@@ -6,12 +6,15 @@
  * reads the play, he executes his pre-snap job; play action can fool him into
  * believing run for longer.
  */
+import { believedCaps, lookAt } from '../believed-body.js';
 import { HANDS_CUE, handsUpAt } from '../hands-cue.js';
 import { isOL } from './blocking.js';
 import { KEY_REACT, KEY_STEP_SEEN, STEP_SEEN, keyScale } from '../key-read.js';
 import { END_LINE_X, FIELD_WIDTH, OPP_GOAL_X } from '../../core/field.js';
 import { angleDiff, clamp, lerp, norm, sub, type Vec2 } from '../../core/vec.js';
-import { DIR_CAP, directionalSpeedFactor, TRUNK_PRICE, TRUNK_RANGE, TRUNK_TWIST, type MoveCommand } from '../../physics/kinematics.js';
+import { DIR_CAP, directionalSpeedFactor, fatigueFactor, movingArrivalVelocity, TRUNK_PRICE, TRUNK_RANGE, TRUNK_TWIST, type MoveCommand } from '../../physics/kinematics.js';
+import { availability, supportParams } from '../../physics/support.js';
+import { postCatchLead } from '../post-catch.js';
 import { timeToReach } from '../../physics/reach.js';
 import { coverageDepth, gapY, isDeepZone, zoneLandmark } from '../../playbook/alignment.js';
 import type { DefSlot, Gap, ZoneId, ZoneStyle } from '../../playbook/types.js';
@@ -29,7 +32,7 @@ import { executeRunFit, guardStep, lineRead, pullers, type RunFitRead } from '..
 import { linePicture } from '../live-gaps.js';
 import { RouteObservation } from '../coverage-read.js';
 import { movingCatchApproach } from '../catch-approach.js';
-import { RELEASE_BELIEF, releaseBelief } from '../release-belief.js';
+import { RELEASE_BELIEF, lastReleaseBelief, releaseBelief } from '../release-belief.js';
 import { withMovementObjective } from '../movement-objective.js';
 import { OPEN_FIELD, playsBall } from '../open-field.js';
 import { DeepCoverage, StemAcceleration, stemStopped } from '../coverage-leverage.js';
@@ -315,6 +318,12 @@ export function pursueIfLive(sim: PlaySim, a: Agent): MoveCommand | null {
   // ball does meanwhile (a catch before his estimate's arrival is not yet in his picture).
   if ((HONEST_FLIGHT || landed) && path) return playObservedFlight(a, sim, path);
   const area = landed ? unresolvedBallArea(a) : null;
+  // FLIGHT_BREAK: the area he would rally to is where his own flight estimate brought the ball to a receiver he was
+  // breaking on (a break within 1 s): the break goes on, on that receiver as he now sees him, rather than a goTo to a
+  // catch spot the receiver has already left (Defense's overrun class: 32 of 38 unlabelled ticks after the catch were
+  // this rally, -5.1 yd/s along the carrier's line). His picture only; the possession read above takes over once the
+  // carrier is in it.
+  if (area && FLIGHT_BREAK_ON()) { const cont = continueFlightBreak(a, sim); if (cont) return cont; }
   if (area) {
     if (sim.trace.data) sim.trace.decide({ t: sim.t, a: a.idx, kind: 'ball-rally',
       chose: 'locate ball at acquired landing area', cue: 'recognized pass; flight ended without acquired possession',
@@ -1443,7 +1452,7 @@ export class ManCoverage implements Behavior {
     // Wide receivers only: a man on a slot is an inside run supporter, who triggers.
     const spot = sim.offAlign.spots[R.slot]?.pos;
     if (!spot || Math.abs(spot.y - sim.ballY) < SLOW_WIDTH) return null;
-    if (speed > SLOW_SPRINT * R.profile.vmax) return null;
+    if (speed > SLOW_SPRINT * believedCaps(sim, a, R).vmax) return null;
     if (a.pos.x - cue.pos.x <= SLOW_MIN) return null;
     const inside = Math.sign(sim.ballY - cue.pos.y) || 1, o = this.opts;
     const lev = (o.trail ? 0.9 : 0.7) * (o.lev === 'outside' ? -inside : o.lev === 'head' ? 0 : inside);
@@ -1464,6 +1473,7 @@ export class ManCoverage implements Behavior {
 
   /** Release movement only; provisional zone readers retain their own
    * support and recognized-flight priorities before using this technique. */
+
   trackReceiver(a: Agent, sim: PlaySim): MoveCommand {
     const R = this.target;
 
@@ -1478,10 +1488,14 @@ export class ManCoverage implements Behavior {
     } else if (sim.t - this.stableSince > 0.35 + 0.35 * (1 - a.r('playRecognition') * a.mind.focus)) this.routeRead = true;
     const delayScale = this.routeRead ? 0.65 : 1;
     const acquired = sim.see(a, R, delayScale);
-    const seen = this.observation.read(acquired, sim.t, R.profile, a.profile.reactionTime,
+    // BELIEVED_BODY: his own look at his man feeds what he believes of him; every read of the man's capacities below is
+    // that belief (off: the man's own, as before).
+    lookAt(sim, a, R, acquired);
+    const RB = believedCaps(sim, a, R);
+    const seen = this.observation.read(acquired, sim.t, RB, a.profile.reactionTime,
       a.r('anticipation') * a.r('manCoverage') * a.mind.focus);
     if (Math.hypot(seen.vel.x, seen.vel.y) > 1.5) this.releaseObserved = true;
-    if (OFF_PEDAL) this.stemAccel.observe(acquired, R.profile, sim.t);
+    if (OFF_PEDAL) this.stemAccel.observe(acquired, RB, sim.t);
     const inside = Math.sign(sim.ballY - seen.pos.y) || 1;
     const o = this.opts;
     // PRESS_MIRROR: in press, while the receiver is still releasing at the
@@ -1519,7 +1533,7 @@ export class ManCoverage implements Behavior {
     // step downhill and turn twice while the receiver accelerated past him.
     const closing = Math.max(0, vx - Math.max(0, a.vel.x));
     const flipTime = Math.PI / a.profile.turnRate + 0.15 * (1 - a.r('anticipation') * a.mind.focus);
-    const releaseBurst = Math.max(0, (R.profile.vmax - Math.hypot(seen.vel.x, seen.vel.y)) / R.profile.tau);
+    const releaseBurst = Math.max(0, (RB.vmax - Math.hypot(seen.vel.x, seen.vel.y)) / RB.tau);
     // CUSHION_BREAK applies inside zone calls (match carries and deep zones);
     // pure man keeps its trigger. Help: a carry with no installed deep
     // responsibility has a deep player behind it.
@@ -1552,7 +1566,7 @@ export class ManCoverage implements Behavior {
       // CUSHION_NEED: once released, keep only the cushion his threat needs.
       // What he could gain upfield during the flip: his upfield speed now
       // plus the acceleration he has left toward his top speed (1/2 a t^2).
-      const upBurst = Math.max(0, (R.profile.vmax - Math.max(0, vx)) / R.profile.tau);
+      const upBurst = Math.max(0, (RB.vmax - Math.max(0, vx)) / RB.tau);
       const need = 1.8 + closing * flipTime + 0.5 * upBurst * flipTime * flipTime;
       const held = CUSHION_NEED && this.releaseObserved ? Math.min(cushion, need) : cushion;
       if (held < cushion) a.tags.add('cushion-need');
@@ -1620,7 +1634,7 @@ export class ManCoverage implements Behavior {
     // CUSHION_BREAK: square in his pedal until the cushion is broken; when the
     // pedal cannot keep it but it is not broken, he carries side-on (QB still
     // in view) at the speed the depth check asks for.
-    const selected = this.depth.choose(a, seen, acquired, R.profile, base, command, sim.t, sim.world.handContact);
+    const selected = this.depth.choose(a, seen, acquired, RB, base, command, sim.t, sim.world.handContact);
     if (breakOn && CARRY_POSTURE) {
       // CARRY_POSTURE 3b: short of CUSHION_BREAK's turn (hipsOpen, his seen cushion and closing), one half-open posture
       // within his head's reach of the QB, look on the QB, at a pace bounded by what that posture gives.
@@ -1922,6 +1936,13 @@ export class ZoneCoverage implements Behavior {
     const live = pursueIfLive(sim, a);
     if (live) return live;
     // Until he sees the throw, a zone defender keeps playing his zone.
+    // FLIGHT_BREAK: his flight has landed by his own estimate (playsThrow is over) and pursuit's possession read above has
+    // not yet seen a carrier: the break keeps its receiver (continueFlightBreak: only within 1 s of a break he made on a
+    // throw he believed) instead of his zone drop resuming. His own picture only.
+    if (FLIGHT_BREAK_ON() && !playsThrow(a, sim, null)) {
+      const cont = continueFlightBreak(a, sim);
+      if (cont) return cont;
+    }
     if (playsThrow(a, sim, null)) return playBall(a, sim, null, RELEASE_BELIEF ? () => this.zonePlay(a, sim) : undefined);
     if (FLAT_CARRY && !this.deep && (this.zone === 'flat_s' || this.zone === 'flat_w') && knowsPass(sim, a) && !believesRun(sim, a)) {
       const carry = this.flatCarry(a, sim); if (carry) return carry;
@@ -2107,7 +2128,8 @@ export class ZoneCoverage implements Behavior {
       let observation = this.observations.get(r);
       if (!observation) { observation = new RouteObservation(); this.observations.set(r, observation); }
       const cue = sim.see(a, r);
-      const seen = observation.read(cue, sim.t, r.profile, a.profile.reactionTime,
+      lookAt(sim, a, r, cue);
+      const seen = observation.read(cue, sim.t, believedCaps(sim, a, r), a.profile.reactionTime,
         a.r('anticipation') * a.r('zoneCoverage') * a.mind.focus);
       const fut = { x: seen.pos.x + seen.vel.x * 0.7, y: seen.pos.y + seen.vel.y * 0.7 };
       if (HALF_KEY) seenAll.set(r, { r, pos: seen.pos, vel: seen.vel, fut, cue });
@@ -2261,7 +2283,7 @@ export class ZoneCoverage implements Behavior {
       if (!depth) { depth = new DeepCoverage(); this.depthReads.set(deepest.r, depth); }
       // CUSHION_BREAK: square in his pedal until the cushion is broken; side-on
       // when the pedal cannot keep it.
-      const selected = depth.choose(a, deepest, deepest.cue, deepest.r.profile, cushion, command, sim.t, sim.world.handContact);
+      const selected = depth.choose(a, deepest, deepest.cue, believedCaps(sim, a, deepest.r), cushion, command, sim.t, sim.world.handContact);
       if (CUSHION_BREAK && CARRY_POSTURE) {
         // CARRY_POSTURE 3b: short of CUSHION_BREAK's turn (turnedWith: his seen cushion broken), one half-open posture
         // within his head's reach of the QB, look on the QB, at a pace bounded by what that posture gives.
@@ -2881,6 +2903,107 @@ function manLook(a: Agent, sim: PlaySim, cmd: MoveCommand): MoveCommand {
   return lookJoints(a, cmd, heading, angleDiff(heading, Math.atan2(qb.y - a.pos.y, qb.x - a.pos.x)), true);
 }
 
+/** FLIGHT_BREAK (default on since engine-94; FLIGHT_BREAK=0 restores the replaced paths; Coverage C14 with Defense, 2026-11-23): one break on the throw for
+ * every defender, during the flight (Defense owns pursuit from the catch on). Taught: plant and drive on the throw to
+ * where the receiver will be, come to balance, with the leverage his seat plays (corner and flat players outside-in,
+ * hooks and the middle inside-out); Rules' hard-corner card row 5, the off-man and zone break rows. Measured before:
+ * - on the big flat plays against the sinking corner (c6-flat.mts) he was 3-6 yd from the receiver at the release and did
+ *   not close through the flight: one aimed about 5 yd off the catch, one held about 0.5 s;
+ * - Defense: first defenders beaten after the catch were 6.0 yd away and 4.3 yd ahead of the catcher at the catch, coming
+ *   downhill at -2.9 yd/s along his line (those who stop him are 2.9 yd away moving +2.5 with him); the shoulder break
+ *   ran through a projected spot at 0.9 speed and the flight drive went full speed to a fixed catch point, braking by
+ *   distance only.
+ * With the flag, both the arm-read break (shoulder pick, before he has the ball's flight) and the flight drive when he
+ * cannot beat the ball to its path aim at a point moving with the receiver's seen velocity that crosses his catch window
+ * at the time he estimates (the shoulder read's lead, or his own flight estimate), shaded by his seat's leverage (0.8 yd,
+ * fading inside 6 yd of contact; from over the top the goal is on the receiver's upfield side), and close only as fast as he can brake from to his tackling-scaled through speed
+ * (movingArrivalVelocity, as Defense's BREAK_BALANCE). The goal is kept per defender (flightBreakOf) so pursuit starts
+ * from it at the catch with no re-aim. Read per call (a replay can switch it for one play).
+ * Paths it replaces, kept only behind FLIGHT_BREAK=0 (retire them when the flag expires): playBelievedBall's shoulder-break
+ * runThrough (0.9 speed through the projected spot) and the man carrier's carry of his own receiver on the arm read;
+ * flightApproach's DRIVE_CATCH runThrough (full speed through the hands), its nearby-receiver carry (track), its
+ * can't-beat-the-ball drive to a fixed catch point and, once the window has passed, the stale-spot drive; the zone
+ * drop or match technique resuming after the flight lands before the possession read (ZoneCoverage.updateCore,
+ * Technique.update), and pursuit's rally to the landing area (pursueIfLive). */
+export const FLIGHT_BREAK = process.env.FLIGHT_BREAK !== '0';
+const FLIGHT_BREAK_ON = () => process.env.FLIGHT_BREAK !== '0';
+const FLIGHT_SHADE = 0.8;
+export interface FlightBreak { receiver: Agent; goal: Vec2; goalVel: Vec2; side: -1 | 1; catchSpot: Vec2; catchT: number; t: number;
+  /** Diagnostic: the call site that made this break ('continue' keeps the original's), and when this break began. */
+  via: string; since: number }
+const flightBreaks = new WeakMap<Agent, FlightBreak>();
+/** FLIGHT_BREAK: the break this defender is making (or last made this play) on a throw: the moving goal and its velocity,
+ * his leverage side (+1 the receiver's sideline side, -1 the ball side), the catch spot and time he assumed. Read-only,
+ * for pursuit's first tick after the catch (Defense). */
+export function flightBreakOf(a: Agent): FlightBreak | null { return flightBreaks.get(a) ?? null; }
+/** Outside-in for corners and flat / curl-flat / deep outside seats, inside-out for hooks, the middle and robbers. */
+function seatOutsideIn(a: Agent): boolean {
+  const b = a.behavior as { zone?: string; kind?: string } | undefined;
+  const z = b?.zone ?? '';
+  if (z) return /^(flat_|curl_flat_|deep_third_|deep_half_|quarter_._out)/.test(z);
+  return a.slot.startsWith('CB');
+}
+/** FLIGHT_BREAK: after his estimated catch time, until the possession read hands him to pursuit: the same break on the
+ * same receiver, his window now (the receiver's seen spot), for up to FLIGHT_HOLD s after his last break request. */
+const FLIGHT_HOLD = 1.0;
+export function continueFlightBreak(a: Agent, sim: PlaySim): MoveCommand | null {
+  const fb = flightBreaks.get(a);
+  if (!fb || sim.t - fb.t > FLIGHT_HOLD) return null;
+  // Only while the throw he broke on is still a throw in his picture: a pump he has seen pulled down (the release belief
+  // undone) ends the break, and his coverage resumes (acc-radius cover6 s8: the Mike kept driving on a pump's receiver
+  // for 1 s after the pull-down and the middle opened for a 34 yd scramble).
+  if (RELEASE_BELIEF && releaseBelief(sim, a).releasedAt === undefined) return null;
+  const seen = sim.see(a, fb.receiver);
+  return flightBreakMove(a, sim, fb.receiver, seen, sim.t, seen.pos, fb.via);
+}
+/** FLIGHT_LEAD (off, parked 2026-11-23: it lost to the break alone, overruns 19 -> 34 and goals about 5 yd off where the
+ * carrier went; FLIGHT_LEAD=1 turns it on, with FLIGHT_BREAK; Coverage with Defense, 2026-11-23): a defender who will
+ * arrive after the catch by dt breaks on where he expects the receiver dt after it (Defense's post-catch.ts forecast:
+ * route momentum through the catch, upfield, away from him), not on the catch spot the carrier will have left. One with
+ * the ball or before it, or who can still reach the hands within the securing beat (OPEN_FIELD's playsBall test, as
+ * taught), keeps the catch spot. Entered at dt > 0.15 s and beyond the beat, left inside half of it (Commit to a decision). Defense's
+ * overrun class: 5.4 yd away at the catch, a 38 deg turn and >= 0.87 s to redirect, beaten at +0.9 s; stoppers 2.6 yd and
+ * 12 deg. Read per call. */
+const flightLeadOn = () => process.env.FLIGHT_LEAD === '1';
+const leading = new WeakMap<Agent, boolean>();
+function flightBreakMove(a: Agent, sim: PlaySim, R: Agent, seen: Perceived, catchT: number, catchSpot: Vec2, via = '?'): MoveCommand {
+  const left = Math.max(0, catchT - sim.t);
+  let goal = { x: catchSpot.x - seen.vel.x * left, y: clamp(catchSpot.y - seen.vel.y * left, 0.3, FIELD_WIDTH - 0.3) };
+  let goalVel: Vec2 = seen.vel;
+  if (flightLeadOn()) {
+    const tArr = timeToReach({ pos: a.pos, vel: a.vel, profile: a.profile, speedScale: a.speedScale }, catchSpot, a.profile.reach);
+    const late = sim.t + tArr - catchT;
+    // Entered 0.15 s late, left at half of it. As taught (OPEN_FIELD's playsBall test): one who can still reach the hands
+    // within the securing beat plays the ball and the hit at the catch spot; only one who cannot is a pursuer and leads.
+    // Its own margins (0.1 s either way).
+    const enter = 0.15, beat = catchT + DRIVE_SECURE - sim.t, was = leading.get(a) ?? false;
+    const on = was ? late > enter / 2 && tArr > beat - 0.1 : late > enter && tArr > beat + 0.1;
+    leading.set(a, on);
+    if (on) {
+      const lead = postCatchLead(seen.vel, catchSpot, a.pos, sim.attackDir(R.team), late);
+      // His goal is the forecast spot itself (a point he expects the receiver to reach), held still.
+      goal = { x: catchSpot.x + lead.x, y: clamp(catchSpot.y + lead.y, 0.3, FIELD_WIDTH - 0.3) };
+      goalVel = { x: 0, y: 0 };
+      a.tags.add('flight-lead');
+    }
+  }
+  const outward = Math.sign(seen.pos.y - sim.ballY) || 1, side: -1 | 1 = seatOutsideIn(a) ? 1 : -1;
+  const contact = a.profile.radius + R.profile.radius + a.profile.reach * 0.65;
+  const dg = Math.hypot(goal.x - a.pos.x, goal.y - a.pos.y);
+  goal.y = clamp(goal.y + side * outward * FLIGHT_SHADE * clamp((dg - contact) / 6, 0, 1), 0.3, FIELD_WIDTH - 0.3);
+  // From over the top (he is downfield of the receiver), the drive is to the receiver's upfield shoulder: a goal on top
+  // of him, so he arrives on the receiver rather than through him toward the line (the comeback overrun).
+  const dir = sim.attackDir(R.team);
+  if ((a.pos.x - seen.pos.x) * dir > contact) goal.x += dir * contact;
+  const support = a.body.support;
+  const capacity = support ? availability(support, supportParams(a.profile), fatigueFactor(a.body.energy)) : 1;
+  const vel = movingArrivalVelocity(a.body, goal, goalVel, a.profile.vmax * a.speedScale, contact, 2.5 + 2 * (1 - a.r('tackling')), 1, capacity);
+  const prev = flightBreaks.get(a), since = prev && prev.receiver === R && sim.t - prev.t <= 0.06 ? prev.since : sim.t;
+  flightBreaks.set(a, { receiver: R, goal: { ...goal }, goalVel: { ...goalVel }, side, catchSpot: { ...catchSpot }, catchT, t: sim.t, via, since });
+  a.tags.add('flight-break');
+  return withMovementObjective({ vel }, { kind: 'moving', point: goal, velocity: goalVel });
+}
+
 /** RELEASE_BELIEF's playBall: with the ball seen, the flight he acquired; on a belief from the arm alone (the motion
  * tells him when, not where) he bites: a zone defender plants (stops his drop, the rest of his zone play goes on), a
  * man defender stays on his man, until he sees the ball or the pull-down. */
@@ -2903,6 +3026,18 @@ function playBelievedBall(a: Agent, sim: PlaySim, man: Agent | null, continueCov
     // Bit 256: a man defender who has not found the ball judges his phase and, in phase (or undisciplined), looks.
     if (man && BALL_EST_MAN_LOOK && estimatesFor(a) && !hasObservedFlight(a) && manLooks(a, sim, man, rb.releasedAt)) return manLook(a, sim, fallback());
     a.tags.add('arm-bite');
+    // FLIGHT_BREAK: a man or match carrier whose read of the passer's shoulders puts the ball on his own receiver breaks
+    // on that receiver's catch window (the shared break) instead of carrying him: a carry runs with a receiver coming
+    // back toward the passer, downhill through the catch (Defense's stage table: -5 yd/s along the carrier's line).
+    if (!continueCoverage && man && FLIGHT_BREAK_ON() && rb.releasedAt !== undefined) {
+      const pick = shoulderTarget(a, sim, rb.releasedAt);
+      const react = a.profile.reactionTime * (1 - 0.4 * a.r('anticipation'));
+      if (pick.R === man && sim.t - rb.releasedAt >= react - 1e-9) {
+        const r = sim.see(a, man), left = Math.max(0, Math.min(SHOULDER_FLIGHT_MAX,
+          Math.hypot(r.pos.x - pick.from.x, r.pos.y - pick.from.y) / SHOULDER_BALL_SPEED - (sim.t - rb.releasedAt)));
+        return flightBreakMove(a, sim, man, r, sim.t + left, { x: r.pos.x + r.vel.x * left, y: r.pos.y + r.vel.y * left }, 'man-arm');
+      }
+    }
     if (!continueCoverage) return fallback();
     // DEEP_GATE: a deep-third, deep-middle, deep-half or Tampa-middle player holds his coverage on the arm alone (a pump
     // moves him nothing); he breaks once he has seen the ball out. Quarter seats keep their route triggers.
@@ -2936,6 +3071,7 @@ function playBelievedBall(a: Agent, sim: PlaySim, man: Agent | null, continueCov
       // rule-of-thumb ball speed). One receiver per belief; his projected spot updates as his picture does.
       const r = sim.see(a, pick.R), left = !SHOULDER_LEAD ? 0 : Math.max(0, Math.min(SHOULDER_FLIGHT_MAX,
         Math.hypot(r.pos.x - pick.from.x, r.pos.y - pick.from.y) / SHOULDER_BALL_SPEED - (sim.t - rb.releasedAt)));
+      if (FLIGHT_BREAK_ON()) return flightBreakMove(a, sim, pick.R, r, sim.t + left, { x: r.pos.x + r.vel.x * left, y: r.pos.y + r.vel.y * left }, 'shoulder');
       return runThrough(a, { x: r.pos.x + r.vel.x * left, y: r.pos.y + r.vel.y * left }, { speed: 0.9 });
     }
     return stopDrop(sim, continueCoverage());
@@ -2993,6 +3129,7 @@ function shoulderTarget(a: Agent, sim: PlaySim, key: number): { R: Agent | null;
  * A newer body-possession picture takes priority in pursueIfLive. */
 function playObservedFlight(a: Agent, sim: PlaySim, path: PlaySim['ballPath'], acquired = false): MoveCommand {
   const c = flightApproach(a, sim, path, acquired);
+  if (!c && FLIGHT_BREAK_ON()) { const cont = continueFlightBreak(a, sim); if (cont) return cont; }
   if (!PURSUIT_COMMIT) return c ?? stand();
   // PURSUIT_COMMIT: on the flight's last tick no sample of it is left ahead of
   // him; that is not a reason to stop. Hold the approach he last chose.
@@ -3041,6 +3178,9 @@ function flightApproach(a: Agent, sim: PlaySim, path: PlaySim['ballPath'], acqui
         const tt = timeToReach({ pos: a.pos, vel: a.vel, profile: a.profile, speedScale: a.speedScale }, hands, a.profile.reach);
         if (!playsBall(a, R, tt, remaining)) { a.tags.add('open-field'); return chase(sim, a, R, 3, { onTop: true }); }
       }
+      // FLIGHT_BREAK: through the hands by the same break (arrival he can brake from, his seat's side), not a full-effort
+      // run through a receiver who is moving upfield through the catch (Defense's overrun class).
+      if (FLIGHT_BREAK_ON()) return flightBreakMove(a, sim, R, seen, sim.t, hands, 'drive-catch');
       return runThrough(a, hands, { speed: 1 });
     }
   }
@@ -3056,6 +3196,8 @@ function flightApproach(a: Agent, sim: PlaySim, path: PlaySim['ballPath'], acqui
     if (sim.trace.data) sim.trace.decide({ t: sim.t, a: a.idx, kind: 'catch-approach',
       chose: 'carry observed receiver', cue: 'nearby running catcher and visible ball window',
       detail: `${window.receiver.slot} at ${window.t.toFixed(2)} s; no earlier reachable ball opportunity.` });
+    // FLIGHT_BREAK: the same break, not a carry that runs with a receiver coming back toward the passer.
+    if (FLIGHT_BREAK_ON()) return flightBreakMove(a, sim, window.receiver, window.seen, window.t, window.p, 'nearby');
     return track(a, window.seen.pos, window.seen.vel);
   }
   if (spot) {
@@ -3071,6 +3213,11 @@ function flightApproach(a: Agent, sim: PlaySim, path: PlaySim['ballPath'], acqui
   // Can't beat the ball to its path: drive on the catch point to arrive with
   // the ball — on the receiver's near side, ready to play through the hands
   // or make the tackle the moment it's caught.
+  // FLIGHT_BREAK: he cannot beat the ball to its path: the shared break on the receiver's moving catch window.
+  if (FLIGHT_BREAK_ON() && window) return flightBreakMove(a, sim, window.receiver, window.seen, window.t, window.p, 'window');
+  // FLIGHT_BREAK: the window has passed in his picture (the ball has arrived by his estimate) but he has not yet seen the
+  // catch: the break keeps its receiver until the possession read hands him to pursuit, rather than a stale spot.
+  if (FLIGHT_BREAK_ON()) { const cont = continueFlightBreak(a, sim); if (cont) return cont; }
   const land = window?.p ?? arrivalPoint(sim, path);
   if (land) {
     // Close to the catch itself. A fixed yard of standoff plus inside shade
@@ -3117,7 +3264,7 @@ function observedCatchWindow(a: Agent, sim: PlaySim, path: PlaySim['ballPath']):
       if (s.z > r.profile.maxCatchHeight * 0.92) continue;
       const p = { x: s.x, y: s.y };
       const reach = r.profile.reach + TRACKING_REACH_BONUS;
-      if (Math.hypot(p.x - seen.pos.x, p.y - seen.pos.y) > r.profile.vmax * remaining + reach) continue;
+      if (Math.hypot(p.x - seen.pos.x, p.y - seen.pos.y) > believedCaps(sim, a, r).vmax * remaining + reach) continue;
       // Catching does not require stopping at the ball point. A receiver's
       // observed path can carry his hands through it even when a point-arrival
       // estimate charges for braking/redirecting. Use the same maximum hand

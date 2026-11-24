@@ -63,6 +63,9 @@ export interface ReceiverPicture {
   readonly facing: number;
   readonly sampledAt: number;
   readonly acquiredAt: number;
+  /** PERIPH_ACUITY: the look's position and velocity uncertainty (yd, yd/s) from its eccentricity. */
+  readonly sigP?: number;
+  readonly sigV?: number;
 }
 
 export interface ReceiverEstimate {
@@ -153,8 +156,9 @@ export class ReceiverForecast {
   constructor(readonly observer: object, readonly prior: InstalledReceiverRoute, private readonly dt: number) {}
 
   /** The last acquired picture of the receiver (sample time and speed), or null if never seen. */
-  lastPicture(): { sampledAt: number; speed: number } | null {
-    return this.picture ? { sampledAt: this.picture.sampledAt, speed: Math.hypot(this.picture.vel.x, this.picture.vel.y) } : null;
+  lastPicture(): { sampledAt: number; speed: number; sigP: number; sigV: number } | null {
+    return this.picture ? { sampledAt: this.picture.sampledAt, speed: Math.hypot(this.picture.vel.x, this.picture.vel.y),
+      sigP: this.picture.sigP ?? 0, sigV: this.picture.sigV ?? 0 } : null;
   }
 
   acquire(p: ReceiverPicture): void {

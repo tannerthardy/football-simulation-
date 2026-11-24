@@ -37,7 +37,7 @@ import { alignDefense, zoneLandmark, type DefenseAlignment } from '../playbook/a
 import { PASS_BY_ID, RUN_BY_ID } from '../playbook/concepts.js';
 import { PRESSURE_BY_ID } from '../playbook/defense.js';
 import { COVERAGE_BY_ID, FAMILY_REPRESENTATIVE, familyOf } from '../playbook/coverages.js';
-import type { Coverage, DefSlot, DefensivePlayCall, OffensivePlayCall, PassConcept } from '../playbook/types.js';
+import { DEF_PERSONNEL, type Coverage, type DefPersonnelId, type DefSlot, type DefensivePlayCall, type OffensivePlayCall, type PassConcept } from '../playbook/types.js';
 import { r01 } from '../players/types.js';
 import type { Agent } from './agent.js';
 import type { PlaySim } from './playsim.js';
@@ -58,6 +58,21 @@ const SCREEN_QB = process.env.SCREEN_QB === '1';
  * front, personnel and alignment tags, all of which are what the alignment in front of him shows; only the coverage
  * and pressure are swapped, and a disguised shell still fools him. Not changed. */
 const QB_SEEN_MAN = process.env.QB_SEEN_MAN !== '0';
+/** QB_SCAN (on, a leak removal; QB_SCAN=0 restores; QB decision plan §1.6, 2026-11-24): what his pre-snap scan can
+ * honestly see. Before the snap he has time to survey the whole field, so every defender is in his picture (a full scan is
+ * fair); exactness is not. Each defender is placed with one error of his own, drawn once per play at the recognition-scaled
+ * size the reads already used (0.3 + 1.0 x (1 - recognition) yd deep, 0.7 of that across), and that one picture feeds
+ * everything he reads before the snap: his memory at the snap, the coverage features, the box count for his checks, the
+ * screen look and the quick check. Off: the memory was seeded with each defender's exact position, and each of the four
+ * reads drew fresh noise around the true positions, so he held four different pictures and an exact one. */
+const QB_SCAN = process.env.QB_SCAN !== '0';
+/** QB_CANON_SEEN (on, a leak removal; QB_CANON_SEEN=0 restores; QB decision plan §1.6): the looks he compares against are
+ * built only from what he can see. The defense's personnel (who is on the field) and its front's alignment (the front, the
+ * end men's edge, its strength, a mug or a Sam walked onto the line) are visible; the slot labels of the actual call and
+ * its other parts are not. The canonical looks use the personnel's slots and those visible fields only, and the corners in
+ * his features and his quick check are found where he sees them (on each side the widest defensive back, by the
+ * personnel group he sees, within 12 yd of the line and 4+ yd off the ball), not by their slot labels. Off: the corners were the defenders labelled CB_S / CB_W. */
+const QB_CANON_SEEN = process.env.QB_CANON_SEEN !== '0';
 /** CLOUD_KILL (experimental, off; screens, 2026-11-14): "never throw a now screen against press or cloud". The now
  * screen's installed kill (and the screen RPO's read) also takes a defender he sees squatting over the screen receiver,
  * whoever he is (a corner, a safety rolled down, an apex walked out; QB lane review, 2026-11-14):
@@ -153,7 +168,30 @@ interface Memory {
   facing: number;
   t: number;
   latency?: number;
+  /** PERIPH_ACUITY: the look's position and velocity uncertainty (yd, yd/s), from its eccentricity. */
+  sigP?: number;
+  sigV?: number;
 }
+
+/** PERIPH_ACUITY (on: promoted 2026-11-23, engine-92; PERIPH_ACUITY=0 restores; QB lane, 2026-11-23, an information leak under the
+ * user's standing rule: docs/reviews/2026-11-23-turned-down-open.md). A player seen off the passer's gaze is seen less
+ * precisely: motion is detected, position and velocity precision are lost with eccentricity. Off, a receiver or defender
+ * inside the peripheral cone (45-69 deg) was seen exactly, apart from 1.7 times the delay: a target 30-60 deg off his
+ * head at the decision was priced from a picture 0.13 yd off (0.04 dead centre), and on 62-72% of decisions made 15 deg
+ * or more off, the target had never been near his gaze. On:
+ * - position: an angular error of PERIPH_POS_K x eccentricity, at the player's range (peripheral localization error
+ *   grows about linearly with eccentricity, roughly 5-10% of it: Levi, Klein & Aitsebaomo 1985);
+ * - velocity: speed discrimination's Weber fraction rising about 0.1 per 40 deg off the fovea (McKee & Nakayama 1984), as
+ *   a velocity error of PERIPH_VEL_K x speed x eccentricity (rad);
+ * - both scaled by his vision rating (1.3 - 0.6 x vision), each player's error a stable draw of his (a coherent misjudgment
+ *   of where that man is, not jitter);
+ * - the clear cone for reading separation narrowed to the useful field for detail, 10-15 deg half-angle by vision (Ball
+ *   et al. 1988, useful field of view); the peripheral cone, where motion is still picked up, keeps its extent.
+ * His own confidence in a picture carries the look's error and its growth with age (the window, qb.ts). Nothing forbids
+ * a throw off a peripheral picture: he prices it with its error. */
+export const PERIPH_ACUITY = process.env.PERIPH_ACUITY !== '0';
+const PERIPH_POS_K = 0.06;
+const PERIPH_VEL_K = 0.14;
 
 type Features = number[];
 
@@ -177,6 +215,8 @@ export class QBMind {
   readonly identifyAt: number;
   private readonly canon = new Map<string, DefenseAlignment>();
   private readonly memory = new Map<Agent, Memory>();
+  /** QB_SCAN: each defender's error in his pre-snap picture (drawn once per play). */
+  private readonly scanErr = new Map<Agent, Vec2>();
   /** QB_SEEN_MAN: where the quarterback's own forecast has a receiver now (set by QBPass); null when he has none. */
   receiverAt: ((r: Agent) => Vec2 | null) | null = null;
   /** Pictures already represented in the prior or a post-snap likelihood. */
@@ -194,8 +234,9 @@ export class QBMind {
     const p = qb.player;
     this.rec = clamp(0.7 * r01(p.ratings.playRecognition) + 0.3 * Math.min(1, p.experience / 8), 0, 1);
     this.vision = r01(p.ratings.awareness);
-    this.clearHalf = 0.33 + 0.22 * this.vision;
-    this.periphHalf = this.clearHalf + 0.45 + 0.2 * this.vision;
+    const legacyClear = 0.33 + 0.22 * this.vision;
+    this.clearHalf = PERIPH_ACUITY ? 0.17 + 0.09 * this.vision : legacyClear;
+    this.periphHalf = legacyClear + 0.45 + 0.2 * this.vision;
     this.identifyAt = 0.45 + 0.4 * (1 - this.rec) + Math.abs(sim.dice('qb-mind').normal(0, 0.08));
     // What he expects from this defense: league habits, adjusted by what
     // he's seen of them today (the sharper QB uses more of it).
@@ -208,14 +249,19 @@ export class QBMind {
     this.disguiseRate = scout ? DISGUISE_RATE + (scout.disguiseRate() - DISGUISE_RATE) * (0.3 + 0.7 * this.rec) : DISGUISE_RATE;
 
     // Canonical looks: how each coverage would align against this formation.
-    const slots = sim.defense.map((d) => d.slot as DefSlot);
+    const dc = sim.defCall;
+    // QB_CANON_SEEN: the personnel he sees (its slots) and the front's visible alignment, not the call itself.
+    const slots = QB_CANON_SEEN ? Object.keys(DEF_PERSONNEL[dc.personnel] ?? {}) as DefSlot[] : sim.defense.map((d) => d.slot as DefSlot);
+    const visible: DefensivePlayCall = QB_CANON_SEEN
+      ? { label: '', personnel: dc.personnel, front: dc.front, coverage: dc.coverage, pressure: null, edge: dc.edge, strength: dc.strength, mug: dc.mug, samOn: dc.samOn }
+      : dc;
     for (const c of COVERAGES) {
       const pressure = c.id === 'cover0' ? PRESSURE_BY_ID.zero_6 : null;
       const ok = !pressure || Object.keys(pressure.blitzers).every((s) => slots.includes(s as DefSlot));
-      this.canon.set(c.id, alignDefense({ ...sim.defCall, coverage: c, pressure: ok ? pressure : null, shown: undefined }, sim.offAlign, slots));
+      this.canon.set(c.id, alignDefense({ ...visible, coverage: c, pressure: ok ? pressure : null, shown: undefined }, sim.offAlign, slots));
     }
-    // Everyone is visible before the snap.
-    for (const d of sim.defense) this.memory.set(d, { pos: { ...d.pos }, vel: { x: 0, y: 0 }, facing: d.body.facing, t: 0 });
+    // Everyone is visible before the snap. QB_SCAN: where his scan put each of them; off, exactly where they stood.
+    for (const d of sim.defense) this.memory.set(d, { pos: QB_SCAN ? this.scanned(d) : { ...this.standing(d) }, vel: { x: 0, y: 0 }, facing: d.body.facing, t: 0 });
     this.preSnapRead();
     for (const [d, m] of this.memory) this.classifiedAt.set(d, m.t);
     this.report = {
@@ -255,12 +301,30 @@ export class QBMind {
     return 0.6 + 1.4 * (1 - this.rec);
   }
 
+  /** Where defender d stands before the snap: the one place his pre-snap reads take a defender's position from; the scan
+   * (QB_SCAN) or the read's own noise applies his error to it. Pre-snap only (the field is still: a full scan sees it). */
+  private standing(d: Agent): Vec2 {
+    return d.pos;
+  }
+
+  /** QB_SCAN: where his pre-snap scan puts defender d: where d stands, off by d's own error, drawn once per play. */
+  private scanned(d: Agent): Vec2 {
+    let e = this.scanErr.get(d);
+    if (!e) {
+      const sigPos = 0.3 + 1.0 * (1 - this.rec);
+      e = { x: this.sim.dice('qb-scan').normal(0, sigPos), y: this.sim.dice('qb-scan').normal(0, sigPos * 0.7) };
+      this.scanErr.set(d, e);
+    }
+    const p = this.standing(d);
+    return { x: p.x + e.x, y: p.y + e.y };
+  }
+
   private preSnapRead(): void {
     const sim = this.sim;
     const sigPos = 0.3 + 1.0 * (1 - this.rec);
     const seen = new Map<DefSlot, Vec2>();
     for (const d of sim.defense) {
-      seen.set(d.slot as DefSlot, { x: d.pos.x + sim.dice('qb-mind').normal(0, sigPos), y: d.pos.y + sim.dice('qb-mind').normal(0, sigPos * 0.7) });
+      seen.set(d.slot as DefSlot, QB_SCAN ? this.scanned(d) : { x: this.standing(d).x + sim.dice('qb-mind').normal(0, sigPos), y: this.standing(d).y + sim.dice('qb-mind').normal(0, sigPos * 0.7) });
     }
     const obs = this.preFeatures(seen);
     const ns = this.noiseScale();
@@ -319,7 +383,7 @@ export class QBMind {
     }
     depths.sort((a, b) => b.d - a.d);
     const width = depths.length >= 2 ? Math.abs(depths[0].y - depths[1].y) / 10 : 0;
-    const cbs = ['CB_S', 'CB_W'].map((s) => pos.get(s as DefSlot)).filter((p): p is Vec2 => !!p);
+    const cbs = QB_CANON_SEEN ? cornersSeen([...pos].map(([slot, p]) => ({ p, db: isDbSeen(sim.defCall.personnel, slot) })), los, by) : ['CB_S', 'CB_W'].map((s) => pos.get(s as DefSlot)).filter((p): p is Vec2 => !!p);
     const cbDepth = cbs.length ? cbs.reduce((s, p) => s + (p.x - los), 0) / cbs.length / 7 : 0.8;
     let press = 0;
     for (const o of sim.offense) {
@@ -414,6 +478,7 @@ export class QBMind {
     const qb = this.qb;
     this.justIdentified = false;
     const dir = Math.atan2(gaze.y - qb.pos.y, gaze.x - qb.pos.x);
+    const mind = qb.mind; // his own
     for (const d of sim.defense) {
       // Sector membership uses the same delayed picture as the clear look.
       // Current hidden position cannot decide whether that picture is acquired.
@@ -423,11 +488,13 @@ export class QBMind {
       const dist = Math.hypot(dx, dy);
       const ang = Math.abs(angleDiff(Math.atan2(dy, dx), dir));
       // Bodies right around him are felt, not seen; pocket presence handles them.
-      if (ang < this.clearHalf * (0.65 + 0.35 * qb.mind.focus) || dist < 3) {
-        this.memory.set(d, { pos: clear.pos, vel: clear.vel, facing: clear.facing, t: sim.t, latency: clear.age ?? 0 });
-      } else if (ang < this.periphHalf * (0.85 + 0.15 * qb.mind.focus)) {
+      if (ang < this.clearHalf * (0.65 + 0.35 * mind.focus) || dist < 3) {
+        const e = PERIPH_ACUITY && dist >= 3 ? this.periphSeen(mind, d.player.id, clear, ang, dist) : null;
+        this.memory.set(d, { pos: e ? e.pos : clear.pos, vel: e ? e.vel : clear.vel, facing: clear.facing, t: sim.t, latency: clear.age ?? 0, sigP: e?.sigP, sigV: e?.sigV });
+      } else if (ang < this.periphHalf * (0.85 + 0.15 * mind.focus)) {
         const s = sim.see(qb, d, 1.7);
-        this.memory.set(d, { pos: s.pos, vel: s.vel, facing: s.facing, t: sim.t - 0.1, latency: s.age ?? 0 });
+        const e = PERIPH_ACUITY ? this.periphSeen(mind, d.player.id, s, ang, dist) : null;
+        this.memory.set(d, { pos: e ? e.pos : s.pos, vel: e ? e.vel : s.vel, facing: s.facing, t: sim.t - 0.1, latency: s.age ?? 0, sigP: e?.sigP, sigV: e?.sigV });
       }
     }
     // Existing recognition milestones summarize this acquired look and its
@@ -449,14 +516,18 @@ export class QBMind {
     const delay = (scale: number) => qb.mind.observationDelay(qb.profile.reactionTime * scale);
     const clear = sim.perception.perceive(target.idx, delay(1));
     const dir = Math.atan2(gaze.y - qb.pos.y, gaze.x - qb.pos.x);
-    const ang = Math.abs(angleDiff(Math.atan2(clear.pos.y - qb.pos.y, clear.pos.x - qb.pos.x), dir));
+    const rx = clear.pos.x - qb.pos.x, ry = clear.pos.y - qb.pos.y;
+    const ang = Math.abs(angleDiff(Math.atan2(ry, rx), dir));
     const seen = ang < this.clearHalf * (0.65 + 0.35 * qb.mind.focus) ? clear
       : ang < this.periphHalf * (0.85 + 0.15 * qb.mind.focus) ? sim.perception.perceive(target.idx, delay(1.7)) : null;
     if (!seen) return null;
     sim.trace.observe(qb, target, seen, sim.t);
     const age = seen.age ?? 0;
-    return { pos: { x: seen.pos.x - seen.vel.x * age, y: seen.pos.y - seen.vel.y * age },
-      vel: { ...seen.vel }, facing: seen.facing, sampledAt: sim.t - age, acquiredAt: sim.t };
+    // PERIPH_ACUITY: off his gaze he sees the receiver less precisely (motion yes, position and velocity less so).
+    const e = PERIPH_ACUITY ? this.periphSeen(qb.mind, target.player.id, seen, ang, Math.hypot(rx, ry)) : null;
+    const sp = e ? e.pos : seen.pos, sv = e ? e.vel : seen.vel;
+    return { pos: { x: sp.x - sv.x * age, y: sp.y - sv.y * age },
+      vel: { ...sv }, facing: seen.facing, sampledAt: sim.t - age, acquiredAt: sim.t, ...(e ? { sigP: e.sigP, sigV: e.sigV } : {}) };
   }
 
   /** Acquired route keys, with memory age plus the original sensing latency. */
@@ -469,6 +540,25 @@ export class QBMind {
       return { id: d.player.id, pos: { x: m.pos.x + m.vel.x * dt, y: m.pos.y + m.vel.y * dt },
         vel: { ...m.vel }, age: age + (m.latency ?? 0) };
     });
+  }
+
+  /** PERIPH_ACUITY: a player seen `ecc` rad off his gaze at `range` yd: the look's position and velocity uncertainty and
+   * the picture he takes, offset by his stable misjudgment of that player (unit normals, scaled by the uncertainty). */
+  private periphSeen(mind: { judgment(key: string): number }, id: string, seen: { pos: Vec2; vel: Vec2 }, ecc: number, range: number): { pos: Vec2; vel: Vec2; sigP: number; sigV: number } {
+    const v = 1.3 - 0.6 * this.vision, speed = Math.hypot(seen.vel.x, seen.vel.y);
+    const sigP = range * PERIPH_POS_K * ecc * v, sigV = speed * PERIPH_VEL_K * ecc * v;
+    const j = (k: string) => mind.judgment(`periph:${id}:${k}`);
+    return { pos: { x: seen.pos.x + sigP * j('px'), y: seen.pos.y + sigP * j('py') },
+      vel: { x: seen.vel.x + sigV * j('vx'), y: seen.vel.y + sigV * j('vy') }, sigP, sigV };
+  }
+
+  /** PERIPH_ACUITY: his uncertainty about a defender's position now (yd): the look's position error and its velocity error
+   * grown over the picture's age (dead reckoning). 0 without the flag or a picture. */
+  pictureSpread(d: Agent): number {
+    const m = this.memory.get(d);
+    if (!PERIPH_ACUITY || !m) return 0;
+    const age = Math.max(0, this.sim.t - m.t) + (m.latency ?? 0);
+    return Math.hypot(m.sigP ?? 0, (m.sigV ?? 0) * age);
   }
 
   /** Age of his picture of a defender: memory age plus its sensing latency.
@@ -556,8 +646,9 @@ export class QBMind {
     let boxL = 0;
     let boxR = 0;
     for (const d of sim.defense) {
-      const x = d.pos.x + sim.dice('qb-mind').normal(0, sigPos) - los;
-      const y = d.pos.y + sim.dice('qb-mind').normal(0, sigPos * 0.7);
+      const sp = QB_SCAN ? this.scanned(d) : null;
+      const x = (sp ? sp.x : this.standing(d).x + sim.dice('qb-mind').normal(0, sigPos)) - los;
+      const y = sp ? sp.y : this.standing(d).y + sim.dice('qb-mind').normal(0, sigPos * 0.7);
       if (x < 7.5 && Math.abs(y - by) < 6.5) {
         if (y >= by) boxL++;
         else boxR++;
@@ -633,8 +724,9 @@ export class QBMind {
     const sig = 0.3 + 1.0 * (1 - this.rec);
     let press = false, cloud = false, defenders = 0;
     for (const d of sim.defense) {
-      const x = d.pos.x + sim.dice('qb-mind').normal(0, sig) - sim.los;
-      const y = d.pos.y + sim.dice('qb-mind').normal(0, sig * 0.7);
+      const sp = QB_SCAN ? this.scanned(d) : null;
+      const x = (sp ? sp.x : this.standing(d).x + sim.dice('qb-mind').normal(0, sig)) - sim.los;
+      const y = sp ? sp.y : this.standing(d).y + sim.dice('qb-mind').normal(0, sig * 0.7);
       if (x < 2.2 && Math.abs(y - r.y) < 1.5) press = true;
       else if (x >= 2.2 && x <= 5 && (y - r.y) * side >= -0.5 && (y - r.y) * side <= 3) cloud = true;
       // Off the line (a man on the line is a box player), outside the box, short of the deep shell.
@@ -681,13 +773,42 @@ export class QBMind {
   /** Quick-game answer to the look: hitches vs. off corners, slants vs. press. */
   private quickCheck(): PassConcept | null {
     const sim = this.sim;
-    const cbs = sim.defense.filter((d) => d.slot === 'CB_S' || d.slot === 'CB_W');
-    // QB_SEEN_MAN: corner depth as he sees it, with his alignment noise.
-    const sig = QB_SEEN_MAN ? 0.3 + 1.0 * (1 - this.rec) : 0;
-    const depth = cbs.length ? cbs.reduce((s, d) => s + d.pos.x + (sig ? sim.dice('qb-mind').normal(0, sig) : 0) - sim.los, 0) / cbs.length : 6;
+    let depth: number;
+    if (QB_SCAN || QB_CANON_SEEN) {
+      // QB_SCAN / QB_CANON_SEEN: the corners where his scan shows them (by where they stand, not their labels).
+      const seenPos = sim.defense.map((d) => QB_SCAN ? this.scanned(d) : this.standing(d));
+      const cbs = QB_CANON_SEEN ? cornersSeen(seenPos.map((p, i) => ({ p, db: isDbSeen(sim.defCall.personnel, sim.defense[i].slot) })), sim.los, sim.ballY)
+        : sim.defense.filter((d) => d.slot === 'CB_S' || d.slot === 'CB_W').map((d) => QB_SCAN ? this.scanned(d) : this.standing(d));
+      depth = cbs.length ? cbs.reduce((s, p) => s + p.x - sim.los, 0) / cbs.length : 6;
+    } else {
+      const cbs = sim.defense.filter((d) => d.slot === 'CB_S' || d.slot === 'CB_W');
+      // QB_SEEN_MAN: corner depth as he sees it, with his alignment noise.
+      const sig = QB_SEEN_MAN ? 0.3 + 1.0 * (1 - this.rec) : 0;
+      depth = cbs.length ? cbs.reduce((s, d) => s + this.standing(d).x + (sig ? sim.dice('qb-mind').normal(0, sig) : 0) - sim.los, 0) / cbs.length : 6;
+    }
     const id = depth > 5 ? 'hitches' : depth < 2.5 ? 'slant_flat' : 'quick_outs';
     return PASS_BY_ID[id] ?? null;
   }
+}
+
+/** QB_CANON_SEEN: the corners where he sees them. Per side of the ball, the widest defensive back (a group he sees in the
+ * personnel, not which back is which) within 12 yd of the line and outside the tackle box (4+ yd off the ball); none on a
+ * side with no such man. A condensed split or a corner over a nub end still counts; a rolled safety counts only when he
+ * stands wider than the corner, which is then the man the passer reads as the corner. */
+export function cornersSeen(pts: Array<{ p: Vec2; db: boolean }>, los: number, by: number): Vec2[] {
+  const out: Vec2[] = [];
+  for (const side of [1, -1]) {
+    let best: Vec2 | null = null;
+    for (const { p, db } of pts) if (db && p.x - los < 12 && (p.y - by) * side >= 4 && (!best || (p.y - by) * side > (best.y - by) * side)) best = p;
+    if (best) out.push(best);
+  }
+  return out;
+}
+
+/** QB_CANON_SEEN: a defensive back by the personnel he sees (CB / S slots of the visible package). */
+function isDbSeen(personnel: DefPersonnelId, slot: string): boolean {
+  const g = DEF_PERSONNEL[personnel]?.[slot as DefSlot];
+  return g === 'CB' || g === 'S';
 }
 
 function normalize(logp: Record<string, number>): Record<string, number> {

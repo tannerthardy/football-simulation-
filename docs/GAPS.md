@@ -2,7 +2,10 @@
 
 The current view of where our football is least realistic, what we know about
 each gap, and what has improved. One page, kept short. Re-ranked on 2026-11-11
-at `engine-28`; rewritten in place at `engine-40` (2026-11-12).
+at `engine-28`; rewritten in place at `engine-40` (2026-11-12). The standing
+table, the current focus, the lane table and the newest rows of the two lists
+at the bottom were brought to `engine-95` on 2026-11-24; sections still
+written at `engine-40` say so in their headings.
 
 [KNOWN_PROBLEMS.md](KNOWN_PROBLEMS.md) is the long record behind this page:
 evidence, what was tried, what is still open. [REFERENCE_STACK.md](REFERENCE_STACK.md)
@@ -16,37 +19,65 @@ are weaker, and each one below says which kind it is.
 
 ## Where the engine stands
 
-League card, 16 games, seed 11, at `engine-40` (the candidate arm of its paired card).
-NFL is the team-season p10–p90 band where one is sourced. One seed: read the
-direction against the last table (`run-ref-26`, in brackets), not the decimals.
+League card, 16 games × 2 leagues, seed 11, at `engine-95` (the candidate arm
+of THROWAWAY_FELT's paired card, #887). NFL is the team-season p10–p90 band
+where one is sourced. One seed: read the direction against the `engine-40`
+table this replaced (in brackets; one league, so not the same sample), not the
+decimals.
 
 | Measure | Engine | NFL band | Reading |
 | --- | --- | --- | --- |
-| Rush yards a carry | 4.37 (4.57) | 3.70–4.83 | In band |
-| Runs of 10+ | 8.3% (9.3) | 7.6–12.9% | In band |
-| Run stuffs (0 or less) | 9.5% (9.3) | 15.9–23.5% | Low |
-| Completion | 64.7% (58.5) | 60.6–68.1% | In band |
-| Yards an attempt | 9.18 (8.37) | 6.35–7.89 | High |
-| YAC a reception | 7.26 (6.65) | 4.53–5.91 | High |
-| 20+ yd completions an attempt | 14.0% (11.4) | 6.7–11.1% | High |
-| Sacks a dropback | 3.7% (4.5) | 4.6–9.4% | Low |
-| Scrambles a dropback | 2.4% (2.5) | 2.2–7.3% | Low edge |
-| Interceptions | 1.3% (2.9) | 1.5–3.2% | Low edge |
-| Missed + broken tackles a play | 0.20 (0.22) | 0.11–0.16 (unsourced) | High |
-| Points a team-game | 35.8 (30.6) | 21–23.5 (unsourced) | High |
+| Rush yards a carry | 3.73 (4.37) | 3.70–4.83 | Low edge |
+| Run stuffs (0 or less) | 12.1% (9.5) | 15.9–23.5% | Low |
+| Completion | 68.3% (64.7) | 60.6–68.1% | High edge |
+| Yards an attempt | 7.95 (9.18) | 6.35–7.89 | High edge |
+| YAC a reception | 6.36 (7.26) | 4.53–5.91 | High |
+| 20+ yd completions an attempt | 8.2% (14.0) | 6.7–11.1% | In band |
+| Sacks a dropback | 5.3% (3.7) | 4.6–9.4% | In band |
+| Scrambles a dropback | 2.8% (2.4) | 2.2–7.3% | Low edge |
+| Interceptions | 1.8% (1.3) | 1.5–3.2% | In band |
+| Missed + broken tackles a play | 0.17 (0.20) | 0.11–0.16 (unsourced) | High edge |
+| Points a team-game | 27.7 (35.8) | 21–23.5 (unsourced) | High |
+| Time to throw | 2.85 s | 2.7–2.9 (unsourced) | In band |
 
-Scoring rose from `run-ref-26` to about 40 at `engine-32` as three offense-side
-defects were removed (open catches judged at the edge of reach, a flat the
-quarterback could not see, defenders handed his read), and has come back to
-about 35 through `engine-36` (deep defenders carry), `engine-39` (the catch
-contest) and `engine-40` (pursuit to the upfield shoulder).
+Since `engine-40` the deep-ball and yards-an-attempt excess has mostly closed
+and sacks and interceptions are in band. What remains is after the catch
+(YAC), completion at the top of the band, and scoring about four points high.
+The whole-game averages now hide the open problems more than they show them:
+the gaps below are in which throws are made when, in specific coverages, and
+in what happens around the tackle.
 
-The run game is in range. The scoring excess is the pass game: too many yards
-an attempt and after the catch, too few sacks.
+## Current focus (2026-11-24, `engine-95`)
 
-## The three focus problems
+The pass game is the priority, and inside it the quarterback's decision
+comes first; pursuit, tackling and the flats run in parallel. Each row names
+the present diagnosis and its owner. Numbers marked *lane* come from the
+owning lane's report on the named PR or branch and were not re-measured by
+Integration.
 
-All lanes are on these three as of 2026-11-11. The pass stress matrix
+| # | Gap | Current diagnosis | State and owner |
+| --- | --- | --- | --- |
+| Q1 | The quarterback's decision: what he throws and when | Whole-play timing matches the NFL, but non-screen throws released under 2.0 s are 14.4% of NFL dropbacks and 2.2% of ours (*lane*, Rules, #876 and #893; dropbacks without play action). Stops leave 0.3–0.5 s after the break against the NFL's 0.1 before, outs 0.3 s late (*lane*, QB). He is set and looking 0.4 s before the break; his window judgment clears only at the break. That judgment prices defenders who reach the catch point a median 0.58 s late (*lane*, QB), with constants fitted to engines 40–47. The controller is five timing models and six pressure responses layered in one method, and plays do not carry their reads | **Rebuild, not patches.** [Plan of record](reviews/2026-11-24-qb-decision-plan.md): `QB_V2` in five modules, quick game first. QB lane builds the look, the judgment and the cycle; Rules authors read plans (#893); Flex the pre-snap plan; Tools the calibration harness; Coverage the defender-side facts. The step clock is not landing; no feature patches on the old controller |
+| Q2 | True-state reads left in the passer | Exact defender positions seeded at the snap, pre-snap features with no sight test, slot labels and call tags in his canonical looks, rushers' true profile and speed scale in felt time, belief pulled toward true ratings (plan §1.6) | Being removed as small landings: QB lane (qb.ts), Flex (qbmind.ts) |
+| Q3 | The pass menu is thin, the quick game most | 32 dropback and quick concepts, 3 play-action, 6 screens and 1 run-pass option; 8 use the quick drop. Core quick-game concepts, option routes, run-pass options and movement passes are missing, and how often we call quick game against the NFL is unmeasured, so the early-throw gap in Q1 is not yet split between missing plays and a late passer. Six installed concepts differ from the taught version (`CONCEPT_GAPS`, #893) | Rules: inventory against a standard menu ranked by NFL frequency and call share by drop class first; then missing quick-game concepts in batches with read plans; concepts corrected to the taught versions behind one flag |
+| V1 | Cover 2 / Cover 6: the deep outside throw against the flat | The squat corner sat shallow and trailed #1 (on top at the break 7% against the NFL's 40%); 10–15 yd wide open 43% against 18% (*lane*, Coverage with Tools' census). A corner at NFL depth fixes that and reopens the flat (open flats 2.0–3.0 a game against 1.5). Flex's flat package closes the flat only by keeping the corner shallow. The curl-flat dropper sits about 3 yd narrow (8.0–8.6 yd from the ball at 3.0 s against 11.5): half is the invented `lerp(QB, receiver, 0.82)` lane spot and zone-settle, half inside-out carries (*lane*, Flex) | Open. `SQUAT_SINK` v2 and `SQUAT_FLAT_FIRST` built, off (`coverage/C14-squat-v2`, `coverage/C14-squat-flat`); census pending. Replacing the 0.82 lane spot is first (Coverage; `LANE_LEVERAGE`, #894, drafted off). `CORNER_READ` parked after two attempts |
+| V2 | Defenders re-aim far more than NFL players | Sharp heading steps on 6–12% of moving intervals against the NFL's 1.4–2.0% at skill positions, linebackers and defensive backs; at least 80% follow a controller request that changed, about 60% of those from coverage (*lane*, Tools, #866). Zone reversals 0.448/s, man 0.240/s (*lane*, Coverage) | `SPOT_LEAN` (#889, off): a settled dropper slides with the quarterback's seen head line instead of jumping between receivers; spot-settle reversals 117 → 66. The deep carry's request alternates speed tick to tick with nothing changing: two fixes had no effect and the stage is not found. Two cells unattributed |
+| V3 | Safeties | The half safety aligned 3 yd inside the NFL's relation to #2 (`HALF_ALIGN`, #888, off, fixes it). His seat against #1 and #2 (`HALF_SEAT`, off, Flex) matches the NFL in movement. First move lateral 66% against 24% is mostly that NFL safeties are already moving at the snap (*lane*, Flex) | `HALF_ALIGN` and `SPOT_LEAN` on Integration's card. The rolling start belongs to pre-snap movement (parked). `DEPTH_FIRST` built, off; `HALF_DECLARE` stopped |
+| D1 | Pursuit after the catch | Defenders are not slow: top speed after the catch is at or above the NFL's (LB 8.7 against 8.4, CB 9.4 against 8.9, S 9.3 against 8.7 yd/s; *lane*, Tools, #866). Two pursuers aim at one spot 0.2–0.4 yd apart, because the shoulder shade fades with distance for both | `TRAIL_LEVERAGE` (#892, off): catch attempts missed 7.1 → 5.3% over six seed sets; the play after a first miss is flat. Bad pursuit after a miss remains open (Defense) |
+| D2 | Coming off a shed block | After a run shed defenders achieve 2.1–2.5 yd/s against 5–7 requested: the behaviour asks for a facing 43–87° off the travel it requests. Linebackers are often still owned by a pass behaviour after taking on a run block; the linemen's fit asks for a square facing. Separately, 6% of run D-line releases are re-blocked within 0.5 s by a different blocker from beside or behind, formed as an ordinary block (*lane*, Defense) | Defense: run-read ownership and facing (not built). `BLOCK_FRAME` built, off (`defense/block-frame`): a re-block needs position in front and inside the frame, otherwise it is the blocker's chosen hold. `SHED_PLAY` showed no effect and waits on these |
+| D3 | The tackle itself | Reach double-counted the body; a miss cost the tackler nothing; aim height was a random draw; light holds do not finish. The package (`TACKLE_REACH`, `LUNGE_FLIGHT`, `DIVE_STANCE`, `REACH_TIME`, `HOLD_AIM` with the bend) reproduces the NFL's miss shape better, but designed runs average 6.3 yd against develop's 3.85, with 7% of runs never grasped (*lane*, Run Game) | On `run/tackle-repair`, not landed. Run Game is attributing the extra yards (honest reach exposing approach, or the package) before the carrier's answers (brace, stiff arm) |
+| R1 | Routes and alignment | Receivers are not late off the line: depth at 1 / 2 / 3 s and time to 10 / 20 yd match the NFL by alignment and route family (BDB 2025 wk 1–2 against engine-97, one operator, `scripts/diag/getoff/getoff.py`, Flex 2026-11-24); slots are 0.2–0.5 yd/s slow at 1.0 s, recovered by 2 s, left; slot intermediates are still going downfield at 3.0 s (8.7 yd against 6.4, Rules). #2's vertical drifts in where the NFL's bends out (`SEAM_LANDMARK`, #886, off: fixes where he ends, not the 1 s lag); go stems, hitch, slant and cross shapes (#879); alignment landmarks (#880); `DRIVE_HASH` (#881) | Built, off, waiting for cards behind the quarterback and coverage work (Rules) |
+| B1 | Ball drag | Spiral drag measured from tracked throws is 0.005 /yd against our 0.003 | `BALL_DRAG` (#884): no outcome effect at 48 games a side, correct physics; lands on as `engine-96` (Tools) |
+| C1 | In-stride catch | `CATCH_STRIDE` removes the receiver braking into the catch and is right | Held: on `engine-94` it gives back all of FLIGHT_BREAK's YAC gain (+0.0 to +1.7 a reception against develop). Lands when pursuit after the catch is repaired |
+| N1 | Receiver numbering after motion | #1/#2/#3 are counted once from the alignment and not re-counted after motion; every reader keeps the stale number | Parked with pre-snap movement; the first step is to measure how often motion changes a number |
+
+## Focus problems as of `engine-40` (2026-11-11)
+
+Kept for their diagnosis. P1's first-ranked cause (C9, zone defenders do not
+break on the ball) was repaired by FLIGHT_BREAK at `engine-94`; P2 and P3 are
+now inside Q1 above.
+
+All lanes were on these three as of 2026-11-11. The pass stress matrix
 reported on 2026-11-11; the order it points to is C9, then C14, then the rule
 tables.
 
@@ -153,7 +184,7 @@ matrix first cut. "Rule" items are coached rules our defenders lack.
 | C6 | No crosser exchange in man | Rule | Open |
 | C7 | Quarters: corner leverage fixed outside; safety never re-reads after locking on #2 | Rule | Open |
 | C8 | Underneath ownership re-picked every tick after a handoff; measured as request thrash | Rule, execution | Diagnosed; fix designed (stable ownership until an observable handoff) |
-| C9 | Zone defenders do not break on the ball: 0.24–0.64 yd/s toward the catch point in the first 0.4 s against the NFL's 1.09–1.36; man is NFL-like | Behaviour; ranked first | **Open for underneath players.** Diagnosed (Defense): intent is immediate, the body starts 0.4–1.2 yd/s slower at the throw and gains less in flight; not a body limit (braking and start force at or above the NFL's) but the path (a straight reversal) and no direction before the release. `ARRIVE_LEAD` (drive to the catcher's upfield shoulder) on at engine-40; `SHOULDER_READ` built, off (needs defenders looking: 55–74% of ours face the quarterback before release against 86–94%, because match carries run hip-turned). Next: eyes in on the match carry |
+| C9 | Zone defenders do not break on the ball: 0.24–0.64 yd/s toward the catch point in the first 0.4 s against the NFL's 1.09–1.36; man is NFL-like | Behaviour; ranked first | **Repaired at `engine-94`** (`FLIGHT_BREAK`, #882: one break on the throw from an arm or ball cue the defender sees, on `engine-93`'s leak-free head). Earlier state: diagnosed (Defense): intent is immediate, the body starts 0.4–1.2 yd/s slower at the throw and gains less in flight; not a body limit (braking and start force at or above the NFL's) but the path (a straight reversal) and no direction before the release. `ARRIVE_LEAD` (drive to the catcher's upfield shoulder) on at engine-40; `SHOULDER_READ` built, off (needs defenders looking: 55–74% of ours face the quarterback before release against 86–94%, because match carries run hip-turned). Next: eyes in on the match carry |
 | C17 | Deep defenders open their hips and run far too early: turned before the release on 58–88% of zone dropbacks against the NFL's 9–13%, at 4–5 yd of cushion (NFL 2–3), and the turn latches, so 43–96% are still running away after the receiver has stopped (NFL 4–12%). 19% of deep defenders over the catch are turned away at the release (NFL 0–4%); this is most of C9 | Rule: stay square until the cushion is broken | **Mostly repaired for deep players (`CUSHION_BREAK`, engine-36, on `PEDAL_CAP`, engine-33):** turned before the throw 51–84% → 29–40% (NFL 8–10), deep completion and trimmed YAC on the NFL. Still turns at 2.5–2.75 s with no help: he steps toward the receiver before the stem shows (a budget fix and a pre-release repair are built and parked) and receivers leave the line too fast. Pure man also over-turns (64–70% against 19–22%), untouched |
 | C10 | Zone seats steered by the quarterback's internal read target | Hidden information | `SEEN_EYES` built, off, candidate (#562): zone linebackers slow at the release 34 / 37% → 19 / 21% |
 | C11 | Help decisions use the true ball state | Hidden information | `JUDGE_SEEN_BALL` built, off; reads worse until C4 exists |
@@ -221,6 +252,11 @@ Engine versions since 2026-11-10. Evidence for each is in
 | engine-38 | The quarterback senses a blocked rusher from what he sees (`BLOCK_SEEN`); a pressed go no longer stalls (`RELEASE_THROUGH`) | Estimate error for a rusher through a blocker +1.39 → +0.43 s; pressed go stalled at 3.0 s 60 → 6% |
 | engine-39 | The catch is a contest (`CATCH_HANDS`, `LOOK_ONCE`, `CATCH_SECURE`, `DRIVE_CATCH`) | Completion 65.6 → 60.1% and 68.2 → 63.8%; third downs and punts follow |
 | engine-40 | Underneath zone defenders drive to the catcher's upfield shoulder (`ARRIVE_LEAD`); a touchdown is ruled before the tackle step | YAC a reception 9.07 → 7.26 and 8.10 → 7.65; points −2 to −3 |
+| engine-41 to engine-91 | Not listed on this page | [REFERENCE_STACK.md](REFERENCE_STACK.md) has one section per version |
+| engine-92 | What the passer sees off his gaze is less exact (`PERIPH_ACUITY`, #875); removes a perception leak | Neutral on whole-game outcomes |
+| engine-93 | A head nobody turns follows the body (`HEAD_FOLLOW`, #885): defenders leaving zone eyes, and the passer after the throw, no longer perceive through a frozen head up to 180° off the body. The look-side hold (#883) landed just before it | Man defenders' head-to-body offset p95 146° → 19°; six-seed card neutral |
+| engine-94 | Defenders break on the throw from a cue they can see (`FLIGHT_BREAK`, #882) | Five-seed card: YAC a reception −0.8 to −1.2 in four seeds, yards an attempt about −0.5, completion flat; interceptions 1.6 → 1.7% of throws (*lane*, Coverage) |
+| engine-95 | The passer throws the ball away on felt pressure with nobody open, not on a timer from the set (`THROWAWAY_FELT`, #887) | Timer throwaways from a clean pocket 24 → 0 in 16 games (*lane*, QB); six-seed card: completion and sacks flat |
 
 Earlier this month: run yards a carry came into the NFL band (4.51 against
 4.48 on league-sampled teams), from 6.19 / 4.40 at the October page.
@@ -242,10 +278,31 @@ rebuild toward the old numbers.
 | Throwaways dropped from the sim export as passes | Hit-throw splits |
 | Rule-based route classifier | 40% agreement with NFL route labels; replaced by shape matching (64.5%) |
 | Concept classifier | Agrees with the called concept 25–80% by concept; 70% of NFL dropbacks fit none of our 17 concepts. Concept-level cells are weak evidence |
+| Re-aim table labelled by `agent.tags` (2026-11-24) | Tags are never cleared during a play, so "flight-break" meant "has broken on a ball this play": 200 reversals attributed to FLIGHT_BREAK were about 65. Attribute by the per-tick branch |
+| Half safety's "#1 alone" target from a position-based state (2026-11-24) | The cell mixed go routes with posts, digs and corners in their stems: 2.3 yd inside #1; on labelled go routes the NFL half ends 8.7 yd inside. Split by route label before building toward it |
+| Tracked ball speed in the first 0.1 s after release (2026-11-24) | Bimodal (p10 1, p90 41 yd/s); "our releases are faster than tracked" was the window. Use 0.2–0.4 s extrapolated back |
+| A 16-game "after a first miss" result (2026-11-24) | Next attempt made 33 → 68% on one seed set and 48 → 48% on another; pooled over six sets it is flat. Outcomes conditioned on a miss need the larger sample |
+| Flat-package gains measured before `engine-93` and `engine-94` (2026-11-24) | YAC −0.9 a reception was FLIGHT_BREAK plus defenders seeing through frozen heads; on `engine-94` the package alone is about neutral. Re-measure anything taken before `HEAD_FOLLOW` |
+| Coverage "top speed" p99 before the throw (2026-11-24) | 8.0 against the NFL's 8.7 was defenders throttling in coverage, not capacity; after the catch ours are at or above the NFL's |
 
 ## Who is on what
 
-Four lanes are working (2026-11-12). Run Game is parked.
+Seven lanes are working (2026-11-24). Assignments come from the user through
+Integration.
+
+| Lane | Focus | Next |
+| --- | --- | --- |
+| QB | Q1: the `QB_V2` controller (the look, the judgment, the cycle) | True-state reads in qb.ts as small landings; then the skeleton against a stub slant-flat plan; the quick game is Phase 1 |
+| Rules + Coaching | Q1: each concept's read as taught (#893) and the NFL side of the gates | Dropback family (curl-flat, smash, dagger, mesh, y-cross, flood, levels, verts); the route flags (#879, #880, #881, #886) wait for cards |
+| Coverage | V1, V2 | Replace the 0.82 lane spot; `SQUAT_FLAT_FIRST` census; the note on what defenders do before a break, for Q1; the deep-carry trace |
+| Flex | Q1's pre-snap plan; V1 with Coverage | True-state reads in qbmind.ts; then the pre-snap plan's design note; `HALF_SEAT` |
+| Defense | D1, D2 | `BLOCK_FRAME` measurement; run-read ownership and facing after a shed; `TRAIL_LEVERAGE` (#892) on Integration's card |
+| Run Game | D3 | Attribute the tackle package's extra run yards; `CARRIER_BRACE`; then the stiff arm |
+| Tools / Physics | The harness for Q1; B1 | `BALL_DRAG` on as `engine-96`; the calibration operator (believed against actual, by defender role) and its standing test; the rating panel |
+| Integration | — | Reviews design notes before code, cards and lands each change with red-diff, keeps this page |
+
+The table below is the lane table as of 2026-11-12, kept for the items it
+names that are still open.
 
 | Lane | Focus | Next |
 | --- | --- | --- |
