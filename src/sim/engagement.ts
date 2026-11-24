@@ -344,9 +344,8 @@ function baseOf(a: Agent): number {
 // ------------------------------------------------------------ creation
 
 /** BLOCK_FRAME (experimental, off; BLOCK_FRAME=1 turns it on). A blocker gets back on a defender who has already been
- * released from a block this play only from where a block is legal: in front of the defender's path (the bearing to
- * the blocker within 90 deg of his travel, or of his facing when he is under 1 yd/s) and inside his frame (within 90 deg
- * of his body facing). The 90 deg half-planes are labeled choices.
+ * released from a block this play only from where a block is legal: inside his frame (the blocker within 90 deg of his
+ * body facing: his chest and shoulders, not his back). The 90 deg half-plane is a labeled choice.
  * From anywhere else, getting a hand on him is a grab, not a block: the blocker may still choose it, by the same
  * discipline-and-situation chance a beaten blocker grabs with (holdChance, as tryHold), decided once per pair per play;
  * a grab forms the engagement with the hold on (cloth), and contact-holding judges the restraint it achieves (with
@@ -363,12 +362,14 @@ let blockFrameSink: ((sim: PlaySim, b: Agent, d: Agent, type: 'pass' | 'run', gr
 export function setBlockFrameSink(f: typeof blockFrameSink): void { blockFrameSink = f; }
 const frameChoice = new WeakMap<Agent, { sim: PlaySim; by: Map<Agent, boolean> }>();
 function inFrameToBlock(_axis: Vec2, d: Agent, b: Agent): boolean {
-  // In front of HIS path (the defender's travel; his facing when he is nearly still) and inside his frame (his facing).
-  // Not the engagement's phi: on a run that is measured on the blocker's own drive axis, and an ordinary reach forms at
-  // |phi| >= 1 there (the fixture in test/inline-zone-keeper.test.ts is such a reach).
-  const toB = Math.atan2(b.pos.y - d.pos.y, b.pos.x - d.pos.x), sp = Math.hypot(d.vel.x, d.vel.y);
-  const path = sp > 1 ? Math.atan2(d.vel.y, d.vel.x) : d.body.facing;
-  return Math.abs(angleDiff(toB, path)) <= Math.PI / 2 && Math.abs(angleDiff(toB, d.body.facing)) <= Math.PI / 2;
+  // Inside his frame: the blocker within 90 deg of the defender's body facing (his chest and shoulders, not his back).
+  // That is what makes a block legal; his direction of travel is not (a backer scraping sideways while facing the line is
+  // blocked legally by a man in front of his chest). Not the engagement's phi either: on a run that is measured on the
+  // blocker's own drive axis, and an ordinary reach forms at |phi| >= 1 there (test/inline-zone-keeper.test.ts).
+  // (A travel half was tried first: 315 of 758 refused run re-blocks were inside his facing but behind his travel, 131
+  // of them square to the blocker, and the runs lost 0.8 yd, from blocks the rule should not have dropped.)
+  const toB = Math.atan2(b.pos.y - d.pos.y, b.pos.x - d.pos.x);
+  return Math.abs(angleDiff(toB, d.body.facing)) <= Math.PI / 2;
 }
 /** The chance a blocker chooses a grab (tryHold's: less disciplined men grab more; in pass protection more than on runs). */
 function holdChance(b: Agent, type: 'pass' | 'run'): number {
