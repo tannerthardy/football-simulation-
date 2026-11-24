@@ -2657,7 +2657,7 @@ As the ball carrier the numbers equal the flag off at every speed.
 
 **Fixtures.** None moved. `npm test` (core and core-defaults, Node 22.22.0) on this tree and on clean develop fe150600 fails the same 29 files with the same failure counts (the Node-version and numeric ones already red on develop); the 6-test `down-rise-plant.test.ts` is new, listed in `test/engine-pin.json` defaults, and sets the flag explicitly for both arms. `dither-budget` passes with the flag on by default.
 
-## engine-97: the spiral's drag is the NFL ball's measured deceleration (2026-11-24)
+## engine-96: the spiral's drag is the NFL ball's measured deceleration (2026-11-24)
 
 On: `BALL_DRAG` (Tools/Physics; `=0` restores the old constant). `DRAG_SPIRAL` 0.003027 /yd (C_d 0.099, a recalled value) becomes 0.0050 /yd
 (interval 0.0045-0.0057, C_d about 0.16 on the rulebook ball): the horizontal deceleration of BDB 2025 weeks 1-9 passes, release frames and the

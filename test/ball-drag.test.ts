@@ -1,4 +1,4 @@
-/** BALL_DRAG (on by default since engine-97, =0 restores): the spiral's drag constant is the measured in-flight deceleration (0.0050 /yd) on and the engine's old 0.003027 off; the QB's launch is re-derived
+/** BALL_DRAG (on by default since engine-96, =0 restores): the spiral's drag constant is the measured in-flight deceleration (0.0050 /yd) on and the engine's old 0.003027 off; the QB's launch is re-derived
  * for the same flight time, so hang time and apex by distance do not move. The module reads the flag at import, so each arm loads it fresh. */
 import { describe, it, expect, vi, afterEach } from 'vitest';
 
