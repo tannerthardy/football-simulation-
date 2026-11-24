@@ -55,6 +55,23 @@ player in his path). Mesh vs cover1 press, with the crossers set to cross 0.4 yd
 **As taught:** a crosser 1.2 yd from a man defender's path still forces him over or under, so he loses a step. If 5b
 shows no delay, the missing mechanism (the man defender seeing and avoiding an offensive body) goes to Coverage.
 
+**Sources re-verified (20:05 UTC, before any run).** 118 quotes, each checked verbatim (scratchpad pages8,
+quotes8.tsv; 0 misses).
+- **Mable.** "the safety is dropping down to the passing strength"; "Strong Corner – Bail to deep third. Man on all #1
+  vertical"; "Strong Apex – Man on #2 except when #2 goes under"; "Weak Corner – MEG: Man Everywhere he Goes" (Soran,
+  Throw Deep, Saban's pass coverages [BLOG]).
+- **Solo.** "the DS is reading the departure of #3. If the WR goes vertical, the DS will take him man-to-man"; "the
+  boundary CB (BC) is left to handle the single-WR by himself" (Cody Alexander, MatchQuarters [CLINIC]).
+- **Banjo.** "the outside defender will take the first [receiver] to release outside or the second receiver to go
+  inside, and the inside defender will take the first receiver inside or the second outside" (Breakdown Sports [BLOG]).
+- **Bunch against man.** Press the point and In/Out the other two, with the risk that the press defender "can easily be
+  picked or rubbed off the LOS" (Waugh, ULM co-DC, Coaches Insider [CLINIC]).
+- **Man against mesh (cells 5, 5a, 5b).** "cornerbacks can be taught to always get over the mesh, while safeties and
+  linebackers can always be taught to stay under" (Waugh). The taught defender sees the crossers and chooses over or
+  under; the prediction from the code is that he does neither.
+- **Conflicts:** Skate means the safety rotating weak (Soran) or the star inside #1 (USA Football, "skinny"); Special is
+  Stubbie in most sources and Solo-like in one. Neither cell here depends on them.
+
 A cell whose prediction does not appear goes to its owner through Integration, as a named missing mechanism:
 - traffic in man and the banjo: Coverage;
 - the trips checks: Coverage;

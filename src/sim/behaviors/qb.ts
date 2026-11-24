@@ -16,6 +16,10 @@
  */
 import { FIELD_WIDTH } from '../../core/field.js';
 import { clamp, logistic, wrapAngle, type Vec2, type Vec3 } from '../../core/vec.js';
+import { READ_PLANS, planFits } from '../../playbook/read-plans.js';
+import { V2Drive, type V2Host } from '../qbv2/drive.js';
+import { bar as v2Bar, confidenceNeed as v2Need, resolveTau as v2Tau } from '../qbv2/ratings.js';
+import { qbRead, qbStage } from '../qb-trace.js';
 import { arcPoint, dragFreeLaunch, minFlightTime, qbArmSpeed, solveLaunch, DRAG_SPIRAL } from '../../physics/ball.js';
 import { stepBody, type Body, type MoveCommand } from '../../physics/kinematics.js';
 import { timeToReach } from '../../physics/reach.js';
@@ -49,6 +53,11 @@ import { DECLARED_BREAK } from '../../playbook/read-compiler/features.js';
  * non-visual term (pocket presence) stands. Teammates are seen as before (`track` returns `see` for them). */
 const TRACK_FEEL = process.env.TRACK_FEEL !== '0' || process.env.PERCEIVE_TRACK === '1';
 const RELEASE_Z = 2.2;
+/** QB_V2 (off; QB_V2=1; QB lane, 2026-11-24, docs/reviews/2026-11-24-qb-decision-plan.md): on a concept with an authored
+ * read plan that fits the call (READ_PLANS, planFits), the read and throw decision is the rebuilt cycle (src/sim/qbv2/):
+ * the look, the judgment, the cycle on his feet. The drop, pocket movement and the throw's mechanics are kept. Other
+ * concepts run this controller unchanged. */
+const QB_V2 = process.env.QB_V2 === '1';
 const CATCH_Z = 1.3;
 
 /** What the no-throw behaviour is told when the throw decision has nothing acceptable this tick (the seam between
@@ -1571,6 +1580,26 @@ export class QBPass implements Behavior {
 
   update(a: Agent, sim: PlaySim): MoveCommand {
     const t = sim.t;
+    if (this.v2 === undefined && t >= this.snapAt) {
+      const plan = QB_V2 ? READ_PLANS[this.concept.id] : undefined;
+      this.v2 = plan && planFits(plan, this.concept) ? new V2Drive(plan) : null;
+      if (this.v2) {
+        // His feet run the plan's drop (Rules: stick is one step from the gun though the installed concept's drop says gun3).
+        if (plan!.drop !== this.concept.drop) this.drop = dropSpec(plan!.drop, a.pos.x, sim.los, sim.offCall.formation.qb !== 'under');
+        // At the snap: the pre-snap decision (Flex's module B) on his own picture: the side by the plan's pick, the alert,
+        // the hot. Protectors are the call's pass protection by side of the ball; the box half-width a stated 5 yd a side
+        // until the alignment's core edge is read.
+        const h0 = this.v2HostFor(a, sim, 0), strong = (() => { const s1 = this.receiverFor(sim, 'S1'); return s1 && s1.pos.y < sim.ballY ? -1 : 1; })();
+        const prot = { S: 0, W: 0 };
+        for (const o of sim.offense) if (o !== a && o.behavior?.kind === 'pass-pro') prot[(o.pos.y - sim.ballY) * strong >= 0 ? 'S' : 'W']++;
+        this.v2.decidePreSnap(h0, { ...this.mind.belief }, this.mind.pSingleHigh(), { S: 5, W: 5 }, prot);
+        // His drop opens his hips and plants him toward read 1 (FW_HIPS reads this.reads[0]): V2's read 1 after the pick.
+        const r0 = this.v2.plan.reads[this.v2.cycle.readIdx], ref0 = r0 ? (r0.look.kind === 'receiver' ? r0.look.ref : r0.throws[0]?.ref) : null;
+        const first = ref0 ? this.receiverFor(sim, ref0) : null;
+        if (first) this.reads = [first, ...this.reads.filter((r) => r !== first)];
+      }
+    }
+    if (this.v2) this.v2h = this.v2HostFor(a, sim, this.v2u);
     if (sim.carrier !== a) { if (QB_BREAK) a.carryPosture = null; return stand(); }
     if (QB_TICK_PICTURE) this.takePictures(a, sim);
     if ((QB_MOF_READ || QB_DEEP_WAIT) && !this.mofBuilt) this.readShell(a, sim);
@@ -1711,6 +1740,8 @@ export class QBPass implements Behavior {
     }
 
     if (this.phase === 'drop') {
+      // QB_V2: on the drop his first read's look resolves (no decision is made until the plant).
+      if (this.v2 && this.v2h && t >= this.snapAt) this.v2.watch(this.v2h);
       const target = { x: this.drop.x, y: this.dropY };
       const d = Math.hypot(target.x - a.pos.x, target.y - a.pos.y);
       // Play-action: sell the fake first.
@@ -1739,7 +1770,7 @@ export class QBPass implements Behavior {
         // (ready() is his own forecast of the break against a throw started now) and worth it; else he sets and hitches.
         // QB_KEY_PLANT: on a keyed quick concept the key is read on the plant, from what he has seen of it by now.
         if (QB_KEY_PLANT && QB_KEY_READ && QB_KEY_MAN && READ_PLAN && this.rhythmConcept() && !hotNow && this.plan?.key && !this.keyRead && this.keyRereadAt === null) this.readKey(a, sim);
-        if (this.rhythmConcept() && !hotNow && !(READ_PLAN && this.plan?.key && !this.keyRead)) {
+        if (!this.v2 && this.rhythmConcept() && !hotNow && !(READ_PLAN && this.plan?.key && !this.keyRead)) {
           const first = this.reads[0];
           if (first && this.ready(first, sim)) {
             const aggression = 0.5 + 0.35 * (a.player.archetype === 'Gunslinger' ? 1 : 0) - 0.25 * a.r('decisionMaking');
@@ -1762,7 +1793,7 @@ export class QBPass implements Behavior {
         // READ_PLAN key: read at its cue, from the drop; until then the low route is not thrown on rhythm.
         if (READ_PLAN && this.plan?.key && !this.keyRead && t >= this.plan.key.cueBy) this.readKey(a, sim);
         const first = READ_PLAN && this.plan?.key && !this.keyRead ? undefined : this.reads[0];
-        if (first && t >= this.snapAt + this.drop.time - this.load(a) && this.ready(first, sim)) {
+        if (!this.v2 && first && t >= this.snapAt + this.drop.time - this.load(a) && this.ready(first, sim)) {
           const aggression = 0.5 + 0.35 * (a.player.archetype === 'Gunslinger' ? 1 : 0) - 0.25 * a.r('decisionMaking');
           const ev = this.evaluate(a, sim, first, 0);
           if (ev && ev.P >= 0.6 - 0.12 * aggression && ev.intRisk <= 0.025 + 0.05 * aggression) {
@@ -1815,6 +1846,8 @@ export class QBPass implements Behavior {
       this.outOn = this.outOn ? side > OUT_EXIT : side >= OUT_ENTER;
     }
     if (u > 0.5) this.underPressure++;
+    // QB_V2: the rebuilt cycle decides (no old read, hot, rhythm, clock or relook throw runs).
+    if (this.v2) return this.v2Step(a, sim, urgency);
 
     // Look-off: veterans hold the safety with their eyes before the first read.
     if (!this.lookOffChecked) {
@@ -2127,6 +2160,61 @@ export class QBPass implements Behavior {
   /** QB_EYES: the man he is gating a throw to (his eyes went there for it), or null. */
   private gateFor: Agent | null = null;
   /** QB_EYES: his processing time on a man his eyes have just reached. */
+  /** QB_V2: the driver (null when the concept has no fitting plan; undefined before the first tick), its host this tick,
+   * and his felt rush last tick (for the host built before this tick's pressure read). */
+  private v2: V2Drive | null | undefined = undefined;
+  private v2h: V2Host | null = null;
+  private v2u = 0;
+  private v2Read = -1;
+  /** QB_V2 diagnostics (no effect): the intents the cycle returned, by kind. */
+  v2Intents: Record<string, number> = {};
+  private v2HostFor(a: Agent, sim: PlaySim, felt: number): V2Host {
+    // Every rating mapping is in src/sim/qbv2/ratings.ts; no archetype, and no bar from decisionMaking.
+    const pr = { playRecognition: a.r('playRecognition'), decisionMaking: a.r('decisionMaking'), composure: a.r('composure'), discipline: a.r('discipline'), experience: a.player.experience };
+    return {
+      a, sim, releaseZ: RELEASE_Z, snapAt: this.snapAt,
+      estimate: (d) => this.mind.estimate(d), seenHead: (d) => sim.see(a, d).head ?? null, pictureAge: (d) => this.mind.pictureAge(d), pictureSpread: (d) => this.mind.pictureSpread?.(d) ?? 0.5,
+      predict: (r, ahead) => this.receiverForecasts.get(r)?.predict(sim.t, ahead) ?? null,
+      breakAt: (r) => this.receiverForecasts.get(r)?.breakAt() ?? null,
+      inClear: (p) => { const eyes = a.head ?? a.body.facing; return Math.abs(wrapAngle(angleTo(a.pos, p) - eyes)) < this.mind.clearHalf * (0.65 + 0.35 * a.mind.focus); },
+      mechanics: (r, u) => { const ev = this.evaluate(a, sim, r, u); return ev ? { point: ev.point, T: ev.T } : null; },
+      windup: () => this.windup(a),
+      body: (d) => this.bodyOf(a, d),
+      ballSkills: (d) => (QB_BELIEVED_DEF ? this.believe(a, d).ballSkills : 0.5),
+      plantAt: Math.min(this.setAt >= 0 ? this.setAt : Infinity, this.snapAt + this.drop.time),
+      stride: this.drop.time / (DROP_STEPS[this.concept.drop] ?? 5),
+      felt,
+      tau: v2Tau(pr, this.narrow(a)),
+      need: v2Need(pr, felt),
+      bar: v2Bar(felt, this.narrow(a)),
+      outside: this.outsidePocket(a, sim),
+    };
+  }
+  /** QB_V2: one decision from the cycle, turned into a command with the kept mechanics. */
+  private v2Step(a: Agent, sim: PlaySim, felt: number): MoveCommand {
+    this.v2u = felt;
+    const h = this.v2HostFor(a, sim, felt); this.v2h = h;
+    const v2 = this.v2!, intent = v2.tick(h);
+    this.v2Intents[intent.kind] = (this.v2Intents[intent.kind] ?? 0) + 1;
+    if (v2.cycle.readIdx !== this.v2Read) {
+      this.v2Read = v2.cycle.readIdx;
+      const r = v2.plan.reads[this.v2Read];
+      qbRead(sim, a, { read: this.v2Read, target: r ? (r.look.kind === 'receiver' ? r.look.ref : `${r.look.side ?? 'S'}:${r.look.role}`) : null, stage: 'qb-cycle' });
+    }
+    const readAgent = (() => { const r = v2.plan.reads[v2.cycle.readIdx]; const ref = r ? (r.look.kind === 'receiver' ? r.look.ref : r.throws[0]?.ref) : null; return ref ? v2.target(h, ref) ?? undefined : undefined; })();
+    let cmd: MoveCommand | null = null;
+    if (intent.kind === 'throw') {
+      const r = v2.target(h, intent.judged.option.ref), ev = r ? this.evaluate(a, sim, r, felt) : null;
+      if (ev) { sim.qbEyes = r!; cmd = this.startIfFinish(a, sim, ev); }
+    } else if (intent.kind === 'kill') {
+      const r = v2.target(h, intent.ref); cmd = this.throwAway(a, sim, r ? { x: r.pos.x, y: r.pos.y, z: 0 } : undefined);
+    } else if (intent.kind === 'away') cmd = this.throwAway(a, sim);
+    else if (intent.kind === 'escape' && this.shouldScramble(a, sim, false)) cmd = this.scramble(a, sim);
+    cmd ??= this.pocketMove(a, sim, readAgent);
+    qbStage(sim, 'qb-cycle', a, { vel: cmd.vel, facing: cmd.facing });
+    return cmd;
+  }
+
   private processing(a: Agent): number { return (0.15 + 0.25 * (1 - a.r('decisionMaking'))) * (1 + 0.8 * this.narrow(a)); }
 
   /** QB_STICK: his picture when he decided the throw: each defender's distance to the catch point and to the low flight. */
@@ -2290,6 +2378,8 @@ export class QBPass implements Behavior {
   }
 
   private gazePoint(sim: PlaySim): Vec2 {
+    // QB_V2: his eyes go where the cycle's look is (or, on the drop, the first read's look).
+    if (this.v2 && this.v2h && !(this.phase === 'windup' && this.pending)) { const g = this.v2.gaze(this.v2h); if (g) return g; }
     const heldPoint = (r: Agent): Vec2 => {
       const forecast = this.receiverForecasts.get(r);
       return forecast?.predict(sim.t, 0) ?? forecast?.prior.start ?? { x: sim.los + 10, y: sim.ballY };
