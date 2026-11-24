@@ -511,13 +511,12 @@ export const FREE_ARM_2D = process.env.FREE_ARM_2D === '1';
  * it: the reach is measured from where the block has left him) and how much force he has left for the grasp (the World
  * shares one arm budget between the blocker's hands joint and the grasp; the grab off a block is the one-hand hold,
  * ONE_ARM_HOLD). Off, the free arm's reach is a share of his reach, 0.7 - 0.3 control (0.4 when no side is free).
- * Whether an arm is free is the hands' state, one hand off the blocker: until hands have a place (blocking plan, Phase
- * 2), it is read from the latch, the blocker's control below FREE_ARM_LATCH (0.5, a stand-in: half way from neutral
- * hands to the blocker's inside hands fully latched; Defense's control-to-freedom curve will replace it), on the side
- * FREE_ARM_2D or the lateral rule says is free. An outside review proposed a share law (0.55 + 0.20 shedding - 0.25
+ * Whether an arm is free is the hands' state, one hand off the blocker; until hands have a place (blocking plan, Phase
+ * 2) it is the side FREE_ARM_2D (or the lateral rule) says is free. Not the latch: Defense's control curve (develop
+ * 7689bc4e, 3,798 samples) shows hand control below 0.6 does not predict getting free, and control is being deleted.
+ * An outside review proposed a share law (0.55 + 0.20 shedding - 0.25
  * control); not adopted: it mixes the arm's reach with the hold's strength, and control is being deleted. */
 export const FREE_ARM_FULL = process.env.FREE_ARM_FULL === '1';
-const FREE_ARM_LATCH = 0.5;
 const FREE_ARM_ENTER = Math.cos(60 * Math.PI / 180), FREE_ARM_EXIT = Math.cos(50 * Math.PI / 180);
 const freeArmOpen = new WeakMap<Agent, { e: object; open: boolean }>();
 function freeArmSide(d: Agent, cp: Vec2): boolean {
@@ -562,9 +561,9 @@ export function tryTackles(sim: PlaySim): void {
       : Math.abs(blockerY) >= 0.25 && blockerY * dy < 0);
     if (engaged && !freeSide && d.engagement!.win < 0.6) continue;
     const body = c.profile.radius + d.profile.radius;
-    // FREE_ARM_FULL: a free arm reaches its full length from where the block has left his torso; whether it is free is
-    // the hands' state, read from the latch until hands have a place (control < FREE_ARM_LATCH, a stand-in).
-    const armFree = FREE_ARM_FULL && freeSide && d.engagement!.control < FREE_ARM_LATCH;
+    // FREE_ARM_FULL: a free arm reaches its full length from where the block has left his torso; free is the 2-D free
+    // side (FREE_ARM_2D), not the latch (hand control does not predict getting free: Defense's curve).
+    const armFree = FREE_ARM_FULL && freeSide;
     const freeArm = armFree ? 1 : freeSide ? 0.7 - 0.3 * clamp(d.engagement!.control, 0, 1) : 0.4;
     // TACKLE_REACH: from his centre, his reach to the carrier's surface (tackle-reach.ts); off, the legacy double count.
     let arms = reachTo(d, c, engaged ? freeArm : 1.0);
