@@ -136,19 +136,28 @@ export class Cycle {
     const press = this.pressureResponse(s);
     if (press) return press;
     const next = this.stepAt(s, this.plan.reads[this.readIdx + 1]?.step ?? (r.step + 1));
-    // QB_QUICK_DRIFT bit 2 (no hitch to keep the rhythm): a read resolved and answered no, with its throws due, lets the
-    // eyes go on without waiting for a step his feet do not take.
-    const answeredNo = s.readFrom !== undefined && res >= s.need && !r.throws.some((o) => s.judge(o)?.early === true);
+    // The hold rule (Integration's ruling, 2026-11-24), applying only when timing throws can be early (QB_QUICK_DRIFT bit 2):
+    // (a) the throw he is timing holds his eyes, no other: on a key read, the throw the key names (none named yet: only
+    //     while every throw of the read is still early); on a receiver read, its throws;
+    // (b) the rhythm bounds it: a read is never held past the progression's next step from the set, so a slow throw
+    //     cannot hold the whole read open-ended.
+    // Controls (staged cells, must not move): the quick out's hitch on its break at 2.05 s, the out at 1.65 s vs the squat.
+    const cue = r.look.kind === 'key' ? s.keyCue(r.look.role, r.look.side ?? 'S') : null;
+    const named = cue ? r.keyRules?.find((k) => k.cue === cue)?.throwTo ?? null : null;
+    const early = (o: ThrowOption) => s.judge(o)?.early === true;
+    const timed = r.look.kind !== 'key' ? r.throws : named ? r.throws.filter((o) => o.ref === named) : r.throws.every(early) ? r.throws : [];
+    const notDue = timed.some(early);
+    // No hitch to keep the rhythm (bit 2): a read resolved and answered no, with the throw he times due, lets the eyes go
+    // on without waiting for a step his feet do not take.
+    const answeredNo = s.readFrom !== undefined && res >= s.need && !notDue;
     if (s.now >= next || answeredNo) {
       this.looks.markDue(t, s.now);
       // Resolved and answered no: the eyes move. Unresolved: hold while the look is resolving (the stare-down), bounded
       // by the next step plus the time the look would take; a look that cannot resolve has nothing to wait for.
       const holding = res < s.need && s.canReach(t) && (this.looks.resolving(t) || s.now - next < 0.1)
         && s.now < next + s.tau * Math.log(1 / Math.max(1e-3, 1 - s.need));
-      // A read whose timing throw is not due yet is not left: its answer comes on the route's break (in rhythm), until
-      // the forecast break passes (then early clears).
-      const notDue = r.throws.some((o) => s.judge(o)?.early === true);
-      if (!holding && !notDue) { this.passed.add(this.readIdx); this.readIdx++; }
+      // (b): at or past the next step the timing hold no longer applies; before it, only an answered no moves on.
+      if (!holding && (s.now >= next || !notDue)) { this.passed.add(this.readIdx); this.readIdx++; }
     }
     return { kind: 'look', target: t };
   }

@@ -600,10 +600,10 @@ index 6821079d8..c78e4ea66 100644
        return gun ? { x: los - 7.3, time: 1.0 } : { x: los - 6.2, time: 1.3 };
 diff --git a/src/sim/qbv2/cycle.ts b/src/sim/qbv2/cycle.ts
 new file mode 100644
-index 000000000..3e8a38858
+index 000000000..2c9cc16f2
 --- /dev/null
 +++ b/src/sim/qbv2/cycle.ts
-@@ -0,0 +1,186 @@
+@@ -0,0 +1,195 @@
 +/**
 + * QB_V2 module E: the cycle (QB lane, 2026-11-24; docs/reviews/2026-11-24-qb-v2-design.md §3). One state machine on
 + * one clock, his feet. This file is the decision logic only: it reads his senses through `CycleSenses` (his picture,
@@ -742,19 +742,28 @@ index 000000000..3e8a38858
 +    const press = this.pressureResponse(s);
 +    if (press) return press;
 +    const next = this.stepAt(s, this.plan.reads[this.readIdx + 1]?.step ?? (r.step + 1));
-+    // QB_QUICK_DRIFT bit 2 (no hitch to keep the rhythm): a read resolved and answered no, with its throws due, lets the
-+    // eyes go on without waiting for a step his feet do not take.
-+    const answeredNo = s.readFrom !== undefined && res >= s.need && !r.throws.some((o) => s.judge(o)?.early === true);
++    // The hold rule (Integration's ruling, 2026-11-24), applying only when timing throws can be early (QB_QUICK_DRIFT bit 2):
++    // (a) the throw he is timing holds his eyes, no other: on a key read, the throw the key names (none named yet: only
++    //     while every throw of the read is still early); on a receiver read, its throws;
++    // (b) the rhythm bounds it: a read is never held past the progression's next step from the set, so a slow throw
++    //     cannot hold the whole read open-ended.
++    // Controls (staged cells, must not move): the quick out's hitch on its break at 2.05 s, the out at 1.65 s vs the squat.
++    const cue = r.look.kind === 'key' ? s.keyCue(r.look.role, r.look.side ?? 'S') : null;
++    const named = cue ? r.keyRules?.find((k) => k.cue === cue)?.throwTo ?? null : null;
++    const early = (o: ThrowOption) => s.judge(o)?.early === true;
++    const timed = r.look.kind !== 'key' ? r.throws : named ? r.throws.filter((o) => o.ref === named) : r.throws.every(early) ? r.throws : [];
++    const notDue = timed.some(early);
++    // No hitch to keep the rhythm (bit 2): a read resolved and answered no, with the throw he times due, lets the eyes go
++    // on without waiting for a step his feet do not take.
++    const answeredNo = s.readFrom !== undefined && res >= s.need && !notDue;
 +    if (s.now >= next || answeredNo) {
 +      this.looks.markDue(t, s.now);
 +      // Resolved and answered no: the eyes move. Unresolved: hold while the look is resolving (the stare-down), bounded
 +      // by the next step plus the time the look would take; a look that cannot resolve has nothing to wait for.
 +      const holding = res < s.need && s.canReach(t) && (this.looks.resolving(t) || s.now - next < 0.1)
 +        && s.now < next + s.tau * Math.log(1 / Math.max(1e-3, 1 - s.need));
-+      // A read whose timing throw is not due yet is not left: its answer comes on the route's break (in rhythm), until
-+      // the forecast break passes (then early clears).
-+      const notDue = r.throws.some((o) => s.judge(o)?.early === true);
-+      if (!holding && !notDue) { this.passed.add(this.readIdx); this.readIdx++; }
++      // (b): at or past the next step the timing hold no longer applies; before it, only an answered no moves on.
++      if (!holding && (s.now >= next || !notDue)) { this.passed.add(this.readIdx); this.readIdx++; }
 +    }
 +    return { kind: 'look', target: t };
 +  }
@@ -2003,10 +2012,20 @@ index 000000000..923769975
 +/** One-shot form (Flex's pre-snap scan). */
 +export const resolveRole = (p: RolePicture, role: KeyRole, side: 'S' | 'W' = 'S'): PicturedMan | null => pick(role, p, side);
 diff --git a/src/sim/receiver-forecast.ts b/src/sim/receiver-forecast.ts
-index 4f494a304..f198236ae 100644
+index 4f494a304..12d6f55aa 100644
 --- a/src/sim/receiver-forecast.ts
 +++ b/src/sim/receiver-forecast.ts
-@@ -206,6 +206,37 @@ export class ReceiverForecast {
+@@ -133,6 +133,9 @@ function priorBreak(prior: InstalledReceiverRoute): number | null {
+   return prior.breakIdx !== undefined ? prior.breakIdx : pathBreak(prior.path, prior.end);
+ }
+ 
++/** Routes timed to a point this far outward of the alignment (yd), mirroring Rules' route timing data (#925). */
++const NO_PLANT_OUTWARD: Record<string, number> = { flat: 6.4, back_flat: 7, swing: 7 };
++
+ export function pathBreak(path: readonly PathPoint[], end: RouteEnd): number | null {
+   let b: number | null = null;
+   const last = end === 'settle' ? path.length - 1 : path.length;
+@@ -206,6 +209,49 @@ export class ReceiverForecast {
      return c.breakStep === null ? null : c.estimate.sampledAt + c.breakStep * this.dt;
    }
  
@@ -2014,6 +2033,18 @@ index 4f494a304..f198236ae 100644
 +   * install (or the answer he expects on an option route). Null for a route without a break. */
 +  breakPoint(): Readonly<Vec2> | null {
 +    const c = this.build(), path = c?.route?.path ?? this.prior.path;
++    // The flat's timing point (Rules, #925 e95e5dac6: RouteDef.timing, the NFL release spot: flat {d 1.54, l 6.4}, back_flat and swing l 7): where the path is that far outward of
++    // his alignment. Interim mirror of that data until #925 lands and timingPoint(route) is read here instead.
++    const outward = this.prior.routeId ? NO_PLANT_OUTWARD[this.prior.routeId] : undefined;
++    if (outward !== undefined) {
++      const s0 = this.prior.start, side = Math.sign((path[path.length - 1]?.p.y ?? s0.y) - s0.y) || 1;
++      let prev: Vec2 = s0;
++      for (const pt of path) {
++        const a = (prev.y - s0.y) * side, b = (pt.p.y - s0.y) * side;
++        if (b >= outward && b > a) { const f = (outward - a) / (b - a); return { x: prev.x + (pt.p.x - prev.x) * f, y: prev.y + (pt.p.y - prev.y) * f }; }
++        prev = pt.p;
++      }
++    }
 +    const idx = path === this.prior.path ? priorBreak(this.prior) : pathBreak(path, c!.route.end);
 +    return idx === null || !path[idx] ? null : path[idx].p;
 +  }
