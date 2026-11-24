@@ -41,7 +41,11 @@ function rep(kind: 'pass' | 'run', B: Mod, R: Mod, tr = false) {
     if (m.bend !== undefined) p.bend = m.bend;
   };
   if (R.matched || B.matched) Object.assign(d.profile, structuredClone(b.profile));
+  const pressB0 = supportParams(b.profile).pressForce, pressD0 = supportParams(d.profile).pressForce;
   apply(b, B); apply(d, R);
+  // The hands joint's compressive limit is the actor's press, set by the controller from his press when the joint is made (setContactHands: pressForce x (0.35 + 0.65|control|)): a profile edit after the
+  // fixture must reach it, or a 'stronger arms' row is a no-op by construction. The joint's actor is the blocker here; the defender's press is not in the contact (a row for his arms is missing, not zero).
+  if (j.actor === b.body) j.push *= supportParams(b.profile).pressForce / pressB0; else if (j.actor === d.body) j.push *= supportParams(d.profile).pressForce / pressD0;
   b.body.pos = { x: 40, y: CENTER_Y }; b.body.vel = { x: 0, y: 0 }; b.body.facing = 0;
   { const Rr = b.profile.radius + d.profile.radius + 0.1; d.body.pos = { x: 40 + Rr, y: CENTER_Y }; } d.body.vel = { x: 0, y: 0 }; d.body.facing = Math.PI;
   const pass = kind === 'pass';
