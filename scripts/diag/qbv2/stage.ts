@@ -91,5 +91,8 @@ for (let seed = s0; seed <= s1; seed++) {
     ball: thrown?.at ?? null, dist: thrown?.dist ?? null, qbSpeed: thrown?.qbSpeed ?? null,
     catchEv: [...new Set(ev.filter((e) => thrown && e.t >= thrown.t && ['catch', 'drop', 'miss', 'pbu', 'deflection', 'interception', 'incomplete', 'secure'].includes(e.type)).map((e) => `${e.type}:${sim.agents[e.a]?.team === sim.qb.team ? 'O' : 'D'}${sim.agents[e.a]?.slot ?? ''}`))],
     belief: thrown?.belief ?? null, roles: (thrown?.roles ?? []).map((r: any) => ({ ...r, arrived: !!r.arrived || ev.some((e) => ['pbu', 'deflection', 'interception'].includes(e.type) && e.a === r.id), slot: sim.agents[r.id].slot, picked: ev.some((e) => e.type === 'interception' && e.a === r.id), played: ev.some((e) => ['pbu', 'deflection', 'interception'].includes(e.type) && e.a === r.id) })),
-    intents: qbb?.v2Intents ?? null, trace }));
+    intents: qbb?.v2Intents ?? null, trace,
+    // TRACK=1 (Rules' operator check): the targeted receiver's 10 Hz track from the snap, [t, x past the line, y], with
+    // the line and the ball's side (y), to the throw + 1.2 s.
+    ...(process.env.TRACK === '1' && thrown?.idx != null ? { los: r2(sim.los), ballY: r2(sim.ballY), track: (tr[thrown.idx] ?? []).filter((x) => x[0] <= thrown.t + 1.2).map((x) => [r2(x[0]), r2(x[1] - sim.los), r2(x[2])]) } : {}) }));
 }
