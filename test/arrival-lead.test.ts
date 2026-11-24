@@ -52,6 +52,10 @@ const STAGED: Record<string, StagedThrow> = {
 async function plays(flag: string) {
   vi.resetModules();
   vi.stubEnv('ARRIVE_LEAD', flag);
+  // Pinned to FLIGHT_BREAK=0 (engine-93, Coverage C14): ARRIVE_LEAD steers the can't-beat-the-ball drive to the catch
+  // point, a path FLIGHT_BREAK replaces (its moving break takes that defender before this branch); with the break on
+  // the lead's own effect is not reached. Retire with ARRIVE_LEAD when FLIGHT_BREAK's replaced paths are removed.
+  vi.stubEnv('FLIGHT_BREAK', '0');
   const { Rng } = await import('../src/core/rng.js');
   const { generateTeam, pickDefense, pickOffense } = await import('../src/league/team.js');
   const { PASS_BY_ID } = await import('../src/playbook/concepts.js');

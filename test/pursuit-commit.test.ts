@@ -57,6 +57,10 @@ async function run(flag: string) {
   vi.resetModules();
   for (const k of stackOn) vi.stubEnv(k, '1');
   vi.stubEnv('PURSUIT_COMMIT', flag);
+  // Pinned to FLIGHT_BREAK=0 (engine-93, Coverage C14): with the break on no defender asks for a stop on the catch tick
+  // in either arm (the break and its continuation keep his receiver through it), so the off arm's premise is gone and
+  // the commit's own effect on the paths it governs is not reached. Retire with the replaced paths.
+  vi.stubEnv('FLIGHT_BREAK', '0');
   const { Rng } = await import('../src/core/rng.js');
   const { generateTeam, pickDefense, pickOffense } = await import('../src/league/team.js');
   const { PASS_BY_ID } = await import('../src/playbook/concepts.js');
