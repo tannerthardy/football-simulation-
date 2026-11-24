@@ -288,3 +288,10 @@ tracks body height and bend (correlation with the defender's mass +0.53, with hi
 | lower pads: the strongest single lever | +0.29 / -0.59 (pass, run, mu 1.1); pass rep +0.09 / +0.01 at mu 1.3, 0.00 at 1.5; run rep still +0.25 / +0.49 at 1.3 | **agrees at today's grip; disagrees once legs bind**: pad level reaches only the traction cap (and balance), so the lever vanishes where legs bind (the reason for posture under load) |
 | hands inside: a sixth to a quarter more push along the line, plus control of the turn | not representable | missing |
 | balance can bind for upright or pass-set men | offset / base radius 0.03-0.14 (pass), 0.07-0.56 (run); lean 44-49 degrees | **not tested** for upright men; at the leans held grip or legs bind first |
+
+## 6. Source status for the figures in this file (what Tools has and has not verified)
+
+- **Verified by Tools from the primary document:** Penn State Supercleat report (static 1.50-1.68, dynamic 1.31-1.47 at 245 lb).
+- **Opened by a research subagent (abstract or full text as stated in the Phase 0 note), not re-opened by Tools:** Kent et al. 2015 (both papers), Seo, Armstrong & Young 2010, Escobar-Molina 2023, Martin & Beckham 2020, Green et al. 2019, Bayne & Kat, Pincivero 2004, Piorkowski 2011, Sarabon 2021.
+- **Not verified by Tools, and not found by the subagent:** **Preatoni et al. 2015's pack figures (sustained 0.93-0.97 x pack weight, engagement peak 1.88-1.94 x)**: none of the abstracts it opened gives a body-weight multiple and the full text returned 403; **Lum, Haff & Barbosa 2020's 90 degree sticking point**: that paper is a review and the angle is a second-hand statement, so it is not a primary source for the bench-press sticking region; the reviewer's "2.8 kN preload" is the vertical load in Kent's first paper, and 2.8 kN is the bottom of the grass range in its companion, not a preload there.
+- Any ratio to body weight in this file is my division unless stated.
