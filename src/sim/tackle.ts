@@ -276,15 +276,16 @@ function launch(sim: PlaySim, d: Agent, c: Agent, cp: Vec2, cv: Vec2, from: 'lun
  * flat in the reach margin (0.02 deep inside reach, 0.13 beyond it), granted 12% of grabs that were out of reach, and
  * missed 28% of grabs off a block that were inside it. On: the attempt starts the reach (his strike step, committed:
  * `strike`); his hands arrive after the reach window, as long as the arms must extend (REACH_WINDOW at full extension,
- * at least 0.08 s; whiffMargin's own law); then, if the carrier's body is inside that reach (`limit`, the same arms or
- * free-arm reach the attempt was judged on) and not behind another body, the hold is made at the distance the bodies
- * are at, with its ordinary quality law and no draw; otherwise it is a miss, and the reach has committed his body
+ * at least 0.08 s; whiffMargin's own law), sweeping out from where the carrier was to the full reach (`limit`, the same
+ * arms or free-arm reach the attempt was judged on); the first tick the carrier's body is inside the hands' reach so far
+ * (and not behind another body), the hold is made at the distance the bodies are at (a fast-closing runner meets the
+ * hands early; a first build judged only at arrival and missed runners who had come inside and passed), with its ordinary quality law and no draw; otherwise it is a miss, and the reach has committed his body
  * (`commitLunge`). Both bodies keep moving in the window under their own commands and contacts, so the carrier's actual
  * cut, speed and the tackler's own momentum decide it. Ratings act through capability only: his grip (gripForce, the
  * reel), his strike, his cut and the carrier's, and the picture delays that chose the moment. Stated choice: the window
  * is the existing REACH_WINDOW law, not a new number. */
 export const REACH_TIME = process.env.REACH_TIME === '1';
-type Reach = { sim: PlaySim; carrier: Agent; arrive: number; engaged: boolean; lunged: boolean; limit: number; arms: number };
+type Reach = { sim: PlaySim; carrier: Agent; t0: number; arrive: number; engaged: boolean; lunged: boolean; limit: number; arms: number; start: number };
 const reaches = new WeakMap<Agent, Reach>();
 /** Diagnostics: tackler `d`'s reach in progress (REACH_TIME), read-only. */
 export function reachOf(d: Agent): Readonly<Reach> | undefined { return reaches.get(d); }
@@ -295,7 +296,8 @@ function startReach(sim: PlaySim, d: Agent, c: Agent, engaged: boolean, lunged: 
   const span = Number.isFinite(limit) ? limit : reachTo(d, c, 1);
   const w = Math.max(0.08, REACH_WINDOW * clamp((dd - body) / Math.max(0.1, span - body), 0, 1));
   // The contact-quality span is his arms (for a lunge, his standing reach, not the lunge's limit), as at the attempt.
-  reaches.set(d, { sim, carrier: c, arrive: sim.t + w - 1e-9, engaged, lunged, limit: span, arms: lunged ? reachTo(d, c, 1) : span });
+  reaches.set(d, { sim, carrier: c, t0: sim.t, arrive: sim.t + w - 1e-9, engaged, lunged, limit: span, arms: lunged ? reachTo(d, c, 1) : span,
+    start: Math.min(dd, span) });
   d.nextTackleAt = sim.t + 0.5;
   // He commits his last step to the near hip as the arms go (a lunge has already left his feet).
   if (!engaged && !lunged) strike(sim, d, c, d.r('tackling'));
@@ -307,12 +309,18 @@ function reachStep(sim: PlaySim, d: Agent, c: Agent): boolean {
   if (!r) return false;
   if (r.sim !== sim || r.carrier !== c) { reaches.delete(d); return false; }
   if (sim.bond && sim.bond.tacklers.includes(d)) { reaches.delete(d); return true; }
-  if (sim.t < r.arrive) return true;
-  reaches.delete(d);
   const dx = c.pos.x - d.pos.x, dy = c.pos.y - d.pos.y, dd = Math.hypot(dx, dy);
   const body = c.profile.radius + d.profile.radius;
+  // The hands sweep out over the window: the reach he has now grows from where the carrier was when he started (or
+  // his torso) to the full limit at arrival. A carrier who comes inside it on the way (a fast-closing runner meeting
+  // the hands early) is reached then; one never inside it by arrival is missed.
+  const share = clamp((sim.t - r.t0) / Math.max(1e-6, r.arrive - r.t0), 0, 1);
+  const now = Math.max(body, r.start) + (r.limit - Math.max(body, r.start)) * share;
+  const inside = dd <= now && !occluded(sim, d, c) && d.body.support?.state !== 'down';
+  if (!inside && sim.t < r.arrive) return true;
+  reaches.delete(d);
   // A blocked defender's free arm may have been pinned or freed meanwhile; the reach he made is the one judged.
-  if (dd <= r.limit && !occluded(sim, d, c) && d.body.support?.state !== 'down') {
+  if (inside) {
     attempt(sim, d, c, contactQuality(dd, body, r.arms), r.engaged && !!d.engagement, r.lunged, r.limit, true);
     return true;
   }
