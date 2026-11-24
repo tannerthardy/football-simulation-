@@ -67,6 +67,8 @@ claimed: these are route-shape measurements. The completion cost of HITCH_OPEN i
    - The NFL back starts slower: 0.6 yd wide at 1.0 s against our 1.3-1.6. That is the protection scan, proposed in
      `docs/reviews/2026-11-23-release-pace.md`; the protection lane has no owner.
    - The bend is too sharp in every arm (52-66° vs 31°).
+   - Kept for the flat's rebuild (#870 closed): its finish at the sideline margin (he stops in bounds, facing the
+     quarterback, instead of climbing) is still taught and is worth keeping. The full-pace lateral run is what fails.
 
 ## Flags
 
