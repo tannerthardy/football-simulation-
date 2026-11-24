@@ -89,8 +89,25 @@ speed fell 3.2 -> 2.3. The facing request does not reach the speed, either becau
 command (the craft or the stem work) re-sets the facing, or because the caps do not bite on a lateral run. With
 FLAT_SHAPE, this is the second attempt at the flat, so it is stopped and reverted.
 
-Re-diagnose before a third attempt. Trace one staged flat's commanded facing against its body facing and speed
-through the run.
+**Traced (2026-11-24):** staged slant_flat vs Cover 3, gun trips, seeds 1-2, the H on the flat, engine-92.
+`out/dbg/flat-trace.mts` reads each stage's command.
+
+- The route command sets no facing. `RouteRunner.update`'s last stage, BALL_EST's `preLook` (out of the break he
+  gets his head round to the QB and his shoulders as far as his head cannot reach), already turns his hips toward the
+  QB from 1.0 s on:
+  - hips -3 to -15° against a travel heading of -71°, so 55-70° off his run;
+  - head (`look`) at +50 to +59°.
+
+  So FLAT_LOOK's request was already being met in the default.
+- **The speed does not pay for it.** With his hips 55-70° off his travel he accelerates to 6.2-6.4 yd/s (2.25-2.5 s),
+  against the NFL's 5.2-5.3. The body's facing speed caps do not bite at that angle. That is the facing-as-state
+  physics (Tools, QB lane), not a route rule.
+- **A glitch.** On some ticks the final commanded facing flips to the other side: -121° / -126° with the look at
+  -176° / 179°, against -3° to +4° on the ticks around them. A turn-side choice near ±180° alternates between
+  sides. It is in the look stage (`preLook` / `lookJoints` / `turnSide`), and it is worth fixing before the facing
+  work leans on it.
+- **Where the flat's speed and width gap sits:** the body letting a man run his full lateral speed with his hips 60°
+  off his run. A flat-specific rule would have to throttle him; per the project's rules that is the wrong fix.
 
 ## Flags
 
