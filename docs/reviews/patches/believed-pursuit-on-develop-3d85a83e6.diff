@@ -1,0 +1,201 @@
+diff --git a/config/baseline.json b/config/baseline.json
+index c29a10f52..7655b31ef 100644
+--- a/config/baseline.json
++++ b/config/baseline.json
+@@ -376,6 +376,7 @@
+     "QB_SCAN": "0",
+     "QB_CANON_SEEN": "0",
+     "BELIEVED_BODY": "0",
++    "BELIEVED_PURSUIT": "0",
+     "QB_SEEN_OUT": "0",
+     "QB_SEEN_REC": "0",
+     "ACC_RADIUS": "0",
+diff --git a/config/reference-stack.json b/config/reference-stack.json
+index a475c8f2e..6c07a7cf0 100644
+--- a/config/reference-stack.json
++++ b/config/reference-stack.json
+@@ -339,6 +339,7 @@
+     "QB_SCAN": "on",
+     "QB_CANON_SEEN": "on",
+     "BELIEVED_BODY": "off",
++    "BELIEVED_PURSUIT": "off",
+     "QB_SEEN_OUT": "on",
+     "QB_SEEN_REC": "on",
+     "ACC_RADIUS": "off",
+diff --git a/docs/FLAGS.md b/docs/FLAGS.md
+index f69966527..c3e7c13e9 100644
+--- a/docs/FLAGS.md
++++ b/docs/FLAGS.md
+@@ -2,7 +2,7 @@
+ 
+ Every engine switch read from the environment, recounted from `src` at `57f50fc3` on 2026-10-22. This includes #210's promotion and #205's two additional default-on switches. Flags that are not on develop (parked, removed from a PR, or only on a side branch) are kept in [PARKED.md](PARKED.md) so the ideas are not lost. Registration rules are in [PLAN.md](PLAN.md): at most 10 experimental flags, and each expires two reviews after it lands.
+ 
+-There are 508 flags read from the environment in `src` (recounted 2026-11-24, with CALL_COMPOSE (off, rules/call-compose) counted: BELIEVED_BODY (off, experimental; Flex) on top of engine-97; engine-97: engine-96 plus QB_SCAN and QB_CANON_SEEN (on, leak removals; Flex; recounted from `src`, the on count also takes in engine-96's BALL_DRAG); engine-96: engine-95 plus BALL_DRAG (on); engine-95: engine-94 plus THROWAWAY_FELT (on); engine-94: engine-93 plus FLIGHT_BREAK (on) and FLIGHT_LEAD (off, parked); engine-93: engine-92 plus HEAD_FOLLOW (on); engine-92: engine-91 plus PERIPH_ACUITY (on); engine-91: engine-90 plus STEM_WORK (on); engine-90: engine-89 plus READ_VERTICAL_LOS and BACK_CLEAR (on); engine-89: engine-88 plus FLAT_CARRY (on); engine-88: engine-87 plus FORECAST_FINISH and QB_ROLE_PATH (on), READ_WINDOW and QB_CLOSE_BELIEF (off); engine-87: engine-86 plus HALF_KEY (on); engine-86 was engine-85 plus MUSH_MATCH (on); engine-85 was engine-84 plus FLAT_SINK (on); engine-84 was engine-83 plus DOWN_RISE_PLANT (on); engine-83 was engine-82 plus QB_DRIVE, QB_RHYTHM_THROW, QB_ALIGN, QB_BODY_FOLLOW, QB_WINDOW_ARRIVE, QB_KEY_PLANT, QB_STICK, QB_PEEK_CLOCK, QB_MOF_READ, QB_DEEP_WAIT and QB_STANCE; QB_DRIVE, QB_RHYTHM_THROW, QB_WINDOW_ARRIVE, QB_KEY_PLANT and QB_STICK on): 386 are on unless set to `0`, 93 are off unless set to `1`, and 28 are numeric scales or modes (identity value unless listed in the stack's numeric section). The rows below carry each flag's history.
++There are 509 flags read from the environment in `src` (recounted 2026-11-24, BELIEVED_PURSUIT (off, experimental; Flex with Defense), with CALL_COMPOSE (off, rules/call-compose) counted: BELIEVED_BODY (off, experimental; Flex) on top of engine-97; engine-97: engine-96 plus QB_SCAN and QB_CANON_SEEN (on, leak removals; Flex; recounted from `src`, the on count also takes in engine-96's BALL_DRAG); engine-96: engine-95 plus BALL_DRAG (on); engine-95: engine-94 plus THROWAWAY_FELT (on); engine-94: engine-93 plus FLIGHT_BREAK (on) and FLIGHT_LEAD (off, parked); engine-93: engine-92 plus HEAD_FOLLOW (on); engine-92: engine-91 plus PERIPH_ACUITY (on); engine-91: engine-90 plus STEM_WORK (on); engine-90: engine-89 plus READ_VERTICAL_LOS and BACK_CLEAR (on); engine-89: engine-88 plus FLAT_CARRY (on); engine-88: engine-87 plus FORECAST_FINISH and QB_ROLE_PATH (on), READ_WINDOW and QB_CLOSE_BELIEF (off); engine-87: engine-86 plus HALF_KEY (on); engine-86 was engine-85 plus MUSH_MATCH (on); engine-85 was engine-84 plus FLAT_SINK (on); engine-84 was engine-83 plus DOWN_RISE_PLANT (on); engine-83 was engine-82 plus QB_DRIVE, QB_RHYTHM_THROW, QB_ALIGN, QB_BODY_FOLLOW, QB_WINDOW_ARRIVE, QB_KEY_PLANT, QB_STICK, QB_PEEK_CLOCK, QB_MOF_READ, QB_DEEP_WAIT and QB_STANCE; QB_DRIVE, QB_RHYTHM_THROW, QB_WINDOW_ARRIVE, QB_KEY_PLANT and QB_STICK on): 386 are on unless set to `0`, 95 are off unless set to `1`, and 28 are numeric scales or modes (identity value unless listed in the stack's numeric section). The rows below carry each flag's history.
+ 
+ **Promotion (2026-11-09):** the reference stack `run-ref-4` is now the engine's default. The 90 flags it lists `on` are read as on unless set to `0` (rows marked "promoted" below); the rest are unchanged. Decisions and evidence for each flag are in [REFERENCE_STACK.md](REFERENCE_STACK.md); `npm run ref -- --list` is the current inventory, and `npm run ref -- --off -- <command>` runs the engine as it was before. The test suites still run on the pre-promotion engine (pinned in `vitest.config.ts`) until their recorded cases are re-recorded. The counts in the paragraph above predate all of this.
+ 
+@@ -231,6 +231,7 @@ There are 508 flags read from the environment in `src` (recounted 2026-11-24, wi
+ | `QB_SCAN` | on | leak removal, on at landing (`=0` restores; Flex, 2026-11-24; QB decision plan §1.6) | quarterback | `src/sim/qbmind.ts` (`QBMind.scanned`) | his pre-snap picture is one full scan with a per-defender error drawn once per play (recognition-scaled), feeding his memory at the snap, the coverage features, the box count, the screen look and the quick check. Off: memory seeded with exact positions; four reads with independent fresh noise. |
+ | `QB_CANON_SEEN` | on | leak removal, on at landing (`=0` restores; Flex, 2026-11-24; QB decision plan §1.6) | quarterback | `src/sim/qbmind.ts` (canonical looks, `cornersSeen`) | the canonical looks use the defense's personnel slots and the front's visible alignment (front, edge, strength, mug, Sam on) only; corners are found where he sees them (on each side the widest defensive back of the visible personnel group within 12 yd of the line and 4+ yd off the ball; attempt 1's 8 yd floor and 9 yd depth cut missed 40-50% of corners on condensed trips and heavy 13 and fell to quickCheck's default; staged probe `scripts/diag/eyes/corner-find.mts`: 98-100% right in 17 looks incl. press, bunch, condensed, nub and rolled safeties, residual misses scan-only at rec <= 0.5). Off: the call object and the CB_S / CB_W labels. |
+ | `BELIEVED_BODY` | off (`=1` turns it on) | experimental (Flex, 2026-11-24; believed-body note, docs/reviews/2026-11-24-believed-body.md, step 2) | coverage (first consumers) | `src/sim/believed-body.ts` (`BeliefStore`, `believedCaps`, `lookAt`); `src/sim/behaviors/defense.ts`, `src/sim/coverage/reads.ts`; `src/game/game.ts` (one store per game, the huddle) | two reviews after it lands. A defender's read of a receiver's top speed, burst, braking and cutting is what he believes, not the man's true profile: his build seen (the engine's own build-capacity fit, `scripts/diag/belief/body-prior-fit.mts`, with one weight error per holder and man), the staff's film (truth plus one error per game, tighter with the man's snaps; none for a rookie) and his own clear looks (a plateau of seen speed held 0.6 s: a floor always, a measurement on a vertical stem; a rise from rest: his burst). Between plays the huddle passes each player's two biggest steps to his unit on the field (stated choices: 2 items, lost 0.15 - 0.13 x awareness). Consumers: man coverage (slow-play sprint test, route observation, stem acceleration, release and upfield burst, the deep cushion), zone route observation and the deep cushion, coverage/reads, the ball-reach check. Off: the man's own capacities, bit-identical. |
++| `BELIEVED_PURSUIT` | off (`=1` turns it on; needs BELIEVED_BODY) | experimental (Flex with Defense, 2026-11-24; believed-body migration step 3, outside audit #6 and #7) | pursuit, run fits | `src/sim/behaviors/common.ts` (`pursuitPoint`), `src/sim/run-fits.ts` (FORCE_BOUNCE) | two reviews after it lands. Pursuit's carrier forecast (the acceleration clamp, the relaxed speed cap and the trace) and the force player's bounce allowance read the runner's top speed, braking and burst as the pursuer believes them, and his look at the carrier feeds that belief (a carrier at speed leaves floors). Off, or without BELIEVED_BODY: the runner's true capacities. Test `test/believed-pursuit.test.ts` (the audit's staged case: equal seen speed, different hidden top speed, the same aim). |
+ | `QB_SEEN_OUT` | on | promoted 2026-11-14 (engine-63; `=0` restores); was experimental (QB lane, information rule, 2026-11-13; staged test `test/qb-seen-out.test.ts`; game rows near flat) | quarterback | `src/sim/behaviors/qb.ts` (`seenOut`, `checkRelease`, `breakClock`, `ready`) | Whether a check-release man is out on his route comes from the quarterback's own picture placing him on his installed release route (then he stays out), not from the man's behaviour object; gates the rhythm outlet, his readiness and his place in the hot order. A slow screen's settle is read from where the quarterback has the receiver. |
+ | `QB_SEEN_REC` | on | promoted 2026-11-14 (engine-63; `=0` restores); was experimental (QB lane, information rule, 2026-11-14; first build) | quarterback | `src/sim/behaviors/qb.ts` (`has`, `evaluate`, `orderReads`) | The remaining reads of his own receivers' true state use where he has them (his forecast, else his delayed picture): a receiver's side for the look-off and the hot side, the verticals' stems for the peek, the clear-look test, the fallback target point, and the man-coverage reorder (with his picture of the defender). A receiver is down when his delayed picture shows him off his feet; a block is the call or an unseen check-release man, not the engagement record. With `QB_BELIEVED_DEF` the reorder also uses the defender's believed speed and man coverage. |
+ | `ACC_RADIUS` | off | experimental (deep-window belief, 2026-11-13) | QB | `src/sim/behaviors/qb.ts` (`window`, pAcc) | set at first review. His accuracy belief's catchable radius grows with the flight and the receiver's ball skills (1.6 + 0.9 T yd) instead of a fixed 1.35: our own catches by aim miss keep about 0.6-0.9 of an on-target ball's completion at a 2 yd miss and 0.2-0.55 at 3 yd (short to long flights), where the fixed radius priced 0.33 and 0.08. To be carded beside Coverage's medium-flight ball defending (our defenders 4.5 yd from the ball at 1.2-1.8 s against the NFL's 2.8). docs/reviews/2026-11-13-qb-gather.md |
+diff --git a/src/sim/behaviors/common.ts b/src/sim/behaviors/common.ts
+index e91adcd89..f89ded4bc 100644
+--- a/src/sim/behaviors/common.ts
++++ b/src/sim/behaviors/common.ts
+@@ -10,7 +10,12 @@ import { chooseApproach } from '../approach-control.js';
+ import { onTopCushion, onTopPoint } from '../open-field.js';
+ import { withMovementObjective } from '../movement-objective.js';
+ import type { PlaySim } from '../playsim.js';
++import { believedCaps, lookAt } from '../believed-body.js';
+ 
++/** BELIEVED_PURSUIT (experimental, off; Flex with Defense, 2026-11-24; believed-body migration step 3, outside audit #6 and
++ * #7): pursuit's carrier forecast and the force player's bounce allowance read the runner's capacities as the pursuer believes
++ * them (BELIEVED_BODY's belief; needs BELIEVED_BODY), and his look at the carrier feeds that belief. */
++export const BELIEVED_PURSUIT = process.env.BELIEVED_PURSUIT === '1';
+ export const STAND: MoveCommand = { vel: { x: 0, y: 0 } };
+ 
+ export function stand(facing?: number): MoveCommand {
+@@ -147,17 +152,20 @@ export function pursuitPoint(sim: PlaySim, a: Agent, target: Agent, horizon = 3,
+   const seen = TRACK_PURSUIT ? sim.track(a, target, 1, true) : sim.see(a, target, delay);
+   const sp = Math.hypot(seen.vel.x, seen.vel.y);
+   const heading = sp > 0.1 ? norm(seen.vel) : { x: 0, y: 0 };
++  // BELIEVED_PURSUIT: the carrier's top speed, braking and burst as this pursuer believes them; his look feeds the belief.
++  if (BELIEVED_PURSUIT) lookAt(sim, a, target, seen);
++  const TB = BELIEVED_PURSUIT ? believedCaps(sim, a, target) : target.profile;
+   const older = TRACK_PURSUIT ? seen : sim.see(a, target, delay + 0.2 / Math.max(0.1, a.profile.reactionTime));
+   // Over the time actually between the two pictures he holds, which attention
+   // can stretch past the 0.2 s asked for; two pictures of the same moment show
+   // no acceleration.
+   const interval = (older.age ?? 0) - (seen.age ?? 0);
+   const acceleration = !TRACK_PURSUIT && interval > 1e-9 ? clamp((sp - Math.hypot(older.vel.x, older.vel.y)) / interval,
+-    -target.profile.brake, Math.max(0, (target.profile.vmax - sp) / target.profile.tau)) : 0;
++    -TB.brake, Math.max(0, (TB.vmax - sp) / TB.tau)) : 0;
+   // Recent acceleration is evidence for a short burst, not a promise of full
+   // speed throughout the horizon. Reassess as new motion becomes visible.
+   const tau = 0.3 + 0.3 * a.r('anticipation');
+-  const V = clamp(sp + acceleration * tau, 0, target.profile.vmax);
++  const V = clamp(sp + acceleration * tau, 0, TB.vmax);
+   const straight = (t: number): Vec2 => {
+     const d = V * t - (V - sp) * tau * (1 - Math.exp(-t / tau));
+     return { x: seen.pos.x + heading.x * d, y: clamp(seen.pos.y + heading.y * d, 0, FIELD_WIDTH) };
+@@ -192,7 +200,7 @@ export function pursuitPoint(sim: PlaySim, a: Agent, target: Agent, horizon = 3,
+     pursuer: { position: mover.pos, velocity: mover.vel, speedScale: mover.speedScale,
+       capacity: { vmax: a.profile.vmax, tau: a.profile.tau, brake: a.profile.brake, lateral: a.profile.lateral } }, observed: seen, older,
+     forecast: { model: 'fixed-observed-heading-relaxing-speed', heading, initialSpeed: sp, acceleration,
+-      speedLimit: target.profile.vmax, targetBrake: target.profile.brake, targetSprintTau: target.profile.tau,
++      speedLimit: TB.vmax, targetBrake: TB.brake, targetSprintTau: TB.tau,
+       relaxedSpeed: V, relaxationTime: tau, lateralBoundary: [0, FIELD_WIDTH] },
+     timeBias: bias, biasedTime, forecastPoint: p, leverage: lev, steeringPoint: point });
+   return point;
+diff --git a/src/sim/run-fits.ts b/src/sim/run-fits.ts
+index 536b61b27..9b496a3ac 100644
+--- a/src/sim/run-fits.ts
++++ b/src/sim/run-fits.ts
+@@ -1,4 +1,5 @@
+ /** A support contract derived from the called front AND coverage, not the run call. */
++import { believedCaps } from './believed-body.js';
+ import { gaitLag } from '../physics/kinematics.js';
+ import { clamp, type Vec2 } from '../core/vec.js';
+ import { gapY, isDeepZone, lineDepth } from '../playbook/alignment.js';
+@@ -6,7 +7,7 @@ import type { DefSlot, Gap } from '../playbook/types.js';
+ import type { Agent } from './agent.js';
+ import type { Perceived } from './perception.js';
+ import type { PlaySim } from './playsim.js';
+-import { blendApproach, chase, gatheringApproach, goTo, stand, track } from './behaviors/common.js';
++import { BELIEVED_PURSUIT, blendApproach, chase, gatheringApproach, goTo, stand, track } from './behaviors/common.js';
+ import { chooseApproach } from './approach-control.js';
+ import { CF_FLOW } from './counterfactual.js';
+ import { lineFlow, linePicture, liveGap, liveGapY } from './live-gaps.js';
+@@ -607,7 +608,11 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
+       }
+       // Behind the line nothing has declared; keep a runner's outward cut inside
+       // the reach of his own reaction.
+-      if (FORCE_BOUNCE && (premesh || seen.pos.x < sim.los - .5)) line += job.side * a.profile.reactionTime * (premesh && back ? back : c).profile.vmax;
++      // BELIEVED_PURSUIT: the runner's top speed as the force player believes it.
++      if (FORCE_BOUNCE && (premesh || seen.pos.x < sim.los - .5)) {
++        const runner = premesh && back ? back : c;
++        line += job.side * a.profile.reactionTime * (BELIEVED_PURSUIT ? believedCaps(sim, a, runner) : runner.profile).vmax;
++      }
+       const desired = forceTrack(a,seen,x,line,lineVel,job.side);
+       desired.point.y += a.mind.placementError;
+       const held = retainedForceTrack(a,desired,sim.t);
+diff --git a/test/believed-pursuit.test.ts b/test/believed-pursuit.test.ts
+new file mode 100644
+index 000000000..558d8def2
+--- /dev/null
++++ b/test/believed-pursuit.test.ts
+@@ -0,0 +1,33 @@
++// BELIEVED_PURSUIT (Flex with Defense, 2026-11-24; outside audit #7's staged case): a pursuer's forecast of the carrier does not
++// move when only the carrier's hidden top speed changes; it reads what he believes of him (with BELIEVED_BODY), not the truth.
++import { afterEach, describe, expect, it, vi } from 'vitest';
++
++afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
++
++async function aimSpread(flags: Record<string, string>) {
++  for (const [k, v] of Object.entries(flags)) vi.stubEnv(k, v);
++  vi.resetModules();
++  const { sceneSim } = await import('../src/lab/coverage-scene.js');
++  const { pursuitPoint } = await import('../src/sim/behaviors/common.js');
++  // A fresh scene for each hidden top speed, run to the same moment; only the call sees the change (pursuit keeps a commitment
++  // per pursuer, so two calls on one scene would not be independent).
++  const aimAt = (dv: number) => {
++    const sim = sceneSim({ formation: 'gun_doubles_11', coverage: 'cover3', strong: { 1: 'go' } });
++    const step = sim as unknown as { tick(): void };
++    while (sim.t < 1.5) step.tick();
++    const carrier = sim.offense.find((o) => o.slot === 'Z')!, d = sim.defense.find((x) => x.slot === 'FS')!;
++    (carrier.body.profile as { vmax: number }).vmax += dv;
++    return pursuitPoint(sim, d, carrier);
++  };
++  const lo = aimAt(-1), hi = aimAt(+1);
++  return Math.hypot(lo.x - hi.x, lo.y - hi.y);
++}
++
++describe('BELIEVED_PURSUIT: the carrier forecast reads the pursuer\'s belief', () => {
++  it('on, the carrier\'s hidden top speed does not move the aim; off, it can', async () => {
++    const on = await aimSpread({ BELIEVED_BODY: '1', BELIEVED_PURSUIT: '1', TRACK_PURSUIT: '0' });
++    const off = await aimSpread({ BELIEVED_BODY: '1', BELIEVED_PURSUIT: '0', TRACK_PURSUIT: '0' });
++    expect(on).toBeLessThan(1e-9);
++    expect(off).toBeGreaterThan(0.05); // off, the true top speed moves it
++  }, 60_000);
++});
+diff --git a/test/engine-pin.json b/test/engine-pin.json
+index 9525e4c6d..570edfd57 100644
+--- a/test/engine-pin.json
++++ b/test/engine-pin.json
+@@ -171,6 +171,7 @@
+   "test/baseline-runner.test.ts",
+   "test/belief-no-calltype.test.ts",
+   "test/believed-body.test.ts",
++  "test/believed-pursuit.test.ts",
+   "test/blind-defender.test.ts",
+   "test/blitz-creep.test.ts",
+   "test/blocker-work-picture.test.ts",
+diff --git a/test/information-guard-allowlist.ts b/test/information-guard-allowlist.ts
+index 54a4689cb..c7ce44769 100644
+--- a/test/information-guard-allowlist.ts
++++ b/test/information-guard-allowlist.ts
+@@ -36,9 +36,7 @@ export const INFORMATION_DEBT: InformationDebt[] = [
+   { file: 'src/sim/behaviors/blocking.ts', key: 'capacity.profile.vmax', reads: 1, class: 'leak', owner: 'Flex', since: '2026-11-24', why: "another player's true physical capacity in a decision; read it through believed(holder, B) (believed-body note, docs/reviews/2026-11-24-believed-body.md, §8 migration)" },
+   { file: 'src/sim/behaviors/carrier.ts', key: 'capacity.profile', reads: 1, class: 'known', owner: 'Flex', since: '2026-11-24', why: "a teammate's capacity, known from practice (believed-body decision 1), or the actor's own body under another name" },
+   { file: 'src/sim/behaviors/carrier.ts', key: 'capacity.profile.reach', reads: 2, class: 'leak', owner: 'Flex', since: '2026-11-24', why: "another player's true physical capacity in a decision; read it through believed(holder, B) (believed-body note, docs/reviews/2026-11-24-believed-body.md, §8 migration)" },
+-  { file: 'src/sim/behaviors/common.ts', key: 'capacity.profile.brake', reads: 2, class: 'leak', owner: 'Flex', since: '2026-11-24', why: "another player's true physical capacity in a decision; read it through believed(holder, B) (believed-body note, docs/reviews/2026-11-24-believed-body.md, §8 migration)" },
+-  { file: 'src/sim/behaviors/common.ts', key: 'capacity.profile.tau', reads: 2, class: 'leak', owner: 'Flex', since: '2026-11-24', why: "another player's true physical capacity in a decision; read it through believed(holder, B) (believed-body note, docs/reviews/2026-11-24-believed-body.md, §8 migration)" },
+-  { file: 'src/sim/behaviors/common.ts', key: 'capacity.profile.vmax', reads: 3, class: 'leak', owner: 'Flex', since: '2026-11-24', why: "another player's true physical capacity in a decision; read it through believed(holder, B) (believed-body note, docs/reviews/2026-11-24-believed-body.md, §8 migration)" },
++  { file: 'src/sim/behaviors/common.ts', key: 'capacity.profile', reads: 1, class: 'leak', owner: 'Flex', since: '2026-11-24', why: "another player's true physical capacity in a decision; read it through believed(holder, B) (believed-body note, docs/reviews/2026-11-24-believed-body.md, §8 migration)" },
+   { file: 'src/sim/behaviors/defense.ts', key: 'capacity.profile', reads: 1, class: 'leak', owner: 'Flex', since: '2026-11-24', why: "another player's true physical capacity in a decision; read it through believed(holder, B) (believed-body note, docs/reviews/2026-11-24-believed-body.md, §8 migration)" },
+   { file: 'src/sim/behaviors/defense.ts', key: 'capacity.profile.maxCatchHeight', reads: 1, class: 'leak', owner: 'Flex', since: '2026-11-24', why: "another player's true physical capacity in a decision; read it through believed(holder, B) (believed-body note, docs/reviews/2026-11-24-believed-body.md, §8 migration)" },
+   { file: 'src/sim/behaviors/defense.ts', key: 'capacity.profile.reach', reads: 1, class: 'leak', owner: 'Flex', since: '2026-11-24', why: "another player's true physical capacity in a decision; read it through believed(holder, B) (believed-body note, docs/reviews/2026-11-24-believed-body.md, §8 migration)" },
+@@ -57,7 +55,7 @@ export const INFORMATION_DEBT: InformationDebt[] = [
+   { file: 'src/sim/catch-choice.ts', key: 'capacity.profile.reach', reads: 1, class: 'leak', owner: 'Flex', since: '2026-11-24', why: "another player's true physical capacity in a decision; read it through believed(holder, B) (believed-body note, docs/reviews/2026-11-24-believed-body.md, §8 migration)" },
+   { file: 'src/sim/motion.ts', key: 'capacity.profile.vmax', reads: 2, class: 'known', owner: 'Flex', since: '2026-11-24', why: "a teammate's capacity, known from practice (believed-body decision 1), or the actor's own body under another name" },
+   { file: 'src/sim/qbmind.ts', key: 'capacity.profile.reactionTime', reads: 1, class: 'known', owner: 'Flex', since: '2026-11-24', why: "a teammate's capacity, known from practice (believed-body decision 1), or the actor's own body under another name" },
+-  { file: 'src/sim/run-fits.ts', key: 'capacity.profile.vmax', reads: 1, class: 'leak', owner: 'Flex', since: '2026-11-24', why: "another player's true physical capacity in a decision; read it through believed(holder, B) (believed-body note, docs/reviews/2026-11-24-believed-body.md, §8 migration)" },
++  { file: 'src/sim/run-fits.ts', key: 'capacity.profile', reads: 1, class: 'leak', owner: 'Flex', since: '2026-11-24', why: "another player's true physical capacity in a decision; read it through believed(holder, B) (believed-body note, docs/reviews/2026-11-24-believed-body.md, §8 migration)" },
+   { file: 'src/sim/run-read.ts', key: 'capacity.profile', reads: 1, class: 'leak', owner: 'Flex', since: '2026-11-24', why: "another player's true physical capacity in a decision; read it through believed(holder, B) (believed-body note, docs/reviews/2026-11-24-believed-body.md, §8 migration)" },
+   { file: 'src/sim/assign.ts', key: 'agent.behavior', reads: 25, class: 'unreviewed', owner: 'Flex', since: '2026-11-13', why: "another player's assignment or intent, which is private until he shows it" },
+   { file: 'src/sim/assign.ts', key: 'agent.pos', reads: 1, class: 'leak', owner: 'Flex', since: '2026-11-13', why: "another player's true position; read it through sim.see(a, other)" },
