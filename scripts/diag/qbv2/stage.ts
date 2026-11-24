@@ -13,7 +13,12 @@ const [concept, coverage, seedArg = '1-8', formation = 'gun_doubles_11'] = proce
 const [s0, s1] = seedArg.split('-').map(Number);
 /** The taught version Rules' plan is authored on (CONCEPT_TAUGHT is not on develop yet). */
 const TAUGHT: Record<string, { back?: string }> = { slant_flat: { back: 'check' }, quick_outs: { back: 'back_flat' } };
-const MID = { playRecognition: 60, decisionMaking: 60, awareness: 60, composure: 60, discipline: 60, anticipation: 60, consistency: 60 };
+// PASSER=<n> (the rating panel): every passing rating at n (mind and arm: the mental ratings, pocket presence, accuracy,
+// release); EXP=<n> his experience. Body ratings stay the roster's. Default: the mid passer (mental 60, experience 4).
+const PN = process.env.PASSER ? Number(process.env.PASSER) : null;
+const MID: Record<string, number> = PN === null ? { playRecognition: 60, decisionMaking: 60, awareness: 60, composure: 60, discipline: 60, anticipation: 60, consistency: 60 }
+  : Object.fromEntries(['playRecognition', 'decisionMaking', 'awareness', 'composure', 'discipline', 'anticipation', 'consistency', 'pocketPresence', 'accShort', 'accMid', 'accDeep', 'release'].map((k) => [k, PN]));
+const EXP = process.env.EXP ? Number(process.env.EXP) : 4;
 const r2 = (x: number) => Math.round(x * 100) / 100;
 type S = [number, number, number, number, number];
 const wrap = (x: number) => Math.atan2(Math.sin(x), Math.cos(x));
@@ -37,7 +42,7 @@ function atPass(sim: any, q: any, pt: any, d: any) {
 for (let seed = s0; seed <= s1; seed++) {
   const setup: any = nativeTraceSetup({ concept, coverage, seed, roster: 3, formation, flip: false });
   const t = process.env.NO_TAUGHT === "1" ? undefined : TAUGHT[concept]; if (t) setup.offCall.pass = { ...PASS_BY_ID[concept], ...t };
-  const qbP = setup.offense.QB; for (const [k, v] of Object.entries(MID)) qbP.ratings[k] = v; qbP.experience = 4;
+  const qbP = setup.offense.QB; for (const [k, v] of Object.entries(MID)) qbP.ratings[k] = v; qbP.experience = EXP;
   const sim: any = new PlaySim(setup);
   let thrown: any = null, qbb: any = null, lastT = -1; const fbk: Record<number, any> = {}; const trace: any[] = []; const tr: Record<number, S[]> = {};
   const tb = sim.throwBall.bind(sim);
