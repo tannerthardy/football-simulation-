@@ -293,8 +293,8 @@ function leverageMagnitude(a: Agent, y: number): number {
 
 /** TRAIL_LEVERAGE (experimental, off; TRAIL_LEVERAGE=1 turns it on). The second man to the ball does not run up the first
  * man's back: a pursuer who sees a teammate ahead of him on the same carrier (nearer the carrier, on his own line to
- * him, closing on him and not yet on him) keeps a full shoulder on the side that teammate does not take, instead of
- * the shade fading to nothing as he closes. When that teammate is no longer ahead of him in his picture (beaten,
+ * him, closing on him and not yet on him) takes his shoulder on the side that teammate does not take, rather than
+ * the same side; it fades with his distance as every pursuer's shade does, so the two men converge from either side. When that teammate is no longer ahead of him in his picture (beaten,
  * passed, off the line, or on the carrier), the trail is released and the ordinary fading shade brings him in.
  *
  * Why (test/pursuit-commit.test.ts's 3-8 yd band on #882 2de8a3c98, intents before/after the spacing pass): the
@@ -306,7 +306,7 @@ function leverageMagnitude(a: Agent, y: number): number {
  * lead is a decision with margins: enter nearer by 0.5 yd, within 45 deg of his own line to the carrier; exit when no
  * longer nearer, beyond 60 deg, moving away from the carrier, or on him (within contact). The side is decided on entry
  * (away from the lead's side of the carrier; his ordinary leverage side when the lead is square behind him) and held
- * until the lead shows 0.5 yd on that side. Magnitude: the existing leverage magnitude (no new constant). */
+ * until the lead shows 0.5 yd on that side. Magnitude: the existing leverage magnitude and distance fade (no new constant). */
 export const TRAIL_LEVERAGE = process.env.TRAIL_LEVERAGE === '1';
 const LEAD_ENTER = 0.5, LEAD_ANGLE_IN = Math.PI / 4, LEAD_ANGLE_OUT = Math.PI / 3, SIDE_MARGIN = 0.5;
 const trailState = new WeakMap<Agent, { target: Agent; lead: Agent | null; side: number; t: number; out: number | null }>();
@@ -344,7 +344,10 @@ function trailShade(sim: PlaySim, a: Agent, target: Agent, seenC: { pos: Vec2 },
     }
   }
   s.t = sim.t;
-  s.out = s.lead ? s.side * leverageMagnitude(a, seenC.pos.y) : null;
+  // The trail man's shoulder fades with his own distance, as every pursuer's does, so he still closes to finish; it is
+  // only on the other side from the lead. (Attempt 1 held it unfaded: catch attempts from trail went in from 1.19 yd
+  // and missed 15% vs 4%, and with the second man held 1.6 yd wide the lead's run attempts missed 28% vs 15%.)
+  s.out = s.lead ? s.side * leverageMagnitude(a, seenC.pos.y) * clamp((dA - contact) / 6, 0, 1) : null;
   if (s.lead) a.tags.add('trail-leverage');
   return s.out;
 }
