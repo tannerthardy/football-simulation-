@@ -23,6 +23,59 @@ import { hasVisibleCap } from './judgment.js';
 import { FIELD_WIDTH } from '../../core/field.js';
 
 export const APEX_LEVERAGE = Number(process.env.APEX_LEVERAGE ?? 7);
+/** HOOK_EXPAND (experimental, off; HOOK_EXPAND=1 turns it on): the back belongs to the hook (the Mike in Cover 3 and
+ * quarters, the hook whose #3 is the back) unless he is the flat threat of a flat seat that can take him. When the back
+ * he reads declares to the flat (his own read of the release, 2+ yd outward), on a side where no flat seat is free for
+ * him (no curl-flat / flat seat on that side by the call, or the one there seen carrying a vertical in his area), the
+ * hook expands with him as man, inside-out (ManCoverage, under MAN_BACK the squeeze from the line while the back is
+ * behind it); held until the back is 15 yd deep. The taught limit: not while a crosser comes across his face (seen in
+ * his window, 2-12 yd deep within 6 yd of him, running at the ball 2+ yd/s) or a #3 vertical in it, which are his
+ * first. Off, a back released to the flat on such a side was nobody's by the call: on Coverage's #872 base, 37 open-flat
+ * catches in 24 games had no seat's landmark within 9 yd, 78% of them backs (flat_open_report.py, class (a)). */
+export const HOOK_EXPAND = process.env.HOOK_EXPAND === '1';
+/** HOOK_EXPAND: whether a flat seat is free for a back released flat to the side `sign` (+1 = +y of the ball). */
+function flatSeatFree(c: RuleCtx, sign: number): boolean {
+  const sim = c.sim;
+  for (const d of sim.defense) {
+    if (d === c.a) continue;
+    const role = (sim.defAlign.spots as Record<string, { role?: { kind: string; zone?: string } }>)[d.slot]?.role;
+    const z = role?.kind === 'zone' ? role.zone ?? '' : '';
+    if (!z.startsWith('curl_flat') && !z.startsWith('flat')) continue;
+    const dp = sim.see(c.a, d).pos;
+    if ((dp.y - sim.ballY) * sign <= 0) continue;
+    // Occupied: he is carrying a climbing receiver in his area, as the hook sees them both.
+    const busy = sim.offense.some((r) => {
+      if (r === sim.qb || ['LT', 'LG', 'C', 'RG', 'RT'].includes(r.slot)) return false;
+      const rp = sim.see(c.a, r);
+      return rp.pos.x - sim.los > 3 && rp.vel.x > 2 && Math.hypot(rp.pos.x - dp.x, rp.pos.y - dp.y) < 4;
+    });
+    if (!busy) return true;
+  }
+  return false;
+}
+/** HOOK_EXPAND: his window holds a crosser coming at the ball or a #3 vertical (his first priorities). */
+function windowBusy(c: RuleCtx, back: Agent): boolean {
+  const sim = c.sim, me = c.a.pos;
+  return sim.offense.some((r) => {
+    if (r === back || r === sim.qb || ['LT', 'LG', 'C', 'RG', 'RT'].includes(r.slot)) return false;
+    const rp = sim.see(c.a, r), depth = rp.pos.x - sim.los;
+    if (depth < 2 || depth > 12 || Math.abs(rp.pos.y - me.y) > 6) return false;
+    const atBall = Math.sign(sim.ballY - rp.pos.y) * rp.vel.y;
+    return atBall > 2 || rp.vel.x > 3;
+  });
+}
+/** HOOK_EXPAND: the hook's directive for a back he reads released to the flat, or null. */
+function hookExpand(c: RuleCtx, b: ReceiverRead | null): Directive | null {
+  if (!HOOK_EXPAND || !b || c.state.mode === 'zoned') return null;
+  if (c.state.mode === 'expand') {
+    if (b.depth < 15) return man(b, { lev: 'inside' });
+    c.state.mode = 'zoned'; return null;
+  }
+  if (b.release !== 'flat' || b.outward < 2 || flatSeatFree(c, b.outSign) || windowBusy(c, b.r)) return null;
+  c.state.mode = 'expand';
+  c.a.tags.add('hook-expand');
+  return man(b, { lev: 'inside' });
+}
 /** CUT_WALL (experimental, off; CUT_WALL=1): a hook defender walls a shallow crosser from his own area and passes him
  * to the next dropper ("collision and pass"), square to the QB at his window depth, instead of jumping him and carrying
  * him man head-up 8 yd past his area. The low-hole rat (whose job is the crosser) keeps the jump. */
@@ -395,6 +448,9 @@ function c3Hook(c: RuleCtx): Directive {
     if (three.depth < 15) return man(three, { lev: 'inside' });
     c.state.mode = 'zoned';
   }
+  // HOOK_EXPAND: his #3 is the back (no #3 on his side) and the back goes to a flat no seat is free for.
+  const exp = !ref(c, 3) ? hookExpand(c, backTo(c)) : null;
+  if (exp) return exp;
   return cut(c) ?? zoneOf(c);
 }
 
@@ -406,7 +462,7 @@ function mike3(c: RuleCtx): Directive {
     if (b.depth < 15) return man(b, { lev: 'inside' });
     c.state.mode = 'zoned';
   }
-  return cut(c) ?? (APEX_LEVERAGE & 4 ? mikeWiden(c, b) : null) ?? zoneOf(c);
+  return hookExpand(c, b) ?? cut(c) ?? (APEX_LEVERAGE & 4 ? mikeWiden(c, b) : null) ?? zoneOf(c);
 }
 
 /** APEX_LEVERAGE 4: the quarters Mike widens to the hook on the side he sees the back release flat, so the apex
