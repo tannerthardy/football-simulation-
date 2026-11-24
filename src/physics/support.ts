@@ -127,8 +127,8 @@ export function supportParams(p: PhysicalProfile): SupportParams {
   return {
     comHeight: 0.55 * p.heightYd,
     // Wider, heavier bases resist more before a step is needed.
-    baseRadius: 0.11 + 0.05 * balance + 0.04 * clamp((p.massKg - 90) / 60, 0, 1),
-    stepSpeed: p.stepSpeed ?? 3.2,
+    baseRadius: (0.11 + 0.05 * balance + 0.04 * clamp((p.massKg - 90) / 60, 0, 1)) * Number(process.env.SCRATCH_CRIT_SCALE ?? 1),
+    stepSpeed: (p.stepSpeed ?? 3.2) * Number(process.env.SCRATCH_CRIT_SCALE ?? 1),
     bend: p.bend ?? 0.5,
     getUp: p.getUp ?? 0.9,
     yawInertia: p.massKg * (0.5 * p.radius) ** 2,
