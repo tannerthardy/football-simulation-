@@ -74,3 +74,18 @@ By throw type (release / arrival p50, NFL → ours):
      touch when the window is open and the receiver is moving.
 4. **Flight time:** in the 5–10 band the NFL flies 0.90 s over 18.4 yd, ours 0.70 over 16.0, a shorter release-to-catch
    distance.
+
+## Revision (2026-11-24, Tools/Physics' drag reconciliation)
+
+Tools/Physics reconciled the drag reading (docs/reviews/2026-11-24-ball-drag-reconciliation.md, tools/open-census
+04eb1b5a8): the NFL ball's speed decay roughly doubles in the last 0.6 s before pass_arrived, in completions and
+incompletions alike, and the catch adds more in the last 0.3 s of completions.
+- **The drag figure above over-reads.** A slope through arrival over-reads drag. With the last 0.6 s excluded, k is
+  0.0047–0.0057 /yd on 20+ yd throws (C_D about 0.15–0.19). The 0.0095 above is inconsistent with the tracked releases:
+  it needs 23.4–25.1 yd/s where they are 22.7–22.8.
+- **The conclusion to carry** is k about 0.005 against our 0.003, not 0.008–0.011. The late tail is not drag.
+- **The arrival column.** `ball_flight.py`'s arrival window (the 0.2 s ending one frame before pass_arrived) sits inside
+  that tail on both sides. Its arrival speeds are the speed after the tail, not at contact.
+- **Unchanged:** the release-speed comparison, the operator, and the observation that he takes no pace off short
+  throws.
+- QB_DRIVE's launch is solved through DRAG_SPIRAL (solveLaunch), so a changed constant re-derives the release by itself.
