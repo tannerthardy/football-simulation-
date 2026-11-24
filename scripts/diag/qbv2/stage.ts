@@ -25,6 +25,15 @@ function breakAt(P: S[], stop: boolean): number | null {
   for (let k = 3; k < P.length - 2; k++) { if (sp[k - 2] < 2 || sp[k + 2] < 2) continue; const d = Math.abs(wrap(Math.atan2(P[k + 2][4], P[k + 2][3]) - Math.atan2(P[k - 2][4], P[k - 2][3]))); if (d > best) { best = d; kb = k; } }
   return kb >= 0 && best > 25 * Math.PI / 180 ? P[kb][0] : null;
 }
+/** Where a judged defender is when the ball leaves (truth, measurement only): to the catch point, to the ball's line from
+ * the passer, and whether his body faces the passer (within 60 deg), so the plays-the-ball share can be split by them. */
+function atPass(sim: any, q: any, pt: any, d: any) {
+  if (!pt) return {};
+  const ax = pt.x - q.pos.x, ay = pt.y - q.pos.y, L2 = ax * ax + ay * ay, u = Math.max(0, Math.min(1, ((d.pos.x - q.pos.x) * ax + (d.pos.y - q.pos.y) * ay) / L2));
+  const toQ = Math.atan2(q.pos.y - d.pos.y, q.pos.x - d.pos.x), f = d.facing ?? Math.atan2(d.vel.y, d.vel.x);
+  return { dPt: r2(Math.hypot(d.pos.x - pt.x, d.pos.y - pt.y)), dLine: r2(Math.hypot(d.pos.x - q.pos.x - u * ax, d.pos.y - q.pos.y - u * ay)), alongU: r2(u),
+    faces: Math.abs(wrap(f - toQ)) < Math.PI / 3, spd: r2(Math.hypot(d.vel.x, d.vel.y)) };
+}
 for (let seed = s0; seed <= s1; seed++) {
   const setup: any = nativeTraceSetup({ concept, coverage, seed, roster: 3, formation, flip: false });
   const t = TAUGHT[concept]; if (t) setup.offCall.pass = { ...PASS_BY_ID[concept], ...t };
@@ -38,7 +47,7 @@ for (let seed = s0; seed <= s1; seed++) {
         dist: r2(Math.hypot((intended?.x ?? q.pos.x) - q.pos.x, (intended?.y ?? q.pos.y) - q.pos.y)), qbSpeed: r2(Math.hypot(q.vel.x, q.vel.y)) };
       const ref = target ? Object.entries(sim.offAlign.numbering).find(([, sl]) => sl === target.slot)?.[0] : null;
       const v2 = qbb?.v2;
-      if (v2 && ref) { const j = v2.judgedFor(ref); thrown.belief = j ? { P: r2(j.P), risk: r2(j.risk) } : null; thrown.roles = (v2.lastRoles.get(ref) ?? []).map((x: any) => ({ id: x.id, role: x.role, pA: r2(x.pArrive) })); }
+      if (v2 && ref) { const j = v2.judgedFor(ref); thrown.belief = j ? { P: r2(j.P), risk: r2(j.risk) } : null; thrown.roles = (v2.lastRoles.get(ref) ?? []).map((x: any) => ({ id: x.id, role: x.role, pA: r2(x.pArrive), pPick: r2(x.pPick), ...atPass(sim, q, intended, sim.agents[x.id]) })); }
     }
     return tb(q, target, v0, intended, arrivalT, ...rest);
   };
@@ -78,6 +87,6 @@ for (let seed = s0; seed <= s1; seed++) {
     pre: qbb?.v2?.presnap ? { flip: qbb.v2.presnap.flip, start: qbb.v2.presnap.startRead, look: qbb.v2.presnap.look ? { shell: qbb.v2.presnap.look.shell, over: Object.fromEntries(Object.entries(qbb.v2.presnap.look.over ?? {}).map(([k, v]: any) => [k, v ? { cushion: v.cushion, press: v.press, lev: v.leverage } : null])) } : null } : null,
     ball: thrown?.at ?? null, dist: thrown?.dist ?? null, qbSpeed: thrown?.qbSpeed ?? null,
     catchEv: [...new Set(ev.filter((e) => thrown && e.t >= thrown.t && ['catch', 'drop', 'miss', 'pbu', 'deflection', 'interception', 'incomplete', 'secure'].includes(e.type)).map((e) => `${e.type}:${sim.agents[e.a]?.team === sim.qb.team ? 'O' : 'D'}${sim.agents[e.a]?.slot ?? ''}`))],
-    belief: thrown?.belief ?? null, roles: (thrown?.roles ?? []).map((r: any) => ({ ...r, arrived: !!r.arrived || ev.some((e) => ['pbu', 'deflection', 'interception'].includes(e.type) && e.a === r.id), slot: sim.agents[r.id].slot })),
+    belief: thrown?.belief ?? null, roles: (thrown?.roles ?? []).map((r: any) => ({ ...r, arrived: !!r.arrived || ev.some((e) => ['pbu', 'deflection', 'interception'].includes(e.type) && e.a === r.id), slot: sim.agents[r.id].slot, picked: ev.some((e) => e.type === 'interception' && e.a === r.id), played: ev.some((e) => ['pbu', 'deflection', 'interception'].includes(e.type) && e.a === r.id) })),
     intents: qbb?.v2Intents ?? null, trace }));
 }
