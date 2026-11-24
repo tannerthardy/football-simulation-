@@ -27,7 +27,7 @@ My recommendation is the simplest law that is consistent with the evidence: **on
 
 ## What the measurement can and cannot separate
 
-- It is 2D horizontal speed from 10 Hz positions: speed along the ground equals v cos(flight angle), so it falls with drag (dv_h/ds = -k v v_h / v... for the horizontal component the same relative decay as v) but also carries tracker smoothing and noise (the QB lane says release frames are noisy, p90 above 30 yd/s, and uses mid-flight onward).
+- It is 2D horizontal speed from 10 Hz positions: speed along the ground is v cos(flight angle); its relative decay with drag is dv_h / v_h = -k ds along the path (so the path, a little longer than the horizontal distance on a lofted ball, is the distance to use), and it carries tracker smoothing and noise (the QB lane says release frames are noisy, p90 above 30 yd/s, and uses mid-flight onward).
 - Wind (unmeasured, the games' mean headwind is not zero for a given pass; it adds variance and, on one-sided stadium samples, bias), air density (altitude, temperature), a wet ball, and the ball's attitude are not separable: **the tracking measures a path-averaged effective C_D A, not an angle of attack.**
 - The arrival frame: on both sides the speed at the arrival frame is not a ball speed (ours jumps to the catcher on `pass_arrived`; the NFL's `pass_arrived` falls after the catch on many plays and gives a speed of 5 yd/s). The QB lane excludes it.
 - Selection: passes with a mid-flight and an arrival sample are the longer ones.
