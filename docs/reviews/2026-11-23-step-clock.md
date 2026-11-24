@@ -334,3 +334,11 @@ an information leak in it (decision-information-scan: the head-turn allowance re
 the allowance now turns toward his picture of the man (`this.mind.estimate(read).pos`). The sack runs above were taken
 before that change; it moves only the head-turn allowance. Red-diff (alone): tests run 4453; failing 59; on the ledger 59;
 new red 0, fixed 0.
+
+### Landing refreshed at engine-95 on develop e5c6db5c9 (FLIGHT_BREAK merged)
+
+`patches/engine71-footwork/step-clock-landing-on-e5c6db5c.patch` (sha256 19b4a68d06f2; `git apply --check` clean on e5c6db5c9;
+typecheck clean). The r2 code and test hunks apply unchanged; registration redone on engine-94's files: QB_STEP_CLOCK
+(baseline "0", stack "on"), READ_WINDOW "on", stack id engine-95, docs/FLAGS.md 503 flags (384 on, 91 off, 28 numeric),
+REFERENCE_STACK engine-95 section (with the resolving-look line). Red-diff (alone): tests run 4453; failing 58; on the
+ledger 58; new red 0, fixed 0.
