@@ -24,6 +24,12 @@ So the ball covers the (4.58 - 0.75) = 3.83 yd to his hands in 0.70 s: **5.5 yd/
 `SNAP_FLIGHT=1`: `snapSecured = (d - 0.75) / 5.5 + SNAP_SECURE` for d >= 2 yd (4.6 yd: 0.80 s secured); off, unchanged. Readers (every gun play): `plannedSnapAt` (the QB's drop clock and the called pocket schedule the linemen know: `called-drop.ts`) and the gun back's handoff pacing and the mesh (`assign.ts`).
 It moves the passer's clock by +0.30 s on every gun dropback, the mesh on gun runs, and the rush's reference timing. The QB lane's quick drift was set from the secure (their 1.1 s) against the NFL's set at 1.6 s from the snap, so it comes down by the same 0.30 s.
 
+## What is measured and what is a choice (Integration's question: why 0.80 against the measured 0.70)
+
+- **Measured:** 0.70 s (p25-p75 0.6-0.8) from the snap event to the ball **within 0.75 yd of the QB** (first touch), over 4.58 yd: 5.5 yd/s over the 3.83 yd to that point.
+- **A choice, not measured:** the 0.1 s `SNAP_SECURE` that seats the ball in his hands after first touch, GUN_SNAP's own constant, kept. **The total 0.80 s is the 0.70 s first touch plus the 0.10 s seat.** If "secured" is defined as the same 0.75 yd rule the QB lane used, the secure is 0.70 s and `SNAP_SECURE` would be 0 (a one-constant change); the QB lane's 0.49 s for ours is the model's `snapSecured`, which already includes the seat, so the like-for-like comparison is NFL 0.70 (first touch) against ours 0.40 (first touch), or 0.80 against 0.50 with the seat on both.
+- **Coupling that moves with it:** `QB_EXTEND` (0.6 s, the QB's handoff action) was derived from the measured gun handoff at 1.2 s after the snap event (0.1 s of it the event's lag): 1.1 - the old secure 0.50 = 0.6. With the secure at 0.80 and `QB_EXTEND` unchanged the gun handoff would move to 1.4 s, 0.2 s *past* its measurement. `gunHandoffReady` re-derives it the same way under the flag: `max(secure + 0.2, 1.1)` = 1.1 s at the 4.6 yd snap, so **the gun runs' handoff does not move** and the +0.30 s lands on the passer's clock and the called pocket schedule only.
+
 ## Caveat
 
 The 0.75 yd threshold is mine (the QB lane's Part 2 used the same). The seat time after it (0.1 s) is `SNAP_SECURE`, kept; no measure of it exists in tracking. Tracking is 0.1 s; positions are quantised to 0.1 yd.

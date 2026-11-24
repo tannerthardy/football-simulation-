@@ -24,7 +24,7 @@ import { BallCarrier } from './behaviors/carrier.js';
 import { goTo, stand } from './behaviors/common.js';
 import { Blitzer, FumbleScramble, ManCoverage, PassRusher, Pursuit, ZoneCoverage } from './behaviors/defense.js';
 import { QBHandoff, QBPass } from './behaviors/qb.js';
-import { GUN_SNAP, QB_EXTEND, snapSecured } from './ball-transfer.js';
+import { GUN_SNAP, gunHandoffReady } from './ball-transfer.js';
 import { ConvoyCue, DownfieldBlocker, RCV_SEEN, RouteRunner, TrackBall } from './behaviors/receiver.js';
 import { ScreenBlocker } from './behaviors/screen.js';
 import { LOOSE_SEEN, looseSeenStart, possessionSeenStart } from './behaviors/loose-seen.js';
@@ -310,7 +310,7 @@ export function assignBehaviors(sim: PlaySim): void {
     if (rb) rb.behavior = new RunBlocker({ kind: 'climb', target: null, drive: { x: 1, y: 0 } });
   } else {
     qb.behavior = new QBHandoff(mesh.qb, mesh.time, rb, mesh.pitch, false, mesh.ballPoint,
-      GUN_SNAP && GUN_MESH && sim.offCall.formation.qb === 'gun' ? snapSecured(qb.pos, { x: sim.los, y: sim.ballY }) + QB_EXTEND : undefined);
+      GUN_SNAP && GUN_MESH && sim.offCall.formation.qb === 'gun' ? gunHandoffReady(qb.pos, { x: sim.los, y: sim.ballY }) : undefined);
     if (rb) rb.behavior = new RunnerToMesh(mesh.rb, mesh.time, mesh.aim, mesh.ride, mesh.through ?? 0, GUN_MESH_GO && !!mesh.ballPoint);
   }
   for (const a of sim.offense) {
@@ -420,7 +420,7 @@ function meshFor(sim: PlaySim, concept: RunConcept): Mesh {
   // GUN_SNAP: the gun back paces to the QB's readiness he can foresee: the snap
   // secured in the QB's hands plus his own handoff action (QB_EXTEND), not an
   // installed per-concept mesh time.
-  if (GUN_SNAP && GUN_MESH && qbType === 'gun') time = snapSecured(sim.qb.pos, { x: los, y: by }) + QB_EXTEND;
+  if (GUN_SNAP && GUN_MESH && qbType === 'gun') time = gunHandoffReady(sim.qb.pos, { x: los, y: by });
   if (concept.scheme === 'toss') {
     qb = { x: los - 1.8, y: by + ps * 0.6 };
     rb = { x: los - 5.5, y: by + ps * 4.0 };

@@ -20,6 +20,15 @@ describe('snapSecured', () => {
     expect(snapSecured({ x: -1, y: 0 }, spot)).toBe(0);
     expect(snapSecured({ x: -7, y: 0 }, spot)).toBeGreaterThan(snapSecured({ x: -4.6, y: 0 }, spot));
   });
+  it('the gun handoff: off, secure + QB_EXTEND (1.1 s at 4.6 yd); on, held at the measured 1.1 s (the floor secure + 0.2 s)', async () => {
+    vi.stubEnv('SNAP_FLIGHT', '0'); vi.resetModules();
+    const off = await import('../src/sim/ball-transfer.js');
+    expect(off.gunHandoffReady({ x: -4.6, y: 0 }, spot)).toBeCloseTo(4.6 / 11.5 + 0.1 + off.QB_EXTEND, 12);
+    vi.stubEnv('SNAP_FLIGHT', '1'); vi.resetModules();
+    const on = await import('../src/sim/ball-transfer.js');
+    expect(on.gunHandoffReady({ x: -4.6, y: 0 }, spot)).toBeCloseTo(1.1, 12);
+    expect(on.gunHandoffReady({ x: -9, y: 0 }, spot)).toBeCloseTo(on.snapSecured({ x: -9, y: 0 }, spot) + 0.2, 12);
+  });
   it('on: the drop clock and the called pocket schedule read it', async () => {
     vi.stubEnv('SNAP_FLIGHT', '1'); vi.resetModules();
     const { plannedSnapAt } = await import('../src/sim/called-drop.js');
