@@ -102,6 +102,37 @@ disguise awareness. A fooled read is a wrong starting point he then has to recov
 
 No rating sets the outcome directly.
 
+### 6.1 Margins (stated choices, not fitted numbers)
+
+Each pick compares two values from his own picture against a margin. The margins below are our coaching choices. They
+are labelled `MARGIN_*` constants in B with a comment that says so, and they are not tuned against any NFL number.
+
+| margin | value | why this size |
+|---|---|---|
+| `MARGIN_CUSHION` | 1.0 yd | About one corner backpedal step; a smaller difference does not change the answer for a hitch or quick out. |
+| `MARGIN_SHELL` | 0.1 around P(single-high) 0.5 | Below that he has no read; he keeps the authored side. |
+| `MARGIN_LEVERAGE` | 0.5 yd lateral (inside / head-up / outside of the keyed receiver) | Matches the head-up band the key rules already use. |
+| `MARGIN_HOT_SIDE` | 0.5 defender | 'either' when the two sides' surpluses are within it. |
+
+Every pick is made once, at the snap (§1), so a margin only has to separate a near-tie from a clear call. It does not
+need an exit margin, because nothing is re-scored afterwards.
+
+### 6.2 Near the margin for a low-rated passer
+
+For a poor reader, his scan error (up to 1.3 yd deep at rec 0) is comparable to the cushion margin, so on a close
+call he sometimes picks the wrong side. What follows:
+- **He commits.** He takes the flipped plan and the cycle starts on it. Nothing in B re-opens the pick after the snap,
+  so a near-margin picture cannot flicker between sides.
+- **He pays for it in the cycle, not in B.** Module C reads the real coverage after the snap; a wrong side means read 1
+  is covered more often, he moves on a step later, and the clock and the pressure state charge him for it. That is
+  the cost of a misread.
+- **No special case.** There is no rule that a poor passer "sometimes picks wrong". The wrong pick comes only from
+  his larger error meeting a near-tie, so it falls off with the true difference and with recognition. Validation
+  (§7, cushion) shows that slope.
+
+The same holds for the shell pick (a disguised rotation fools the belief, he flips to the wrong side and pays in the
+cycle) and for the hot count (a man at the box's edge counted in has him looking for a rusher who does not come).
+
 ## 7. Validation (before games)
 
 Staged first, then the calibration operator.
@@ -111,8 +142,13 @@ Staged first, then the calibration operator.
 - **Shell:** flip correctness against the played shell, by recognition and disguise.
 - **Hot:** `over` against the true surplus at the snap. Its error, by recognition, is concentrated near the box's
   edge.
-- **Honesty:** with B on, no `PreSnapState` field changes when a defender's slot label, tag or call is permuted while
-  every position is held.
+- **Honesty (standing test):** with B on, no `PreSnapState` field changes when a defender's slot label, tag or call
+  is permuted while every position is held. This lives in `test/` as a standing contract, not a one-off check, and
+  covers QBMind's own pre-snap features under `QB_CANON_SEEN` as well.
+  - Permutations: swap slot labels between defenders, swap the coverage call for one with the same alignment, and
+    clear tags.
+  - Fixture: the same staged pre-snap fixture across press, bunch, condensed and rolled-safety looks, so it also
+    guards the corner rule.
 - **Dither:** a dither-budget pass.
 
 NFL: BDB has no QB pre-snap intent, so the comparisons stay at the throw-level outcomes the QB lane already measures.
