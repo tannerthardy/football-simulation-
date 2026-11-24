@@ -395,11 +395,21 @@ const aimFor = new WeakMap<Agent, Aim>();
 function chooseAim(d: Agent, cp: Vec2, cv: Vec2, engaged: boolean, lunging: boolean): Aim {
   const sup = d.body.support, a = sup ? availability(sup, supportParams(d.profile), fatigueFactor(d.body.energy)) : 1;
   const err = (2 - a) * (1.3 - 0.6 * d.r('tackling'));
+  // Stated choices, not fitted. Legs share is the World's hold height: 0 the shoulder line, 0.5 the waist (belt), 1 the
+  // legs at the feet (com x (1 - 0.55 legs) below the waist; upperHoldHeight above it). Means: the taught contact for the
+  // situation (Rules + Coaching 2026-11-24, docs/reviews/2026-11-24-tackle-aim-point.md on #869). Spreads: gripReach's
+  // own per-situation spreads (inherited), times WHIFF_MARGIN's execution law (inherited).
+  //  - 0.35 off a block: what one free arm reaches at the side (gripReach's engaged mean).
+  //  - 1 at full stretch: the feet and ankles, the 'tap' (gripReach's lunge spread 0.15).
   if (engaged) return { mean: 0.35, sd: 0.12 * err, region: 'free arm' };
   if (lunging) return { mean: 1, sd: 0.15 * err, region: 'feet' };
   const cs = Math.hypot(cv.x, cv.y), rx = cp.x - d.pos.x, ry = cp.y - d.pos.y, rd = Math.hypot(rx, ry) || 1;
   // +1: the carrier running at him; -1: he is behind the carrier (attempt's cosA, from his picture).
   const cosA = cs > 0.5 ? -(cv.x * rx + cv.y * ry) / (cs * rd) : 1;
+  //  - 0.6 behind: the hips or legs, between the hip line (0.5) and the thighs (0.7), the taught 'hips/legs'.
+  //  - 0.7 in front: the thighs, below the hip line, above the knee (the taught contact point).
+  //  - 0.5 side-on: the near hip, the belt line (Quinn's 'epicentre').
+  // The side/front/behind split is attempt's own cosA bands (0.3), from his picture of the carrier's travel.
   if (cosA < -0.3) return { mean: 0.6, sd: 0.18 * err, region: 'hips/legs' };
   if (cosA > 0.3) return { mean: 0.7, sd: 0.12 * err, region: 'thigh' };
   return { mean: 0.5, sd: 0.12 * err, region: 'near hip' };
