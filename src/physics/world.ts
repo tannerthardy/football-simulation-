@@ -343,6 +343,26 @@ const LEAN_PITCH = process.env.LEAN_PITCH !== '0';
  * unchanged, and the runner's side of the row is unchanged. */
 const GRASP_ARM_MOMENT = process.env.GRASP_ARM_MOMENT !== '0';
 const POSTURE_RATE = 2.5;
+/** POSTURE_HOLD (experimental, off; POSTURE_HOLD=1; =hold keeps only the hold, for the card's diagnosis; docs/reviews/2026-11-24-blocking-phase1-design.md
+ * section 3). Pad level under load, for a man in a hands joint. Two stated choices, one shape:
+ *  - Leg force at a pad level. The legs push through the knee-torque-angle curve (isometric knee extensor torque peaks near 70 degrees of flexion,
+ *    Pincivero et al. 2004; a set lineman pushes best with hip and knee near 120 degrees, Martin and Beckham 2020), so an engaged man's push is
+ *    `LEG_ANGLE_FLOOR + (1 - LEG_ANGLE_FLOOR) x posture` of his leg force: standing tall gives up leg force, playing low gives it back. Not applied to a
+ *    man in the open (the gait has its own force-velocity law). The deepest posture (1.0) is already near the strongest angle, so there is no
+ *    force cost to playing lower (the cost is mobility, MOBILITY below).
+ *  - A hold. The vertical load the opponent's pad line puts on him (liftFelt, positive = lifting him) is carried by his legs at that angle,
+ *    `HOLD_K x leg drive x the same shape`. Past that, the unheld part, as a share of his weight, moves his pads at up to POSTURE_RATE per second
+ *    (he is stood up if the opponent is below him, sunk if the opponent presses down): at an unheld share of HOLD_FULL of his weight, the full rate.
+ *    The work is the lift force times the pad-height change, charged to the opponent's energy (the lifter). The pair's vertical load stays equal and
+ *    opposite (liftImp), so nothing is created.
+ * MOBILITY: playing low costs first step and quickness, a stated choice (the force cost of playing low is none: posture 1.0 is already near the strongest angle):
+ * the leg drive of an engaged man across his facing is scaled by `1 - MOBILITY_COST x posture x sin^2(angle off his facing)` (MOBILITY_COST 0.3, a choice;
+ * `MOBILITY_COST=0` removes it), so a low man pushing straight on pays nothing and a low man beaten across his face pays most. */
+const POSTURE_HOLD_ENV = process.env.POSTURE_HOLD ?? '0';
+const POSTURE_HOLD = POSTURE_HOLD_ENV !== '0' && POSTURE_HOLD_ENV !== '';
+const LEG_ANGLE_ON = POSTURE_HOLD && POSTURE_HOLD_ENV !== 'hold';
+const LEG_ANGLE_FLOOR = 0.7, HOLD_K = 1, HOLD_FULL = 0.25, MOBILITY_COST = Number(process.env.MOBILITY_COST ?? 0.3);
+const legAngle = (posture: number): number => LEG_ANGLE_FLOOR + (1 - LEG_ANGLE_FLOOR) * posture;
 const DEFAULT_POSTURE = 0.2;
 const FALL_TIP = 3;
 const FALL_FRICTION = 0.25;
@@ -1503,6 +1523,20 @@ export class World {
     return fraction;
   }
 
+  /** POSTURE_HOLD's mobility cost: 1 off, else `1 - MOBILITY_COST x posture x sin^2(angle off his facing)` for an engaged man's leg drive along `angle`. */
+  private lowAcross(engaged: boolean, posture: number, facing: number, angle: number): number {
+    if (!POSTURE_HOLD || !engaged || MOBILITY_COST === 0) return 1;
+    const s = Math.sin(this.facingDelta(facing, angle));
+    return 1 - MOBILITY_COST * clamp(posture, 0, 1) * s * s;
+  }
+
+  /** The index of the other body in the first live hands joint on body `i` (POSTURE_HOLD's lifter), -1 if none. */
+  private handsPartner(i: number): number {
+    const b = this.bodies[i];
+    for (const j of this.joints) if (j.kind === 'hands' && !j.off && (j.a === b || j.b === b)) return this.indexOf(j.a === b ? j.b : j.a);
+    return -1;
+  }
+
   /** Common recovery allocation, including the analytic unheld path. The
    * body's finite compliance comes from its profile, not unused effort:
    * exhausting active drive cannot make a weak grip infinitely effective. */
@@ -2101,8 +2135,10 @@ export class World {
     // Friction on the actual normal load: standing weight less any contact lift.
     const muScale = TURF_MU_SCALE !== 1 && this.joints.some(j => j.kind === 'hands' && (j.a === b || j.b === b)) ? TURF_MU_SCALE : 1;
     const traction = muScale * (PAD_LEVERAGE ? sp.traction * clamp(1 - this.liftFelt[i] / (m * G), 0, 2) : sp.traction);
+    const engagedHands = POSTURE_HOLD && this.joints.some(j => j.kind === 'hands' && !j.off && (j.a === b || j.b === b));
+    const angleFactor = LEG_ANGLE_ON && engagedHands ? legAngle(sup.posture) : 1;
     const pushForce = (muScale === 1 ? sp.pushForce : Math.min(legDrive(p), sp.traction * muScale))
-      * (HIP_BRACE ? 1 - this.hipUsed[i] : 1);
+      * (HIP_BRACE ? 1 - this.hipUsed[i] : 1) * angleFactor;
     report.groundImpulseLimit[i] += traction * h;
     this.recovery[i] = 0;
     const spinBefore=b.spin??0;
@@ -2134,7 +2170,24 @@ export class World {
         // Pad level moves at a finite rate. Contact geometry affects support,
         // rather than granting a power bonus or standing him up by a heuristic.
         const target = clamp(intent.posture ?? DEFAULT_POSTURE, 0, 1) - 0.2 * (1 - b.energy);
+        const postureBefore = sup.posture;
         sup.posture = clamp(sup.posture + clamp(target - sup.posture, -POSTURE_RATE * h, POSTURE_RATE * h), 0, 1);
+        if (POSTURE_HOLD && engagedHands) {
+          // The unheld part of the vertical load moves his pads: lifted past what his legs hold, he is stood up; pressed down past it, he is sunk.
+          const V = this.liftFelt[i], H = HOLD_K * legDrive(p) * legAngle(sup.posture) * fat;
+          const excess = Math.abs(V) - H;
+          if (excess > 0) {
+            const share = clamp(excess / (HOLD_FULL * m * G), 0, 1), dp = -Math.sign(V) * POSTURE_RATE * share * h;
+            const before = sup.posture;
+            sup.posture = clamp(sup.posture + dp, 0, 1);
+            const moved = sup.posture - before;
+            // Work against the load: force x pad height change (positive when he rises against a lift), charged to the lifter's energy, per his mass.
+            const dH = padHeightAt(sp, before) - padHeightAt(sp, sup.posture);
+            const work = Math.abs(V) * Math.max(0, V > 0 ? dH : -dH) * 0.5;
+            if (work > 0 && moved !== 0) { const j = this.handsPartner(i); if (j >= 0) this.plans[j].actionWork += work / this.mass[j]; }
+          }
+          void postureBefore;
+        }
         // Locomotion: the tick's planned force, while he is still on his feet.
         let lx = plan.ax * m, ly = plan.ay * m;
         // A strike: the legs drive the body on beyond the gait, as hard as
@@ -2162,8 +2215,8 @@ export class World {
           if (ex > 0) {
             const vp = b.vel.x * ux + b.vel.y * uy;
             // Legs drive hardest straight ahead; sideways or backward far less.
-            const dir = legDriveFactor(p, this.facingDelta(b.facing, Math.atan2(uy, ux))) * trunkPrice(b);
-            const capacity = sp.pushForce * dir * clamp(1 - vp / p.vmax, 0, ECCENTRIC_GAIN) * fat * a * push;
+            const dir = legDriveFactor(p, this.facingDelta(b.facing, Math.atan2(uy, ux))) * trunkPrice(b) * this.lowAcross(engagedHands, sup.posture, b.facing, Math.atan2(uy, ux));
+            const capacity = sp.pushForce * angleFactor * dir * clamp(1 - vp / p.vmax, 0, ECCENTRIC_GAIN) * fat * a * push;
             const mag = Math.min(capacity, L * (1 + clamp(intent.growth ?? PUSH_GROWTH, 0, PUSH_GROWTH)), m * ex / h, intent.leanCap ?? Infinity);
             tx = ux * mag; ty = uy * mag;
           }
@@ -2224,7 +2277,7 @@ export class World {
         // below. Without the law, a strength gap is a constant net force and
         // a carry keeps building.
         const tf = hypot2(tfx, tfy);
-        const along = tf > 1e-9 ? legDriveFactor(p, this.facingDelta(b.facing, Math.atan2(tfy, tfx))) * trunkPrice(b) : 1;
+        const along = tf > 1e-9 ? legDriveFactor(p, this.facingDelta(b.facing, Math.atan2(tfy, tfx))) * trunkPrice(b) * this.lowAcross(engagedHands, sup.posture, b.facing, Math.atan2(tfy, tfx)) : 1;
         const fv = tf > 1e-9 ? clamp(1 - (b.vel.x * tfx + b.vel.y * tfy) / (tf * p.vmax), 0, ECCENTRIC_GAIN) : 1;
         const strength = pushForce * fv * along * a;
         const capacity = Math.min(Math.max(hypot2(lx, ly), strength), traction * a);

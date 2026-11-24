@@ -2670,3 +2670,7 @@ completion .677 -> .682, uncontested drop .052 -> .058, breakup .097 -> .094, in
 run share .310 -> .310. Catch roll, actual run (8 games a side): ball speed p50 22.5 -> 21.9 yd/s, share over 24 yd/s 28.9% -> 23.7%.
 Not modelled: the NFL ball's decay roughly doubles 0.3-0.6 s before arrival (tracker smoothing near the catch, or the ball's nose-over at the end
 of the arc); the catch roll's 24 yd/s step is not what the NFL ball avoids on short throws (a catch-rebuild question, not drag).
+
+## GRIP_MU and POSTURE_HOLD (Tools/Physics, 2026-11-24; both off, experimental)
+
+Off in the stack. `GRIP_MU` sets the shared traction coefficient (1 means 1.3; a number sets it); `POSTURE_HOLD` gives an engaged man's leg force a knee-angle shape, holds pad level against a vertical load his legs do not carry, and charges playing low a mobility cost across his face. Neither is on until the card (arms: ref, grip only, posture only, both) clears; see `docs/reviews/2026-11-24-blocking-phase1-design.md` and `2026-11-24-blocking-phase1-bench.md`.

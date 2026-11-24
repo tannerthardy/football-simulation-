@@ -72,7 +72,8 @@ function rep(kind: 'pass' | 'run', B: Mod, R: Mod, tr = false) {
   const spB = supportParams(b.profile), spD = supportParams(d.profile);
   const fr = (k: string, f: (x: number) => boolean) => W.filter(r => f(r[k])).length / W.length;
   const limits = { bGrip: fr('bUtil', x => x >= 0.95), dGrip: fr('dUtil', x => x >= 0.95), bLeg: fr('bLegLim', x => x > 0.5), dLeg: fr('dLegLim', x => x > 0.5), bBal: m('bBal'), dBal: m('dBal'), bBalMax: Math.max(...W.map(r => r.bBal)), dBalMax: Math.max(...W.map(r => r.dBal)), bAng: m('bAng'), dAng: m('dAng'), bLean: m('bLean'), dLean: m('dLean') };
-  return { limits, pair: m('pair'), bv: m('bv'), dv: m('dv'), hand: m('hand'), bFelt: m('bFelt'), dFelt: m('dFelt'), bLift: m('bLift'), dLift: m('dLift'),
+  const last = rows[rows.length - 1];
+  return { limits, endPost: `${(last.bPost ?? 0).toFixed(2)}/${(last.dPost ?? 0).toFixed(2)}`, pair: m('pair'), bv: m('bv'), dv: m('dv'), hand: m('hand'), bFelt: m('bFelt'), dFelt: m('dFelt'), bLift: m('bLift'), dLift: m('dLift'),
     dispB: -(b.body.pos.x - x0.b), dispD: d.body.pos.x - x0.d, fell: first,
     cap: { bPush: spB.pushForce * N, bTr: spB.traction * N, dPush: spD.pushForce * N, dTr: spD.traction * N, bKg: b.profile.massKg, dKg: d.profile.massKg } };
 }
@@ -103,6 +104,8 @@ const CASES: Case[] = [
   // The user's test: a stronger, lower man must beat a heavier, higher one (rusher = the stronger, lower man).
   { name: 'COMBO rusher stronger (+0.2) and lower (1.0) vs blocker heavier (+10%) and higher (0.6)', who: 'R', exp: 1, both: { R: { str: 0.95, posture: 1.0 }, B: { mass: 1.1, massP: 1.1, posture: 0.6 } } },
   { name: 'COMBO rusher heavier (+10%) and higher (0.6) vs blocker stronger (+0.2) and lower (1.0)', who: 'R', exp: -1, both: { R: { mass: 1.1, massP: 1.1, posture: 0.6 }, B: { str: 0.97, posture: 1.0 } } },
+  { name: 'COMBO weak-legged blocker (strength 0.05) under a rusher at posture 1.0 (stood up?)', who: 'R', exp: 1, both: { R: { posture: 1.0 }, B: { str: 0.05 } } },
+  { name: 'COMBO weak-legged rusher (strength 0.05) under a blocker at posture 1.0 (stood up?)', who: 'R', exp: -1, both: { R: { str: 0.05, posture: 0.74 }, B: { posture: 1.0 } } },
   { name: 'COMBO rusher lower (1.0) only, matched otherwise: blocker anchors at 0.45', who: 'R', exp: 1, both: { R: { posture: 1.0 }, B: { posture: 0.45 } } },
 ];
 for (const kind of (mode === 'both' ? ['pass', 'run'] : [mode]) as ('pass' | 'run')[]) {
@@ -113,7 +116,7 @@ for (const kind of (mode === 'both' ? ['pass', 'run'] : [mode]) as ('pass' | 'ru
     const r = rep(kind, Bm, Rm, trace && c.who === '-');
     if (c.who === '-') base = r.pair;
     const dv = r.pair - base, dir = c.exp === 0 ? '' : (Math.sign(dv) === c.exp || Math.abs(dv) < 0.02) ? (Math.abs(dv) < 0.02 ? ' NO EFFECT' : ' ok') : ' WRONG WAY';
-    console.log(`${c.name.padEnd(44)} pair ${r.pair.toFixed(2)} (${dv >= 0 ? '+' : ''}${dv.toFixed(2)})${dir.padEnd(11)}| gets b/d ${r.bv.toFixed(2)}/${r.dv.toFixed(2)} | hand ${r.hand.toFixed(0)} N | lift b/d ${r.bLift.toFixed(2)}/${r.dLift.toFixed(2)} bw | push cap b/d ${r.cap.bPush.toFixed(0)}/${r.cap.dPush.toFixed(0)} (traction ${r.cap.bTr.toFixed(0)}/${r.cap.dTr.toFixed(0)}) N | kg ${r.cap.bKg.toFixed(0)}/${r.cap.dKg.toFixed(0)}${r.fell > 0 ? ` | FELL at ${r.fell.toFixed(2)} s` : ''} | binds grip(util>=.95) b/d ${r.limits.bGrip.toFixed(2)}/${r.limits.dGrip.toFixed(2)}, legs below grip b/d ${r.limits.bLeg.toFixed(2)}/${r.limits.dLeg.toFixed(2)}, balance (offset/base radius mean, max) b/d ${r.limits.bBal.toFixed(2)},${r.limits.bBalMax.toFixed(2)}/${r.limits.dBal.toFixed(2)},${r.limits.dBalMax.toFixed(2)} | com offset angle b/d ${r.limits.bAng.toFixed(1)}/${r.limits.dAng.toFixed(1)} deg, lean-force angle (atan lean/weight) b/d ${r.limits.bLean.toFixed(0)}/${r.limits.dLean.toFixed(0)} deg`);
+    console.log(`${c.name.padEnd(44)} pair ${r.pair.toFixed(2)} (${dv >= 0 ? '+' : ''}${dv.toFixed(2)})${dir.padEnd(11)}| gets b/d ${r.bv.toFixed(2)}/${r.dv.toFixed(2)} | hand ${r.hand.toFixed(0)} N | lift b/d ${r.bLift.toFixed(2)}/${r.dLift.toFixed(2)} bw | push cap b/d ${r.cap.bPush.toFixed(0)}/${r.cap.dPush.toFixed(0)} (traction ${r.cap.bTr.toFixed(0)}/${r.cap.dTr.toFixed(0)}) N | kg ${r.cap.bKg.toFixed(0)}/${r.cap.dKg.toFixed(0)} | posture at 2 s b/d ${r.endPost}${r.fell > 0 ? ` | FELL at ${r.fell.toFixed(2)} s` : ''} | binds grip(util>=.95) b/d ${r.limits.bGrip.toFixed(2)}/${r.limits.dGrip.toFixed(2)}, legs below grip b/d ${r.limits.bLeg.toFixed(2)}/${r.limits.dLeg.toFixed(2)}, balance (offset/base radius mean, max) b/d ${r.limits.bBal.toFixed(2)},${r.limits.bBalMax.toFixed(2)}/${r.limits.dBal.toFixed(2)},${r.limits.dBalMax.toFixed(2)} | com offset angle b/d ${r.limits.bAng.toFixed(1)}/${r.limits.dAng.toFixed(1)} deg, lean-force angle (atan lean/weight) b/d ${r.limits.bLean.toFixed(0)}/${r.limits.dLean.toFixed(0)} deg`);
   }
 }
 

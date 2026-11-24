@@ -117,8 +117,18 @@ export function legDrive(p: PhysicalProfile): number {
   return p.power * G * (LEG_ALLOMETRY ? (p.massKg / LEG_REF_MASS_KG) ** (LEG_MASS_EXPONENT - 1) : 1);
 }
 
-/** Cleat-turf traction coefficient for a sustained push (model assumption). */
-export const TURF_MU = 1.1;
+/** GRIP_MU (experimental, off; GRIP_MU=1 sets 1.3, GRIP_MU=<number> sets that value, e.g. 1.5 for the card): the shared cleat-on-turf
+ * traction coefficient, the one grip limit every ground interaction reads (`traction = mu x mass x g`, then the actual normal load).
+ * Off, 1.1: unsourced, and below every measured dynamic value found. Sourced (docs/reviews/2026-11-24-blocking-phase0.md section 4, phase1-design
+ * section 1): Penn State Supercleat evaluation, linear traction at a 245 lb load, static 1.50-1.68, dynamic 1.31-1.47; Kent et al. 2015
+ * (Sports Biomech 14), 2.8 kN vertical load, peak horizontal 3.2 kN on natural grass and 4.5 kN on infill (about 1.14 and 1.6; the companion
+ * paper 1.0-1.5 on grass). 1.3 is the dynamic floor on infill and the middle of grass: a stated choice inside a stated range 1.3-1.5. Nothing
+ * was found at lineman loads of 1.2-1.8 kN per foot, and the load dependence and the surface (grass, infill, wet) are field properties for later. */
+const GRIP_ENV = process.env.GRIP_MU;
+export const GRIP_MU = GRIP_ENV !== undefined && GRIP_ENV !== '' && GRIP_ENV !== '0';
+/** Cleat-turf traction coefficient for a sustained push (a stated choice; see GRIP_MU). */
+export const TURF_MU = GRIP_MU ? (GRIP_ENV === '1' ? 1.3 : Number(GRIP_ENV)) : 1.1;
+if (!(TURF_MU > 0.5 && TURF_MU < 3)) throw new Error(`GRIP_MU=${GRIP_ENV}: a traction coefficient between 0.5 and 3 (1 means 1.3)`);
 
 /** Derived on demand (cheap), so a scenario that edits a profile sees the change. */
 export function supportParams(p: PhysicalProfile): SupportParams {

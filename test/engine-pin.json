@@ -301,6 +301,7 @@
   "test/grasp-world.test.ts",
   "test/grass-read.test.ts",
   "test/grip-hold.test.ts",
+  "test/grip-posture.test.ts",
   "test/grip-reach.test.ts",
   "test/ground-force-allocation.test.ts",
   "test/half-key.test.ts",
