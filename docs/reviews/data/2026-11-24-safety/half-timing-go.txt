@@ -1,0 +1,34 @@
+
+## NFL, #1 on GO: halves with #1 vertical and #2 under at 2.5 s: 23
+  #2 release t: 1.20 (1.20-1.40) n 23
+  #2 under/out break t: 1.70 (1.50-2.10) n 20
+  half's first committed move toward #1 t: 1.40 (1.20-1.70) n 21 (none by 2.5 s: 2)
+  move minus #2 break: -0.25 (-0.60--0.03) n 18
+  move minus #2 release: 0.10 (-0.20-0.40) n 21
+  outward speed from the move to 2.5 s (yd/s): 2.46 (1.82-3.07) n 21
+  outward change by 1.0 / 1.5 / 2.0 / 2.5 s: +0.5 / +1.2 / +2.2 / +3.5; to #1 at 2.5 s -8.7
+  decomposition (medians): to #1 at the snap -7.7 + his outward +3.5 - #1's outward +5.5; at the snap #1 15.1 and he 7.9 yd from the ball
+
+## ours, SEAM_LANDMARK, HALF_SEAT off, #1 on go/fade: halves with #1 vertical and #2 under at 2.5 s: 20
+  #2 release t: 1.20 (1.20-1.30) n 19
+  #2 under/out break t: 1.50 (1.20-1.80) n 17
+  half's first committed move toward #1 t: 1.00 (0.80-1.30) n 13 (none by 2.5 s: 7)
+  move minus #2 break: -0.60 (-0.75--0.05) n 11
+  move minus #2 release: -0.30 (-0.50-0.20) n 13
+  HALF_SEAT declaration t: - (none by 2.5 s: 20)
+  move minus declaration: -
+  outward speed from the move to 2.5 s (yd/s): 3.36 (2.67-3.88) n 13
+  outward change by 1.0 / 1.5 / 2.0 / 2.5 s: +0.1 / +1.1 / +2.5 / +3.5; to #1 at 2.5 s -6.2
+  decomposition (medians): to #1 at the snap -8.9 + his outward +3.5 - #1's outward +2.8; at the snap #1 15.5 and he 6.7 yd from the ball
+
+## ours, SEAM_LANDMARK + HALF_SEAT final, #1 on go/fade: halves with #1 vertical and #2 under at 2.5 s: 15
+  #2 release t: 1.25 (1.20-1.30) n 12
+  #2 under/out break t: 1.30 (1.30-1.40) n 9
+  half's first committed move toward #1 t: 0.90 (0.80-1.00) n 9 (none by 2.5 s: 6)
+  move minus #2 break: -0.35 (-0.42--0.30) n 4
+  move minus #2 release: -0.30 (-0.45--0.20) n 7
+  HALF_SEAT declaration t: 1.80 (1.50-1.90) n 9 (none by 2.5 s: 6)
+  move minus declaration: -0.70 (-1.00--0.50) n 5
+  outward speed from the move to 2.5 s (yd/s): 2.68 (2.22-2.98) n 9
+  outward change by 1.0 / 1.5 / 2.0 / 2.5 s: +0.6 / +1.6 / +1.6 / +3.1; to #1 at 2.5 s -9.8
+  decomposition (medians): to #1 at the snap -10.1 + his outward +3.1 - #1's outward +3.2; at the snap #1 16.6 and he 6.5 yd from the ball

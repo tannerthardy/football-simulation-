@@ -11,10 +11,14 @@ half_seat.py); kept when at 2.5 s (before the throw) #1 is vertical and #2 is no
     outward over 1 yd/s;
   his outward speed from that move to 2.5 s, and his outward change by 1.0 / 1.5 / 2.0 / 2.5 s;
   ours: HALF_SEAT's declaration time.
-usage: python3 -I scripts/diag/defense-film/half_timing.py LABEL 'glob' [LABEL 'glob' ...]"""
+With --go, only plays where #1's labelled route is a go (NFL routeRan GO; ours go / fade) (Rules: 'vertical at 2.5 s'
+also catches posts, digs and corners in their stems).
+usage: python3 -I scripts/diag/defense-film/half_timing.py [--go] LABEL 'glob' [LABEL 'glob' ...]"""
 import json, sys, glob, math
 import numpy as np
 OL = {'C', 'G', 'T', 'OT', 'OG', 'OL', 'QB'}
+GO_ONLY = '--go' in sys.argv
+GO = {'GO', 'go', 'fade'}
 
 
 def q(v, f=.5): return float(np.percentile(v, f * 100)) if len(v) else float('nan')
@@ -46,6 +50,7 @@ def rows(paths):
                 if abs(T[k25] - 2.5) > 0.06: continue
                 vert = lambda i, k: (P(i, k)[0] > 6 and vel(i, k)[0] > 1.5) or P(i, k)[0] > 9
                 if not vert(n1, k25) or vert(n2, k25) or P(n2, k25)[0] >= 6: continue
+                if GO_ONLY and pl[n1].get('routeId') not in GO: continue
                 rel = brk = mv = dec = None
                 for k in range(k0 + 1, k25 + 1):
                     if rel is None and math.dist(P(n2, k), P(n2, k0)) >= 2: rel = T[k]
@@ -63,7 +68,7 @@ def rows(paths):
     return out
 
 
-args = sys.argv[1:]
+args = [x for x in sys.argv[1:] if x != '--go']
 for lab, pat in zip(args[::2], args[1::2]):
     A = rows(sorted(glob.glob(pat)))
     print(f'\n## {lab}: halves with #1 vertical and #2 under at 2.5 s: {len(A)}')
