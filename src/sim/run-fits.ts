@@ -430,7 +430,64 @@ const contradictedMesh = new WeakSet<Agent>();
 /** Explicit null means unresolved possession: keep the installed fit, without
  * falling through to the authoritative holder. Undefined preserves older
  * direct callers; defense.runFit always supplies its acquired interpretation. */
+/** SHED_PURSUE (experimental, off; SHED_PURSUE=1 turns it on): a run defender who has come free of a block plays the
+ * ball from his own picture, as taught (shed, find the ball, then squeeze or press it at his gap, pursue it once it has
+ * declared away), instead of re-landmarking square to the line.
+ *
+ * Why (scripts/diag/pursuit/dl-shed-tap.mts, develop 0226f0d3, designed runs, 154 DL releases with the carrier short
+ * of his level): 59-68% of his free ticks in the 0.5 s after the shed were the fit's landmark request at 0.60-0.65
+ * vmax, facing 92-99 deg off its own travel (`facing: Math.PI`, toward the backfield, whatever the travel) and 60-70
+ * deg off the bearing to a carrier about 3 yd away; NFL linemen hold 2.7-2.8 yd/s after a live release, ours fall to
+ * 2.1-2.4 (release-op.py, BDB 2025 weeks 1-9).
+ *
+ * Shed: he was engaged and is now free (his own state); it lasts until he is engaged again or the play ends. With the
+ * ball given and seen carried, the carrier's path relative to his gap is read off the same crossing projection as
+ * THREAT_READ (where the seen path meets the line):
+ *  - press: it crosses within the threat zone (half the gap + 1 yd; exit at + 1.5): he chases him at his gap;
+ *  - away: it has declared away (crossing beyond half the gap + 2 yd, and the runner at the surface or already past
+ *    him laterally on that side; exit back inside + 1.5): he pursues (chase, with the pursuit leverage);
+ *  - otherwise, and before the ball is given: he holds his gap fit, facing the ball he sees, not the backfield.
+ * Margins (stated choices): 0.5 yd between enter and exit on each boundary. Cutback and alley jobs keep their contract. */
+export const SHED_PURSUE = process.env.SHED_PURSUE === '1';
+const shedState = new WeakMap<Agent, { sim: PlaySim; engaged: boolean; shed: boolean; mode: 'press' | 'away' | 'hold' }>();
+/** SHED_PURSUE: the facing the held fit plays with this call (the seen ball), or null. */
+let shedHoldFacing: number | null = null;
+/** SHED_PURSUE: a behaviour that plays its own engagement before reaching the fit (the pass rusher) reports it here. */
+export function noteEngaged(a: Agent, sim: PlaySim): void {
+  if (!SHED_PURSUE) return;
+  const s = shedState.get(a);
+  if (!s || s.sim !== sim) shedState.set(a, { sim, engaged: true, shed: false, mode: 'hold' });
+  else { s.engaged = true; s.shed = false; s.mode = 'hold'; }
+}
 export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallbackSide: number, input?: RunFitRead | null) {
+  if (!SHED_PURSUE) return executeRunFitInner(a, sim, fallbackGap, fallbackSide, input);
+  if (a.engagement) noteEngaged(a, sim);
+  let s = shedState.get(a);
+  if (!s || s.sim !== sim) { s = { sim, engaged: false, shed: false, mode: 'hold' }; shedState.set(a, s); }
+  if (!a.engagement && s.engaged) { s.engaged = false; s.shed = true; }
+  shedHoldFacing = null;
+  const cmd = executeRunFitInner(a, sim, fallbackGap, fallbackSide, input);
+  const face = shedHoldFacing; shedHoldFacing = null;
+  return face === null ? cmd : { ...cmd, facing: face };
+}
+/** SHED_PURSUE's read of the carrier's path against his gap, with enter/exit margins on each boundary. */
+function shedRead(a: Agent, sim: PlaySim, seen: Perceived, gy: number, half: number): 'press' | 'away' | 'hold' {
+  const s = shedState.get(a)!;
+  const dirX = sim.attackDir(sim.offense[0].team);
+  const toLos = Math.max(0, (sim.los - seen.pos.x) * dirX);
+  const reachLos = clamp(toLos / Math.max(.5, seen.vel.x * dirX), 0, 1);
+  const off = seen.pos.y + seen.vel.y * reachLos - gy, dist = Math.abs(off);
+  const pressIn = half + 1, pressOut = half + 1.5, awayIn = half + 2, awayOut = half + 1.5;
+  const surface = seen.pos.x * dirX > (sim.los - 1.6) * dirX;
+  const pastHim = (seen.pos.y - a.pos.y) * Math.sign(off) > 0;
+  let m = s.mode;
+  if (m === 'press' && dist > pressOut) m = 'hold';
+  if (m === 'away' && dist < awayOut) m = dist < pressIn ? 'press' : 'hold';
+  if (m === 'hold') m = dist < pressIn ? 'press' : dist > awayIn && (surface || pastHim) ? 'away' : 'hold';
+  s.mode = m;
+  return m;
+}
+function executeRunFitInner(a: Agent, sim: PlaySim, fallbackGap: Gap, fallbackSide: number, input?: RunFitRead | null) {
   if (a.engagement) return stand();
   let job: RunFitJob = a.runFit ?? { gap: fallbackGap, side: fallbackSide, kind: 'insert', technique: 'attack', edge: 'box', pace: 'stack' };
   // HONEST_READS: a direct caller without a read gets the one defense.runFit
@@ -730,6 +787,13 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
     declared = threat && seen.pos.x > sim.los - 1.6;
     if (threat && !declared) { a.tags.add('fit-threat-read'); threatened = true; }
   } else declared = !premesh && seen.pos.x > sim.los-1.6 && Math.abs(seen.pos.y-gy) < 2.5;
+  if (SHED_PURSUE && shedState.get(a)?.shed && job.kind !== 'cutback') {
+    const half = Number.isFinite(gap.width) ? Math.max(.6, gap.width / 2) : 1.2;
+    const m = premesh || seen.carrying !== true ? 'hold' : shedRead(a, sim, seen, gy, half);
+    if (m === 'press') { a.tags.add('shed-press'); return chase(sim, a, c, 2); }
+    if (m === 'away') { a.tags.add('shed-pursue'); return chase(sim, a, c, 3); }
+    a.tags.add('shed-hold'); shedHoldFacing = Math.atan2(seen.pos.y - a.pos.y, seen.pos.x - a.pos.x);
+  }
   if (declared && job.kind !== 'cutback') return chase(sim,a,c,2);
   // A stack backer whose gap the runner's path threatens fills downhill to meet
   // him at the line, instead of waiting at his landmark until he declares. A
