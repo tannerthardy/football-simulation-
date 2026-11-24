@@ -13,7 +13,7 @@ const { compilingPlan } = await import(`${W}/src/playbook/read-compiler/runtime.
 const { writeFileSync } = await import('node:fs');
 const GAMES = Number(process.argv[2] ?? 2), OUT = process.argv[3], FIRST = Number(process.argv[4] ?? 201);
 const r2 = (v: number) => Math.round(v * 100) / 100;
-const rows: any[] = []; const st = new WeakMap<any, any>();
+const rows: any[] = []; const attempts: any[] = []; const st = new WeakMap<any, any>();
 const proto = PlaySim.prototype as any, tick = proto.tick, run = proto.run;
 proto.tick = function (this: any) {
   let s = st.get(this);
@@ -28,6 +28,12 @@ proto.tick = function (this: any) {
     const [d, c] = e.type === 'broken_tackle' ? [sim.agents[e.b], sim.agents[e.a]] : [sim.agents[e.a], sim.agents[e.b]];
     if (!d || !c || c.team !== sim.offense[0].team) continue;
     if (c === sim.qb && sim.isPass && sim.throwAt < 0 && !sim.scrambled) continue;
+    // Every attempt (missed_tackle / initial wrap; broken holds are outcomes of a wrap): was the tackler trail-tagged?
+    if (e.type !== 'broken_tackle') {
+      const rx = c.pos.x - d.pos.x, ry = c.pos.y - d.pos.y;
+      attempts.push({ ptype: sim.isPass && !sim.scrambled ? 'catch' : 'run', missed: e.type === 'missed_tackle', trail: (s.trailAt.get(d) ?? -9) >= sim.t - 0.3,
+        dist: r2(Math.hypot(rx, ry)), detail: e.note ?? null });
+    }
     // A pending miss's next attempt is this one.
     for (const o of s.open) if (!o.next && o.c === c && d !== o.d0) o.next = { by: d === o.f ? 'follow man' : 'another', dt: r2(sim.t - o.t), made: e.type === 'tackle_wrap' };
     if (e.type === 'tackle_wrap') continue;
@@ -52,4 +58,4 @@ proto.run = function (this: any) {
 const rng = new Rng(FIRST);
 const home = generateTeam(rng, 'Ironmen', 'IRN', { strength: 0.55 }), away = generateTeam(rng, 'Comets', 'COM', { strength: 0.55 });
 for (let g = 0; g < GAMES; g++) { simulateGame(home, away, { seed: FIRST + g }); console.error(`game ${g + 1}/${GAMES}: ${rows.length} misses`); }
-writeFileSync(OUT, JSON.stringify({ games: GAMES, firstSeed: FIRST, rows })); console.log('misses', rows.length);
+writeFileSync(OUT, JSON.stringify({ games: GAMES, firstSeed: FIRST, rows, attempts })); console.log('misses', rows.length);

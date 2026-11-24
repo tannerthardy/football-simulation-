@@ -12,3 +12,9 @@ for arg in sys.argv[1:]:
               f" | yards after the miss p50 {q([r['yardsAfter'] for r in R])} mean {round(sum(r['yardsAfter'] for r in R if r['yardsAfter'] is not None)/max(1,len(R)),2)}")
         T = [r for r in F if r['follow']['trail']]
         if T: print(f"        trail-tagged follow men n {len(T)}: dist p50 {q([r['follow']['dist'] for r in T])}, lateral p50 {q([r['follow']['lat'] for r in T])}, next attempt by him {100*sum(1 for r in T if r['next'] and r['next']['by']=='follow man')/len(T):.0f}% (made {100*sum(1 for r in T if r['next'] and r['next']['by']=='follow man' and r['next']['made'])/len(T):.0f}%), yards after p50 {q([r['yardsAfter'] for r in T])}")
+
+    A = json.load(open(f)).get('attempts', [])
+    for pt in ('catch', 'run'):
+        for tr in (False, True):
+            X = [r for r in A if r['ptype'] == pt and r['trail'] == tr]
+            if X: print(f"{lab:<6} {pt:<5} attempts {'trail-tagged' if tr else 'other':<12} n {len(X):>4} | missed {100*sum(r['missed'] for r in X)/len(X):.0f}% | distance p50 {q([r['dist'] for r in X])} | dives {sum(1 for r in X if r['detail']=='dive')}")
