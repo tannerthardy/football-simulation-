@@ -143,3 +143,28 @@ for (const kind of (mode === 'both' ? ['pass', 'run'] : [mode]) as ('pass' | 'ru
   }
   console.log('\n== defender pulls directly away from a blocker with inside hands (no mechanism today: hands carry no tension at control 0)\n  ' + out.join('\n  '));
 }
+
+// Mobility cost (POSTURE_HOLD): a low man beaten across his face. The rusher bulls 4.5 and also runs 3.0 yd/s laterally (a speed move across the blocker's face); the blocker
+// anchors in front (asks 0) and mirrors laterally at 3.0 with push 1. Reported: each man's lateral velocity over 0.5-1.5 s for the blocker at posture 0.45 (tall) and 1.0 (low),
+// and how far across the rusher gets relative to the blocker (yd) at 1.5 s.
+{
+  const rows: string[] = [];
+  for (const bPost of [0.45, 0.8, 1.0]) {
+    const f = contactFixture({ type: 'pass', runBlock: 60, passBlock: 60, side: 1 });
+    const { sim, blocker: b, defender: d, engagement: e } = f as any;
+    e.control = 0;
+    b.body.pos = { x: 40, y: CENTER_Y }; b.body.vel = { x: 0, y: 0 }; b.body.facing = 0;
+    d.body.pos = { x: 40 + b.profile.radius + d.profile.radius + 0.1, y: CENTER_Y }; d.body.vel = { x: 0, y: 0 }; d.body.facing = Math.PI;
+    const y0 = { b: b.body.pos.y, d: d.body.pos.y };
+    let sb = 0, sd = 0, n = 0;
+    for (let k = 0; k < Math.round(1.5 / sim.dt); k++) {
+      const intents: any[] = sim.agents.map((a: any) => ({ vel: { x: 0, y: 0 }, facing: a.facing }));
+      intents[b.idx] = { vel: { x: 0, y: 3.0 }, facing: 0, push: 1, posture: bPost };
+      intents[d.idx] = { vel: { x: -4.5, y: 3.0 }, facing: Math.PI, push: 1, posture: 0.74 };
+      sim.world.step(intents, sim.dt); sim.t += sim.dt;
+      if ((k + 1) * sim.dt >= 0.5) { sb += b.body.vel.y; sd += d.body.vel.y; n++; }
+    }
+    rows.push(`blocker posture ${bPost}: lateral velocity blocker ${(sb / n).toFixed(2)} / rusher ${(sd / n).toFixed(2)} yd/s; at 1.5 s the rusher is ${(d.body.pos.y - y0.d - (b.body.pos.y - y0.b)).toFixed(2)} yd across of the blocker`);
+  }
+  console.log('\n== a low man beaten across his face (rusher runs 3.0 yd/s laterally, blocker mirrors at 3.0): POSTURE_HOLD ' + (process.env.POSTURE_HOLD ?? '0') + ', GRIP_MU ' + (process.env.GRIP_MU ?? 'off') + '\n  ' + rows.join('\n  '));
+}

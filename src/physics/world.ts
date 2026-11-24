@@ -357,7 +357,8 @@ const POSTURE_RATE = 2.5;
  *    opposite (liftImp), so nothing is created.
  * MOBILITY: playing low costs first step and quickness, a stated choice (the force cost of playing low is none: posture 1.0 is already near the strongest angle):
  * the leg drive of an engaged man across his facing is scaled by `1 - MOBILITY_COST x posture x sin^2(angle off his facing)` (MOBILITY_COST 0.3, a choice;
- * `MOBILITY_COST=0` removes it), so a low man pushing straight on pays nothing and a low man beaten across his face pays most. */
+ * `MOBILITY_COST=0` removes it), so a low man pushing straight on pays nothing and a low man beaten across his face pays most; and the gait's cut factor of an engaged man is scaled by
+ * `1 - MOBILITY_COST x posture` (his first step and quickness), whichever way he moves. */
 const POSTURE_HOLD_ENV = process.env.POSTURE_HOLD ?? '0';
 const POSTURE_HOLD = POSTURE_HOLD_ENV !== '0' && POSTURE_HOLD_ENV !== '';
 const LEG_ANGLE_ON = POSTURE_HOLD && POSTURE_HOLD_ENV !== 'hold';
@@ -1523,6 +1524,14 @@ export class World {
     return fraction;
   }
 
+  /** POSTURE_HOLD's mobility cost on the gait's change of direction: `1 - MOBILITY_COST x posture` for a man in a live hands joint (1 off), so a low man
+   * is slower to re-place his feet across the contact (first step and quickness). */
+  private lowCut(i: number): number {
+    if (!POSTURE_HOLD || MOBILITY_COST === 0) return 1;
+    const b = this.bodies[i];
+    return this.joints.some(j => j.kind === 'hands' && !j.off && (j.a === b || j.b === b)) ? 1 - MOBILITY_COST * clamp(b.support!.posture, 0, 1) : 1;
+  }
+
   /** POSTURE_HOLD's mobility cost: 1 off, else `1 - MOBILITY_COST x posture x sin^2(angle off his facing)` for an engaged man's leg drive along `angle`. */
   private lowAcross(engaged: boolean, posture: number, facing: number, angle: number): number {
     if (!POSTURE_HOLD || !engaged || MOBILITY_COST === 0) return 1;
@@ -1603,7 +1612,7 @@ export class World {
     // a new stopping target each tick turns a smooth rotation into a chase.
     plan.ax = acc.x; plan.ay = acc.y;
     plan.facing = this.handContact === 'center' ? requestedFacing : facing;
-    plan.cut = intent.cutSkill ?? 1;
+    plan.cut = (intent.cutSkill ?? 1) * this.lowCut(i);
     return plan;
   }
 
