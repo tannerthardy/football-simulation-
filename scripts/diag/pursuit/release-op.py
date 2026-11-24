@@ -16,7 +16,8 @@ Per release:
 The live subset keeps releases made before the carrier reaches his level (Flex's spot check: late run releases are
 often the blocker leaving while the defender slows, not a come-off). It does not select on his speed after release.
 Usage (sim plays file or NFL rows file): python3 -I release-op.py PLAYS.json ROWS-out.json   (plays -> rows)
-                                         python3 -I release-op.py --tables ROWS.json"""
+                                         python3 -I release-op.py --tables ROWS.json
+                                         python3 -I release-op.py --rough PLAYS.json   (speed roughness check)"""
 import json, math, sys, collections
 ENG, ENG_MIN, OPEN = 1.2, 0.3, 1.5
 GRP = {'DE': 'DL', 'DT': 'DL', 'NT': 'DL', 'EDGE': 'DL', 'OLB': 'LB', 'ILB': 'LB', 'MLB': 'LB', 'LB': 'LB', 'CB': 'DB', 'S': 'DB', 'SS': 'DB', 'FS': 'DB', 'DB': 'DB', 'NB': 'DB'}
@@ -104,8 +105,22 @@ def tables(R, live=False):
               + f" | release -> carrier passes his level p50 {q([r['to_pass'] for r in P], .5)} s (n {len(P)})"
               + f" | after he is passed: speed +0.5 s p50 {q([r['after_sp'] for r in P], .5)}, chasing (> 3 yd/s along his travel) {100 * sum(1 for r in P if r['chase']) / max(1, sum(1 for r in P if r['chase'] is not None)):.0f}%")
 
+def roughness(plays):
+    # speed roughness: per defender per play, mean |speed change| per 0.1 s frame / 0.1 s (same velocity formula);
+    # a check on whether peak acceleration reflects motion or position jitter.
+    R = []
+    for p in plays:
+        fr = p['frames']
+        for d in fr[0]['def']:
+            s = [vel(fr, i, 'def', d) for i in range(len(fr))]
+            s = [math.hypot(*v) for v in s if v]
+            if len(s) > 2: R.append(sum(abs(s[i + 1] - s[i]) for i in range(len(s) - 1)) / (len(s) - 1) / 0.1)
+    print('speed roughness yd/s2 per defender-play p25/p50/p75', q(R, .25), q(R, .5), q(R, .75), 'n', len(R))
+
 if __name__ == '__main__':
-    if sys.argv[1] == '--tables':
+    if sys.argv[1] == '--rough':
+        pl = json.load(open(sys.argv[2])); roughness(pl['plays'] if isinstance(pl, dict) else pl)
+    elif sys.argv[1] == '--tables':
         R = json.load(open(sys.argv[2])); tables(R); tables(R, live=True)
     else:
         plays = json.load(open(sys.argv[1])); rows = []
