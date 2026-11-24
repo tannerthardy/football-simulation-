@@ -150,24 +150,33 @@ worse off his gaze (PERIPH_ACUITY).
 - B is within the holder's useful view;
 - the holder is not engaged with someone else.
 
-That gives a measurement v̂ with sd σ_obs = his velocity noise / √samples.
+That gives a seen speed v̂ with sd σ_obs = his velocity noise / √samples.
 
-- **Always a floor:** max(floor, v̂ − 2σ_obs). He has seen B do at least this. It never goes down.
-- **A full-effort context makes it a measurement,** not just a floor. The context is B carrying the ball at 90% or more
-  of the top speed the holder believes (*chosen*). The measurement's sd is √(σ_obs² + σ_effort²), σ_effort = 0.15 yd/s
-  (*chosen*).
-- **A route is not full effort here.** This was corrected by step 2's gates (2026-11-24).
-  - A go-route receiver with true vmax 10.87 is seen at 8.7 yd/s by 4.5 s: routes run at 0.94 of vmax, and in-pads
-    burst is slow.
-  - Treating a vertical stem as a measurement pulled beliefs down.
-  - So a route's plateau is a floor only, and so is a carry under 90% of the believed speed.
-- **One or two clear looks bring vmax's sd to about 0.1–0.15.** That is the step the user describes; there is no drift.
-- **Being outrun on a fair angle:** while the holder runs at 90%+ of his own known top speed on a closing angle, B
-  gaining ground is a floor from his own body. B's speed ≥ his own plus the gain rate.
+**What he sees is a lower bound on what B can do, never a sample of it** (Integration, from an outside review, 2026-11-24;
+step 2 v2). Most of what he sees is a man not at full effort, so sightings are never averaged into the estimate.
+- **A sighting is a floor:** max(floor, v̂ − 2σ_obs). Seeing 9.2 proves at least about 9.2 at once; seeing 6 proves
+  nothing. It never goes down.
+- **The belief is the build-and-film estimate truncated at the floor.** That is the normal from §4.1 and §4.2 conditioned
+  on vmax ≥ floor, with mean μ + σ·φ(α)/(1 − Φ(α)) and the sd shrunk accordingly, where α = (floor − μ)/σ.
+  - A floor far under the estimate changes nothing.
+  - A floor near or over it lifts the mean at once and narrows it. That is the step the user describes, with no drift.
+  - The upper side of the belief comes only from build and film.
+- **Why not a measurement at "full effort":** routes run below top speed here. A go-route receiver with true vmax 10.87
+  is seen at 8.7 yd/s by 4.5 s (routes at 0.94 of vmax; in-pads burst is slow). Step 2's first version treated a
+  vertical stem, and then a fast carry, as a measurement, and that pulled beliefs down.
+- **Being outrun on a fair angle** is the same kind of evidence from his own body. While he runs at 90%+ of his own
+  known top speed on a closing angle, B gaining ground is a floor: B's speed ≥ his own plus the gain rate.
 
-**A clear look at burst:** B's seen speed rising out of a near-stop while he carries the ball gives a measurement of
-accel. Route releases are excluded: over 2 games they made the burst belief worse (error 0.18 → 0.22), the same effort
-bias as speed. Until a burst is seen, accel stays at its prior and film value. What he has not shown stays uncertain.
+**Burst is the same shape.** A rise of B's seen speed from near rest gives a floor on his burst from rest (vmax / tau):
+the mean acceleration over the rise, less the sight error. A man's acceleration only falls as his speed rises, so the
+mean over the rise cannot exceed his burst, whatever his effort. That holds on a route as well as with the ball.
+- Over 2 games, burst error stays flat at 0.14–0.16.
+- A first version inverted a sprint model from a standing start and overstated burst (error 0.20 → 0.33).
+- What he has not shown stays at its prior and film value.
+
+**Tendencies are a different kind of belief** (a corner who squats on breaks, a back who bounces). They are what a man
+chooses to do, not what he can do; they are learned from repeated behaviour and are a separate record from the believed
+body, later.
 
 **Ratings act only here:** perception quality (existing acuity and reaction) sets σ_obs; awareness sets the chance he
 registers a clear look at all (*chosen*: 0.7 + 0.3 × awareness).
@@ -263,6 +272,20 @@ The migration runs one consumer per step, each behind its own flag, with the sca
 order: coverage (the cushion, the user's example), then pursuit, then the QB (QB_SCOUT onto the shared type), then the
 strength consumers. The strength consumers follow the anchor physics fix, or measure what felt learns before it.
 
+## 8b. A leak of the same kind: the offense's coverage scouting (fixed as SCOUT_SEEN)
+
+`game.ts` fed the offense's in-game coverage scouting (`CoverageScouting.observe`) the defense's true call and whether
+it was disguised, even on a play where the passer was sacked at 1.8 s.
+- **SCOUT_SEEN (off):** it learns from the passer's belief at the end of the play, each coverage by its share, weighted
+  by how settled it was (his top coverage's share). A disguise counts when the shell he read before the snap is not the
+  shell he believed after it.
+- **The booth** (coaches upstairs naming the coverage between plays) is a real second channel, to be added with the
+  information-flow work, not assumed now.
+- **The defense's run/pass scouting** (`ScoutingReport.observe(snapContext, pass)`) counts whether a pass happened,
+  which the defense sees on every play: not a leak.
+- **The coordinators' `observe` (game.ts 1106–1108)** learns from each side's own call and the visible result: not a
+  leak.
+
 ## 9. Example of the same structure: the receiver recount after motion
 
 Today a defender's numbering of the receivers (who is #2, #3) is not updated as a communication event after motion. In
@@ -314,7 +337,8 @@ then pursuit with Defense, then the QB with the QB lane, replacing QB_SCOUT's bl
 - report = typical(position) + k · (truth + film error − typical);
 - k = clamp(SCOUT0 + SCOUT_AWARE · playRecognition + SCOUT_EXP · min(1, experience / 8));
 - film error sd = FILM_ERR · |typical| · √(FLOOR² + (1 − FLOOR²) / (1 + defender experience / FILM_YEARS)), drawn from
-  Rng(hash(passer | defender)): fixed per pair and game, new for a substituted man;
+  Rng(hash(passer | defender)): fixed per pair, the same every game, new for a different man (the believed body seeds
+  per holder, man and game instead: adding the game to the hash is the fix);
 - ballSkills and manCoverage the same way, with an absolute error;
 - `bodyFor(a, d)` is the helper every reach estimate uses.
 
@@ -327,7 +351,9 @@ then pursuit with Defense, then the QB with the QB lane, replacing QB_SCOUT's bl
 **What changes:**
 - The typical-by-position mean becomes the appearance prior from build (§4.1). This also removes its fallback to truth
   for a position with no typical entry, which the QB lane flagged as a weak spot.
-- The k-weighted blend toward truth by the passer's ratings goes. A rating may not scale the truth. The passer's
+- The k-weighted blend toward truth by the passer's ratings goes. The QB lane's own caveat: under QB_SCOUT the outright
+  truth reads are gone (bodyOf, believe and the window's mover read the report), but scoutReport is still typical + k ·
+  (truth + film error − typical). That is a rating scaling truth, which `believed(qb, d)` retires. A rating may not scale the truth. The passer's
   recognition and experience act instead on his own perception (σ_obs, registering a look) and, later, on a film entry
   of his own (§4.2).
 - In-game looks (§4.3) now update what he believes about a defender's speed. Today it is fixed for the game.
