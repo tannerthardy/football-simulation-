@@ -1,0 +1,8 @@
+Underneath droppers (installed hook / hole / curl / curl-flat), non-PA dropbacks before the throw, 4 games on the #872 base with the flat package on (drop-labels.mts): share of ticks by movement label and mean depth speed (yd/s) under it, per 0.5 s bucket.
+0.0 5256 man-pedal 29% (+0.0) | (none) 24% (+0.0) | read-step 21% (-0.3) | zone-landmark 14% (+0.4) | spot-drop 5% (+0.7) | lane-hold 4% (-0.1) | spot-drop-run 2% (+0.5) | cross-wall 1% (-0.2)
+0.5 5840 man-pedal 39% (+0.8) | zone-landmark 28% (+1.4) | spot-drop-run 8% (+1.8) | lane-hold 8% (-0.1) | hook-stem-read 5% (+0.8) | spot-drop 5% (+2.1) | cross-wall 2% (-0.0) | curl-flat-widen 2% (+0.2)
+1.0 5840 man-pedal 27% (+0.8) | hook-stem-read 15% (+0.8) | zone-landmark 14% (+2.7) | lane 7% (-0.6) | spot-drop-run 7% (+3.2) | wall 6% (+1.3) | spot-drop 5% (+3.7) | open-carry 4% (-0.8)
+1.5 5807 open-carry 12% (-0.0) | man-pedal 11% (+0.2) | wall 11% (+2.0) | open-carry-seam 10% (+1.8) | zone-landmark 10% (+2.9) | carry-wall 7% (+1.2) | spot-drop 6% (+4.4) | lane 6% (+0.1)
+2.0 5182 open-carry 17% (+0.6) | open-carry-seam 12% (+3.1) | spot-settle 10% (+1.6) | lane 9% (+1.1) | open-carry-wall 9% (+3.7) | man-pedal 7% (+0.2) | wall 6% (+2.3) | zone-landmark 5% (+2.0)
+2.5 3335 open-carry 20% (+0.8) | spot-settle 12% (+0.7) | lane 12% (+1.0) | open-carry-seam 10% (+3.7) | zone-settle 9% (+1.5) | open-carry-wall 7% (+4.2) | man-pedal 5% (+0.1) | open-carry-cross 4% (+1.0)
+3.0 263 open-carry 20% (+0.8) | zone-settle 12% (+1.4) | lane 11% (+0.9) | spot-settle 9% (-0.0) | open-carry-cross 8% (+1.2) | open-carry-seam 6% (+3.5) | (zone) 6% (+0.1) | (man) 5% (+0.1)
