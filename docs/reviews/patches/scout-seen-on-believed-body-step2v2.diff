@@ -1,0 +1,143 @@
+diff --git a/config/baseline.json b/config/baseline.json
+index e0947d033..8f9a668a4 100644
+--- a/config/baseline.json
++++ b/config/baseline.json
+@@ -375,6 +375,7 @@
+     "QB_SCAN": "0",
+     "QB_CANON_SEEN": "0",
+     "BELIEVED_BODY": "0",
++    "SCOUT_SEEN": "0",
+     "QB_SEEN_OUT": "0",
+     "QB_SEEN_REC": "0",
+     "ACC_RADIUS": "0",
+diff --git a/config/reference-stack.json b/config/reference-stack.json
+index 01653a1ed..8b8589aaf 100644
+--- a/config/reference-stack.json
++++ b/config/reference-stack.json
+@@ -338,6 +338,7 @@
+     "QB_SCAN": "on",
+     "QB_CANON_SEEN": "on",
+     "BELIEVED_BODY": "off",
++    "SCOUT_SEEN": "off",
+     "QB_SEEN_OUT": "on",
+     "QB_SEEN_REC": "on",
+     "ACC_RADIUS": "off",
+diff --git a/docs/FLAGS.md b/docs/FLAGS.md
+index 83465976f..67ef571db 100644
+--- a/docs/FLAGS.md
++++ b/docs/FLAGS.md
+@@ -2,7 +2,7 @@
+ 
+ Every engine switch read from the environment, recounted from `src` at `57f50fc3` on 2026-10-22. This includes #210's promotion and #205's two additional default-on switches. Flags that are not on develop (parked, removed from a PR, or only on a side branch) are kept in [PARKED.md](PARKED.md) so the ideas are not lost. Registration rules are in [PLAN.md](PLAN.md): at most 10 experimental flags, and each expires two reviews after it lands.
+ 
+-There are 507 flags read from the environment in `src` (recounted 2026-11-24: BELIEVED_BODY (off, experimental; Flex) on top of engine-97; engine-97: engine-96 plus QB_SCAN and QB_CANON_SEEN (on, leak removals; Flex; recounted from `src`, the on count also takes in engine-96's BALL_DRAG); engine-96: engine-95 plus BALL_DRAG (on); engine-95: engine-94 plus THROWAWAY_FELT (on); engine-94: engine-93 plus FLIGHT_BREAK (on) and FLIGHT_LEAD (off, parked); engine-93: engine-92 plus HEAD_FOLLOW (on); engine-92: engine-91 plus PERIPH_ACUITY (on); engine-91: engine-90 plus STEM_WORK (on); engine-90: engine-89 plus READ_VERTICAL_LOS and BACK_CLEAR (on); engine-89: engine-88 plus FLAT_CARRY (on); engine-88: engine-87 plus FORECAST_FINISH and QB_ROLE_PATH (on), READ_WINDOW and QB_CLOSE_BELIEF (off); engine-87: engine-86 plus HALF_KEY (on); engine-86 was engine-85 plus MUSH_MATCH (on); engine-85 was engine-84 plus FLAT_SINK (on); engine-84 was engine-83 plus DOWN_RISE_PLANT (on); engine-83 was engine-82 plus QB_DRIVE, QB_RHYTHM_THROW, QB_ALIGN, QB_BODY_FOLLOW, QB_WINDOW_ARRIVE, QB_KEY_PLANT, QB_STICK, QB_PEEK_CLOCK, QB_MOF_READ, QB_DEEP_WAIT and QB_STANCE; QB_DRIVE, QB_RHYTHM_THROW, QB_WINDOW_ARRIVE, QB_KEY_PLANT and QB_STICK on): 386 are on unless set to `0`, 93 are off unless set to `1`, and 28 are numeric scales or modes (identity value unless listed in the stack's numeric section). The rows below carry each flag's history.
++There are 508 flags read from the environment in `src` (recounted 2026-11-24: BELIEVED_BODY and SCOUT_SEEN (off, experimental; Flex) on top of engine-97; engine-97: engine-96 plus QB_SCAN and QB_CANON_SEEN (on, leak removals; Flex; recounted from `src`, the on count also takes in engine-96's BALL_DRAG); engine-96: engine-95 plus BALL_DRAG (on); engine-95: engine-94 plus THROWAWAY_FELT (on); engine-94: engine-93 plus FLIGHT_BREAK (on) and FLIGHT_LEAD (off, parked); engine-93: engine-92 plus HEAD_FOLLOW (on); engine-92: engine-91 plus PERIPH_ACUITY (on); engine-91: engine-90 plus STEM_WORK (on); engine-90: engine-89 plus READ_VERTICAL_LOS and BACK_CLEAR (on); engine-89: engine-88 plus FLAT_CARRY (on); engine-88: engine-87 plus FORECAST_FINISH and QB_ROLE_PATH (on), READ_WINDOW and QB_CLOSE_BELIEF (off); engine-87: engine-86 plus HALF_KEY (on); engine-86 was engine-85 plus MUSH_MATCH (on); engine-85 was engine-84 plus FLAT_SINK (on); engine-84 was engine-83 plus DOWN_RISE_PLANT (on); engine-83 was engine-82 plus QB_DRIVE, QB_RHYTHM_THROW, QB_ALIGN, QB_BODY_FOLLOW, QB_WINDOW_ARRIVE, QB_KEY_PLANT, QB_STICK, QB_PEEK_CLOCK, QB_MOF_READ, QB_DEEP_WAIT and QB_STANCE; QB_DRIVE, QB_RHYTHM_THROW, QB_WINDOW_ARRIVE, QB_KEY_PLANT and QB_STICK on): 386 are on unless set to `0`, 94 are off unless set to `1`, and 28 are numeric scales or modes (identity value unless listed in the stack's numeric section). The rows below carry each flag's history.
+ 
+ **Promotion (2026-11-09):** the reference stack `run-ref-4` is now the engine's default. The 90 flags it lists `on` are read as on unless set to `0` (rows marked "promoted" below); the rest are unchanged. Decisions and evidence for each flag are in [REFERENCE_STACK.md](REFERENCE_STACK.md); `npm run ref -- --list` is the current inventory, and `npm run ref -- --off -- <command>` runs the engine as it was before. The test suites still run on the pre-promotion engine (pinned in `vitest.config.ts`) until their recorded cases are re-recorded. The counts in the paragraph above predate all of this.
+ 
+@@ -231,6 +231,7 @@ There are 507 flags read from the environment in `src` (recounted 2026-11-24: BE
+ | `QB_SCAN` | on | leak removal, on at landing (`=0` restores; Flex, 2026-11-24; QB decision plan §1.6) | quarterback | `src/sim/qbmind.ts` (`QBMind.scanned`) | his pre-snap picture is one full scan with a per-defender error drawn once per play (recognition-scaled), feeding his memory at the snap, the coverage features, the box count, the screen look and the quick check. Off: memory seeded with exact positions; four reads with independent fresh noise. |
+ | `QB_CANON_SEEN` | on | leak removal, on at landing (`=0` restores; Flex, 2026-11-24; QB decision plan §1.6) | quarterback | `src/sim/qbmind.ts` (canonical looks, `cornersSeen`) | the canonical looks use the defense's personnel slots and the front's visible alignment (front, edge, strength, mug, Sam on) only; corners are found where he sees them (on each side the widest defensive back of the visible personnel group within 12 yd of the line and 4+ yd off the ball; attempt 1's 8 yd floor and 9 yd depth cut missed 40-50% of corners on condensed trips and heavy 13 and fell to quickCheck's default; staged probe `scripts/diag/eyes/corner-find.mts`: 98-100% right in 17 looks incl. press, bunch, condensed, nub and rolled safeties, residual misses scan-only at rec <= 0.5). Off: the call object and the CB_S / CB_W labels. |
+ | `BELIEVED_BODY` | off (`=1` turns it on) | experimental (Flex, 2026-11-24; believed-body note, docs/reviews/2026-11-24-believed-body.md, step 2) | coverage (first consumers) | `src/sim/believed-body.ts` (`BeliefStore`, `believedCaps`, `lookAt`); `src/sim/behaviors/defense.ts`, `src/sim/coverage/reads.ts`; `src/game/game.ts` (one store per game, the huddle) | two reviews after it lands. A defender's read of a receiver's top speed, burst, braking and cutting is what he believes, not the man's true profile: his build seen (the engine's own build-capacity fit, `scripts/diag/belief/body-prior-fit.mts`, with one weight error per holder and man), the staff's film (truth plus one error per game, tighter with the man's snaps; none for a rookie) and his own clear looks (a plateau of seen speed held 0.6 s: a floor always, a measurement on a vertical stem; a rise from rest: his burst). Between plays the huddle passes each player's two biggest steps to his unit on the field (stated choices: 2 items, lost 0.15 - 0.13 x awareness). Consumers: man coverage (slow-play sprint test, route observation, stem acceleration, release and upfield burst, the deep cushion), zone route observation and the deep cushion, coverage/reads, the ball-reach check. Off: the man's own capacities, bit-identical. |
++| `SCOUT_SEEN` | off (`=1` turns it on) | experimental (Flex, 2026-11-24; an outside review's leak, confirmed by Integration) | QB (the offense's in-game scouting) | `src/sim/qbmind.ts` (`CoverageScouting.observeSeen`), `src/game/game.ts` | two reviews after it lands. On a pass play the offense's coverage scouting learns what its passer came to believe, not the defense's call: his belief at the end of the play, each coverage by its share, weighted by how settled it was (his top coverage's share), and a disguise when the shell he read before the snap is not the shell he believed after it. Off: the defense's true call and whether it was disguised were counted, even on a play where he was sacked at 1.8 s. The booth (coaches upstairs naming the coverage between plays) is a real second channel, left for the information-flow work. The defense's run/pass scouting (`ScoutingReport.observe`) counts whether a pass happened, which the defense sees on every play: not a leak. Test `test/scout-seen.test.ts`. |
+ | `QB_SEEN_OUT` | on | promoted 2026-11-14 (engine-63; `=0` restores); was experimental (QB lane, information rule, 2026-11-13; staged test `test/qb-seen-out.test.ts`; game rows near flat) | quarterback | `src/sim/behaviors/qb.ts` (`seenOut`, `checkRelease`, `breakClock`, `ready`) | Whether a check-release man is out on his route comes from the quarterback's own picture placing him on his installed release route (then he stays out), not from the man's behaviour object; gates the rhythm outlet, his readiness and his place in the hot order. A slow screen's settle is read from where the quarterback has the receiver. |
+ | `QB_SEEN_REC` | on | promoted 2026-11-14 (engine-63; `=0` restores); was experimental (QB lane, information rule, 2026-11-14; first build) | quarterback | `src/sim/behaviors/qb.ts` (`has`, `evaluate`, `orderReads`) | The remaining reads of his own receivers' true state use where he has them (his forecast, else his delayed picture): a receiver's side for the look-off and the hot side, the verticals' stems for the peek, the clear-look test, the fallback target point, and the man-coverage reorder (with his picture of the defender). A receiver is down when his delayed picture shows him off his feet; a block is the call or an unseen check-release man, not the engagement record. With `QB_BELIEVED_DEF` the reorder also uses the defender's believed speed and man coverage. |
+ | `ACC_RADIUS` | off | experimental (deep-window belief, 2026-11-13) | QB | `src/sim/behaviors/qb.ts` (`window`, pAcc) | set at first review. His accuracy belief's catchable radius grows with the flight and the receiver's ball skills (1.6 + 0.9 T yd) instead of a fixed 1.35: our own catches by aim miss keep about 0.6-0.9 of an on-target ball's completion at a 2 yd miss and 0.2-0.55 at 3 yd (short to long flights), where the fixed radius priced 0.33 and 0.08. To be carded beside Coverage's medium-flight ball defending (our defenders 4.5 yd from the ball at 1.2-1.8 s against the NFL's 2.8). docs/reviews/2026-11-13-qb-gather.md |
+diff --git a/src/game/game.ts b/src/game/game.ts
+index 42a819e8a..eacfae903 100644
+--- a/src/game/game.ts
++++ b/src/game/game.ts
+@@ -12,7 +12,7 @@ import { clamp } from '../core/vec.js';
+ import { r01, type Player } from '../players/types.js';
+ import { alignStyle, decayWorkload, pickDefense, pickOffense, specialist, SUBSTITUTION_COST, type Availability, type Team } from '../league/team.js';
+ import { PlaySim, type PlaySetup } from '../sim/playsim.js';
+-import { CoverageScouting } from '../sim/qbmind.js';
++import { CoverageScouting, SCOUT_SEEN } from '../sim/qbmind.js';
+ import { ScoutingReport } from '../sim/recognition.js';
+ import type { Frame, PenaltyCall, PlayResult } from '../sim/types.js';
+ import { BoxScore } from './stats.js';
+@@ -723,7 +723,11 @@ export class Game {
+     for (const a of sim.agents) this.box.line(a.player, a.team === 'O' ? offTeam.abbr : defTeam.abbr).snaps++;
+     // Both sides learn from the snap they just saw.
+     this.scouting[defSide].observe(sim.snapContext, ranCall.kind === 'pass');
+-    if (ranCall.kind === 'pass') this.coverageScouting[offSide].observe(defCall);
++    // SCOUT_SEEN: the offense learns the coverage its passer came to believe, weighted by how settled it was (off: the call).
++    if (ranCall.kind === 'pass') {
++      if (SCOUT_SEEN) this.coverageScouting[offSide].observeSeen(sim.qbMind.belief, sim.qbMind.report.pre);
++      else this.coverageScouting[offSide].observe(defCall);
++    }
+ 
+     const startDown = s.down;
+     const startDist = s.distance;
+diff --git a/src/sim/qbmind.ts b/src/sim/qbmind.ts
+index 971f25219..4639706e5 100644
+--- a/src/sim/qbmind.ts
++++ b/src/sim/qbmind.ts
+@@ -66,6 +66,8 @@ const QB_SEEN_MAN = process.env.QB_SEEN_MAN !== '0';
+  * screen look and the quick check. Off: the memory was seeded with each defender's exact position, and each of the four
+  * reads drew fresh noise around the true positions, so he held four different pictures and an exact one. */
+ const QB_SCAN = process.env.QB_SCAN !== '0';
++/** SCOUT_SEEN (experimental, off): the offense's in-game coverage scouting learns from its passer's belief (CoverageScouting.observeSeen). */
++export const SCOUT_SEEN = process.env.SCOUT_SEEN === '1';
+ /** QB_CANON_SEEN (on, a leak removal; QB_CANON_SEEN=0 restores; QB decision plan §1.6): the looks he compares against are
+  * built only from what he can see. The defense's personnel (who is on the field) and its front's alignment (the front, the
+  * end men's edge, its strength, a mug or a Sam walked onto the line) are visible; the slot labels of the actual call and
+@@ -107,6 +109,27 @@ export class CoverageScouting {
+   private disguised = 0;
+   constructor(private readonly strength = 12) {}
+ 
++  /**
++   * SCOUT_SEEN (experimental, off; Flex, 2026-11-24; an outside review's leak, confirmed by Integration): what the offense
++   * learns of a defense's coverage on a pass play is what its passer came to believe, not the call. His belief at the end of
++   * the play is counted, weighted by how settled it was (his top coverage's share): a passer sacked at 1.8 s on a muddled
++   * picture teaches the offense little. A disguise is counted when the shell he read before the snap is not the shell he
++   * believed after it. The booth (coaches upstairs naming the coverage between plays) is a second, real channel, left for
++   * the information-flow work; it is not assumed here.
++   */
++  observeSeen(belief: Record<string, number>, preTop: string): void {
++    let top = '', best = -1;
++    for (const [id, p] of Object.entries(belief)) if (p > best) { best = p; top = id; }
++    if (best <= 0) return;
++    for (const [id, p] of Object.entries(belief)) {
++      const rep = repOf(COVERAGE_BY_ID[id] ?? COVERAGES[0]);
++      this.counts[rep] = (this.counts[rep] ?? 0) + best * p;
++    }
++    this.n += best;
++    const shell = (id: string) => COVERAGE_BY_ID[id]?.shell;
++    if (shell(preTop) && shell(top) && shell(preTop) !== shell(top)) this.disguised += best;
++  }
++
+   observe(call: DefensivePlayCall): void {
+     const rep = repOf(call.coverage);
+     this.counts[rep] = (this.counts[rep] ?? 0) + 1;
+diff --git a/test/scout-seen.test.ts b/test/scout-seen.test.ts
+new file mode 100644
+index 000000000..27c9aada6
+--- /dev/null
++++ b/test/scout-seen.test.ts
+@@ -0,0 +1,25 @@
++// SCOUT_SEEN (Flex, 2026-11-24): the offense's coverage scouting learns from what its passer came to believe, never the call.
++import { describe, expect, it } from 'vitest';
++import { CoverageScouting } from '../src/sim/qbmind.js';
++
++describe('SCOUT_SEEN: coverage scouting from the passer\'s belief', () => {
++  it('a settled belief teaches more than a muddled one', () => {
++    const settled = new CoverageScouting(1), muddled = new CoverageScouting(1);
++    for (let i = 0; i < 10; i++) {
++      settled.observeSeen({ cover3: 0.9, cover2: 0.1 }, 'cover3');
++      muddled.observeSeen({ cover3: 0.4, cover2: 0.35, cover4: 0.25 }, 'cover3');
++    }
++    expect(settled.snaps()).toBeCloseTo(9, 6);
++    expect(muddled.snaps()).toBeCloseTo(4, 6);
++    expect(settled.frequencies().cover3).toBeGreaterThan(muddled.frequencies().cover3);
++  });
++
++  it('a disguise is what he saw change: the pre-snap shell he read against the shell he believed after the snap', () => {
++    const s = new CoverageScouting(1), base = s.disguiseRate();
++    s.observeSeen({ cover2: 0.8, cover3: 0.2 }, 'cover3'); // read one-high before the snap, two-high after: rotated
++    expect(s.disguiseRate()).toBeGreaterThan(base);
++    const t = new CoverageScouting(1);
++    t.observeSeen({ cover3: 0.8, cover2: 0.2 }, 'cover3');
++    expect(t.disguiseRate()).toBeLessThan(base);
++  });
++});
