@@ -39,12 +39,12 @@ for (let seed = s0; seed <= s1; seed++) {
   const t = process.env.NO_TAUGHT === "1" ? undefined : TAUGHT[concept]; if (t) setup.offCall.pass = { ...PASS_BY_ID[concept], ...t };
   const qbP = setup.offense.QB; for (const [k, v] of Object.entries(MID)) qbP.ratings[k] = v; qbP.experience = 4;
   const sim: any = new PlaySim(setup);
-  let thrown: any = null, qbb: any = null, lastT = -1; const trace: any[] = []; const tr: Record<number, S[]> = {};
+  let thrown: any = null, qbb: any = null, lastT = -1; const fbk: Record<number, any> = {}; const trace: any[] = []; const tr: Record<number, S[]> = {};
   const tb = sim.throwBall.bind(sim);
   sim.throwBall = (q: any, target: any, v0: any, intended: any, arrivalT: number, ...rest: any[]) => {
     if (q === sim.qb && !thrown) {
       thrown = { t: sim.t, slot: target?.slot ?? null, idx: target?.idx ?? null, away: !target, pt: intended ? { x: intended.x, y: intended.y } : null, arr: arrivalT,
-        dist: r2(Math.hypot((intended?.x ?? q.pos.x) - q.pos.x, (intended?.y ?? q.pos.y) - q.pos.y)), qbSpeed: r2(Math.hypot(q.vel.x, q.vel.y)),
+        dist: r2(Math.hypot((intended?.x ?? q.pos.x) - q.pos.x, (intended?.y ?? q.pos.y) - q.pos.y)), qbSpeed: r2(Math.hypot(q.vel.x, q.vel.y)), qbDepth: r2(sim.los - q.pos.x),
         rid: target?.behavior?.route?.id ?? null, plannedBreak: target?.behavior?.breakTime != null ? r2(target.behavior.breakTime) : null, depthAtThrow: target ? r2(target.pos.x - sim.los) : null };
       const ref = target ? Object.entries(sim.offAlign.numbering).find(([, sl]) => sl === target.slot)?.[0] : null;
       const v2 = qbb?.v2;
@@ -65,11 +65,15 @@ for (let seed = s0; seed <= s1; seed++) {
     // Calibration: did each judged defender get within his reach + 0.5 of the throw's point by the ball's arrival?
     if (thrown?.roles && thrown.pt && sim.t <= thrown.arr + 1e-6) for (const r of thrown.roles) { const d = sim.agents[r.id]; if (Math.hypot(d.pos.x - thrown.pt.x, d.pos.y - thrown.pt.y) <= d.profile.reach + 0.5) r.arrived = true; }
     const v2 = qbb?.v2, h = qbb?.v2h;
+    // The passer's forecast of each receiver's break, first taken at the secure and at 1.0 s from the snap (absolute times).
+    if (h && !thrown) for (const r of sim.offense) { if (r.behavior?.kind !== 'route') continue; const fb = (fbk[r.idx] ??= {}); const b = h.breakAt(r);
+      if (fb.atSecure === undefined && sim.t >= h.snapAt) fb.atSecure = b == null ? null : r2(b);
+      if (fb.at1 === undefined && sim.t >= 1.0) fb.at1 = b == null ? null : r2(b); }
     if (v2 && h && !thrown && sim.t >= h.plantAt - 1e-6 && Math.round(sim.t * 20) % 1 === 0 && trace.length < 60) {
       const c = v2.cycle, look = c.looks.current, r = c.plan.reads[c.readIdx];
       trace.push({ t: r2(sim.t - h.snapAt), read: c.readIdx, st: c.state, look: look ? (look.kind === 'receiver' ? look.ref : look.role) : null,
         res: look ? r2(c.looks.resolved(look)) : null, need: r2(h.need), bar: r2(h.bar.P), risk: r2(h.bar.risk), press: c.pressure,
-        opts: r ? r.throws.map((o: any) => { const j = v2.judgedFor(o.ref); return j ? `${o.ref}:${r2(j.P)}/${r2(j.risk)}` : `${o.ref}:-`; }) : [] });
+        opts: r ? r.throws.map((o: any) => { const j = v2.judgedFor(o.ref); const rc = v2.target(h, o.ref), bk = rc ? h.breakAt(rc) : null; return j ? `${o.ref}:${r2(j.P)}/${r2(j.risk)}${j.early ? ' early' : ''}${bk != null ? ' bk' + r2(bk) : ''}` : `${o.ref}:-`; }) : [] });
     }
     if (sim.t > 6) sim.phase = 'dead';
   };
@@ -85,10 +89,10 @@ for (let seed = s0; seed <= s1; seed++) {
   }
   const ev = sim.events as any[];
   console.log(JSON.stringify({ concept, coverage, seed, v2: !!qbb?.v2, rel: thrown ? r2(thrown.t - snap) : null, rel0: thrown ? r2(thrown.t) : null, secured: r2(snap), plant0: qbb?.v2h ? r2(qbb.v2h.plantAt) : null, brk, slot: thrown?.slot ?? null, away: thrown?.away ?? null,
-    route: thrown?.rid ?? null, plannedBreak: thrown?.plannedBreak ?? null, depthAtThrow: thrown?.depthAtThrow ?? null, relBrk,
+    route: thrown?.rid ?? null, fcBreak: thrown?.idx != null ? fbk[thrown.idx] ?? null : null, plannedBreak: thrown?.plannedBreak ?? null, depthAtThrow: thrown?.depthAtThrow ?? null, relBrk,
     complete: !!sim.stats.completed, int: ev.some((e) => e.type === 'interception'), sack: ev.some((e) => e.type === 'sack'),
     pre: qbb?.v2?.presnap ? { flip: qbb.v2.presnap.flip, start: qbb.v2.presnap.startRead, look: qbb.v2.presnap.look ? { shell: qbb.v2.presnap.look.shell, over: Object.fromEntries(Object.entries(qbb.v2.presnap.look.over ?? {}).map(([k, v]: any) => [k, v ? { cushion: v.cushion, press: v.press, lev: v.leverage } : null])) } : null } : null,
-    ball: thrown?.at ?? null, dist: thrown?.dist ?? null, qbSpeed: thrown?.qbSpeed ?? null,
+    ball: thrown?.at ?? null, dist: thrown?.dist ?? null, qbDepth: thrown?.qbDepth ?? null, qbSpeed: thrown?.qbSpeed ?? null,
     catchEv: [...new Set(ev.filter((e) => thrown && e.t >= thrown.t && ['catch', 'drop', 'miss', 'pbu', 'deflection', 'interception', 'incomplete', 'secure'].includes(e.type)).map((e) => `${e.type}:${sim.agents[e.a]?.team === sim.qb.team ? 'O' : 'D'}${sim.agents[e.a]?.slot ?? ''}`))],
     belief: thrown?.belief ?? null, roles: (thrown?.roles ?? []).map((r: any) => ({ ...r, arrived: !!r.arrived || ev.some((e) => ['pbu', 'deflection', 'interception'].includes(e.type) && e.a === r.id), slot: sim.agents[r.id].slot, picked: ev.some((e) => e.type === 'interception' && e.a === r.id), played: ev.some((e) => ['pbu', 'deflection', 'interception'].includes(e.type) && e.a === r.id) })),
     intents: qbb?.v2Intents ?? null, trace,

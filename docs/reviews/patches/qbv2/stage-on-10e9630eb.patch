@@ -208,10 +208,10 @@ index 000000000..6050b81d9
 +sim.run();
 diff --git a/scripts/diag/qbv2/stage.ts b/scripts/diag/qbv2/stage.ts
 new file mode 100644
-index 000000000..68c2e29a2
+index 000000000..154e59774
 --- /dev/null
 +++ b/scripts/diag/qbv2/stage.ts
-@@ -0,0 +1,98 @@
+@@ -0,0 +1,102 @@
 +// QB lane 2026-11-24 (QB_V2 bring-up, the user's "start simple" set): staged plays of a quick concept against the coverage
 +// where its answer is plain, and the control that takes it away. One mid-rated passer. Run once with QB_V2 unset (the
 +// old controller) and once with QB_V2=1 on the same cells. Per play: the release (from the snap), the target and its
@@ -253,12 +253,12 @@ index 000000000..68c2e29a2
 +  const t = process.env.NO_TAUGHT === "1" ? undefined : TAUGHT[concept]; if (t) setup.offCall.pass = { ...PASS_BY_ID[concept], ...t };
 +  const qbP = setup.offense.QB; for (const [k, v] of Object.entries(MID)) qbP.ratings[k] = v; qbP.experience = 4;
 +  const sim: any = new PlaySim(setup);
-+  let thrown: any = null, qbb: any = null, lastT = -1; const trace: any[] = []; const tr: Record<number, S[]> = {};
++  let thrown: any = null, qbb: any = null, lastT = -1; const fbk: Record<number, any> = {}; const trace: any[] = []; const tr: Record<number, S[]> = {};
 +  const tb = sim.throwBall.bind(sim);
 +  sim.throwBall = (q: any, target: any, v0: any, intended: any, arrivalT: number, ...rest: any[]) => {
 +    if (q === sim.qb && !thrown) {
 +      thrown = { t: sim.t, slot: target?.slot ?? null, idx: target?.idx ?? null, away: !target, pt: intended ? { x: intended.x, y: intended.y } : null, arr: arrivalT,
-+        dist: r2(Math.hypot((intended?.x ?? q.pos.x) - q.pos.x, (intended?.y ?? q.pos.y) - q.pos.y)), qbSpeed: r2(Math.hypot(q.vel.x, q.vel.y)),
++        dist: r2(Math.hypot((intended?.x ?? q.pos.x) - q.pos.x, (intended?.y ?? q.pos.y) - q.pos.y)), qbSpeed: r2(Math.hypot(q.vel.x, q.vel.y)), qbDepth: r2(sim.los - q.pos.x),
 +        rid: target?.behavior?.route?.id ?? null, plannedBreak: target?.behavior?.breakTime != null ? r2(target.behavior.breakTime) : null, depthAtThrow: target ? r2(target.pos.x - sim.los) : null };
 +      const ref = target ? Object.entries(sim.offAlign.numbering).find(([, sl]) => sl === target.slot)?.[0] : null;
 +      const v2 = qbb?.v2;
@@ -279,11 +279,15 @@ index 000000000..68c2e29a2
 +    // Calibration: did each judged defender get within his reach + 0.5 of the throw's point by the ball's arrival?
 +    if (thrown?.roles && thrown.pt && sim.t <= thrown.arr + 1e-6) for (const r of thrown.roles) { const d = sim.agents[r.id]; if (Math.hypot(d.pos.x - thrown.pt.x, d.pos.y - thrown.pt.y) <= d.profile.reach + 0.5) r.arrived = true; }
 +    const v2 = qbb?.v2, h = qbb?.v2h;
++    // The passer's forecast of each receiver's break, first taken at the secure and at 1.0 s from the snap (absolute times).
++    if (h && !thrown) for (const r of sim.offense) { if (r.behavior?.kind !== 'route') continue; const fb = (fbk[r.idx] ??= {}); const b = h.breakAt(r);
++      if (fb.atSecure === undefined && sim.t >= h.snapAt) fb.atSecure = b == null ? null : r2(b);
++      if (fb.at1 === undefined && sim.t >= 1.0) fb.at1 = b == null ? null : r2(b); }
 +    if (v2 && h && !thrown && sim.t >= h.plantAt - 1e-6 && Math.round(sim.t * 20) % 1 === 0 && trace.length < 60) {
 +      const c = v2.cycle, look = c.looks.current, r = c.plan.reads[c.readIdx];
 +      trace.push({ t: r2(sim.t - h.snapAt), read: c.readIdx, st: c.state, look: look ? (look.kind === 'receiver' ? look.ref : look.role) : null,
 +        res: look ? r2(c.looks.resolved(look)) : null, need: r2(h.need), bar: r2(h.bar.P), risk: r2(h.bar.risk), press: c.pressure,
-+        opts: r ? r.throws.map((o: any) => { const j = v2.judgedFor(o.ref); return j ? `${o.ref}:${r2(j.P)}/${r2(j.risk)}` : `${o.ref}:-`; }) : [] });
++        opts: r ? r.throws.map((o: any) => { const j = v2.judgedFor(o.ref); const rc = v2.target(h, o.ref), bk = rc ? h.breakAt(rc) : null; return j ? `${o.ref}:${r2(j.P)}/${r2(j.risk)}${j.early ? ' early' : ''}${bk != null ? ' bk' + r2(bk) : ''}` : `${o.ref}:-`; }) : [] });
 +    }
 +    if (sim.t > 6) sim.phase = 'dead';
 +  };
@@ -299,10 +303,10 @@ index 000000000..68c2e29a2
 +  }
 +  const ev = sim.events as any[];
 +  console.log(JSON.stringify({ concept, coverage, seed, v2: !!qbb?.v2, rel: thrown ? r2(thrown.t - snap) : null, rel0: thrown ? r2(thrown.t) : null, secured: r2(snap), plant0: qbb?.v2h ? r2(qbb.v2h.plantAt) : null, brk, slot: thrown?.slot ?? null, away: thrown?.away ?? null,
-+    route: thrown?.rid ?? null, plannedBreak: thrown?.plannedBreak ?? null, depthAtThrow: thrown?.depthAtThrow ?? null, relBrk,
++    route: thrown?.rid ?? null, fcBreak: thrown?.idx != null ? fbk[thrown.idx] ?? null : null, plannedBreak: thrown?.plannedBreak ?? null, depthAtThrow: thrown?.depthAtThrow ?? null, relBrk,
 +    complete: !!sim.stats.completed, int: ev.some((e) => e.type === 'interception'), sack: ev.some((e) => e.type === 'sack'),
 +    pre: qbb?.v2?.presnap ? { flip: qbb.v2.presnap.flip, start: qbb.v2.presnap.startRead, look: qbb.v2.presnap.look ? { shell: qbb.v2.presnap.look.shell, over: Object.fromEntries(Object.entries(qbb.v2.presnap.look.over ?? {}).map(([k, v]: any) => [k, v ? { cushion: v.cushion, press: v.press, lev: v.leverage } : null])) } : null } : null,
-+    ball: thrown?.at ?? null, dist: thrown?.dist ?? null, qbSpeed: thrown?.qbSpeed ?? null,
++    ball: thrown?.at ?? null, dist: thrown?.dist ?? null, qbDepth: thrown?.qbDepth ?? null, qbSpeed: thrown?.qbSpeed ?? null,
 +    catchEv: [...new Set(ev.filter((e) => thrown && e.t >= thrown.t && ['catch', 'drop', 'miss', 'pbu', 'deflection', 'interception', 'incomplete', 'secure'].includes(e.type)).map((e) => `${e.type}:${sim.agents[e.a]?.team === sim.qb.team ? 'O' : 'D'}${sim.agents[e.a]?.slot ?? ''}`))],
 +    belief: thrown?.belief ?? null, roles: (thrown?.roles ?? []).map((r: any) => ({ ...r, arrived: !!r.arrived || ev.some((e) => ['pbu', 'deflection', 'interception'].includes(e.type) && e.a === r.id), slot: sim.agents[r.id].slot, picked: ev.some((e) => e.type === 'interception' && e.a === r.id), played: ev.some((e) => ['pbu', 'deflection', 'interception'].includes(e.type) && e.a === r.id) })),
 +    intents: qbb?.v2Intents ?? null, trace,
@@ -351,20 +355,27 @@ index 000000000..6ce43eb69
 +  if (sim.t > 2) sim.phase = 'dead'; };
 +sim.run();
 diff --git a/src/sim/behaviors/qb.ts b/src/sim/behaviors/qb.ts
-index d6943e2dd..0563d365e 100644
+index d6943e2dd..7846e3db5 100644
 --- a/src/sim/behaviors/qb.ts
 +++ b/src/sim/behaviors/qb.ts
-@@ -16,6 +16,10 @@
+@@ -16,12 +16,16 @@
   */
  import { FIELD_WIDTH } from '../../core/field.js';
  import { clamp, logistic, wrapAngle, type Vec2, type Vec3 } from '../../core/vec.js';
 +import { READ_PLANS, planFits } from '../../playbook/read-plans.js';
 +import { V2Drive, type V2Host } from '../qbv2/drive.js';
-+import { bar as v2Bar, confidenceNeed as v2Need, resolveTau as v2Tau } from '../qbv2/ratings.js';
++import { anticipationLead as v2Lead, bar as v2Bar, confidenceNeed as v2Need, resolveTau as v2Tau } from '../qbv2/ratings.js';
 +import { qbRead, qbStage } from '../qb-trace.js';
  import { arcPoint, dragFreeLaunch, minFlightTime, qbArmSpeed, solveLaunch, DRAG_SPIRAL } from '../../physics/ball.js';
  import { stepBody, type Body, type MoveCommand } from '../../physics/kinematics.js';
  import { timeToReach } from '../../physics/reach.js';
+ import { supportParams } from '../../physics/support.js';
+ import type { PassConcept, ReceiverRef } from '../../playbook/types.js';
+-import { dropSpec, plannedFakeEnd, plannedSnapAt } from '../called-drop.js';
++import { dropSpec, plannedFakeEnd, plannedSnapAt, QB_QUICK_DRIFT } from '../called-drop.js';
+ import { PUNCH } from '../engagement.js';
+ import type { Agent, Behavior } from '../agent.js';
+ import type { Perceived } from '../perception.js';
 @@ -49,6 +53,11 @@ import { DECLARED_BREAK } from '../../playbook/read-compiler/features.js';
   * non-visual term (pocket presence) stands. Teammates are seen as before (`track` returns `see` for them). */
  const TRACK_FEEL = process.env.TRACK_FEEL !== '0' || process.env.PERCEIVE_TRACK === '1';
@@ -377,6 +388,15 @@ index d6943e2dd..0563d365e 100644
  const CATCH_Z = 1.3;
  
  /** What the no-throw behaviour is told when the throw decision has nothing acceptable this tick (the seam between
+@@ -1157,7 +1166,7 @@ export class QBPass implements Behavior {
+     private readonly concept: PassConcept,
+     receiverPriors: ReadonlyMap<Agent, InstalledReceiverRoute>,
+   ) {
+-    const gun = sim.offCall.formation.qb !== 'under';
++    const gun = sim.offCall.formation.qb !== 'under'; this.formationGun = gun;
+     // GUN_SNAP: his drop starts when the snap is secured in his hands.
+     this.snapAt = plannedSnapAt(gun, a.pos, { x: sim.los, y: sim.ballY });
+     this.drop = dropSpec(concept.drop, a.pos.x, sim.los, gun);
 @@ -1571,6 +1580,26 @@ export class QBPass implements Behavior {
  
    update(a: Agent, sim: PlaySim): MoveCommand {
@@ -404,23 +424,26 @@ index d6943e2dd..0563d365e 100644
      if (sim.carrier !== a) { if (QB_BREAK) a.carryPosture = null; return stand(); }
      if (QB_TICK_PICTURE) this.takePictures(a, sim);
      if ((QB_MOF_READ || QB_DEEP_WAIT) && !this.mofBuilt) this.readShell(a, sim);
-@@ -1711,6 +1740,8 @@ export class QBPass implements Behavior {
+@@ -1711,6 +1740,11 @@ export class QBPass implements Behavior {
      }
  
      if (this.phase === 'drop') {
 +      // QB_V2: on the drop his first read's look resolves (no decision is made until the plant).
-+      if (this.v2 && this.v2h && t >= this.snapAt) this.v2.watch(this.v2h);
++      if (this.v2 && this.v2h && t >= this.snapAt && !this.v2Drift()) this.v2.watch(this.v2h);
++      // QB_QUICK_DRIFT bit 2: on the gun quick drift he reads from the moment he has the ball; a throw he commits to
++      // starts from his drift (the set is his throwing step); anything else and the drift goes on.
++      if (this.v2Drift() && t >= this.snapAt) { const c = this.v2Step(a, sim, this.v2u, true); if (c) return c; }
        const target = { x: this.drop.x, y: this.dropY };
        const d = Math.hypot(target.x - a.pos.x, target.y - a.pos.y);
        // Play-action: sell the fake first.
-@@ -1734,12 +1765,15 @@ export class QBPass implements Behavior {
+@@ -1734,12 +1768,15 @@ export class QBPass implements Behavior {
        }
        // BLITZ_READ: a free rusher he has recognized ends the drop: he hits his back foot and throws hot.
        const hotNow = BLITZ_READ && this.hotSeenAt !== null && t - this.hotSeenAt >= this.processing(a);
 -      if (d < 0.4 || t > this.snapAt + this.drop.time + 0.4 || (pressure.time < 0.5 && t > this.snapAt + 0.4) || hotNow) {
 +      // QB_V2: the plant is the footwork event the read keys on (his back foot down at drop.time), not his body reaching
 +      // within 0.4 yd of the spot: waiting for that held every quick read 0.15 s past the plant (staged V2, 2026-11-24).
-+      const v2Plant = !!this.v2 && t >= this.snapAt + this.drop.time;
++      const v2Plant = !!this.v2 && !this.v2Drift() && t >= this.snapAt + this.drop.time;
 +      if (d < 0.4 || t > this.snapAt + this.drop.time + 0.4 || (pressure.time < 0.5 && t > this.snapAt + 0.4) || hotNow || v2Plant) {
          // QB_RHYTHM_THROW: on a rhythm concept, as his back foot hits he throws read 1 if it will be ready by the release
          // (ready() is his own forecast of the break against a throw started now) and worth it; else he sets and hitches.
@@ -431,7 +454,7 @@ index d6943e2dd..0563d365e 100644
            const first = this.reads[0];
            if (first && this.ready(first, sim)) {
              const aggression = 0.5 + 0.35 * (a.player.archetype === 'Gunslinger' ? 1 : 0) - 0.25 * a.r('decisionMaking');
-@@ -1762,7 +1796,7 @@ export class QBPass implements Behavior {
+@@ -1762,7 +1799,7 @@ export class QBPass implements Behavior {
          // READ_PLAN key: read at its cue, from the drop; until then the low route is not thrown on rhythm.
          if (READ_PLAN && this.plan?.key && !this.keyRead && t >= this.plan.key.cueBy) this.readKey(a, sim);
          const first = READ_PLAN && this.plan?.key && !this.keyRead ? undefined : this.reads[0];
@@ -440,16 +463,16 @@ index d6943e2dd..0563d365e 100644
            const aggression = 0.5 + 0.35 * (a.player.archetype === 'Gunslinger' ? 1 : 0) - 0.25 * a.r('decisionMaking');
            const ev = this.evaluate(a, sim, first, 0);
            if (ev && ev.P >= 0.6 - 0.12 * aggression && ev.intRisk <= 0.025 + 0.05 * aggression) {
-@@ -1815,6 +1849,8 @@ export class QBPass implements Behavior {
+@@ -1815,6 +1852,8 @@ export class QBPass implements Behavior {
        this.outOn = this.outOn ? side > OUT_EXIT : side >= OUT_ENTER;
      }
      if (u > 0.5) this.underPressure++;
 +    // QB_V2: the rebuilt cycle decides (no old read, hot, rhythm, clock or relook throw runs).
-+    if (this.v2) return this.v2Step(a, sim, urgency);
++    if (this.v2) return this.v2Step(a, sim, urgency)!;
  
      // Look-off: veterans hold the safety with their eyes before the first read.
      if (!this.lookOffChecked) {
-@@ -2127,6 +2163,64 @@ export class QBPass implements Behavior {
+@@ -2127,6 +2166,70 @@ export class QBPass implements Behavior {
    /** QB_EYES: the man he is gating a throw to (his eyes went there for it), or null. */
    private gateFor: Agent | null = null;
    /** QB_EYES: his processing time on a man his eyes have just reached. */
@@ -458,12 +481,13 @@ index d6943e2dd..0563d365e 100644
 +  private v2: V2Drive | null | undefined = undefined;
 +  private v2h: V2Host | null = null;
 +  private v2u = 0;
++  private formationGun = true;
 +  private v2Read = -1;
 +  /** QB_V2 diagnostics (no effect): the intents the cycle returned, by kind. */
 +  v2Intents: Record<string, number> = {};
 +  private v2HostFor(a: Agent, sim: PlaySim, felt: number): V2Host {
 +    // Every rating mapping is in src/sim/qbv2/ratings.ts; no archetype, and no bar from decisionMaking.
-+    const pr = { playRecognition: a.r('playRecognition'), decisionMaking: a.r('decisionMaking'), composure: a.r('composure'), discipline: a.r('discipline'), experience: a.player.experience };
++    const pr = { playRecognition: a.r('playRecognition'), decisionMaking: a.r('decisionMaking'), composure: a.r('composure'), discipline: a.r('discipline'), experience: a.player.experience, anticipation: a.r('anticipation') };
 +    return {
 +      a, sim, releaseZ: RELEASE_Z, snapAt: this.snapAt,
 +      estimate: (d) => this.mind.estimate(d), seenHead: (d) => sim.see(a, d).head ?? null, pictureAge: (d) => this.mind.pictureAge(d), pictureSpread: (d) => this.mind.pictureSpread?.(d) ?? 0.5,
@@ -475,19 +499,23 @@ index d6943e2dd..0563d365e 100644
 +      placeSpread: (dist) => this.missSigma(a, sim, dist, this.v2h?.felt ?? 0),
 +      body: (d) => this.bodyOf(a, d),
 +      ballSkills: (d) => (QB_BELIEVED_DEF ? this.believe(a, d).ballSkills : 0.5),
-+      plantAt: Math.min(this.setAt >= 0 ? this.setAt : Infinity, this.snapAt + this.drop.time),
++      plantAt: this.v2Drift() ? this.snapAt : Math.min(this.setAt >= 0 ? this.setAt : Infinity, this.snapAt + this.drop.time),
 +      // One hitch step (s): his drop's stride, but a one-step drop's whole time is not a hitch (0.75 s on the gun quick drop
 +      // held read 2 of quick outs 0.75 s on a covered first read: staged V2, 2026-11-24). Capped at the gun three-step's stride.
 +      stride: Math.min(this.drop.time / (DROP_STEPS[this.v2?.cycle?.plan?.drop ?? this.concept.drop] ?? 5), 0.33),
 +      felt,
 +      tau: v2Tau(pr, this.narrow(a)),
 +      need: v2Need(pr, felt),
++      lead: this.v2Drift() ? v2Lead(pr) : undefined,
 +      bar: v2Bar(felt, this.narrow(a)),
 +      outside: this.outsidePocket(a, sim),
 +    };
 +  }
 +  /** QB_V2: one decision from the cycle, turned into a command with the kept mechanics. */
-+  private v2Step(a: Agent, sim: PlaySim, felt: number): MoveCommand {
++  /** QB_QUICK_DRIFT bit 2 applies: V2 on a gun quick drop. */
++  private v2Drift(): boolean { return !!this.v2 && (QB_QUICK_DRIFT & 2) !== 0 && this.v2.cycle.plan.drop === 'quick' && this.formationGun; }
++
++  private v2Step(a: Agent, sim: PlaySim, felt: number, drifting = false): MoveCommand | null {
 +    this.v2u = felt;
 +    const h = this.v2HostFor(a, sim, felt); this.v2h = h;
 +    const v2 = this.v2!, intent = v2.tick(h);
@@ -506,6 +534,7 @@ index d6943e2dd..0563d365e 100644
 +      const r = v2.target(h, intent.ref); cmd = this.throwAway(a, sim, r ? { x: r.pos.x, y: r.pos.y, z: 0 } : undefined);
 +    } else if (intent.kind === 'away') cmd = this.throwAway(a, sim);
 +    else if (intent.kind === 'escape' && this.shouldScramble(a, sim, false)) cmd = this.scramble(a, sim);
++    if (!cmd && drifting) return null;
 +    cmd ??= this.pocketMove(a, sim, readAgent);
 +    qbStage(sim, 'qb-cycle', a, { vel: cmd.vel, facing: cmd.facing });
 +    return cmd;
@@ -514,7 +543,7 @@ index d6943e2dd..0563d365e 100644
    private processing(a: Agent): number { return (0.15 + 0.25 * (1 - a.r('decisionMaking'))) * (1 + 0.8 * this.narrow(a)); }
  
    /** QB_STICK: his picture when he decided the throw: each defender's distance to the catch point and to the low flight. */
-@@ -2290,6 +2384,8 @@ export class QBPass implements Behavior {
+@@ -2290,6 +2393,8 @@ export class QBPass implements Behavior {
    }
  
    private gazePoint(sim: PlaySim): Vec2 {
@@ -523,12 +552,39 @@ index d6943e2dd..0563d365e 100644
      const heldPoint = (r: Agent): Vec2 => {
        const forecast = this.receiverForecasts.get(r);
        return forecast?.predict(sim.t, 0) ?? forecast?.prior.start ?? { x: sim.los + 10, y: sim.ballY };
+diff --git a/src/sim/called-drop.ts b/src/sim/called-drop.ts
+index 6821079d8..c78e4ea66 100644
+--- a/src/sim/called-drop.ts
++++ b/src/sim/called-drop.ts
+@@ -16,12 +16,22 @@ const PA_DROP = process.env.PA_DROP !== '0';
+ const CONCEPT_DROPS = process.env.CONCEPT_DROPS !== '0';
+ const FIVE_GUN = (los: number) => ({ x: los - 8.8, time: 1.8 });
+ const FIVE_UNDER = (los: number) => ({ x: los - 8.9, time: 2.0 });
++/** QB_QUICK_DRIFT (QB lane, off; bits: 1 = the drift's shape, 2 = V2 reads from the secure, the set is the throwing step,
++ * read in qb.ts): the gun quick game is a short slow drift, not a two-yard step. Measured, not taught (Rules' qb_plant.py on
++ * rules/route-chart d20d02418, 2022 BDB non-PA quick/flat throws released under 2.0 s, gun, n 437): he retreats 1.57 yd
++ * (p25-75 1.14-2.03) from his snap depth at a peak of 1.65 yd/s and sets 1.60 s after the snap (1.50-1.70), the set being
++ * the throwing step 0.2 s before the release; ours retreated 2.5 yd at 3.15 yd/s. 1.6 yd over 1.1 s from the secure
++ * (0.49 s): the measured set less the secure. Under center unchanged. */
++export const QB_QUICK_DRIFT = Number(process.env.QB_QUICK_DRIFT ?? '0') | 0;
++const QUICK_DRIFT_YD = 1.6, QUICK_DRIFT_S = 1.1;
+ 
+ /** Where and when the called drop puts the QB (los-relative x, seconds). */
+ export function dropSpec(drop: DropType, qbStartX: number, los: number, gun: boolean): { x: number; time: number } {
+   switch (drop) {
+     // Depths at the throw match tracking (median 7.9 yd behind the line).
+     case 'quick':
++      // From the line (the gun snap spot 4.6 yd behind it), not qbStartX: the linemen ask with his live spot.
++      if (gun && (QB_QUICK_DRIFT & 1)) return { x: los - 4.6 - QUICK_DRIFT_YD, time: QUICK_DRIFT_S };
+       return gun ? { x: los - 6.6, time: 0.75 } : { x: los - 5.0, time: 1.05 };
+     case 'gun3':
+       return gun ? { x: los - 7.3, time: 1.0 } : { x: los - 6.2, time: 1.3 };
 diff --git a/src/sim/qbv2/cycle.ts b/src/sim/qbv2/cycle.ts
 new file mode 100644
-index 000000000..ef7188a1c
+index 000000000..ee6683630
 --- /dev/null
 +++ b/src/sim/qbv2/cycle.ts
-@@ -0,0 +1,177 @@
+@@ -0,0 +1,180 @@
 +/**
 + * QB_V2 module E: the cycle (QB lane, 2026-11-24; docs/reviews/2026-11-24-qb-v2-design.md §3). One state machine on
 + * one clock, his feet. This file is the decision logic only: it reads his senses through `CycleSenses` (his picture,
@@ -542,7 +598,7 @@ index 000000000..ef7188a1c
 +export type PressureState = 'clean' | 'felt' | 'imminent' | 'contact';
 +
 +/** What D returns for a candidate throw (the judgment), or null when he cannot judge it (not in his picture). */
-+export interface Judged { option: ThrowOption; P: number; risk: number; reachesSticks: boolean }
++export interface Judged { option: ThrowOption; P: number; risk: number; reachesSticks: boolean; /** Before its time (an on-break throw whose release would lead the break by more than his anticipation): not thrown yet. */ early?: boolean }
 +
 +/** His senses as the cycle needs them (all from his own picture, felt rush and the judgment). */
 +export interface CycleSenses {
@@ -622,7 +678,7 @@ index 000000000..ef7188a1c
 +    const cue = r.look.kind === 'key' ? s.keyCue(r.look.role, r.look.side ?? 'S') : null;
 +    const named = cue ? r.keyRules?.find((k) => k.cue === cue)?.throwTo ?? null : null;
 +    const order = named ? [...r.throws].sort((a, b) => (a.ref === named ? -1 : b.ref === named ? 1 : 0)) : r.throws;
-+    const clear = order.map((o) => s.judge(o)).filter((j): j is Judged => !!j && j.P >= s.bar.P && j.risk <= s.bar.risk);
++    const clear = order.map((o) => s.judge(o)).filter((j): j is Judged => !!j && !j.early && j.P >= s.bar.P && j.risk <= s.bar.risk);
 +    if (!clear.length) return null;
 +    const first = clear[0];
 +    if (named && first.option.ref === named) return first;
@@ -670,7 +726,10 @@ index 000000000..ef7188a1c
 +      // by the next step plus the time the look would take; a look that cannot resolve has nothing to wait for.
 +      const holding = res < s.need && s.canReach(t) && (this.looks.resolving(t) || s.now - next < 0.1)
 +        && s.now < next + s.tau * Math.log(1 / Math.max(1e-3, 1 - s.need));
-+      if (!holding) { this.passed.add(this.readIdx); this.readIdx++; }
++      // A read whose timing throw is not due yet is not left: its answer comes on the route's break (in rhythm), until
++      // the forecast break passes (then early clears).
++      const notDue = r.throws.some((o) => s.judge(o)?.early === true);
++      if (!holding && !notDue) { this.passed.add(this.readIdx); this.readIdx++; }
 +    }
 +    return { kind: 'look', target: t };
 +  }
@@ -708,10 +767,10 @@ index 000000000..ef7188a1c
 +}
 diff --git a/src/sim/qbv2/drive.ts b/src/sim/qbv2/drive.ts
 new file mode 100644
-index 000000000..613525010
+index 000000000..bdde9621b
 --- /dev/null
 +++ b/src/sim/qbv2/drive.ts
-@@ -0,0 +1,240 @@
+@@ -0,0 +1,246 @@
 +/**
 + * QB_V2 wiring (QB lane, 2026-11-24): drives the cycle (module E) from QBPass on a concept with an authored read plan
 + * that fits the call, with the look (C), the judgment (D), the role resolver and the pre-snap decision (B, Flex). It
@@ -763,6 +822,9 @@ index 000000000..613525010
 +  felt: number;
 +  tau: number;
 +  need: number;
++  /** His anticipation lead (s): an on-break throw may release up to this long before his forecast of the break. Absent:
++   * no timing hold (the plant holds the ball instead). */
++  lead?: number;
 +  bar: { P: number; risk: number };
 +  outside: boolean;
 +  releaseZ: number;
@@ -911,7 +973,10 @@ index 000000000..613525010
 +    });
 +    const j = judge(q, defs);
 +    this.held.set(o.ref, j.roles.find((x) => x.role === 'coverer')?.id ?? null);
-+    const judged: Judged = { option: o, P: j.P, risk: j.risk, reachesSticks: mech.point.x >= sim.firstDownX };
++    // A timing throw is not started before its time: the release (now + windup) may lead his forecast of the break by at
++    // most his anticipation lead. Judged all the same (the trace shows it), marked early.
++    const early = h.lead !== undefined && o.timing === 'onBreak' && q.breakIn !== null && q.breakIn > q.windup + h.lead;
++    const judged: Judged = { option: o, P: j.P, risk: j.risk, reachesSticks: mech.point.x >= sim.firstDownX, early };
 +    this.lastJudged.set(o.ref, judged);
 +    this.lastRoles.set(o.ref, j.roles);
 +    return judged;
@@ -1458,10 +1523,10 @@ index 000000000..6e6e830cc
 +};
 diff --git a/src/sim/qbv2/presnap.ts b/src/sim/qbv2/presnap.ts
 new file mode 100644
-index 000000000..acdc3c501
+index 000000000..fba8666fe
 --- /dev/null
 +++ b/src/sim/qbv2/presnap.ts
-@@ -0,0 +1,205 @@
+@@ -0,0 +1,236 @@
 +/**
 + * QB_V2 module B: the passer's pre-snap plan (Flex, 2026-11-24; design note docs/reviews/2026-11-24-qb-module-b-presnap-plan.md,
 + * approved in outline by Integration). At the snap, once, it turns his own pre-snap picture into a `PreSnapState` for the
@@ -1493,6 +1558,16 @@ index 000000000..acdc3c501
 +export const MARGIN_LEVERAGE = 0.5;
 +/** The hot side: 'either' when the two sides' surpluses are within this many defenders. */
 +export const MARGIN_HOT_SIDE = 0.5;
++/** A flat defender is outside #2 (outside leverage on the out) when aligned more than this far outside him, in the passer's
++ * seen picture; head-up within it counts as not outside (yd). Stated choice (Rules + Coaching's measurable definition,
++ * 2026-11-24): the whole field-flip condition is an extension of the taught flat-defender key, not itself a sourced rule. */
++export const OUTSIDE_OF_TWO = 1.0;
++/** ...and no deeper than this past the line: deeper he is a third or quarter player, not the flat defender (yd; stated
++ * choice, Rules + Coaching). */
++export const APEX_MAX_DEPTH = 7;
++/** The ball within this of the middle has no field side (yd; stated choice). */
++const FIELD_MIDDLE = 1.0;
++const FIELD_MIDDLE_Y = 53.333 / 2;
 +
 +/** A defender pressed on a receiver: within this depth of the line and this lateral distance of him (QBMind's press rule). */
 +const PRESS_DEEP = 2.5;
@@ -1623,13 +1698,34 @@ index 000000000..acdc3c501
 +  return true;
 +}
 +
++/** The field side (S or W): the side with more room to its sideline; none with the ball within FIELD_MIDDLE of the middle. */
++export function fieldSide(p: RolePicture): 'S' | 'W' | null {
++  const toMiddle = FIELD_MIDDLE_Y - p.ballY;
++  if (Math.abs(toMiddle) < FIELD_MIDDLE) return null;
++  return Math.sign(toMiddle) === p.strong ? 'S' : 'W';
++}
++
++/** The flat defender over a side's #2, found in his scan by the shared resolver (never a label), at apex depth
++ * (APEX_MAX_DEPTH or less) and aligned outside #2 by more than OUTSIDE_OF_TWO: outside leverage on the out. No #2 or no flat
++ * defender: false. A stated choice, not a taught rule (Rules + Coaching, 2026-11-24): it extends the taught post-snap key
++ * (the apex widens to the out, sits on the hitch) to his pre-snap alignment. */
++export function flatOutsideOfTwo(p: RolePicture, side: 'S' | 'W'): boolean {
++  const two = p.receivers[`${side}2`];
++  const man = two ? resolveRole(p, 'flat', side) : null;
++  return !!two && !!man && deep(p, man) <= APEX_MAX_DEPTH && out(p, man, side) - out(p, two, side) > OUTSIDE_OF_TWO;
++}
++
 +/** Whether he mirrors the plan, by its pick. Near the margin he keeps the coach's (strong) side. */
-+export function pickFlip(plan: QbReadPlan, look: PreSnapLook): boolean {
++export function pickFlip(plan: QbReadPlan, look: PreSnapLook, picture?: RolePicture): boolean {
 +  switch (plan.pick) {
 +    case 'cushion': {
 +      // The softer corner: the cushion of the man over each #1 (the corner).
 +      const s = look.over.S1?.cushion, w = look.over.W1?.cushion;
-+      return s != null && w != null && w > s + MARGIN_CUSHION;
++      if (!(s != null && w != null && w > s + MARGIN_CUSHION)) return false;
++      // To the field only when the field side is clearly better: the flat defender over the field #2 must not sit outside
++      // him with outside leverage, or the long field out is the risk throw (QB lane and Integration, 2026-11-24; a stated
++      // choice extending the taught flat-defender key, Rules + Coaching).
++      return !(picture && fieldSide(picture) === 'W' && flatOutsideOfTwo(picture, 'W'));
 +    }
 +    case 'shell':
 +      return !!plan.pickShell && look.shell != null && look.shell !== plan.pickShell;
@@ -1654,7 +1750,7 @@ index 000000000..acdc3c501
 +export function decidePreSnap(inp: PreSnapInputs): PreSnapState & { look: PreSnapLook } {
 +  const { plan } = inp;
 +  const look = lookOf(inp.picture, inp.pSingleHigh, inp.boxHalfWidth);
-+  const flip = pickFlip(plan, look);
++  const flip = pickFlip(plan, look, inp.picture);
 +  const alert = plan.alert && condHolds(plan.alert.when, look, flip) ? { read: plan.alert.read } : null;
 +  const confirm: KeyRole | null = plan.confirm;
 +  return {
@@ -1669,10 +1765,10 @@ index 000000000..acdc3c501
 +}
 diff --git a/src/sim/qbv2/ratings.ts b/src/sim/qbv2/ratings.ts
 new file mode 100644
-index 000000000..e918e07d4
+index 000000000..e089a8abb
 --- /dev/null
 +++ b/src/sim/qbv2/ratings.ts
-@@ -0,0 +1,39 @@
+@@ -0,0 +1,50 @@
 +/**
 + * QB_V2: every rating-to-parameter mapping in one place (QB lane, 2026-11-24; Integration's outside review of the passer's
 + * ratings). Each parameter names its source, so a mapping can be split or re-mapped later without touching the modules.
@@ -1689,6 +1785,8 @@ index 000000000..e918e07d4
 +  composure: number;
 +  discipline: number;
 +  experience: number;
++  /** Optional so older callers keep working; the typical (0.5) when absent. */
++  anticipation?: number;
 +}
 +
 +/** How he estimates: the look's resolve time (s), from his processing (playRecognition, decisionMaking, experience),
@@ -1711,6 +1809,15 @@ index 000000000..e918e07d4
 +export const BAR_RISK0 = 0.0425;
 +export function bar(felt: number, narrow: number): { P: number; risk: number } {
 +  return { P: BAR_P0 - 0.32 * felt - 0.15 * narrow, risk: BAR_RISK0 + 0.08 * felt };
++}
++
++/** How far ahead of a timing route's break he will let the ball go (s): the release may come up to this long before his
++ * forecast of the break, from his anticipation. The coached rule is the ball out on the break (in rhythm); without a plant
++ * to hold it (the gun quick drift) nothing else does. Stated: 0.3 s at the top of the scale, 0.15 for the typical passer
++ * (NFL tracking, release minus break: outs +0.30 p50 with 25% thrown before the break, stops -0.10 with 50%; the
++ * reach-and-release record). */
++export function anticipationLead(r: PasserRatings): number {
++  return 0.3 * Math.min(1, Math.max(0, r.anticipation ?? 0.5));
 +}
 diff --git a/src/sim/qbv2/roles.ts b/src/sim/qbv2/roles.ts
 new file mode 100644
@@ -1981,10 +2088,10 @@ index 000000000..3612a7df5
 +});
 diff --git a/test/qbv2-presnap.test.ts b/test/qbv2-presnap.test.ts
 new file mode 100644
-index 000000000..e7ba66e91
+index 000000000..e1fb8a1a5
 --- /dev/null
 +++ b/test/qbv2-presnap.test.ts
-@@ -0,0 +1,126 @@
+@@ -0,0 +1,145 @@
 +// QB_V2 module B (Flex, 2026-11-24): the passer's pre-snap plan from his own picture. Each pick and its margin, the alert
 +// (one condition or alternatives, mirrored with the plan), the hot count against his own protection, and two standing
 +// contracts: the state does not change when the defenders' identities or order are permuted with every position held
@@ -1993,7 +2100,7 @@ index 000000000..e7ba66e91
 +import { describe, expect, it } from 'vitest';
 +import { Rng } from '../src/core/rng.js';
 +import type { QbReadPlan } from '../src/sim/qbv2/plan.js';
-+import { condHolds, decidePreSnap, lookOf, MARGIN_CUSHION, type PreSnapInputs } from '../src/sim/qbv2/presnap.js';
++import { condHolds, decidePreSnap, fieldSide, lookOf, MARGIN_CUSHION, type PreSnapInputs } from '../src/sim/qbv2/presnap.js';
 +import type { PicturedMan, RolePicture } from '../src/sim/qbv2/roles.js';
 +
 +const LOS = 50, BY = 26.65;
@@ -2109,6 +2216,25 @@ index 000000000..e7ba66e91
 +    expect(m.checkdown?.ref).toBe('W3');
 +    expect((m.alert!.when as any[])[1]).toEqual({ press: 'W1', cushion: { on: 'W1', over: 6 } });
 +    expect(mirrorPlan(m)).toEqual(p);
++  });
++  it('a flip to the field needs the field side clearly better: not with the flat defender outside the field #2', () => {
++    // Ball on the hash with the field to the weak side (more room toward -y); the weak corner softer by 2 yd.
++    const hashPic = (ballY: number, flatOut: number): RolePicture => {
++      const at = (d: number, o: number, db = true): PicturedMan => ({ id: nextId++, x: LOS + d, y: ballY + o, vx: 0, vy: 0, db });
++      const rcv = (o: number): PicturedMan => ({ id: 950 + Math.round(o * 10), x: LOS - 1, y: ballY + o, vx: 0, vy: 0 });
++      const defs = [-3, -1, 1, 3].map((o) => at(0.9, o, false)).concat([at(4.5, -2, false), at(4.5, 2, false), at(5, 20.5), at(7, -20.5),
++        at(12, 9), at(12, -9), at(4.5, -flatOut)]);
++      return { defenders: defs, receivers: { S1: rcv(20), S2: rcv(10), W1: rcv(-20), W2: rcv(-10) }, los: LOS, dir: 1, ballY, strong: 1, t: -1 };
++    };
++    const outs = plan({ pick: 'cushion' });
++    const field = 33; // more room toward -y: the weak side is the field
++    expect(fieldSide(hashPic(field, 8.5))).toBe('W');
++    expect(decidePreSnap(inputs(hashPic(field, 8.5), outs)).flip).toBe(true); // flat defender inside #2: field is clearly better
++    expect(decidePreSnap(inputs(hashPic(field, 11.5), outs)).flip).toBe(false); // outside #2 by 1.5 yd: take the boundary
++    expect(decidePreSnap(inputs(hashPic(field, 10.8), outs)).flip).toBe(true); // head-up (0.8 yd outside, within 1.0): not outside
++    // The boundary flip is not taxed: with the weak side the boundary, the same look flips.
++    expect(fieldSide(hashPic(20, 11.5))).toBe('S');
++    expect(decidePreSnap(inputs(hashPic(20, 11.5), outs)).flip).toBe(true);
 +  });
 +});
 diff --git a/test/qbv2-roles.test.ts b/test/qbv2-roles.test.ts

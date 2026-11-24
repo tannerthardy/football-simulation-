@@ -49,6 +49,9 @@ export interface V2Host {
   felt: number;
   tau: number;
   need: number;
+  /** His anticipation lead (s): an on-break throw may release up to this long before his forecast of the break. Absent:
+   * no timing hold (the plant holds the ball instead). */
+  lead?: number;
   bar: { P: number; risk: number };
   outside: boolean;
   releaseZ: number;
@@ -197,7 +200,10 @@ export class V2Drive {
     });
     const j = judge(q, defs);
     this.held.set(o.ref, j.roles.find((x) => x.role === 'coverer')?.id ?? null);
-    const judged: Judged = { option: o, P: j.P, risk: j.risk, reachesSticks: mech.point.x >= sim.firstDownX };
+    // A timing throw is not started before its time: the release (now + windup) may lead his forecast of the break by at
+    // most his anticipation lead. Judged all the same (the trace shows it), marked early.
+    const early = h.lead !== undefined && o.timing === 'onBreak' && q.breakIn !== null && q.breakIn > q.windup + h.lead;
+    const judged: Judged = { option: o, P: j.P, risk: j.risk, reachesSticks: mech.point.x >= sim.firstDownX, early };
     this.lastJudged.set(o.ref, judged);
     this.lastRoles.set(o.ref, j.roles);
     return judged;

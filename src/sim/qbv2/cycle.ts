@@ -11,7 +11,7 @@ export type CycleState = 'presnap' | 'drop' | 'read' | 'throw' | 'structureOut' 
 export type PressureState = 'clean' | 'felt' | 'imminent' | 'contact';
 
 /** What D returns for a candidate throw (the judgment), or null when he cannot judge it (not in his picture). */
-export interface Judged { option: ThrowOption; P: number; risk: number; reachesSticks: boolean }
+export interface Judged { option: ThrowOption; P: number; risk: number; reachesSticks: boolean; /** Before its time (an on-break throw whose release would lead the break by more than his anticipation): not thrown yet. */ early?: boolean }
 
 /** His senses as the cycle needs them (all from his own picture, felt rush and the judgment). */
 export interface CycleSenses {
@@ -91,7 +91,7 @@ export class Cycle {
     const cue = r.look.kind === 'key' ? s.keyCue(r.look.role, r.look.side ?? 'S') : null;
     const named = cue ? r.keyRules?.find((k) => k.cue === cue)?.throwTo ?? null : null;
     const order = named ? [...r.throws].sort((a, b) => (a.ref === named ? -1 : b.ref === named ? 1 : 0)) : r.throws;
-    const clear = order.map((o) => s.judge(o)).filter((j): j is Judged => !!j && j.P >= s.bar.P && j.risk <= s.bar.risk);
+    const clear = order.map((o) => s.judge(o)).filter((j): j is Judged => !!j && !j.early && j.P >= s.bar.P && j.risk <= s.bar.risk);
     if (!clear.length) return null;
     const first = clear[0];
     if (named && first.option.ref === named) return first;
@@ -139,7 +139,10 @@ export class Cycle {
       // by the next step plus the time the look would take; a look that cannot resolve has nothing to wait for.
       const holding = res < s.need && s.canReach(t) && (this.looks.resolving(t) || s.now - next < 0.1)
         && s.now < next + s.tau * Math.log(1 / Math.max(1e-3, 1 - s.need));
-      if (!holding) { this.passed.add(this.readIdx); this.readIdx++; }
+      // A read whose timing throw is not due yet is not left: its answer comes on the route's break (in rhythm), until
+      // the forecast break passes (then early clears).
+      const notDue = r.throws.some((o) => s.judge(o)?.early === true);
+      if (!holding && !notDue) { this.passed.add(this.readIdx); this.readIdx++; }
     }
     return { kind: 'look', target: t };
   }

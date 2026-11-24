@@ -14,6 +14,8 @@ export interface PasserRatings {
   composure: number;
   discipline: number;
   experience: number;
+  /** Optional so older callers keep working; the typical (0.5) when absent. */
+  anticipation?: number;
 }
 
 /** How he estimates: the look's resolve time (s), from his processing (playRecognition, decisionMaking, experience),
@@ -36,4 +38,13 @@ export const BAR_P0 = 0.56;
 export const BAR_RISK0 = 0.0425;
 export function bar(felt: number, narrow: number): { P: number; risk: number } {
   return { P: BAR_P0 - 0.32 * felt - 0.15 * narrow, risk: BAR_RISK0 + 0.08 * felt };
+}
+
+/** How far ahead of a timing route's break he will let the ball go (s): the release may come up to this long before his
+ * forecast of the break, from his anticipation. The coached rule is the ball out on the break (in rhythm); without a plant
+ * to hold it (the gun quick drift) nothing else does. Stated: 0.3 s at the top of the scale, 0.15 for the typical passer
+ * (NFL tracking, release minus break: outs +0.30 p50 with 25% thrown before the break, stops -0.10 with 50%; the
+ * reach-and-release record). */
+export function anticipationLead(r: PasserRatings): number {
+  return 0.3 * Math.min(1, Math.max(0, r.anticipation ?? 0.5));
 }
