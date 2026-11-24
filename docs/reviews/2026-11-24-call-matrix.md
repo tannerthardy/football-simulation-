@@ -130,3 +130,35 @@ So the cell could not appear in the 2.6 s window, against man or zone, and the 1
 later in the play. The repair is the crossers' release and pace, which is mine: mesh as taught is a quick inside release
 to the mesh landmark at 5-6 yd, the two crossers timed to meet there. The route chart has the cross family's timing
 against the NFL to check it with. Cells 5, 5a and 5b re-run after that.
+
+### Cell 5, corrected (21:00 UTC)
+
+**The NFL witness.** `scripts/diag/routes/mesh_point.py` on #876, 2022 BDB non-PA dropbacks with a shallow from each
+side. 210 NFL plays and 60 of ours:
+
+| | split at the snap | closest approach | gap there | release |
+|---|---|---|---|---|
+| NFL | 15.9 yd | 2.5 s | 2.8 yd | 3.0 s |
+| ours | 14.2 yd | 2.8 s | 3.45 yd | 2.85 s |
+
+So the NFL's crossers do not meet early or tightly either. The 2.6 s HOLD window was too short for this cell, and the
+first diagnosis ("the crossers are late") overstated it: ours are about 0.3 s later than the NFL's.
+
+**Get-off is not the cause.** Flex's get-off table (43ac24b90) has our receivers matching the NFL at 0.5 s.
+
+**Re-run with HOLD = 3.2 s, 12 seeds:**
+
+| cell | closest approach, p50 | man defender to the other crosser, p50 | traffic |
+|---|---|---|---|
+| press man | 3.18 yd | 4.4 yd | 0 of 24 |
+| zone | 1.01 yd | – | – |
+| 5a (0.4 yd gap set) | 2.58 yd | – | – |
+| 5b (1.2 yd gap set) | 3.34 yd | – | – |
+
+- Against man the crossers stay about 3 yd apart, and the gap is depth: H's shallow-high climbs to about 6.3 yd against
+  4.5 against zone.
+- MESH_GAP moves only the under route, so it cannot close a gap that H's climb opens.
+
+**Verdict:** cell 5 still does not appear. The first cause to remove is mine: why the high crosser climbs against press
+man (the route's craft against a man defender, or the nickel's jam at 2.0 s). Until then the pick question cannot be
+asked of mesh. Cell 1 asks it already (bunch: bodies within 1.2 yd, no obstruction), and that item stands for Coverage.
