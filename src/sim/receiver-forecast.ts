@@ -115,9 +115,6 @@ function priorBreak(prior: InstalledReceiverRoute): number | null {
   return prior.breakIdx !== undefined ? prior.breakIdx : pathBreak(prior.path, prior.end);
 }
 
-/** Routes with no planted break, timed to their landmark (breakPoint). */
-const NO_PLANT_ROUTES = new Set(['flat', 'back_flat', 'arrow', 'swing', 'shoot']);
-
 export function pathBreak(path: readonly PathPoint[], end: RouteEnd): number | null {
   let b: number | null = null;
   const last = end === 'settle' ? path.length - 1 : path.length;
@@ -194,13 +191,6 @@ export class ReceiverForecast {
    * install (or the answer he expects on an option route). Null for a route without a break. */
   breakPoint(): Readonly<Vec2> | null {
     const c = this.build(), path = c?.route?.path ?? this.prior.path;
-    // A route with no planted break (the flat family) is timed to its landmark, where it levels off (Rules, 2026-11-24:
-    // "The arrow's landmark at 3 yd", Throw Deep): its last declared vertex, before any extension. Interim, by route id,
-    // until the timing point is marked as data on the route.
-    if (this.prior.routeId && NO_PLANT_ROUTES.has(this.prior.routeId)) {
-      let k = -1; for (let i = 0; i < path.length; i++) if (!path[i].ext) k = i;
-      return k > 0 ? path[k].p : null;
-    }
     const idx = path === this.prior.path ? priorBreak(this.prior) : pathBreak(path, c!.route.end);
     return idx === null || !path[idx] ? null : path[idx].p;
   }
