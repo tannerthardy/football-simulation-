@@ -27,7 +27,7 @@ PlaySim.prototype.run = ((orig) => function (this: any) {
           b.marginProbe = true; b.marginProbeAll = true; try { b.evaluate(a, s, ev.target, b.barNow?.u ?? 0); } catch { /* */ } b.marginProbe = false; b.marginProbeAll = false;
           dec = { t: s.t, slot: ev.target.slot, T: ev.T, iR: ev.intRisk, P: ev.P, point: { x: ev.point.x, y: ev.point.y }, rows: b.marginLast ?? [],
             defs: s.defense.map((d: any) => { const e = b.mind.estimate(d); return { idx: d.idx, slot: d.slot, x: d.pos.x, y: d.pos.y, vx: d.vel.x, vy: d.vel.y, kind: d.behavior?.kind ?? null,
-              cover: d.behavior?.target?.slot ?? null, reach: d.profile.reach, picx: e.pos.x, picy: e.pos.y,
+              cover: d.behavior?.target?.slot ?? null, reach: d.profile.reach, picx: e.pos.x, picy: e.pos.y, picvx: e.vel.x, picvy: e.vel.y, age: b.mind.pictureAge(d),
               faceQB: +(Math.abs(wrap(d.body.facing - Math.atan2(a.pos.y - d.pos.y, a.pos.x - d.pos.x))) * 180 / Math.PI).toFixed(0) }; }) };
         }
         return st(a, s, ev);
@@ -47,7 +47,7 @@ PlaySim.prototype.run = ((orig) => function (this: any) {
       const leave = tr.find((s) => { if (s[0] < dec.t) return false; const ux = rel.pt.x - s[1], uy = rel.pt.y - s[2], L = Math.hypot(ux, uy) || 1, sp = Math.hypot(s[3], s[4]), vt = (s[3] * ux + s[4] * uy) / L; return vt >= 1.5 && sp > 0 && vt / sp >= 0.7; });
       const ag = sim.agents[d.idx], fb = ag ? flightBreakOf(ag) : null;
       return { slot: d.slot, kind: d.kind, covers: d.cover === dec.slot, faceQB: d.faceQB, dist: +Math.hypot(d.x - rel.pt.x, d.y - rel.pt.y).toFixed(1),
-        picErr: +Math.hypot(d.picx - d.x, d.picy - d.y).toFixed(2), priced: row ? { m: row.m, blind: row.blind, react: row.react, facingQB: row.facingQB, contest: row.contest, first: row.first, deepZone: row.deepZone, roof: row.roof, carry: row.carry, under: row.under, dTgt: row.dTgt, total: row.total, rushTerm: row.rushTerm, est: row.est, tt: row.tt, closeState: row.closeState, tied: row.tied } : null,
+        picErr: +Math.hypot(d.picx - d.x, d.picy - d.y).toFixed(2), picAge: +d.age.toFixed(2), closeTrue: +(((rel.pt.x - d.x) * d.vx + (rel.pt.y - d.y) * d.vy) / (Math.hypot(rel.pt.x - d.x, rel.pt.y - d.y) || 1)).toFixed(2), closePic: +(((rel.pt.x - d.picx) * d.picvx + (rel.pt.y - d.picy) * d.picvy) / (Math.hypot(rel.pt.x - d.picx, rel.pt.y - d.picy) || 1)).toFixed(2), speedTrue: +Math.hypot(d.vx, d.vy).toFixed(2), speedPic: +Math.hypot(d.picvx, d.picvy).toFixed(2), priced: row ? { m: row.m, blind: row.blind, react: row.react, facingQB: row.facingQB, contest: row.contest, first: row.first, deepZone: row.deepZone, roof: row.roof, carry: row.carry, under: row.under, dTgt: row.dTgt, total: row.total, rushTerm: row.rushTerm, est: row.est, tt: row.tt, closeState: row.closeState, tied: row.tied } : null,
         actualMargin: reachAt ? +(reachAt[0] - rel.arr).toFixed(2) : null, nearAtRelease: (() => { const s0 = tr.find((s) => s[0] >= rel.t - 1e-9); return s0 ? +Math.hypot(s0[1] - rel.pt.x, s0[2] - rel.pt.y).toFixed(1) : null; })(), minDist: tr.length ? +Math.min(...tr.filter((s) => s[0] <= rel.arr + 0.1).map((s) => Math.hypot(s[1] - rel.pt.x, s[2] - rel.pt.y))).toFixed(1) : null, leaveVsRelease: leave ? +(leave[0] - rel.t).toFixed(2) : null,
         broke: !!fb && fb.t >= rel.t - 0.05, interceptor: !!ie && ie.a === d.idx };
     });
