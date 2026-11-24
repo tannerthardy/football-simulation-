@@ -19,6 +19,8 @@ import numpy as np
 OL = {'C', 'G', 'T', 'OT', 'OG', 'OL', 'QB'}
 GO_ONLY = '--go' in sys.argv
 GO = {'GO', 'go', 'fade'}
+INSIDE = {'POST', 'post', 'IN', 'dig', 'CORNER', 'corner', 'deep_out', 'comeback', 'curl', 'HITCH', 'OUT', 'out'}
+def rgroup(rid): return 'go' if rid in GO else 'post/dig/corner/other' if rid else 'unlabelled'
 
 
 def q(v, f=.5): return float(np.percentile(v, f * 100)) if len(v) else float('nan')
@@ -62,15 +64,18 @@ def rows(paths):
                     if src == 'sim' and dec is None and r.get('lab') and r['lab'][k] and r['lab'][k][h].endswith('|D'): dec = T[k]
                 outw = lambda t: (P(h, kk(t))[1] - P(h, k0)[1]) * s
                 spd = (outw(2.5) - outw(mv)) / (2.5 - mv) if mv is not None and mv < 2.4 else None
-                out.append(dict(rel=rel, brk=brk, mv=mv, dec=dec, spd=spd, o=[outw(t) for t in (1.0, 1.5, 2.0, 2.5)],
+                out.append(dict(grp=rgroup(pl[n1].get('routeId')), rel=rel, brk=brk, mv=mv, dec=dec, spd=spd, o=[outw(t) for t in (1.0, 1.5, 2.0, 2.5)],
                                 to1=(P(h, k25)[1] - P(n1, k25)[1]) * s, to1_0=(P(h, k0)[1] - P(n1, k0)[1]) * s,
                                 n1out=(P(n1, k25)[1] - P(n1, k0)[1]) * s, w1=abs(P(n1, k0)[1] - by), wh=abs(P(h, k0)[1] - by)))
     return out
 
 
-args = [x for x in sys.argv[1:] if x != '--go']
-for lab, pat in zip(args[::2], args[1::2]):
-    A = rows(sorted(glob.glob(pat)))
+args = [x for x in sys.argv[1:] if x not in ('--go', '--by-route')]
+BY = '--by-route' in sys.argv
+for lab0, pat in zip(args[::2], args[1::2]):
+  ALL = rows(sorted(glob.glob(pat)))
+  for grp in (('go', 'post/dig/corner/other') if BY else ('all',)):
+    A = [r for r in ALL if grp == 'all' or r['grp'] == grp]; lab = lab0 if grp == 'all' else f'{lab0}, #1 {grp}'
     print(f'\n## {lab}: halves with #1 vertical and #2 under at 2.5 s: {len(A)}')
     print(f"  #2 release t: {f3([r['rel'] for r in A if r['rel'] is not None])}")
     print(f"  #2 under/out break t: {f3([r['brk'] for r in A if r['brk'] is not None])}")
