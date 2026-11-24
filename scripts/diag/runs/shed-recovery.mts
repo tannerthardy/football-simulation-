@@ -54,7 +54,9 @@ proto.tick = function (this: any) {
     const hands = sim.world.joints.some((j: any) => j.kind === 'hands' && !j.off && (j.a === d.body || j.b === d.body));
     const re = !!d.engagement;
     x.ticks.push([r3(el), r3(Math.hypot(d.vel.x, d.vel.y)), cmd ? r3(Math.hypot(cmd.x, cmd.y)) : null, sup?.state?.[0] ?? '?', dev === null ? null : r3(dev), touching ? 1 : 0, hands ? 1 : 0, re ? 1 : 0,
-      carrier ? r3(Math.hypot(carrier.pos.x - d.pos.x, carrier.pos.y - d.pos.y)) : null, r3(d.profile.vmax * (d.speedScale ?? 1))]);
+      carrier ? r3(Math.hypot(carrier.pos.x - d.pos.x, carrier.pos.y - d.pos.y)) : null, r3(d.profile.vmax * (d.speedScale ?? 1)),
+      cmd && Math.hypot(d.vel.x, d.vel.y) > 0.3 && Math.hypot(cmd.x, cmd.y) > 0.3 ? Math.round(Math.abs(Math.atan2(d.vel.x * cmd.y - d.vel.y * cmd.x, d.vel.x * cmd.x + d.vel.y * cmd.y)) * 180 / Math.PI) : null,
+      r3(Math.abs(Math.atan2(Math.sin(d.body.facing - Math.atan2(cmd?.y ?? 0, cmd?.x ?? 1)), Math.cos(d.body.facing - Math.atan2(cmd?.y ?? 0, cmd?.x ?? 1)))) * 180 / Math.PI)]);
   }
   return out;
 };
