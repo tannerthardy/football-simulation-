@@ -294,8 +294,12 @@ export const REACH_TIME = process.env.REACH_TIME === '1';
  * constant acceleration, the simplest late-peaking profile). Not whiffMargin's REACH_WINDOW (0.2 s, an unsourced
  * assumption that TKL_WHIFF keeps). */
 const REACH_EXTEND = 0.12;
-type Reach = { sim: PlaySim; carrier: Agent; t0: number; arrive: number; engaged: boolean; lunged: boolean; limit: number; arms: number; start: number };
+type Reach = { sim: PlaySim; carrier: Agent; t0: number; arrive: number; engaged: boolean; lunged: boolean; limit: number; arms: number; start: number;
+  /** The bodies at the last check (its time and both centres): the next check sweeps the path between. */
+  prev: { t: number; d: Vec2; c: Vec2 } };
 const reaches = new WeakMap<Agent, Reach>();
+/** Diagnostics (REACH_TIME): reaches met between two checks that the end-of-tick distance alone would not have met. */
+export const reachDiag = { sweptMeets: 0 };
 /** Diagnostics: tackler `d`'s reach in progress (REACH_TIME), read-only. */
 export function reachOf(d: Agent): Readonly<Reach> | undefined { return reaches.get(d); }
 
@@ -305,7 +309,7 @@ function startReach(sim: PlaySim, d: Agent, c: Agent, engaged: boolean, lunged: 
   // The hands go out from his torso to full reach in REACH_EXTEND, accelerating (reachStep).
   // The contact-quality span is his arms (for a lunge, his standing reach, not the lunge's limit), as at the attempt.
   reaches.set(d, { sim, carrier: c, t0: sim.t, arrive: sim.t + REACH_EXTEND - 1e-9, engaged, lunged, limit: span, arms: lunged ? reachTo(d, c, 1) : span,
-    start: body });
+    start: body, prev: { t: sim.t, d: { ...d.pos }, c: { ...c.pos } } });
   d.nextTackleAt = sim.t + 0.5;
   // He commits his last step to the near hip as the arms go (a lunge has already left his feet).
   if (!engaged && !lunged) strike(sim, d, c, d.r('tackling'));
@@ -332,7 +336,8 @@ function reachMeets(sim: PlaySim, d: Agent, c: Agent, engaged: boolean, limit: n
       vx += gx / g * dv; vy += gy / g * dv;
     }
   }
-  const h = sim.dt / 2;
+  // The executor's law (reachStep): the same accelerating hands, sampled finely, through full extension at REACH_EXTEND.
+  const h = REACH_EXTEND / 12;
   for (let t = h; t <= REACH_EXTEND + 1e-9; t += h) {
     const share = t / REACH_EXTEND, hands = body + (span - body) * share * share;
     const gap = Math.hypot(p.pos.x + p.vel.x * t - (d.pos.x + vx * t), p.pos.y + p.vel.y * t - (d.pos.y + vy * t));
@@ -349,15 +354,29 @@ function reachStep(sim: PlaySim, d: Agent, c: Agent): boolean {
   if (sim.bond && sim.bond.tacklers.includes(d)) { reaches.delete(d); return true; }
   const dx = c.pos.x - d.pos.x, dy = c.pos.y - d.pos.y, dd = Math.hypot(dx, dy);
   const body = c.profile.radius + d.profile.radius;
-  // The hands sweep out over the window: the reach he has now grows from where the carrier was when he started (or
-  // his torso) to the full limit at arrival. A carrier who comes inside it on the way (a fast-closing runner meeting
-  // the hands early) is reached then; one never inside it by arrival is missed.
-  // Constant acceleration from his torso: the extension covered is the square of the time share (speed peaking at
-  // full extension, as a strike's does just before contact).
-  const share = clamp((sim.t - r.t0) / Math.max(1e-6, r.arrive - r.t0), 0, 1);
-  const now = r.start + (r.limit - r.start) * share * share;
-  const inside = dd <= now && !occluded(sim, d, c) && d.body.support?.state !== 'down';
-  if (!inside && sim.t < r.arrive) return true;
+  // The hands go out from his torso, accelerating (extension the square of the time share), to the full limit at
+  // REACH_EXTEND. The check sweeps the path both bodies took since the last one (straight, between the two samples,
+  // as the World's step moves them), against the reach the hands had at each instant, and only up to full extension:
+  // a carrier who came inside the hands between two ticks is reached, not scored a miss because the samples straddled
+  // him (review 2026-11-24: the first build tested the distance at tick boundaries only, and full extension at the
+  // first tick after REACH_EXTEND, 0.15 s rather than 0.12).
+  const T = r.arrive - r.t0, t1 = sim.t - r.t0, t0 = r.prev.t - r.t0, N = 10;
+  let inside = false, at = 1;
+  if (!occluded(sim, d, c) && d.body.support?.state !== 'down') {
+    for (let k = 1; k <= N; k++) {
+      const u = k / N, tau = t0 + (t1 - t0) * u;
+      if (tau > T + 1e-9) break;
+      const gx = r.prev.c.x + (c.pos.x - r.prev.c.x) * u - (r.prev.d.x + (d.pos.x - r.prev.d.x) * u);
+      const gy = r.prev.c.y + (c.pos.y - r.prev.c.y) * u - (r.prev.d.y + (d.pos.y - r.prev.d.y) * u);
+      const share = clamp(tau / Math.max(1e-6, T), 0, 1);
+      if (Math.hypot(gx, gy) <= r.start + (r.limit - r.start) * share * share) { inside = true; at = u; break; }
+    }
+  }
+  // Diagnostics: a reach met between the samples that the end-of-tick test alone would not have met at this tick.
+  const endShare = clamp(t1 / Math.max(1e-6, T), 0, 1);
+  if (inside && at < 1 && dd > r.start + (r.limit - r.start) * endShare * endShare) reachDiag.sweptMeets++;
+  r.prev = { t: sim.t, d: { ...d.pos }, c: { ...c.pos } };
+  if (!inside && t1 < T - 1e-9) return true;
   reaches.delete(d);
   // A blocked defender's free arm may have been pinned or freed meanwhile; the reach he made is the one judged.
   if (inside) {

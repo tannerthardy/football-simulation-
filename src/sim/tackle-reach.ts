@@ -22,9 +22,14 @@ import type { Agent } from './agent.js';
 
 export const TACKLE_REACH = process.env.TACKLE_REACH === '1';
 
-/** Centre-to-centre distance at which tackler `d` reaches carrier `c` with `share` of his reach. */
+/** Centre-to-centre distance at which tackler `d` reaches carrier `c` with `share` of his reach. Under TACKLE_REACH the
+ * share scales only what the arms add beyond his own body (`armSpan`): his torso is there whatever share of the arm he
+ * can use (share 1: c.radius + d.reach, his full reach to the carrier's surface). A first build scaled his whole reach
+ * from the centre, body included, so a blocked defender's 0.4 share of a 310 lb DT reached 0.686 yd against torsos
+ * touching at 0.63, and planners' 0.65 and 0.75 contact windows were trimmed the same way (review, 2026-11-24). */
 export function reachTo(d: Agent, c: Agent, share = 1): number {
-  return c.profile.radius + (TACKLE_REACH ? 0 : d.profile.radius) + d.profile.reach * share;
+  return TACKLE_REACH ? c.profile.radius + d.profile.radius + armSpan(d) * share
+    : c.profile.radius + d.profile.radius + d.profile.reach * share;
 }
 
 /** The part of his reach beyond his own torso (what the arms add past the body): the span the hold quality laws scale

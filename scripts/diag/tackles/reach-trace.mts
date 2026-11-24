@@ -9,7 +9,7 @@ const { Rng } = await import(`${W}/src/core/rng.ts`);
 const { generateTeam } = await import(`${W}/src/league/team.ts`);
 const { simulateGame } = await import(`${W}/src/game/game.ts`);
 const { compilingPlan } = await import(`${W}/src/playbook/read-compiler/runtime.ts`);
-const { reachOf, aimOf } = await import(`${W}/src/sim/tackle.ts`);
+const { reachOf, aimOf, reachDiag } = await import(`${W}/src/sim/tackle.ts`);
 const { writeFileSync } = await import('node:fs');
 const GAMES = Number(process.argv[2] ?? 2), OUT = process.argv[3], FIRST = Number(process.argv[4] ?? 201);
 const r3 = (v: number) => Math.round(v * 1000) / 1000;
@@ -57,5 +57,5 @@ proto.event = function (this: any, type: string, a: any, b: any, note?: string) 
 const rng = new Rng(FIRST);
 const home = generateTeam(rng, 'Ironmen', 'IRN', { strength: 0.55 }), away = generateTeam(rng, 'Comets', 'COM', { strength: 0.55 });
 for (let g = 0; g < GAMES; g++) { simulateGame(home, away, { seed: FIRST + g }); console.error(`game ${g + 1}/${GAMES}: ${rows.length} reaches`); }
-writeFileSync(OUT, JSON.stringify({ games: GAMES, firstSeed: FIRST, rows }));
+writeFileSync(OUT, JSON.stringify({ games: GAMES, firstSeed: FIRST, sweptMeets: reachDiag?.sweptMeets ?? null, rows }));
 console.log('reaches', rows.length);
