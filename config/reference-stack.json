@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "engine-98",
+  "id": "engine-100",
   "runSet": {
     "commit": "1b5415de99b5b7194eff045f3c37a07a4c54c1a9",
     "seeds": [
@@ -338,10 +338,13 @@
     "QB_HONEST_FEEL": "on",
     "THROW_PLATFORM": "off",
     "QB_BELIEVED_DEF": "on",
+    "QB_SCOUT": "on",
+    "QB_SCREEN_SEEN": "on",
     "QB_SEEN_MAN": "on",
     "QB_SCAN": "on",
     "QB_CANON_SEEN": "on",
     "BELIEVED_BODY": "off",
+    "SCOUT_SEEN": "on",
     "QB_SEEN_OUT": "on",
     "QB_SEEN_REC": "on",
     "ACC_RADIUS": "off",
