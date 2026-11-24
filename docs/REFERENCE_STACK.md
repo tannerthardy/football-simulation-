@@ -611,6 +611,35 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
 
 
+## engine-95: the ball goes away on what he perceives (2026-11-24)
+
+On: `THROWAWAY_FELT` (QB lane with Integration). Off, a fixed per-passer timer from the set (2.5 + 1.0 composure + 0.6
+pocketPresence + N(0, 0.25) s) threw the ball away once it ran out (over 0.8 s by a per-tick chance, or 2.2 s), without
+asking whether anyone was open or whether he felt pressure: an invented timer, not football.
+
+Taught: a passer throws it away because the rush is on him and nobody is there, or he is out of the pocket with nobody;
+with a clean pocket he keeps working, checks down or moves. On:
+
+- The timer no longer throws the ball away. It stays as his sense of time: it raises his urgency (his bar drops toward
+  the checkdown), calls the scramble drill, and his break or scramble.
+- He throws it away with the rush on him (felt pressure from the rush: enter 0.6, exit 0.4; chosen) or outside the
+  pocket by his own position (4.5 yd from the ball's line sideways, exit 3.5 yd; chosen), when no option clears his bar.
+  Under imminent pressure the existing no-throw path still answers first.
+- READ_WINDOW's quick game out of reads in a clean pocket keeps working (the best live option at the lowered bar, his
+  break or scramble); its dead-read rule is unchanged.
+
+Same 16 games (seeds 11-18, 19-26), engine-94 without the clock, off / on (`scripts/diag/eyes/dropback-outcome.ts`):
+
+| | off | on |
+|---|---|---|
+| completion (throwaways as attempts) | 65.8% | 68.0% |
+| thrown away | 34 (timer 24, pressure 10) | 19 (pressure) |
+| INT | 1.38% | 1.40% |
+| sacks | 92 (6.39%) | 96 (6.77%) |
+| scrambles | 39 | 28 |
+| time to throw p50 | 2.36 s | 2.31 s |
+| clean-pocket holds (timer out, felt < 0.4, in the pocket) | 23: 19 thrown away | 29: 10 complete, 5 sacked (p50 6.31 s, 2.15 s after the timer) |
+
 ## engine-94: one break on the throw (2026-11-24)
 
 On: `FLIGHT_BREAK` (Coverage C14 with Defense; Integration's paired card). `FLIGHT_LEAD` is present but off and
