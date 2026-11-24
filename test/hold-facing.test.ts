@@ -17,6 +17,10 @@
  * in the first 0.5 s with HOLD_FACING off; on, 1907 DT_S 199 -> 49, 1931 DT_W 151 -> 6, 1933 DT_W 190 -> 0, 1957 DT_S
  * 200 -> 21, 1960 DT_W 148 -> 1, 1985 DT_W 151 -> 18, and three that stay over 90 (1908, 1932, 1940). 1957 is pinned
  * for its margin on both bounds.
+ * Re-pinned on engine-98 (TRAIL_LEVERAGE on, Defense, 2026-11-24) to seed 1960, DT_W: with the second pursuer on the other
+ * shoulder, 1957's DT_S no longer makes the hold. The same scan found 7 side holds over 120 deg off; on, 1928 DT_W 153 -> 50,
+ * 1931 DT_W 148 -> 5, 1936 DT_W 177 -> 0, 1960 DT_W 175 -> 1, and three over 60 (1932, 1940, 1942). 1960 is pinned for its
+ * margin on both bounds, with TRAIL_LEVERAGE on or off (175 -> 1 in both).
  * Runs on the engine defaults (the reference stack), not the legacy pin. */
 import { readFileSync } from 'node:fs';
 import { afterEach, describe, expect, it, vi } from 'vitest';
@@ -24,7 +28,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 const stack: Record<string, string> = JSON.parse(readFileSync(new URL('../config/reference-stack.json', import.meta.url), 'utf8')).flags;
 afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 
-async function turn(flag: string, openHands = '0', seed = 1957, slot = 'DT_S') {
+async function turn(flag: string, openHands = '0', seed = 1960, slot = 'DT_W') {
   vi.resetModules();
   for (const [k, v] of Object.entries(stack)) if (v === 'on') vi.stubEnv(k, '1');
   for (const k of ['PA_HINGE', 'EDGE_SET', 'POCKET_DROP', 'POWER_AIM', 'END_KEY']) vi.stubEnv(k, '0'); // engine-73: scenes recorded before this group of the engine-73 landing; Flex to re-record with it on

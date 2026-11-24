@@ -511,6 +511,7 @@
     "CATCH_CARRY": "0",
     "PURSUIT_FIELD": "0",
     "PURSUIT_COMMIT": "0",
+    "TRAIL_LEVERAGE": "0",
     "HONEST_READS": "0",
     "HONEST_FLIGHT": "0",
     "RUSH_PROMISE": "0",

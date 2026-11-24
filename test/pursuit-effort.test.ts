@@ -127,10 +127,13 @@ describe('interception uses the sprint request budget', () => {
     expect(Math.hypot(far.vel.x, far.vel.y)).toBeCloseTo(d.profile.vmax * expected, 12);
     expect(command.effort).toBe(expected);
     expect(p.steeringPointEstimate).toBe('not-evaluated');
-    expect(seen).toHaveBeenCalledTimes(3); // Existing chase, current forecast and older cue only.
+    // Reads of the carrier: existing chase, current forecast and older cue only. (TRAIL_LEVERAGE also reads his
+    // teammates, a different body; those are not reads of the carrier.)
+    const carrierReads = () => seen.mock.calls.filter(call => call[1] === c).length;
+    expect(carrierReads()).toBe(3);
     c.body.pos = { x: -100, y: 50 }; c.body.vel = { x: -8, y: 0 };
     expect(chase(sim, d, c)).toEqual(command); // Unacquired reality cannot move the effort boundary.
-    expect(seen).toHaveBeenCalledTimes(6);
+    expect(carrierReads()).toBe(6);
     vi.restoreAllMocks();
   });
 });

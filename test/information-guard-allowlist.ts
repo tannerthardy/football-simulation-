@@ -84,7 +84,6 @@ export const INFORMATION_DEBT: InformationDebt[] = [
   { file: 'src/sim/behaviors/blocking.ts', key: 'sim.carrier', reads: 5, class: 'unreviewed', owner: 'Flex', since: '2026-11-13', why: "the true holder" },
   { file: 'src/sim/behaviors/blocking.ts', key: 'sim.scrambled', reads: 1, class: 'unreviewed', owner: 'Flex', since: '2026-11-13', why: "the play's private scramble flag" },
   { file: 'src/sim/behaviors/carrier.ts', key: 'sim.bond', reads: 3, class: 'unreviewed', owner: 'Run Game', since: '2026-11-13', why: "the true tackle bond" },
-  { file: 'src/sim/behaviors/common.ts', key: 'agent.isDown', reads: 1, class: 'leak', owner: 'Defense', since: '2026-11-13', why: "another player's true off-feet state; sim.see(...).pose is the delayed cue" },
   { file: 'src/sim/behaviors/common.ts', key: 'sim.bond', reads: 2, class: 'unreviewed', owner: 'Defense', since: '2026-11-13', why: "the true tackle bond" },
   { file: 'src/sim/behaviors/defense.ts', key: 'agent.body', reads: 1, class: 'unreviewed', owner: 'Defense', since: '2026-11-13', why: "another player's true body state" },
   { file: 'src/sim/behaviors/defense.ts', key: 'agent.engagement', reads: 1, class: 'unreviewed', owner: 'Defense', since: '2026-11-13', why: "whether another player is engaged and with whom; he sees contact only through his own pictures" },

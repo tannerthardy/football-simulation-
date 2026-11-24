@@ -74,7 +74,10 @@ describe('RUSH_LEAN_BOUND', () => {
     const { PlaySim } = await import('../src/sim/playsim.js');
     const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');
     let found: string | null = null, scenes = 0;
-    search: for (const coverage of ['cover2', 'cover3']) for (let seed = 1; seed <= 8; seed++) for (let roster = 1; roster <= 12; roster++) {
+    // Seeds 1-24 (widened 2026-11-24, engine-98, Defense): with TRAIL_LEVERAGE on a second rusher converging on the QB
+    // takes the other shoulder, and seeds 1-8 (192 scenes) hold no such fall; the first is now cover2 roster 8 seed 17
+    // (DE_W, rip, 3.60 s, scene 200). With it off the first was cover2 roster 1 seed 2 (DE_S, dip, 3.95 s).
+    search: for (const coverage of ['cover2', 'cover3']) for (let seed = 1; seed <= 24; seed++) for (let roster = 1; roster <= 12; roster++) {
       scenes++;
       const sim: any = new PlaySim(nativeTraceSetup({ coverage, concept: 'four_verts', seed, roster, formation: 'gun_doubles_11', flip: false }));
       const ends = new Set(sim.defense.filter((a: any) => /^DE/.test(a.slot)).map((a: any) => a.idx));
@@ -88,7 +91,7 @@ describe('RUSH_LEAN_BOUND', () => {
     }
     console.log(`earned edge fall: ${found ?? 'none'} after ${scenes} scenes`);
     expect(found).not.toBeNull();
-  }, 240_000);
+  }, 900_000);
 
   it('is off unless set', async () => {
     vi.resetModules(); vi.stubEnv('RUSH_LEAN_BOUND', '0');

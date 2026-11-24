@@ -470,6 +470,7 @@
     "ZONE_SCOOP": "on",
     "ZONE_WINGS": "on",
     "PURSUIT_FIELD": "on",
-    "PURSUIT_COMMIT": "on"
+    "PURSUIT_COMMIT": "on",
+    "TRAIL_LEVERAGE": "off"
   }
 }
