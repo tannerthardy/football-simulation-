@@ -392,6 +392,7 @@
   "test/physics.test.ts",
   "test/pin-bisect.test.ts",
   "test/place-kick-execution.test.ts",
+  "test/plan-break-body.test.ts",
   "test/plan-roles.test.ts",
   "test/planned-drop.test.ts",
   "test/plant-reach.test.ts",
