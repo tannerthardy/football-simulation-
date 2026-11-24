@@ -56,6 +56,9 @@ No decision reads B's true profile.
        size of the step.
      - pLost = 0.15 − 0.13 × the receiver's awareness. **Stated choice, not measured.**
      - pWrong = 0 in the first build.
+     - **He tells what he saw, not what he believes:** only his own entries from this play (floors and measurements),
+       re-sourced as `told`. Passing his whole belief would hand the hearer his build prior and film a second time.
+       Step 2's first version did that, and the hearer's sd halved with no new evidence.
      - It reaches only that unit. The defense's players learn about the opposing offense and do not pass it to their
        own offense (Integration's default, 2026-11-24).
 - **Pre-game film** enters each player's belief at kickoff as a `film` entry from "the staff": one report per (team, B,
@@ -150,15 +153,21 @@ worse off his gaze (PERIPH_ACUITY).
 That gives a measurement v̂ with sd σ_obs = his velocity noise / √samples.
 
 - **Always a floor:** max(floor, v̂ − 2σ_obs). He has seen B do at least this. It never goes down.
-- **A full-effort context makes it a measurement,** not just a floor. The contexts are: B carrying in the open and
-  chased; B on a vertical route; B chasing a carrier. The measurement's sd is √(σ_obs² + σ_effort²), σ_effort = 0.15
-  yd/s (*chosen*).
+- **A full-effort context makes it a measurement,** not just a floor. The context is B carrying the ball at 90% or more
+  of the top speed the holder believes (*chosen*). The measurement's sd is √(σ_obs² + σ_effort²), σ_effort = 0.15 yd/s
+  (*chosen*).
+- **A route is not full effort here.** This was corrected by step 2's gates (2026-11-24).
+  - A go-route receiver with true vmax 10.87 is seen at 8.7 yd/s by 4.5 s: routes run at 0.94 of vmax, and in-pads
+    burst is slow.
+  - Treating a vertical stem as a measurement pulled beliefs down.
+  - So a route's plateau is a floor only, and so is a carry under 90% of the believed speed.
 - **One or two clear looks bring vmax's sd to about 0.1–0.15.** That is the step the user describes; there is no drift.
 - **Being outrun on a fair angle:** while the holder runs at 90%+ of his own known top speed on a closing angle, B
   gaining ground is a floor from his own body. B's speed ≥ his own plus the gain rate.
 
-**A clear look at burst:** B's seen speed rising out of a near-stop or a cut gives a measurement of accel. Until then,
-accel stays at its prior and film value. What he has not shown stays uncertain.
+**A clear look at burst:** B's seen speed rising out of a near-stop while he carries the ball gives a measurement of
+accel. Route releases are excluded: over 2 games they made the burst belief worse (error 0.18 → 0.22), the same effort
+bias as speed. Until a burst is seen, accel stays at its prior and film value. What he has not shown stays uncertain.
 
 **Ratings act only here:** perception quality (existing acuity and reaction) sets σ_obs; awareness sets the chance he
 registers a clear look at all (*chosen*: 0.7 + 0.3 × awareness).
