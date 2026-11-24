@@ -29,3 +29,23 @@ slots = {}
 for r in S: slots.setdefault((r['kind'], r['dPos']), []).append(r)
 for (k, s), v in sorted(slots.items()):
     if len(v) >= 15: print(f"  {k} {s}: {q([r['dPost'] for r in v],50):.2f} / {q([r['bPost'] for r in v],50):.2f} / {q([r['dPad']-r['bPad'] for r in v],50):+.2f} ({len(v)})")
+
+# Lean, balance and grip use, and the blocker's retreat split into his own request and what the contact forces (needs pad-gap.mts output with lean / request fields)
+if 'bLean' in R[0]:
+    print('\n## Lean-force angle (atan lean / weight), capture offset / base radius, ground-impulse use / limit, by age (p50 [p90])')
+    print('| kind | age s | blocker lean deg | defender lean deg | blocker offset/base | defender offset/base | blocker grip use | defender grip use | share grip use >= 0.95 b / d |'); print('|---|---|---|---|---|---|---|---|---|')
+    for kind in ('pass', 'run'):
+        for age in (0.3, 0.6, 1.0, 1.5):
+            S = [r for r in R if r['kind'] == kind and r['age'] == age]
+            if not S: continue
+            f = lambda k: f"{q([r[k] for r in S if r[k] is not None], 50):.2f} [{q([r[k] for r in S if r[k] is not None], 90):.2f}]"
+            u = lambda k: np.mean([r[k] >= 0.95 for r in S if r[k] is not None])
+            print(f"| {kind} | {age} | {f('bLean')} | {f('dLean')} | {f('bOff')} | {f('dOff')} | {f('bUtil')} | {f('dUtil')} | {u('bUtil'):.2f} / {u('dUtil'):.2f} |")
+    print('\n## Engaged blocker retreat toward his backfield (yd/s) against his own request, by time since contact (p50; mean of the forced part = velocity minus request)')
+    print('| kind | age s | pairs | blocker retreat velocity p50 | his requested retreat p50 | forced part (velocity - request) mean | rusher closing velocity p50 | rusher requested p50 |'); print('|---|---|---|---|---|---|---|---|')
+    for kind in ('pass', 'run'):
+        for age in (0.3, 0.6, 1.0, 1.5):
+            S = [r for r in R if r['kind'] == kind and r['age'] == age and r['bReq'] is not None and r['dReq'] is not None]
+            if not S: continue
+            bv = [-r['dir'] * r['bv'] for r in S]; br = [-r['dir'] * r['bReq'] for r in S]; dv = [-r['dir'] * r['dv'] for r in S]; dr = [-r['dir'] * r['dReq'] for r in S]
+            print(f"| {kind} | {age} | {len(S)} | {q(bv,50):+.2f} | {q(br,50):+.2f} | {np.mean(np.array(bv)-np.array(br)):+.2f} | {q(dv,50):+.2f} | {q(dr,50):+.2f} |")

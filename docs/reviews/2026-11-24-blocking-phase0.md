@@ -48,7 +48,7 @@ asks **0.49**, gets 1.13); both at the cap (blocker 1,551 N, rusher 1,507 N, tra
 `scripts/diag/blocking/staged-bench.mts` (World only, no controllers; the C and DT_W of `contactFixture`, hands latched,
 control 0 frozen, fixed requests and posture, 2.0 s, mean over 0.5-2.0 s). Pass: rusher bulls (asks 4.5), blocker
 anchors (asks 0, posture 0.8). Run: blocker drives 3.0, defender presses 1.5. One change per row; the table shows the
-change in the pair's velocity (yd/s; + = blocker walked back / defender driven back) at `TURF_MU_SCALE` 1.0 (today) and
+change in the pair's velocity toward the offense's backfield (yd/s; + = the BLOCKER is driven back in both reps; an earlier label that read the run rep as 'defender driven back' was wrong, corrected 2026-11-24 after the reviewer's diff: in the staged run rep the defender, asking 1.5, walks the centre, asking 3.0, back 0.33 yd/s) at `TURF_MU_SCALE` 1.0 (today) and
 1.25 (traction relaxed, so legs bind; 1.5 gives the same rows). `--trace` prints per-tick hand force, felt force, lift,
 posture, base offset and state. Hand speed and hands inside versus outside have **no mechanism**; they are not in the
 table (the plan's rows for them start in Phase 2).
