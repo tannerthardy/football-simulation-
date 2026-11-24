@@ -124,8 +124,9 @@ const JAM_SHADE = 0.6, JAM_GIVE = 1.0;
 const C2_JAM_STEP = process.env.C2_JAM_STEP === '1';
 /** SQUAT_SIT (experimental, off; with SQUAT_SINK; Coverage C14 2026-11-24, the staged quick-outs-vs-Cover-2 case): the
  * squat corner sinks only while #1 threatens the hole. When #1, as he sees him, turns out under the hole (his seen
- * outward speed over max(1.5, 0.5 x his upfield speed), past 1 yd and short of the hole depth; read ahead of #1's
- * cancel and the sink's own exits) the corner sits on it and drives:
+ * outward speed over max(1.5, 0.5 x his upfield speed) with his upfield speed falling, under 3.5 yd/s, or exceeded by
+ * the outward: a break, not a fade's outside release that is still accelerating upfield; past 1 yd and short of the
+ * hole depth; read ahead of #1's cancel and the sink's own exits) the corner sits on it and drives:
  * downhill to #1's depth, outside-in on where #1 will be across the field 0.5 s on, his reaction already in the seen
  * picture. He leaves the drive only
  * if #1 turns back up (upfield over 1.5 x outward and over 3 yd/s, the far side of the entry). Off, the sink held until
@@ -2129,7 +2130,8 @@ export class ZoneCoverage implements Behavior {
     // SQUAT_SIT: sit on #1's out under the hole and drive (see SQUAT_SIT).
     if (SQUAT_SIT) {
       const outV = o.vel.y * outside;
-      if (!this.sitting) this.sitting = !believesRun(sim, a) && oDepth > 1 && oDepth < SQUAT_HOLE && outV > Math.max(1.5, 0.5 * Math.max(0, oUp));
+      if (!this.sitting) this.sitting = !believesRun(sim, a) && oDepth > 1 && oDepth < SQUAT_HOLE && outV > Math.max(1.5, 0.5 * Math.max(0, oUp))
+        && (oUp < 3.5 || outV > oUp);
       else if (oUp > 3 && oUp > 1.5 * Math.max(0, outV)) this.sitting = false;
       if (this.sitting) {
         a.tags.add('squat-sit');
