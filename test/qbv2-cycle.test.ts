@@ -62,3 +62,13 @@ describe('QB_V2 cycle (module E) on the stub slant-flat plan', () => {
     expect(c.pressure).toBe('felt');
   });
 });
+
+describe('QB_V2 cycle: a covered read marked kill', () => {
+  it('throws at the read receiver\'s feet once resolved and answered no', () => {
+    const plan = { ...STUB_SLANT_FLAT, reads: [{ ...STUB_SLANT_FLAT.reads[0], look: { kind: 'receiver' as const, ref: 'S1' as const }, keyRules: undefined, onCovered: 'kill' as const }] };
+    const c = new Cycle(plan);
+    let i: ReturnType<Cycle['tick']> = { kind: 'look', target: null };
+    for (let t = 0; t <= 1.6 && i.kind !== 'kill'; t += 0.05) i = c.tick(senses({ now: t }, { S1: 0.2, S2: 0.3 }));
+    expect(i).toEqual({ kind: 'kill', ref: 'S1' });
+  });
+});

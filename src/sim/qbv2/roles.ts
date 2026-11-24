@@ -43,7 +43,9 @@ function area(role: KeyRole, p: RolePicture, side: 'S' | 'W'): Area | null {
     case 'corner': return { deep: [-1, 9], out: [Math.max(two, 8), 40] };
     case 'mofSafety': return { deep: [9, 30], out: [-6, 6] };
     case 'apex': case 'overhang': return { deep: [3, 7], out: [3.5, Math.max(4, two)] };
-    case 'flat': return p.t < 0 ? { deep: [0, 7], out: [two, one + 2] } : { deep: [-1, 6], out: [two, 40] };
+    // Before the snap the flat defender is the first man inside #1 outside the box (the apex or nickel; Rules +
+    // Coaching, Throw Deep); after it, where he has widened to.
+    case 'flat': return p.t < 0 ? { deep: [0, 7], out: [3.5, one] } : { deep: [-1, 6], out: [two, 40] };
     case 'curl': return p.t < 0 ? { deep: [3, 8], out: [two - 2, one] } : { deep: [6, 13], out: [two - 1, one + 1] };
     case 'hook': return p.t < 0 ? { deep: [3, 8], out: [0, two] } : { deep: [5, 12], out: [-1, two] };
     default: return null;
@@ -67,7 +69,7 @@ function pick(role: KeyRole, p: RolePicture, side: 'S' | 'W'): PicturedMan | nul
   // The role's landmark as coached (chosen): the flat 3 yd deep and 4 yd outside #2, the curl 10 yd deep between #1 and
   // #2, the hook 8 yd deep halfway to #2; apex and overhang the middle of their area.
   const two = recOut(p, side, 2) ?? 6, one = recOut(p, side, 1) ?? 14;
-  const [cd, co] = role === 'flat' ? [3, two + 4] : role === 'curl' ? [10, (one + two) / 2] : role === 'hook' ? [8, two / 2]
+  const [cd, co] = role === 'flat' ? (p.t < 0 ? [4, two] : [3, two + 4]) : role === 'curl' ? [10, (one + two) / 2] : role === 'hook' ? [8, two / 2]
     : [(a.deep[0] + a.deep[1]) / 2, (out[0] + out[1]) / 2];
   const dist = (m: PicturedMan) => Math.hypot(deepOf(p, m) - cd, outOf(p, m, side) - co);
   return cand.reduce((b, m) => (dist(m) < dist(b) ? m : b));

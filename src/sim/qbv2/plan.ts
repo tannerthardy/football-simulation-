@@ -47,6 +47,10 @@ export interface PlanRead {
   /** Key reads: what each movement of the key means (the throw it names). A cue not listed answers with `throws`'
    * order. */
   keyRules?: Array<{ cue: KeyCue; throwTo: ReceiverRef }>;
+  /** When this read is answered no (resolved, nothing clears his bar): 'kill' throws the ball at the read's first
+   * receiver's feet to end the play without a turnover (a covered screen; "throw the ball at the TE's feet", Gridiron
+   * Strategies). Default: his eyes move on. (Rules + Coaching, 2026-11-24) */
+  onCovered?: 'kill';
 }
 
 /** The hot answer and its trigger, as a contract with the protection (Phase 3 owns the protection side). */

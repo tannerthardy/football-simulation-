@@ -46,7 +46,9 @@ export type Intent =
   | { kind: 'checkdown' }
   | { kind: 'move' }
   | { kind: 'escape' }
-  | { kind: 'away' };
+  | { kind: 'away' }
+  /** Thrown at this receiver's feet to end the play (a covered read marked onCovered: 'kill'). */
+  | { kind: 'kill'; ref: string };
 
 /** Pressure states' entry and exit on his felt rush (chosen: each exit well under its entry; `felt` as THROWAWAY_FELT). */
 const PRESSURE: Array<{ s: PressureState; enter: number; exit: number }> = [
@@ -111,7 +113,7 @@ export class Cycle {
   }
 
   private commit(s: CycleSenses, intent: Intent): Intent {
-    if (intent.kind === 'throw') this.state = 'throw';
+    if (intent.kind === 'throw' || intent.kind === 'kill') this.state = 'throw';
     this.decision = { intent, at: s.now };
     return intent;
   }
@@ -122,7 +124,10 @@ export class Cycle {
     const t = this.target(r);
     this.looks.update(t, s.inClear(t), s.now, s.tau);
     const res = this.looks.resolved(t);
-    if (res >= s.need) { const j = this.choose(s, r); if (j) return this.commit(s, { kind: 'throw', judged: j }); }
+    if (res >= s.need) {
+      const j = this.choose(s, r); if (j) return this.commit(s, { kind: 'throw', judged: j });
+      if (r.onCovered === 'kill' && r.throws[0]) return this.commit(s, { kind: 'kill', ref: r.throws[0].ref });
+    }
     const press = this.pressureResponse(s);
     if (press) return press;
     const next = this.stepAt(s, this.plan.reads[this.readIdx + 1]?.step ?? (r.step + 1));
