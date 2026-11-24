@@ -6,6 +6,7 @@
  * reads the play, he executes his pre-snap job; play action can fool him into
  * believing run for longer.
  */
+import { believedCaps, lookAt } from '../believed-body.js';
 import { HANDS_CUE, handsUpAt } from '../hands-cue.js';
 import { isOL } from './blocking.js';
 import { KEY_REACT, KEY_STEP_SEEN, STEP_SEEN, keyScale } from '../key-read.js';
@@ -1451,7 +1452,7 @@ export class ManCoverage implements Behavior {
     // Wide receivers only: a man on a slot is an inside run supporter, who triggers.
     const spot = sim.offAlign.spots[R.slot]?.pos;
     if (!spot || Math.abs(spot.y - sim.ballY) < SLOW_WIDTH) return null;
-    if (speed > SLOW_SPRINT * R.profile.vmax) return null;
+    if (speed > SLOW_SPRINT * believedCaps(sim, a, R).vmax) return null;
     if (a.pos.x - cue.pos.x <= SLOW_MIN) return null;
     const inside = Math.sign(sim.ballY - cue.pos.y) || 1, o = this.opts;
     const lev = (o.trail ? 0.9 : 0.7) * (o.lev === 'outside' ? -inside : o.lev === 'head' ? 0 : inside);
@@ -1487,10 +1488,14 @@ export class ManCoverage implements Behavior {
     } else if (sim.t - this.stableSince > 0.35 + 0.35 * (1 - a.r('playRecognition') * a.mind.focus)) this.routeRead = true;
     const delayScale = this.routeRead ? 0.65 : 1;
     const acquired = sim.see(a, R, delayScale);
-    const seen = this.observation.read(acquired, sim.t, R.profile, a.profile.reactionTime,
+    // BELIEVED_BODY: his own look at his man feeds what he believes of him; every read of the man's capacities below is
+    // that belief (off: the man's own, as before).
+    lookAt(sim, a, R, acquired);
+    const RB = believedCaps(sim, a, R);
+    const seen = this.observation.read(acquired, sim.t, RB, a.profile.reactionTime,
       a.r('anticipation') * a.r('manCoverage') * a.mind.focus);
     if (Math.hypot(seen.vel.x, seen.vel.y) > 1.5) this.releaseObserved = true;
-    if (OFF_PEDAL) this.stemAccel.observe(acquired, R.profile, sim.t);
+    if (OFF_PEDAL) this.stemAccel.observe(acquired, RB, sim.t);
     const inside = Math.sign(sim.ballY - seen.pos.y) || 1;
     const o = this.opts;
     // PRESS_MIRROR: in press, while the receiver is still releasing at the
@@ -1528,7 +1533,7 @@ export class ManCoverage implements Behavior {
     // step downhill and turn twice while the receiver accelerated past him.
     const closing = Math.max(0, vx - Math.max(0, a.vel.x));
     const flipTime = Math.PI / a.profile.turnRate + 0.15 * (1 - a.r('anticipation') * a.mind.focus);
-    const releaseBurst = Math.max(0, (R.profile.vmax - Math.hypot(seen.vel.x, seen.vel.y)) / R.profile.tau);
+    const releaseBurst = Math.max(0, (RB.vmax - Math.hypot(seen.vel.x, seen.vel.y)) / RB.tau);
     // CUSHION_BREAK applies inside zone calls (match carries and deep zones);
     // pure man keeps its trigger. Help: a carry with no installed deep
     // responsibility has a deep player behind it.
@@ -1561,7 +1566,7 @@ export class ManCoverage implements Behavior {
       // CUSHION_NEED: once released, keep only the cushion his threat needs.
       // What he could gain upfield during the flip: his upfield speed now
       // plus the acceleration he has left toward his top speed (1/2 a t^2).
-      const upBurst = Math.max(0, (R.profile.vmax - Math.max(0, vx)) / R.profile.tau);
+      const upBurst = Math.max(0, (RB.vmax - Math.max(0, vx)) / RB.tau);
       const need = 1.8 + closing * flipTime + 0.5 * upBurst * flipTime * flipTime;
       const held = CUSHION_NEED && this.releaseObserved ? Math.min(cushion, need) : cushion;
       if (held < cushion) a.tags.add('cushion-need');
@@ -1629,7 +1634,7 @@ export class ManCoverage implements Behavior {
     // CUSHION_BREAK: square in his pedal until the cushion is broken; when the
     // pedal cannot keep it but it is not broken, he carries side-on (QB still
     // in view) at the speed the depth check asks for.
-    const selected = this.depth.choose(a, seen, acquired, R.profile, base, command, sim.t, sim.world.handContact);
+    const selected = this.depth.choose(a, seen, acquired, RB, base, command, sim.t, sim.world.handContact);
     if (breakOn && CARRY_POSTURE) {
       // CARRY_POSTURE 3b: short of CUSHION_BREAK's turn (hipsOpen, his seen cushion and closing), one half-open posture
       // within his head's reach of the QB, look on the QB, at a pace bounded by what that posture gives.
@@ -2123,7 +2128,8 @@ export class ZoneCoverage implements Behavior {
       let observation = this.observations.get(r);
       if (!observation) { observation = new RouteObservation(); this.observations.set(r, observation); }
       const cue = sim.see(a, r);
-      const seen = observation.read(cue, sim.t, r.profile, a.profile.reactionTime,
+      lookAt(sim, a, r, cue);
+      const seen = observation.read(cue, sim.t, believedCaps(sim, a, r), a.profile.reactionTime,
         a.r('anticipation') * a.r('zoneCoverage') * a.mind.focus);
       const fut = { x: seen.pos.x + seen.vel.x * 0.7, y: seen.pos.y + seen.vel.y * 0.7 };
       if (HALF_KEY) seenAll.set(r, { r, pos: seen.pos, vel: seen.vel, fut, cue });
@@ -2277,7 +2283,7 @@ export class ZoneCoverage implements Behavior {
       if (!depth) { depth = new DeepCoverage(); this.depthReads.set(deepest.r, depth); }
       // CUSHION_BREAK: square in his pedal until the cushion is broken; side-on
       // when the pedal cannot keep it.
-      const selected = depth.choose(a, deepest, deepest.cue, deepest.r.profile, cushion, command, sim.t, sim.world.handContact);
+      const selected = depth.choose(a, deepest, deepest.cue, believedCaps(sim, a, deepest.r), cushion, command, sim.t, sim.world.handContact);
       if (CUSHION_BREAK && CARRY_POSTURE) {
         // CARRY_POSTURE 3b: short of CUSHION_BREAK's turn (turnedWith: his seen cushion broken), one half-open posture
         // within his head's reach of the QB, look on the QB, at a pace bounded by what that posture gives.
@@ -3258,7 +3264,7 @@ function observedCatchWindow(a: Agent, sim: PlaySim, path: PlaySim['ballPath']):
       if (s.z > r.profile.maxCatchHeight * 0.92) continue;
       const p = { x: s.x, y: s.y };
       const reach = r.profile.reach + TRACKING_REACH_BONUS;
-      if (Math.hypot(p.x - seen.pos.x, p.y - seen.pos.y) > r.profile.vmax * remaining + reach) continue;
+      if (Math.hypot(p.x - seen.pos.x, p.y - seen.pos.y) > believedCaps(sim, a, r).vmax * remaining + reach) continue;
       // Catching does not require stopping at the ball point. A receiver's
       // observed path can carry his hands through it even when a point-arrival
       // estimate charges for braking/redirecting. Use the same maximum hand

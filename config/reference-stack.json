@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "engine-95",
+  "id": "engine-98",
   "runSet": {
     "commit": "1b5415de99b5b7194eff045f3c37a07a4c54c1a9",
     "seeds": [
@@ -137,6 +137,7 @@
     "HANDS_ON_ARMS": "on",
     "SECURE_SPLIT": "on",
     "SECURE_FACE_GEOM": "on",
+    "BALL_DRAG": "on",
     "CARRY_POSTURE": "on",
     "CORNER_DROP": "on",
     "CARRY_TURN": "on",
@@ -211,6 +212,7 @@
     "LEGS_HELD": "on",
     "PICTURE_AGE": "off",
     "PERIPH_ACUITY": "on",
+    "CALL_COMPOSE": "off",
     "FLIGHT_BREAK": "on",
     "FLIGHT_LEAD": "off",
     "HEAD_FOLLOW": "on",
@@ -337,6 +339,9 @@
     "THROW_PLATFORM": "off",
     "QB_BELIEVED_DEF": "on",
     "QB_SEEN_MAN": "on",
+    "QB_SCAN": "on",
+    "QB_CANON_SEEN": "on",
+    "BELIEVED_BODY": "off",
     "QB_SEEN_OUT": "on",
     "QB_SEEN_REC": "on",
     "ACC_RADIUS": "off",
