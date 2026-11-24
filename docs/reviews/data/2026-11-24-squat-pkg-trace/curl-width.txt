@@ -1,0 +1,38 @@
+
+## def curl-flat seat-moments 602
+ t 2.5 n 360 width p50 8.3 landmark width p50 12.0 kind {'man': 160, 'zone': 200}
+ t 3.0 n 185 width p50 8.6 landmark width p50 12.0 kind {'zone': 94, 'man': 91}
+ t 3.5 n 57 width p50 9.6 landmark width p50 12.0 kind {'man': 24, 'zone': 33}
+ by label (n, width p50, landmark width p50, target width p50):
+   open-carry             n 203  w 9.4  lm -  tgt 11.0
+   man-pedal              n  75  w 6.2  lm -  tgt 6.3
+   lane                   n  73  w 7.5  lm 12.0  tgt 10.6
+   spot-settle            n  72  w 11.0  lm 12.0  tgt 17.6
+   open-carry-seam        n  41  w 7.8  lm 12.0  tgt 11.2
+   curl-flat-widen        n  36  w 8.7  lm 12.0  tgt 8.7
+   wall                   n  34  w 7.8  lm -  tgt 8.0
+   zone-settle            n  25  w 5.5  lm 12.0  tgt -
+   open-carry-wall        n  14  w 8.0  lm -  tgt 8.1
+   open-carry-cross       n  10  w 9.8  lm 12.0  tgt 5.1
+   trap                   n   8  w 13.9  lm -  tgt 15.1
+   zone-landmark          n   3  w 3.6  lm 12.0  tgt -
+
+## pk curl-flat seat-moments 732
+ t 2.5 n 398 width p50 8.3 landmark width p50 12.0 kind {'man': 164, 'zone': 234}
+ t 3.0 n 224 width p50 8.4 landmark width p50 12.0 kind {'man': 105, 'zone': 119}
+ t 3.5 n 110 width p50 8.1 landmark width p50 12.0 kind {'man': 51, 'zone': 59}
+ by label (n, width p50, landmark width p50, target width p50):
+   open-carry             n 183  w 11.2  lm -  tgt 12.7
+   lane                   n 128  w 7.6  lm 12.0  tgt 9.0
+   threat-sink            n  99  w 6.4  lm -  tgt 7.4
+   spot-settle            n  68  w 10.9  lm 12.0  tgt -
+   open-carry-seam        n  64  w 8.1  lm 12.0  tgt 10.8
+   curl-flat-widen        n  47  w 7.9  lm 12.0  tgt 10.8
+   threat-sink-drop       n  25  w 7.3  lm 12.0  tgt -
+   open-carry-cross       n  24  w 9.0  lm 12.0  tgt 9.2
+   man-pedal              n  22  w 5.4  lm -  tgt 5.8
+   open-carry-wall        n  21  w 7.7  lm -  tgt 8.3
+   wall                   n  18  w 6.5  lm -  tgt 6.6
+   carry-release          n  10  w 5.5  lm -  tgt 7.1
+
+[exited with code 0]
