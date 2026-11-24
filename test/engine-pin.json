@@ -452,6 +452,7 @@
   "test/race-lean.test.ts",
   "test/rat-coverage.test.ts",
   "test/reach-contact.test.ts",
+  "test/read-plan-fit.test.ts",
   "test/read-plan.test.ts",
   "test/read-plans.test.ts",
   "test/read-window.test.ts",

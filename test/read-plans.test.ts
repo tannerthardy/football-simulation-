@@ -3,12 +3,13 @@
  * concept's, steps start on the plant or the first hitch (smash: the corner read on the hitch) and do not go backward, a key's answers are among its throws, and each expected
  * read exists. Nothing in the engine reads the plans yet. */
 import { describe, expect, it, vi } from 'vitest';
-import { READ_PLANS } from '../src/playbook/read-plans.js';
 
 // The plans are the taught versions: checked against the concepts installed as taught (CONCEPT_TAUGHT, #896).
 vi.stubEnv('CONCEPT_TAUGHT', '1');
 const { PASS_BY_ID: PASS, SCREEN_BY_ID } = await import('../src/playbook/concepts.js');
 const PASS_BY_ID = { ...PASS, ...SCREEN_BY_ID };
+// After the stub: read-plans.ts imports the concepts (routesOf), so it must load with the taught installs too.
+const { READ_PLANS } = await import('../src/playbook/read-plans.js');
 import type { ReceiverRef } from '../src/playbook/types.js';
 
 function routed(id: string): Set<ReceiverRef> {

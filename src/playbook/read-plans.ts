@@ -5,6 +5,8 @@
  * first hitch. Defenders by the role a coach teaches the passer to find, never a slot or an assignment.
  */
 import type { QbReadPlan } from '../sim/qbv2/plan.js';
+import { PASS_BY_ID, SCREEN_BY_ID } from './concepts.js';
+import type { PassConcept, ReceiverRef } from './types.js';
 
 /** Slant-flat: key the flat defender on the plant, the flat then the slant; widens: the slant behind him; sinks under
  * the slant: the flat. Reset to the backside's slant-flat on the first hitch. (Klatt; Football Playbook Designer;
@@ -345,3 +347,55 @@ export const READ_PLANS: Readonly<Record<string, QbReadPlan>> = Object.fromEntri
   [SLANT_FLAT, STICK, HITCHES, QUICK_OUTS, CURL_FLAT, SMASH, DAGGER, MESH, Y_CROSS, FLOOD, LEVELS, FOUR_VERTS, VERTS_HITCH,
     PA_POST_DIG, PA_SHOT, PA_FLOOD, RB_SLIP_SCREEN, TE_SCREEN, BUBBLE_SCREEN, BUNCH_NOW_SCREEN, WIDE_NOW_SCREEN, TUNNEL_SCREEN]
     .map((p) => [p.conceptId, p]));
+
+/** The taught versions these plans were authored on, where they differ from the installed concept (CONCEPT_GAPS).
+ * Under CALL_COMPOSE step 2 each is a setting of its concept: slant_flat's and quick_outs' back, levels' outside short
+ * in, flood's backside slant and mesh's W1 corner. */
+const TAUGHT_ON: Record<string, { strong?: PassConcept['strong']; weak?: PassConcept['weak']; back?: string }> = {
+  slant_flat: { back: 'check' },
+  quick_outs: { back: 'back_flat' },
+  levels: { strong: { 1: 'short_in', 2: 'dig' } },
+  flood: { weak: { 1: 'slant' } },
+  mesh: { weak: { 1: 'corner' } },
+};
+
+/** The route a concept puts at a receiver: 'B' is the back's (null when he blocks). */
+function routeAt(c: { strong: PassConcept['strong']; weak: PassConcept['weak']; back: string }, ref: ReceiverRef): string | null {
+  if (ref === 'B' || ref === 'B2') return c.back === 'block' ? null : c.back;
+  const n = Number(ref.slice(1)) as 1 | 2 | 3 | 4;
+  return (ref[0] === 'S' ? c.strong[n] : c.weak[n]) ?? null;
+}
+
+/** Every receiver a plan reads, throws to, keys an answer on, holds as a hot or checks down to. */
+export function planRefs(plan: QbReadPlan): ReceiverRef[] {
+  const refs = new Set<ReceiverRef>();
+  for (const r of plan.reads) {
+    if (r.look.kind === 'receiver') refs.add(r.look.ref);
+    for (const t of r.throws) refs.add(t.ref);
+    for (const k of r.keyRules ?? []) refs.add(k.throwTo);
+  }
+  for (const h of plan.hot) refs.add(h.answer.ref);
+  if (plan.checkdown) refs.add(plan.checkdown.ref);
+  return [...refs];
+}
+
+/** The routes a plan was authored on, at the receivers it uses (in its own frame: authored on the strong side, as
+ * the concept's strong and weak are). For the QB lane's plan lookup: a call takes the plan only when every one of these
+ * matches (`planFits`). Null for a plan with no installed concept. */
+export function routesOf(plan: QbReadPlan): Map<ReceiverRef, string | null> | null {
+  const base = PASS_BY_ID[plan.conceptId] ?? SCREEN_BY_ID[plan.conceptId];
+  if (!base) return null;
+  const t = TAUGHT_ON[plan.conceptId] ?? {};
+  const on = { strong: { ...base.strong, ...t.strong }, weak: { ...base.weak, ...t.weak }, back: t.back ?? base.back };
+  return new Map(planRefs(plan).map((ref) => [ref, routeAt(on, ref)]));
+}
+
+/** The call runs the routes the plan was authored on, at every receiver the plan uses (QB lane, 2026-11-24: otherwise
+ * the call runs the old controller, as an unported concept does, so a plan can never read a go as a flat). The call
+ * is compared in its concept frame, strong and weak as authored, before the formation's flip. */
+export function planFits(plan: QbReadPlan, call: Pick<PassConcept, 'strong' | 'weak' | 'back'>): boolean {
+  const authored = routesOf(plan);
+  if (!authored) return false;
+  for (const [ref, route] of authored) if (routeAt(call, ref) !== route) return false;
+  return true;
+}
