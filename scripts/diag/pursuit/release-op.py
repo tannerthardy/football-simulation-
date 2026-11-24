@@ -13,6 +13,8 @@ Per release:
  - time from the release until the carrier passes his level (carrier x >= his x), when there is a carrier;
  - once the carrier is past his level: his speed 0.5 s later, and whether he chases (velocity along the carrier's
    travel > 3 yd/s).
+The live subset keeps releases made before the carrier reaches his level (Flex's spot check: late run releases are
+often the blocker leaving while the defender slows, not a come-off). It does not select on his speed after release.
 Usage (sim plays file or NFL rows file): python3 -I release-op.py PLAYS.json ROWS-out.json   (plays -> rows)
                                          python3 -I release-op.py --tables ROWS.json"""
 import json, math, sys, collections
@@ -88,8 +90,9 @@ def release_row(p, did, j):
 def q(v, pct):
     v = sorted(x for x in v if x is not None); return round(v[min(len(v) - 1, int(pct * len(v)))], 2) if v else None
 
-def tables(R):
-    print(f'releases: {len(R)}')
+def tables(R, live=False):
+    if live: R = [r for r in R if r['to_pass'] is not None and r['to_pass'] > 0]
+    print(f"releases{' (live: before the carrier reaches his level)' if live else ''}: {len(R)}")
     for lab, keep in [('all', lambda r: True)] + [(f'{pt} {g}', (lambda pt, g: lambda r: r['ptype'] == pt and r['grp'] == g)(pt, g)) for pt in ('run', 'pass') for g in ('DL', 'LB', 'DB')]:
         X = [r for r in R if keep(r)]
         if len(X) < 10: continue
@@ -103,8 +106,8 @@ def tables(R):
 
 if __name__ == '__main__':
     if sys.argv[1] == '--tables':
-        tables(json.load(open(sys.argv[2])))
+        R = json.load(open(sys.argv[2])); tables(R); tables(R, live=True)
     else:
         plays = json.load(open(sys.argv[1])); rows = []
         for p in (plays['plays'] if isinstance(plays, dict) else plays): rows.extend(analyse_play(p))
-        json.dump(rows, open(sys.argv[2], 'w')); print('rows', len(rows)); tables(rows)
+        json.dump(rows, open(sys.argv[2], 'w')); print('rows', len(rows)); tables(rows); tables(rows, live=True)
