@@ -1,5 +1,5 @@
 {
- "operator": "scripts/diag/routes/call_shares.py at 375557142 (rules/route-chart, #876)",
+ "operator": "scripts/diag/routes/call_shares.py at a5736c1e9 (rules/route-chart, #876)",
  "population": "non-PA dropbacks",
  "halves": {
   "slant_flat": [
@@ -1890,6 +1890,14 @@
     "wheel": 0.0106
    }
   },
+  "full_share_given_room": {
+   "y_cross": 0.0161,
+   "post_cross": 0.004,
+   "four_verts": 0.0096,
+   "mesh": 0.0636,
+   "drive": 0.1332,
+   "hitch_cross": 0.0032
+  },
   "mesh_outside": {
    "SHALLOW": 0.5191,
    "GO": 0.1383,
@@ -2893,6 +2901,14 @@
     "angle": 0.0872,
     "out": 0.0394
    }
+  },
+  "full_share_given_room": {
+   "y_cross": 0.0,
+   "post_cross": 0.0,
+   "four_verts": 0.0624,
+   "mesh": 0.0848,
+   "drive": 0.1238,
+   "hitch_cross": 0.0
   },
   "mesh_outside": {
    "GO": 0.5,
