@@ -1,0 +1,44 @@
+
+## control (package TS2 + DF): team-games 24; targeted 40.7 per team-game; 20+ air attempts 1.71, completions 0.79 (comp 46.3%), int 0.0%
+  single-high POST   20+: n    3, per team-game 0.125, comp   0.0%, int  0.0%
+  single-high GO     20+: n   18, per team-game 0.750, comp  50.0%, int  0.0%
+  single-high CORNER 20+: n    2, per team-game 0.083, comp  50.0%, int  0.0%
+  single-high other  20+: n    2, per team-game 0.083, comp   0.0%, int  0.0%
+  two-high    POST   20+: n    2, per team-game 0.083, comp  50.0%, int  0.0%
+  two-high    GO     20+: n    9, per team-game 0.375, comp  55.6%, int  0.0%
+  two-high    CORNER 20+: n    2, per team-game 0.083, comp  50.0%, int  0.0%
+  look-off yes: 20+ n 21, comp  57.1%; deep safeties toward the target at the throw p50 -0.64 yd (n 29)
+  look-off no : 20+ n 20, comp  35.0%; deep safeties toward the target at the throw p50 -0.56 yd (n 29)
+  look-off yes, all 10+ air: n 115, comp  57.4%; deep safeties toward target p50 +0.10 yd
+  look-off no , all 10+ air: n 88, comp  53.4%; deep safeties toward target p50 +0.14 yd
+  by family x air window: attempts per team-game, comp %, int %
+    cover1    10-15: 0.92 /  36% /  5% (n 22) | 15-20: 0.08 /  50% /  0% (n 2) | 20-: 0.46 /  18% /  0% (n 11)
+    cover2    10-15: 0.67 /  62% /  6% (n 16) | 15-20: 0.25 /  50% / 17% (n 6) | 20-: 0.08 / 100% /  0% (n 2)
+    cover3    10-15: 2.12 /  57% /  2% (n 51) | 15-20: 0.29 /  43% /  0% (n 7) | 20-: 0.58 /  57% /  0% (n 14)
+    cover4    10-15: 1.08 /  85% /  0% (n 26) | 15-20: 0.04 /   0% /  0% (n 1) | 20-: 0.25 /  33% /  0% (n 6)
+    cover6    10-15: 0.67 /  69% /  6% (n 16) | 15-20: 0.08 /  50% /  0% (n 2) | 20-: 0.12 /  67% /  0% (n 3)
+    tampa2    10-15: 0.21 /  60% /  0% (n 5) | 15-20: 0.00 /   0% /  0% (n 0) | 20-: 0.08 /  50% /  0% (n 2)
+    cover2man 10-15: 0.00 /   0% /  0% (n 0) | 15-20: 0.00 /   0% /  0% (n 0) | 20-: 0.04 /   0% /  0% (n 1)
+    cover0    10-15: 0.25 /  50% /  0% (n 6) | 15-20: 0.08 /   0% /  0% (n 2) | 20-: 0.08 / 100% /  0% (n 2)
+
+## + HALF_SEAT: team-games 24; targeted 42.4 per team-game; 20+ air attempts 1.79, completions 0.92 (comp 51.2%), int 0.0%
+  single-high POST   20+: n    6, per team-game 0.250, comp  33.3%, int  0.0%
+  single-high GO     20+: n   18, per team-game 0.750, comp  44.4%, int  0.0%
+  single-high CORNER 20+: n    3, per team-game 0.125, comp  33.3%, int  0.0%
+  two-high    POST   20+: n    3, per team-game 0.125, comp  66.7%, int  0.0%
+  two-high    GO     20+: n    9, per team-game 0.375, comp  77.8%, int  0.0%
+  two-high    CORNER 20+: n    1, per team-game 0.042, comp 100.0%, int  0.0%
+  two-high    other  20+: n    2, per team-game 0.083, comp  50.0%, int  0.0%
+  look-off yes: 20+ n 23, comp  52.2%; deep safeties toward the target at the throw p50 -0.48 yd (n 33)
+  look-off no : 20+ n 20, comp  50.0%; deep safeties toward the target at the throw p50 -0.73 yd (n 27)
+  look-off yes, all 10+ air: n 108, comp  45.4%; deep safeties toward target p50 +0.54 yd
+  look-off no , all 10+ air: n 85, comp  62.4%; deep safeties toward target p50 +0.14 yd
+  by family x air window: attempts per team-game, comp %, int %
+    cover1    10-15: 1.12 /  48% /  0% (n 27) | 15-20: 0.29 /  14% /  0% (n 7) | 20-: 0.54 /  54% /  0% (n 13)
+    cover2    10-15: 0.67 /  56% /  0% (n 16) | 15-20: 0.08 /  50% /  0% (n 2) | 20-: 0.25 /  67% /  0% (n 6)
+    cover3    10-15: 1.79 /  65% /  7% (n 43) | 15-20: 0.17 /  75% /  0% (n 4) | 20-: 0.58 /  29% /  0% (n 14)
+    cover4    10-15: 0.88 /  57% /  5% (n 21) | 15-20: 0.04 /   0% /  0% (n 1) | 20-: 0.25 /  83% /  0% (n 6)
+    cover6    10-15: 0.62 /  53% /  7% (n 15) | 15-20: 0.00 /   0% /  0% (n 0) | 20-: 0.04 /   0% /  0% (n 1)
+    tampa2    10-15: 0.33 /  38% /  0% (n 8) | 15-20: 0.00 /   0% /  0% (n 0) | 20-: 0.08 / 100% /  0% (n 2)
+    cover2man 10-15: 0.04 /   0% /  0% (n 1) | 15-20: 0.00 /   0% /  0% (n 0) | 20-: 0.00 /   0% /  0% (n 0)
+    cover0    10-15: 0.12 /  33% /  0% (n 3) | 15-20: 0.08 /  50% /  0% (n 2) | 20-: 0.04 /   0% /  0% (n 1)
