@@ -275,12 +275,11 @@ function launch(sim: PlaySim, d: Agent, c: Agent, cp: Vec2, cv: Vec2, from: 'lun
  * a rating contest and a random execution draw. roll-audit.mts (3 games): the roll missed 4.7% of free reaches, nearly
  * flat in the reach margin (0.02 deep inside reach, 0.13 beyond it), granted 12% of grabs that were out of reach, and
  * missed 28% of grabs off a block that were inside it. On: the attempt starts the reach (his strike step, committed:
- * `strike`); his hands go out from his torso at one speed, the full reach (`limit`, the same arms or free-arm reach the
- * attempt was judged on) in REACH_WINDOW (whiffMargin's law at full extension); the first tick the carrier's body is
- * inside the hands' reach so far (and not behind another body), the hold is made at the distance the bodies are at. A
- * nearer carrier is met sooner, a fast-closing one meets the hands early. (A first build judged only at arrival and
- * missed runners who had come inside and passed; a second swept from the carrier's start distance over a window scaled
- * by it, so with a small margin the hands crept out at the margin's pace and a carrier drifting away at 1 yd/s escaped.) with its ordinary quality law and no draw; otherwise it is a miss, and the reach has committed his body
+ * `strike`); his hands arrive after the reach window, as long as the arms must extend (REACH_WINDOW at full extension,
+ * at least 0.08 s; whiffMargin's own law), sweeping out from where the carrier was to the full reach (`limit`, the same
+ * arms or free-arm reach the attempt was judged on); the first tick the carrier's body is inside the hands' reach so far
+ * (and not behind another body), the hold is made at the distance the bodies are at (a fast-closing runner meets the
+ * hands early; a first build judged only at arrival and missed runners who had come inside and passed), with its ordinary quality law and no draw; otherwise it is a miss, and the reach has committed his body
  * (`commitLunge`). Both bodies keep moving in the window under their own commands and contacts, so the carrier's actual
  * cut, speed and the tackler's own momentum decide it. Ratings act through capability only: his grip (gripForce, the
  * reel), his strike, his cut and the carrier's, and the picture delays that chose the moment. Stated choice: the window
@@ -293,12 +292,12 @@ export function reachOf(d: Agent): Readonly<Reach> | undefined { return reaches.
 
 function startReach(sim: PlaySim, d: Agent, c: Agent, engaged: boolean, lunged: boolean, limit: number): void {
   const body = c.profile.radius + d.profile.radius;
+  const dd = Math.hypot(c.pos.x - d.pos.x, c.pos.y - d.pos.y);
   const span = Number.isFinite(limit) ? limit : reachTo(d, c, 1);
-  // The hands go out from his torso at one speed, his full extension (span - body) in REACH_WINDOW (whiffMargin's law
-  // at full extension), so the window is REACH_WINDOW; a carrier nearer is met sooner (reachStep).
+  const w = Math.max(0.08, REACH_WINDOW * clamp((dd - body) / Math.max(0.1, span - body), 0, 1));
   // The contact-quality span is his arms (for a lunge, his standing reach, not the lunge's limit), as at the attempt.
-  reaches.set(d, { sim, carrier: c, t0: sim.t, arrive: sim.t + REACH_WINDOW - 1e-9, engaged, lunged, limit: span, arms: lunged ? reachTo(d, c, 1) : span,
-    start: body });
+  reaches.set(d, { sim, carrier: c, t0: sim.t, arrive: sim.t + w - 1e-9, engaged, lunged, limit: span, arms: lunged ? reachTo(d, c, 1) : span,
+    start: Math.min(dd, span) });
   d.nextTackleAt = sim.t + 0.5;
   // He commits his last step to the near hip as the arms go (a lunge has already left his feet).
   if (!engaged && !lunged) strike(sim, d, c, d.r('tackling'));
@@ -316,7 +315,7 @@ function reachStep(sim: PlaySim, d: Agent, c: Agent): boolean {
   // his torso) to the full limit at arrival. A carrier who comes inside it on the way (a fast-closing runner meeting
   // the hands early) is reached then; one never inside it by arrival is missed.
   const share = clamp((sim.t - r.t0) / Math.max(1e-6, r.arrive - r.t0), 0, 1);
-  const now = Math.min(r.limit, r.start + (r.limit - r.start) * share);
+  const now = Math.max(body, r.start) + (r.limit - Math.max(body, r.start)) * share;
   const inside = dd <= now && !occluded(sim, d, c) && d.body.support?.state !== 'down';
   if (!inside && sim.t < r.arrive) return true;
   reaches.delete(d);
