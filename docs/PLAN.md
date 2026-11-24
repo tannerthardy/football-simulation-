@@ -6,6 +6,11 @@ the film threads"). It changes only at a review. The full
 reasoning is in the [operating plan](https://claude.ai/artifact/QyJcg5wYYaxaYwHPzf7A6K)
 and the [audit](https://claude.ai/artifact/TXYF6DZsWiNVLnNALHxVGz).
 
+Brought up to date on 2026-11-24 at Tanner's request (develop `engine-95`):
+the testing and merging steps as they are run now, the lanes, and
+"Current direction". The goal, the merge criteria and the long-term direction
+are unchanged.
+
 ## Goal
 
 Close to the most realistic football engine possible, mostly physics-based and
@@ -25,12 +30,22 @@ It then becomes a management game.
   mechanism is correct.
 - **Testing stays cheap.** Use the smallest check that answers the question:
   unit or scenario tests, then `npm run scorecard` (quick tier, 6 games), the
-  PR tier (12 games, run by CI), and the full tier (48 games) only for big
-  fixes.
+  PR tier (12 games), and the full tier (48 games) only for big fixes. There
+  is no GitHub CI ([AGENTS.md](../AGENTS.md#no-github-actions)): the owning
+  lane runs the checks locally and reports them in the PR.
 - **Compare like with like.** Measure a change against a base arm in the same
   run, or a saved card whose provenance matches (#209). Games that change on
   the first few plays lose most of the pairing, so check a second seed before
-  calling a whole-game move.
+  calling a whole-game move. A landing card is run on the engine's defaults
+  (`npm run ref`) with a `ref` arm beside the candidate arm, over several
+  seeds; one arm alone compares nothing. A result conditioned on a rare event
+  (the play after a missed tackle, one coverage cell) needs more games than a
+  whole-game rate before it is read.
+- **Every landing shows it broke nothing.** `node scripts/red-diff.mjs` runs
+  the core suite against the recorded list of failing tests
+  (`test/red-ledger.json`, #878) and reports new and fixed failures. A landing
+  shows "new red: 0", or names and explains each new one. Checking only a
+  fixed list of tests hid about 68 failing tests on develop before this.
 - **Check the seams before the brain.** Most "dumb player" film examined so
   far came from a hand-off between systems, not missing intelligence: an aim
   kept after the target changed, a shortcut to hidden state, contact granted
@@ -61,11 +76,22 @@ attaches its scorecard and explains each stat that moved.
 - A test pinned to an older setting so a staged scene keeps working carries a
   comment saying why, and the open question goes in
   [KNOWN_PROBLEMS.md](KNOWN_PROBLEMS.md).
+- A change that removes hidden information (a player reading true state he
+  could not perceive) lands as soon as it is correct, whatever it does to the
+  statistics (Tanner's standing rule, 2026-11). Numbers measured before such
+  a removal are re-measured before anything is built on them.
+- A flag the scorecard is to compare must be registered in
+  `config/reference-stack.json` (`"on"` or `"off"`) and `config/baseline.json`
+  (`"0"`), and read in code only as `process.env.X === '1'` (off by default)
+  or `process.env.X !== '0'` (on by default); other forms are rejected by the
+  provenance check. Engine ids (`engine-N`) are given in merge order.
 
 ## Names
 
-- Lanes: `run`, `defense`, `coverage`, `trenches`, `physics`, `rules`, `tools`,
-  and later `coaching` and `league`.
+- Lanes as of 2026-11-24: `qb`, `coverage`, `defense`, `run`, `rules`
+  (Rules + Coaching), `tools` (Tools / Physics) and Flex, with Integration as
+  the coordinator. `trenches` has no lane at present; blocking changes go to
+  Defense. `league` is later.
 - Branch: `<lane>/<gap-id>-<short-goal>`, for example `defense/G1-open-field-tackle`.
 - PR title: `[G1] Defenders take pursuit angles to the ball carrier`.
 - Labels: one `lane:*`, one `gap:*`, and one of `ready`, `needs-tanner`, `hold`.
@@ -103,9 +129,42 @@ attaches its scorecard and explains each stat that moved.
   owns pursuit and the tackle. Agree on a change to a shared function with the
   lane that owns it before you push it.
 
-## Next after the film threads
+## Current direction (2026-11-24)
 
-Set on 2026-10-23 from the outside audit; the findings are in
+Set by Tanner over 2026-11-23 and 2026-11-24. [GAPS.md](GAPS.md) has the
+diagnosis and owner of each item.
+
+1. **The pass game is the priority, and the quarterback's decision is first.**
+   It is being rebuilt, not patched:
+   [the plan of record](reviews/2026-11-24-qb-decision-plan.md) replaces the
+   passer's read logic, timing models and window judgment with one controller
+   (`QB_V2`) that models the taught procedure: a pre-snap plan, each read on a
+   step of his feet, a look that takes time to resolve, and a judgment of the
+   few defenders that matter to the throw. Plays carry their reads as taught.
+   It takes over one concept family at a time, quick game first, each phase
+   gated on release against the break, what is thrown when, his belief
+   against the outcome, and passers of different ratings behaving differently.
+   The pass menu itself is being checked against a standard one, quick game
+   first: missing concepts are added with their reads as taught, and installed
+   concepts that differ from the taught version are corrected.
+2. **In parallel:** coverage of the deep outside throw and the flat in
+   Cover 2 and Cover 6; defenders re-aiming; pursuit after the catch; coming
+   off a shed block; the tackle.
+3. **Slowed or parked behind these:** the pre-snap movement build, the catch
+   model rebuild, and scheme options. Where coaching points differ, the most
+   standard version is built now and the variants become scheme options
+   later.
+4. **Standing rules restated in this period:** realistic and bug-free lands
+   whatever it does to scoring, and a gap that opens points to the next
+   missing mechanism, not to a dial; every information leak found is removed
+   and a real solution built; a technique that works too well is given its
+   real cost, never banned; a failed attempt stays on its lane branch,
+   written up, and is not landed off unless another lane needs it.
+
+## Next after the film threads (2026-10-23, historical)
+
+Superseded as the working order by "Current direction"; kept because its rule
+on leak removals still holds. Set on 2026-10-23 from the outside audit; the findings are in
 [KNOWN_PROBLEMS.md](KNOWN_PROBLEMS.md). Each step is small and judged on
 restaged plays with a control:
 

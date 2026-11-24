@@ -8,7 +8,6 @@ import { Rng } from '../../core/rng.js';
 import { generateTeam, type Team } from '../../league/team.js';
 import { FORMATION_BY_ID } from '../formations.js';
 import type { PassConcept, ReceiverRef } from '../types.js';
-import { CONCEPT_TAUGHT } from '../concepts.js';
 import { compile, PA_TABLES, tableId as tableIdOf } from './compile.js';
 import { DECLARED_BREAK } from './features.js';
 import { BREAK_DECL } from '../route-breaks.js';
@@ -155,9 +154,7 @@ const KEYS: Record<string, { low: ReceiverRef; high: ReceiverRef; role: string; 
   dagger: { low: 'S1', high: 'S2', role: 'deep_defender_over_vertical', deep: true, danger: 'the hook defender under the dig' },
   // Levels: the hook defender, the dig (high) over the in under it (low): "if he drops toward the dig, the shallow route
   // opens underneath; if he squeezes the shallow route, the dig opens behind him" (Football Nation USA, Levels Concept).
-  // CONCEPT_TAUGHT (concepts.ts): the taught levels puts the 5 yd in outside (S1) and the square-in in the slot (S2).
-  levels: CONCEPT_TAUGHT ? { low: 'S1', high: 'S2', role: 'hook', deep: false, danger: 'the safety over the dig' }
-    : { low: 'S2', high: 'S1', role: 'hook', deep: false, danger: 'the safety over the dig' },
+  levels: { low: 'S2', high: 'S1', role: 'hook', deep: false, danger: 'the safety over the dig' },
 };
 /** PLAN_ROLES: coached keys and orders for the geometric concepts that sat within a yard of a compiler threshold
  * (docs/reviews/2026-11-15-plan-orders.md, sources there). A concept taught as a one-defender high-low is keyed on

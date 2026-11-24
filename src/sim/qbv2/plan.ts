@@ -27,8 +27,11 @@ export type ThrowTiming = 'onBreak' | 'seenOpen';
  * assignment). The vocabulary is Rules + Coaching's; these are the ones Phase 1 needs. */
 export type KeyRole = 'flat' | 'curl' | 'hook' | 'apex' | 'corner' | 'mofSafety' | 'overhang' | (string & {});
 
-/** What the key defender does, as the passer sees it (from his movement in the passer's picture). */
-export type KeyCue = 'sinks' | 'widens' | 'squats' | 'carries' | 'bails' | 'jumps' | 'blitzes';
+/** What the key defender does, as the passer sees it (from his movement in the passer's picture).
+ * `none`: he has looked at the key's area and no defender fills the role there (for the flat defender: nobody
+ * underneath, not bailing and inside about 7 yd, over or outside #2 between the box and the sideline). It is something
+ * he sees, not a role that failed to resolve: a side he has not looked at yet is not read, and `none` does not fire. */
+export type KeyCue = 'sinks' | 'widens' | 'squats' | 'carries' | 'bails' | 'jumps' | 'blitzes' | 'none';
 
 export interface ThrowOption {
   ref: ReceiverRef;

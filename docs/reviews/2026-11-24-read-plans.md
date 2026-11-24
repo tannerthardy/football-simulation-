@@ -13,6 +13,11 @@ Nothing in the engine reads it yet.
 - Steps: 0 = the plant (the third step under center, one step from the gun), 1 = the first hitch.
 - Defenders are named only by the role a coach teaches the passer to find. The flat defender is the curl/flat,
   apex or nickel man outside the box on that side, who can get to the flat.
+- He finds the flat defender outside-in: the first underneath defender over or outside #2, the corner included when
+  the corner squats (Cover 2, Bowen). If nobody fills that spot when he looks (`none`), the flat is uncovered and he
+  throws to where that defender would be: the flat, or the quick out on quick outs. Ross on Leach ("flat defender lined
+  up inside the Y ... he will be throwing the shoot") is the same logic. `none` is something he sees. A side he has not
+  looked at yet is not read, and the next look or the hot and checkdown rules apply (QB lane, 2026-11-24).
 
 ## The quick-game family rule
 
@@ -260,18 +265,19 @@ verbatim:
 ## Concept gaps (decided: the concepts are corrected)
 
 Integration's decision is to correct the installed concepts to the taught versions, not bend the plans. The plans in
-`read-plans.ts` are the taught versions. `CONCEPT_TAUGHT` (#896, off) installs the concepts to match. While that flag is
-off, `CONCEPT_GAPS` records what each plan meets instead:
-- **slant_flat:** the back check-releases (Klatt). Flag off, he blocks, so there is no checkdown on the field.
-- **quick_outs:** the back runs the shoot (Kratzer). Flag off, he blocks, so there is no outlet.
-- **levels:** S1 runs the 5 yd in, S2 the 10-12 yd square-in (Brown). Flag off, the key pair is inverted.
-- **flood:** the backside slant is the backside hot (Miller). Flag off, W1 runs a dig.
-- **mesh:** a corner on both sides, the better one picked (Win With The Pass). Flag off, the flipped first read is a go.
+`read-plans.ts` are the taught versions. Each taught version is a CALL_COMPOSE step-2 setting of its concept (#903;
+it replaces `CONCEPT_TAUGHT`, #896). A plan is used only on a call that runs the routes it was authored on (`planFits`);
+any other call runs the old controller. `CONCEPT_GAPS` records what each plan would meet on the installed default:
+- **slant_flat:** the back check-releases (Klatt). Installed default: he blocks, so there is no checkdown on the field.
+- **quick_outs:** the back runs the shoot (Kratzer). Installed default: he blocks, so there is no outlet.
+- **levels:** S1 runs the 5 yd in, S2 the 10-12 yd square-in (Brown). Installed default: the key pair is inverted.
+- **flood:** the backside slant is the backside hot (Miller). Installed default: W1 runs a dig.
+- **mesh:** a corner on both sides, the better one picked (Win With The Pass). Installed default: the flipped first read is a go.
 
 Curl-flat is not a gap: ours matches Heck's "Florida 4", whose sit (#3) is the blitz throw. All other hot answers
 marked GENERIC follow the replacement rule, because no source names the rusher.
 
-The consistency test checks the plans against the concepts with `CONCEPT_TAUGHT=1`.
+The consistency test checks each plan against the routes it was authored on (`routesOf`).
 
 ## Sources
 

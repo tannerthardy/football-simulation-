@@ -17,17 +17,17 @@ export const SLANT_FLAT: QbReadPlan = {
   reads: [
     { step: 0, look: { kind: 'key', role: 'flat' },
       throws: [{ ref: 'S2', timing: 'onBreak' }, { ref: 'S1', timing: 'onBreak' }],
-      keyRules: [{ cue: 'widens', throwTo: 'S1' }, { cue: 'jumps', throwTo: 'S1' }, { cue: 'sinks', throwTo: 'S2' }] },
+      keyRules: [{ cue: 'widens', throwTo: 'S1' }, { cue: 'jumps', throwTo: 'S1' }, { cue: 'sinks', throwTo: 'S2' }, { cue: 'none', throwTo: 'S2' }] },
     { step: 1, look: { kind: 'key', role: 'flat', side: 'W' },
       throws: [{ ref: 'W2', timing: 'onBreak' }, { ref: 'W1', timing: 'onBreak' }],
-      keyRules: [{ cue: 'widens', throwTo: 'W1' }, { cue: 'jumps', throwTo: 'W1' }, { cue: 'sinks', throwTo: 'W2' }] },
+      keyRules: [{ cue: 'widens', throwTo: 'W1' }, { cue: 'jumps', throwTo: 'W1' }, { cue: 'sinks', throwTo: 'W2' }, { cue: 'none', throwTo: 'W2' }] },
   ],
   hot: [{ side: 'S', over: 1, answer: { ref: 'S1', timing: 'onBreak' } }, { side: 'W', over: 1, answer: { ref: 'W1', timing: 'onBreak' } }],
-  // Taught: the back (CONCEPT_TAUGHT, #896). While that flag is off ours blocks: CONCEPT_GAPS.
+  // Taught: the back checks and releases (a CALL_COMPOSE setting, #903). Installed default: he blocks (CONCEPT_GAPS).
   checkdown: { ref: 'B', fromStep: 1, timing: 'seenOpen' },
   confirm: null,
   expected: { cover0: 0, cover1: 0, cover2: 0, tampa2: 0, cover2man: 0, cover3: 0, cover4: 0, cover6: 0 },
-  source: 'docs/reviews/2026-11-24-read-plans.md#slant-flat-slant_flat (Klatt; Football Playbook Designer; Bowen, NFP; Bleacher Report slant; Hewitt; Browns cut-up). Checkdown: the back (CONCEPT_TAUGHT).',
+  source: 'docs/reviews/2026-11-24-read-plans.md#slant-flat-slant_flat (Klatt; Football Playbook Designer; Bowen, NFP; Bleacher Report slant; Hewitt; Browns cut-up). Checkdown: the back (taught setting).',
 };
 
 /** Stick: key the flat defender outside-in on the plant: he fails to widen: the flat; widens: the stick. First hitch: the
@@ -44,7 +44,7 @@ export const STICK: QbReadPlan = {
   reads: [
     { step: 0, look: { kind: 'key', role: 'flat' },
       throws: [{ ref: 'S3', timing: 'onBreak' }, { ref: 'S2', timing: 'onBreak' }],
-      keyRules: [{ cue: 'widens', throwTo: 'S2' }, { cue: 'jumps', throwTo: 'S2' }, { cue: 'sinks', throwTo: 'S3' }, { cue: 'squats', throwTo: 'S3' }] },
+      keyRules: [{ cue: 'widens', throwTo: 'S2' }, { cue: 'jumps', throwTo: 'S2' }, { cue: 'sinks', throwTo: 'S3' }, { cue: 'squats', throwTo: 'S3' }, { cue: 'none', throwTo: 'S3' }] },
     { step: 1, look: { kind: 'receiver', ref: 'W1' },
       throws: [{ ref: 'W1', timing: 'onBreak' }, { ref: 'W2', timing: 'seenOpen' }] },
   ],
@@ -81,12 +81,13 @@ export const QUICK_OUTS: QbReadPlan = {
     { step: 0, look: { kind: 'key', role: 'flat' },
       throws: [{ ref: 'S1', timing: 'onBreak' }, { ref: 'S2', timing: 'onBreak' }],
       keyRules: [{ cue: 'sinks', throwTo: 'S1' }, { cue: 'carries', throwTo: 'S1' }, { cue: 'bails', throwTo: 'S1' },
-        { cue: 'squats', throwTo: 'S2' }, { cue: 'jumps', throwTo: 'S2' }, { cue: 'widens', throwTo: 'S2' }] },
+        { cue: 'squats', throwTo: 'S2' }, { cue: 'jumps', throwTo: 'S2' }, { cue: 'widens', throwTo: 'S2' },
+        { cue: 'none', throwTo: 'S1' }] },
     // "progression continuing on the weak side" (Kratzer): the backside quick out on the first hitch.
     { step: 1, look: { kind: 'receiver', ref: 'W1' }, throws: [{ ref: 'W1', timing: 'onBreak' }] },
   ],
   hot: [{ side: 'S', over: 1, answer: { ref: 'S2', timing: 'onBreak' } }, { side: 'W', over: 1, answer: { ref: 'W2', timing: 'onBreak' } }],
-  // Taught: the back's shoot (CONCEPT_TAUGHT, #896; a CALL_COMPOSE step-2 setting). While it is not called ours blocks.
+  // Taught: the back's shoot (a CALL_COMPOSE step-2 setting, #903). While it is not called ours blocks.
   checkdown: { ref: 'B', fromStep: 1, timing: 'seenOpen' },
   confirm: null,
   expected: { cover2: 0, tampa2: 0, cover3: 0, cover4: 0 },
@@ -104,7 +105,7 @@ export const CURL_FLAT: QbReadPlan = {
   reads: [
     { step: 0, look: { kind: 'key', role: 'flat' },
       throws: [{ ref: 'S2', timing: 'onBreak' }, { ref: 'S1', timing: 'seenOpen' }],
-      keyRules: [{ cue: 'widens', throwTo: 'S1' }, { cue: 'jumps', throwTo: 'S1' }, { cue: 'sinks', throwTo: 'S2' }] },
+      keyRules: [{ cue: 'widens', throwTo: 'S1' }, { cue: 'jumps', throwTo: 'S1' }, { cue: 'sinks', throwTo: 'S2' }, { cue: 'none', throwTo: 'S2' }] },
   ],
   // The sit over the ball (#3) is the blitz throw in the five-step version ours runs (Heck, "Florida 4").
   hot: [{ side: 'either', over: 1, answer: { ref: 'S3', timing: 'onBreak' } }],
@@ -158,7 +159,7 @@ export const MESH: QbReadPlan = {
     { step: 1, look: { kind: 'receiver', ref: 'S2' },
       throws: [{ ref: 'S2', timing: 'seenOpen' }, { ref: 'W2', timing: 'seenOpen' }, { ref: 'S3', timing: 'seenOpen' }] },
   ],
-  // GENERIC hot (the crosser on the blitz side). The corners run both sides (CONCEPT_TAUGHT); he picks the better corner.
+  // GENERIC hot (the crosser on the blitz side). The corners run both sides (taught setting); he picks the better corner.
   hot: [{ side: 'S', over: 1, answer: { ref: 'S2', timing: 'onBreak' } }, { side: 'W', over: 1, answer: { ref: 'W2', timing: 'onBreak' } }],
   checkdown: { ref: 'B', fromStep: 2, timing: 'seenOpen' },
   confirm: null,
@@ -195,12 +196,12 @@ export const FLOOD: QbReadPlan = {
       keyRules: [{ cue: 'jumps', throwTo: 'S2' }, { cue: 'widens', throwTo: 'S2' }, { cue: 'sinks', throwTo: 'S3' }] },
     { step: 1, look: { kind: 'receiver', ref: 'W1' }, throws: [{ ref: 'W1', timing: 'onBreak' }, { ref: 'W2', timing: 'seenOpen' }] },
   ],
-  // The flat is hot; the backside slant is hot vs a blitz from his side (Miller; the slant: CONCEPT_TAUGHT).
+  // The flat is hot; the backside slant is hot vs a blitz from his side (Miller; the slant: taught setting).
   hot: [{ side: 'S', over: 1, answer: { ref: 'S3', timing: 'onBreak' } }, { side: 'W', over: 1, answer: { ref: 'W1', timing: 'onBreak' } }],
   checkdown: { ref: 'B', fromStep: 2, timing: 'seenOpen' },
   confirm: null,
   expected: { cover3: 0 },
-  source: 'docs/reviews/2026-11-24-read-plans.md#flood-flood (Miller GS; Bowen NFP and BR; YFO; Kou; Wide Zone Warriors). Backside slant (CONCEPT_TAUGHT). Variants: sail first (YFO); peek the vertical (Kou).',
+  source: 'docs/reviews/2026-11-24-read-plans.md#flood-flood (Miller GS; Bowen NFP and BR; YFO; Kou; Wide Zone Warriors). Backside slant (taught setting). Variants: sail first (YFO); peek the vertical (Kou).',
 };
 
 /** Levels: an alert on the divide (seam) at the end of the drop, then short to deep on the defender between the
@@ -213,7 +214,7 @@ export const LEVELS: QbReadPlan = {
   reads: [
     { step: 0, look: { kind: 'receiver', ref: 'S3' }, throws: [{ ref: 'S3', timing: 'onBreak' }] },
     { step: 1, look: { kind: 'key', role: 'hook' },
-      // Taught (CONCEPT_TAUGHT): S1 the 5 yd in (low), S2 the square-in (high).
+      // Taught (setting): S1 the 5 yd in (low), S2 the square-in (high).
       throws: [{ ref: 'S1', timing: 'onBreak' }, { ref: 'S2', timing: 'onBreak' }],
       keyRules: [{ cue: 'sinks', throwTo: 'S1' }, { cue: 'carries', throwTo: 'S1' }, { cue: 'jumps', throwTo: 'S2' }, { cue: 'squats', throwTo: 'S2' }] },
   ],
@@ -222,7 +223,7 @@ export const LEVELS: QbReadPlan = {
   checkdown: { ref: 'B', fromStep: 1, timing: 'seenOpen' },
   confirm: 'mofSafety',
   expected: { cover2: 1 },
-  source: 'docs/reviews/2026-11-24-read-plans.md#levels-levels (Brown, smartfootball blogspot; Wilhite; Bowen NFP; Alert The Post). GENERIC hot. Routes as taught (CONCEPT_TAUGHT).',
+  source: 'docs/reviews/2026-11-24-read-plans.md#levels-levels (Brown, smartfootball blogspot; Wilhite; Bowen NFP; Alert The Post). GENERIC hot. Routes as taught (setting).',
 };
 
 /** Four verticals: the locked seam on the plant (a rhythm throw), the seam reader off the free safety on the first
@@ -367,7 +368,8 @@ export const FADE_FLAT: QbReadPlan = {
     { step: 0, look: { kind: 'receiver', ref: 'S1' }, throws: [{ ref: 'S1', timing: 'onBreak' }] },
     { step: 0, look: { kind: 'key', role: 'flat' },
       throws: [{ ref: 'S2', timing: 'onBreak' }, { ref: 'S1', timing: 'seenOpen' }],
-      keyRules: [{ cue: 'sinks', throwTo: 'S2' }, { cue: 'carries', throwTo: 'S2' }, { cue: 'squats', throwTo: 'S1' }, { cue: 'jumps', throwTo: 'S1' }] },
+      keyRules: [{ cue: 'sinks', throwTo: 'S2' }, { cue: 'carries', throwTo: 'S2' }, { cue: 'squats', throwTo: 'S1' }, { cue: 'jumps', throwTo: 'S1' },
+        { cue: 'none', throwTo: 'S2' }] },
     { step: 1, look: { kind: 'receiver', ref: 'S3' }, throws: [{ ref: 'S3', timing: 'seenOpen' }] },
     { step: 1, look: { kind: 'receiver', ref: 'W1' }, throws: [{ ref: 'W1', timing: 'seenOpen' }] },
   ],
@@ -379,10 +381,10 @@ export const FADE_FLAT: QbReadPlan = {
 };
 
 /** Where the installed concept differs from the taught version these plans follow. Integration's decision: correct the
- * concepts (CONCEPT_TAUGHT, #896), not the plans. Also in docs/reviews/2026-11-24-read-plans.md, "Concept gaps". */
+ * concepts' calls (CALL_COMPOSE settings, #903), not the plans. Also in docs/reviews/2026-11-24-read-plans.md, "Concept gaps". */
 export const CONCEPT_GAPS: ReadonlyArray<{ concept: string; taught: string; whileOff: string }> = [
-  // Each is installed as taught by CONCEPT_TAUGHT (#896); the plans above are the taught versions. While that flag is
-  // off the installed concept differs, and `whileOff` says what the plan meets instead.
+  // Each taught version is a CALL_COMPOSE setting (#903); the plans above are the taught versions. While it is not called,
+  // the installed concept differs, and `whileOff` says what the plan meets instead.
   { concept: 'slant_flat', taught: 'the back check-releases as the checkdown (Klatt)', whileOff: 'the back blocks: no checkdown on the field' },
   { concept: 'quick_outs', taught: 'the back runs the shoot, the outlet (Kratzer)', whileOff: 'the back blocks: no outlet' },
   { concept: 'levels', taught: 'S1 the 5 yd in, S2 the 10-12 yd square-in (Brown)', whileOff: 'S1 runs the dig and S2 the short in: the key pair is inverted' },

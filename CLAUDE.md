@@ -87,6 +87,13 @@ controlled comparisons. Add difficult, mirrored or unaffected cases only for
 distinct unresolved risks. If two attempts do not repair the mechanism, stop
 and re-diagnose.
 
+When stuck, stage the simple case that should obviously work: one concept
+against the look it is drawn to beat, one block the stronger man should win,
+one tackle with nobody in the way. Run it, and when it fails ask why at each
+stage (what he saw, what he decided, what his body did) until the stage at
+fault is found. Fix that, re-run the same case, add a case where it should
+fail, and only then widen. Whole games hide which stage is wrong.
+
 When a matched football-transfer question needs games,
 `npm run mech:sim && npm run mech:report`
 compares the sim with 2022 NFL all-22 tracking using identical measurement

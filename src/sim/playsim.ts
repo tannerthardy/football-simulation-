@@ -1,3 +1,4 @@
+import { BELIEVED_BODY, BeliefStore } from './believed-body.js';
 import { shouldersOf } from '../physics/kinematics.js';
 /**
  * The play simulator: 22 agents on a continuous field, ticked at 20 Hz.
@@ -101,6 +102,8 @@ export interface PlaySetup {
   recordLevel?: ReplayLevel;
   /** Energy at the snap by player id (0–1). */
   energy?: Map<string, number>;
+  /** BELIEVED_BODY: the game's beliefs about opponents' capacities (one store per game; absent, the play makes its own). */
+  beliefs?: BeliefStore;
   manPrefs?: ManPreference;
   /** Ball carriers try to get out of bounds (2-minute drill). */
   hurry?: boolean;
@@ -200,6 +203,8 @@ const outOfField = (p: { x: number; y: number }): boolean => p.x <= 0 || p.x >= 
 export class PlaySim {
   readonly dt = DT;
   readonly rng: Rng;
+  /** BELIEVED_BODY: what each player believes of the opponents' capacities (null with the flag off). */
+  readonly beliefs: BeliefStore | null;
   private readonly streams = new Map<string, Rng>();
   t = 0;
   readonly agents: Agent[] = [];
@@ -358,6 +363,7 @@ export class PlaySim {
     // Normalize once before alignment, actor indices and any ordered consumer.
     const offense = orderedOffense(setup.offense), defense = orderedDefense(setup.defense);
     this.rng = typeof setup.seed === 'number' ? new Rng(setup.seed) : setup.seed;
+    this.beliefs = BELIEVED_BODY ? setup.beliefs ?? new BeliefStore(typeof setup.seed === 'number' ? setup.seed : 'play') : null;
     this.stagedThrow = setup.stagedThrow ?? null;
     this.coverageScouting = setup.coverageScouting;
     this.los = setup.los;

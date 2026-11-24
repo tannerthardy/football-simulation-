@@ -5,8 +5,16 @@
  * route run the side's default (#1 go, #2+ seam) as clear-outs.
  */
 import type { PassConcept, RunConcept } from './types.js';
+import { BASE_COMPOSITIONS, compileComposition, MENU_COMPOSITIONS } from './calls/compositions.js';
 
-const BASE_PASS_CONCEPTS: PassConcept[] = [
+/** CALL_COMPOSE (experimental, off; docs/reviews/2026-11-24-call-composition.md, approved 2026-11-24; step 1): the pool
+ * concepts are built from compositions (src/playbook/calls: a half-field concept per side or one full-field concept,
+ * tags and the back's job) instead of the literals below. Each composition compiles to exactly its literal
+ * (test/call-compose.test.ts), so on changes nothing yet. The literals stay as the off path. */
+export const CALL_COMPOSE = process.env.CALL_COMPOSE === '1';
+
+/** Today's concepts as literals: the off path, and the golden reference for CALL_COMPOSE's compositions. */
+export const legacyBaseConcepts = (): PassConcept[] => [
   // ------------------------------------------------------------ quick game
   {
     id: 'slant_flat', name: 'Slant-Flat', family: 'quick', drop: 'quick',
@@ -98,6 +106,8 @@ const BASE_PASS_CONCEPTS: PassConcept[] = [
   },
 ];
 
+const BASE_PASS_CONCEPTS: PassConcept[] = CALL_COMPOSE ? BASE_COMPOSITIONS.map(compileComposition) : legacyBaseConcepts();
+
 /**
  * CONCEPT_MENU (experimental, off; CONCEPT_MENU=1): the drop-back combinations the NFL runs most that our
  * concepts never produced (docs/reviews/2026-11-11-playbook-coverage.md, BDB 2025 routeRan on drop-back
@@ -107,7 +117,7 @@ const BASE_PASS_CONCEPTS: PassConcept[] = [
  * intended key and rule; `progression` is ordered to match it. CALL_MIX weights them from their route classes like the rest.
  */
 export const CONCEPT_MENU = process.env.CONCEPT_MENU !== '0';
-export const MENU_CONCEPTS: PassConcept[] = [
+export const legacyMenuConcepts = (): PassConcept[] => [
   {
     id: 'double_slants', name: 'Double Slants', family: 'quick', drop: 'quick',
     strong: { 1: 'slant', 2: 'slant', 3: 'flat' }, weak: { 1: 'go', 2: 'hitch' }, back: 'block',
@@ -202,6 +212,8 @@ export const MENU_CONCEPTS: PassConcept[] = [
   },
 ];
 
+export const MENU_CONCEPTS: PassConcept[] = CALL_COMPOSE ? MENU_COMPOSITIONS.map(compileComposition) : legacyMenuConcepts();
+
 /** CONCEPT_DROPS (experimental, off; read plans, 2026-11-14; the QB lane owns the drops' depths and times in
  * `dropSpec`): each pool concept's coached drop class, so its first read's route is ready on its step. Our gun drops
  * were 68% at 2-3.5 yd behind the snap against the NFL's 43%, and 10% at 3.5-5 yd against 28% (the NFL setting there at
@@ -227,34 +239,6 @@ const COACHED_DROP: Record<string, PassConcept['drop']> = {
   smash: 'five', drive: 'five', corner_flat: 'five', levels: 'five', comebacks: 'five',
 };
 if (CONCEPT_DROPS) for (const c of [...BASE_PASS_CONCEPTS, ...MENU_CONCEPTS]) if (COACHED_DROP[c.id]) c.drop = COACHED_DROP[c.id];
-/** CONCEPT_TAUGHT (experimental, off; Rules + Coaching, 2026-11-24, Integration's decision on the read plans' concept
- * gaps): five concepts installed as they are taught, so the authored read plans (src/playbook/read-plans.ts) run on the
- * routes they were written for. Sources and what each concept ran before are in docs/reviews/2026-11-24-concept-taught.md.
- * - levels: the outside receiver runs the 5 yd in and the slot the 10-12 yd square-in ("the outside receiver runs a
- *   five-yard in route, and the slot receiver or tight-end runs a ten-to-twelve yard square-in", Chris Brown); ours ran
- *   the dig outside and the short in from the slot.
- * - slant_flat: the back check-releases, the taught checkdown ("throw the ball to the tailback", Klatt); ours blocked.
- * - quick_outs: the back runs the shoot to the flat, the outlet ("Back - Shoot route ... will always be an outlet",
- *   Kratzer); ours blocked.
- *   For both backs: under BACK_RELEASE he releases only when the protection's count does not need him; when the box
- *   outnumbers the line he checks his man first, and an extra rusher beyond that is the quarterback's hot (the route
- *   on the blitz side), as the quick game is taught.
- * - flood: the backside #1 runs a slant, the backside hot ("Runs a slant and is the hot receiver vs. blitz from his
- *   side", Miller); ours ran a dig.
- * - mesh: both outside receivers run the corner, and the quarterback picks the better corner matchup ("The Progression
- *   is Corner, Mesh, Swing. As the QB comes to the line ... he is going to pick his best corner route match up", Win
- *   With The Pass; Mumme and Leach's corner, Black41); ours ran a backside go. */
-export const CONCEPT_TAUGHT = process.env.CONCEPT_TAUGHT === '1';
-if (CONCEPT_TAUGHT) {
-  const by = Object.fromEntries([...BASE_PASS_CONCEPTS, ...MENU_CONCEPTS].map((c) => [c.id, c]));
-  by.levels.strong = { ...by.levels.strong, 1: 'short_in', 2: 'dig' };
-  by.slant_flat.back = 'check';
-  by.slant_flat.progression = [...by.slant_flat.progression, 'B'];
-  by.quick_outs.back = 'back_flat';
-  by.quick_outs.progression = [...by.quick_outs.progression, 'B'];
-  by.flood.weak = { ...by.flood.weak, 1: 'slant' };
-  by.mesh.weak = { ...by.mesh.weak, 1: 'corner' };
-}
 /** QUICK_HITCH (experimental, off; Integration's go 2026-11-16): the quick game runs the quick hitch at 5 yd
  * (routes.ts `quick_hitch`), the five-step game the hitch at 6. Which concepts carry which is their install: the quick
  * family (a three-step, one step from the gun) takes the quick hitch; a dropback concept, a five-step concept even when
