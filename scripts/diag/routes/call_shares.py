@@ -15,7 +15,7 @@ Outputs (JSON):
   - for each half, the back's job on the play;
   - core_partner / core_back: on a side with the half's core, which halves' cores are on the other side (equal split;
     'unmatched' if none), and the back's job on the play;
-  - the share of plays per full concept.
+  - the share of plays per full concept; on mesh plays, each side's #1 route and the back's job.
 Labelled defaults for the play-caller, not targets.
   python3 -I call_shares.py NFL=nfl-routes.jsonl.gz [OURS=sim.jsonl.gz] HALVES=src/playbook/calls/halves.ts [--json OUT]"""
 import sys, re, gzip, json, collections
@@ -115,6 +115,7 @@ def run(path, nfl, H):
     N = 0; side = collections.Counter(); partner = collections.defaultdict(collections.Counter)
     back = collections.defaultdict(collections.Counter); full = collections.Counter(); core = collections.Counter()
     cpartner = collections.defaultdict(collections.Counter); cback = collections.defaultdict(collections.Counter)
+    meshout = collections.Counter(); meshback = collections.Counter()
     for ball, R in plays(path, nfl):
         N += 1
         S = {s: [tag(r) for r in sorted([r for r in R if not r['back'] and (r['y'] - ball) * s > 0], key=lambda r: -(r['y'] - ball) * s)]
@@ -126,7 +127,10 @@ def run(path, nfl, H):
             for h in M[s]:
                 w = 1 / len(M[s]); side[h] += w; back[h][job] += w
                 for o in (M[-s] or ['unmatched']): partner[h][o] += w / max(1, len(M[-s]))
-        for f in full_match(S): full[f] += 1
+        for f in full_match(S):
+            full[f] += 1
+            if f == 'mesh':
+                meshout.update(T[0] for T in S.values() if T); meshback[job] += 1
         on = {s: [] for s in (1, -1)}
         for h, t in H.items():
             st, c = CORE.get(h, (1, t))
@@ -143,6 +147,7 @@ def run(path, nfl, H):
                 partner={h: norm(partner[h]) for h in H if partner[h]}, back={h: norm(back[h]) for h in H if back[h]},
                 core_share={h: round(core[h] / N, 4) for h in H if len(CORE.get(h, (1, H[h]))[1]) >= 2},
                 core_partner={h: norm(cpartner[h]) for h in H if cpartner[h]}, core_back={h: norm(cback[h]) for h in H if cback[h]},
+                mesh_outside=norm(meshout), mesh_back=norm(meshback),
                 full_share={f: round(full[f] / N, 4) for f in ('mesh', 'drive', 'y_cross', 'hitch_cross', 'post_cross', 'four_verts')})
 
 
