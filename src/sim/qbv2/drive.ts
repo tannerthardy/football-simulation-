@@ -75,7 +75,10 @@ export const CATCH_CLEAN = 0.82;
  * adjusts to it), farther out CATCH_OUT; his real release error at the arrival is PLACE_REAL times his own missSigma
  * (medians 1.40/1.17/0.95 yd against 0.95/0.81/0.61 believed). His ball lands in a disk of that spread around the aim
  * (Rayleigh), so P(caught clean) = IN * P(|e| <= R) + OUT * (1 - P). Falls back to CATCH_CLEAN without a spread. */
-export const CATCH_ADJUST = 1.0, CATCH_IN = 0.90, CATCH_OUT = 0.58, PLACE_REAL = 1.5;
+// Re-measured on the candidate (QB_QUICK_DRIFT=3, Integration's ruling): the 35/60/88 panel, 475 throws no defender played,
+// ball-to-aim p50 0.66/0.54/0.48 yd against believed 0.81/0.68/0.57 (ratio 0.82); 0.95 caught within 1 yd, 0.77 beyond.
+// (Bit 1, 152 throws: 1.5, 0.90, 0.58. The longer, on-the-move outs of bit 1 carried more error than his belief.)
+export const CATCH_ADJUST = 1.0, CATCH_IN = 0.95, CATCH_OUT = 0.77, PLACE_REAL = 0.82;
 export function catchFrom(spread: number | undefined): number {
   if (spread === undefined || !(spread > 0)) return CATCH_CLEAN;
   const s = PLACE_REAL * spread, pin = 1 - Math.exp(-(CATCH_ADJUST * CATCH_ADJUST) / (2 * s * s));
