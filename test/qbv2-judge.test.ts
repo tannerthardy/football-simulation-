@@ -14,7 +14,7 @@ function stop(res = 1): ThrowQuestion {
   const at = (t: number) => ({ x: Math.min(5 + 8 * t, 12), y: 20 });
   return {
     windup: 0.35, flight: 0.55 + 0.6, catchAt: { x: 11.5, y: 20 }, receiverAt: at, breakIn: 0.875,
-    ballHeightAt: () => 3.5, path: [{ x: -5, y: 20 }, { x: 3, y: 20 }, { x: 11.5, y: 20 }], catchClean: 0.9, res, receiverSpread: 0.3,
+    ballHeightAt: () => 3.5, path: [{ x: -5, y: 20 }, { x: 3, y: 20 }, { x: 11.5, y: 20 }], los: 0, catchClean: 0.9, res, receiverSpread: 0.3,
   };
 }
 
@@ -42,15 +42,23 @@ describe('QB_V2 judgment (module D)', () => {
     expect(judge({ ...q, receiverAt: (t: number) => ({ x: 10 + 6 * t, y: 20 }) }, defs).roles.map((r) => r.role)).toEqual(['driver', 'driver']);
   });
 
+  it('a press man tight on the receiver is the coverer before he has matched his speed', () => {
+    const q = { ...stop(), receiverAt: (t: number) => ({ x: 6 + 4.5 * t, y: 20 }) };
+    expect(findCoverer(q, [def(1, 7, 19, 1.8, 1.1)])?.id).toBe(1);
+  });
+
   it('a rough look is a wider belief on the same picture', () => {
     const d = [def(1, 9, 20, 6, 0, { facing: 0 })];
     expect(judge(stop(0.1), d).roles[0].sigma).toBeGreaterThan(judge(stop(1), d).roles[0].sigma);
   });
 
-  it('a man under the low part of the ball\'s path is a lane man and can pick it', () => {
-    const q = { ...stop(), ballHeightAt: (p: { x: number }) => (p.x < 4 ? 2.4 : 3.5) };
-    const j = judge(q, [def(5, 3, 20.5, 0, 0, { ballSkills: 0.8 })]);
-    expect(j.roles[0].role).toBe('lane');
-    expect(j.risk).toBeGreaterThan(0.2);
+  it('a dropper under the low part of the ball\'s path is a lane man and can pick it; a rusher at the line only bats it now and then', () => {
+    const q = { ...stop(), receiverAt: () => ({ x: 12, y: 20 }), breakIn: null, ballHeightAt: (p: { x: number }) => (p.x < 4 ? 2.4 : 3.5) };
+    const dropper = judge(q, [def(5, 3, 20.5, 0, 0, { ballSkills: 0.8 })]);
+    expect(dropper.roles[0].role).toBe('lane');
+    expect(dropper.risk).toBeGreaterThan(0.2);
+    const rusher = judge({ ...q, path: [{ x: -5, y: 20 }, { x: -1, y: 20 }, { x: 0.5, y: 20 }, { x: 11.5, y: 20 }], ballHeightAt: (p: { x: number }) => (p.x < 1 ? 2.6 : 3.5) }, [def(6, 0.5, 20.3, 0, 0)]);
+    expect(rusher.roles[0].role).toBe('lane');
+    expect(rusher.risk).toBeLessThan(0.03);
   });
 });

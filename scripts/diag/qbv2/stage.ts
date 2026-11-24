@@ -1,0 +1,63 @@
+// QB lane 2026-11-24 (QB_V2 bring-up, the user's "start simple" set): staged plays of a quick concept against the coverage
+// where its answer is plain, and the control that takes it away. One mid-rated passer. Run once with QB_V2 unset (the
+// old controller) and once with QB_V2=1 on the same cells. Per play: the release (from the snap), the target and its
+// release minus break (10 Hz track: stop = under half peak speed after the peak; others = sharpest turn > 25 deg), the
+// result; with V2, every 0.05 s from the plant until the throw: read, look resolution against his need, his bar, and
+// each candidate's judged P / risk, so the stage that held the ball is read off the trace.
+//   QB_V2=1 node --import tsx scripts/diag/qbv2/stage.ts quick_outs cover3 1-12 > rows.jsonl
+import { PlaySim } from '../../../src/sim/playsim.js';
+import { PASS_BY_ID } from '../../../src/playbook/concepts.js';
+import { nativeTraceSetup } from '../command-trace.js';
+
+const [concept, coverage, seedArg = '1-8', formation = 'gun_doubles_11'] = process.argv.slice(2);
+const [s0, s1] = seedArg.split('-').map(Number);
+/** The taught version Rules' plan is authored on (CONCEPT_TAUGHT is not on develop yet). */
+const TAUGHT: Record<string, { back?: string }> = { slant_flat: { back: 'check' }, quick_outs: { back: 'back_flat' } };
+const MID = { playRecognition: 60, decisionMaking: 60, awareness: 60, composure: 60, discipline: 60, anticipation: 60, consistency: 60 };
+const r2 = (x: number) => Math.round(x * 100) / 100;
+type S = [number, number, number, number, number];
+const wrap = (x: number) => Math.atan2(Math.sin(x), Math.cos(x));
+function breakAt(P: S[], stop: boolean): number | null {
+  if (P.length < 8) return null;
+  const sp = P.map((s) => Math.hypot(s[3], s[4]));
+  if (stop) { let kp = 3; for (let k = 3; k < P.length; k++) if (sp[k] > sp[kp]) kp = k; for (let k = kp + 1; k < P.length; k++) if (sp[k] < 0.5 * sp[kp]) return P[k][0]; return null; }
+  let best = 0, kb = -1;
+  for (let k = 3; k < P.length - 2; k++) { if (sp[k - 2] < 2 || sp[k + 2] < 2) continue; const d = Math.abs(wrap(Math.atan2(P[k + 2][4], P[k + 2][3]) - Math.atan2(P[k - 2][4], P[k - 2][3]))); if (d > best) { best = d; kb = k; } }
+  return kb >= 0 && best > 25 * Math.PI / 180 ? P[kb][0] : null;
+}
+for (let seed = s0; seed <= s1; seed++) {
+  const setup: any = nativeTraceSetup({ concept, coverage, seed, roster: 3, formation, flip: false });
+  const t = TAUGHT[concept]; if (t) setup.offCall.pass = { ...PASS_BY_ID[concept], ...t };
+  const qbP = setup.offense.QB; for (const [k, v] of Object.entries(MID)) qbP.ratings[k] = v; qbP.experience = 4;
+  const sim: any = new PlaySim(setup);
+  let thrown: any = null, qbb: any = null, lastT = -1; const trace: any[] = []; const tr: Record<number, S[]> = {};
+  const tb = sim.throwBall.bind(sim);
+  sim.throwBall = (q: any, target: any, ...rest: any[]) => { if (q === sim.qb && !thrown) thrown = { t: sim.t, slot: target?.slot ?? null, idx: target?.idx ?? null, away: !target }; return tb(q, target, ...rest); };
+  const t0 = sim.tick.bind(sim);
+  sim.tick = () => {
+    t0();
+    const b = sim.qb.behavior; if (b?.kind === 'qb-pass' && typeof b.throwAway === 'function') qbb = b;
+    if (sim.t - lastT >= 0.099) { lastT = sim.t; for (const a of sim.offense) (tr[a.idx] ??= []).push([sim.t, a.pos.x, a.pos.y, a.vel.x, a.vel.y]); }
+    const v2 = qbb?.v2, h = qbb?.v2h;
+    if (v2 && h && !thrown && sim.t >= h.plantAt - 1e-6 && Math.round(sim.t * 20) % 1 === 0 && trace.length < 60) {
+      const c = v2.cycle, look = c.looks.current, r = c.plan.reads[c.readIdx];
+      trace.push({ t: r2(sim.t - h.snapAt), read: c.readIdx, st: c.state, look: look ? (look.kind === 'receiver' ? look.ref : look.role) : null,
+        res: look ? r2(c.looks.resolved(look)) : null, need: r2(h.need), bar: r2(h.bar.P), risk: r2(h.bar.risk), press: c.pressure,
+        opts: r ? r.throws.map((o: any) => { const j = v2.judgedFor(o.ref); return j ? `${o.ref}:${r2(j.P)}/${r2(j.risk)}` : `${o.ref}:-`; }) : [] });
+    }
+    if (sim.t > 6) sim.phase = 'dead';
+  };
+  try { sim.run(); } catch (e) { process.stderr.write(String((e as Error).message).slice(0, 200) + '\n'); }
+  const snap = qbb?.snapAt ?? 0;
+  let relBrk: number | null = null;
+  if (thrown?.idx != null) {
+    const rid = String(sim.agents[thrown.idx]?.behavior?.route?.id ?? '').split(':').pop() ?? '';
+    const P = (tr[thrown.idx] ?? []).filter((s) => s[0] <= thrown.t + 1.2);
+    const b = breakAt(P, /hitch|stick|curl|hook|comeback/.test(rid)); if (b !== null) relBrk = r2(thrown.t - b);
+  }
+  const ev = sim.events as any[];
+  console.log(JSON.stringify({ concept, coverage, seed, v2: !!qbb?.v2, rel: thrown ? r2(thrown.t - snap) : null, slot: thrown?.slot ?? null, away: thrown?.away ?? null,
+    route: thrown?.idx != null ? String(sim.agents[thrown.idx]?.behavior?.route?.id ?? '').split(':').pop() : null, relBrk,
+    complete: !!sim.stats.completed, int: ev.some((e) => e.type === 'interception'), sack: ev.some((e) => e.type === 'sack'),
+    intents: qbb?.v2Intents ?? null, trace }));
+}
