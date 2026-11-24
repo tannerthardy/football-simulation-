@@ -138,6 +138,7 @@
     "TACKLE_REACH": "off",
     "LUNGE_FLIGHT": "off",
     "REACH_TIME": "off",
+    "GATHER_ATTACK": "off",
     "CARRY_POSTURE": "on",
     "CORNER_DROP": "on",
     "CARRY_TURN": "on",
