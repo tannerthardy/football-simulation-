@@ -101,6 +101,20 @@ const HANDS_SCALE = 1.2;
  * 0.75-1.5 yd away at arrival complete 28%, ours 46-59% (catchpoint.py, same
  * operator). */
 const CATCH_SECURE = process.env.CATCH_SECURE !== '0';
+/** HANDS_ON_ARMS (default on, HANDS_ON_ARMS=0 restores; Tools, 2026-11-24; a defect fix): CATCH_HANDS's contest returns, besides 'over', the difficulty the hands of a defender who reaches the
+ * receiver's arms but does not knock the ball loose add to the catch. The accumulator was declared in the first CATCH_HANDS commit (f26fc0611) and never written, so for every
+ * defender who reached the arms and failed the rake roll the difficulty term (`diffHands`, below) was 0: a nearby defender who lost his rake roll added nothing. Now each such defender
+ * adds `depth * technique`: how deep into his reach the receiver's arms are, and his arm technique: the same two physical terms the rake roll multiplies (no new constant); the
+ * receiver's hands and contested-catch skill scale it where `diffHands` is applied. Several defenders add. Expect contested completions to fall. */
+const HANDS_ON_ARMS = process.env.HANDS_ON_ARMS !== '0';
+/** SECURE_SPLIT (default on, SECURE_SPLIT=0 restores; Tools, 2026-11-24; a defect fix): in the securing window a defender's hand play and his body's arrival are separate events, each tried once.
+ * Before, one `tried` mark covered both: the hand condition (toBall within reach + 0.15) is met a tick or two before the body arrives (toBody within the two radii + 0.1), the
+ * attempt then ran with hit = 0, and the arrival's dislodge was skipped. */
+const SECURE_SPLIT = process.env.SECURE_SPLIT !== '0';
+/** SECURE_FACE_GEOM (default on, SECURE_FACE_GEOM=0 restores; Tools, 2026-11-24; a defect fix): while the ball is in the receiver's hands (the securing window) a defender faces the ball when his
+ * shoulders are toward the ball's position, not against the ball's velocity: the ball is pinned to the receiver (velocity = his), so a defender running with him and looking at the ball
+ * scored as not facing it (c = -1) and took the 0.6 penalty on his hand play. Same threshold (within about 110 degrees). */
+const SECURE_FACE_GEOM = process.env.SECURE_FACE_GEOM !== '0';
 /** CATCH_POINT (off; CATCH_POINT=1 turns it on; C14 open end): a receiver
  * tracking the ball catches it where it comes to his hands, not where it first
  * crosses the edge of his reach. Off, the catch resolved on the first tick the
@@ -135,6 +149,14 @@ function facingBall(a: Agent, ballVel: Vec3, sim?: PlaySim): boolean {
   const f = shouldersOf(a.body); // a look over the shoulder is the shoulders turned, not the hips
   const c = Math.cos(f) * (-ballVel.x / sp) + Math.sin(f) * (-ballVel.y / sp);
   return c > -0.35;
+}
+
+/** SECURE_FACE_GEOM: his shoulders are toward the point (within about 110 degrees). */
+function facesPoint(a: Agent, p: Vec3): boolean {
+  const dx = p.x - a.pos.x, dy = p.y - a.pos.y, d = Math.hypot(dx, dy);
+  if (d < 1e-6) return true;
+  const f = shouldersOf(a.body);
+  return Math.cos(f) * (dx / d) + Math.sin(f) * (dy / d) > -0.35;
 }
 
 /** bodyStarts, when supplied, is indexed by agent and spans the same interval
@@ -390,6 +412,8 @@ function contestHands(sim: PlaySim, R: Agent, o: Opp, opps: Opp[], rng: ReturnTy
       deflect(sim, 0.2, 'drop', R, 0.5);
       return 'over';
     }
+    // His hands were on the arms and did not strip the ball: they still make the catch harder (HANDS_ON_ARMS).
+    if (HANDS_ON_ARMS) add += depth * technique;
   }
   return add;
 }
@@ -420,20 +444,27 @@ export function secureStep(sim: PlaySim): void {
   const bp = ball.flight.pos;
   const rng = sim.dice('secure', R);
   for (const D of sim.defense) {
-    if (S.tried.has(D) || D.isDown(sim.t) || D.engagement) continue;
+    if (D.isDown(sim.t) || D.engagement) continue;
+    if (!SECURE_SPLIT && S.tried.has(D)) continue;
     const toBall = Math.hypot(D.pos.x - bp.x, D.pos.y - bp.y);
     const toBody = Math.hypot(D.pos.x - R.pos.x, D.pos.y - R.pos.y);
     const handReach = D.profile.reach + 0.15;
     const bodyTouch = D.profile.radius + R.profile.radius + 0.1;
-    if (toBall > handReach && toBody > bodyTouch) continue;
+    // SECURE_SPLIT: the hand play and the body's arrival are separate events, each tried once (S.tried: the hand play, S.triedBody: the arrival).
+    const hands = toBall <= handReach && (!SECURE_SPLIT || !S.tried.has(D));
+    const body = toBody <= bodyTouch && (!SECURE_SPLIT || !S.triedBody?.has(D));
+    if (!hands && !body) continue;
     S.tried.add(D);
+    if (SECURE_SPLIT && body) (S.triedBody ??= new Set()).add(D);
     // What he delivers: a hand to the ball, or his body into the receiver.
     const rel = toBody > 1e-6 ? { x: (R.pos.x - D.pos.x) / toBody, y: (R.pos.y - D.pos.y) / toBody } : { x: 1, y: 0 };
     const closing = Math.max(0, (D.vel.x - R.vel.x) * rel.x + (D.vel.y - R.vel.y) * rel.y);
-    const hand = toBall <= handReach
-      ? (0.25 + 0.35 * D.r('ballSkills') + 0.15 * D.r('manCoverage')) * (1 - 0.6 * toBall / handReach) * (facingBall(D, ball.flight.vel, sim) || D.tags.has('looking') ? 1 : 0.6)
+    // SECURE_FACE_GEOM: facing the ball is his shoulders toward the ball's position while it is pinned to the receiver.
+    const sees = SECURE_FACE_GEOM ? facesPoint(D, bp) : facingBall(D, ball.flight.vel, sim);
+    const hand = hands
+      ? (0.25 + 0.35 * D.r('ballSkills') + 0.15 * D.r('manCoverage')) * (1 - 0.6 * toBall / handReach) * (sees || D.tags.has('looking') ? 1 : 0.6)
       : 0;
-    const hit = toBody <= bodyTouch ? clamp((closing - 1.5) / 6, 0, 0.8) * (0.6 + 0.4 * D.r('hitPower')) * D.profile.massKg / 90 : 0;
+    const hit = body ? clamp((closing - 1.5) / 6, 0, 0.8) * (0.6 + 0.4 * D.r('hitPower')) * D.profile.massKg / 90 : 0;
     const resist = (1.15 - 0.3 * R.r('hands') - 0.3 * R.r('contestedCatch')) * (1 - 0.7 * progress);
     const pLoose = clamp((1 - (1 - hand) * (1 - hit)) * resist, 0, 0.9);
     if (rng.next() < pLoose) {

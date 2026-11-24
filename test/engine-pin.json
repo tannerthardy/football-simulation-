@@ -189,6 +189,7 @@
   "test/catch-carry.test.ts",
   "test/catch-choice.test.ts",
   "test/catch-eyes.test.ts",
+  "test/catch-fixes.test.ts",
   "test/catch-opportunity.test.ts",
   "test/catch-phase-control.test.ts",
   "test/catch-reach.test.ts",
