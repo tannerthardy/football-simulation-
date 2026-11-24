@@ -1,0 +1,48 @@
+diff --git a/src/sim/qbv2/drive.ts b/src/sim/qbv2/drive.ts
+index 9882a9394..04739bb28 100644
+--- a/src/sim/qbv2/drive.ts
++++ b/src/sim/qbv2/drive.ts
+@@ -16,7 +16,7 @@ import { COVER_RADIUS, judge, type SeenDefender, type ThrowQuestion } from './ju
+ import type { LookTarget } from './look.js';
+ import type { PreSnapState, QbReadPlan, ThrowOption } from './plan.js';
+ import { decidePreSnap, mirrorPlan } from './presnap.js';
+-import { RoleResolver, type RolePicture } from './roles.js';
++import { isDbSlot, RoleResolver, type RolePicture } from './roles.js';
+ 
+ type V = { x: number; y: number };
+ type V3 = { x: number; y: number; z: number };
+@@ -141,8 +141,8 @@ export class V2Drive {
+   private picture(h: V2Host): RolePicture {
+     const sim = h.sim, s1 = this.receiver(h, 'S1'), strong: 1 | -1 = s1 && this.seenAt(h, s1).y < sim.ballY ? -1 : 1;
+     const defenders = sim.defense.filter((d) => this.seenUp(h, d)).map((d) => {
+-      const e = h.estimate(d), pos = d.player.position as string;
+-      return { id: d.idx, x: e.pos.x, y: e.pos.y, vx: e.vel.x, vy: e.vel.y, db: ['CB', 'S', 'FS', 'SS', 'NB', 'DB'].includes(pos) };
++      const e = h.estimate(d);
++      return { id: d.idx, x: e.pos.x, y: e.pos.y, vx: e.vel.x, vy: e.vel.y, db: isDbSlot(sim.defCall.personnel, d.slot) };
+     });
+     const receivers: RolePicture['receivers'] = {};
+     for (const ref of ['S1', 'S2', 'S3', 'W1', 'W2', 'W3', 'B'] as ReceiverRef[]) {
+diff --git a/src/sim/qbv2/roles.ts b/src/sim/qbv2/roles.ts
+index 923769975..9d86bf3e3 100644
+--- a/src/sim/qbv2/roles.ts
++++ b/src/sim/qbv2/roles.ts
+@@ -7,6 +7,7 @@
+  * area plus an exit margin (commit to a decision); only then is it re-resolved.
+  */
+ import type { KeyRole } from './plan.js';
++import { DEF_PERSONNEL, type DefPersonnelId, type DefSlot } from '../../playbook/types.js';
+ 
+ export interface PicturedMan {
+   id: number; x: number; y: number; vx: number; vy: number;
+@@ -102,3 +103,11 @@ export class RoleResolver {
+ 
+ /** One-shot form (Flex's pre-snap scan). */
+ export const resolveRole = (p: RolePicture, role: KeyRole, side: 'S' | 'W' = 'S'): PicturedMan | null => pick(role, p, side);
++
++/** A defensive back by the personnel he sees: the CB / S slots of the visible package (corners and safeties, not which is which).
++ * The same rule as QBMind's corner finder (QB_CANON_SEEN's isDbSeen on develop), so B, C and QBMind share one definition; a
++ * roster label is not read. */
++export function isDbSlot(personnel: DefPersonnelId, slot: string): boolean {
++  const g = DEF_PERSONNEL[personnel]?.[slot as DefSlot];
++  return g === 'CB' || g === 'S';
++}
