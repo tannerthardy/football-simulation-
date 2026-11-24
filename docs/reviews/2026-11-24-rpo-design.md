@@ -208,6 +208,24 @@ They are the route work for item (c).
   Also the answers in §2 (man, cloud, gap cancel, blitz the key). If an RPO proves too strong, the fix is a missing
   defensive mechanism, never a cap on the RPO.
 
+**Defense's answer (2026-11-24).** The overhang and hook defenders already choose between run fit and drop from their
+own picture. recognition.ts builds a run/pass read from his pre-snap expectation plus the cues his position keys:
+- the linemen firing out or setting;
+- pulls;
+- the QB's drop or mesh;
+- the back's path;
+- receivers releasing or blocking;
+- the handoff or throw he sees.
+
+He commits when convinced, and his behaviour follows `believesRun`. READ_LEAN scales an unsure backer's downhill pace.
+
+Defense has not verified three things, and these are the first places to look if RPOs come out too strong:
+1. How early overhangs and hooks commit while the ball is still in the mesh, and what their key weights are there.
+2. Whether the overhang weighs a slot's screen release against the run flow, or reads only the box.
+3. Whether a backer whose gap GAP_MATCH has cancelled stays home. Cloud corners are the Coverage lane's question.
+
+Defense will measure (1) and (2) on the first RPO plays.
+
 ## 7. Migration and checks
 
 - One flag, `RPO_COMPOSE`, off. When on, `iz_now_rpo` becomes a RunCall with `rpo: {throw: now screen weak, when:
@@ -223,4 +241,4 @@ They are the route work for item (c).
    - the first set in §5.
 2. **Run Game:** what sets the mesh deadline, and whether half-line is supported.
 3. **QB lane:** answered in §3: `fills` is a new cue, the throw is one read, and there is a handoff intent.
-4. **Defense:** are the conflict defenders' run-or-drop choices made from what they see, so the read is honest?
+4. **Defense:** answered in §6. The choices come from perception; (1) and (2) are to measure on the first plays.
