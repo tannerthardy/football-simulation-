@@ -138,7 +138,8 @@ interface PassCall {
   drop: 'derived' | DropType;          // derived from the primary (below)
   snap?: SnapCount;                    // carried, no effect until a snap-timing model exists
   alert?: { half: 'strong' | 'weak'; read: number; when: AlertCond | AlertCond[] };  // QB_V2's AlertCond
-  kill?: { other: PassCall | RunCall; rule: KillRule };  // same formation and motion; observable rule only
+  kill?: { other: PassCall | RunCall; rule: KillRule };  // same formation and motion
+  // KillRule = AlertCond | AlertCond[] (shell, press, cushion, leverage, boxAtLeast): one evaluator in Flex's module B
   fake?: RunConceptId;                 // play action, as today
 }
 
