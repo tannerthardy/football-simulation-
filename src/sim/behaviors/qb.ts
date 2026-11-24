@@ -36,6 +36,7 @@ import { believedProfile, typicalAt } from '../believed.js';
 import type { PhysicalProfile } from '../../players/physical.js';
 import type { ReplayTelemetryFrame } from '../types.js';
 import { ReceiverForecast, type InstalledReceiverRoute } from '../receiver-forecast.js';
+import { PERIPH_ACUITY } from '../qbmind.js';
 import { screenSpot, type ScreenSpot } from '../screen-spot.js';
 import { compilingPlan, installedPlan } from '../../playbook/read-compiler/runtime.js';
 import { DECLARED_BREAK } from '../../playbook/read-compiler/features.js';
@@ -2949,6 +2950,8 @@ export class QBPass implements Behavior {
         const age = this.mind.pictureAge(d), A = dp.vmax / Math.max(dp.tau, 1e-3);
         spreadD = Math.min(0.5 * A * age * age, dp.vmax * age) / Math.max(dp.vmax, 1e-3);
       }
+      // PERIPH_ACUITY: his uncertainty about where this defender is: the look's eccentric error grown over its age.
+      if (PERIPH_ACUITY) spreadD = Math.hypot(spreadD, this.mind.pictureSpread(d) / Math.max(dp.vmax, 1e-3));
       return { d, dp, dBall, blind, mover, react, leap, spreadD, facingQB, tied, closeState, roof, deepBail, carryAt, seen, speedScale: mover.speedScale, estimateError: a.mind.judgment(`reach:${d.slot}`) * noise };
     });
     // A ball that arrives at `pt`: who contests it at the catch, who can get a
@@ -2956,6 +2959,12 @@ export class QBPass implements Behavior {
     // PICTURE_AGE: his receiver's uncertainty from the age of the last look
     // (never seen: since the snap).
     let spreadR = 0;
+    // PERIPH_ACUITY: his uncertainty about where the receiver will be: the look's eccentric error grown over its age.
+    let periphR = 0;
+    if (PERIPH_ACUITY) {
+      const pic = forecast?.lastPicture() ?? null;
+      if (pic) periphR = Math.hypot(pic.sigP, pic.sigV * Math.max(0, sim.t - pic.sampledAt));
+    }
     if (PICTURE_AGE) {
       const pic = forecast?.lastPicture() ?? null;
       const age = Math.max(0, sim.t - (pic ? pic.sampledAt : this.snapAt)), A = r.profile.vmax / Math.max(r.profile.tau, 1e-3);
@@ -2995,8 +3004,8 @@ export class QBPass implements Behavior {
         const tt = carryTt !== null ? carryTt : deepZone ? bodyArrive(seen, dp, speedScale ?? 1, pt, dp.reach + 0.3, dzStart) : QB_ROLE_PATH && deepBail && !tied ? Math.max(total, bodyArrive(seen, dp, speedScale ?? 1, pt, dp.reach + 0.3, total)) : closeState && !tied ? cbArrive(pt, dp.reach + 0.3) : blind + (QB_WINDOW_ARRIVE && !tied ? arriveTime(mover, pt, dp.reach + 0.3, react) : timeToReach(mover, pt, dp.reach + 0.3) + react);
         // BLITZ_READ: a defender he believes is rushing is going elsewhere, not to this point.
         const m = tt - total + estimateError + (BLITZ_READ ? 3 * this.rushOf(d) : 0);
-        const sCatch = PICTURE_AGE ? Math.hypot(0.13, spreadD, spreadR / Math.max(dp.vmax, 1e-3)) : 0.13;
-        const sPath = PICTURE_AGE ? Math.hypot(0.1, spreadD) : 0.1;
+        const sCatch = PICTURE_AGE || PERIPH_ACUITY ? Math.hypot(0.13, spreadD, Math.hypot(spreadR, periphR) / Math.max(dp.vmax, 1e-3)) : 0.13;
+        const sPath = PICTURE_AGE || PERIPH_ACUITY ? Math.hypot(0.1, spreadD) : 0.1;
         const contest = under ? 0 : 1 - logistic((m - 0.05) / sCatch);
         // A defender who gets there well before the ball is sitting on the route.
         const first = under ? 0 : 1 - logistic((m + 0.3) / sCatch);
@@ -3052,6 +3061,8 @@ export class QBPass implements Behavior {
     // QB_ALIGN: an armed throw (no time to reset) is priced with what it keeps of his body.
     if (QB_ALIGN) { const pl = this.alignPlan(a, sim, point); if (!pl.reset) sigma *= this.alignCost(a, pl.resid, pl.across).sigK; }
     const radius = ACC_RADIUS ? 1.6 + 0.9 * T + 0.4 * (r.r('ballSkills') - 0.5) : 1.35;
+    // PERIPH_ACUITY: not knowing exactly where the receiver will be adds to the miss, as his own error does.
+    if (PERIPH_ACUITY) sigma = Math.hypot(sigma, periphR);
     const pAcc = Math.exp(-(sigma * sigma) / (2 * radius * radius));
     // He knows his own accuracy: the ball can land anywhere in his miss, and an
     // errant ball is the one a defender can pick. Its risk is averaged over the

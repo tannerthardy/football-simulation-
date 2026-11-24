@@ -611,6 +611,66 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
 
 
+## engine-92: what the passer sees off his gaze is less exact (2026-11-23)
+
+On: `PERIPH_ACUITY` (QB lane; Integration's paired card). An information leak under the user's standing rule:
+- Off, every receiver or defender inside his peripheral cone (45–69°) was seen exactly, apart from 1.7× the delay.
+- At decisions with the target 30–60° off his head, the receiver picture was 0.13 yd off.
+- On 62–72% of decisions made 15° or more off, the target had never been near his gaze.
+- Throws decided off-gaze completed better than throws he looked at.
+
+On, each look is offset by his stable misjudgment of that player:
+- position error 0.06 × range × eccentricity (Levi, Klein & Aitsebaomo 1985);
+- velocity error 0.14 × speed × eccentricity (McKee & Nakayama 1984);
+- both scaled by 1.3 − 0.6 × vision.
+
+The clear cone for reading separation is 10–15° (Ball et al. 1988), and the periphery's edge is unchanged. There is no
+must-look rule. The window prices each picture's spread, with its growth over the picture's age, in quadrature:
+- in the contest and undercut margins;
+- in the catch-point spread;
+- in the accuracy σ.
+
+PICTURE_AGE's age spreads come on with it.
+
+The decision's picture, by head angle (receiver error p50, off → on):
+
+| head angle | receiver error, yd |
+|---|---|
+| 0–15° | 0.04 → 0.07 |
+| 15–30° | 0.05 → 0.32 |
+| 30–60° | 0.13 → 0.56 |
+| over 60° | 0.32 → 0.50 |
+
+Completion by head angle at the decision (off → on):
+
+| head angle | completion |
+|---|---|
+| 0–15° | 67% → 69% |
+| 15–30° | 72% → 66% |
+| 30–60° | 74% → 64% |
+| over 60° | 72% → 75% |
+
+Over 60° is selection, not a leak: those targets were seen come open, and within each separation band they complete no
+better than looked-at throws.
+
+Paired six-seed card (seeds 23/37/11/5/61/88, deltas against engine-91):
+
+| | mean delta |
+|---|---|
+| completion | −1.2 pts |
+| yards per attempt | −0.17 |
+| sacks | +0.1 |
+| INT | +0.1 |
+| 20+ yard plays | −0.9 |
+| YAC | +0.2 |
+| time to throw | flat |
+
+The dither budget's carrier row is re-recorded (pooled [0.3897, 785, 306], was [0.2963, 854, 253]). The QB's re-priced
+options move his head; defenders reading his eyes break on other lines; the run after the catch meets them elsewhere.
+No stage flips, and carrier / spacing stays inside its own budget.
+
+docs/reviews/2026-11-23-turned-down-open.md; test/periph-acuity.test.ts.
+
 ## engine-91: the stem worked to the defender's leverage (2026-11-18)
 
 On: `STEM_WORK` (Rules + Coaching; Integration, from Coverage's flow table). Taught: attack the defender's leverage,

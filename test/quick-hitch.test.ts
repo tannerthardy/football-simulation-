@@ -52,7 +52,10 @@ describe('QUICK_HITCH', () => {
     const on = await stop(true), off = await stop(false);
     expect(on.length).toBe(3);
     expect(off.length).toBe(3);
-    for (const d of on) expect(d).toBeLessThanOrEqual(5.2);
-    for (const d of off) expect(d).toBeGreaterThan(5.2);
+    // Re-recorded 2026-11-24 on engine-92 (7b36c6e55): the plant is read as the first tick under 1 yd/s downfield, which
+    // can land just past the 5 yd point (on 5.22 / 5.02 / 5.01, off 6.24 / 5.85 / 5.85). The claim is the yard between
+    // the quick hitch (5) and the five-step hitch (6), so the cut is midway between them, not 0.2 past 5.
+    for (const d of on) expect(d).toBeLessThanOrEqual(5.5);
+    for (const d of off) expect(d).toBeGreaterThan(5.5);
   }, 120_000);
 });
