@@ -15,8 +15,18 @@ export function handoffReach(from: Agent, to: Agent): number {
  * read, extend into the pocket). Under center the exchange is immediate. */
 export const GUN_SNAP = process.env.GUN_SNAP !== '0';
 export const SNAP_SPEED = 11.5, SNAP_SECURE = .1, QB_EXTEND = .6;
+/** SNAP_FLIGHT (experimental, off; SNAP_FLIGHT=1): the gun snap's flight measured directly on the football's own track, in place of GUN_SNAP's 11.5 yd/s.
+ * GUN_SNAP's speed came from "the gun QB gets the ball 0.4 s later than an under-center QB over a 4.6 yd snap", which assumed the under-center exchange is
+ * instant; it is not, so the difference understated the flight. Measured (BDB 2025 weeks 1-3, tracking incl. the football, 2,585 shotgun and pistol non-play-action
+ * dropbacks with the ball at least 2.5 yd from the QB at the snap frame; scripts/diag/snap/snap_flight.py, docs/reviews/2026-11-24-snap-flight.md): the ball starts moving at the snap event (lag p25/50/75 0.0/0.0/0.1 s) and takes 0.6/0.7/0.8 s to come within 0.75 yd of the QB
+ * over a median 4.58 yd (p25-p75 4.17-4.88): (4.58 - 0.75) / 0.70 = 5.5 yd/s over the part flown to within a hand. The same SNAP_SECURE (0.1 s to seat it) follows.
+ * Readers (all of them gun-only, d >= 2 yd): the QB's drop clock (called-drop.ts plannedSnapAt), the gun back's handoff pacing and the mesh (assign.ts), so the pocket
+ * schedule the linemen know and the handoff windows move with it. */
+export const SNAP_FLIGHT = process.env.SNAP_FLIGHT === '1';
+export const SNAP_FLIGHT_SPEED = 5.5, SNAP_REACH = 0.75;
 /** When the snap is secured in the QB's hands (s after the snap), from where he stands. */
 export function snapSecured(qbPos: { x: number; y: number }, ballSpot: { x: number; y: number }): number {
   const d = Math.hypot(qbPos.x - ballSpot.x, qbPos.y - ballSpot.y);
-  return d < 2 ? 0 : d / SNAP_SPEED + SNAP_SECURE;
+  if (d < 2) return 0;
+  return SNAP_FLIGHT ? Math.max(0, d - SNAP_REACH) / SNAP_FLIGHT_SPEED + SNAP_SECURE : d / SNAP_SPEED + SNAP_SECURE;
 }

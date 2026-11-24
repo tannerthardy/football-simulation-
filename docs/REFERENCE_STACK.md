@@ -2684,3 +2684,7 @@ completion .677 -> .682, uncontested drop .052 -> .058, breakup .097 -> .094, in
 run share .310 -> .310. Catch roll, actual run (8 games a side): ball speed p50 22.5 -> 21.9 yd/s, share over 24 yd/s 28.9% -> 23.7%.
 Not modelled: the NFL ball's decay roughly doubles 0.3-0.6 s before arrival (tracker smoothing near the catch, or the ball's nose-over at the end
 of the arc); the catch roll's 24 yd/s step is not what the NFL ball avoids on short throws (a catch-rebuild question, not drag).
+
+## SNAP_FLIGHT (Tools/Physics, 2026-11-24; off, experimental)
+
+Off in the stack. The gun snap's flight from the football's own track: `snapSecured = (d - 0.75) / 5.5 + 0.1` (0.80 s at 4.6 yd) against GUN_SNAP's 11.5 yd/s (0.50 s). docs/reviews/2026-11-24-snap-flight.md. Own card arm.
