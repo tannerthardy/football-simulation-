@@ -311,7 +311,8 @@ export const PA_FLOOD: QbReadPlan = {
 
 const screenPlan = (conceptId: string, drop: QbReadPlan['drop'], ref: 'B' | 'S1' | 'S2' | 'S3' | 'W1', timing: 'onBreak' | 'seenOpen', source: string): QbReadPlan => ({
   conceptId, drop, readType: 'progression',
-  reads: [{ step: 0, look: { kind: 'receiver', ref }, throws: [{ ref, timing }] }],
+  // Covered or a rusher in the lane: the ball at his feet ("he must throw the ball at the TE's feet", Gridiron Strategies).
+  reads: [{ step: 0, look: { kind: 'receiver', ref }, throws: [{ ref, timing }], onCovered: 'kill' }],
   hot: [], checkdown: null, confirm: null, expected: {}, source,
 });
 export const RB_SLIP_SCREEN = screenPlan('rb_slip_screen', 'gun5', 'B', 'seenOpen',
