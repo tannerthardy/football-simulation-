@@ -37,6 +37,7 @@ function rep(kind: 'pass' | 'run', B: Mod, R: Mod, tr = false) {
     if (m.bend !== undefined) p.bend = m.bend;
   };
   if (R.matched || B.matched) Object.assign(d.profile, structuredClone(b.profile));
+  if (process.env.HAND_FREE === '1') { sim.world.handDz[b.idx] = Number(process.env.HANDZ_B ?? 0); sim.world.handDz[d.idx] = Number(process.env.HANDZ_R ?? 0); }
   apply(b, B); apply(d, R);
   b.body.pos = { x: 40, y: CENTER_Y }; b.body.vel = { x: 0, y: 0 }; b.body.facing = 0;
   { const Rr = b.profile.radius + d.profile.radius + 0.1; d.body.pos = { x: 40 + Rr, y: CENTER_Y }; } d.body.vel = { x: 0, y: 0 }; d.body.facing = Math.PI;
