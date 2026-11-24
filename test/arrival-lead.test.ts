@@ -57,6 +57,7 @@ async function plays(flag: string) {
   // the lead's own effect is not reached (on and off medians are identical, 2.34 yd). Owner: Coverage. Remove this test with
   // ARRIVE_LEAD when FLIGHT_BREAK=0's paths (flightApproach's fixed catch-point drive) are retired.
   vi.stubEnv('FLIGHT_BREAK', '0');
+  vi.stubEnv('SPOT_LEAN', '0'); // engine-98 (Coverage, pinned test-only): the short-throw scenes were found with the spot dropper's old receiver-to-receiver lean; with SPOT_LEAN he settles elsewhere before the throw and fewer scenes keep the premise (4 of the 5 needed). Coverage to re-find the scenes with it on
   const { Rng } = await import('../src/core/rng.js');
   const { generateTeam, pickDefense, pickOffense } = await import('../src/league/team.js');
   const { PASS_BY_ID } = await import('../src/playbook/concepts.js');

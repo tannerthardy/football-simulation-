@@ -12,6 +12,7 @@ async function play(flag: string, until = 2.4) {
   vi.resetModules();
   vi.stubEnv('QB_BODY_SEEN', flag);
   vi.stubEnv('SEEN_EYES', '1');
+  vi.stubEnv('SPOT_LEAN', '0'); // engine-98 (Coverage, pinned test-only): the scene measures the spot dropper's drift toward the receiver the head is on; SPOT_LEAN slides him along the seen head line instead. Coverage to re-stage the drift against the head line with it on
   const { Rng } = await import('../src/core/rng.js');
   const { generateTeam, pickDefense, pickOffense } = await import('../src/league/team.js');
   const { PASS_BY_ID } = await import('../src/playbook/concepts.js');
