@@ -93,6 +93,28 @@ export const CALL_MIX_TILT: Record<CallBucket, Record<RouteClass, number>> = (()
   return Object.fromEntries(buckets.map((b) => [b, Object.fromEntries(ROUTE_CLASSES.map((k) => [k, CALL_MIX_PREF[b][k] / mean[k]]))])) as Record<CallBucket, Record<RouteClass, number>>;
 })();
 
+/** CALL_COMPOSE: the means the play-caller's situation and talent terms are divided by, so that each averages 1 and
+ * moves calls between situations without raising a family's total. The base weights already hold the NFL's overall
+ * share, which includes its situations. The terms' sizes themselves (quick ×2.2 on third and short and ×0.6 on long
+ * yardage, dropback ×1.6 on long yardage, the arm term 0.5 + arm, comebacks ×2 in the hurry-up) are the caller's
+ * stated choices, not fitted.
+ * - Family terms: over the NFL's down-and-distance mix, from the fit's routes per bucket. Long yardage (distance 9+) is
+ *   taken as 1st down, 2nd long and 3rd long; third and short (4 or less) as 3rd short (3 or less in the buckets).
+ * - Arm: the mean of 0.5 + arm over generated starting quarterbacks (256 teams at strength 0.4-0.6: 1.224;
+ *   out/dbg/arm-mean.mts).
+ * - Hurry-up: 23% of our pass calls (81 of 349, 4 games, out/dbg/hurry-share.mts); no NFL figure is to hand. */
+export const COMPOSE_NORM = (() => {
+  const total = Object.values(CALL_MIX_BUCKET_N).reduce((s, v) => s + v, 0);
+  const long = (CALL_MIX_BUCKET_N['1st'] + CALL_MIX_BUCKET_N['2nd_long'] + CALL_MIX_BUCKET_N['3rd_long']) / total;
+  const thirdShort = CALL_MIX_BUCKET_N['3rd_short'] / total;
+  return {
+    quick: thirdShort * 2.2 + long * 0.6 + (1 - thirdShort - long) * 1.1,
+    dropback: long * 1.6 + (1 - long),
+    arm: 1.224,
+    hurry: 1 + 0.23,
+  };
+})();
+
 /** The coordinator's preference for this concept in this down and distance. */
 export function callMixWeight(c: PassConcept, down: number, distance: number, pref = CALL_MIX_PREF): number {
   const p = pref[callBucket(down, distance)];

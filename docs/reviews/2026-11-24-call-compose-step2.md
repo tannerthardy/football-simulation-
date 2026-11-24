@@ -82,76 +82,77 @@ Calls are not outcomes. What the composed calls do to games is for the card.
 
 ## Called share against NFL share (16 games, flag on)
 
-**The fade-flat overcall, found and fixed.** The first smoke had fade-flat at 10.7% of passes, against an NFL share of
-4.7%. Two causes stacked:
-1. **CALL_MIX counted twice.** CALL_MIX_PREF was fitted on the equal-weight pool, to correct that pool's route-class
-   mix: breaking routes 0.35-0.7, quick routes up to 2.2. On top of NFL-share base weights, that correction applied a
-   second time on every snap. It lifted quick, vertical and flat concepts like fade-flat, and sank breaking ones (curl,
-   comebacks, dig).
-   - **Fix:** under CALL_COMPOSE, CALL_MIX applies only its situational tilt. `CALL_MIX_TILT` divides each class by its
-     NFL-weighted geometric mean over the buckets (weights are the fit's own n_nfl_routes), so it averages 1 per class
-     and 3rd and long still favours the break.
-   - With the flag off, CALL_MIX is unchanged.
-2. **Formation availability.** The shares were over all plays, while CONCEPT_FIT offers a trips half only from trips
-   sets.
+Three double counts were found and removed, each with the same fix: a term on top of a base weight that already holds
+the NFL's overall share must average 1.
+1. **CALL_MIX's pool correction.** It was fitted on the equal-weight pool (breaking ×0.35-0.7, quick up to ×2.2), so it
+   counted a second time on NFL-share base weights.
+   - **Fix:** under CALL_COMPOSE only `CALL_MIX_TILT` applies: each class divided by its NFL-weighted geometric mean over
+     the buckets.
+   - The first smoke had fade-flat at 10.7% of passes, against 4.7% NFL.
+2. **Formation availability.**
    - **Fix:** base weights use each half's core share among the plays whose formation has room for it
      (`core_share_given_room`, operator 375557142).
+3. **The caller's situation and talent terms.** Each is divided by its mean (`COMPOSE_NORM`, src/game/call-mix.ts):
+   - quick-family terms: mean 0.83 over the NFL's down-and-distance mix;
+   - dropback terms: mean 1.42;
+   - the arm term: league mean of 0.5 + arm, 1.224, over 256 generated starting QBs;
+   - comebacks' hurry-up term: our hurry share of 23%, with no NFL figure to hand.
+
+   The terms' sizes themselves are the caller's stated choices, not fitted: quick ×2.2 on third and short and ×0.6 on
+   long yardage, dropback ×1.6 on long yardage, `0.5 + arm`, comebacks ×2 in the hurry-up. With the flag off, every
+   term is as before.
 
 **The run:** 16 games, seeds 501-516 in 4 processes of 4 games, `npm run ref` with CALL_COMPOSE=1, out/dbg/compose-table.mts.
-- 1,407 pass calls, without screens.
-- 954 non-PA composed calls in the table. The NFL share is renormalised over the same non-PA pool.
+- 1,408 pass calls, without screens.
+- 953 non-PA composed calls in the table. The NFL share is renormalised over the same non-PA pool.
 - With 10-100 calls per row, a ratio is good to about ±25%.
 
 | composition | NFL share (of the non-PA pool) | called share | called / NFL | base weight | back in: expected / called |
 |---|---|---|---|---|---|
-| drive | 13.3% | 9.3% (89) | 0.70 | 3.85 | 0% / 0% |
-| fade_flat | 9.2% | 10.1% (96) | 1.09 | 2.67 | 6% / 5% |
-| curl_flat | 7.4% | 11.3% (108) | 1.53 | 2.14 | 7% / 3% |
-| slant_flat | 6.6% | 5.9% (56) | 0.88 | 1.93 | 14% / 25% |
-| stick | 6.5% | 6.8% (65) | 1.04 | 1.90 | 0% / 0% |
-| verts_hitch | 6.4% | 3.8% (36) | 0.59 | 1.86 | 23% / 14% |
-| mesh | 6.3% | 4.4% (42) | 0.69 | 1.84 | 16% / 12% |
-| double_slants | 5.8% | 2.8% (27) | 0.48 | 1.70 | 22% / 19% |
-| hitches | 4.1% | 5.1% (49) | 1.25 | 1.19 | 21% / 10% |
-| smash | 3.8% | 4.8% (46) | 1.27 | 1.10 | 18% / 17% |
-| corner_flat | 3.5% | 5.9% (56) | 1.66 | 1.03 | 15% / 14% |
-| hitch_post | 3.1% | 4.0% (38) | 1.27 | 0.91 | 24% / 13% |
-| quick_outs | 3.0% | 3.8% (36) | 1.26 | 0.87 | 32% / 47% |
-| dagger | 2.6% | 2.8% (27) | 1.07 | 0.77 | 18% / 15% |
-| sail_corner | 2.5% | 2.4% (23) | 0.95 | 0.74 | 30% / 30% |
-| seam_hitch | 2.0% | 1.6% (15) | 0.78 | 0.59 | 24% / 20% |
-| y_cross | 1.7% | 1.6% (15) | 0.90 | 0.51 | 0% / 0% |
-| four_verts | 1.7% | 3.2% (31) | 1.88 | 0.50 | 0% / 0% |
-| double_outs | 1.7% | 1.8% (17) | 1.05 | 0.49 | 31% / 35% |
-| comebacks | 1.5% | 2.6% (25) | 1.71 | 0.45 | 26% / 40% |
+| drive | 13.3% | 8.0% (76) | 0.60 | 3.85 | 0% / 0% |
+| fade_flat | 9.2% | 11.3% (108) | 1.23 | 2.67 | 6% / 4% |
+| curl_flat | 7.4% | 10.5% (100) | 1.42 | 2.14 | 7% / 5% |
+| slant_flat | 6.6% | 9.0% (86) | 1.36 | 1.93 | 14% / 22% |
+| stick | 6.5% | 8.4% (80) | 1.28 | 1.90 | 0% / 0% |
+| verts_hitch | 6.4% | 4.1% (39) | 0.64 | 1.86 | 23% / 10% |
+| mesh | 6.3% | 3.3% (31) | 0.51 | 1.84 | 16% / 13% |
+| double_slants | 5.8% | 2.9% (28) | 0.50 | 1.70 | 22% / 25% |
+| hitches | 4.1% | 4.8% (46) | 1.17 | 1.19 | 21% / 26% |
+| smash | 3.8% | 4.3% (41) | 1.13 | 1.10 | 18% / 17% |
+| corner_flat | 3.5% | 3.5% (33) | 0.98 | 1.03 | 15% / 12% |
+| hitch_post | 3.1% | 3.7% (35) | 1.17 | 0.91 | 24% / 26% |
+| quick_outs | 3.0% | 3.9% (37) | 1.30 | 0.87 | 32% / 43% |
+| dagger | 2.6% | 3.1% (30) | 1.19 | 0.77 | 18% / 17% |
+| sail_corner | 2.5% | 3.4% (32) | 1.32 | 0.74 | 30% / 28% |
+| seam_hitch | 2.0% | 2.1% (20) | 1.04 | 0.59 | 24% / 20% |
+| y_cross | 1.7% | 1.3% (12) | 0.72 | 0.51 | 0% / 0% |
+| four_verts | 1.7% | 2.0% (19) | 1.15 | 0.50 | 0% / 0% |
+| double_outs | 1.7% | 2.1% (20) | 1.24 | 0.49 | 31% / 35% |
+| comebacks | 1.5% | 1.5% (14) | 0.96 | 0.45 | 26% / 36% |
 | flood | 1.1% | 1.5% (14) | 1.30 | 0.33 | 11% / 0% |
-| trips_stick | 1.0% | 0.2% (2) | 0.21 | 0.29 | 0% / 0% |
-| levels | 0.9% | 1.4% (13) | 1.46 | 0.27 | 17% / 31% |
-| hitch_out | 0.9% | 1.0% (10) | 1.12 | 0.27 | 11% / 30% |
-| post_cross | 0.8% | 0.8% (8) | 1.11 | 0.22 | 100% / 100% |
-| seam_slant | 0.7% | 0.1% (1) | 0.15 | 0.21 | 7% / 0% |
-| trips_sail | 0.7% | 0.3% (3) | 0.44 | 0.21 | 14% / 0% |
-| hitch_cross | 0.3% | 0.3% (3) | 0.95 | 0.10 | 0% / 0% |
+| trips_stick | 1.0% | 0.8% (8) | 0.83 | 0.29 | 0% / 0% |
+| levels | 0.9% | 1.6% (15) | 1.69 | 0.27 | 17% / 33% |
+| hitch_out | 0.9% | 0.6% (6) | 0.67 | 0.27 | 11% / 0% |
+| post_cross | 0.8% | 0.9% (9) | 1.25 | 0.22 | 100% / 100% |
+| seam_slant | 0.7% | 0.4% (4) | 0.58 | 0.21 | 7% / 0% |
+| trips_sail | 0.7% | 0.7% (7) | 1.02 | 0.21 | 14% / 0% |
+| hitch_cross | 0.3% | 0.0% (0) | 0.00 | 0.10 | 0% / - |
 | trips_outs | 0.3% | 0.3% (3) | 0.95 | 0.10 | 33% / 33% |
 
 **Reading it:**
-- Fade-flat is now 1.09× its NFL share (10.1% against 9.2%).
-- **Above 1.5×:**
-  - four verticals (1.88×): the arm term `0.5 + arm` and dropback ×1.6 on long yardage;
-  - comebacks (1.71×): ×2 in the hurry-up;
-  - corner-flat (1.66×) and curl-flat (1.53×): the long-yardage dropback ×1.6.
-
-  These are the caller's situation and talent terms. Unlike CALL_MIX's tilt, they are not normalised to average 1.
-  Normalising them is the next fix if the card wants the base mix to hold: each family term divided by its mean over
-  the NFL's down-and-distance mix.
-- **Below 0.5×:**
-  - the trips concepts: trips_stick 0.21, seam_slant 0.15, trips_sail 0.44;
-  - double_slants (0.48), whose half has a #3.
-
-  Our formation mix offers trips less often than the NFL does. That is a formation-frequency question (Flex), not a
-  call weight.
-- **Back in:** non-PA composed calls expected from the axes 13.7%, called 13.2%; all pass calls 15.4%. The axes predict the
-  called rate. The NFL's back protects on about 12-23% of plays, depending on the family (`core_back`).
+- Nothing is called at 2× its NFL share. Before the term normalisation, four_verts was 1.88× (now 1.15×), comebacks
+  1.71× (0.96×) and corner_flat 1.66× (0.98×).
+- **Above 1.4×:**
+  - curl_flat 1.42× (100 calls);
+  - levels 1.69×, on 15 calls, inside the noise.
+- **Below 0.65×:**
+  - drive (0.60×) and mesh (0.51×) were low in both runs. They are full-field concepts that need two receivers on each
+    side; their NFL share is unconditional, while CONCEPT_FIT offers them only from 2x2 and wider. That is the same
+    availability effect as the halves had, the other way round. The fix, if wanted, is the halves' fix for full-field
+    concepts: their share among plays with room for them.
+  - double_slants (0.50×), whose half has a #3.
+  - The trips concepts are now near their share. The rest of their shortfall is formation frequency (Flex).
+- **Back in:** non-PA composed calls expected from the axes 14.0%, called 14.3%; all pass calls 17.3%. The NFL's back protects on about 12-23%, by family.
 
 ## The shares
 
