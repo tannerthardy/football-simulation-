@@ -13,7 +13,7 @@ import { clamp, type Vec2 } from '../core/vec.js';
 import type { MoveCommand } from '../physics/kinematics.js';
 import { gapY, lineOffset } from '../playbook/alignment.js';
 import { GUN_QB_DEPTH } from '../playbook/formations.js';
-import { getRoute } from '../playbook/routes.js';
+import { SEAM_LANDMARK, getRoute } from '../playbook/routes.js';
 import { CONCEPT_MENU } from '../playbook/concepts.js';
 /** PA_DROP (qb.ts): the play-action back's fake track beside the QB, not on his drop line. */
 const PA_DROP_FAKE = process.env.PA_DROP !== '0';
@@ -257,7 +257,10 @@ export function assignBehaviors(sim: PlaySim): void {
       }
       const side = ref[0] === 'S' ? concept.strong : concept.weak;
       const num = Number(ref[1]) as 1 | 2 | 3 | 4;
-      const routeId = side[num] ?? (num === 1 ? 'go' : 'seam');
+      const drawn = side[num] ?? (num === 1 ? 'go' : 'seam');
+      // SEAM_LANDMARK (routes.ts): a vertical by an inside receiver is the seam ("a fly route run by an inside slot
+      // receiver or a tight end", Four Verts Football, what is a seam route), with the seam's landmark and read.
+      const routeId = SEAM_LANDMARK && num >= 2 && drawn === 'go' ? 'seam' : drawn;
       if (PRO_CALL && spot?.inline && callCount > inCount) {
         // Short of the count: an attached end checks his man first, then runs his route.
         coord.add(a);
