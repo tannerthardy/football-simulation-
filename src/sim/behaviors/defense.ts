@@ -293,7 +293,7 @@ export function pursueIfLive(sim: PlaySim, a: Agent): MoveCommand | null {
       if (sim.trace.data) sim.trace.decide({ t: sim.t, a: a.idx, kind: 'possession-pursuit', chose: target.slot,
         cue: 'carrying=true in this observer\'s acquired body picture',
         detail: `Sample age ${cue.age ?? 'unknown'} s; acquired x=${cue.pos.x}; installed ${a.runFit?.kind ?? 'fallback'} boundary. No authoritative holder/catch flag.` });
-      return asCarrierPursuit(chase(sim, a, target, 3, { onTop: OPEN_FIELD }));
+      return br(a, sim, 'pil-carrier', asCarrierPursuit(chase(sim, a, target, 3, { onTop: OPEN_FIELD })));
     }
   }
   // CATCH_CARRY: the ball reached a receiver he is on (he drove on the catch,
@@ -317,9 +317,9 @@ export function pursueIfLive(sim: PlaySim, a: Agent): MoveCommand | null {
       if (!refuted && on) {
         a.tags.add('catch-carry');
         // OPEN_FIELD: the ball is there; he approaches the receiver as a runner in space.
-        if (OPEN_FIELD) return asCarrierPursuit(chase(sim, a, drive.receiver, 3, { onTop: true }));
+        if (OPEN_FIELD) return br(a, sim, 'pil-catch-carry', asCarrierPursuit(chase(sim, a, drive.receiver, 3, { onTop: true })));
         const f = seen.facing;
-        return asCarrierPursuit(runThrough(a, f === undefined ? seen.pos : { x: seen.pos.x + Math.cos(f) * 0.35, y: seen.pos.y + Math.sin(f) * 0.35 }, { speed: 1 }));
+        return br(a, sim, 'pil-catch-carry-runThrough', asCarrierPursuit(runThrough(a, f === undefined ? seen.pos : { x: seen.pos.x + Math.cos(f) * 0.35, y: seen.pos.y + Math.sin(f) * 0.35 }, { speed: 1 })));
       }
       if (refuted) catchDrive.delete(a);
     }
@@ -333,7 +333,7 @@ export function pursueIfLive(sim: PlaySim, a: Agent): MoveCommand | null {
     if (sim.trace.data) sim.trace.decide({ t: sim.t, a: a.idx, kind: 'catch-anticipation', chose: anticipated.target.slot,
       cue: 'first acquired catch opportunity; result not yet acquired',
       detail: 'Keep working with the possible catcher; an empty picture after the opportunity refutes it. No confirmed possession.' });
-    return track(a, anticipated.cue.pos, anticipated.cue.vel);
+    return br(a, sim, 'pil-anticipated-track', track(a, anticipated.cue.pos, anticipated.cue.vel));
   }
   if ((HONEST_FLIGHT || landed) && path && sim.trace.data) sim.trace.decide({ t: sim.t, a: a.idx, kind: 'flight-continuation',
     chose: 'continue acquired catch opportunity', cue: 'recognized trajectory; no newer acquired holder',
@@ -342,11 +342,17 @@ export function pursueIfLive(sim: PlaySim, a: Agent): MoveCommand | null {
   // ball does meanwhile (a catch before his estimate's arrival is not yet in his picture).
   if ((HONEST_FLIGHT || landed) && path) return playObservedFlight(a, sim, path);
   const area = landed ? unresolvedBallArea(a) : null;
+  // FLIGHT_BREAK: the area he would rally to is where his own flight estimate brought the ball to a receiver he was
+  // breaking on (a break within 1 s): the break goes on, on that receiver as he now sees him, rather than a goTo to a
+  // catch spot the receiver has already left (Defense's overrun class: 32 of 38 unlabelled ticks after the catch were
+  // this rally, -5.1 yd/s along the carrier's line). His picture only; the possession read above takes over once the
+  // carrier is in it.
+  if (area && FLIGHT_BREAK_ON()) { const cont = continueFlightBreak(a, sim); if (cont) return br(a, sim, 'pil-rally-break', cont); }
   if (area) {
     if (sim.trace.data) sim.trace.decide({ t: sim.t, a: a.idx, kind: 'ball-rally',
       chose: 'locate ball at acquired landing area', cue: 'recognized pass; flight ended without acquired possession',
       detail: 'Keep ball responsibility instead of reopening route coverage. No holder is inferred.' });
-    return goTo(a, area);
+    return br(a, sim, 'pil-rally', goTo(a, area));
   }
   return null;
 }
@@ -1986,6 +1992,13 @@ export class ZoneCoverage implements Behavior {
     if (live) return live;
     // Until he sees the throw, a zone defender keeps playing his zone.
     const squat = !this.deep && (this.zone === 'flat_s' || this.zone === 'flat_w') && squatSinkCall(sim);
+    // FLIGHT_BREAK: his flight has landed by his own estimate (playsThrow is over) and pursuit's possession read above has
+    // not yet seen a carrier: the break keeps its receiver (continueFlightBreak: only within 1 s of a break he made on a
+    // throw he believed) instead of his zone drop resuming. His own picture only.
+    if (FLIGHT_BREAK_ON() && !playsThrow(a, sim, null)) {
+      const cont = continueFlightBreak(a, sim);
+      if (cont) return cont;
+    }
     if (playsThrow(a, sim, null)) return playBall(a, sim, null, RELEASE_BELIEF ? () => this.zonePlay(a, sim) : undefined);
     if (squat) {
       const sq = this.squatCorner(a, sim);
@@ -3056,7 +3069,7 @@ function seatOutsideIn(a: Agent): boolean {
 /** FLIGHT_BREAK: after his estimated catch time, until the possession read hands him to pursuit: the same break on the
  * same receiver, his window now (the receiver's seen spot), for up to FLIGHT_HOLD s after his last break request. */
 const FLIGHT_HOLD = 1.0;
-function continueFlightBreak(a: Agent, sim: PlaySim): MoveCommand | null {
+export function continueFlightBreak(a: Agent, sim: PlaySim): MoveCommand | null {
   const fb = flightBreaks.get(a);
   if (!fb || sim.t - fb.t > FLIGHT_HOLD) return null;
   const seen = sim.see(a, fb.receiver);
@@ -3065,7 +3078,8 @@ function continueFlightBreak(a: Agent, sim: PlaySim): MoveCommand | null {
 /** FLIGHT_LEAD (off; FLIGHT_LEAD=1 turns it on, with FLIGHT_BREAK; Coverage with Defense, 2026-11-23): a defender who will
  * arrive after the catch by dt breaks on where he expects the receiver dt after it (Defense's post-catch.ts forecast:
  * route momentum through the catch, upfield, away from him), not on the catch spot the carrier will have left. One with
- * the ball or before it keeps the catch spot. Entered at dt > 0.15 s, left at dt < 0 (Commit to a decision). Defense's
+ * the ball or before it, or who can still reach the hands within the securing beat (OPEN_FIELD's playsBall test, as
+ * taught), keeps the catch spot. Entered at dt > 0.15 s and beyond the beat, left inside half of it (Commit to a decision). Defense's
  * overrun class: 5.4 yd away at the catch, a 38 deg turn and >= 0.87 s to redirect, beaten at +0.9 s; stoppers 2.6 yd and
  * 12 deg. Read per call. */
 const flightLeadOn = () => process.env.FLIGHT_LEAD === '1';
@@ -3077,7 +3091,12 @@ function flightBreakMove(a: Agent, sim: PlaySim, R: Agent, seen: Perceived, catc
   if (flightLeadOn()) {
     const tArr = timeToReach({ pos: a.pos, vel: a.vel, profile: a.profile, speedScale: a.speedScale }, catchSpot, a.profile.reach);
     const late = sim.t + tArr - catchT;
-    const was = leading.get(a) ?? false, on = was ? late > 0 : late > 0.15;
+    // Diagnostic: FLIGHT_LEAD_ENTER (tenths of a second; default 1.5 = 0.15 s), the exit half of it.
+    const enter = Number(process.env.FLIGHT_LEAD_ENTER ?? 1.5) / 10;
+    // As taught (OPEN_FIELD's playsBall test): one who can still reach the hands within the securing beat plays the ball
+    // and the hit at the catch spot; only one who cannot is a pursuer and leads. Its own margins (0.1 s either way).
+    const beat = catchT + DRIVE_SECURE - sim.t, was = leading.get(a) ?? false;
+    const on = was ? late > enter / 2 && tArr > beat - 0.1 : late > enter && tArr > beat + 0.1;
     leading.set(a, on);
     if (on) {
       const lead = postCatchLead(seen.vel, catchSpot, a.pos, sim.attackDir(R.team), late);
@@ -3105,22 +3124,22 @@ function flightBreakMove(a: Agent, sim: PlaySim, R: Agent, seen: Perceived, catc
 
 function playBelievedBall(a: Agent, sim: PlaySim, man: Agent | null, continueCoverage?: () => MoveCommand): MoveCommand {
   const fallback = (): MoveCommand => {
-    if (continueCoverage) return continueCoverage();
+    if (continueCoverage) return br(a, sim, 'pbb-1', continueCoverage());
     if (man) {
       const s = sim.see(a, man);
       const inside = Math.sign(sim.ballY - s.pos.y) || 1;
-      return track(a, { x: s.pos.x, y: s.pos.y + inside * 0.7 }, s.vel, { cutSkill: 0.85 + 0.35 * a.r('manCoverage') });
+      return br(a, sim, 'pbb-2', track(a, { x: s.pos.x, y: s.pos.y + inside * 0.7 }, s.vel, { cutSkill: 0.85 + 0.35 * a.r('manCoverage') }));
     }
-    return { vel: a.vel };
+    return br(a, sim, 'pbb-3', { vel: a.vel });
   };
-  if (!sawThrow(a, sim, man)) return fallback();
+  if (!sawThrow(a, sim, man)) return br(a, sim, 'pbb-4', fallback());
   const rb = releaseBelief(sim, a);
   // BALL_EST (with bit 128): a ball seen once is not yet a flight he can play: with fewer than two samples his own
   // estimate is empty, and he plays as on the arm alone until it is not (not an empty path to playObservedFlight).
   const noFlight = rb.ballAt !== undefined && estimatesFor(a) && !hasObservedFlight(a) && !sim.ballEstimates?.estimate(a, sim).length;
   if (rb.ballAt === undefined || noFlight) {
     // Bit 256: a man defender who has not found the ball judges his phase and, in phase (or undisciplined), looks.
-    if (man && BALL_EST_MAN_LOOK && estimatesFor(a) && !hasObservedFlight(a) && manLooks(a, sim, man, rb.releasedAt)) return manLook(a, sim, fallback());
+    if (man && BALL_EST_MAN_LOOK && estimatesFor(a) && !hasObservedFlight(a) && manLooks(a, sim, man, rb.releasedAt)) return br(a, sim, 'pbb-5', manLook(a, sim, fallback()));
     a.tags.add('arm-bite');
     // FLIGHT_BREAK: a man or match carrier whose read of the passer's shoulders puts the ball on his own receiver breaks
     // on that receiver's catch window (the shared break) instead of carrying him: a carry runs with a receiver coming
@@ -3131,13 +3150,13 @@ function playBelievedBall(a: Agent, sim: PlaySim, man: Agent | null, continueCov
       if (pick.R === man && sim.t - rb.releasedAt >= react - 1e-9) {
         const r = sim.see(a, man), left = Math.max(0, Math.min(SHOULDER_FLIGHT_MAX,
           Math.hypot(r.pos.x - pick.from.x, r.pos.y - pick.from.y) / SHOULDER_BALL_SPEED - (sim.t - rb.releasedAt)));
-        return flightBreakMove(a, sim, man, r, sim.t + left, { x: r.pos.x + r.vel.x * left, y: r.pos.y + r.vel.y * left });
+        return br(a, sim, 'pbb-6', flightBreakMove(a, sim, man, r, sim.t + left, { x: r.pos.x + r.vel.x * left, y: r.pos.y + r.vel.y * left }));
       }
     }
-    if (!continueCoverage) return fallback();
+    if (!continueCoverage) return br(a, sim, 'pbb-7', fallback());
     // DEEP_GATE: a deep-third, deep-middle, deep-half or Tampa-middle player holds his coverage on the arm alone (a pump
     // moves him nothing); he breaks once he has seen the ball out. Quarter seats keep their route triggers.
-    if (DEEP_GATE && !man && heldDeepSeat(a)) { a.tags.add('deep-hold'); return continueCoverage(); }
+    if (DEEP_GATE && !man && heldDeepSeat(a)) { a.tags.add('deep-hold'); return br(a, sim, 'pbb-8', continueCoverage()); }
     // A zone defender breaks on the passer's shoulders at the delivery (the arm coming through; on the load alone he
     // plants): toward the receiver they point at, read through the tracking channel of the passer he is watching,
     // chosen once for this belief, with his reaction time after the choice. With none lined up, he plants (stops his
@@ -3150,10 +3169,10 @@ function playBelievedBall(a: Agent, sim: PlaySim, man: Agent | null, continueCov
         if (lp.R) {
           const r = sim.see(a, lp.R);
           a.tags.add('arm-load');
-          return stopDrop(sim, goTo(a, r.pos, { speed: ARM_LOAD_PACE, facing: angleTo(a.pos, r.pos) }));
+          return br(a, sim, 'pbb-9', stopDrop(sim, goTo(a, r.pos, { speed: ARM_LOAD_PACE, facing: angleTo(a.pos, r.pos) })));
         }
       }
-      return stopDrop(sim, continueCoverage());
+      return br(a, sim, 'pbb-10', stopDrop(sim, continueCoverage()));
     }
     const pick = shoulderTarget(a, sim, rb.releasedAt);
     const react = a.profile.reactionTime * (1 - 0.4 * a.r('anticipation'));
@@ -3167,10 +3186,10 @@ function playBelievedBall(a: Agent, sim: PlaySim, man: Agent | null, continueCov
       // rule-of-thumb ball speed). One receiver per belief; his projected spot updates as his picture does.
       const r = sim.see(a, pick.R), left = !SHOULDER_LEAD ? 0 : Math.max(0, Math.min(SHOULDER_FLIGHT_MAX,
         Math.hypot(r.pos.x - pick.from.x, r.pos.y - pick.from.y) / SHOULDER_BALL_SPEED - (sim.t - rb.releasedAt)));
-      if (FLIGHT_BREAK_ON()) return flightBreakMove(a, sim, pick.R, r, sim.t + left, { x: r.pos.x + r.vel.x * left, y: r.pos.y + r.vel.y * left });
-      return runThrough(a, { x: r.pos.x + r.vel.x * left, y: r.pos.y + r.vel.y * left }, { speed: 0.9 });
+      if (FLIGHT_BREAK_ON()) return br(a, sim, 'pbb-11', flightBreakMove(a, sim, pick.R, r, sim.t + left, { x: r.pos.x + r.vel.x * left, y: r.pos.y + r.vel.y * left }));
+      return br(a, sim, 'pbb-12', runThrough(a, { x: r.pos.x + r.vel.x * left, y: r.pos.y + r.vel.y * left }, { speed: 0.9 }));
     }
-    return stopDrop(sim, continueCoverage());
+    return br(a, sim, 'pbb-13', stopDrop(sim, continueCoverage()));
   }
   a.tags.add('onBall');
   const path = hasObservedFlight(a) ? rememberedFlight(a, sim.t) : null;
@@ -3223,19 +3242,24 @@ function shoulderTarget(a: Agent, sim: PlaySim, key: number): { R: Agent | null;
 
 /** Same catch approach, seeded only by this defender's acquired trajectory.
  * A newer body-possession picture takes priority in pursueIfLive. */
+/** Diagnostic only (Defense's tap): which return of the ball-phase approach (playObservedFlight / flightApproach) produced
+ * this defender's request, and when. Read by nothing in the engine. */
+const ballPhaseBranch = new WeakMap<Agent, { branch: string; t: number }>();
+export function ballPhaseBranchOf(a: Agent): { branch: string; t: number } | null { return ballPhaseBranch.get(a) ?? null; }
+function br(a: Agent, sim: PlaySim, branch: string, cmd: MoveCommand): MoveCommand { ballPhaseBranch.set(a, { branch, t: sim.t }); return cmd; }
 function playObservedFlight(a: Agent, sim: PlaySim, path: PlaySim['ballPath'], acquired = false): MoveCommand {
   const c = flightApproach(a, sim, path, acquired);
-  if (!c && FLIGHT_BREAK_ON()) { const cont = continueFlightBreak(a, sim); if (cont) return cont; }
+  if (!c && FLIGHT_BREAK_ON()) { const cont = continueFlightBreak(a, sim); if (cont) return br(a, sim, 'pof-continue', cont); }
   if (!PURSUIT_COMMIT) return c ?? stand();
   // PURSUIT_COMMIT: on the flight's last tick no sample of it is left ahead of
   // him; that is not a reason to stop. Hold the approach he last chose.
   if (c) { lastFlightApproach.set(a, { cmd: c, t: sim.t }); return c; }
   const last = lastFlightApproach.get(a);
-  if (last && sim.t - last.t <= 0.3) return { ...last.cmd };
+  if (last && sim.t - last.t <= 0.3) return br(a, sim, 'pof-replay', { ...last.cmd });
   // No catchable sample left on his flight and no recent approach: he keeps his ball responsibility and goes to where
   // he believes it came down (pursueIfLive's ball rally), not a stop. A newer holder picture takes over there.
   const area = BALL_CUE_OWN ? unresolvedBallArea(a) : null;
-  return area ? goTo(a, area) : stand();
+  return br(a, sim, area ? 'pof-area' : 'pof-stand', area ? goTo(a, area) : stand());
 }
 
 const lastFlightApproach = new WeakMap<Agent, { cmd: MoveCommand; t: number }>();
@@ -3272,12 +3296,12 @@ function flightApproach(a: Agent, sim: PlaySim, path: PlaySim['ballPath'], acqui
         const opp = window && window.receiver === R ? window : opportunity ?? catchOpportunity(a);
         const remaining = opp && opp.receiver === R ? opp.t + DRIVE_SECURE - sim.t : DRIVE_SECURE;
         const tt = timeToReach({ pos: a.pos, vel: a.vel, profile: a.profile, speedScale: a.speedScale }, hands, a.profile.reach);
-        if (!playsBall(a, R, tt, remaining)) { a.tags.add('open-field'); return chase(sim, a, R, 3, { onTop: true }); }
+        if (!playsBall(a, R, tt, remaining)) { a.tags.add('open-field'); return br(a, sim, 'fa-open-field-chase', chase(sim, a, R, 3, { onTop: true })); }
       }
       // FLIGHT_BREAK: through the hands by the same break (arrival he can brake from, his seat's side), not a full-effort
       // run through a receiver who is moving upfield through the catch (Defense's overrun class).
-      if (FLIGHT_BREAK_ON()) return flightBreakMove(a, sim, R, seen, sim.t, hands);
-      return runThrough(a, hands, { speed: 1 });
+      if (FLIGHT_BREAK_ON()) return br(a, sim, 'fa-drive-catch-break', flightBreakMove(a, sim, R, seen, sim.t, hands));
+      return br(a, sim, 'fa-drive-catch-runThrough', runThrough(a, hands, { speed: 1 }));
     }
   }
   // A defender already carrying the visible catcher must not brake out of
@@ -3293,8 +3317,8 @@ function flightApproach(a: Agent, sim: PlaySim, path: PlaySim['ballPath'], acqui
       chose: 'carry observed receiver', cue: 'nearby running catcher and visible ball window',
       detail: `${window.receiver.slot} at ${window.t.toFixed(2)} s; no earlier reachable ball opportunity.` });
     // FLIGHT_BREAK: the same break, not a carry that runs with a receiver coming back toward the passer.
-    if (FLIGHT_BREAK_ON()) return flightBreakMove(a, sim, window.receiver, window.seen, window.t, window.p);
-    return track(a, window.seen.pos, window.seen.vel);
+    if (FLIGHT_BREAK_ON()) return br(a, sim, 'fa-nearby-break', flightBreakMove(a, sim, window.receiver, window.seen, window.t, window.p));
+    return br(a, sim, 'fa-nearby-track', track(a, window.seen.pos, window.seen.vel));
   }
   if (spot) {
     const tt = timeToReach({ pos: a.pos, vel: a.vel, profile: a.profile, speedScale: a.speedScale }, spot.p, a.profile.reach);
@@ -3304,16 +3328,16 @@ function flightApproach(a: Agent, sim: PlaySim, path: PlaySim['ballPath'], acqui
     // A receiver may get to the ball before this later point on its flight.
     // Reaching where an already-caught pass would have hit the ground is not
     // an interception opportunity. Close the actual visible catch window.
-    if (tt <= spot.t - sim.t + 0.05 && (!window || spot.t <= window.t + 0.05)) return goTo(a, spot.p);
+    if (tt <= spot.t - sim.t + 0.05 && (!window || spot.t <= window.t + 0.05)) return br(a, sim, 'fa-beat-ball-goTo', goTo(a, spot.p));
   }
   // Can't beat the ball to its path: drive on the catch point to arrive with
   // the ball — on the receiver's near side, ready to play through the hands
   // or make the tackle the moment it's caught.
   // FLIGHT_BREAK: he cannot beat the ball to its path: the shared break on the receiver's moving catch window.
-  if (FLIGHT_BREAK_ON() && window) return flightBreakMove(a, sim, window.receiver, window.seen, window.t, window.p);
+  if (FLIGHT_BREAK_ON() && window) return br(a, sim, 'fa-window-break', flightBreakMove(a, sim, window.receiver, window.seen, window.t, window.p));
   // FLIGHT_BREAK: the window has passed in his picture (the ball has arrived by his estimate) but he has not yet seen the
   // catch: the break keeps its receiver until the possession read hands him to pursuit, rather than a stale spot.
-  if (FLIGHT_BREAK_ON()) { const cont = continueFlightBreak(a, sim); if (cont) return cont; }
+  if (FLIGHT_BREAK_ON()) { const cont = continueFlightBreak(a, sim); if (cont) return br(a, sim, 'fa-continue', cont); }
   const land = window?.p ?? arrivalPoint(sim, path);
   if (land) {
     // Close to the catch itself. A fixed yard of standoff plus inside shade
@@ -3341,10 +3365,10 @@ function flightApproach(a: Agent, sim: PlaySim, path: PlaySim['ballPath'], acqui
     const control = 2.2 + 2.5 * (1 - a.r('tackling'));
     const allowed = Math.sqrt(control * control + 2 * a.profile.brake * 0.7 * Math.max(0, d - 0.3));
     const sp = Math.min(a.profile.vmax, allowed);
-    return movingCatchApproach(a,sim,withMovementObjective({vel:{x:(dx/d)*sp,y:(dy/d)*sp}},
-      { kind: 'fixed', point: tgt }),window,spot);
+    return br(a, sim, 'fa-land-approach', movingCatchApproach(a,sim,withMovementObjective({vel:{x:(dx/d)*sp,y:(dy/d)*sp}},
+      { kind: 'fixed', point: tgt }),window,spot));
   }
-  return spot ? runThrough(a, spot.p, { speed: 0.9 }) : null;
+  return spot ? br(a, sim, 'fa-spot-runThrough', runThrough(a, spot.p, { speed: 0.9 })) : null;
 }
 
 /** First plausible receiver catch from the defender's delayed picture and
