@@ -18,7 +18,8 @@ Outputs (JSON):
     plays;
   - core_partner / core_back: on a side with the half's core, which halves' cores are on the other side (equal split;
     'unmatched' if none), and the back's job on the play;
-  - the share of plays per full concept; on mesh plays, each side's #1 route and the back's job.
+  - the share of plays per full concept, and among plays with room for it (mesh, drive, hitch-cross: two receivers
+    on each side; Y-cross: three to a side; post-cross: two to a side; four verticals: four receivers); on mesh plays, each side's #1 route and the back's job.
 Labelled defaults for the play-caller, not targets.
   python3 -I call_shares.py NFL=nfl-routes.jsonl.gz [OURS=sim.jsonl.gz] HALVES=src/playbook/calls/halves.ts [--json OUT]"""
 import sys, re, gzip, json, collections
@@ -124,7 +125,7 @@ def run(path, nfl, H):
     back = collections.defaultdict(collections.Counter); full = collections.Counter(); core = collections.Counter()
     cpartner = collections.defaultdict(collections.Counter); cback = collections.defaultdict(collections.Counter)
     possible = collections.Counter()
-    meshout = collections.Counter(); meshback = collections.Counter()
+    meshout = collections.Counter(); meshback = collections.Counter(); froom = collections.Counter()
     for ball, R in plays(path, nfl):
         N += 1
         S = {s: [tag(r) for r in sorted([r for r in R if not r['back'] and (r['y'] - ball) * s > 0], key=lambda r: -(r['y'] - ball) * s)]
@@ -136,6 +137,10 @@ def run(path, nfl, H):
             for h in M[s]:
                 w = 1 / len(M[s]); side[h] += w; back[h][job] += w
                 for o in (M[-s] or ['unmatched']): partner[h][o] += w / max(1, len(M[-s]))
+        L = sorted(len(T) for T in S.values())
+        for f, ok in (('mesh', L[0] >= 2), ('drive', L[0] >= 2), ('hitch_cross', L[0] >= 2), ('y_cross', L[1] >= 3),
+                      ('post_cross', L[1] >= 2), ('four_verts', L[0] + L[1] >= 4)):
+            if ok: froom[f] += 1
         for f in full_match(S):
             full[f] += 1
             if f == 'mesh':
@@ -163,6 +168,7 @@ def run(path, nfl, H):
                 core_share_given_room={h: round(core[h] / possible[h], 4) for h in H if possible[h] and len(CORE.get(h, (1, H[h]))[1]) >= 2},
                 room={h: round(possible[h] / N, 4) for h in H},
                 core_partner={h: norm(cpartner[h]) for h in H if cpartner[h]}, core_back={h: norm(cback[h]) for h in H if cback[h]},
+                full_share_given_room={f: round(full[f] / froom[f], 4) for f in froom if froom[f]},
                 mesh_outside=norm(meshout), mesh_back=norm(meshback),
                 full_share={f: round(full[f] / N, 4) for f in ('mesh', 'drive', 'y_cross', 'hitch_cross', 'post_cross', 'four_verts')})
 
