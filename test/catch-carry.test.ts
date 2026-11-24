@@ -26,7 +26,8 @@ async function plays(flag: string, opts: { dropPicture?: boolean; airProbe?: boo
   const { COVERAGE_BY_ID, FRONT_BY_ID } = await import('../src/playbook/defense.js');
   const { FORMATION_BY_ID } = await import('../src/playbook/formations.js');
   const { PlaySim } = await import('../src/sim/playsim.js');
-  const { pursueIfLive } = await import('../src/sim/behaviors/defense.js');
+  const { pursueIfLive, HONEST_FLIGHT } = await import('../src/sim/behaviors/defense.js');
+  const { catchOpportunity, SECURE_BEAT } = await import('../src/sim/possession-read.js');
   const offense = generateTeam(new Rng(101), 'Carry O', 'CRO', { strength: .55 });
   const defense = generateTeam(new Rng(102), 'Carry D', 'CRD', { strength: .55 });
   const out: Run = { carried: false, towardAt04: [], refutedCarry: false, airResult: 'unset' };
@@ -36,10 +37,13 @@ async function plays(flag: string, opts: { dropPicture?: boolean; airProbe?: boo
       defCall: { personnel: 'nickel', front: FRONT_BY_ID.over, coverage: COVERAGE_BY_ID.cover3, pressure: null, zoneStyle: 'spot', label: 'cc' },
       los: 40, ballY: 26, firstDownX: 50, seed });
     let driver: (typeof sim.defense)[number] | null = null, R: (typeof sim.offense)[number] | null = null, securedAt = -1;
+    // HONEST_FLIGHT: an empty picture refutes the catch only once taken after the securing beat of his own estimated
+    // arrival (no picture during the beat shows the ball), so under it the empty picture starts there; off, at the secure.
+    let dropFrom = Infinity;
     const see = sim.see.bind(sim);
     if (opts.dropPicture) sim.see = (who, t, d) => {
       const s = see(who, t, d);
-      return R && t === R && securedAt >= 0 && sim.t >= securedAt ? { ...s, carrying: false, age: 0 } : s;
+      return R && t === R && securedAt >= 0 && sim.t >= dropFrom ? { ...s, carrying: false, age: 0 } : s;
     };
     while (sim.t < 6) {
       sim.tick();
@@ -49,8 +53,16 @@ async function plays(flag: string, opts: { dropPicture?: boolean; airProbe?: boo
         if (R) break; // the securing window ended with no defender driving on the catch
         continue;
       }
-      if (securedAt < 0) { if (sim.ball.kind === 'held' && sim.ball.carrier === R) securedAt = sim.t; else if (sim.ball.kind !== 'air') break; continue; }
-      if (driver.tags.has('catch-carry')) { if (opts.dropPicture) out.refutedCarry = true; else out.carried = true; }
+      if (securedAt < 0) {
+        if (sim.ball.kind === 'held' && sim.ball.carrier === R) {
+          securedAt = sim.t;
+          const opp = HONEST_FLIGHT ? catchOpportunity(driver) : null;
+          dropFrom = opp ? Math.max(securedAt, opp.t + SECURE_BEAT) : securedAt;
+        } else if (sim.ball.kind !== 'air') break;
+        continue;
+      }
+      // Dropped: carried on any tick after the first empty picture has reached his decision.
+      if (driver.tags.has('catch-carry')) { if (opts.dropPicture) { if (sim.t > dropFrom + 1e-9) out.refutedCarry = true; else driver.tags.delete('catch-carry'); } else out.carried = true; }
       if (opts.airProbe) {
         // A ball back in the air: the unresolved-possession branch must not carry him.
         const real = sim.ball; driver.tags.delete('catch-carry');

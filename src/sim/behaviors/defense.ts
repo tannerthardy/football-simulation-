@@ -39,7 +39,7 @@ import { DeepCoverage, StemAcceleration, stemStopped } from '../coverage-leverag
 import { facingTechnique, roundedTurnTime, withFacingTechnique } from '../coverage/orientation.js';
 import { SNAP_REACT } from '../snap-count.js';
 import { BALL_EST, BALL_EST_MAN_LOOK, estimatesFor, lookAnyway, lookJoints, neckOf, PHASE_BEHIND, PHASE_SIDE, phaseJudgeSd } from '../ball-estimate.js';
-import { acquireFlight, anticipatedCatcher, catchOpportunity, flightLanded, hasObservedFlight, observedHolder, QB_RELEASE, qbRunning, qbRunningAtLine, rememberCatchOpportunity, rememberedFlight, unresolvedBallArea } from '../possession-read.js';
+import { acquireFlight, anticipatedCatcher, catchOpportunity, flightLanded, hasObservedFlight, observedHolder, QB_RELEASE, qbRunning, qbRunningAtLine, rememberCatchOpportunity, rememberedFlight, SECURE_BEAT, unresolvedBallArea } from '../possession-read.js';
 import { seenEngaged } from '../seen-contact.js';
 import { BALL_CUE_OWN } from '../release-evidence.js';
 
@@ -124,7 +124,7 @@ export const HONEST_READS = process.env.HONEST_READS !== '0';
  * play until his estimate resolves it. */
 export const HONEST_FLIGHT = process.env.HONEST_FLIGHT === '1';
 /** HONEST_FLIGHT's drive on a catch: from this long before his estimate's arrival to this long after (a catch's securing beat). */
-const DRIVE_LEAD = 0.05, DRIVE_SECURE = 0.4;
+const DRIVE_LEAD = 0.05, DRIVE_SECURE = SECURE_BEAT;
 /** INFO_HONEST (off; INFO_HONEST=63 turns every item on; single items by their
  * bit below, for the per-item read): coverage decisions
  * read the defender's own picture, not true state. Items (coverage audit
@@ -3150,8 +3150,20 @@ const lastFlightApproach = new WeakMap<Agent, { cmd: MoveCommand; t: number }>()
 
 function flightApproach(a: Agent, sim: PlaySim, path: PlaySim['ballPath'], acquired = false): MoveCommand | null {
   const spot = catchSpot(a, { t: sim.t, ballPath: path });
-  const window = observedCatchWindow(a, sim, path);
-  if (acquired) rememberCatchOpportunity(a, window);
+  // HONEST_FLIGHT: a man defender plays the catch on his own man (as coached: his man's hands) when his flight estimate
+  // brings the ball within his man's reach; another receiver's opportunity is his only when his man has none (mesh's
+  // crossers: the ball passes the near crosser first, and the first-opportunity read put him on the other man).
+  const own = HONEST_FLIGHT && a.behavior?.kind === 'man' ? (a.behavior as unknown as { target?: Agent }).target ?? null : null;
+  const window = (own ? observedCatchWindow(a, sim, path, own) : null) ?? observedCatchWindow(a, sim, path);
+  // HONEST_FLIGHT: his catch hypothesis persists until a perceived change clears it: a new window replaces it, but an
+  // empty re-read during its securing beat (his own picture of the receiver is still from before the catch) does not.
+  const held = HONEST_FLIGHT ? catchOpportunity(a) : null;
+  // HONEST_FLIGHT: re-read on every tick he reads the flight, not only at its first acquisition (a hypothesis formed on
+  // the picture at acquisition went unrevised for the rest of the flight: mesh, cover1 doubles s10, the other crosser).
+  // The same receiver keeps the arrival he first judged (a re-read finds the first reachable sample still ahead, which
+  // moves with the clock and would stretch the securing beat without end); only a different receiver replaces it.
+  const keep = HONEST_FLIGHT && held && (window ? window.receiver === held.receiver : sim.t <= held.t + DRIVE_SECURE);
+  if ((acquired || HONEST_FLIGHT) && !keep) rememberCatchOpportunity(a, window);
   // Near the ball's path, a defender with ball skills turns his head and finds
   // it (looking over the shoulder doesn't turn the body).
   const nearPath = spot && Math.hypot(spot.p.x - a.pos.x, spot.p.y - a.pos.y) < 5;
@@ -3260,12 +3272,15 @@ function flightApproach(a: Agent, sim: PlaySim, path: PlaySim['ballPath'], acqui
 /** First plausible receiver catch from the defender's delayed picture and
  * the visible flight. Does not inspect the intended target or called route.
  * This is a possibility estimate; a receiver can still drop or miss it. */
-function observedCatchWindow(a: Agent, sim: PlaySim, path: PlaySim['ballPath']): { p: Vec2; t: number; receiver: Agent; seen: Perceived } | null {
-  const receivers = sim.offense.filter(r => r !== sim.qb && !['LT', 'LG', 'C', 'RG', 'RT'].includes(r.slot))
-    .map(r => ({ r, seen: sim.see(a, r) }));
+function observedCatchWindow(a: Agent, sim: PlaySim, path: PlaySim['ballPath'], only?: Agent): { p: Vec2; t: number; receiver: Agent; seen: Perceived } | null {
+  const receivers = sim.offense.filter(r => (only ? r === only : r !== sim.qb) && !['LT', 'LG', 'C', 'RG', 'RT'].includes(r.slot))
+    // HONEST_FLIGHT, his own man: the continuous attended read he mirrors him by (sim.track), not a recognition picture.
+    .map(r => ({ r, seen: only ? sim.track(a, r, 1, true) : sim.see(a, r) }));
+  let prevSample: PlaySim['ballPath'][number] | null = null;
   for (const s of path) {
     const remaining = s.t - sim.t;
-    if (remaining < 0 || s.z < 0.25) continue;
+    if (remaining < 0 || s.z < 0.25) { prevSample = remaining < 0 ? s : null; continue; }
+    const before = prevSample; prevSample = s;
     for (const { r, seen } of receivers) {
       if (s.z > r.profile.maxCatchHeight * 0.92) continue;
       const p = { x: s.x, y: s.y };
@@ -3276,13 +3291,28 @@ function observedCatchWindow(a: Agent, sim: PlaySim, path: PlaySim['ballPath']):
       // estimate charges for braking/redirecting. Use the same maximum hand
       // envelope as a tracking catch, without consulting his hidden target,
       // route or eventual possession. He may still miss or drop the pass.
-      const passing = Math.hypot(p.x - seen.pos.x - seen.vel.x * remaining,
-        p.y - seen.pos.y - seen.vel.y * remaining) <= reach;
+      // HONEST_FLIGHT: over the flight segment to this sample, not only at it (the catch's own closest-approach geometry,
+      // physics/catch-opportunity.ts, on his picture of the receiver carried on its velocity): a 0.1 s sample spacing
+      // missed a receiver whose hands meet the ball between samples (mesh, cover1 doubles s10: 1.30-1.46 at the samples,
+      // a catch at the reach between them).
+      const passing = HONEST_FLIGHT && before
+        ? segmentPass(before, s, seen, sim.t) <= reach
+        : Math.hypot(p.x - seen.pos.x - seen.vel.x * remaining, p.y - seen.pos.y - seen.vel.y * remaining) <= reach;
       const tt = timeToReach({ pos: seen.pos, vel: seen.vel, profile: r.profile }, p, reach);
       if (passing || tt <= remaining) return { p, t: s.t, receiver: r, seen };
     }
   }
   return null;
+}
+
+/** HONEST_FLIGHT: the closest the ball comes, between two samples of his flight estimate, to a receiver he sees, carried
+ * on his seen velocity (both linear over the segment). */
+function segmentPass(a0: { t: number; x: number; y: number }, a1: { t: number; x: number; y: number }, seen: Perceived, now: number): number {
+  const dt = a1.t - a0.t;
+  const r0x = a0.x - (seen.pos.x + seen.vel.x * (a0.t - now)), r0y = a0.y - (seen.pos.y + seen.vel.y * (a0.t - now));
+  const dvx = (a1.x - a0.x) - seen.vel.x * dt, dvy = (a1.y - a0.y) - seen.vel.y * dt;
+  const vv = dvx * dvx + dvy * dvy, s = vv > 1e-12 ? clamp(-(r0x * dvx + r0y * dvy) / vv, 0, 1) : 0;
+  return Math.hypot(r0x + dvx * s, r0y + dvy * s);
 }
 
 /** Where the ball comes down to catch height on its current flight. */
