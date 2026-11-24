@@ -338,6 +338,39 @@ export const WIDE_NOW_SCREEN = screenPlan('wide_now_screen', 'quick', 'W1', 'onB
 export const TUNNEL_SCREEN = screenPlan('tunnel_screen', 'quick', 'S1', 'seenOpen',
   'docs/reviews/2026-11-24-read-plans.md#screens (AFM: "at most, takes a three-step drop"; Coaches Insider, three screens).');
 
+/** Fade-flat (fade_flat, a menu concept). The plan is a key read on the flat defender, outside-in, at the plant:
+ * - he sinks with the fade: the flat;
+ * - he squats on the flat: the fade, in the hole between the corner and the safety.
+ *
+ * Alert, before the snap: press on #1 with the middle of the field closed means the fade one-on-one.
+ *
+ * First hitch: #3's hitch, then the backside hitch. The back from the first hitch.
+ *
+ * Drop: the quick game's, "one… two… three… throw now", thrown "on time". The ball's placement off the defender (the
+ * hole, over the outside shoulder, or the back shoulder) is the throw's, not the read's: the rule is in
+ * docs/reviews/2026-11-24-read-plans.md#fade-flat for the QB lane.
+ * Sources: Gridiron Strategies (Hancock, Marinelli, Shaw); Throw Deep; Win With The Pass; AFQ; Hewitt (USA Football);
+ * Smart Football. */
+export const FADE_FLAT: QbReadPlan = {
+  conceptId: 'fade_flat', drop: 'quick', readType: 'key',
+  // "do we have a single coverage on our Z or X with bump man-to-man? Is there safety help?" (Shaw); "If the corner plays
+  // bump and run, the quarterback can adjust the receiver to a fade route" (Hewitt).
+  alert: { read: 0, when: { press: 'S1', shell: 'closed' } },
+  reads: [
+    { step: 0, look: { kind: 'receiver', ref: 'S1' }, throws: [{ ref: 'S1', timing: 'onBreak' }] },
+    { step: 0, look: { kind: 'key', role: 'flat' },
+      throws: [{ ref: 'S2', timing: 'onBreak' }, { ref: 'S1', timing: 'seenOpen' }],
+      keyRules: [{ cue: 'sinks', throwTo: 'S2' }, { cue: 'carries', throwTo: 'S2' }, { cue: 'squats', throwTo: 'S1' }, { cue: 'jumps', throwTo: 'S1' }] },
+    { step: 1, look: { kind: 'receiver', ref: 'S3' }, throws: [{ ref: 'S3', timing: 'seenOpen' }] },
+    { step: 1, look: { kind: 'receiver', ref: 'W1' }, throws: [{ ref: 'W1', timing: 'seenOpen' }] },
+  ],
+  hot: [{ side: 'S', over: 1, answer: { ref: 'S2', timing: 'onBreak' } }, { side: 'W', over: 1, answer: { ref: 'W1', timing: 'onBreak' } }],
+  checkdown: { ref: 'B', fromStep: 1, timing: 'seenOpen' },
+  confirm: null,
+  expected: { cover0: 0, cover1: 0, cover2: 1, tampa2: 1, cover2man: 1, cover3: 1, cover4: 1, cover6: 1 },
+  source: 'docs/reviews/2026-11-24-read-plans.md#fade-flat-fade_flat (Gridiron Strategies: Hancock, Marinelli, Shaw; Throw Deep; Win With The Pass; AFQ; Hewitt; Smart Football).',
+};
+
 /** Where the installed concept differs from the taught version these plans follow. Integration's decision: correct the
  * concepts (CONCEPT_TAUGHT, #896), not the plans. Also in docs/reviews/2026-11-24-read-plans.md, "Concept gaps". */
 export const CONCEPT_GAPS: ReadonlyArray<{ concept: string; taught: string; whileOff: string }> = [
@@ -354,6 +387,7 @@ export const CONCEPT_GAPS: ReadonlyArray<{ concept: string; taught: string; whil
  * concept keeps its mark for the old controller. */
 export const PLAN_DROP_DIFFERS: Readonly<Record<string, string>> = {
   stick: 'taught quick (three steps under center, one from the gun); installed gun3 (CONCEPT_DROPS)',
+  fade_flat: 'taught quick (the three-step fade, thrown on time); installed gun3',
 };
 
 const swapRef = (r: ReceiverRef): ReceiverRef => (r === 'S3' ? 'B' : r);
@@ -372,7 +406,7 @@ export function backThreePlan(p: QbReadPlan): QbReadPlan {
   };
 }
 
-const BASE_PLANS = [SLANT_FLAT, STICK, HITCHES, QUICK_OUTS, CURL_FLAT, SMASH, DAGGER, MESH, Y_CROSS, FLOOD, LEVELS, FOUR_VERTS, VERTS_HITCH,
+const BASE_PLANS = [SLANT_FLAT, STICK, FADE_FLAT, HITCHES, QUICK_OUTS, CURL_FLAT, SMASH, DAGGER, MESH, Y_CROSS, FLOOD, LEVELS, FOUR_VERTS, VERTS_HITCH,
   PA_POST_DIG, PA_SHOT, PA_FLOOD, RB_SLIP_SCREEN, TE_SCREEN, BUBBLE_SCREEN, BUNCH_NOW_SCREEN, WIDE_NOW_SCREEN, TUNNEL_SCREEN];
 
 /** The authored plans by concept id, with the back-as-#3 version of each concept that has one (`<id>+b3`). */

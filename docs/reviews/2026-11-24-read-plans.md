@@ -177,6 +177,64 @@ concept owner: a back release would restore the taught outlet.
 
 **Variants:** #1 fade with an inside quick out (Win With The Pass, "Brown"); fade conversion against press.
 
+## Fade-flat (`fade_flat`)
+
+Sources: 90 quotes, each checked verbatim against its saved page (scratchpad pages7, quotes7.tsv; 0 misses).
+
+**Read: a key on the flat defender (the corner in Cover 2), on the plant.**
+- Hold the corner low with the flat and throw behind him. "Both smash, and the fade-out combination are two route
+  concepts offenses use to push the ball downfield as the corner is held low with a route in the flat" (Throw Deep,
+  Five plays that beat Cover 2).
+- "With the cornerback's eyes on the #2 WR in a cover 2 defense, the fade-out combination applies stress immediately as
+  the CB honors the X WR's out-breaking route" (Throw Deep).
+- The Cover 2 corner's rule is what the key reads: "If #2 goes flat, they release the WR and cover the flat route. If #2
+  goes vertical, the CB should keep running with WR" (Win With The Pass, Cover 2 beaters).
+- The only verbatim statement of the whole rule is a low-authority page: "If the Cornerback drifts deep with the Fade,
+  then throw the ball to the Out Route in the flats. If the Cornerback stays in the flats to jump on the Out, then throw
+  it over the top to the Fade" (bestflagfootballplays). The coach-authored sources above give the same mechanism.
+
+**Alert: the fade against press with no help.**
+- "Pre-snap, we always look to see if we have the home run. By that I mean do we have a single coverage on our Z or X
+  with bump man-to-man? Is there safety help?" (J.D. Shaw, Gridiron Strategies, 3-step passing).
+- "If the corner plays bump and run, the quarterback can adjust the receiver to a fade route" (Hewitt, USA Football).
+- "If both corners are pressing, you have a mismatch and can go to a fade adjustment" (AFQ, quick game).
+- The plan's condition: `{press: 'S1', shell: 'closed'}`. No source ties the alert to the single-high safety's distance;
+  "Is there safety help?" is the closest.
+- Smart Football prefers a middle-of-field key to press/soft, because press/soft "is often subtle and difficult to gauge
+  in 1.5 seconds". The alert uses both.
+
+**First hitch:** #3's hitch, then the backside hitch (the concept's `read` line). **Checkdown:** the back, from the
+first hitch.
+
+**Drop and timing.**
+- "In a 3-step drop, the ball is thrown "on time" in the window between the corner and the safety playing over the top
+  in his half of the field" (Hancock, Gridiron Strategies).
+- "one… two… three… throw now" (Marinelli, Gridiron Strategies).
+- The plan's drop is `quick`; the installed concept keeps gun3 (`PLAN_DROP_DIFFERS`), as with stick.
+
+**Expected:** the key (index 1) against Cover 2, 3, 4, 6 and 2-man ("The safety has to honor the fade, so the quick out
+should be open", Win With The Pass); the alert (index 0) against Cover 0 and 1 with press.
+
+**Poor against:** a corner taught to read #2 first. "Our Cover 2 Read takes away the things that usually attack Cover 2
+like smash, fade-flat and slant" (USA Football, Cover 2 Read). The flat is jumped and the fade is carried.
+
+**The ball's placement off the defender (for the QB lane's throw, not the read).** Gridiron Strategies (Marinelli)
+gives a three-way rule:
+- defender behind the receiver: the holeshot;
+- defender "still even with the receiver. The ball will be thrown over the top and to the outside shoulder";
+- defender "over the top of the receiver ... the quarterback will throw the ball with velocity and to the outside ...
+  the receiver will break off his route by planting on his outside foot and pivoting into the ball".
+
+**Sources conflict on the even case.** The Texans' film piece: "if the defensive back is chasing and losing the race,
+then throw the fade. If he's lockstep with the receiver, then throw the backshoulder fade." Bowen (Bleacher Report)
+says the back shoulder "works best when thrown versus a defensive back trailing the play". The receiver reacts to the
+ball rather than knowing the call: "Hopkins doesn't really need to know which throw it is - he can just react to either
+one" (Texans).
+
+**Release:** "win with an outside release in press-man, to stack on top of the defensive back" (Bowen). Keep "3 to 5
+yards between him and the sideline" (Marinelli). AFQ says reduce splits for room, while Bowen notes a plus split
+leaves only the fade or the comeback from an outside release.
+
 ## The schema additions (agreed with the QB lane)
 
 The QB lane accepted all three, in `plan.ts` at 9a8a3902 (claude/exciting-cori-hc8l4u), which this branch carries
