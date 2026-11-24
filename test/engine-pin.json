@@ -529,6 +529,7 @@
   "test/scorecard-weird-games.test.ts",
   "test/scorecard-weird.test.ts",
   "test/scout-representative-time.test.ts",
+  "test/scout-seen.test.ts",
   "test/screen-call.test.ts",
   "test/screen-declare.test.ts",
   "test/screen-install.test.ts",

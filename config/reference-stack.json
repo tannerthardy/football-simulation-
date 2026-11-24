@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "engine-99",
+  "id": "engine-100",
   "runSet": {
     "commit": "1b5415de99b5b7194eff045f3c37a07a4c54c1a9",
     "seeds": [
@@ -344,6 +344,7 @@
     "QB_SCAN": "on",
     "QB_CANON_SEEN": "on",
     "BELIEVED_BODY": "off",
+    "SCOUT_SEEN": "on",
     "QB_SEEN_OUT": "on",
     "QB_SEEN_REC": "on",
     "ACC_RADIUS": "off",

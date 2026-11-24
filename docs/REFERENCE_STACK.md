@@ -611,6 +611,21 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
 
 
+## engine-100: the offense scouts the coverage from what its passer saw (2026-11-24)
+
+`SCOUT_SEEN` on (Flex; `=0` restores). The offense's in-game coverage scouting was fed the defense's true call after
+every pass play, with whether it was disguised (an outside review's finding, confirmed by Integration). It now learns
+from its passer's belief at the end of the play, each coverage by its share, weighted by how settled that belief was;
+a disguise counts when the shell he read before the snap differs from the one he believed after. Coaches upstairs
+naming the coverage between plays is a real second channel, left for the information-flow work.
+
+What it changes, measured in advance (Flex, 8 team-games): the offense's learned coverage mix against the defense's
+true mix, as total-variation distance, is 0.45 / 0.33 / 0.22 / 0.17 after 5 / 10 / 20 / 40 pass plays, against
+0.36 / 0.22 / 0.11 / 0.07 from the true call; it holds a disguise rate of 0.11-0.15 against a true 0.23-0.27.
+
+Card e138 (5 seeds x 32 games, on against off): completion -2.6 to +1.4, yards per attempt -0.31 to +0.10, sack rate
+-0.4 to +0.9, INT rate -0.3 to +0.3; no row moves the same way across seeds.
+
 ## engine-99: what he believes of a defender is a scouting report (2026-11-24)
 
 Card e138 (5 seeds x 32 games, QB_SCOUT on against off): completion -1.7 to +3.2, yards per attempt -0.38 to +0.62, sack rate -0.4 to +1.1, INT rate -0.2 to +0.6; no row moves the same way across seeds. QB_SCREEN_SEEN was on in every arm of that card, so it is not isolated by it.
