@@ -390,3 +390,34 @@ N(0, 0.25) s; past it (over > 0.8 by a per-tick chance, or over > 2.2) it throws
 asking whether anyone is open or whether he feels pressure. It predates the clock (24 clean-pocket throwaways off, 19 with
 a man clearing his bar); the clock's holds send more plays past it (33). READ_WINDOW's quick-game out-of-reads branch
 throws away from a clean pocket at 1.75 s after the set when no live read clears.
+
+## THROWAWAY_FELT: the ball goes away on what he perceives (engine-95 candidate, 2026-11-24)
+
+Approved by Integration as its own flag, on, built on engine-94 without the clock; the clock rebases on it after.
+Patch `patches/engine71-footwork/throwaway-felt-on-e5c6db5c.patch` on develop e5c6db5c9 (sha256 283c321c4cfd; `git apply
+--check` clean; typecheck clean; registry engine-95, 503 flags: 383 on, 92 off, 28 numeric). Red-diff (alone): tests
+run 4453; failing 59; on the ledger 59; new red 0, fixed 0.
+
+- The timer no longer throws the ball away; it stays as his urgency (bar, checkdown, scramble drill, break/scramble).
+- He throws it away with the rush on him (felt pressure: enter 0.6, exit 0.4; chosen) or outside the pocket by his own
+  position (4.5 yd sideways from the ball's line, exit 3.5; chosen) when no option clears his bar.
+- READ_WINDOW's quick game out of reads in a clean pocket keeps working; its dead-read rule is unchanged.
+
+Same 16 games, engine-94, clock off, THROWAWAY_FELT off / on (`scripts/diag/eyes/dropback-outcome.ts` +
+`dropback_outcome_table.py`):
+
+| | off | on |
+|---|---|---|
+| dropbacks | 1439 | 1417 |
+| completion (throwaways as attempts) | 65.8% | 68.0% |
+| thrown away | 34 (timer 24, pressure 10) | 19 (pressure) |
+| INT | 18 (1.38%) | 18 (1.40%) |
+| sacks | 92 (6.39%) | 96 (6.77%) |
+| scrambles | 39 (2.71%) | 28 (1.98%) |
+| time to throw p25/50/75 | 1.91/2.36/2.86 s | 1.90/2.31/2.86 s |
+| clean-pocket holds (timer out, felt < 0.4, in the pocket) | 23: 19 thrown away | 29: 10 complete, 5 sacked |
+| their sacks | | 5 (0.35% of dropbacks), p50 6.31 s, 2.15 s after the timer ran out |
+
+The felt/outside decision itself never threw the ball away on these seeds: with the rush on him the existing no-throw
+path answers first (its throwaways, line 2251, are the 19). Scrambles 39 → 28 are within these games' noise; the card is
+the test.
