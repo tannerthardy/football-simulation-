@@ -14,7 +14,7 @@ const run = (flag: string, setup: any) => {
   process.env.FLIGHT_BREAK = flag;
   const sim: any = new PlaySim(setup), frames: any[] = [];
   const tick = sim.tick.bind(sim);
-  sim.tick = () => { tick(); if (sim.ball?.kind !== 'air' && !frames.released) frames.push({ t: sim.t, pos: sim.defense.map((d: any) => [d.pos.x, d.pos.y]),
+  sim.tick = () => { tick(); if (sim.ball?.kind !== 'air' && !(frames as any).released) frames.push({ t: sim.t, pos: sim.defense.map((d: any) => [d.pos.x, d.pos.y]),
     fb: sim.defense.map((d: any) => { const f = flightBreakOf(d); return f && sim.t - f.t < 0.06 ? f.via : null; }), pump: sim.events?.some?.((e: any) => e.type === 'pump') ?? false });
     else (frames as any).released = true; };
   let res: any; try { res = sim.run(); } catch { return null; }

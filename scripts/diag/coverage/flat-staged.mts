@@ -3,7 +3,7 @@
 // read per call). Per throw: the target's number, depth and width at the release, the outcome and yards; then a
 // per-cell comparison (all throws; flat / short outside, non-#1; #1 at 8+ yd), paired by setup.
 //   FLAG=SQUAT_SINK node --import tsx scripts/diag/coverage/flat-staged.mts [seeds] [coverages] [out.jsonl]
-import { writeFileSync, mkdirSync } from 'node:fs';
+import { appendFileSync, existsSync, readFileSync, mkdirSync } from 'node:fs';
 import { dirname } from 'node:path';
 const W = process.cwd();
 const seeds = Number(process.argv[2] ?? 3);
@@ -19,9 +19,13 @@ const { nativeTraceSetup } = await import(`${W}/scripts/diag/command-trace.ts`);
 const { PASS_BY_ID } = await import(`${W}/src/playbook/concepts.ts`);
 const { FIELD_WIDTH } = await import(`${W}/src/core/field.ts`);
 const concepts = Object.entries(PASS_BY_ID).filter(([id, c]: any) => !/screen/.test(id) && !c.screen).map(([id]) => id);
-const rows: any[] = [];
+mkdirSync(dirname(outPath), { recursive: true });
+// Resumable: each paired play is appended as it finishes; a rerun skips the plays already in the file.
+const rows: any[] = existsSync(outPath) ? readFileSync(outPath, 'utf8').split('\n').filter(Boolean).map((l) => JSON.parse(l)) : [];
+const done = new Set(rows.map((r) => `${r.concept}|${r.coverage}|${r.formation}|${r.seed}|${r.flip}`));
 for (const concept of concepts) for (const coverage of COVS) for (const formation of ['gun_doubles_11', 'gun_trips_11'])
   for (let seed = 1; seed <= seeds; seed++) for (const flip of [false, true]) {
+    if (done.has(`${concept}|${coverage}|${formation}|${seed}|${flip}`)) continue;
     const arm: any = {};
     for (const flags of ARMS) {
       for (const f of ALLFLAGS) delete process.env[f];
@@ -41,10 +45,8 @@ for (const concept of concepts) for (const coverage of COVS) for (const formatio
       arm[armName(flags)] = { tgt, yards: res.yards, outcome: res.outcome, cov: sim.defCall.coverage.id, yac: res.stats?.yac ?? null };
     }
     for (const f of ALLFLAGS) delete process.env[f];
-    if (ARMS.every((f) => arm[armName(f)])) rows.push({ concept, coverage, formation, seed, flip, arms: arm });
+    if (ARMS.every((f) => arm[armName(f)])) { const row = { concept, coverage, formation, seed, flip, arms: arm }; rows.push(row); appendFileSync(outPath, JSON.stringify(row) + '\n'); }
   }
-mkdirSync(dirname(outPath), { recursive: true });
-writeFileSync(outPath, rows.map((r) => JSON.stringify(r)).join('\n') + '\n');
 const cell = (t: any) => !t ? 'no throw' : t.depth < 5 && t.w < 15 && !t.ref.endsWith('1') ? 'flat' : t.ref.endsWith('1') && t.depth >= 8 ? '#1 8+' : 'other';
 const fams = [...new Set(rows.map((r) => r.coverage))];
 for (const cov of [fams]) {
