@@ -13,8 +13,9 @@ const BODY_POS = /(?<![\w.])(?!h\.a\.)(?:r|d|t|s1|rc|cov|target|recv|def)\.pos\b
 /** Files holding real Agents (the rest are pure over pictures and plans). */
 const AGENT_FILES = ['drive.ts', 'roles.ts', 'presnap.ts', 'cycle.ts', 'look.ts', 'plan.ts', 'ratings.ts'];
 
+/** Paid: drive.ts no longer reads a defender's roster position (Flex's isDbSlot, the visible package's slots). */
 const DEBT: Record<string, { reads: number; why: string }> = {
-  'drive.ts:player.position': { reads: 1, why: "a defender's roster position (DB or not) in the role picture: personnel, known pre-snap" },
+  'drive.ts:player.position': { reads: 0, why: 'paid 2026-11-24: isDbSlot on the visible package' },
 };
 
 describe('QB_V2 information guard', () => {

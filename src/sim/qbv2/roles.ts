@@ -7,6 +7,7 @@
  * area plus an exit margin (commit to a decision); only then is it re-resolved.
  */
 import type { KeyRole } from './plan.js';
+import { DEF_PERSONNEL, type DefPersonnelId, type DefSlot } from '../../playbook/types.js';
 
 export interface PicturedMan {
   id: number; x: number; y: number; vx: number; vy: number;
@@ -102,3 +103,11 @@ export class RoleResolver {
 
 /** One-shot form (Flex's pre-snap scan). */
 export const resolveRole = (p: RolePicture, role: KeyRole, side: 'S' | 'W' = 'S'): PicturedMan | null => pick(role, p, side);
+
+/** A defensive back by the personnel he sees: the CB / S slots of the visible package (corners and safeties, not which is which).
+ * The same rule as QBMind's corner finder (QB_CANON_SEEN's isDbSeen on develop), so B, C and QBMind share one definition; a
+ * roster label is not read. */
+export function isDbSlot(personnel: DefPersonnelId, slot: string): boolean {
+  const g = DEF_PERSONNEL[personnel]?.[slot as DefSlot];
+  return g === 'CB' || g === 'S';
+}
