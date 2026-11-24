@@ -179,7 +179,11 @@ export function pursuitPoint(sim: PlaySim, a: Agent, target: Agent, horizon = 3,
     bias = sim.rng.fork(`pursuit:${a.idx}`).normal(0, 0.12 * (1.2 - a.r('pursuit')));
     angleBias.set(a, bias);
   }
-  const meetT = PURSUIT_COMMIT ? (PURSUIT_SPOT ? commitSpot(sim, a, target, ip, path, seen, heading, V, mover, reach, horizon, request) : commitMeeting(sim, a, target, ip, path, mover, reach, horizon, request)) : ip.t;
+  const committed = PURSUIT_COMMIT ? (PURSUIT_SPOT ? commitSpot(sim, a, target, ip, path, seen, heading, V, mover, reach, horizon, request) : commitMeeting(sim, a, target, ip, path, mover, reach, horizon, request)) : ip.t;
+  // COMMIT_YIELD: as the carrier nears the spot he holds, the aim moves from it to the fresh intercept, so the release
+  // (under MEET_NEAR) is not a step: fully held from YIELD_FAR s of the carrier's time to it, fully fresh at MEET_NEAR.
+  const wCommit = COMMIT_YIELD ? clamp((committed - MEET_NEAR) / (YIELD_FAR - MEET_NEAR), 0, 1) : 1;
+  const meetT = committed * wCommit + ip.t * (1 - wCommit);
   const biasedTime = clamp(meetT - bias, 0, horizon);
   const p = path(biasedTime);
   // Keep the support contract while approaching, then close onto the near
@@ -214,6 +218,21 @@ const angleBias = new WeakMap<Agent, number>();
  *  - it is under MEET_NEAR s away, past his horizon, or the target changed.
  * The exit is on the far side of the entry. Also: a defender playing the
  * ball holds his last approach on the flight's final tick (defense.ts). */
+/** COMMIT_YIELD (experimental, off; COMMIT_YIELD=1 turns it on; with PURSUIT_COMMIT): a committed meeting hands over to
+ * the fresh intercept continuously as the carrier nears the spot he holds. Far, commit to the meeting; near, track the
+ * man.
+ *
+ * Why (test/pursuit-commit.test.ts on develop ffaecd3a, engine-92; its 3-8 yd band; release reasons counted per range):
+ *  - the band's turn rate was 7.9 off -> 10.6 on, against the contract;
+ *  - held ticks are steady; re-chosen ticks turn about 40 deg/s;
+ *  - at 3-8 yd most releases (82 of 165) are MEET_NEAR: the carrier reaches the held spot before the pursuer, and the
+ *    spot is then re-chosen in one step. The others: an earlier meeting 32, late 22, a new target 17, off the path 12.
+ * The blend is by the carrier's time to the held spot, so it is complete exactly when that release would fire.
+ *
+ * Stated choice: YIELD_FAR 0.5 s (about a reaction and a stride before the carrier reaches the spot). */
+export const COMMIT_YIELD = process.env.COMMIT_YIELD === '1';
+/** YIELD_FAR may be overridden by env for diagnosis only (the 3-8 yd band: 0.5 s -> 9.45 deg/s, 1.0 s -> 7.43; off 7.9). */
+const YIELD_FAR = Number(process.env.YIELD_FAR ?? 0.5);
 export const PURSUIT_COMMIT = process.env.PURSUIT_COMMIT !== '0';
 const MEET_ENTER = 0.1, MEET_EXIT = 0.15, MEET_MARGIN = 0.3, MEET_NEAR = 0.15;
 const heldMeeting = new WeakMap<Agent, { target: Agent; at: number; ok: boolean }>();
