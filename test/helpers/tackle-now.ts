@@ -14,3 +14,13 @@ export function tackleNow(sim: PlaySim, mod: TackleModule = Static, maxTicks = 6
     mod.tryTackles(sim);
   }
 }
+
+/** Fixture helper: the staged scene as everyone's perceived history (each body dead-reckoned back on its current
+ * velocity over the perception buffer), so a decision that reads the tackler's picture sees what the fixture set up. */
+export function recordPicture(sim: PlaySim, frames = 24): void {
+  for (let k = 0; k < frames; k++) {
+    const lag = (frames - 1 - k) * sim.dt;
+    sim.perception.record(sim.agents.map(a => ({ pos: { x: a.pos.x - a.vel.x * lag, y: a.pos.y - a.vel.y * lag },
+      vel: a.vel, facing: a.facing, stance: a.stance, pose: a.pose })), sim.ball.kind === 'held' ? sim.ball.carrier.idx : undefined);
+  }
+}
