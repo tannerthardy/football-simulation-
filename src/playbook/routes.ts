@@ -45,6 +45,13 @@ const GO_STEM = process.env.GO_STEM === '1';
  * (ours leaves 0.3 s after the plant, the NFL's 0.1 s before): without it hitch completion fell 70 -> 56% (HITCH_DEPTH,
  * docs/reviews/2026-11-23-stop-route-settle.md), so this stays off until the QB clock lands. */
 const HITCH_OPEN = process.env.HITCH_OPEN === '1';
+/** SLANT_ANGLE (experimental, off): the slant leaves its break at the angle the NFL's does. NFL slants (BDB 2025, PFF
+ * SLANT, route_chart.py): break at 3.2 yd (p25-p75 2.1-4.5) at 1.7 s, exit 34 deg against the line and still climbing
+ * (2.4 yd in the second after); ours exit 48 deg on the drawn 45 deg leg and run faster after the break (6.3 vs 5.1 yd/s
+ * at +0.6 s). The coaching names both: the "skinny" slant at 45 deg and the flatter "fat" slant against zone (M: the 34 deg
+ * is measured, the mix of the two is not sourced). With the flag: the same stem and break, a 34 deg leg to 5.5 yd, easing
+ * to 24 deg. SLANT_LEAN (#858, flat at 6 yd) is superseded by this measurement: it exited at 9 deg and stopped climbing. */
+const SLANT_ANGLE = process.env.SLANT_ANGLE === '1';
 /** CROSS_FLAT (experimental, off): the shallow crossers reach their depth in the first leg and run flat across, as
  * taught ("run under the linebackers, flat across"; docs/reviews/2026-11-14-crosser-depth.md). Off, the shallow
  * climbs on a diagonal from a 2.5 yd stem to 5 yd across 22 yd: still rising at 3.0 s (4.7 yd median against zone, ball
@@ -80,7 +87,7 @@ const ROUTE_TABLE: Record<string, RouteDef> = {
   // the five-step hitch above stays at 6 (Throw Deep, Smash: "settle hitch route at 6 yards"). Same shape, a yard shallower.
   quick_hitch: { id: 'quick_hitch', family: 'quick', depth: 4, end: 'settle', points: HITCH_OPEN ? [{ d: 5, l: 0, s: 0.2 }, { d: 5.5, l: -1.4, s: 0 }] : [{ d: 5, l: 0, s: 0.2 }, { d: 4.5, l: 0.3, s: 0 }] },
   // Three-step slant: break at 45°, then flatten across the field if not thrown.
-  slant: { id: 'slant', family: 'quick', depth: 6, end: 'continue', points: [{ d: 2, l: 0, s: 0.75 }, { d: 6.5, l: -4.5 }, { d: 8.5, l: -12 }] },
+  slant: { id: 'slant', family: 'quick', depth: 6, end: 'continue', points: SLANT_ANGLE ? [{ d: 2, l: 0, s: 0.75 }, { d: 5.5, l: -5.2 }, { d: 8.5, l: -12 }] : [{ d: 2, l: 0, s: 0.75 }, { d: 6.5, l: -4.5 }, { d: 8.5, l: -12 }] },
   quick_out: { id: 'quick_out', family: 'quick', depth: 5, end: 'continue', points: [{ d: 5, l: 0, s: 0.4 }, { d: 5, l: 9, s: 0.9 }] },
   stick: {
     id: 'stick', family: 'quick', depth: 6, end: 'sitVsZone',
