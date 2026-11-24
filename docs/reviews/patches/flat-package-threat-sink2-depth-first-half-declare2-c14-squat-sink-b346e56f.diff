@@ -1,0 +1,464 @@
+diff --git a/config/baseline.json b/config/baseline.json
+index d3b297ebd..9c40bdff3 100644
+--- a/config/baseline.json
++++ b/config/baseline.json
+@@ -125,6 +125,13 @@
+     "HELD_SWING": "0",
+     "HOLD_SUBSTEPS": "0",
+     "CATCH_CHOICE": "0",
++    "MAN_BACK": "0",
++    "UNDER_CARRY": "0",
++    "CARRY_RELEASE": "0",
++    "HOOK_EXPAND": "0",
++    "THREAT_SINK": "0",
++    "DEPTH_FIRST": "0",
++    "HALF_DECLARE": "0",
+     "CATCH_SPEED": "0",
+     "HANDS_CUE": "0",
+     "KEEPER_TORSO": "1",
+diff --git a/config/reference-stack.json b/config/reference-stack.json
+index cf77f1daa..ac16c375f 100644
+--- a/config/reference-stack.json
++++ b/config/reference-stack.json
+@@ -190,6 +190,13 @@
+     "HANG_GRIP": "off",
+     "EXTEND": "off",
+     "CATCH_CHOICE": "on",
++    "MAN_BACK": "off",
++    "UNDER_CARRY": "off",
++    "CARRY_RELEASE": "off",
++    "HOOK_EXPAND": "off",
++    "THREAT_SINK": "off",
++    "DEPTH_FIRST": "off",
++    "HALF_DECLARE": "off",
+     "CATCH_SPEED": "on",
+     "HANDS_CUE": "on",
+     "IZ_FLAT": "on",
+diff --git a/docs/FLAGS.md b/docs/FLAGS.md
+index 1e8976483..5e3cd7f3c 100644
+--- a/docs/FLAGS.md
++++ b/docs/FLAGS.md
+@@ -2,7 +2,7 @@
+ 
+ Every engine switch read from the environment, recounted from `src` at `57f50fc3` on 2026-10-22. This includes #210's promotion and #205's two additional default-on switches. Flags that are not on develop (parked, removed from a PR, or only on a side branch) are kept in [PARKED.md](PARKED.md) so the ideas are not lost. Registration rules are in [PLAN.md](PLAN.md): at most 10 experimental flags, and each expires two reviews after it lands.
+ 
+-There are 502 flags read from the environment in `src` (2026-11-23, coverage/C14-squat-sink: engine-91 plus SQUAT_SINK, FLIGHT_BREAK, OFF_DRIVE and SEAT_FILL (off); recounted 2026-11-18, engine-91: engine-90 plus STEM_WORK (on); engine-90: engine-89 plus READ_VERTICAL_LOS and BACK_CLEAR (on); engine-89: engine-88 plus FLAT_CARRY (on); engine-88: engine-87 plus FORECAST_FINISH and QB_ROLE_PATH (on), READ_WINDOW and QB_CLOSE_BELIEF (off); engine-87: engine-86 plus HALF_KEY (on); engine-86 was engine-85 plus MUSH_MATCH (on); engine-85 was engine-84 plus FLAT_SINK (on); engine-84 was engine-83 plus DOWN_RISE_PLANT (on); engine-83 was engine-82 plus QB_DRIVE, QB_RHYTHM_THROW, QB_ALIGN, QB_BODY_FOLLOW, QB_WINDOW_ARRIVE, QB_KEY_PLANT, QB_STICK, QB_PEEK_CLOCK, QB_MOF_READ, QB_DEEP_WAIT and QB_STANCE; QB_DRIVE, QB_RHYTHM_THROW, QB_WINDOW_ARRIVE, QB_KEY_PLANT and QB_STICK on): 379 are on unless set to `0`, 95 are off unless set to `1`, and 28 are numeric scales or modes (identity value unless listed in the stack's numeric section). The rows below carry each flag's history.
++There are 509 flags read from the environment in `src` (`MAN_BACK`, `UNDER_CARRY`, `CARRY_RELEASE`, `HOOK_EXPAND`, `THREAT_SINK`, `DEPTH_FIRST` and `HALF_DECLARE` off, Flex 2026-11-23; 2026-11-23, coverage/C14-squat-sink: engine-91 plus SQUAT_SINK, FLIGHT_BREAK, OFF_DRIVE and SEAT_FILL (off); recounted 2026-11-18, engine-91: engine-90 plus STEM_WORK (on); engine-90: engine-89 plus READ_VERTICAL_LOS and BACK_CLEAR (on); engine-89: engine-88 plus FLAT_CARRY (on); engine-88: engine-87 plus FORECAST_FINISH and QB_ROLE_PATH (on), READ_WINDOW and QB_CLOSE_BELIEF (off); engine-87: engine-86 plus HALF_KEY (on); engine-86 was engine-85 plus MUSH_MATCH (on); engine-85 was engine-84 plus FLAT_SINK (on); engine-84 was engine-83 plus DOWN_RISE_PLANT (on); engine-83 was engine-82 plus QB_DRIVE, QB_RHYTHM_THROW, QB_ALIGN, QB_BODY_FOLLOW, QB_WINDOW_ARRIVE, QB_KEY_PLANT, QB_STICK, QB_PEEK_CLOCK, QB_MOF_READ, QB_DEEP_WAIT and QB_STANCE; QB_DRIVE, QB_RHYTHM_THROW, QB_WINDOW_ARRIVE, QB_KEY_PLANT and QB_STICK on): 379 are on unless set to `0`, 102 are off unless set to `1`, and 28 are numeric scales or modes (identity value unless listed in the stack's numeric section). The rows below carry each flag's history.
+ 
+ **Promotion (2026-11-09):** the reference stack `run-ref-4` is now the engine's default. The 90 flags it lists `on` are read as on unless set to `0` (rows marked "promoted" below); the rest are unchanged. Decisions and evidence for each flag are in [REFERENCE_STACK.md](REFERENCE_STACK.md); `npm run ref -- --list` is the current inventory, and `npm run ref -- --off -- <command>` runs the engine as it was before. The test suites still run on the pre-promotion engine (pinned in `vitest.config.ts`) until their recorded cases are re-recorded. The counts in the paragraph above predate all of this.
+ 
+@@ -427,6 +427,13 @@ There are 502 flags read from the environment in `src` (2026-11-23, coverage/C14
+ | `RELEASE_SEEN` | on | promoted 2026-11-12 (engine-45; `=0` restores); was experimental (C14 release, 2026-11-12) | receivers | `src/sim/behaviors/receiver.ts` (`RouteRunner.handleRelease` release-around, `tightAtSnap`) | set at first review. Model-rule repair: the release-around (PRESS_MIRROR / PRESS_RELEASE) was keyed on the defence's call (`defAlign.spots[d.slot].press && manTarget === a.slot`), a private assignment the receiver cannot know. With it he releases around any defender he saw tight over him at the snap (within 2.5 yd ahead and 1.5 yd either side, as he saw them), on that defender's seen position; release side and how cleanly he clears are the existing technique (route side vs seen shade; cut skill by release rating). The corner's own jam still reads the corner's assignment. Games (seed 11, 8 per arm, off -> on): stalled at the line (press_stall.py) 10 -> 7% (NFL 3%), with a lineman nearest 31 -> 12% (NFL 5%); off-ball tight receivers stalled 21 -> 13% (NFL 5%); press rows within 0.1 s to 5 yd. Review `docs/reviews/2026-11-12-release-seen.md`. Test `test/release-seen.test.ts`. |
+ | `HANDS_CUE` | on | promoted 2026-11-12 (engine-47; `=0` restores); was experimental (C14 man trail, 2026-11-12) | receivers, coverage | `src/sim/hands-cue.ts`, `src/sim/behaviors/receiver.ts` (`TrackBall.update`), `src/sim/behaviors/defense.ts` (`readsHandsAt`) | set at first review. A receiver's hands coming up for the ball as evidence a trailer within 3 yd can see. While he tracks a ball to him his hands come up a lead before it reaches his spot, 0.55 - 0.35 x route running s (stand-in debt: hands are not in tracking, so the lead is estimated, bounded by the trailer's observable break: recognition through the cue lands at p50 0.10 s after the secure event, later than the NFL trailer's break onset, p50 0.40 s before arrival, trail_break.py; late hands is receiver craft against this read); his running facing and speed are untouched (no separate head/hands channel exists, so it is a state, not a pose). The trailer's throw cue takes the earliest of his own sight of the ball, the existing look-back facing cue, and this, with his usual reaction delay. No hands without a ball coming (decoy hands not modelled: false-cue rate 0 by construction). Fixture (man-trail-fixture.ts, engine-44, off -> on): trailers who recognise the throw by the secure event 48/62 -> 56/60; those with no flight picture by then 14 -> 4 (off, 11 of the 14 recognised it at p50 0.20 s after); closing at +0.25 s pooled about 0.64 -> 0.71 yd/s (a trailer behind a faster crosser still cannot close). Test `test/hands-cue.test.ts`. |
+ | `CATCH_CHOICE` | on | promoted 2026-11-12 (engine-47; `=0` restores); was experimental (C14 catch, 2026-11-12) | receivers | `src/sim/catch-choice.ts` (`chooseCatchPoint`), `src/sim/behaviors/receiver.ts` (`TrackBall.update`) | set at first review. Where on the ball's path he plays it, as his choice: the reachable segment of the path from the earliest point (today's `catchSpot`: the high point, or coming back to a short ball) to the latest point with the ball still at or above his shoulders (0.82 of his height, estimated: hands carried while running); he plays the latest point the two nearest defenders, as he sees them, cannot reach before the ball by 0.1 s, else the point with the best margin over them. One judgment error per throw on those margins, sd 0.1 + 0.2 x (1 - ball tracking) s. Re-read every 0.1 s, committed in the last 0.3 s. Superseded and replaced `IN_STRIDE_CATCH` (removed 2026-11-12; see PARKED.md). Pooled read (seeds 11 + 23, 16 games each, on 3081064c; off -> on, NFL in brackets): deep man 0-2 yd completion 44 -> 58% (32), catch at 5+ yd/s with room short 93 -> 96%, deep 89 -> 86%; with CATCH_SPEED 87 / 80% (88 / 72); intermediate zone yd/att 9.11 -> 9.22 (6.85). Blocked in games by natural deep throws landing short of his full-speed spot (Rules+Coaching) and by the catch at speed (CATCH_SPEED). Review docs/reviews/2026-11-12-catch-choice.md. Test `test/catch-choice.test.ts`. |
++| `MAN_BACK` | off | experimental (Flex, 2026-11-23; Integration, from Tools' flat-catch report) | coverage | `src/sim/behaviors/defense.ts` (`ManCoverage.trackReceiver`) | man on a back, as taught: while the back he has is still in the backfield (installed there, behind the line in his own picture) he squeezes from the defense's side of the line, at the line plus the cushion his flip-turn needs against what he sees (CUSHION_NEED's need), and mirrors the back across the field, square (run when the back's crossing has opened his hips); the back's upfield run behind the line does not move that spot. Once the back crosses the line ordinary man technique takes over (latched). Off: the off-man pedal floor and the feed-forward of the back's upfield speed made him gain depth while the back climbed toward the line 8-10 yd away: NFL man defenders on a back (BDB 2025 weeks 1-9, PFF man matchups, non-PA dropbacks) 3.6 yd at the snap, 2.5 at 1.5 s, closing 1.7-2.1 yd/s; ours 4.6 -> 5.2, closing 0.2-1.2 (scripts/diag/flat-seat). |
++| `UNDER_CARRY` | off | experimental (Flex, 2026-11-23; Integration, from the flat-seat measurement) | coverage | `src/sim/behaviors/defense.ts` (`ManCoverage.trackReceiver`) | an underneath match carry inside a zone call (deep help behind him: not man, not protectDepth, not press, not overTop) rides a released receiver from on top at his shoulder (body + body + reach over the receiver's seen depth) until his hips open, with no OFF_PEDAL floor and no alignment cushion schedule; the deep player has the vertical. Off, ReadRelease and the other match wrappers ran the corner pedal: NFL hook / curl-flat / hole seats over a climbing receiver within 5 yd 2.9 / 1.8 / 0.6 / -0.3 yd over him at 1.0-2.5 s, ours 4.0 / 3.2 / 2.0 / 0.6 (scripts/diag/flat-seat/carry_relation.py). |
++| `CARRY_RELEASE` | off | experimental (Flex, 2026-11-23; Integration, attempt 2 with UNDER_CARRY) | coverage | `src/sim/behaviors/defense.ts` (`ManCoverage.carryRelease`) | the curl-flat rule's second half for a match carry: a curl-flat / flat seat in a zone call carrying a climbing receiver releases him to the deep help he sees over him once he has seen a back or his side's #3 declare to the flat on his side (shallow, running outward or settled 4+ yd outside the ball) for his recognition time (0.2 s + up to 0.4 s by play recognition and focus), and breaks to that receiver inside-out (a yard inside, a yard on top, led 0.4 s); no deep help in his picture, he keeps the carry; latched. Off, with UNDER_CARRY, open flats whose owner had left for another receiver rose 6 -> 17 in 24 games. |
++| `HOOK_EXPAND` | off | experimental (Flex, 2026-11-23; Integration, open-flat class (a)) | coverage | `src/sim/coverage/rules.ts` (`mike3`, `c3Hook`: `hookExpand`) | the back belongs to the hook unless he is a free flat seat's flat threat: when the back he reads declares flat (2+ yd outward) to a side with no free flat seat (none by the call, or the one there seen carrying a vertical in his area), the Mike / the hook whose #3 is the back expands with him as man, inside (under MAN_BACK the squeeze from the line), held to 15 yd; not while a crosser comes across his face or a #3 vertical is in his window. Off: on Coverage's #872 base, 37 open flats in 24 games had no landmark within 9 yd, 78% backs. |
++| `THREAT_SINK` | off | experimental (Flex, 2026-11-24; Integration, the 1.5-2.5 s drop relation) | coverage | `src/sim/behaviors/defense.ts` (`threatSinkX`; `ManCoverage.trackReceiver`, `ZoneCoverage` no-target drop) | one relation for match carries (zone call, deep help) and plain droppers: against a climbing receiver in his window he sinks toward its depth facing the QB with no feed-forward (his backpedal sets the pace) and hands it on once it is 2 yd beyond him with deep help seen (latched), then holds; a route there not climbing: hold; none in his band: the drop as before. Off: carries rode verticals at 2-4 yd/s and droppers ran to the landmark; NFL pace from 2.0 s follows the receiver in front (pace_driver.py). |
++| `DEPTH_FIRST` | off | experimental (Flex, 2026-11-24; Integration + Coverage, safety first move) | coverage | `src/sim/behaviors/defense.ts` (`ZoneCoverage`, the deep read with no vertical) | the deep safety opens and gains depth with his eyes on his key, taking width (landmark and eye lean) only once he has seen it shown: the QB's eyes held on one target for his read time (0.2 + 0.4 x (1 - recognition x focus) s) in his delayed picture, or a receiver climbing past 5 yd at over 3 yd/s; before the cue his lateral target is his alignment; latched. Off: first move lateral 81-85% for deep middles / halves (NFL backward 75%); not alignment depth (aligned 14-15+ yd still 85-88% lateral). |
++| `HALF_DECLARE` | off | experimental (Flex, 2026-11-24; Coverage's ask) | coverage | `src/sim/behaviors/defense.ts` (`ZoneCoverage`, the deep zones' vertical filter) | the half's carry waits for a declared vertical: a deep-half safety counts a receiver he sees climbing past 6 yd at over 2 yd/s, or past 7.5 yd; kept while past 5 yd climbing at over 0.5 yd/s, or past 6.5 yd. Off: any receiver past the line at over 1.5 yd/s was a vertical, so the half carried every release (deep-open-carry at about 0.55 s). |
+ | `CATCH_SPEED` | on | promoted 2026-11-12 (engine-47; `=0` restores); was experimental (C14 catch, 2026-11-12) | receivers | `src/sim/catching.ts` (`runTrackTerm`, the `shoulder` term) | set at first review. Tracking a ball he is not facing while he runs: replaces the over-the-shoulder step (from behind, above 6.5 yd/s only, +0.12-0.24) with K x clamp((speed - 3) / 4.5, 0, 1) x angle x clamp(air time / 1.3, 0, 1) x (0.7 + 0.6 x (1 - ball tracking)), angle from behind 1, straight across 0.46 (second constant, from the NFL's pooled across-vs-behind loss, 8.4 vs 18.4 points), facing past 120 deg 0; through hands like the other terms. By design it is smaller than the old step for a fast catch on a short-flight ball (air time well under 1.3 s: e.g. 0.15 at 0.6 s against the old 0.12-0.24 from behind above 6.5 yd/s), and larger on every deep ball (air time >= 1.3 s), so it can only make the same deep catch harder. K = 0.37, estimated from the NFL's fall in completion on well-placed balls with no defender within 2 yd (catch_speed.py: short 88%, deep 72% at 5+ yd/s; ours were 92-100 / 89-90). Debt: a stand-in for hands and eyes at speed; a physical model of the hand path against the ball replaces it. Pooled read (catch_speed.py, seeds 11 + 23, 16 games each, on 3081064c; baseline -> CATCH_SPEED -> with CATCH_CHOICE, NFL in brackets): at 5+ yd/s with no defender within 2 yd short 93 -> 95 -> 87% (88), deep 89 -> 84 -> 80% (72); defender within 2 yd short 73 -> 66 -> 65% (57), deep 65 -> 61 -> 53% (52); deep from behind 0-5 / 5-6.5 / 6.5+ 75 / 73 / 81 -> with both 84 / 66 / 68% (78 / 57 / 60); deep across his line stays easy (both 95 / 94 / 86% vs 65 / 53 / 73, n 7-96); control (short, facing it) 86 -> 85 -> 90% (77; the term is zero there). Deep man 0-2 yd completion 44 -> 53 -> 59% (32; n 81-98, ~5 pts sampling error). Forced outside go balls (identical throws by construction, forced-meet.ts, n 211): completions 110 -> 102 with CATCH_SPEED, 123 with CATCH_CHOICE, 115 with both. Test `test/catch-speed.test.ts`. |
+ | `PASS_SINK` | off | experimental | trenches | `src/sim/engagement.ts:696` | set at first review |
+ | `PULL_CUE` | off | experimental | defense | `src/sim/run-fits.ts:195` | set at first review |
+diff --git a/src/sim/behaviors/defense.ts b/src/sim/behaviors/defense.ts
+index 94d9eaaaa..f9e1955a5 100644
+--- a/src/sim/behaviors/defense.ts
++++ b/src/sim/behaviors/defense.ts
+@@ -1299,6 +1299,89 @@ export function openCarryFacing(a: Agent, sim: PlaySim, receiver: Agent, req: Mo
+  * -0.1, 29%; C3/C4 2.3-2.4, +0.2-0.3, 27-42%), the largest group pedalling on
+  * the back (man:RB) inside a zone call. */
+ const CUSHION_NEED = process.env.CUSHION_NEED !== '0';
++/** MAN_BACK (experimental, off; MAN_BACK=1 turns it on): man on a back, as taught: squeeze the back from the defense's
++ * side of the line and mirror him, inside-out, square. While the back he has is still in the backfield (installed
++ * there, and behind the line in his own picture), the threat he must cushion begins where the back crosses the line, so
++ * his depth is the line plus the cushion his flip-turn needs against what he sees of the back (CUSHION_NEED's need), and
++ * he moves with the back across the field, not up the field: the back's upfield run behind the line does not move that
++ * spot. Once the back crosses the line, ordinary man technique takes over (latched, never re-entered). Before, the
++ * pedal floor (OFF_PEDAL: no nearer the line than he is) and the feed-forward of the back's upfield speed made him gain
++ * depth while the back climbed toward the line 8-10 yd away: NFL man defenders on a back (BDB 2025 weeks 1-9, PFF man
++ * matchups, non-PA dropbacks) align at 3.6 yd and come down to 2.5 by 1.5 s, closing 1.7-2.1 yd/s; ours aligned at 4.6
++ * and went to 5.2 (5.5 on backs who don't go to the flat), closing 0.2-1.2 (scripts/diag/flat-seat). */
++export const MAN_BACK = process.env.MAN_BACK === '1';
++/** UNDER_CARRY (experimental, off; UNDER_CARRY=1 turns it on): an underneath defender carrying or walling a receiver
++ * inside a zone call (a match carry with deep help behind him: not man, not protectDepth, not press) plays him as
++ * taught, from on top and inside at his shoulder (his body, the receiver's and a reach), riding him to the hand-off,
++ * not with a corner's off-man cushion. Once the release is seen and before his hips open, his target depth is the
++ * receiver's seen depth plus that shoulder offset, with no pedal floor at his own depth (OFF_PEDAL) and the alignment
++ * cushion schedule unused; the deep player has the vertical. Off, ReadRelease and the other match wrappers ran
++ * ManCoverage's corner pedal: NFL hook / curl-flat / hole seats over a climbing receiver within 5 yd (PFF assignments,
++ * BDB 2025 weeks 1-9, non-PA dropbacks) sit 2.9 / 1.8 / 0.6 / -0.3 yd over him at 1.0 / 1.5 / 2.0 / 2.5 s, rising
++ * 0.7 yd/s at 1.0 s; ours 4.0 / 3.2 / 2.0 / 0.6, rising 1.5 (scripts/diag/flat-seat/carry_relation.py). */
++export const UNDER_CARRY = process.env.UNDER_CARRY === '1';
++/** CARRY_RELEASE (experimental, off; CARRY_RELEASE=1 turns it on): the curl-flat rule's second half for a match carry,
++ * as taught (Cover 3 curl-flat: carry #2 vertical, then first to the flat; quarters apex: carry #2 unless the flat is
++ * threatened; the back belongs to the hook unless he is the flat threat). A curl-flat or flat seat in a zone call
++ * carrying a climbing receiver releases him to the deep help he sees over him once he has seen a back or his side's #3
++ * declare to the flat on his side (shallow, 2+ yd outside the ball and running outward, or settled 4+ yd outside it), held in his picture for
++ * his recognition time (0.2 s plus up to 0.4 s more for poorer play recognition and focus: his eyes go QB, #2, then
++ * the flat), and breaks to that receiver inside-out (to a point a yard inside him and a yard on top, led 0.4 s). With no
++ * deep help in his picture he keeps the carry. The release is a decision: once made it holds for the play. The throw
++ * is still played by playBall / FLIGHT_BREAK; this is the pre-throw half. Off, a curl-flat seat that matched #2 rode him
++ * upfield (UNDER_CARRY) or pedalled under him and never looked at the back: with UNDER_CARRY, open flats whose owner
++ * had left for another receiver rose 6 -> 17 in 24 games (flat_open_report.py). */
++export const CARRY_RELEASE = process.env.CARRY_RELEASE === '1';
++/** THREAT_SINK (experimental, off; THREAT_SINK=1 turns it on): one relation for the underneath defender against a
++ * climbing receiver in his window, shared by the match carries (ManCoverage in a zone call, with deep help) and the
++ * plain droppers (ZoneCoverage with no route selected): "sink as the route sinks, pass it on". While the receiver he
++ * reads is climbing (seen upfield over 2 yd/s), he sinks toward that receiver's depth facing the QB, with no
++ * feed-forward of the receiver's speed, so his own backpedal or crossover sets how much of it he matches; once the
++ * receiver is SINK_HANDOFF yd beyond him and he sees deep help over him, he hands him on and holds his depth (latched
++ * for that receiver). A route in his window that is not climbing: he holds his depth. No route in his band: the drop
++ * as before (the early ramp, unexplained in the NFL data, is not modelled). The plain-dropper half is for hook and curl
++ * seats; the hole / middle hook / robber reads the QB and robs crossers at his depth and keeps his own drop. Off, match carries rode verticals at 2-4
++ * yd/s (open-carry-seam, walls) and plain droppers ran to the landmark: NFL underneath droppers' pace from 2.0 s follows
++ * the receiver in front (R^2 0.09-0.24 on its upfield speed and its depth over him; 2.0 yd/s at 2.5 s with a vertical,
++ * 1.0 without; it stops gaining once that receiver is 2+ yd past him), not the drop the QB shows (pace_driver.py).
++ * Attempt 2 (2026-11-24, stop_lane.py): a match carry whose receiver he sees stop climbing sits over the top of the stop at
++ * the width he had, eyes on the QB, instead of level and inside it. Attempt 1 left him level and inside a stopped #2: in
++ * the QB's lane at the break 22% at #2 stops and 24-27% at outs (NFL 5-13%), under the receiver 28% (NFL 10%). */
++export const THREAT_SINK = process.env.THREAT_SINK === '1';
++/** DEPTH_FIRST (experimental, off; DEPTH_FIRST=1 turns it on): the deep safety's read in its taught order: he opens at the
++ * snap and gains depth with his eyes on his key, and takes width (his landmark's, and the lean to the QB's eyes) only once
++ * he has seen it shown: the QB's eyes held on one target for his read time in his own delayed picture (0.2 s plus up to
++ * 0.4 s more for poorer play recognition and focus), or a receiver he sees climbing past 5 yd at over 3 yd/s. Before the
++ * cue his lateral target is where he aligned; once shown, his lateral target grows from there to the read's (landmark
++ * and eye lean) over his read time, so a poorer reader is moved later and a look-off costs him more slowly, not at once.
++ * The switch to the width phase is his decision and holds for the play.
++ * Applies to the deep read with no vertical yet (deep middle, halves, quarters, deep thirds). Off, the read went straight
++ * to the landmark pulled toward the QB's eyes from the first tick, so the first committed move was lateral 81-85% for
++ * deep middles and halves (NFL backward 75%), the deep middle drifting 3.6 yd across by 2.0 s (NFL 1.4) and the half
++ * widening 1.5 yd by 1.0 s (NFL 0.5); not alignment depth: aligned 14-15+ yd they were still 85-88% lateral
++ * (safety-first-move.mts, nfl_safety_seat.py). */
++export const DEPTH_FIRST = process.env.DEPTH_FIRST === '1';
++/** HALF_DECLARE (experimental, off; HALF_DECLARE=1 turns it on; Coverage's ask, 2026-11-24): the half's carry waits for
++ * a declared vertical. A deep-half safety counts a receiver as a vertical only once he sees him declare it: a stem
++ * climbing past 6 yd at over 2 yd/s, or already past 7.5 yd; once counted, he keeps him while that receiver is still past
++ * 5 yd and climbing at over 0.5 yd/s, or past 6.5 yd (the exit on the far side of the entry). Off, the band's filter
++ * counted any receiver past the line at over 1.5 yd/s, so every release was a vertical and the half went with it on the
++ * release (deep-open-carry at about 0.55 s; first move lateral 61% with DEPTH_FIRST, NFL 24%). Positions and speeds
++ * are his seen picture. Attempt 2 (Coverage's timing relation): the over-the-top width (deep-open-carry's lateral target, the
++ * receiver's line) is taken in time, not at once: he holds his read target while the receiver's time to reach his depth
++ * (seen) exceeds his own time across (lateral gap / his speed capacity + his reaction time) by more than 0.4 s, blends
++ * over that margin, and latches at full width. Attempt 1 (the declaration alone) moved first-move lateral 61% -> 70%:
++ * the cause was the over-the-top target jumping to the receiver's line, not the filter. */
++export const HALF_DECLARE = process.env.HALF_DECLARE === '1';
++/** HALF_DECLARE: the margin (s) over which the half's width blends in as the receiver's time to his depth closes on his time across. */
++const HALF_TIME_MARGIN = 0.4;
++const SINK_HANDOFF = 2;
++/** THREAT_SINK: his depth target (field x) against `recv` as he sees it; `held` latches the hand-off. */
++function threatSinkX(a: Agent, sim: PlaySim, held: Set<Agent>, recv: { r: Agent; pos: Vec2; vel: Vec2 }): number {
++  if (held.has(recv.r) || recv.vel.x <= 2) return a.pos.x;
++  if (recv.pos.x - a.pos.x >= SINK_HANDOFF && seesDeepHelp(a, sim, recv.pos)) { held.add(recv.r); a.tags.add('sink-handoff'); return a.pos.x; }
++  return Math.max(a.pos.x, recv.pos.x);
++}
+ /** LOOK_ONCE (off; LOOK_ONCE=1 turns it on; C15, estimated): whether a defender
+  * near the ball's path gets his head around to find it is one event per flight,
+  * not a fresh dice roll every tick. Off, the 0.15-0.65 chance was re-rolled at
+@@ -1361,6 +1444,14 @@ export class ManCoverage implements Behavior {
+   /** CARRY_TURN: the receiver he has turned fully on (a seen event), kept until both cues clear. */
+   private carryTurn: { full: Agent | null } = { full: null };
+   private releaseObserved = false;
++  /** THREAT_SINK: receivers he has handed on (latched). */
++  private readonly sinkHeld = new Set<Agent>();
++  /** THREAT_SINK (attempt 2): the receiver he was sinking with that he has seen stop (latched until seen climbing again), and
++   * the width he holds over the stop. */
++  private sinkStopped: Agent | null = null;
++  private sinkStopY = 0;
++  /** MAN_BACK: the back he has has crossed the line (latched). */
++  private backPast = false;
+   /** OFF_PEDAL: the stem-stop read (coverage-leverage `stemStopped`) on his own delayed sight of the stem. */
+   private readonly stemAccel = new StemAcceleration();
+   private stemStop = false;
+@@ -1504,6 +1595,43 @@ export class ManCoverage implements Behavior {
+     return runFit(a, sim, this.gap, this.gapSign, read);
+   }
+ 
++  /** CARRY_RELEASE: the flat threat he released #2 for (latched), and when each candidate first showed. */
++  private releasedTo: Agent | null = null;
++  private readonly flatSince = new Map<Agent, number>();
++  private carryRelease(a: Agent, sim: PlaySim): MoveCommand | null {
++    const o = this.opts, R = this.target;
++    if (sim.defCall.coverage.man || o.protectDepth || o.overTop || this.press) return null;
++    const role = (sim.defAlign.spots as Record<string, { role?: { kind: string; zone?: string } }>)[a.slot]?.role;
++    const zone = role?.kind === 'zone' ? role.zone ?? '' : '';
++    if (!zone.startsWith('curl_flat') && !zone.startsWith('flat')) return null;
++    if (!this.releasedTo) {
++      const rs = sim.see(a, R);
++      if (rs.pos.x - sim.los <= 2 || rs.vel.x <= 2) { this.flatSince.clear(); return null; }
++      const side = Math.sign(a.pos.y - sim.ballY) || 1;
++      const three = sim.offAlign.numbering[(side === sim.offAlign.strongSign ? 'S3' : 'W3') as 'S3' | 'W3'];
++      const recog = 0.2 + 0.4 * (1 - a.r('playRecognition') * a.mind.focus);
++      let pick: Agent | null = null;
++      for (const r of sim.offense) {
++        if (r === R || r === sim.qb || !(sim.offAlign.spots[r.slot]?.backfield || r.slot === three)) continue;
++        const p = sim.see(a, r);
++        const out = (p.pos.y - sim.ballY) * side;
++        const showing = p.pos.x - sim.los < 3 && p.pos.x - sim.los > -8 && out > 2 && (side * p.vel.y > 1.5 || out > 4);
++        if (!showing) { this.flatSince.delete(r); continue; }
++        if (!this.flatSince.has(r)) this.flatSince.set(r, sim.t);
++        if (sim.t - this.flatSince.get(r)! >= recog) pick = r;
++      }
++      if (!pick || !seesDeepHelp(a, sim, rs.pos)) return null;
++      this.releasedTo = pick;
++      if (sim.trace.data) sim.trace.decide({ t: sim.t, a: a.idx, kind: 'carry-release', chose: `release ${R.slot} -> flat ${pick.slot}`,
++        cue: `${pick.slot} declared to the flat outside him for ${recog.toFixed(2)} s; deep help over ${R.slot}`, options: [`carry ${R.slot}`, `flat ${pick.slot}`], detail: zone });
++    }
++    const F = this.releasedTo, fs = sim.see(a, F), inside = Math.sign(sim.ballY - fs.pos.y) || 1;
++    const lead = 0.4;
++    const aim = { x: Math.max(sim.los + 0.5, fs.pos.x + fs.vel.x * lead + 1), y: clamp(fs.pos.y + fs.vel.y * lead + inside * 1, 0.5, FIELD_WIDTH - 0.5) };
++    a.tags.add('carry-release');
++    return withFacingTechnique(track(a, aim, fs.vel, { gain: 2.0, speed: 1 }), { label: 'carry-release', key: fs.vel });
++  }
++
+   /** Release movement only; provisional zone readers retain their own
+    * support and recognized-flight priorities before using this technique. */
+ 
+@@ -1527,6 +1655,7 @@ export class ManCoverage implements Behavior {
+ 
+   trackReceiver(a: Agent, sim: PlaySim): MoveCommand {
+     const R = this.target;
++    if (CARRY_RELEASE) { const rel = this.carryRelease(a, sim); if (rel) return rel; }
+ 
+     // Anticipate a stable observed stem, then lose that confidence on a break.
+     // No route identity or once-per-play "knows the route" coin flip.
+@@ -1596,6 +1725,18 @@ export class ManCoverage implements Behavior {
+     if (breakOn && this.hipsOpen && !crossing && (infoHonest(6) ? !playsThrow(a, sim, R) : sim.ball.kind !== 'air') && vx < Math.max(0, a.vel.x) - 1
+       && !broken()) { this.hipsOpen = false; a.tags.add('re-square'); }
+ 
++    // MAN_BACK: a back still in the backfield is squeezed from the line, mirrored across the field.
++    if (MAN_BACK && !this.press && !o.overTop && !o.protectDepth && !this.backPast && sim.offAlign.spots[R.slot]?.backfield) {
++      if (deep > 0.5) this.backPast = true;
++      else {
++        const upBurst = Math.max(0, (R.profile.vmax - Math.max(0, vx)) / R.profile.tau);
++        const need = 1.8 + closing * flipTime + 0.5 * upBurst * flipTime * flipTime;
++        const tgt = { x: Math.max(seen.pos.x, sim.los) + need, y: clamp(seen.pos.y + lev, 0.5, FIELD_WIDTH - 0.5) };
++        a.tags.add('man-back');
++        return withFacingTechnique(track(a, tgt, { x: 0, y: seen.vel.y }, { facing: this.hipsOpen ? undefined : Math.PI, gain: 1.6 }),
++          { label: this.hipsOpen ? 'man-back-run' : 'man-back', key: seen.vel });
++      }
++    }
+     let tx = seen.pos.x;
+     let ty = seen.pos.y + lev;
+     if (this.press && vx >= 0) {
+@@ -1629,6 +1770,32 @@ export class ManCoverage implements Behavior {
+         else if (!this.stemStop || OFF_PEDAL_SETTLE) tx = Math.max(tx, a.pos.x);
+       }
+     }
++    // THREAT_SINK: a match carry with deep help sinks with the climbing receiver and hands him on.
++    if (THREAT_SINK && !sim.defCall.coverage.man && !o.protectDepth && !o.overTop && !this.press && this.releaseObserved
++      && deep > 0 && !crossing) {
++      // Attempt 2, the stop's release: a route he was sinking with that he sees stop climbing (upfield under 1 yd/s; the
++      // stop is kept until it climbs again over 2.5) is no longer a vertical threat. He stops gaining and sits over the
++      // top of it by his body and the receiver's plus his reach (the same shoulder the deep carry uses), at the width he
++      // had when it stopped, eyes on the QB, so he is in position to break on the throw instead of level and inside it.
++      if (this.sinkStopped === R && seen.vel.x > 2.5) this.sinkStopped = null;
++      else if (this.sinkStopped !== R && !this.sinkHeld.has(R) && seen.vel.x < 1 && seen.pos.x - sim.los > 2) { this.sinkStopped = R; this.sinkStopY = a.pos.y; }
++      if (this.sinkStopped === R) {
++        const over = a.profile.radius + R.profile.radius + a.player.measurables.armIn / 36 * 0.7;
++        a.tags.add('threat-sink-stop');
++        return withFacingTechnique(goTo(a, { x: Math.max(a.pos.x, seen.pos.x + over), y: clamp(this.sinkStopY, 0.5, FIELD_WIDTH - 0.5) },
++          { facing: angleTo(a.pos, sim.see(a, sim.qb).pos) }), { label: 'threat-sink-stop', key: seen.vel });
++      }
++      const sx = threatSinkX(a, sim, this.sinkHeld, { r: R, pos: seen.pos, vel: seen.vel });
++      a.tags.add('threat-sink');
++      return withFacingTechnique(track(a, { x: sx, y: clamp(ty, 0.5, FIELD_WIDTH - 0.5) }, { x: 0, y: seen.vel.y }, { facing: Math.PI, gain: 1.6 }),
++        { label: 'threat-sink', key: seen.vel });
++    }
++    // UNDER_CARRY: a match carry with deep help rides the released receiver from on top at his shoulder.
++    if (UNDER_CARRY && !sim.defCall.coverage.man && !o.protectDepth && !o.overTop && !this.press && this.releaseObserved
++      && !this.hipsOpen && deep > 0) {
++      tx = seen.pos.x + shoulderOff;
++      a.tags.add('under-carry');
++    }
+     // Over the top: a deep carrier keeps a cushion on the vertical; trail: a
+     // low-hip under defender sits behind his hip with help over the top.
+     if (o.overTop) {
+@@ -1812,6 +1979,18 @@ export class ZoneCoverage implements Behavior {
+   private nextPatternRead = 0;
+   private patternHesitationUntil = -1;
+   private readonly initialDepth: number;
++  /** DEPTH_FIRST: where he aligned laterally; the QB eye target he is reading and since when; width shown (latched). */
++  private readonly snapY: number;
++  private eyeTarget: Agent | null = null;
++  private eyeSince = 0;
++  private widthShown = false;
++  private shownAt = 0;
++  /** HALF_DECLARE: his last read target's y before a vertical (held into the carry), and the receivers whose over-the-top
++   * width he has committed to (latched). */
++  private readY: number | null = null;
++  private overCommitted = new Set<Agent>();
++  /** THREAT_SINK: routes he has handed on (latched). */
++  private readonly sinkHeld = new Set<Agent>();
+   private turnedWith: Agent | null = null;
+   /** CARRY_TURN: the receiver he has turned fully on (a seen event), kept until both cues clear. */
+   private carryTurn: { full: Agent | null } = { full: null };
+@@ -1885,6 +2064,7 @@ export class ZoneCoverage implements Behavior {
+   ) {
+     this.landmark = zoneLandmark(zone, sim.offAlign);
+     this.initialDepth = a.pos.x - sim.los;
++    this.snapY = a.pos.y;
+     this.deep = isDeepZone(zone);
+     // Flat/curl-flat defenders expand all the way to the sideline with a threat.
+     this.radius = this.deep ? 11 : zone === 'robber' || zone === 'hook_mid' || zone === 'hole' ? 6.5 : zone.includes('flat') ? 11 : 7.5;
+@@ -2278,7 +2458,9 @@ export class ZoneCoverage implements Behavior {
+       let vert = ZONE_HOLD_BAND || this.ownsArea()
+         ? threats.filter((th) => {
+           const held = this.vertHeld.has(th.r);
+-          const v = held ? th.fut.x - sim.los > 6.5 || (th.vel.x > 0.5 && th.pos.x > sim.los)
++          const half = HALF_DECLARE && (this.zone === 'deep_half_s' || this.zone === 'deep_half_w'), d = th.pos.x - sim.los;
++          const v = half ? (held ? d > 6.5 || (d > 5 && th.vel.x > 0.5) : d > 7.5 || (d > 6 && th.vel.x > 2))
++            : held ? th.fut.x - sim.los > 6.5 || (th.vel.x > 0.5 && th.pos.x > sim.los)
+             : th.fut.x - sim.los > 7.5 || (th.vel.x > 1.5 && th.pos.x > sim.los);
+           if (v) this.vertHeld.add(th.r); else this.vertHeld.delete(th.r);
+           return v;
+@@ -2317,6 +2499,23 @@ export class ZoneCoverage implements Behavior {
+         let tgt = lm;
+         // Spot-drop safeties play the QB's eyes harder (and get moved by look-offs).
+         if (qbEyes) tgt = lerp(lm, infoHonest(8) ? sim.see(a, qbEyes).pos : qbEyes.pos, (spot ? 0.25 + 0.2 * a.r('zoneCoverage') : 0.2) * a.r('anticipation') + (spot ? 0.1 : 0));
++        // DEPTH_FIRST: depth first; width only once he has seen it shown (the QB's eyes held, or a climbing receiver).
++        if (DEPTH_FIRST && this.initialDepth >= 9 && !this.widthShown) {
++          if (qbEyes !== this.eyeTarget) { this.eyeTarget = qbEyes; this.eyeSince = sim.t; }
++          const read = 0.2 + 0.4 * (1 - a.r('playRecognition') * a.mind.focus);
++          const climbing = threats.some((th) => th.vel.x > 3 && th.pos.x - sim.los > 5);
++          // Only a seen look is a cue: with SEEN_EYES and QB_BODY_SEEN both off, seenQbEyes is the published target.
++          const seenLook = SEEN_EYES || QB_BODY_SEEN;
++          if ((seenLook && qbEyes && sim.t - this.eyeSince >= read) || climbing) { this.widthShown = true; this.shownAt = sim.t; a.tags.add('width-shown'); }
++          else { tgt = { x: tgt.x, y: this.snapY }; a.tags.add('depth-first'); }
++        }
++        // DEPTH_FIRST: once shown, the width (landmark and the eye lean) grows over his read time, not all at once.
++        if (DEPTH_FIRST && this.initialDepth >= 9 && this.widthShown) {
++          const read = 0.2 + 0.4 * (1 - a.r('playRecognition') * a.mind.focus);
++          const w = clamp((sim.t - this.shownAt) / read, 0, 1);
++          tgt = { x: tgt.x, y: this.snapY + (tgt.y - this.snapY) * w };
++        }
++        if (HALF_DECLARE) this.readY = tgt.y;
+         // SAFETY_DEPTH: a deep safety keeps his depth over the deepest receiver he sees in his band, with his landmark
+         // as a floor; the QB's eyes shade him laterally only.
+         if (SAFETY_DEPTH && this.initialDepth >= 9) {
+@@ -2361,6 +2560,17 @@ export class ZoneCoverage implements Behavior {
+         // CUSHION_BREAK: a deep-zone carry plays a shoulder off the receiver's line (bodies plus a reach).
+         ? a.profile.radius + deepest.r.profile.radius + a.player.measurables.armIn / 36 * 0.7 : 0.8);
+       if (this.keyAim !== null) ty = this.keyAim;
++      // HALF_DECLARE (attempt 2): the half takes the over-the-top width in time, from his own picture: T, the time until
++      // the receiver reaches his depth (seen depth gap over the seen climb, climb floored at 0.5 yd/s), against L, the time
++      // he needs to get across (lateral gap over his own speed capacity, plus his reaction time). He holds his read target
++      // while T exceeds L by the margin and blends to the over-the-top line as T closes on L; at full width it is latched.
++      if (HALF_DECLARE && (this.zone === 'deep_half_s' || this.zone === 'deep_half_w') && this.readY !== null && !this.overCommitted.has(deepest.r)) {
++        const T = Math.max(0, a.pos.x - deepest.pos.x) / Math.max(0.5, deepest.vel.x);
++        const L = Math.abs(ty - this.readY) / (a.profile.vmax * a.speedScale) + a.profile.reactionTime;
++        const w = clamp((L + HALF_TIME_MARGIN - T) / HALF_TIME_MARGIN, 0, 1);
++        if (w >= 1) this.overCommitted.add(deepest.r);
++        else { ty = this.readY + (ty - this.readY) * w; a.tags.add('half-in-time'); }
++      }
+       // A landmark describes responsibility, not a minimum depth to sprint
+       // to regardless of the release. Let the initial cushion compress as
+       // the stem climbs; otherwise a corner retreats from a hitch into grass.
+@@ -2581,6 +2791,13 @@ export class ZoneCoverage implements Behavior {
+     this.selectTarget(a, best?.r ?? null);
+     if (!best) {
+       let tgt = lm;
++      // THREAT_SINK: sink with the deepest climbing route in his band, hand it on; routes there but none climbing: hold.
++      if (THREAT_SINK && !this.deep && (this.zone.startsWith('hook_s') || this.zone.startsWith('hook_w') || this.zone.startsWith('curl')) && threats.length) {
++        const up = threats.filter((th) => th.vel.x > 2 && th.pos.x <= lm.x + 4).sort((p, q) => q.pos.x - p.pos.x)[0];
++        const sx = up ? threatSinkX(a, sim, this.sinkHeld, up) : a.pos.x;
++        a.tags.add('threat-sink');
++        return withFacingTechnique(goTo(a, this.fromMotion(a, { x: Math.min(lm.x, sx), y: lm.y }, true), { facing: facingQB, speed: zs }), { label: 'threat-sink-drop' });
++      }
+       if (ZONE_HOLD_LEAN) {
+         const lean = this.headLean(a, sim, lm);
+         if (lean) tgt = lerp(lm, lean, 0.25 * a.r('anticipation'));
+@@ -3058,6 +3275,10 @@ const FLIGHT_HOLD = 1.0;
+ function continueFlightBreak(a: Agent, sim: PlaySim): MoveCommand | null {
+   const fb = flightBreaks.get(a);
+   if (!fb || sim.t - fb.t > FLIGHT_HOLD) return null;
++  // Only while the throw he broke on is still a throw in his picture: a pump he has seen pulled down (the release belief
++  // undone) ends the break, and his coverage resumes (acc-radius cover6 s8: the Mike kept driving on a pump's receiver
++  // for 1 s after the pull-down and the middle opened for a 34 yd scramble).
++  if (RELEASE_BELIEF && releaseBelief(sim, a).releasedAt === undefined) return null;
+   const seen = sim.see(a, fb.receiver);
+   return flightBreakMove(a, sim, fb.receiver, seen, sim.t, seen.pos);
+ }
+diff --git a/src/sim/coverage/rules.ts b/src/sim/coverage/rules.ts
+index 6a56420a2..83bb6a49a 100644
+--- a/src/sim/coverage/rules.ts
++++ b/src/sim/coverage/rules.ts
+@@ -23,6 +23,59 @@ import { hasVisibleCap } from './judgment.js';
+ import { FIELD_WIDTH } from '../../core/field.js';
+ 
+ export const APEX_LEVERAGE = Number(process.env.APEX_LEVERAGE ?? 7);
++/** HOOK_EXPAND (experimental, off; HOOK_EXPAND=1 turns it on): the back belongs to the hook (the Mike in Cover 3 and
++ * quarters, the hook whose #3 is the back) unless he is the flat threat of a flat seat that can take him. When the back
++ * he reads declares to the flat (his own read of the release, 2+ yd outward), on a side where no flat seat is free for
++ * him (no curl-flat / flat seat on that side by the call, or the one there seen carrying a vertical in his area), the
++ * hook expands with him as man, inside-out (ManCoverage, under MAN_BACK the squeeze from the line while the back is
++ * behind it); held until the back is 15 yd deep. The taught limit: not while a crosser comes across his face (seen in
++ * his window, 2-12 yd deep within 6 yd of him, running at the ball 2+ yd/s) or a #3 vertical in it, which are his
++ * first. Off, a back released to the flat on such a side was nobody's by the call: on Coverage's #872 base, 37 open-flat
++ * catches in 24 games had no seat's landmark within 9 yd, 78% of them backs (flat_open_report.py, class (a)). */
++export const HOOK_EXPAND = process.env.HOOK_EXPAND === '1';
++/** HOOK_EXPAND: whether a flat seat is free for a back released flat to the side `sign` (+1 = +y of the ball). */
++function flatSeatFree(c: RuleCtx, sign: number): boolean {
++  const sim = c.sim;
++  for (const d of sim.defense) {
++    if (d === c.a) continue;
++    const role = (sim.defAlign.spots as Record<string, { role?: { kind: string; zone?: string } }>)[d.slot]?.role;
++    const z = role?.kind === 'zone' ? role.zone ?? '' : '';
++    if (!z.startsWith('curl_flat') && !z.startsWith('flat')) continue;
++    const dp = sim.see(c.a, d).pos;
++    if ((dp.y - sim.ballY) * sign <= 0) continue;
++    // Occupied: he is carrying a climbing receiver in his area, as the hook sees them both.
++    const busy = sim.offense.some((r) => {
++      if (r === sim.qb || ['LT', 'LG', 'C', 'RG', 'RT'].includes(r.slot)) return false;
++      const rp = sim.see(c.a, r);
++      return rp.pos.x - sim.los > 3 && rp.vel.x > 2 && Math.hypot(rp.pos.x - dp.x, rp.pos.y - dp.y) < 4;
++    });
++    if (!busy) return true;
++  }
++  return false;
++}
++/** HOOK_EXPAND: his window holds a crosser coming at the ball or a #3 vertical (his first priorities). */
++function windowBusy(c: RuleCtx, back: Agent): boolean {
++  const sim = c.sim, me = c.a.pos;
++  return sim.offense.some((r) => {
++    if (r === back || r === sim.qb || ['LT', 'LG', 'C', 'RG', 'RT'].includes(r.slot)) return false;
++    const rp = sim.see(c.a, r), depth = rp.pos.x - sim.los;
++    if (depth < 2 || depth > 12 || Math.abs(rp.pos.y - me.y) > 6) return false;
++    const atBall = Math.sign(sim.ballY - rp.pos.y) * rp.vel.y;
++    return atBall > 2 || rp.vel.x > 3;
++  });
++}
++/** HOOK_EXPAND: the hook's directive for a back he reads released to the flat, or null. */
++function hookExpand(c: RuleCtx, b: ReceiverRead | null): Directive | null {
++  if (!HOOK_EXPAND || !b || c.state.mode === 'zoned') return null;
++  if (c.state.mode === 'expand') {
++    if (b.depth < 15) return man(b, { lev: 'inside' });
++    c.state.mode = 'zoned'; return null;
++  }
++  if (b.release !== 'flat' || b.outward < 2 || flatSeatFree(c, b.outSign) || windowBusy(c, b.r)) return null;
++  c.state.mode = 'expand';
++  c.a.tags.add('hook-expand');
++  return man(b, { lev: 'inside' });
++}
+ /** CUT_WALL (experimental, off; CUT_WALL=1): a hook defender walls a shallow crosser from his own area and passes him
+  * to the next dropper ("collision and pass"), square to the QB at his window depth, instead of jumping him and carrying
+  * him man head-up 8 yd past his area. The low-hole rat (whose job is the crosser) keeps the jump. */
+@@ -395,6 +448,9 @@ function c3Hook(c: RuleCtx): Directive {
+     if (three.depth < 15) return man(three, { lev: 'inside' });
+     c.state.mode = 'zoned';
+   }
++  // HOOK_EXPAND: his #3 is the back (no #3 on his side) and the back goes to a flat no seat is free for.
++  const exp = !ref(c, 3) ? hookExpand(c, backTo(c)) : null;
++  if (exp) return exp;
+   return cut(c) ?? zoneOf(c);
+ }
+ 
+@@ -406,7 +462,7 @@ function mike3(c: RuleCtx): Directive {
+     if (b.depth < 15) return man(b, { lev: 'inside' });
+     c.state.mode = 'zoned';
+   }
+-  return cut(c) ?? (APEX_LEVERAGE & 4 ? mikeWiden(c, b) : null) ?? zoneOf(c);
++  return hookExpand(c, b) ?? cut(c) ?? (APEX_LEVERAGE & 4 ? mikeWiden(c, b) : null) ?? zoneOf(c);
+ }
+ 
+ /** APEX_LEVERAGE 4: the quarters Mike widens to the hook on the side he sees the back release flat, so the apex
