@@ -36,3 +36,32 @@ Per play-side: #1 = the widest route runner at least 7 yd out; the corner = the 
 - **Flat outcome.** Flat throws per 100 play-sides in A: NFL 19.1 (open at the release 53 of 175, .30), default 20.9, **sink 31.6 (open 16 of 56, .29)**; in B: NFL 7.3, ours 2.2-2.3 (n 8-9 throws). So with the flat early our quarterback throws it 1.65 times as often as the NFL's and with the same open share, and without a flat early he barely throws it. The flat completions are 65% of the NFL's completions to that side in A (YAC 6.2) against 37% | 48% in ours (YAC 9.3 | 8.2); in B 38% against 21-26% (YAC 5.7 against 6.9 and 20.7, the last on 15 catches).
 - What this says for the fix Coverage expects ("a flat-first priority in the minimax"): the NFL data do not show the corner squatting against the early flat, so the target to match is a corner who is only about 1 yd shallower with the flat early (Cover 2 8.9, Cover 6 11.1) than without it; the sink's present 2.7 yd gap in Cover 2 is a larger response than the NFL's. A flat-first priority that makes him shallower would widen the gap. The flat is thrown more than the NFL's with the early flat, which is a quarterback and route question as much as the corner's.
 - Caveats: A and B are decided from positions at 1.5 s, not from the route's assignment; flat throws are counted at the target's position at the release (under 4 yd, 8+ yd out), the NFL's from 175 | 98 and 102 | 61 flat throws and ours from 4-56; the sims' per-cell flat counts (8-60 completions) are small and the 20.7 YAC in Cover 2 B is 15 catches.
+
+## The sink arm at d0bafcc18 (the flat played to the catch: flight plus the securing beat), Coverage's rerun
+
+Same 24 games and operators; the sink arm only (the default arm is unchanged); `data/reviews/census/squat-v2b-census.md`, `squat-v2b-flat-open.md`. NFL | default | sink d148cd598 | **sink d0bafcc18**.
+
+| | NFL | default | d148cd598 | **d0bafcc18** |
+|---|---|---|---|---|
+| Cover 2, 10-15 yd wide open, fixed (n of the last 313) | .177 | .433 | .243 | **.179** |
+| Cover 2, at the release (203) | .188 | .273 | .175 | **.128** |
+| Cover 6, fixed (238) | .096 | .280 | .114 | **.105** |
+| Cover 6, at the release (166) | .097 | .169 | .092 | **.078** |
+| Cover 3 / Quarters / Cover 1, fixed | .104 / .106 / .018 | .032 / .038 / .011 | .031 / .023 / .000 | .046 / .035 / .002 |
+| Cover 2, corner on top / level / trailing at #1's break (n 81) | .40 / .23 / .36 | .07 / .16 / .77 | .40 / .25 / .34 | **.38 / .25 / .37**; distance 2.5 (NFL 4.2) |
+| Cover 6, same (n 39) | .40 / .20 / .40 | .15 / .10 / .75 | .42 / .21 / .38 | **.21 / .26 / .54**; distance 4.4 (NFL 5.3) |
+| Cover 2, corner depth at 3.0 s vs a vertical #1, median; under #1 | 12.0; 3.4 | 6.7; 8.1 | 11.2; 3.4 | **11.2; 3.2** |
+| Cover 6, same | 14.0; 1.0 | 8.1; 6.5 | 12.5; 1.9 | **15.1; -0.2** |
+
+**The corner by the flat threat, depth at 3.0 s (median, p25-p75), A = flat early, B = none; the gap B - A in brackets (target: NFL 1.0 Cover 2, 0.5 Cover 6):**
+
+| | NFL A / B | default A / B | d148cd598 A / B | **d0bafcc18 A / B** |
+|---|---|---|---|---|
+| Cover 2 | 8.9 (7.0-11.7) / 9.9 (7.8-12.1) [1.0] | 5.8 / 6.4 [0.6] | 6.7 / 9.4 [2.7] | **7.7 (6.5-9.7) / 9.5 (7.9-11.1) [1.8]** |
+| Cover 6 | 11.1 (8.8-14.2) / 11.6 (8.7-14.4) [0.5] | 9.1 / 9.5 [0.4] | 9.5 / 10.9 [1.4] | **9.7 (7.2-13.9) / 11.1 (9.4-13.6) [1.4]** |
+
+At 2.0 s the Cover 2 corner is 5.4 (A) | 5.9 (B) against NFL 6.0 | 6.2 (d148cd598 5.0 | 5.8); Cover 6 7.1 | 7.9 against 7.6 | 7.6. Under #1 at 3.0 s, A: Cover 2 2.1 (NFL 1.8; before 2.8), Cover 6 0.0 (NFL 0.2). **B is unchanged** (Cover 2 9.4 -> 9.5, Cover 6 10.9 -> 11.1). **A moves up by 1.0 yd in Cover 2 (6.7 -> 7.7; the gap 2.7 -> 1.8) and by 0.2 in Cover 6 (9.5 -> 9.7; the gap stays at 1.4).** The NFL's gaps are 1.0 and 0.5; Cover 2 is now 0.8 over the target, Cover 6 0.9 over (n of the 3.0 s depths 61-68 in A, 95-132 in B; the p25-p75 intervals overlap throughout).
+
+**Flat outcomes.** Flat throws per 100 play-sides in A (NFL 19.1 Cover 2, 15.3 Cover 6): Cover 2 default 20.9 | d148cd598 31.6 | **d0bafcc18 27.3 (18 of 51)**; Cover 6 16.9 | 21.2 | **21.4 (10 of 27)**; in B (NFL 7.3, 7.0): 2.1 and 1.2. Flat completions as a share of the completions to that side in A: Cover 2 NFL .65 (YAC 6.2) | .50 (9.8); Cover 6 .52 (6.5) | .41 (9.9). **Open flats per game NFL 1.50 | default 2.04 | d148cd598 2.88 | d0bafcc18 3.00; open-flat YAC per game 17.4 | 27.3 | 40.6 | 47.7;** flat share of completions .344 | .196 | .226 | .219; owner classes of the 72 open-flat catches (per game): (a) no seat owns it 1.92 (before 1.75), (b) left .33, (c) too far .50, (d) blocked .04, (e) on it and able .21.
+
+**Reading.** The window stays at the NFL's (Cover 2 .179, Cover 6 .105 against .177 and .096) and B is untouched. The flat-early corner moves 1 yd deeper in Cover 2, still 0.8 yd past the NFL's gap, and not at all in Cover 6; the flat is not cheaper: open flats 3.00 per game against 2.88 and 1.50, and open-flat YAC 47.7 against 40.6 and 17.4 per game (one 74-yd catch in class (d) is 74 of that). The Cover 6 corner at #1's break is on top .21 against the NFL's .40 and trailing .54 against .40 (n 39: about one standard error of .07 on each), and against a vertical #1 at 3.0 s he is level with him (median under #1 -0.2, NFL 1.0, distance 1.6 against 3.6, n 36): the securing beat may have shifted his Cover 6 split-field role, which the cells do not separate from noise.
