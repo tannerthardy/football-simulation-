@@ -611,7 +611,7 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
 
 
-## engine-93: one break on the throw (2026-11-23)
+## engine-94: one break on the throw (2026-11-24)
 
 On: `FLIGHT_BREAK` (Coverage C14 with Defense; Integration's paired card). `FLIGHT_LEAD` is present but off and
 parked: it lost to the break alone (overruns 19 -> 34; its goals missed where the carrier went by about 5 yd).
@@ -642,7 +642,7 @@ Defense's first-defender table (two seeds, CATCH_STRIDE on):
 | off | 62.3% | 8.46 |
 | on | 67.7% | 6.50 |
 
-Integration's paired card (seeds 23 / 37 / 11 / 5, deltas against engine-92):
+Integration's paired card (seeds 23 / 37 / 11 / 5, deltas against engine-92 (before HEAD_FOLLOW)):
 
 | | per seed | mean |
 |---|---|---|
@@ -653,23 +653,61 @@ Integration's paired card (seeds 23 / 37 / 11 / 5, deltas against engine-92):
 | 20+ yard plays | -3.7*, -1.6*, -1.3, -0.6 | -1.8 |
 | sacks | | about +0.1 |
 
-Interceptions (`scripts/diag/coverage/int-census.mts`; 11 seeds x 2 games per arm, Tools' game set):
+Interceptions (`scripts/diag/coverage/int-census.mts`; 11 seeds x 2 games per arm, both arms with HEAD_FOLLOW):
 
 | | throws | INT | per throw |
 |---|---|---|---|
-| off | 1,840 | 26 | 1.4% |
-| on | 1,899 | 44 | 2.3% |
+| off | 1,957 | 31 | 1.6% |
+| on | 1,891 | 33 | 1.7% |
 
-Of the 44 with the break on, 22 were made by a defender breaking on that throw, 18 of them on the targeted receiver:
-- 14 man defenders, 3 curl-flat, 2 deep middle;
-- 12 off a tipped ball, 8 alone at the ball, 2 in a contested catch;
-- median 2.7 yd from the target at the release.
-Those defenders arrive at the catch point with the ball, which is the mechanism working. Seven more are passes batted at
-the line by rushers (1 off). Rushers never run the break, so these are game divergence, not this change. The rest
-match the off arm's mix.
+Of the 33 with the break on, 22 were by a defender breaking on that throw (19 on the targeted receiver): defenders
+arriving at the catch point with the ball. Before HEAD_FOLLOW the same census read 26 -> 44; most of that rise was
+defenders seeing the arm or the ball through a frozen head (engine-93).
+
+Information audit (`scripts/diag/coverage/break-perception.mts`): every break had a cue inside his recorded head's cone
+at the cue's sample time (arm p50 0 deg off the head, ball p50 4 deg); nothing in FLIGHT_BREAK reads the true ball. The
+hold after the flight lands requires his release belief to stand, so a pump he has seen pulled down ends it.
+
+Tools' census (24 games, both arms with HEAD_FOLLOW), wide-open share at 10-15 yd, fixed times: Cover 6 .206 -> .225,
+Cover 2 .465 -> .427 (NFL .096 / .177), at the release Cover 6 .163 -> .121, Cover 2 .364 -> .330. Paired staged plays
+(`prerelease-diverge.mts`): the break moves no defender before the release on 189 of 192 Cover 6/8 plays.
 
 scripts/diag/coverage/int-census.mts (here); the staged and traced evidence is on coverage/C14-cards
 (docs/reviews/2026-11-23-coverage-cards-engine.md, scripts/diag/coverage/flat-staged.mts).
+## engine-93: a head nobody turns follows the body (2026-11-24)
+
+On: `HEAD_FOLLOW` (Coverage C14; found auditing FLIGHT_BREAK at Integration's and the QB lane's request). An information
+leak under the user's standing rule.
+
+With HEAD off (the stack), `stepHeads` turned only zone-eyed defenders' heads and skipped the passer. A head nobody
+drove kept its last direction while the body turned under it. Perception reads the recorded head (release-evidence's
+`sawAt`, the ball estimator's samples), so such a player saw the passer or the ball through a head up to 180 deg off his
+body. The neck allows 90 deg standing and 45 at a sprint, plus up to 55 deg of trunk twist for zone eyes.
+
+Who has a head, and what drives it (HEAD off):
+
+| player | head | engine-92 | engine-93 |
+|---|---|---|---|
+| zone-eyed defender | stepHeads (his key, then the passer) | driven | unchanged |
+| defender who left zone eyes (man conversion, pursuit, return, run fit) | none | frozen | relaxes to the body |
+| passer, controller running (qb-pass, handoff, mesh, PA fake) | qb.ts (QB_HEAD) | driven | held within the neck plus trunk twist |
+| passer after the throw (blocks, pursues, carries) | none | frozen | relaxes to the body |
+| receivers, linemen, rushers, other offense | never set (body cone) | unchanged | unchanged |
+
+Head offset off the body (`scripts/diag/coverage/head-audit.mts`, one game, seed 23; sampled at the end of the tick):
+
+| cell | engine-92 p95 / max, ticks over 145 deg | engine-93 |
+|---|---|---|
+| man defender, not driven | 146 / 180, 815 of 15,451 | 19 / 103, 0 |
+| zone eyes | 74 / 176, 6 | 75 / 141, 0 |
+| downfield block / carrier (returns) | 158-162 / 178, 41 | 10-28 / 74, 0 |
+| passer after the throw | 52-69 / 180, 60 | 10-87 / 158, 17 |
+
+At the perception record itself every head is within the neck plus trunk twist by construction
+(`test/head-follow.test.ts`). The passer's few end-of-tick excesses are his body turning after the record.
+
+A man defender's head now simply follows his body. Where he should look (his man's hip, then back for the ball) is a
+later technique item, not built here.
 
 ## engine-92: what the passer sees off his gaze is less exact (2026-11-23)
 

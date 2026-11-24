@@ -57,7 +57,7 @@ async function run(flag: string, pinBreak = false) {
   vi.resetModules();
   for (const k of stackOn) vi.stubEnv(k, '1');
   vi.stubEnv('PURSUIT_COMMIT', flag);
-  // The off case's premise only (pinBreak): pinned to FLIGHT_BREAK=0 (engine-93, Coverage C14, #882). With the break
+  // The off case's premise only (pinBreak): pinned to FLIGHT_BREAK=0 (engine-94, Coverage C14, #882). With the break
   // on no defender asks for a stop on the catch tick (the break and its continuation keep his receiver through it), so
   // the premise tests the retired paths (playObservedFlight's stale catch-point drive and the rally goTo). Owner:
   // Defense; rewrite the premise on the break, or remove it, when FLIGHT_BREAK=0's paths are retired. The contract case

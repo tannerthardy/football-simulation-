@@ -271,7 +271,7 @@ export class BallEstimates {
         if (SHARED_HEAD) { headWant(sim, a, sim.qb, 'qb'); tr.head = a.head ?? a.facing; tr.headT = sim.t; continue; }
         const qb = sim.see(a, sim.qb).pos, toward = Math.atan2(qb.y - a.pos.y, qb.x - a.pos.x);
         const base = shouldersOf(a.body); // the neck sits on the shoulders (the trunk), not the hips
-        const lim = base + clamp(sideOf(angDiff(toward, base), angDiff(tr.head, base)), -neckOf(a), neckOf(a));
+        const lim = base + clamp(sideOf(angDiff(toward, base), angDiff(tr.head, base), a), -neckOf(a), neckOf(a));
         const step = HEAD_RATE * Math.max(0, sim.t - tr.headT);
         tr.head = base + clamp(angDiff(tr.head + clamp(angDiff(lim, tr.head), -step, step), base), -neckOf(a), neckOf(a));
         tr.headT = sim.t;
@@ -310,7 +310,7 @@ export class BallEstimates {
       } else {
         const toward = Math.atan2(want.y - a.pos.y, want.x - a.pos.x);
         const base = shouldersOf(a.body); // the neck sits on the shoulders (the trunk), not the hips
-        const lim = base + clamp(sideOf(angDiff(toward, base), angDiff(tr.head, base)), -neckOf(a), neckOf(a));
+        const lim = base + clamp(sideOf(angDiff(toward, base), angDiff(tr.head, base), a), -neckOf(a), neckOf(a));
         const step = HEAD_RATE * Math.max(0, sim.t - tr.headT);
         tr.head = base + clamp(angDiff(tr.head + clamp(angDiff(lim, tr.head), -step, step), base), -neckOf(a), neckOf(a));
         tr.headT = sim.t;
@@ -616,11 +616,19 @@ export class BallEstimates {
 
 /** A target almost directly behind him is reached over the shoulder his head is already turned to; the head cannot
  * pass through the back of his neck, and the shortest-angle side flips arbitrarily near 180 deg. */
-export function sideOf(rel: number, headRel: number): number {
-  if (Math.abs(rel) <= BEHIND || Math.abs(headRel) < 0.2) return rel;
-  const side = Math.sign(headRel);
+export function sideOf(rel: number, headRel: number, who?: object): number {
+  // LOOK_SIDE_HOLD: a target near dead behind him is reached over one shoulder, chosen once and held. Without the hold, a
+  // target within 0.2 rad of straight behind (`headRel` near 0) took the raw sign of `rel`, which flips at +-pi, so the
+  // look, and the turn priced off its side (lookJoints), swung to the other shoulder between ticks. The side is kept per
+  // man until the target is well forward again (EXIT) and a head clearly turned the other way (over HEAD_PICK) still decides.
+  if (Math.abs(rel) <= BEHIND) { if (who && Math.abs(rel) < BEHIND_EXIT) lastSide.delete(who); return rel; }
+  const prev = who ? lastSide.get(who) : undefined;
+  const side = Math.abs(headRel) >= 0.2 ? Math.sign(headRel) : (prev ?? (Math.sign(rel) || 1));
+  if (who) lastSide.set(who, side);
   return Math.sign(rel) === side ? rel : side * (2 * Math.PI - Math.abs(rel));
 }
+const BEHIND_EXIT = (130 * Math.PI) / 180;
+const lastSide = new WeakMap<object, number>();
 const BEHIND = (150 * Math.PI) / 180;
 
 /** A fit he can believe: finite, and no faster than a thrown football can be (50 yd/s; the hardest throws are about 30). */

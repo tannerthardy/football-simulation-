@@ -6,6 +6,10 @@ afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 
 describe('QB_BODY_SEEN: the arm and head are seen, not published', () => {
   it('a defender sees the passer start his motion and turn his head one observation delay late', async () => {
+    // HEAD_FOLLOW=0 (engine-93, Coverage C14): this fixture turns the passer's head once by hand with every body idle; with
+    // HEAD_FOLLOW an undriven head relaxes to the body, so the hand-set head would not hold. The test is about when a
+    // defender sees the head, not who turns it. Owner QB: drive the head through the controller and drop the pin.
+    vi.stubEnv('HEAD_FOLLOW', '0');
     const { contactFixture } = await import('../scripts/diag/run-contact-technique.js');
     const { sim, defender: d } = contactFixture({ type: 'run', runBlock: 60, passBlock: 60, side: 1 });
     const qb = sim.qb;

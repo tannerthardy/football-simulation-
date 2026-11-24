@@ -2897,7 +2897,7 @@ function manLook(a: Agent, sim: PlaySim, cmd: MoveCommand): MoveCommand {
   return lookJoints(a, cmd, heading, angleDiff(heading, Math.atan2(qb.y - a.pos.y, qb.x - a.pos.x)), true);
 }
 
-/** FLIGHT_BREAK (default on since engine-93; FLIGHT_BREAK=0 restores the replaced paths; Coverage C14 with Defense, 2026-11-23): one break on the throw for
+/** FLIGHT_BREAK (default on since engine-94; FLIGHT_BREAK=0 restores the replaced paths; Coverage C14 with Defense, 2026-11-23): one break on the throw for
  * every defender, during the flight (Defense owns pursuit from the catch on). Taught: plant and drive on the throw to
  * where the receiver will be, come to balance, with the leverage his seat plays (corner and flat players outside-in,
  * hooks and the middle inside-out); Rules' hard-corner card row 5, the off-man and zone break rows. Measured before:

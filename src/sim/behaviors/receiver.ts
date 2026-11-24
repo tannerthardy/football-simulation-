@@ -1008,7 +1008,7 @@ function turnSide(a: Agent, sim: PlaySim, d: number, heading: number): number {
   let h = head - heading;
   while (h > Math.PI) h -= 2 * Math.PI;
   while (h < -Math.PI) h += 2 * Math.PI;
-  return sideOf(d, h);
+  return sideOf(d, h, a);
 }
 
 /** BALL_EST: to keep sampling the ball he turns his shoulders off his running line only as far as his head cannot
