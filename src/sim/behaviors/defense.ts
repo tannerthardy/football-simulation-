@@ -2922,7 +2922,9 @@ function manLook(a: Agent, sim: PlaySim, cmd: MoveCommand): MoveCommand {
 export const FLIGHT_BREAK = process.env.FLIGHT_BREAK !== '0';
 const FLIGHT_BREAK_ON = () => process.env.FLIGHT_BREAK !== '0';
 const FLIGHT_SHADE = 0.8;
-export interface FlightBreak { receiver: Agent; goal: Vec2; goalVel: Vec2; side: -1 | 1; catchSpot: Vec2; catchT: number; t: number }
+export interface FlightBreak { receiver: Agent; goal: Vec2; goalVel: Vec2; side: -1 | 1; catchSpot: Vec2; catchT: number; t: number;
+  /** Diagnostic: the call site that made this break ('continue' keeps the original's), and when this break began. */
+  via: string; since: number }
 const flightBreaks = new WeakMap<Agent, FlightBreak>();
 /** FLIGHT_BREAK: the break this defender is making (or last made this play) on a throw: the moving goal and its velocity,
  * his leverage side (+1 the receiver's sideline side, -1 the ball side), the catch spot and time he assumed. Read-only,
@@ -2946,7 +2948,7 @@ export function continueFlightBreak(a: Agent, sim: PlaySim): MoveCommand | null 
   // for 1 s after the pull-down and the middle opened for a 34 yd scramble).
   if (RELEASE_BELIEF && releaseBelief(sim, a).releasedAt === undefined) return null;
   const seen = sim.see(a, fb.receiver);
-  return flightBreakMove(a, sim, fb.receiver, seen, sim.t, seen.pos);
+  return flightBreakMove(a, sim, fb.receiver, seen, sim.t, seen.pos, fb.via);
 }
 /** FLIGHT_LEAD (off, parked 2026-11-23: it lost to the break alone, overruns 19 -> 34 and goals about 5 yd off where the
  * carrier went; FLIGHT_LEAD=1 turns it on, with FLIGHT_BREAK; Coverage with Defense, 2026-11-23): a defender who will
@@ -2958,7 +2960,7 @@ export function continueFlightBreak(a: Agent, sim: PlaySim): MoveCommand | null 
  * 12 deg. Read per call. */
 const flightLeadOn = () => process.env.FLIGHT_LEAD === '1';
 const leading = new WeakMap<Agent, boolean>();
-function flightBreakMove(a: Agent, sim: PlaySim, R: Agent, seen: Perceived, catchT: number, catchSpot: Vec2): MoveCommand {
+function flightBreakMove(a: Agent, sim: PlaySim, R: Agent, seen: Perceived, catchT: number, catchSpot: Vec2, via = '?'): MoveCommand {
   const left = Math.max(0, catchT - sim.t);
   let goal = { x: catchSpot.x - seen.vel.x * left, y: clamp(catchSpot.y - seen.vel.y * left, 0.3, FIELD_WIDTH - 0.3) };
   let goalVel: Vec2 = seen.vel;
@@ -2990,7 +2992,8 @@ function flightBreakMove(a: Agent, sim: PlaySim, R: Agent, seen: Perceived, catc
   const support = a.body.support;
   const capacity = support ? availability(support, supportParams(a.profile), fatigueFactor(a.body.energy)) : 1;
   const vel = movingArrivalVelocity(a.body, goal, goalVel, a.profile.vmax * a.speedScale, contact, 2.5 + 2 * (1 - a.r('tackling')), 1, capacity);
-  flightBreaks.set(a, { receiver: R, goal: { ...goal }, goalVel: { ...goalVel }, side, catchSpot: { ...catchSpot }, catchT, t: sim.t });
+  const prev = flightBreaks.get(a), since = prev && prev.receiver === R && sim.t - prev.t <= 0.06 ? prev.since : sim.t;
+  flightBreaks.set(a, { receiver: R, goal: { ...goal }, goalVel: { ...goalVel }, side, catchSpot: { ...catchSpot }, catchT, t: sim.t, via, since });
   a.tags.add('flight-break');
   return withMovementObjective({ vel }, { kind: 'moving', point: goal, velocity: goalVel });
 }
@@ -3026,7 +3029,7 @@ function playBelievedBall(a: Agent, sim: PlaySim, man: Agent | null, continueCov
       if (pick.R === man && sim.t - rb.releasedAt >= react - 1e-9) {
         const r = sim.see(a, man), left = Math.max(0, Math.min(SHOULDER_FLIGHT_MAX,
           Math.hypot(r.pos.x - pick.from.x, r.pos.y - pick.from.y) / SHOULDER_BALL_SPEED - (sim.t - rb.releasedAt)));
-        return flightBreakMove(a, sim, man, r, sim.t + left, { x: r.pos.x + r.vel.x * left, y: r.pos.y + r.vel.y * left });
+        return flightBreakMove(a, sim, man, r, sim.t + left, { x: r.pos.x + r.vel.x * left, y: r.pos.y + r.vel.y * left }, 'man-arm');
       }
     }
     if (!continueCoverage) return fallback();
@@ -3062,7 +3065,7 @@ function playBelievedBall(a: Agent, sim: PlaySim, man: Agent | null, continueCov
       // rule-of-thumb ball speed). One receiver per belief; his projected spot updates as his picture does.
       const r = sim.see(a, pick.R), left = !SHOULDER_LEAD ? 0 : Math.max(0, Math.min(SHOULDER_FLIGHT_MAX,
         Math.hypot(r.pos.x - pick.from.x, r.pos.y - pick.from.y) / SHOULDER_BALL_SPEED - (sim.t - rb.releasedAt)));
-      if (FLIGHT_BREAK_ON()) return flightBreakMove(a, sim, pick.R, r, sim.t + left, { x: r.pos.x + r.vel.x * left, y: r.pos.y + r.vel.y * left });
+      if (FLIGHT_BREAK_ON()) return flightBreakMove(a, sim, pick.R, r, sim.t + left, { x: r.pos.x + r.vel.x * left, y: r.pos.y + r.vel.y * left }, 'shoulder');
       return runThrough(a, { x: r.pos.x + r.vel.x * left, y: r.pos.y + r.vel.y * left }, { speed: 0.9 });
     }
     return stopDrop(sim, continueCoverage());
@@ -3171,7 +3174,7 @@ function flightApproach(a: Agent, sim: PlaySim, path: PlaySim['ballPath'], acqui
       }
       // FLIGHT_BREAK: through the hands by the same break (arrival he can brake from, his seat's side), not a full-effort
       // run through a receiver who is moving upfield through the catch (Defense's overrun class).
-      if (FLIGHT_BREAK_ON()) return flightBreakMove(a, sim, R, seen, sim.t, hands);
+      if (FLIGHT_BREAK_ON()) return flightBreakMove(a, sim, R, seen, sim.t, hands, 'drive-catch');
       return runThrough(a, hands, { speed: 1 });
     }
   }
@@ -3188,7 +3191,7 @@ function flightApproach(a: Agent, sim: PlaySim, path: PlaySim['ballPath'], acqui
       chose: 'carry observed receiver', cue: 'nearby running catcher and visible ball window',
       detail: `${window.receiver.slot} at ${window.t.toFixed(2)} s; no earlier reachable ball opportunity.` });
     // FLIGHT_BREAK: the same break, not a carry that runs with a receiver coming back toward the passer.
-    if (FLIGHT_BREAK_ON()) return flightBreakMove(a, sim, window.receiver, window.seen, window.t, window.p);
+    if (FLIGHT_BREAK_ON()) return flightBreakMove(a, sim, window.receiver, window.seen, window.t, window.p, 'nearby');
     return track(a, window.seen.pos, window.seen.vel);
   }
   if (spot) {
@@ -3205,7 +3208,7 @@ function flightApproach(a: Agent, sim: PlaySim, path: PlaySim['ballPath'], acqui
   // the ball — on the receiver's near side, ready to play through the hands
   // or make the tackle the moment it's caught.
   // FLIGHT_BREAK: he cannot beat the ball to its path: the shared break on the receiver's moving catch window.
-  if (FLIGHT_BREAK_ON() && window) return flightBreakMove(a, sim, window.receiver, window.seen, window.t, window.p);
+  if (FLIGHT_BREAK_ON() && window) return flightBreakMove(a, sim, window.receiver, window.seen, window.t, window.p, 'window');
   // FLIGHT_BREAK: the window has passed in his picture (the ball has arrived by his estimate) but he has not yet seen the
   // catch: the break keeps its receiver until the possession read hands him to pursuit, rather than a stale spot.
   if (FLIGHT_BREAK_ON()) { const cont = continueFlightBreak(a, sim); if (cont) return cont; }

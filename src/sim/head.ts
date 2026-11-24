@@ -17,6 +17,14 @@ import { shouldersOf } from '../physics/kinematics.js';
 import { ZONE_EYES, zoneEyesFor, zoneEyesTarget } from './zone-eyes.js';
 
 export const HEAD = process.env.HEAD === '1';
+/** HEAD_FOLLOW (default on since engine-93; HEAD_FOLLOW=0 restores; Coverage C14, 2026-11-24, an information leak under
+ * the user's standing rule): with HEAD off, only a zone-eyed defender's head is turned each tick (ZONE_EYES), so a
+ * defender who stops being zone-eyed (a match defender converted to man, a zone defender handed to pursuit) kept the
+ * head he last had while his body turned under it. Perception reads that recorded head (release-evidence's sawAt), so he
+ * saw the passer or the ball through a head pointing up to 180 deg off his body (audit: 302 of 3,590 FLIGHT_BREAK
+ * entries had a head more than 100 deg off his body; the neck allows 45-90). On, a head nobody is turning relaxes to
+ * his body facing at the head's rate, within the neck range, as this file's model states. */
+export const HEAD_FOLLOW = process.env.HEAD_FOLLOW !== '0';
 /** Head turn rate (rad/s) and the view cone about the head: GAZE's. */
 export const HEAD_RATE = 6;
 export const HEAD_CONE = Math.PI / 2;
@@ -78,7 +86,11 @@ export function stepHeads(sim: PlaySim): void {
     if (a === sim.qb) continue;
     // ZONE_EYES: a zone defender's head turns with HEAD off too, on his shoulders (the neck sits on the trunk).
     const zone = zoneEyesFor(a);
-    if (!HEAD && !zone) continue;
+    if (!HEAD && !zone) {
+      // HEAD_FOLLOW: an undriven head relaxes to his body facing, within the neck range (never frozen while he turns).
+      if (HEAD_FOLLOW && a.head !== null && a.head !== undefined) a.head = turnHead(a, a.head, a.body.facing, step, a.body.facing);
+      continue;
+    }
     const facing = a.body.facing;
     let head = a.head ?? facing;
     const w = wants.get(a);
