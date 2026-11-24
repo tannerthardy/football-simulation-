@@ -5,6 +5,7 @@
 // scrambles) from the snap; pocket sacks are left out (they are not rush attempts in the NFL file); to the end.
 // Labels from engine events (src/sim/tackle.ts), mirroring PFF's per-defender coding with a miss first:
 //   missed = a missed_tackle (reach, dive, grab that did not connect) or a broken hold (broken_tackle) by him;
+//   `how` splits a miss: broken (any broken hold by him on the play) or reach (only missed_tackle events);
 //   tackle = otherwise the initial wrap on the play that ended in a tackle; assist = otherwise any other wrap.
 // Frames: 0.1 s from the snap, +x downfield, LOS at x = 0 (y is not mirrored; the operator is mirror-safe).
 // Weight is body mass in lb, height in inches.
@@ -61,20 +62,20 @@ proto.run = function (this: any) {
   if (!carrier || !s.tracks[carrier.slot]) return r;
   const ends = ['tackle', 'out_of_bounds', 'touchdown', 'fumble'].map((k) => ev[k]).filter((x) => x != null && x >= k0);
   const ke = ends.length ? Math.min(...ends) : s.tracks[carrier.slot].at(-1)[0];
-  const per: Record<string, { miss: boolean; initial: boolean; wrap: boolean }> = {};
+  const per: Record<string, { miss: boolean; broken: boolean; initial: boolean; wrap: boolean }> = {};
   for (const e of this.events) {
     if (fr(e.t) < k0) continue;
     const broken = e.type === 'broken_tackle';
     if (e.type !== 'missed_tackle' && e.type !== 'tackle_wrap' && !broken) continue;
     const [d, c] = broken ? [this.agents[e.b], this.agents[e.a]] : [this.agents[e.a], this.agents[e.b]];
     if (!d || c !== carrier) continue;
-    const p = (per[d.slot] ??= { miss: false, initial: false, wrap: false });
-    if (e.type === 'tackle_wrap') { p.wrap = true; if (e.note !== 'assist') p.initial = true; } else p.miss = true;
+    const p = (per[d.slot] ??= { miss: false, broken: false, initial: false, wrap: false });
+    if (e.type === 'tackle_wrap') { p.wrap = true; if (e.note !== 'assist') p.initial = true; } else { p.miss = true; if (broken) p.broken = true; }
   }
   const ended = ev.tackle != null;
-  const labels: Record<string, string> = {};
+  const labels: Record<string, string> = {}, how: Record<string, string> = {};
   for (const [k, p] of Object.entries(per)) {
-    if (p.miss) labels[k] = 'missed';
+    if (p.miss) { labels[k] = 'missed'; how[k] = p.broken ? 'broken' : 'reach'; }
     else if (p.wrap && ended) labels[k] = p.initial ? 'tackle' : 'assist';
   }
   if (!Object.keys(labels).length) return r;
@@ -82,7 +83,7 @@ proto.run = function (this: any) {
   const lo = k0 - 12, hi = ke + 12;
   const tracks: Record<string, any[]> = {};
   for (const [k, tr] of Object.entries(s.tracks)) tracks[k] = (tr as any[]).filter((q) => q[0] >= lo && q[0] <= hi);
-  out.write(JSON.stringify({ src: 'sim', key: [this.seed ?? null, nPlays], ptype, carrier: carrier.slot, k0, ke, los: 0, events: ev, labels,
+  out.write(JSON.stringify({ src: 'sim', key: [this.seed ?? null, nPlays], ptype, carrier: carrier.slot, k0, ke, los: 0, events: ev, labels, how,
     side: Object.fromEntries(all.map((a: any) => [a.slot, a.team === off ? 'off' : 'def'])),
     wt: Object.fromEntries(all.map((a: any) => [a.slot, Math.round(a.profile.massKg * 2.2046)])),
     ht: Object.fromEntries(all.map((a: any) => [a.slot, Math.round(a.profile.heightYd * 36)])),

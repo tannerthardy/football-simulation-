@@ -179,7 +179,8 @@ def play_rows(p):
     for n, kind in p['labels'].items():
         if n not in dist:
             continue
-        row = dict(src=p['src'], key=p['key'], id=n, kind=kind, ptype=p['ptype'], pos=p['pos'].get(n, '?'))
+        row = dict(src=p['src'], key=p['key'], id=n, kind=kind, ptype=p['ptype'], pos=p['pos'].get(n, '?'),
+                   how=(p.get('how') or {}).get(n))
         fa = att.get(n)
         if fa is None:
             row['dropped'] = True; out.append(row); continue
