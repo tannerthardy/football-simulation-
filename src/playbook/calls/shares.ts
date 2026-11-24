@@ -5,6 +5,7 @@
  *
  * What each table holds:
  * - core_share: the share of plays with a half's core on a side. A play can count for several halves.
+ * - core_share_given_room / room: the core share among the plays whose formation has room for it, and that room's share.
  * - core_partner: on a side with that core, which halves' cores are on the other side ('unmatched' if none of ours).
  * - core_back: the back's job on those plays.
  * - full_share: the share of plays per full-field concept.
@@ -13,10 +14,12 @@
  * These are a starting call sheet, not targets.
  */
 export const NFL_CALL_SHARES: {
-  core_share: Record<string, number>; full_share: Record<string, number>; mesh_outside: Record<string, number>; mesh_back: Record<string, number>;
+  core_share: Record<string, number>; core_share_given_room: Record<string, number>; room: Record<string, number>; full_share: Record<string, number>; mesh_outside: Record<string, number>; mesh_back: Record<string, number>;
   core_partner: Record<string, Record<string, number>>; core_back: Record<string, Record<string, number>>;
 } = {
   core_share: { slant_flat: 0.034, stick: 0.0322, slant_stick: 0.0128, quick_out_hitch: 0.0148, hitches: 0.0204, double_slants: 0.029, hitch_quick_out: 0.0046, seam_slant: 0.0021, trips_hitch_flat: 0.005, smash: 0.0189, curl_flat: 0.0377, flood: 0.0056, dagger: 0.013, levels_outside_deep: 0.0046, levels_outside_short: 0.0112, comeback_dig: 0.0076, fade_flat: 0.047, hitch_post: 0.0155, double_outs: 0.0083, corner_out: 0.0126, corner_flat: 0.018, trips_sail: 0.0021, seam_hitch: 0.0058, trips_outs: 0.001, verts_hitch: 0.0185, slant_go: 0.0205, slant_hitch: 0.0128, dig_shallow: 0.0196, go_hook: 0.0433, go_hitch: 0.0433, hitch_go: 0.0409, hitch_out: 0.0072, hitch_seam: 0.0409, comeback_seam: 0.019 },
+  core_share_given_room: { slant_flat: 0.0342, stick: 0.0337, slant_stick: 0.0133, quick_out_hitch: 0.0154, hitches: 0.0212, double_slants: 0.0301, hitch_quick_out: 0.0048, seam_slant: 0.0037, trips_hitch_flat: 0.0052, smash: 0.0196, curl_flat: 0.038, flood: 0.0058, dagger: 0.0136, levels_outside_deep: 0.0048, levels_outside_short: 0.0117, comeback_dig: 0.0079, fade_flat: 0.0473, hitch_post: 0.0161, double_outs: 0.0087, corner_out: 0.0131, corner_flat: 0.0182, trips_sail: 0.0037, seam_hitch: 0.0104, trips_outs: 0.0017, verts_hitch: 0.033, slant_go: 0.0213, slant_hitch: 0.0133, dig_shallow: 0.0203, go_hook: 0.045, go_hitch: 0.045, hitch_go: 0.0425, hitch_out: 0.0075, hitch_seam: 0.0425, comeback_seam: 0.0198 },
+  room: { slant_flat: 0.9936, stick: 0.9564, slant_stick: 0.9623, quick_out_hitch: 0.9623, hitches: 0.9623, double_slants: 0.9623, hitch_quick_out: 0.9623, seam_slant: 0.5599, trips_hitch_flat: 0.9564, smash: 0.9623, curl_flat: 0.9936, flood: 0.9564, dagger: 0.9623, levels_outside_deep: 0.9623, levels_outside_short: 0.9623, comeback_dig: 0.9623, fade_flat: 0.9936, hitch_post: 0.9623, double_outs: 0.9623, corner_out: 0.9623, corner_flat: 0.9936, trips_sail: 0.5599, seam_hitch: 0.5599, trips_outs: 0.5599, verts_hitch: 0.5599, slant_go: 0.9623, slant_hitch: 0.9623, dig_shallow: 0.9623, go_hook: 0.9623, go_hitch: 0.9623, hitch_go: 0.9623, hitch_out: 0.9623, hitch_seam: 0.9623, comeback_seam: 0.9623, go: 0.9994 },
   full_share: { mesh: 0.0326, drive: 0.0683, y_cross: 0.009, hitch_cross: 0.0017, post_cross: 0.0039, four_verts: 0.0089 },
   mesh_outside: { SHALLOW: 0.5191, GO: 0.1383, POST: 0.0681, 'IN8+': 0.0638, 'HITCH8+': 0.0489, CORNER: 0.034, 'OUT8+': 0.034, SLANT: 0.0319, 'HITCH<8': 0.0191, 'OUT<8': 0.017, 'IN<8': 0.0106, PROTECT: 0.0043, 'CROSS-deep': 0.0043, FLAT: 0.0043, SCREEN: 0.0021 },
   mesh_back: { flat: 0.3872, empty: 0.234, wheel: 0.1277, stay: 0.1191, angle: 0.0851, out: 0.0298, other: 0.017 },

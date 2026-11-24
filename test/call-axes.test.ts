@@ -18,7 +18,7 @@ const has = <T>(opts: { value: T }[] | undefined, f: (v: T) => boolean) => !!opt
 describe('CALL_COMPOSE step 2: the axes', () => {
   it('the shares are the NFL block of config/call-shares.json', () => {
     const cfg = JSON.parse(readFileSync(new URL('../config/call-shares.json', import.meta.url), 'utf8')).NFL;
-    for (const k of ['core_share', 'full_share', 'mesh_outside', 'mesh_back', 'core_partner', 'core_back'] as const)
+    for (const k of ['core_share', 'core_share_given_room', 'room', 'full_share', 'mesh_outside', 'mesh_back', 'core_partner', 'core_back'] as const)
       expect(NFL_CALL_SHARES[k], k).toStrictEqual(cfg[k]);
   });
 

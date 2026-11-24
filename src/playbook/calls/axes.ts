@@ -114,11 +114,13 @@ function axesOf(c: Composition): Axes {
 
 export const AXES: Record<string, Axes> = Object.fromEntries(Object.values(COMPOSITION_BY_ID).map((c) => [c.id, axesOf(c)]));
 
-/** The composition's NFL share: its strong half's core, or its full-field pattern. */
+/** The composition's NFL share: its strong half's core among the plays whose formation has room for it, or its
+ * full-field pattern. Conditional, because CONCEPT_FIT already offers a half only where the formation carries it: an
+ * unconditional share would let the concepts that fit every formation absorb the trips concepts' weight on 2x2 snaps. */
 export function nflShare(id: string): number | undefined {
   const c = COMPOSITION_BY_ID[id];
   if (!c || c.family === 'playaction') return undefined;
-  return 'full' in c.routes ? N.full_share[c.routes.full] : N.core_share[c.routes.strong];
+  return 'full' in c.routes ? N.full_share[c.routes.full] : N.core_share_given_room[c.routes.strong] ?? N.core_share[c.routes.strong];
 }
 const SHARES = Object.keys(COMPOSITION_BY_ID).map(nflShare).filter((v): v is number => v !== undefined);
 const MEAN_SHARE = SHARES.reduce((s, v) => s + v, 0) / SHARES.length;

@@ -77,6 +77,22 @@ export const CALL_MIX_PREF: Record<CallBucket, Record<RouteClass, number>> = {
   '3rd_long': { quick: 0.856, flat: 0.882, cross: 1.055, breaking: 1.178, vertical: 1.066 },
 };
 
+/** NFL routes per bucket in the fit (config/call-mix.json fit.n_nfl_routes): the buckets' weights in the NFL's dropbacks. */
+export const CALL_MIX_BUCKET_N: Record<CallBucket, number> = {'1st': 5675, '2nd_short': 473, '2nd_med': 1512, '2nd_long': 3279, '3rd_short': 1043, '3rd_med': 1701, '3rd_long': 1891};
+
+/** CALL_COMPOSE (src/playbook/calls/axes.ts): the preference as a situational tilt only. CALL_MIX_PREF was fitted to
+ * correct an equal-weight pool's route mix; a composed call's base weight is already its NFL share, so the pool
+ * correction would count twice (it lifts quick and vertical concepts and sinks breaking ones on every down). Dividing
+ * each class by its NFL-weighted geometric mean over the buckets keeps what the situation adds (3rd and long favours the
+ * break at the sticks) and averages 1 per class. */
+export const CALL_MIX_TILT: Record<CallBucket, Record<RouteClass, number>> = (() => {
+  const buckets = Object.keys(CALL_MIX_PREF) as CallBucket[];
+  const total = buckets.reduce((s, b) => s + CALL_MIX_BUCKET_N[b], 0);
+  const mean = Object.fromEntries(ROUTE_CLASSES.map((k) => [k,
+    Math.exp(buckets.reduce((s, b) => s + (CALL_MIX_BUCKET_N[b] / total) * Math.log(CALL_MIX_PREF[b][k]), 0))])) as Record<RouteClass, number>;
+  return Object.fromEntries(buckets.map((b) => [b, Object.fromEntries(ROUTE_CLASSES.map((k) => [k, CALL_MIX_PREF[b][k] / mean[k]]))])) as Record<CallBucket, Record<RouteClass, number>>;
+})();
+
 /** The coordinator's preference for this concept in this down and distance. */
 export function callMixWeight(c: PassConcept, down: number, distance: number, pref = CALL_MIX_PREF): number {
   const p = pref[callBucket(down, distance)];

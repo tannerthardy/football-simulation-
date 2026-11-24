@@ -28,7 +28,7 @@ import type { Coverage, DefPersonnelId, DefSlot, DefensivePlayCall, Formation, M
 import { DEF_PERSONNEL, OFF_PERSONNEL } from '../playbook/types.js';
 import { alignStyle, pickOffense, type CoverageSystem, type Team } from '../league/team.js';
 import { motionEnabled } from '../sim/motion.js';
-import { CALL_MIX, callMixWeight } from './call-mix.js';
+import { CALL_MIX, CALL_MIX_TILT, callMixWeight } from './call-mix.js';
 import { asBackThree, backIsThree, CONCEPT_FIT, conceptFits, fieldRefs } from './concept-fit.js';
 import { derivePhysical } from '../players/physical.js';
 
@@ -610,7 +610,8 @@ export class OffensiveCoordinator {
       }
       w *= this.learned(`pass:${c.family}:${c.id}`);
       // CALL_MIX: the route classes this down and distance calls for (src/game/call-mix.ts).
-      if (CALL_MIX) w *= callMixWeight(c, s.down, s.distance);
+      // Under CALL_COMPOSE only its situational tilt: the base weight is already the NFL share (call-mix.ts CALL_MIX_TILT).
+      if (CALL_MIX) w *= callMixWeight(c, s.down, s.distance, CALL_COMPOSE ? CALL_MIX_TILT : undefined);
       weights.push([c, w]);
     }
     void defense;
