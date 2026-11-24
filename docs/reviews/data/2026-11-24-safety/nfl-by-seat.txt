@@ -1,0 +1,17 @@
+
+## run
+
+## play action
+  deep middle        n   239: first backward 68%, lateral-in 25%, lateral-out 5%, downhill 1% | depth +0.3 / +1.0 / +2.1 / +3.7 | width -0.1 / -0.4 / -0.8 / -1.1
+  deep half          n   193: first backward 69%, lateral-out 27%, lateral-in 4%, downhill 1% | depth +0.4 / +1.1 / +2.2 / +3.8 | width +0.2 / +0.6 / +1.2 / +1.8
+  quarter            n   245: first backward 54%, lateral-in 20%, lateral-out 15%, downhill 11% | depth +0.1 / +0.4 / +1.0 / +2.0 | width +0.0 / +0.0 / +0.0 / -0.1
+  man                n   143: first downhill 38%, lateral-out 28%, lateral-in 24%, backward 9% | depth -0.1 / -0.4 / -0.6 / -0.8 | width +0.0 / -0.1 / -0.4 / -0.2
+  underneath / other n   433: first downhill 37%, backward 22%, lateral-out 22%, lateral-in 18% | depth -0.1 / -0.3 / -0.4 / -0.2 | width -0.0 / -0.0 / +0.1 / +0.5
+
+## dropback
+  deep middle        n   494: first backward 75%, lateral-in 18%, lateral-out 5%, downhill 1% | depth +0.4 / +1.1 / +2.3 / +3.9 | width -0.1 / -0.4 / -0.9 / -1.4
+  deep half          n   665: first backward 75%, lateral-out 21%, lateral-in 3%, downhill 0% | depth +0.4 / +1.3 / +2.6 / +4.2 | width +0.1 / +0.5 / +1.1 / +1.8
+  quarter            n   792: first backward 67%, lateral-out 17%, lateral-in 13%, downhill 3% | depth +0.2 / +0.5 / +1.3 / +2.3 | width +0.0 / +0.1 / +0.1 / +0.2
+  deep third         n    32: first backward 56%, lateral-out 38%, downhill 3%, lateral-in 3% | depth +0.2 / +0.6 / +1.7 / +3.1 | width +0.1 / +0.4 / +0.8 / +1.4
+  man                n   580: first backward 32%, lateral-out 29%, downhill 21%, lateral-in 17% | depth -0.0 / +0.0 / +0.4 / +1.0 | width +0.0 / +0.1 / +0.2 / +0.2
+  underneath / other n  1297: first backward 39%, lateral-out 24%, downhill 21%, lateral-in 16% | depth +0.0 / +0.2 / +0.7 / +1.4 | width +0.0 / +0.1 / +0.2 / +0.3

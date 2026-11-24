@@ -1,0 +1,44 @@
+safety-plays 2194
+
+## run: n 689: lateral-in 45%, backward 26%, lateral-out 23%, downhill 6%
+  lateral first, by label at the move: deep-read 176, (zone) 97, deep-open-carry 57, man-pedal 49, (man) 41, zone-landmark 20, lane-hold 8, man-slowplay 4
+  lateral first, by role: deep_mid 130, man 86, deep_half_w 62, deep_half_s 42, quarter_w_in 39, curl_flat_s 39, quarter_s_in 28, hook_s 19
+  lateral first, by coverage family: cover3 146, cover1 90, cover2 63, cover4 56, cover0 49, tampa2 28, cover6 27, cover2man 8
+  by role group: share lateral first / depth change at 0.5 / 1.0 / 1.5 / 2.0 s / width change (out +) at 0.5 / 1.0 / 1.5 / 2.0 s
+    deep middle        n  168: lateral  77% | depth +0.2 / +0.3 / -0.2 / -0.9 | width -0.4 / -1.6 / -2.2 / -2.2
+    deep half          n  138: lateral  75% | depth +0.1 / +0.5 / +0.4 / -0.2 | width +0.2 / +0.4 / -0.2 / -1.0
+    quarter            n  117: lateral  57% | depth +0.2 / +0.5 / +0.4 / -0.6 | width +0.0 / -0.3 / -1.4 / -1.9
+    underneath / other n  140: lateral  56% | depth +0.0 / +0.1 / -0.7 / -1.6 | width -0.2 / -0.6 / -0.8 / -0.8
+    man                n  121: lateral  71% | depth +0.0 / +0.3 / +0.3 / +0.1 | width -0.1 / -0.2 / -0.3 / -0.3
+
+## play action: n 358: lateral-in 48%, backward 30%, lateral-out 18%, downhill 5%
+  lateral first, by label at the move: deep-read 123, man-pedal 38, deep-open-carry 30, (zone) 18, zone-landmark 11, man-open-carry 4, lane-hold 4, man-slowplay 2
+  lateral first, by role: deep_mid 89, deep_half_w 24, curl_flat_s 22, deep_half_s 19, man 19, quarter_s_in 17, hook_s 14, quarter_w_in 12
+  lateral first, by coverage family: cover3 113, cover1 35, cover6 27, cover4 16, cover2 15, cover0 11, tampa2 10, cover2man 7
+  by role group: share lateral first / depth change at 0.5 / 1.0 / 1.5 / 2.0 s / width change (out +) at 0.5 / 1.0 / 1.5 / 2.0 s
+    deep middle        n  109: lateral  82% | depth +0.1 / +0.4 / +1.3 / +2.7 | width -0.4 / -1.7 / -2.7 / -2.7
+    deep half          n   57: lateral  75% | depth +0.1 / +0.6 / +1.9 / +3.3 | width +0.2 / +0.4 / +1.6 / +1.6
+    quarter            n   51: lateral  57% | depth +0.2 / +0.5 / +1.0 / +2.3 | width +0.1 / +0.1 / -0.2 / -0.2
+    underneath / other n   73: lateral  64% | depth +0.0 / +0.4 / +0.6 / +0.8 | width -0.2 / -0.9 / -1.4 / -1.0
+    man                n   54: lateral  35% | depth +0.0 / +0.5 / +1.4 / +2.3 | width -0.1 / -0.2 / -0.1 / -0.1
+
+## dropback: n 1055: lateral-in 43%, backward 28%, lateral-out 26%, downhill 3%
+  lateral first, by label at the move: deep-read 381, deep-open-carry 135, man-pedal 121, zone-landmark 43, lane-hold 16, man-open 9, spot-drop 7, man-open-carry 5
+  lateral first, by role: deep_mid 223, deep_half_w 103, man 91, deep_half_s 77, quarter_w_in 58, quarter_s_in 55, hook_s 45, curl_flat_s 45
+  lateral first, by coverage family: cover3 237, cover1 158, cover2 96, cover4 93, cover6 54, tampa2 47, cover0 35, cover2man 14
+  by role group: share lateral first / depth change at 0.5 / 1.0 / 1.5 / 2.0 s / width change (out +) at 0.5 / 1.0 / 1.5 / 2.0 s
+    deep middle        n  262: lateral  85% | depth +0.1 / +0.6 / +1.7 / +3.3 | width -0.4 / -1.8 / -3.0 / -3.6
+    deep half          n  222: lateral  81% | depth +0.1 / +0.5 / +1.7 / +3.2 | width +0.3 / +1.5 / +2.6 / +2.9
+    quarter            n  191: lateral  59% | depth +0.2 / +0.7 / +1.5 / +2.9 | width +0.0 / +0.0 / +0.1 / +0.5
+    underneath / other n  184: lateral  66% | depth +0.0 / +0.3 / +0.7 / +1.0 | width -0.3 / -0.9 / -1.3 / -1.3
+    man                n  182: lateral  50% | depth +0.0 / +0.5 / +1.3 / +2.6 | width -0.0 / -0.1 / -0.1 / -0.2
+
+## screen: n 85: lateral-in 44%, backward 31%, lateral-out 25%, downhill 1%
+  lateral first, by label at the move: deep-read 24, deep-open-carry 12, man-pedal 6, (zone) 6, zone-landmark 4, man-open-carry 3, man-slowplay 2, spot-drop 1
+  lateral first, by role: deep_mid 18, curl_flat_s 7, deep_half_w 7, deep_half_s 7, quarter_s_in 5, quarter_w_in 5, hook_s 4, man 4
+  lateral first, by coverage family: cover3 25, cover2 8, cover4 7, cover1 7, cover6 5, cover2man 2, tampa2 2, cover0 2
+  by role group: share lateral first / depth change at 0.5 / 1.0 / 1.5 / 2.0 s / width change (out +) at 0.5 / 1.0 / 1.5 / 2.0 s
+    deep middle        n   24: lateral  75% | depth +0.1 / +0.7 / +1.4 / +1.8 | width -0.4 / -1.6 / -2.6 / -2.6
+    deep half          n   15: lateral  93% | depth +0.0 / +0.5 / +1.4 / +2.6 | width -0.2 / -0.9 / -1.1 / -1.8
+    quarter            n   17: lateral  59% | depth +0.1 / +0.6 / +1.3 / +1.3 | width +0.2 / +0.5 / +1.1 / +1.0
+    underneath / other n   21: lateral  52% | depth +0.2 / +0.6 / +1.1 / +0.1 | width -0.2 / -0.8 / -0.6 / -0.2
