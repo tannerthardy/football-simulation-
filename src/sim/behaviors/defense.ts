@@ -113,11 +113,15 @@ export const SQUAT_SINK = process.env.SQUAT_SINK === '1';
  * plays catch feet (holds his depth, gives ground only as #1 closes to a yard, never past 5 yd), facing him; within his
  * reach the palm goes on (press-contact.ts: the same World hands joint, palm-follow and swipe as press man; from his
  * outside shade it pushes #1 inside). The jam ends when #1 is level with him or by him, past 5 yd, cancels, on a run read
- * or a throw; then the sink. With it the sink plays the hole only: the flat is conceded until the ball is thrown there
- * (FLIGHT_BREAK) or #1 stops climbing and a flat threat takes him to his flat zone play (SQUAT_SINK's exits). */
+ * or a throw; then the sink (whose hole-only spot is now C2_CONCEDE, split out to attribute it). */
 export const C2_JAM = process.env.C2_JAM === '1';
 /** C2_JAM: his outside shade on #1 (yd) and how far he gives ground as #1 closes (catch feet). */
 const JAM_SHADE = 0.6, JAM_GIVE = 1.0;
+/** C2_JAM_STEP (attempt 2, with C2_JAM): on #1's release as he sees it (past the line, climbing over 1.5 yd/s), the corner
+ * commits to stepping up to meet him so the hands meet inside the legal 5 yd (about 3 yd), not at his 4.5 yd alignment
+ * where only the last half-yard was left: his catch depth becomes #1's seen depth plus his reach, floored at 2 yd. A
+ * release he reads late beats him (the technique's cost). Kept once entered. */
+const C2_JAM_STEP = process.env.C2_JAM_STEP === '1';
 /** SQUAT_SIT (experimental, off; with SQUAT_SINK; Coverage C14 2026-11-24, the staged quick-outs-vs-Cover-2 case): the
  * squat corner sinks only while #1 threatens the hole. When #1, as he sees him, turns out under the hole (his seen
  * outward speed over max(1.5, 0.5 x his upfield speed), past 1 yd and short of the hole depth; read ahead of #1's
@@ -127,6 +131,11 @@ const JAM_SHADE = 0.6, JAM_GIVE = 1.0;
  * if #1 turns back up (upfield over 1.5 x outward and over 3 yd/s, the far side of the entry). Off, the sink held until
  * #1 climbed under 1 yd/s, which a rounded out never does before the throw. */
 const SQUAT_SIT = process.env.SQUAT_SIT === '1';
+/** C2_CONCEDE (experimental, off; with SQUAT_SINK; split from C2_JAM 2026-11-24 to attribute it): the sink plays the hole
+ * only; the flat is conceded until the ball is thrown there (FLIGHT_BREAK) or #1 stops climbing and a flat threat takes
+ * him to his flat zone play (SQUAT_SINK's exits). Off, the sink's spot is SQUAT_SINK v2's minimax between the hole and
+ * flat windows. Taught Cover 2 (Bowen; Ratledge): the corner does not cover the flat before the ball. */
+const C2_CONCEDE = process.env.C2_CONCEDE === '1';
 /** Is this call's flat seat played by SQUAT_SINK (every Cover 2 form, Cover 6/8 half side, cloud; not Deuce's palms or DOT)?
  * The flag is read per call (not only at import) so a diagnostic replay can switch it for one play of a game. */
 export function squatSinkCall(sim: PlaySim): boolean {
@@ -2058,6 +2067,8 @@ export class ZoneCoverage implements Behavior {
   /** C2_JAM: the receiver he is jamming (read by press-contact.ts), and whether his jam phase is over for this play. */
   jamOn: Agent | null = null;
   private jamDone = false;
+  /** C2_JAM_STEP: committed to stepping up on #1's seen release. */
+  private jamStep = false;
   /** SQUAT_SIT: sitting on #1's out (entered on his out-turn under the hole, left when he turns back up). */
   private sitting = false;
   /**
@@ -2086,9 +2097,12 @@ export class ZoneCoverage implements Behavior {
       else {
         this.jamOn = one;
         a.tags.add('jam');
-        const tx = sim.los + dir * Math.min(5, Math.max(myDepth, oDepth + JAM_GIVE)), ty = o.pos.y + outside * JAM_SHADE;
+        if (C2_JAM_STEP && !this.jamStep && oDepth > 0 && oUp > 1.5) this.jamStep = true;
+        const reachYd = a.profile.radius + one.profile.radius + a.player.measurables.armIn / 36 * 0.45;
+        const tx = this.jamStep ? sim.los + dir * Math.max(2, Math.min(myDepth, oDepth + reachYd))
+          : sim.los + dir * Math.min(5, Math.max(myDepth, oDepth + JAM_GIVE)), ty = o.pos.y + outside * JAM_SHADE;
         return withFacingTechnique(track(a, { x: tx, y: clamp(ty, 0.5, FIELD_WIDTH - 0.5) }, { x: 0, y: o.vel.y },
-          { facing: angleTo(a.pos, o.pos), speed: 0.7, gain: 1.6 }), { label: 'jam-catch', key: o.vel });
+          { facing: angleTo(a.pos, o.pos), speed: this.jamStep ? 0.9 : 0.7, gain: 1.6 }), { label: this.jamStep ? 'jam-step' : 'jam-catch', key: o.vel });
       }
     }
     if (!this.squatSinking) this.squatSinking = !this.oneCancelled && !believesRun(sim, a) && oDepth >= 0.5 && oUp > 2.5 && oUp > 1.5 * oAcross;
@@ -2164,7 +2178,7 @@ export class ZoneCoverage implements Behavior {
     }
     let to: Vec2;
     const holeT = { x: sim.los + dir * Math.min(oDepth - SQUAT_UNDER, SQUAT_HOLE), y: o.pos.y + outside * 0.5 };
-    if (!threat || C2_JAM) to = { x: sim.los + dir * Math.max((holeT.x - sim.los) * dir, myDepth - 0.5), y: holeT.y };
+    if (!threat || C2_CONCEDE) to = { x: sim.los + dir * Math.max((holeT.x - sim.los) * dir, myDepth - 0.5), y: holeT.y };
     else {
       // The corner's hole shot is the ball under the safety, at the card's hole depth (row 5b: 10-12 yd); a ball beyond it
       // is the safety's, so #1's window is held to that depth on his line.
