@@ -66,6 +66,9 @@ const QB_SEEN_MAN = process.env.QB_SEEN_MAN !== '0';
  * screen look and the quick check. Off: the memory was seeded with each defender's exact position, and each of the four
  * reads drew fresh noise around the true positions, so he held four different pictures and an exact one. */
 const QB_SCAN = process.env.QB_SCAN !== '0';
+/** SCOUT_SEEN (leak removal, on; `=0` restores): the offense's in-game coverage scouting learns from its passer's belief
+ * (CoverageScouting.observeSeen), not the defense's call. */
+export const SCOUT_SEEN = process.env.SCOUT_SEEN !== '0';
 /** QB_CANON_SEEN (on, a leak removal; QB_CANON_SEEN=0 restores; QB decision plan §1.6): the looks he compares against are
  * built only from what he can see. The defense's personnel (who is on the field) and its front's alignment (the front, the
  * end men's edge, its strength, a mug or a Sam walked onto the line) are visible; the slot labels of the actual call and
@@ -106,6 +109,27 @@ export class CoverageScouting {
   private n = 0;
   private disguised = 0;
   constructor(private readonly strength = 12) {}
+
+  /**
+   * SCOUT_SEEN (leak removal, on; Flex, 2026-11-24; an outside review's leak, confirmed by Integration): what the offense
+   * learns of a defense's coverage on a pass play is what its passer came to believe, not the call. His belief at the end of
+   * the play is counted, weighted by how settled it was (his top coverage's share): a passer sacked at 1.8 s on a muddled
+   * picture teaches the offense little. A disguise is counted when the shell he read before the snap is not the shell he
+   * believed after it. The booth (coaches upstairs naming the coverage between plays) is a second, real channel, left for
+   * the information-flow work; it is not assumed here.
+   */
+  observeSeen(belief: Record<string, number>, preTop: string): void {
+    let top = '', best = -1;
+    for (const [id, p] of Object.entries(belief)) if (p > best) { best = p; top = id; }
+    if (best <= 0) return;
+    for (const [id, p] of Object.entries(belief)) {
+      const rep = repOf(COVERAGE_BY_ID[id] ?? COVERAGES[0]);
+      this.counts[rep] = (this.counts[rep] ?? 0) + best * p;
+    }
+    this.n += best;
+    const shell = (id: string) => COVERAGE_BY_ID[id]?.shell;
+    if (shell(preTop) && shell(top) && shell(preTop) !== shell(top)) this.disguised += best;
+  }
 
   observe(call: DefensivePlayCall): void {
     const rep = repOf(call.coverage);
