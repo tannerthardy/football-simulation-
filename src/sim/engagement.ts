@@ -343,7 +343,7 @@ function baseOf(a: Agent): number {
 
 // ------------------------------------------------------------ creation
 
-/** BLOCK_FRAME (experimental, off; BLOCK_FRAME=1 turns it on). A blocker gets back on a defender who has already been
+/** BLOCK_FRAME (on since engine-101; BLOCK_FRAME=0 restores). A blocker gets back on a defender who has already been
  * released from a block this play only from where a block is legal: inside his frame (the blocker within 90 deg of his
  * body facing: his chest and shoulders, not his back). The 90 deg half-plane is a labeled choice.
  * From anywhere else, getting a hand on him is a grab, not a block: the blocker may still choose it, by the same
@@ -354,7 +354,7 @@ function baseOf(a: Agent): number {
  * had hands back on them within 0.5 s, 36 of 37 by a new blocker, 31 of 37 from beside or behind him; createEngagement
  * clamped phi to +-0.95, so a blocker from behind got the block of one at the hip, never a hold and never a call.
  * Initial fits (a defender not yet released this play) are unchanged. */
-export const BLOCK_FRAME = process.env.BLOCK_FRAME === '1';
+export const BLOCK_FRAME = process.env.BLOCK_FRAME !== '0';
 const engagedBefore = new WeakMap<Agent, PlaySim>();
 /** BLOCK_FRAME diagnostics (read-only; behaviour does not depend on it): called at each re-block outside the frame with
  * the blocker's choice (true = a grab, false = no block). */

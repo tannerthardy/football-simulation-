@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "engine-100",
+  "id": "engine-101",
   "runSet": {
     "commit": "1b5415de99b5b7194eff045f3c37a07a4c54c1a9",
     "seeds": [
@@ -242,7 +242,7 @@
     "PAST_ALONG_PATH": "on",
     "PUNCH": "on",
     "HOLD_CALL": "off",
-    "BLOCK_FRAME": "off",
+    "BLOCK_FRAME": "on",
     "TACKLE_BRAKE": "off",
     "TACKLE_RESET": "off",
     "RUSH_HANDS": "off",

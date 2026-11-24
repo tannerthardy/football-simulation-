@@ -611,6 +611,26 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
 
 
+## engine-101: a blocker gets back on a released defender only from his frame (2026-11-24)
+
+On: `BLOCK_FRAME` (Defense; `=0` restores). Legality is the frame: a defender already released from a block this play
+is blocked again only from inside his frame (the blocker within 90 deg of his body facing: chest and shoulders, not his
+back; a labeled choice). From anywhere else a hand on him is a grab, not a block: the blocker may choose it by the same
+discipline-and-situation chance a beaten blocker grabs with (holdChance, as tryHold), decided once per pair per play,
+and the engagement forms with the hold on; otherwise he does not re-block that man. A hold persists while his hands
+stay on and the defender is within block reach. The persistent hold is the officiating half of the Phase 2 grip
+(Tools' push-contest and blocking-physics plan): it decides what is legal and what is called, not who wins the rep;
+contact-holding judges the restraint the grab achieves. Initial fits are unchanged.
+Why (post-shed-joint-tap.mts, develop 7689bc4e, 4 games): 6% of run DL releases had hands back on them within 0.5 s,
+36 of 37 by a new blocker and 31 of 37 from beside or behind; createEngagement clamped phi to +-0.95, so a blocker
+from behind got the block of one at the hip, never a hold and never a call. Two first-attempt geometry flaws were
+fixed before the card (phi on the run drive axis; a travel-based path that refused legal blocks on square defenders).
+Also fixed on the way: contact-holding's effect is already yd/s (the unit fix), and a hold lasting one tick.
+Card e138 (5 seeds x 32 games, frame arm against the reference): completion -2.6 to +2.2, yards per attempt -0.34 to
++0.20, rush yards per carry -0.21 to +0.03, run stuffs -3.3 to +1.2; no row moves the same way across seeds.
+Tests: inline-zone-keeper's fixture faces the defender to his blocker; responsibility-ledger M10-P081's stratum reads
+`U` with the flag on. Off hash = develop.
+
 ## engine-100: the offense scouts the coverage from what its passer saw (2026-11-24)
 
 `SCOUT_SEEN` on (Flex; `=0` restores). The offense's in-game coverage scouting was fed the defense's true call after
