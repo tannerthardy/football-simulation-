@@ -291,11 +291,11 @@ function leverageMagnitude(a: Agent, y: number): number {
   return (0.5 + 1.7 * near) * (0.55 + 0.45 * a.r('pursuit'));
 }
 
-/** TRAIL_LEVERAGE (on since engine-98; TRAIL_LEVERAGE=0 restores). The second man to the ball does not run up the first
+/** TRAIL_LEVERAGE (experimental, off; TRAIL_LEVERAGE=1 turns it on). The second man to the ball does not run up the first
  * man's back: a pursuer who sees a teammate ahead of him on the same carrier (nearer the carrier, on his own line to
  * him, closing on him and not yet on him) takes his shoulder on the side that teammate does not take, rather than
  * the same side; it fades with his distance as every pursuer's shade does, so the two men converge from either side. When that teammate is no longer ahead of him in his picture (beaten,
- * passed, off the line, or on the carrier), the trail is released and the ordinary fading shade brings him in.
+ * passed, off the line, or on the carrier), the trail is released; he keeps the shoulder he took, fading as he closes.
  *
  * Why (test/pursuit-commit.test.ts's 3-8 yd band on #882 2de8a3c98, intents before/after the spacing pass): the
  * spacing pass changed 170 band requests (commitment off) and 136 (on); 54-59% were cut off a pursuer of the same
@@ -308,7 +308,7 @@ function leverageMagnitude(a: Agent, y: number): number {
  * past the lead, the lead down, or the lead on a stopped carrier (the tackle on). The side is decided on entry
  * (away from the lead's side of the carrier; his ordinary leverage side when the lead is square behind him) and held
  * until the lead shows 0.5 yd on that side. Magnitude: the existing leverage magnitude and distance fade (no new constant). */
-export const TRAIL_LEVERAGE = process.env.TRAIL_LEVERAGE !== '0';
+export const TRAIL_LEVERAGE = process.env.TRAIL_LEVERAGE === '1';
 const LEAD_ENTER = 0.5, LEAD_ANGLE_IN = Math.PI / 4, LEAD_ANGLE_OUT = Math.PI / 3, SIDE_MARGIN = 0.5;
 const trailState = new WeakMap<Agent, { target: Agent; lead: Agent | null; side: number; t: number; out: number | null }>();
 /** TRAIL_LEVERAGE diagnostics (read-only): his current trail lead and side, or null. Behaviour does not depend on it. */
@@ -334,14 +334,14 @@ function trailShade(sim: PlaySim, a: Agent, target: Agent, seenC: { pos: Vec2; v
   if (s.lead) {
     const r = read(s.lead);
     // Released on what he sees settle the lead's try, not on the lead's arrival: the carrier past the lead (along the
-    // carrier's travel, by RELEASE_PAST), the lead down, or the lead on the carrier with the carrier stopped (the tackle
+    // carrier's travel, by RELEASE_PAST), the lead seen down, or the lead on the carrier with the carrier stopped (the tackle
     // is on: he comes in to finish it). Or the trail's other perceived exits: he is now nearer, the lead is off his
     // line, or the lead is moving away. (Attempt 2 also released at the lead's arrival within contact: 9% of releases,
     // 145 of 1561, came with the lead up, within 1.2 yd and the carrier not past him.)
     const cv = seenC.vel, cs = Math.hypot(cv.x, cv.y);
     const past = cs > 1 && ((r.sb.pos.x - seenC.pos.x) * cv.x + (r.sb.pos.y - seenC.pos.y) * cv.y) / cs < -RELEASE_PAST;
     const tackleOn = r.dB <= contact && cs < STOPPED;
-    if (dA - r.dB < 0 || r.off > LEAD_ANGLE_OUT || r.closing < 0 || past || s.lead.isDown(sim.t) || tackleOn) s.lead = null;
+    if (dA - r.dB < 0 || r.off > LEAD_ANGLE_OUT || r.closing < 0 || past || r.sb.pose === 'down' || tackleOn) s.lead = null;
     else {
       const lat = r.sb.pos.y - seenC.pos.y;
       if (Math.sign(lat) === s.side && Math.abs(lat) > SIDE_MARGIN) s.side = -s.side;
@@ -364,7 +364,12 @@ function trailShade(sim: PlaySim, a: Agent, target: Agent, seenC: { pos: Vec2; v
   // The trail man's shoulder fades with his own distance, as every pursuer's does, so he still closes to finish; it is
   // only on the other side from the lead. (Attempt 1 held it unfaded: catch attempts from trail went in from 1.19 yd
   // and missed 15% vs 4%, and with the second man held 1.6 yd wide the lead's run attempts missed 28% vs 15%.)
-  s.out = s.lead ? s.side * leverageMagnitude(a, seenC.pos.y) * clamp((dA - contact) / 6, 0, 1) : null;
+  // Released, he keeps the shoulder he took on this carrier (same magnitude and fade) and does not cross back to the
+  // generic inside shade: a man who has taken a side keeps his leverage. Swapping at release snapped his steering point
+  // across the carrier: pursuit-commit's 3-8 yd band, in the 0.6 s after a release, his decided request turned a median
+  // 20.1 deg/s against 4.5 with the shade inert (the band as a whole 19.6 against 11.4 with the flag off); kept, 6.8,
+  // and the band 14.9. A new lead re-chooses the side; a new carrier starts afresh.
+  s.out = s.side !== 0 ? s.side * leverageMagnitude(a, seenC.pos.y) * clamp((dA - contact) / 6, 0, 1) : null;
   if (s.lead) a.tags.add('trail-leverage');
   return s.out;
 }
@@ -517,8 +522,10 @@ function aroundBodies(sim: PlaySim, a: Agent, target: Agent, runner: import('../
   const toRunner = Math.hypot(runner.pos.x - a.pos.x, runner.pos.y - a.pos.y);
   let block: { x: number; y: number; d: number; r: number } | null = null;
   for (const o of sim.opponents(a)) {
-    if (o === target || o.isDown(sim.t)) continue;
+    if (o === target) continue;
+    // Down on his picture of the body, not the body's true state.
     const seen = sim.see(a, o, look);
+    if (seen.pose === 'down') continue;
     const rx = seen.pos.x - a.pos.x, ry = seen.pos.y - a.pos.y, d = Math.hypot(rx, ry);
     const r = a.profile.radius + o.profile.radius + AROUND_MARGIN;
     const along = rx * ux + ry * uy;

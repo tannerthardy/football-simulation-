@@ -13,7 +13,10 @@ const stackOn = Object.entries(JSON.parse(readFileSync(new URL('../config/refere
 afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 
 const sim_dt = 1 / 20;
-const PLAYS = [['iz_strong', 3], ['power', 7], ['oz_strong', 11], ['iz_weak', 19]] as const;
+// Re-found 2026-11-24 for engine-98 (TRAIL_LEVERAGE on): iz_strong 3's carrier now reaches 1.41 yd past the line (2.21
+// with the trail off; the second pursuer takes the other shoulder) and iz_weak 19's never reached it (-1.84 either way),
+// so two scenes that cross with room in both arms are added: iz_strong 23 (3.10 / 3.13) and oz_strong 13 (2.27 / 2.27).
+const PLAYS = [['iz_strong', 3], ['power', 7], ['oz_strong', 11], ['iz_weak', 19], ['iz_strong', 23], ['oz_strong', 13]] as const;
 
 async function fumbles(on: boolean): Promise<{ first: number[]; atOnce: number; lateAt25: number; n: number; lost: number; others: number }[]> {
   for (const f of stackOn) vi.stubEnv(f, '1');

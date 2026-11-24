@@ -29,7 +29,11 @@ const TRAIL: Case[] = [
   { coverage: 'cover1', concept: 'mesh', formation: 'gun_doubles_11', seed: 10, flip: false, staged: { at: 1.75, slot: 'Y', aim: { x: 43.93517692229286, y: 29.152697579963142, z: 1.203423769957923 }, T: 0.7516468371986261 } },
   { coverage: 'cover1', concept: 'mesh', formation: 'gun_trips_11', seed: 11, flip: false, staged: { at: 2.55, slot: 'H', aim: { x: 44.66199109746469, y: 27.47384832103233, z: 1.1084586927141817 }, T: 0.7960112743105804 } },
 ];
-const CONTROL: Case = { coverage: 'cover1', concept: 'mesh', formation: 'gun_doubles_11', seed: 2, flip: false, staged: { at: 1.75, slot: 'Y', aim: { x: 44.342182796878774, y: 28.737207826607396, z: 1.053565279262162 }, T: 0.5741794636999107 } };
+// Control re-found 2026-11-24 (engine-98, Defense) by the rule above, on the current engine with this file's pins: the
+// recorded control (s2, throw at 1.75) no longer closed (off -1.29, on -1.57: it passed by 0.02 on develop 67f7cec1 and
+// failed by 0.03 with TRAIL_LEVERAGE on). The first cover1 doubles catch that closes at over 0.3 is now s1, no flip,
+// with the QB's own throw (natural 2.60, staged off 2.60 / on 2.47, the same with TRAIL_LEVERAGE on or off).
+const CONTROL: Case = { coverage: 'cover1', concept: 'mesh', formation: 'gun_doubles_11', seed: 1, flip: false, staged: { at: 1.85, slot: 'Y', aim: { x: 43.78501828308758, y: 25.274891633349522, z: 1.114483431235362 }, T: 0.6759220785016771 } };
 
 /** His own man defender's closing speed on the catcher (yd/s), mean over 0.1-0.4 s after the secure event. */
 async function closing(flag: string, c: Case): Promise<number> {
