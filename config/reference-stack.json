@@ -208,6 +208,7 @@
     "LEGS_HELD": "on",
     "PICTURE_AGE": "off",
     "PERIPH_ACUITY": "on",
+    "CONCEPT_TAUGHT": "off",
     "FLIGHT_BREAK": "on",
     "FLIGHT_LEAD": "off",
     "HEAD_FOLLOW": "on",

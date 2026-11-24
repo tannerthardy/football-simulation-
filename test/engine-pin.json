@@ -200,6 +200,7 @@
   "test/compile-picture.test.ts",
   "test/concept-drops.test.ts",
   "test/concept-fit.test.ts",
+  "test/concept-taught.test.ts",
   "test/constraint-work.test.ts",
   "test/contact-anatomy.test.ts",
   "test/contact-angular-transfer.test.ts",
