@@ -6,7 +6,7 @@ import { STUB_SLANT_FLAT, type ThrowOption } from '../src/sim/qbv2/plan.js';
 
 function senses(over: Partial<CycleSenses> & { now: number }, P: Record<string, number> = {}, cue: string | null = null): CycleSenses {
   return {
-    plantAt: 1.0, stride: 0.4, felt: 0, outside: false, tau: 0.2, need: 0.6, bar: { P: 0.6, risk: 0.05 },
+    plantAt: 1.0, stride: 0.4, felt: 0, outside: false, tau: 0.2, need: 0.6, bar: { P: 0.6, risk: 0.05 }, hotSide: null,
     inClear: () => true, canReach: () => true,
     judge: (o: ThrowOption): Judged | null => (o.ref in P ? { option: o, P: P[o.ref], risk: 0.01, reachesSticks: false } : null),
     keyCue: () => cue,

@@ -33,8 +33,10 @@ export interface CycleSenses {
   bar: { P: number; risk: number };
   /** D: judge one candidate throw on his picture now. */
   judge(o: ThrowOption): Judged | null;
-  /** For a key read: what the key is doing in his picture (null while he cannot tell). */
-  keyCue(role: string): string | null;
+  /** For a key read: what the key (by role and side) is doing in his picture (null while he cannot tell). */
+  keyCue(role: string, side: 'S' | 'W'): string | null;
+  /** The side he sees an unblocked rusher coming from (his picture), or null. */
+  hotSide: 'S' | 'W' | null;
 }
 
 /** What the cycle asks for this tick. */
@@ -78,11 +80,11 @@ export class Cycle {
   }
 
   /** The look target a read calls for. */
-  private target(r: PlanRead): LookTarget { return r.look.kind === 'receiver' ? { kind: 'receiver', ref: r.look.ref } : { kind: 'key', role: r.look.role }; }
+  private target(r: PlanRead): LookTarget { return r.look.kind === 'receiver' ? { kind: 'receiver', ref: r.look.ref } : { kind: 'key', role: `${r.look.side ?? 'S'}:${r.look.role}` }; }
 
   /** Throws of this read that clear his bar, in the taught order (a key's answer first), then the line to gain, then P. */
   private choose(s: CycleSenses, r: PlanRead): Judged | null {
-    const cue = r.look.kind === 'key' ? s.keyCue(r.look.role) : null;
+    const cue = r.look.kind === 'key' ? s.keyCue(r.look.role, r.look.side ?? 'S') : null;
     const named = cue ? r.keyRules?.find((k) => k.cue === cue)?.throwTo ?? null : null;
     const order = named ? [...r.throws].sort((a, b) => (a.ref === named ? -1 : b.ref === named ? 1 : 0)) : r.throws;
     const clear = order.map((o) => s.judge(o)).filter((j): j is Judged => !!j && j.P >= s.bar.P && j.risk <= s.bar.risk);
@@ -138,7 +140,10 @@ export class Cycle {
   /** The one ordered pressure response, by state (design §3.3). Null in a clean pocket and with the rush only felt. */
   private pressureResponse(s: CycleSenses): Intent | null {
     if (this.pressure === 'clean' || this.pressure === 'felt') return null;
-    if (this.plan.hot) { const j = s.judge(this.plan.hot.answer); if (j && j.P >= s.bar.P && j.risk <= s.bar.risk) return this.commit(s, { kind: 'throw', judged: j }); }
+    for (const h of this.plan.hot) {
+      if (h.side !== 'either' && h.side !== s.hotSide) continue;
+      const j = s.judge(h.answer); if (j && j.P >= s.bar.P && j.risk <= s.bar.risk) return this.commit(s, { kind: 'throw', judged: j });
+    }
     if (this.plan.checkdown) { const j = s.judge({ ref: this.plan.checkdown.ref, timing: this.plan.checkdown.timing }); if (j && j.P >= s.bar.P && j.risk <= s.bar.risk) return this.commit(s, { kind: 'throw', judged: j }); }
     if (this.pressure === 'imminent') return { kind: 'move' };
     return { kind: 'away' };

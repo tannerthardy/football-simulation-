@@ -39,8 +39,9 @@ export interface ThrowOption {
 export interface PlanRead {
   /** Footwork step it is thrown from: 0 = the plant (the last step of the drop), 1 = the first hitch, 2 = the second. */
   step: number;
-  /** Where his eyes go: a receiver, or a key defender by role. */
-  look: { kind: 'receiver'; ref: ReceiverRef } | { kind: 'key'; role: KeyRole };
+  /** Where his eyes go: a receiver, or a key defender by role on a side (S: the read's own side, the default; W the
+   * other), e.g. the backside flat defender on slant-flat's reset (Rules + Coaching, 2026-11-24). */
+  look: { kind: 'receiver'; ref: ReceiverRef } | { kind: 'key'; role: KeyRole; side?: 'S' | 'W' };
   /** Candidate throws in taught order (for a key read, both routes of the pair). */
   throws: ThrowOption[];
   /** Key reads: what each movement of the key means (the throw it names). A cue not listed answers with `throws`'
@@ -70,8 +71,13 @@ export interface QbReadPlan {
   drop: PassConcept['drop'];
   readType: ReadType;
   reads: PlanRead[];
-  hot: HotRule | null;
+  /** A hot per side: the route that replaces the area the blitz comes from (USA Football, Hewitt). */
+  hot: HotRule[];
   checkdown: CheckdownRule | null;
+  /** A structure pick: which of these reads he starts on is chosen before the snap by this cue (Flex's module B resolves
+   * it from his own picture: cushion = the softest corner, shell = open or closed, leverage = the defender's side of the
+   * receiver) (Rules + Coaching, 2026-11-24). */
+  pick?: { by: 'cushion' | 'shell' | 'leverage'; reads: number[] };
   /** The defender he confirms on the drop (structure picks and most progressions: the middle-of-field safety). */
   confirm: KeyRole | null;
   /** Per coverage family (QBMind's families: cover0, cover1, cover2, tampa2, cover2man, cover3, cover4, cover6), the
@@ -107,7 +113,7 @@ export const STUB_SLANT_FLAT: QbReadPlan = {
   readType: 'key',
   reads: [{
     step: 0,
-    look: { kind: 'key', role: 'flat' },
+    look: { kind: 'key', role: 'flat', side: 'S' },
     throws: [{ ref: 'S1', timing: 'onBreak' }, { ref: 'S2', timing: 'seenOpen' }],
     keyRules: [{ cue: 'widens', throwTo: 'S1' }, { cue: 'sinks', throwTo: 'S2' }],
   }, {
@@ -115,7 +121,7 @@ export const STUB_SLANT_FLAT: QbReadPlan = {
     look: { kind: 'receiver', ref: 'W1' },
     throws: [{ ref: 'W1', timing: 'onBreak' }, { ref: 'W2', timing: 'seenOpen' }],
   }],
-  hot: { side: 'either', over: 1, answer: { ref: 'S1', timing: 'onBreak' } },
+  hot: [{ side: 'S', over: 1, answer: { ref: 'S1', timing: 'onBreak' } }, { side: 'W', over: 1, answer: { ref: 'W1', timing: 'onBreak' } }],
   checkdown: null,
   confirm: null,
   source: 'QB lane stub for interface work; not authored',
