@@ -6,7 +6,7 @@
 import { describe, expect, it } from 'vitest';
 import { Rng } from '../src/core/rng.js';
 import type { QbReadPlan } from '../src/sim/qbv2/plan.js';
-import { condHolds, decidePreSnap, lookOf, MARGIN_CUSHION, type PreSnapInputs } from '../src/sim/qbv2/presnap.js';
+import { condHolds, decidePreSnap, fieldSide, lookOf, MARGIN_CUSHION, type PreSnapInputs } from '../src/sim/qbv2/presnap.js';
 import type { PicturedMan, RolePicture } from '../src/sim/qbv2/roles.js';
 
 const LOS = 50, BY = 26.65;
@@ -122,5 +122,23 @@ describe('mirrorPlan (QB lane)', () => {
     expect(m.checkdown?.ref).toBe('W3');
     expect((m.alert!.when as any[])[1]).toEqual({ press: 'W1', cushion: { on: 'W1', over: 6 } });
     expect(mirrorPlan(m)).toEqual(p);
+  });
+  it('a flip to the field needs the field side clearly better: not with the flat defender outside the field #2', () => {
+    // Ball on the hash with the field to the weak side (more room toward -y); the weak corner softer by 2 yd.
+    const hashPic = (ballY: number, flatOut: number): RolePicture => {
+      const at = (d: number, o: number, db = true): PicturedMan => ({ id: nextId++, x: LOS + d, y: ballY + o, vx: 0, vy: 0, db });
+      const rcv = (o: number): PicturedMan => ({ id: 950 + Math.round(o * 10), x: LOS - 1, y: ballY + o, vx: 0, vy: 0 });
+      const defs = [-3, -1, 1, 3].map((o) => at(0.9, o, false)).concat([at(4.5, -2, false), at(4.5, 2, false), at(5, 20.5), at(7, -20.5),
+        at(12, 9), at(12, -9), at(4.5, -flatOut)]);
+      return { defenders: defs, receivers: { S1: rcv(20), S2: rcv(10), W1: rcv(-20), W2: rcv(-10) }, los: LOS, dir: 1, ballY, strong: 1, t: -1 };
+    };
+    const outs = plan({ pick: 'cushion' });
+    const field = 33; // more room toward -y: the weak side is the field
+    expect(fieldSide(hashPic(field, 8.5))).toBe('W');
+    expect(decidePreSnap(inputs(hashPic(field, 8.5), outs)).flip).toBe(true); // flat defender inside #2: field is clearly better
+    expect(decidePreSnap(inputs(hashPic(field, 11.5), outs)).flip).toBe(false); // outside #2 by 1.5 yd: take the boundary
+    // The boundary flip is not taxed: with the weak side the boundary, the same look flips.
+    expect(fieldSide(hashPic(20, 11.5))).toBe('S');
+    expect(decidePreSnap(inputs(hashPic(20, 11.5), outs)).flip).toBe(true);
   });
 });

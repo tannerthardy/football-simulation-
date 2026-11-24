@@ -29,6 +29,12 @@ export const MARGIN_SHELL = 0.1;
 export const MARGIN_LEVERAGE = 0.5;
 /** The hot side: 'either' when the two sides' surpluses are within this many defenders. */
 export const MARGIN_HOT_SIDE = 0.5;
+/** A flat defender is outside #2 (outside leverage on the out) when aligned more than this far outside him (yd; stated
+ * choice, pending Rules' teaching source). */
+export const OUTSIDE_OF_TWO = 0.5;
+/** The ball within this of the middle has no field side (yd; stated choice). */
+const FIELD_MIDDLE = 1.0;
+const FIELD_MIDDLE_Y = 53.333 / 2;
 
 /** A defender pressed on a receiver: within this depth of the line and this lateral distance of him (QBMind's press rule). */
 const PRESS_DEEP = 2.5;
@@ -159,13 +165,31 @@ export function condHolds(when: AlertCond | AlertCond[] | undefined, look: PreSn
   return true;
 }
 
+/** The field side (S or W): the side with more room to its sideline; none with the ball within FIELD_MIDDLE of the middle. */
+export function fieldSide(p: RolePicture): 'S' | 'W' | null {
+  const toMiddle = FIELD_MIDDLE_Y - p.ballY;
+  if (Math.abs(toMiddle) < FIELD_MIDDLE) return null;
+  return Math.sign(toMiddle) === p.strong ? 'S' : 'W';
+}
+
+/** The flat defender over a side's #2, found in his scan by the shared resolver (never a label), aligned outside #2 by more
+ * than OUTSIDE_OF_TWO: outside leverage on the out. No #2 or no flat defender: false. */
+export function flatOutsideOfTwo(p: RolePicture, side: 'S' | 'W'): boolean {
+  const two = p.receivers[`${side}2`];
+  const man = two ? resolveRole(p, 'flat', side) : null;
+  return !!two && !!man && out(p, man, side) - out(p, two, side) > OUTSIDE_OF_TWO;
+}
+
 /** Whether he mirrors the plan, by its pick. Near the margin he keeps the coach's (strong) side. */
-export function pickFlip(plan: QbReadPlan, look: PreSnapLook): boolean {
+export function pickFlip(plan: QbReadPlan, look: PreSnapLook, picture?: RolePicture): boolean {
   switch (plan.pick) {
     case 'cushion': {
       // The softer corner: the cushion of the man over each #1 (the corner).
       const s = look.over.S1?.cushion, w = look.over.W1?.cushion;
-      return s != null && w != null && w > s + MARGIN_CUSHION;
+      if (!(s != null && w != null && w > s + MARGIN_CUSHION)) return false;
+      // To the field only when the field side is clearly better: the flat defender over the field #2 must not sit outside
+      // him with outside leverage, or the long field out is the risk throw (QB lane and Integration, 2026-11-24).
+      return !(picture && fieldSide(picture) === 'W' && flatOutsideOfTwo(picture, 'W'));
     }
     case 'shell':
       return !!plan.pickShell && look.shell != null && look.shell !== plan.pickShell;
@@ -190,7 +214,7 @@ export function hotOf(look: PreSnapLook, protectors: { S: number; W: number }): 
 export function decidePreSnap(inp: PreSnapInputs): PreSnapState & { look: PreSnapLook } {
   const { plan } = inp;
   const look = lookOf(inp.picture, inp.pSingleHigh, inp.boxHalfWidth);
-  const flip = pickFlip(plan, look);
+  const flip = pickFlip(plan, look, inp.picture);
   const alert = plan.alert && condHolds(plan.alert.when, look, flip) ? { read: plan.alert.read } : null;
   const confirm: KeyRole | null = plan.confirm;
   return {
