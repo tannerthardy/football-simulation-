@@ -1,0 +1,20 @@
+diff --git a/src/sim/coverage/rules.ts b/src/sim/coverage/rules.ts
+index 83bb6a49a..31517c22e 100644
+--- a/src/sim/coverage/rules.ts
++++ b/src/sim/coverage/rules.ts
+@@ -49,6 +49,7 @@ function flatSeatFree(c: RuleCtx, sign: number): boolean {
+       const rp = sim.see(c.a, r);
+       return rp.pos.x - sim.los > 3 && rp.vel.x > 2 && Math.hypot(rp.pos.x - dp.x, rp.pos.y - dp.y) < 4;
+     });
++    const g = globalThis as any; if (g.__fsf) g.__fsf.push({ t: +sim.t.toFixed(2), hook: c.a.slot, seat: d.slot, zone: z, seatPos: [+(dp.x - sim.los).toFixed(1), +dp.y.toFixed(1)], busy });
+     if (!busy) return true;
+   }
+   return false;
+@@ -71,6 +72,7 @@ function hookExpand(c: RuleCtx, b: ReceiverRead | null): Directive | null {
+     if (b.depth < 15) return man(b, { lev: 'inside' });
+     c.state.mode = 'zoned'; return null;
+   }
++  { const g = globalThis as any; if (g.__hx && b.release === 'flat') g.__hx.push({ t: +c.sim.t.toFixed(2), hook: c.a.slot, back: b.r.slot, outward: +b.outward.toFixed(1), free: flatSeatFree(c, b.outSign), busyWin: windowBusy(c, b.r) }); }
+   if (b.release !== 'flat' || b.outward < 2 || flatSeatFree(c, b.outSign) || windowBusy(c, b.r)) return null;
+   c.state.mode = 'expand';
+   c.a.tags.add('hook-expand');
