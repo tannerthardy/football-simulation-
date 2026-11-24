@@ -233,7 +233,15 @@ The cycle and `QbReadPlan` do not change. Only the compiler that produces the pl
 - **Kill/can is pre-snap.** It belongs in Flex's module B, beside the pick and the alert, on the same scan. The cycle
   receives the resulting plan.
 
-**Question for Flex:** do formation ids carry enough to place `HalfConcept` numbers and the back as #3 (`backAs`)?
+**Flex's answer (2026-11-24): no new formation field is needed.**
+- **Placing a half by number.** After motion, alignOffense gives `OffenseAlignment.numbering` (S1..S4, W1..W4).
+  formationStructure (src/playbook/structure.ts) gives each side's count and attached/detached, bunch/stack and
+  reduced-split structure. That is enough to place a half outside-in, and to enforce that a trips half pairs only with
+  a one-receiver side.
+- **The back as a number (`backAs`).** The spot's `backfield` flag and its side relative to the ball.
+- **Legality.** Reuse `eligibilityAtSnap` (src/game/presnap-rules.ts) on the aligned spots after motion: seven on the
+  line, the two ends and the backfield eligible. A tag that gives a route to a covered player is refused. Flex offered
+  the small adapter from OffenseAlignment to SnapPlayerFacts.
 
 ## 5. What the play-caller chooses, and the constraints
 
@@ -254,8 +262,8 @@ share instead of equalling stick's.
 
 **Constraints, checked when the call is built** (a call that fails is not drawn):
 1. **Legal formation.** "at least seven players lined up on the line of scrimmage", and only the end players are eligible
-   (Wikipedia, Eligible receiver). A tag cannot give a route to an ineligible player. This is Flex's formation check,
-   reused.
+   (Wikipedia, Eligible receiver). A tag cannot give a route to an ineligible player. It reuses `eligibilityAtSnap`
+   (src/game/presnap-rules.ts) on the spots aligned after motion.
 2. **Protection accounts for the released routes.** Blockers = five linemen + each `stay` back or TE + each `check` /
    `slow` player (counted as in, while his man rushes).
    - With fewer than six blockers (a scat back, or empty), each side needs a hot or sight-adjust route in its half's
@@ -381,6 +389,6 @@ outcomes are judged as usual, not by matching them.
    - the back as his own axis;
    - variants as tags or axis settings, not new concepts.
 2. **The QB lane:** answered in §4. Two compiled plans plus a pick, and the table as written.
-3. **Flex:** formation fields for half placement.
+3. **Flex:** answered in §4. No new field; legality reuses `eligibilityAtSnap` after motion.
 4. **Then, in order:** build the tables and compiler behind `CALL_COMPOSE` (off), re-cut #896 as above, and go on to
    the RPO note (b).
