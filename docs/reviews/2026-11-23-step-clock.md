@@ -442,3 +442,17 @@ Red-diff (alone): tests run 4456; failing 59; on the ledger 59; new red 0, fixed
   19, throwaways 19 / 17 / 17, time to throw p50 2.31 s throughout. QB_SCREEN_SEEN changes no play on these seeds.
 - Found, not fixed here: held() reads the rusher's true block (engagement) and who is winning it (engagement.win) for
   the felt rush. It needs a model of what he sees of a block; its own item.
+
+### Refreshed as engine-98 on develop d31271e42 plus Flex's engine-97 (2026-11-24)
+
+`patches/engine71-footwork/qb-scout-screen-seen-engine98-on-d31271e4-plus-flex97.patch` (sha256 bcf57e708bf2) applies on develop
+d31271e42 with Flex's `qb-scan-canon-seen-engine97-on-develop-d31271e42.diff` (sha256 4656588…, commit 030c354b0 on
+claude/quirky-franklin-9lbwbp) applied first; `git apply --check` clean; typecheck clean. Registry: id engine-98;
+FLAGS.md 508 = 388 on + 92 off + 28 numeric (on Flex's recount from src, 506 = 386 + 92 + 28); REFERENCE_STACK engine-98
+above engine-97. Red-diff --files on the registry and QB tests (35 files: every qb-*.test.ts, acc-radius, arrival-lead,
+decision-information-scan, engine-pin-manifest, scorecard-provenance, baseline-runner): tests run 118; failing 6; on the
+ledger 6; new red 0, fixed 0.
+
+Gaps (for the PR): held() reads the rusher's true engagement and who is winning it (engagement.win) for the felt rush;
+it needs what he sees of a block (the rusher's seen progress past the blocker, the blocker's posture), which Defense's
+blocking work touches. scoutReport falls back to truth for a position without a typical (none today).
