@@ -164,6 +164,7 @@
   "test/back-three.test.ts",
   "test/backer-start.test.ts",
   "test/backward-pass-clock.test.ts",
+  "test/ball-drag.test.ts",
   "test/ball-estimate.test.ts",
   "test/ball-glance.test.ts",
   "test/ball-rules.test.ts",
