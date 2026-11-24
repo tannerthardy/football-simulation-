@@ -310,6 +310,10 @@ function leverageMagnitude(a: Agent, y: number): number {
 export const TRAIL_LEVERAGE = process.env.TRAIL_LEVERAGE === '1';
 const LEAD_ENTER = 0.5, LEAD_ANGLE_IN = Math.PI / 4, LEAD_ANGLE_OUT = Math.PI / 3, SIDE_MARGIN = 0.5;
 const trailState = new WeakMap<Agent, { target: Agent; lead: Agent | null; side: number; t: number; out: number | null }>();
+/** TRAIL_LEVERAGE diagnostics (read-only): his current trail lead and side, or null. Behaviour does not depend on it. */
+export function trailStateOf(a: Agent): { lead: Agent | null; side: number } | null {
+  const s = trailState.get(a); return s ? { lead: s.lead, side: s.side } : null;
+}
 function trailShade(sim: PlaySim, a: Agent, target: Agent, seenC: { pos: Vec2 }, dA: number, contact: number): number | null {
   // No per-tick cache: the same pictures give the same lead and side (the update is idempotent), and a repeated call
   // reads what the first read, as the pursuit read contracts expect.
