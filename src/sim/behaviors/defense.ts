@@ -3236,19 +3236,24 @@ function shoulderTarget(a: Agent, sim: PlaySim, key: number): { R: Agent | null;
 
 /** Same catch approach, seeded only by this defender's acquired trajectory.
  * A newer body-possession picture takes priority in pursueIfLive. */
+/** Diagnostic only (Defense's tap): which return of the ball-phase approach (playObservedFlight / flightApproach) produced
+ * this defender's request, and when. Read by nothing in the engine. */
+const ballPhaseBranch = new WeakMap<Agent, { branch: string; t: number }>();
+export function ballPhaseBranchOf(a: Agent): { branch: string; t: number } | null { return ballPhaseBranch.get(a) ?? null; }
+function br(a: Agent, sim: PlaySim, branch: string, cmd: MoveCommand): MoveCommand { ballPhaseBranch.set(a, { branch, t: sim.t }); return cmd; }
 function playObservedFlight(a: Agent, sim: PlaySim, path: PlaySim['ballPath'], acquired = false): MoveCommand {
   const c = flightApproach(a, sim, path, acquired);
-  if (!c && FLIGHT_BREAK_ON()) { const cont = continueFlightBreak(a, sim); if (cont) return cont; }
+  if (!c && FLIGHT_BREAK_ON()) { const cont = continueFlightBreak(a, sim); if (cont) return br(a, sim, 'pof-continue', cont); }
   if (!PURSUIT_COMMIT) return c ?? stand();
   // PURSUIT_COMMIT: on the flight's last tick no sample of it is left ahead of
   // him; that is not a reason to stop. Hold the approach he last chose.
   if (c) { lastFlightApproach.set(a, { cmd: c, t: sim.t }); return c; }
   const last = lastFlightApproach.get(a);
-  if (last && sim.t - last.t <= 0.3) return { ...last.cmd };
+  if (last && sim.t - last.t <= 0.3) return br(a, sim, 'pof-replay', { ...last.cmd });
   // No catchable sample left on his flight and no recent approach: he keeps his ball responsibility and goes to where
   // he believes it came down (pursueIfLive's ball rally), not a stop. A newer holder picture takes over there.
   const area = BALL_CUE_OWN ? unresolvedBallArea(a) : null;
-  return area ? goTo(a, area) : stand();
+  return br(a, sim, area ? 'pof-area' : 'pof-stand', area ? goTo(a, area) : stand());
 }
 
 const lastFlightApproach = new WeakMap<Agent, { cmd: MoveCommand; t: number }>();
@@ -3285,12 +3290,12 @@ function flightApproach(a: Agent, sim: PlaySim, path: PlaySim['ballPath'], acqui
         const opp = window && window.receiver === R ? window : opportunity ?? catchOpportunity(a);
         const remaining = opp && opp.receiver === R ? opp.t + DRIVE_SECURE - sim.t : DRIVE_SECURE;
         const tt = timeToReach({ pos: a.pos, vel: a.vel, profile: a.profile, speedScale: a.speedScale }, hands, a.profile.reach);
-        if (!playsBall(a, R, tt, remaining)) { a.tags.add('open-field'); return chase(sim, a, R, 3, { onTop: true }); }
+        if (!playsBall(a, R, tt, remaining)) { a.tags.add('open-field'); return br(a, sim, 'fa-open-field-chase', chase(sim, a, R, 3, { onTop: true })); }
       }
       // FLIGHT_BREAK: through the hands by the same break (arrival he can brake from, his seat's side), not a full-effort
       // run through a receiver who is moving upfield through the catch (Defense's overrun class).
-      if (FLIGHT_BREAK_ON()) return flightBreakMove(a, sim, R, seen, sim.t, hands);
-      return runThrough(a, hands, { speed: 1 });
+      if (FLIGHT_BREAK_ON()) return br(a, sim, 'fa-drive-catch-break', flightBreakMove(a, sim, R, seen, sim.t, hands));
+      return br(a, sim, 'fa-drive-catch-runThrough', runThrough(a, hands, { speed: 1 }));
     }
   }
   // A defender already carrying the visible catcher must not brake out of
@@ -3306,8 +3311,8 @@ function flightApproach(a: Agent, sim: PlaySim, path: PlaySim['ballPath'], acqui
       chose: 'carry observed receiver', cue: 'nearby running catcher and visible ball window',
       detail: `${window.receiver.slot} at ${window.t.toFixed(2)} s; no earlier reachable ball opportunity.` });
     // FLIGHT_BREAK: the same break, not a carry that runs with a receiver coming back toward the passer.
-    if (FLIGHT_BREAK_ON()) return flightBreakMove(a, sim, window.receiver, window.seen, window.t, window.p);
-    return track(a, window.seen.pos, window.seen.vel);
+    if (FLIGHT_BREAK_ON()) return br(a, sim, 'fa-nearby-break', flightBreakMove(a, sim, window.receiver, window.seen, window.t, window.p));
+    return br(a, sim, 'fa-nearby-track', track(a, window.seen.pos, window.seen.vel));
   }
   if (spot) {
     const tt = timeToReach({ pos: a.pos, vel: a.vel, profile: a.profile, speedScale: a.speedScale }, spot.p, a.profile.reach);
@@ -3317,16 +3322,16 @@ function flightApproach(a: Agent, sim: PlaySim, path: PlaySim['ballPath'], acqui
     // A receiver may get to the ball before this later point on its flight.
     // Reaching where an already-caught pass would have hit the ground is not
     // an interception opportunity. Close the actual visible catch window.
-    if (tt <= spot.t - sim.t + 0.05 && (!window || spot.t <= window.t + 0.05)) return goTo(a, spot.p);
+    if (tt <= spot.t - sim.t + 0.05 && (!window || spot.t <= window.t + 0.05)) return br(a, sim, 'fa-beat-ball-goTo', goTo(a, spot.p));
   }
   // Can't beat the ball to its path: drive on the catch point to arrive with
   // the ball — on the receiver's near side, ready to play through the hands
   // or make the tackle the moment it's caught.
   // FLIGHT_BREAK: he cannot beat the ball to its path: the shared break on the receiver's moving catch window.
-  if (FLIGHT_BREAK_ON() && window) return flightBreakMove(a, sim, window.receiver, window.seen, window.t, window.p);
+  if (FLIGHT_BREAK_ON() && window) return br(a, sim, 'fa-window-break', flightBreakMove(a, sim, window.receiver, window.seen, window.t, window.p));
   // FLIGHT_BREAK: the window has passed in his picture (the ball has arrived by his estimate) but he has not yet seen the
   // catch: the break keeps its receiver until the possession read hands him to pursuit, rather than a stale spot.
-  if (FLIGHT_BREAK_ON()) { const cont = continueFlightBreak(a, sim); if (cont) return cont; }
+  if (FLIGHT_BREAK_ON()) { const cont = continueFlightBreak(a, sim); if (cont) return br(a, sim, 'fa-continue', cont); }
   const land = window?.p ?? arrivalPoint(sim, path);
   if (land) {
     // Close to the catch itself. A fixed yard of standoff plus inside shade
@@ -3354,10 +3359,10 @@ function flightApproach(a: Agent, sim: PlaySim, path: PlaySim['ballPath'], acqui
     const control = 2.2 + 2.5 * (1 - a.r('tackling'));
     const allowed = Math.sqrt(control * control + 2 * a.profile.brake * 0.7 * Math.max(0, d - 0.3));
     const sp = Math.min(a.profile.vmax, allowed);
-    return movingCatchApproach(a,sim,withMovementObjective({vel:{x:(dx/d)*sp,y:(dy/d)*sp}},
-      { kind: 'fixed', point: tgt }),window,spot);
+    return br(a, sim, 'fa-land-approach', movingCatchApproach(a,sim,withMovementObjective({vel:{x:(dx/d)*sp,y:(dy/d)*sp}},
+      { kind: 'fixed', point: tgt }),window,spot));
   }
-  return spot ? runThrough(a, spot.p, { speed: 0.9 }) : null;
+  return spot ? br(a, sim, 'fa-spot-runThrough', runThrough(a, spot.p, { speed: 0.9 })) : null;
 }
 
 /** First plausible receiver catch from the defender's delayed picture and
