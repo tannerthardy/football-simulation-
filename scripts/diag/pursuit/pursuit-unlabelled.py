@@ -17,7 +17,7 @@ for r in R:
         if f['t'] > a['beat_t'] + 1e-9: break
         d = f['d'][k]
         if d['stage'] or d.get('tech'): continue
-        key = (d.get('cls'), d.get('zone'), d.get('ball'), d.get('kind'))
+        key = (d.get('bpb') or 'not via playObservedFlight/flightApproach', d.get('cls'), d.get('ball'), d.get('kind'))
         c[key] += 1; ts[key].append(f['t'])
 for key, n in c.most_common(12):
-    t = sorted(ts[key]); print(f"{n:4d} ticks  class {key[0]}  zone {key[1]}  ball {key[2]}  kind {key[3]}  t after catch p50 {t[len(t)//2]:.1f} (min {t[0]:.1f}, max {t[-1]:.1f})")
+    t = sorted(ts[key]); print(f"{n:4d} ticks  branch {key[0]}  class {key[1]}  ball {key[2]}  kind {key[3]}  t after catch p50 {t[len(t)//2]:.1f} (min {t[0]:.1f}, max {t[-1]:.1f})")
