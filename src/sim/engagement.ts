@@ -344,9 +344,9 @@ function baseOf(a: Agent): number {
 // ------------------------------------------------------------ creation
 
 /** BLOCK_FRAME (experimental, off; BLOCK_FRAME=1 turns it on). A blocker gets back on a defender who has already been
- * released from a block this play only from where a block is legal: in front of the defender's path (the engagement's
- * own phi, unclamped, |phi| < 1: the same measure HOLD_LEVERAGE uses for "past the blocker") and inside his frame (the
- * front half-plane of his shoulders: the bearing to the blocker within 90 deg of his body facing; a labeled choice).
+ * released from a block this play only from where a block is legal: in front of the defender's path (the bearing to
+ * the blocker within 90 deg of his travel, or of his facing when he is under 1 yd/s) and inside his frame (within 90 deg
+ * of his body facing). The 90 deg half-planes are labeled choices.
  * From anywhere else, getting a hand on him is a grab, not a block: the blocker may still choose it, by the same
  * discipline-and-situation chance a beaten blocker grabs with (holdChance, as tryHold), decided once per pair per play;
  * a grab forms the engagement with the hold on (cloth), and contact-holding judges the restraint it achieves (with
@@ -358,9 +358,13 @@ function baseOf(a: Agent): number {
 export const BLOCK_FRAME = process.env.BLOCK_FRAME === '1';
 const engagedBefore = new WeakMap<Agent, PlaySim>();
 const frameChoice = new WeakMap<Agent, { sim: PlaySim; by: Map<Agent, boolean> }>();
-function inFrameToBlock(axis: Vec2, d: Agent, b: Agent): boolean {
-  if (Math.abs(measurePhi(axis, d, b)) >= 1) return false;
-  return Math.abs(angleDiff(Math.atan2(b.pos.y - d.pos.y, b.pos.x - d.pos.x), d.body.facing)) <= Math.PI / 2;
+function inFrameToBlock(_axis: Vec2, d: Agent, b: Agent): boolean {
+  // In front of HIS path (the defender's travel; his facing when he is nearly still) and inside his frame (his facing).
+  // Not the engagement's phi: on a run that is measured on the blocker's own drive axis, and an ordinary reach forms at
+  // |phi| >= 1 there (the fixture in test/inline-zone-keeper.test.ts is such a reach).
+  const toB = Math.atan2(b.pos.y - d.pos.y, b.pos.x - d.pos.x), sp = Math.hypot(d.vel.x, d.vel.y);
+  const path = sp > 1 ? Math.atan2(d.vel.y, d.vel.x) : d.body.facing;
+  return Math.abs(angleDiff(toB, path)) <= Math.PI / 2 && Math.abs(angleDiff(toB, d.body.facing)) <= Math.PI / 2;
 }
 /** The chance a blocker chooses a grab (tryHold's: less disciplined men grab more; in pass protection more than on runs). */
 function holdChance(b: Agent, type: 'pass' | 'run'): number {
