@@ -159,3 +159,64 @@ throws, an underneath man about 1.8 yd inside the hitch (§4 of the reach record
 **Film:** docs/reviews/film/qb-vision-2026-11-23/ (index.html + film.json; `scripts/diag/eyes/film-record.ts`). The
 six plays at three ratings with the vision cone; also published for the user as a page. On three of the six (curl_flat,
 dagger, mesh) all three passers throw the same ball at the same time: there, his eyes are not what decides the play.
+
+## On engine-93 (FLIGHT_BREAK on): measured again, and the price is not ready there (2026-11-24)
+
+Integration asked for the build to be measured on top of FLIGHT_BREAK (coverage/C14-flight-break a771ec841, engine-93),
+with interceptions by the interceptor's state. Base: a771ec841 plus the patch.
+- The defender-start rule was brought in line with the defenders' own rule (defense.ts `playBelievedBall`, the shoulder
+  read and FLIGHT_BREAK):
+  - one who sees the passer, man or zone, at the release plus 0.8 reactions (theirs is the reaction × (1 − 0.4
+    anticipation); the passer cannot know the anticipation, so the middle);
+  - a man on the target turned to his receiver at the break plus his reaction;
+  - anyone else not facing him at the release plus 1.8 reactions.
+- WIP diff: `docs/reviews/patches/engine71-footwork/step-clock-def-start-bat-on-engine93-a771ec84-wip.diff`.
+
+Same 8 games per arm, not paired:
+
+| engine-93 | off | clock | price | both |
+|---|---|---|---|---|
+| completion | 69.8% | 68.3% | 68.3% | 65.8% |
+| yards per dropback | 6.64 | 6.09 | 5.95 | 6.39 |
+| INT (of attempts) | 8 (1.3%) | 8 (1.3%) | 15 (2.4%) | 10 (1.5%) |
+| sacks | 47 | 40 | 33 | 26 |
+| throwaways | 23 | 28 | 9 | 8 |
+| time to throw p50 | 2.75 s | 2.65 | 2.60 | 2.55 |
+| stop: thrown before the break | 15% | 16% | 23% | 22% |
+| batted per attempt | 0.7% | 1.8% | 1.6% | 2.1% |
+
+**Interceptions by the interceptor's state** (`scripts/diag/eyes/int-price.ts`: at each decision, the window's
+per-defender rows for the throw chosen and each defender's truth and picture):
+- Nearly every interceptor broke on that throw (FLIGHT_BREAK's flightBreakOf set at the release): off 8 of 8, price 13
+  of 15. None was tipped.
+- Most were the defender covering the target (off 7 of 8, price 11 of 15), 3–9 yd from the spot at the decision, and
+  most were already closing on it within 0.05 s of the decision.
+- **His picture of them was right.** Error 0.1–0.5 yd and about 0.25 s old in all but two: a 3.1 yd error at 1.15 s on
+  the off arm, and one phantom 28.8 yd off, a memory he had not refreshed.
+- **His price did not see them coming.**
+  - Priced picks against actual: off 7.0 against 8, price 6.2 against 15.
+  - Most actual picks came on throws he priced under 0.01: off 5 of 8, price 8 of 15.
+  - The interceptor was not priced as a threat at all (no row: contest under 0.05 and no pick term) on 4 of 8 (off) and
+    10 of 15 (price). Where he was priced, his margin was +0.3 to +1.75 s: he arrives well after the ball, in the
+    passer's model.
+- So the miss is the window's arrival model against the engine's breaking defender, not his picture. It predates this
+  build (half the off arm's picks are unpriced). QB_DEF_START makes it worse on engine-93 because it starts that
+  defender later, and the defender arrives anyway.
+
+**What follows.** The price arm (QB_DEF_START, QB_BAT_HEIGHT) is not for landing on engine-93 as built. The next step is
+a measurement: for the defenders who break on a throw (interceptions and the rest), when they leave against the windup
+and the release, how fast they close, where they meet the ball, and the window's priced arrival for the same men. Then
+the arrival is brought to the body the engine moves: the break's moving goal and its braking, the start at the cue the
+defender actually has. That is the same rule the defenders use, so the passer's belief follows FLIGHT_BREAK.
+
+Also, for Coverage: several interceptors who broke at the release had their back to the passer (114–166° off him). What
+cue a man turned to his receiver uses to break on the release is worth a check on their side.
+
+**QB_KEY_THROW and QB_RHYTHM under the clock** (staged panel, mid rating, clock on, engine-93): neither is inert.
+- QB_RHYTHM=0 changes 47 of 256 plays: completions 164 → 173, sacks 16 → 15. Its pressure rule, eyes to the outlet,
+  still acts.
+- QB_KEY_THROW=1 changes 37 plays: completions 164 → 164.
+- So they are not folded silently into the clock. A retirement review needs its own measurement.
+
+The clock arm is unaffected by the price question. On engine-93 it sets him earlier and throws earlier with the same
+interception rate. Its yards per dropback (6.64 → 6.09) are within the unpaired spread, and the card decides.

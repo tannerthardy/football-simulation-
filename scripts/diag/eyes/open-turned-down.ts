@@ -9,6 +9,7 @@ import { Rng } from '../../../src/core/rng.js';
 import { simulateGame } from '../../../src/game/game.js';
 import { generateTeam, leagueSample } from '../../../src/league/team.js';
 import { PlaySim } from '../../../src/sim/playsim.js';
+import { flightBreakOf } from '../../../src/sim/behaviors/defense.js';
 
 const seed = Number(process.argv[2] ?? 11), games = Number(process.argv[3] ?? 4);
 const EYES_DEG = 15;
@@ -23,7 +24,7 @@ const orig = PlaySim.prototype.run;
 PlaySim.prototype.run = function (this: any) {
   playNo++;
   const sim: any = this; if (!sim.isPass) return orig.apply(this);
-  const samples: any[] = [], heads: any[] = []; let decision: any = null, release: any = null, hooked = false, nextT = 0, lastRead: any = null;
+  const samples: any[] = [], heads: any[] = []; let relSnap: any = null; let decision: any = null, release: any = null, hooked = false, nextT = 0, lastRead: any = null;
   const tick0 = sim.tick.bind(sim);
   sim.tick = () => {
     const b0: any = sim.qb.behavior;
@@ -32,7 +33,10 @@ PlaySim.prototype.run = function (this: any) {
       b0.startThrow = (a: any, s: any, ev: any) => { if (!decision) decision = { t: +s.t.toFixed(2), slot: ev.target.slot, P: +ev.P.toFixed(3), iR: +ev.intRisk.toFixed(3) }; return st(a, s, ev); };
       const tb = sim.throwBall.bind(sim);
       sim.throwBall = (p: any, target: any, v0: any, intended: any, arrivalT: number, away = false, ...rest: any[]) => {
-        if (p === sim.qb && !release) release = { t: +sim.t.toFixed(2), slot: target?.slot ?? null, away: !!away || !target }; return tb(p, target, v0, intended, arrivalT, away, ...rest); };
+        if (p === sim.qb && !release && intended) relSnap = { t: sim.t, pt: { x: intended.x, y: intended.y }, defs: sim.defense.map((d: any) => ({ idx: d.idx, slot: d.slot, x: d.pos.x, y: d.pos.y, vx: d.vel.x, vy: d.vel.y, kind: d.behavior?.kind ?? null, man: d.behavior?.target?.slot ?? null })) };
+        if (p === sim.qb && !release) { const hd = sim.qb.head ?? sim.qb.body.facing, deg = (x: number) => +(Math.abs(wrap(x)) * 180 / Math.PI).toFixed(1);
+          const bA = intended ? Math.atan2(intended.y - p.pos.y, intended.x - p.pos.x) : null, bR = target ? Math.atan2(target.pos.y - p.pos.y, target.pos.x - p.pos.x) : null;
+          release = { t: +sim.t.toFixed(2), slot: target?.slot ?? null, away: !!away || !target, headAim: bA === null ? null : deg(hd - bA), recvAim: bA === null || bR === null ? null : deg(bR - bA), headRecv: bR === null ? null : deg(hd - bR), air: +(arrivalT - sim.t).toFixed(2) }; } return tb(p, target, v0, intended, arrivalT, away, ...rest); };
     }
     tick0();
     const b: any = sim.qb.behavior, qb = sim.qb;
@@ -81,8 +85,21 @@ PlaySim.prototype.run = function (this: any) {
   };
   const res = orig.apply(this);
   const ev = sim.events as any[];
+  // Interceptions by the interceptor's state (Integration, engine-93): at the release, his distance to the aim point,
+  // his speed and closing speed on it, whether he made a break on this throw (FLIGHT_BREAK's flightBreakOf), and a tip.
+  let intState: any = null;
+  const ie = ev.find((e) => e.type === 'interception');
+  if (ie && relSnap) {
+    const d0 = relSnap.defs.find((x: any) => x.idx === ie.a), ag = sim.agents[ie.a];
+    if (d0) {
+      const dx = relSnap.pt.x - d0.x, dy = relSnap.pt.y - d0.y, L = Math.hypot(dx, dy) || 1, sp = Math.hypot(d0.vx, d0.vy);
+      const fb = ag ? flightBreakOf(ag) : null;
+      intState = { slot: d0.slot, kind: d0.kind, onTarget: d0.man !== null && d0.man === release?.slot, dist: +L.toFixed(1), speed: +sp.toFixed(1), closing: +((d0.vx * dx + d0.vy * dy) / L).toFixed(1),
+        broke: !!fb && fb.t >= relSnap.t - 0.05, tipped: ev.some((e) => e.type === 'deflection' && e.t <= ie.t) };
+    }
+  }
   console.log(JSON.stringify({ seed, playNo, concept: sim.offCall?.pass?.id ?? null, family: sim.offCall?.pass?.family ?? null, cov: sim.defCall?.coverage?.id ?? null,
-    decision, release, sack: ev.some((e) => e.type === 'sack'), scramble: !release && !ev.some((e) => e.type === 'sack'), cmp: !!sim.stats.completed, int: ev.some((e) => e.type === 'interception'), yards: res.yards, samples, heads }));
+    decision, release, sack: ev.some((e) => e.type === 'sack'), scramble: !release && !ev.some((e) => e.type === 'sack'), cmp: !!sim.stats.completed, int: ev.some((e) => e.type === 'interception'), bat: ev.some((e) => e.type === 'deflection' && e.note === 'batted at the line'), intState, yards: res.yards, samples, heads }));
   return res;
 };
 for (let g = 0; g < games; g++) {
