@@ -39,7 +39,10 @@ CORE = {'stick': (2, ('HITCH<8', 'FLAT')), 'seam_slant': (2, ('SLANT', 'HITCH<8'
         'trips_outs': (2, ('OUT8+', 'OUT<8')), 'verts_hitch': (2, ('GO', 'HITCH<8')),
         'corner_out': (1, ('CORNER', 'OUT<8')), 'corner_flat': (1, ('CORNER', 'FLAT')), 'double_slants': (1, ('SLANT', 'SLANT')),
         'hitch_post': (1, ('HITCH<8', 'POST')), 'double_outs': (1, ('OUT8+', 'OUT<8')), 'hitch_quick_out': (1, ('HITCH<8', 'OUT<8')),
-        'dagger': (1, ('IN8+', 'GO')), 'seam_hitch': (1, ('HITCH<8', 'GO'))}
+        'dagger': (1, ('IN8+', 'GO'))}
+# A core that is a generic pair (another half's identity) is counted only on a side that is exactly the concept: fade-flat
+# is a two-receiver side (a clear-out over a flat on a wider side is not it); seam-hitch is its full trips shape.
+EXACT = {'fade_flat'}
 BACK_JOB = {'PROTECT': 'stay', 'FLAT': 'flat', 'ANGLE': 'angle', 'WHEEL': 'wheel', 'OUT<8': 'out', 'OUT8+': 'out'}
 
 
@@ -91,9 +94,11 @@ def match(T, H):
     return [h for h, n in best if n == k]
 
 
-def core_on(T, start, core, back_flat):
-    """The core's tags on receivers #start.. of this side, in order; a final FLAT may be the back's on that side."""
+def core_on(T, start, core, back_flat, exact=False):
+    """The core's tags on receivers #start.. of this side, in order; a final FLAT may be the back's on that side. An exact
+    core is the whole side."""
     k = len(core); i = start - 1
+    if exact and len(T) not in (k, k - 1): return False
     if tuple(T[i:i + k]) == core: return True
     return back_flat and core[-1] == 'FLAT' and len(T) == i + k - 1 and tuple(T[i:i + k - 1]) == core[:-1]
 
@@ -135,7 +140,7 @@ def run(path, nfl, H):
         for h, t in H.items():
             st, c = CORE.get(h, (1, t))
             for s in (1, -1):
-                if core_on(S[s], st, c, any(tag(b) == 'FLAT' and (b['y'] - ball) * s > 0 for b in backs)): on[s].append(h)
+                if core_on(S[s], st, c, any(tag(b) == 'FLAT' and (b['y'] - ball) * s > 0 for b in backs), h in EXACT): on[s].append(h)
         for h in set(on[1]) | set(on[-1]):
             if len(CORE.get(h, (1, H[h]))[1]) >= 2: core[h] += 1
         for s in (1, -1):
