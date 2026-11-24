@@ -261,6 +261,7 @@
     "FLIGHT_BREAK": "0",
     "FLIGHT_LEAD": "0",
     "HEAD_FOLLOW": "0",
+    "BALL_DRAG": "0",
     "POCKET_CLIMB": "0",
     "BLOCK_SEEN": "0",
     "FREE_BOUND": "0",
