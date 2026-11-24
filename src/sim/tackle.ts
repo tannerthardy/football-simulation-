@@ -22,7 +22,7 @@
  * a quarterback in the grasp. Whiffed lunges and dives commit the body: a
  * defender who leaves his base to reach pays for it physically.
  */
-import { armSpan, reachTo } from './tackle-reach.js';
+import { armSpan, lockBand, reachTo } from './tackle-reach.js';
 import { TRACK_TACKLE } from './behaviors/common.js';
 import { OPP_GOAL_X, OWN_GOAL_X } from '../core/field.js';
 import { G } from '../core/units.js';
@@ -194,7 +194,7 @@ function flightStep(sim: PlaySim, d: Agent, c: Agent): boolean {
   if (dd - arms < f.closest - f.closestArms) { f.closest = dd; f.closestArms = arms; }
   if (state !== 'down' && sim.t - f.t0 <= FLIGHT_MAX && dd <= arms && !occluded(sim, d, c)) {
     flights.delete(d);
-    attempt(sim, d, c, contactQuality(dd, c.profile.radius + d.profile.radius, arms), false, true, arms, REACH_TIME);
+    attempt(sim, d, c, contactQuality(dd, c.profile.radius + d.profile.radius, arms, lockBand(d, c)), false, true, arms, REACH_TIME);
     return true;
   }
   if (state === 'down' || sim.t - f.t0 > FLIGHT_MAX) {
@@ -380,13 +380,13 @@ function reachStep(sim: PlaySim, d: Agent, c: Agent): boolean {
   reaches.delete(d);
   // A blocked defender's free arm may have been pinned or freed meanwhile; the reach he made is the one judged.
   if (inside) {
-    attempt(sim, d, c, contactQuality(dd, body, r.arms), r.engaged && !!d.engagement, r.lunged, r.limit, true);
+    attempt(sim, d, c, contactQuality(dd, body, r.arms, lockBand(d, c)), r.engaged && !!d.engagement, r.lunged, r.limit, true);
     return true;
   }
   d.missedTackles++;
   sim.stats.missedTackles++;
   sim.event('missed_tackle', d, c, 'reach');
-  if (!r.engaged && !r.lunged) commitLunge(d, dx / (dd || 1), dy / (dd || 1), contactQuality(dd, body, r.arms));
+  if (!r.engaged && !r.lunged) commitLunge(d, dx / (dd || 1), dy / (dd || 1), contactQuality(dd, body, r.arms, lockBand(d, c)));
   return true;
 }
 
@@ -518,7 +518,7 @@ export function tryTackles(sim: PlaySim): void {
     const range = arms + (engaged ? 0 : 0.45);
     if (dd <= range && !occluded(sim, d, c)) {
       // Contact quality: 1 = body to body (form tackle), 0 = fingertips / lunge.
-      const q = contactQuality(dd, body, arms);
+      const q = contactQuality(dd, body, arms, lockBand(d, c));
       const acquireAtReach = (REACH_CONTACT || TACKLE_TOUCH) && dd <= arms && !engaged;
       // A tackler reaches when he is in position to wrap, or when this is
       // the best shot the visible relative trajectory offers (a runner
@@ -543,7 +543,7 @@ export function tryTackles(sim: PlaySim): void {
         // Forecast the command actually executed, without asking the behavior
         // for another decision or drawing from its pursuit-error stream.
         const observed = windowPicture(sim, d, c);
-        const window = previewTackleWindow(d, observed, sim.intents[d.idx], body, arms, sim.world.time);
+        const window = previewTackleWindow(d, observed, sim.intents[d.idx], body, arms, sim.world.time, lockBand(d, c));
         if (window) {
           // Compare two estimates from the same observation. Actual reach and
           // the resulting grip still use current physical geometry below.
@@ -1026,7 +1026,7 @@ export function updateBond(sim: PlaySim, bond: TackleBond, intents: Intent[]): v
     // A holder on the ground is stretched out behind his arms; the arms
     // themselves are as close as they were.
     const stretched = d.body.support?.state !== 'up' ? GROUND_STRETCH : 0;
-    const quality = clamp(1 - (near - stretched - torso - 0.25) / Math.max(0.2, armSpan(d) - 0.25), 0, 1);
+    const band = lockBand(d, c), quality = clamp(1 - (near - stretched - torso - band) / Math.max(0.2, armSpan(d) - band), 0, 1);
     const available = clamp(0.25 + 0.85 * quality, 0.1, 1) * (execution.get(d) ?? 1);
     const rate = Math.min(1, dt * (1 + 2.5 * d.r('tackling')));
     const g = grip.get(d) ?? available;
@@ -1151,7 +1151,7 @@ export function updateBond(sim: PlaySim, bond: TackleBond, intents: Intent[]): v
   if (c.body.support?.state === 'up') for (const d of bond.tacklers) {
     const torso = c.profile.radius + d.profile.radius;
     const distance = armDistance(holds.get(d), Math.hypot(d.pos.x - c.pos.x, d.pos.y - c.pos.y), torso);
-    const quality = clamp(1 - (distance - torso - 0.25) / Math.max(0.2, armSpan(d) - 0.25), 0, 1);
+    const band = lockBand(d, c), quality = clamp(1 - (distance - torso - band) / Math.max(0.2, armSpan(d) - band), 0, 1);
     const secure = clamp(grip.get(d) ?? 0, 0, 1) * quality;
     if (d.body.support?.state !== 'up' || distance > torso + .15 || secure < .5) continue;
     const cs = Math.hypot(c.vel.x, c.vel.y);

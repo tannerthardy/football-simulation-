@@ -37,3 +37,13 @@ export function reachTo(d: Agent, c: Agent, share = 1): number {
 export function armSpan(d: Agent): number {
   return TACKLE_REACH ? d.profile.reach - d.profile.radius : d.profile.reach;
 }
+
+/** The gap between the bodies (beyond torsos touching) within which his arms still close around the carrier and the
+ * hands lock behind him: the wrap's full-quality band. Under TACKLE_REACH it is geometry, per pair: each arm wraps a
+ * quarter of the carrier's girth, so the hands meet while the gap is at most his arm's length (the profile's 0.85 of
+ * the arm, `d.reach - 0.25`) less pi/2 of the carrier's radius; at most his arm span (Integration approved, 2026-11-24:
+ * about 0.36 yd for a 33-inch arm on a 0.27 yd back). Off, the legacy 0.25 yd. */
+export function lockBand(d: Agent, c: Agent): number {
+  if (!TACKLE_REACH) return 0.25;
+  return Math.max(0, Math.min(armSpan(d), d.profile.reach - 0.25 - Math.PI / 2 * c.profile.radius));
+}

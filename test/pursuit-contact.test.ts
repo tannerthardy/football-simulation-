@@ -254,7 +254,7 @@ describe('physical tackle contact',()=>{
     recordPicture(sim);tackleNow(sim);expect(sim.bond).toBeNull();expect(d.nextTackleAt).toBe(0);
   });
   it('a grab at full reach couples only partly, still conserving momentum',()=>{
-    const {sim,c,d}=stage();d.body.pos={x:50,y:CENTER_Y+Math.min(1.4,reachTo(d,c,1)-.1)};c.body.vel={x:REACH_TIME?4:8,y:2}; // REACH_TIME: a passing speed the 0.12 s reach can still meet
+    const {sim,c,d}=stage();d.body.pos={x:50,y:CENTER_Y+Math.min(1.4,reachTo(d,c,1)-.02)};c.body.vel={x:REACH_TIME?4:8,y:2}; // REACH_TIME: a passing speed the 0.12 s reach can still meet
     d.body.vel={x:0,y:0};
     vi.spyOn(sim.rng,'chance').mockReturnValue(false);
     recordPicture(sim);tackleNow(sim);expect(sim.bond?.tacklers).toContain(d);

@@ -25,22 +25,22 @@ export interface TackleWindow {
 }
 
 /** Existing geometric wrap quality: torso contact versus extended fingertips. */
-export function contactQuality(distance: number, body: number, arms: number): number {
-  return clamp(1 - (distance - body - .25) / Math.max(.2, arms - body - .25), 0, 1);
+export function contactQuality(distance: number, body: number, arms: number, band = .25): number {
+  return clamp(1 - (distance - body - band) / Math.max(.2, arms - body - band), 0, 1);
 }
 
 /** Only free, upright movement is forecast. Contact/joint ownership remains
  * the caller's responsibility; a one-body preview cannot model those loads.
  */
 export function previewTackleWindow(d: Agent, seen: Perceived,
-  command: Intent | undefined, body: number, arms: number, now: number): TackleWindow | null {
+  command: Intent | undefined, body: number, arms: number, now: number, band = .25): TackleWindow | null {
   const s = d.body.support;
   if (!command || command.free || command.dive || command.lunge || d.isDown(now)
     || d.engagement || (s && (s.state !== 'up' || s.foot || s.strike
       || Math.hypot(s.lean.x, s.lean.y) > 1e-6
       || Math.hypot(s.load.x, s.load.y) > 1e-6))) return null;
   let closest = Math.hypot(seen.pos.x - d.pos.x, seen.pos.y - d.pos.y);
-  const currentQuality = contactQuality(closest, body, arms);
+  const currentQuality = contactQuality(closest, body, arms, band);
   let closestAt = 0, lastT = 0, best = currentQuality, bestAt = 0;
   // Six ordinary decision samples preserve the previous 0.3 s lookahead.
   // A useful hip passing between now and the next tick is not a reason to
@@ -56,9 +56,9 @@ export function previewTackleWindow(d: Agent, seen: Perceived,
     if (distance < closest) { closest = distance; closestAt = p.t; }
     // The shot is the wrap quality, not the distance: closing on through form-tackle range still reaches the best
     // shot at the first sample that attains it.
-    const quality = contactQuality(distance, body, arms);
+    const quality = contactQuality(distance, body, arms, band);
     if (quality > best + 1e-9) { best = quality; bestAt = p.t; }
   }
-  return { currentQuality, futureQuality: contactQuality(closest, body, arms), closest, closestAt,
+  return { currentQuality, futureQuality: contactQuality(closest, body, arms, band), closest, closestAt,
     reached: bestAt < lastT - 1e-9 };
 }
