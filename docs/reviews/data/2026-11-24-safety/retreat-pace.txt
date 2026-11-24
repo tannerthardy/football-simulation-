@@ -1,0 +1,25 @@
+# Deep safety retreat pace: requested vs achieved (ours, 342aa488f default, 8 games, dropbacks no PA) and the NFL (BDB weeks 1-2, PFF 2L/2R/3M/4x)
+
+## deep half (ours)
+t 0.25 n 228 req depth 1.04 ach depth 0.14 req lat 5.01 ach lat 0.75 gain 0.00
+t 0.50 n 232 req depth 1.11 ach depth 0.50 req lat 4.42 ach lat 1.92 gain 0.10
+t 0.75 n 232 req depth 1.63 ach depth 1.06 req lat 4.50 ach lat 2.62 gain 0.29
+t 1.00 n 232 req depth 3.50 ach depth 1.65 req lat 5.34 ach lat 2.88 gain 0.60
+t 1.25 n 232 req depth 4.15 ach depth 2.47 req lat 5.27 ach lat 2.60 gain 1.15
+t 1.50 n 232 req depth 4.21 ach depth 2.75 req lat 4.91 ach lat 2.60 gain 1.81
+
+## deep middle (ours)
+t 0.25 n 243 req depth 1.80 ach depth 0.21 req lat 5.47 ach lat 0.81 gain 0.01
+t 0.50 n 250 req depth 1.62 ach depth 0.63 req lat 5.31 ach lat 2.04 gain 0.13
+t 0.75 n 250 req depth 1.54 ach depth 0.82 req lat 4.79 ach lat 2.90 gain 0.33
+t 1.00 n 250 req depth 3.50 ach depth 1.23 req lat 5.82 ach lat 3.00 gain 0.58
+t 1.25 n 250 req depth 5.00 ach depth 2.07 req lat 5.29 ach lat 2.37 gain 0.98
+t 1.50 n 250 req depth 5.08 ach depth 2.80 req lat 4.95 ach lat 2.46 gain 1.64
+
+## quarter (ours)
+t 0.25 n 186 req depth 1.51 ach depth 0.23 req lat 3.24 ach lat 0.64 gain 0.01
+t 0.50 n 193 req depth 1.34 ach depth 0.78 req lat 2.85 ach lat 1.57 gain 0.15
+t 0.75 n 193 req depth 1.27 ach depth 1.00 req lat 2.10 ach lat 1.69 gain 0.38
+t 1.00 n 193 req depth 2.87 ach depth 1.21 req lat 3.91 ach lat 1.16 gain 0.60
+t 1.25 n 193 req depth 3.75 ach depth 1.78 req lat 3.60 ach lat 1.03 gain 1.01
+t 1.50 n 193 req depth 4.24 ach depth 2.30 req lat 4.08 ach lat 1.40 gain 1.59
