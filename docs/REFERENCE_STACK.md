@@ -611,6 +611,41 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
 
 
+## engine-93: a head nobody turns follows the body (2026-11-24)
+
+On: `HEAD_FOLLOW` (Coverage C14; found auditing FLIGHT_BREAK at Integration's and the QB lane's request). An information
+leak under the user's standing rule.
+
+With HEAD off (the stack), `stepHeads` turned only zone-eyed defenders' heads and skipped the passer. A head nobody
+drove kept its last direction while the body turned under it. Perception reads the recorded head (release-evidence's
+`sawAt`, the ball estimator's samples), so such a player saw the passer or the ball through a head up to 180 deg off his
+body. The neck allows 90 deg standing and 45 at a sprint, plus up to 55 deg of trunk twist for zone eyes.
+
+Who has a head, and what drives it (HEAD off):
+
+| player | head | engine-92 | engine-93 |
+|---|---|---|---|
+| zone-eyed defender | stepHeads (his key, then the passer) | driven | unchanged |
+| defender who left zone eyes (man conversion, pursuit, return, run fit) | none | frozen | relaxes to the body |
+| passer, controller running (qb-pass, handoff, mesh, PA fake) | qb.ts (QB_HEAD) | driven | held within the neck plus trunk twist |
+| passer after the throw (blocks, pursues, carries) | none | frozen | relaxes to the body |
+| receivers, linemen, rushers, other offense | never set (body cone) | unchanged | unchanged |
+
+Head offset off the body (`scripts/diag/coverage/head-audit.mts`, one game, seed 23; sampled at the end of the tick):
+
+| cell | engine-92 p95 / max, ticks over 145 deg | engine-93 |
+|---|---|---|
+| man defender, not driven | 146 / 180, 815 of 15,451 | 19 / 103, 0 |
+| zone eyes | 74 / 176, 6 | 75 / 141, 0 |
+| downfield block / carrier (returns) | 158-162 / 178, 41 | 10-28 / 74, 0 |
+| passer after the throw | 52-69 / 180, 60 | 10-87 / 158, 17 |
+
+At the perception record itself every head is within the neck plus trunk twist by construction
+(`test/head-follow.test.ts`). The passer's few end-of-tick excesses are his body turning after the record.
+
+A man defender's head now simply follows his body. Where he should look (his man's hip, then back for the ball) is a
+later technique item, not built here.
+
 ## engine-92: what the passer sees off his gaze is less exact (2026-11-23)
 
 On: `PERIPH_ACUITY` (QB lane; Integration's paired card). An information leak under the user's standing rule:

@@ -307,6 +307,7 @@
   "test/hand-site.test.ts",
   "test/hands-cue.test.ts",
   "test/hang-airborne.test.ts",
+  "test/head-follow.test.ts",
   "test/head.test.ts",
   "test/hold-facing.test.ts",
   "test/hold-finish.test.ts",
