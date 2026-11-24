@@ -444,6 +444,7 @@
   "test/qb-seen-rec.test.ts",
   "test/qb-stick.test.ts",
   "test/qb-tick-picture.test.ts",
+  "test/qb-trace.test.ts",
   "test/quarter-flat-force-support.test.ts",
   "test/quarters-check.test.ts",
   "test/quarters-flat-wheel.test.ts",
