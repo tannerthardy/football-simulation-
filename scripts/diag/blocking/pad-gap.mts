@@ -16,7 +16,7 @@ mkdirSync(dirname(out), { recursive: true });
 const proto = PlaySim.prototype as unknown as { tick: () => void }; const tick0 = proto.tick;
 const AGES = [0.3, 0.6, 1.0, 1.5];
 const OLP = new Set(['OT', 'OG', 'C', 'T', 'G']);
-interface Row { kind: string; age: number; bPos: string; dPos: string; bPad: number; dPad: number; bPost: number; dPost: number; bReq: number | null; dReq: number | null; bLift: number; dLift: number; bKg: number; dKg: number; bStr: number; dStr: number; bBend: number; dBend: number; bLean: number; dLean: number; bOff: number; dOff: number; bUtil: number | null; dUtil: number | null; dir: number; bv: number; bReq: number | null; dv: number; dReq: number | null }
+interface Row { kind: string; age: number; bPos: string; dPos: string; bPad: number; dPad: number; bPost: number; dPost: number; bLift: number; dLift: number; bKg: number; dKg: number; bStr: number; dStr: number; bBend: number; dBend: number; bLean: number; dLean: number; bOff: number; dOff: number; bUtil: number | null; dUtil: number | null; dir: number; bv: number; bReq: number | null; dv: number; dReq: number | null }
 const rows: Row[] = [];
 const state = new WeakMap<object, Map<string, { t0: number; done: Set<number> }>>();
 proto.tick = function (this: any) {
@@ -42,7 +42,7 @@ proto.tick = function (this: any) {
         const pb = padHeightAt(supportParams(blk.profile), sb.posture), pd = padHeightAt(supportParams(def.profile), sd.posture);
         const lf = (i: number, p: any) => (this.world.liftFelt?.[i] ?? 0) / (p.massKg * 10.73);
         rows.push({ kind: this.offCall.kind, age: a, bPos: blk.slot ?? '?', dPos: def.slot ?? '?', bPad: pb, dPad: pd, bPost: sb.posture, dPost: sd.posture,
-          bReq: this.cmds?.[blk.idx]?.posture ?? null, dReq: this.cmds?.[def.idx]?.posture ?? null, bLift: lf(blk.idx, blk.profile), dLift: lf(def.idx, def.profile),
+          bLift: lf(blk.idx, blk.profile), dLift: lf(def.idx, def.profile),
           bKg: blk.profile.massKg, dKg: def.profile.massKg, bStr: blk.profile.power / blk.profile.massKg, dStr: def.profile.power / def.profile.massKg, bBend: blk.profile.bend ?? 0, dBend: def.profile.bend ?? 0,
           bLean: Math.atan2(Math.hypot(sb.lean.x, sb.lean.y), blk.profile.massKg * 10.73) * 180 / Math.PI, dLean: Math.atan2(Math.hypot(sd.lean.x, sd.lean.y), def.profile.massKg * 10.73) * 180 / Math.PI,
           bOff: Math.hypot(sb.xi.x, sb.xi.y) / baseRadiusAt(supportParams(blk.profile), sb.posture), dOff: Math.hypot(sd.xi.x, sd.xi.y) / baseRadiusAt(supportParams(def.profile), sd.posture),
