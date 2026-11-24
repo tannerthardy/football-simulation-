@@ -80,8 +80,15 @@ export function landmarkView(path: readonly PathPoint[], idx: number, from: Vec2
 export function routePath(start: Vec2, los: number, outside: number, pts: readonly RoutePoint[],
   extend: boolean, family: RouteDef['family']): PathPoint[] {
   const endX = OPP_GOAL_X + 8.5;
+  // GO_STEM (routes.ts): a point's `side` keeps that much room to his sideline (or the room he started with, if less).
+  const sideline = outside > 0 ? FIELD_WIDTH : 0, room0 = Math.abs(sideline - start.y);
+  const keep = (y: number, side: number | undefined): number => {
+    if (side === undefined) return y;
+    const room = Math.min(side, room0);
+    return outside > 0 ? Math.min(y, sideline - room) : Math.max(y, sideline + room);
+  };
   const out: PathPoint[] = pts.map(rp => ({
-    p: { x: Math.min(endX, los + rp.d), y: clamp(start.y + rp.l * outside, 1.2, FIELD_WIDTH - 1.2) }, s: rp.s ?? 1, ...(rp.cut ? { cut: true } : {}),
+    p: { x: Math.min(endX, los + rp.d), y: clamp(keep(start.y + rp.l * outside, rp.side), 1.2, FIELD_WIDTH - 1.2) }, s: rp.s ?? 1, ...(rp.cut ? { cut: true } : {}),
   }));
   // ROUTE_EFFORT: the through speed at a declared break by its type, from the route's own geometry.
   if (extend && out.length >= 1) {

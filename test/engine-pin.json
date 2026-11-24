@@ -294,6 +294,7 @@
   "test/game-takeaway-credit.test.ts",
   "test/gap-assignment.test.ts",
   "test/gaze-field-of-view.test.ts",
+  "test/go-stem.test.ts",
   "test/grasp-attachment-locality.test.ts",
   "test/grasp-force-integration.test.ts",
   "test/grasp-reel-travel.test.ts",

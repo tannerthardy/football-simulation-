@@ -31,6 +31,14 @@ const CROSS_OVER = process.env.CROSS_OVER === '1';
 const ROUTE_SHAPE = process.env.ROUTE_SHAPE !== '0';
 /** SLANT_LEAN (experimental, off): the slant as a roll through its first point, flattening at its catch depth (see SLANT_LEAN_POINTS). */
 const SLANT_LEAN = process.env.SLANT_LEAN === '1';
+/** GO_STEM (experimental, off): the go stems outside and stacks the corner instead of running a straight line up his
+ * alignment: an outside release, then on to the outside up to 4 yd from where he lined up, keeping 5 yd of room to the
+ * sideline (or the room he started with). Taught: stem the defender, then stack him to own the vertical leverage
+ * (Viqtory Sports, Learn to Stem & Stack at Wide Receiver); the fade's landmark "just inside the numbers" (Gridiron
+ * Strategies, Fade Route With Landmarks) (M: the 5 yd room is measured, not a quoted figure). NFL WR/TE gos (BDB 2025,
+ * PFF GO, not in motion; route_chart.py): 3.7-4.3 yd outside his start by 3.0 s from any split 6-20 yd off the sideline,
+ * ending 5.0 yd from it from a 6-10 yd split; ours 0.8 (10-14 yd split) and -0.5 (14-20). Off, the go is unchanged. */
+const GO_STEM = process.env.GO_STEM === '1';
 /** CROSS_FLAT (experimental, off): the shallow crossers reach their depth in the first leg and run flat across, as
  * taught ("run under the linebackers, flat across"; docs/reviews/2026-11-14-crosser-depth.md). Off, the shallow
  * climbs on a diagonal from a 2.5 yd stem to 5 yd across 22 yd: still rising at 3.0 s (4.7 yd median against zone, ball
@@ -45,7 +53,9 @@ const SLANT_LEAN = process.env.SLANT_LEAN === '1';
 const CROSS_FLAT = process.env.CROSS_FLAT !== '0';
 const ROUTE_TABLE: Record<string, RouteDef> = {
   // Verticals
-  go: { id: 'go', family: 'deep', depth: 30, end: 'continue', points: [{ d: 4, l: 0.6 }, { d: 50, l: 1.5 }] },
+  go: { id: 'go', family: 'deep', depth: 30, end: 'continue', points: GO_STEM
+    ? [{ d: 4, l: 1.2, side: 5 }, { d: 14, l: 3.5, side: 5 }, { d: 50, l: 4, side: 5 }]
+    : [{ d: 4, l: 0.6 }, { d: 50, l: 1.5 }] },
   fade: { id: 'fade', family: 'deep', depth: 25, end: 'continue', points: [{ d: 3, l: 1.6 }, { d: 50, l: 3.5 }] },
   seam: { id: 'seam', family: 'deep', depth: 22, end: 'continue', points: [{ d: 4, l: -0.4 }, { d: 50, l: -1.2 }] },
   // A tagged near-safety read. Reserve the middle in the concept; this is not
