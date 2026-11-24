@@ -1,0 +1,123 @@
+== c1 trips_outs cover1 gun_bunch_11 press=press n=12
+  routes (('S1', 'go'), ('S2', 'out'), ('S3', 'quick_out'), ('W1', 'hitch'), ('B', 'pass-pro'))
+  S1: sep p50 1.0/1.5/2.0/2.5 = 1.35/0.96/0.8/1.09; nearest safety @2.0 p50 6.31
+  S2: sep p50 1.0/1.5/2.0/2.5 = 0.66/0.83/0.94/0.77; nearest safety @2.0 p50 5.96
+  S3: sep p50 1.0/1.5/2.0/2.5 = 3.16/3.48/3.29/3.6; nearest safety @2.0 p50 3.93
+  W1: sep p50 1.0/1.5/2.0/2.5 = 1.12/1.18/1.15/0.84; nearest safety @2.0 p50 27.32
+  B: sep p50 1.0/1.5/2.0/2.5 = 2.66/2.76/3.08/3.51; nearest safety @2.0 p50 16.9
+  man defenders: {'B': '0/12 with traffic, extra p50 0.08', 'S1': '11/12 with traffic, extra p50 0.09', 'W1': '0/12 with traffic, extra p50 0.05', 'S2': '9/12 with traffic, extra p50 0.14', 'S3': '0/12 with traffic, extra p50 0.92'}
+  covered: {'LB_M': [('zone:-->None', 11), ('zone:-->S2', 1)], 'LB_W': [('man:B->None', 11), ('man:B->S2', 1)], 'CB_S': [('man:S1->S2', 11), ('man:S1->S1', 1)], 'CB_W': [('man:W1->W1', 12)], 'NB': [('man:S2->S2', 12)], 'FS': [('zone:-->None', 12)], 'SS': [('man:S3->S3', 11), ('man:S3->S2', 1)]}
+== c1ctl trips_outs cover1 gun_trips_11 press=press n=12
+  routes (('S1', 'go'), ('S2', 'out'), ('S3', 'quick_out'), ('W1', 'hitch'), ('B', 'pass-pro'))
+  S1: sep p50 1.0/1.5/2.0/2.5 = 1.01/1.22/1.29/1.85; nearest safety @2.0 p50 12.23
+  S2: sep p50 1.0/1.5/2.0/2.5 = 1.13/1.15/1.03/1.34; nearest safety @2.0 p50 7.21
+  S3: sep p50 1.0/1.5/2.0/2.5 = 2.98/2.92/2.53/2.7; nearest safety @2.0 p50 2.53
+  W1: sep p50 1.0/1.5/2.0/2.5 = 1.12/1.18/1.15/0.84; nearest safety @2.0 p50 27.16
+  B: sep p50 1.0/1.5/2.0/2.5 = 2.66/2.76/3.08/3.51; nearest safety @2.0 p50 16.37
+  man defenders: {'B': '0/12 with traffic, extra p50 0.08', 'S1': '0/12 with traffic, extra p50 0.13', 'W1': '0/12 with traffic, extra p50 0.05', 'S2': '0/12 with traffic, extra p50 0.12', 'S3': '1/12 with traffic, extra p50 1.21'}
+  covered: {'LB_M': [('zone:-->None', 9), ('zone:-->S3', 2)], 'LB_W': [('man:B->None', 12)], 'CB_S': [('man:S1->S1', 12)], 'CB_W': [('man:W1->W1', 12)], 'NB': [('man:S2->S2', 12)], 'FS': [('zone:-->None', 12)], 'SS': [('man:S3->S3', 11), ('man:S3->S2', 1)]}
+== c2 trips_outs cover1_banjo gun_bunch_11 press=None n=12
+  routes (('S1', 'go'), ('S2', 'out'), ('S3', 'quick_out'), ('W1', 'hitch'), ('B', 'pass-pro'))
+  S1: sep p50 1.0/1.5/2.0/2.5 = 1.85/1.52/1.17/0.68; nearest safety @2.0 p50 5.02
+  S2: sep p50 1.0/1.5/2.0/2.5 = 1.05/1.06/1.1/0.79; nearest safety @2.0 p50 5.5
+  S3: sep p50 1.0/1.5/2.0/2.5 = 3.06/3.24/1.85/3.25; nearest safety @2.0 p50 5.62
+  W1: sep p50 1.0/1.5/2.0/2.5 = 5.41/4.41/4.35/4.88; nearest safety @2.0 p50 22.32
+  B: sep p50 1.0/1.5/2.0/2.5 = 2.66/2.76/3.08/3.54; nearest safety @2.0 p50 18.57
+  man defenders: {'B': '0/12 with traffic, extra p50 0.07', 'W1': '0/12 with traffic, extra p50 0.35', 'S2': '9/12 with traffic, extra p50 0.81'}
+  covered: {'LB_M': [('zone:-->S3', 6), ('zone:-->None', 5)], 'LB_W': [('man:B->None', 11), ('man:B->S2', 1)], 'CB_S': [('zone:-->S2', 11), ('zone:-->S1', 1)], 'CB_W': [('man:W1->W1', 12)], 'NB': [('man:S2->S2', 12)], 'FS': [('zone:-->None', 12)], 'SS': [('zone:-->S3', 4), ('zone:-->S2', 4)]}
+== c3 trips_stick cover3_mable gun_trips_11 press=None n=12
+  routes (('S1', 'quick_hitch'), ('S2', 'quick_hitch'), ('S3', 'flat'), ('W1', 'go'), ('B', 'angle'))
+  S1: sep p50 1.0/1.5/2.0/2.5 = 6.13/4.7/2.43/0.67; nearest safety @2.0 p50 7.81
+  S2: sep p50 1.0/1.5/2.0/2.5 = 3.92/1.73/3.26/4.36; nearest safety @2.0 p50 4.08
+  S3: sep p50 1.0/1.5/2.0/2.5 = 3.21/4.8/3.88/3.29; nearest safety @2.0 p50 9.61
+  W1: sep p50 1.0/1.5/2.0/2.5 = 5.19/3.96/2.55/1.42; nearest safety @2.0 p50 22.27
+  B: sep p50 1.0/1.5/2.0/2.5 = 1.38/3.42/4.15/4.71; nearest safety @2.0 p50 13.77
+  man defenders: {'W1': '0/12 with traffic, extra p50 0.07'}
+  W1: defenders within 5 yd @2.0: [(('CB_W',), 12)]
+  covered: {'LB_M': [('zone:-->None', 12)], 'LB_W': [('zone:-->None', 12)], 'CB_S': [('zone:-->S1', 12)], 'CB_W': [('man:W1->W1', 12)], 'NB': [('zone:-->S2', 12)], 'FS': [('zone:-->None', 12)], 'SS': [('zone:-->S2', 12)]}
+== c3ctl trips_stick cover3 gun_trips_11 press=None n=12
+  routes (('S1', 'quick_hitch'), ('S2', 'quick_hitch'), ('S3', 'flat'), ('W1', 'go'), ('B', 'angle'))
+  S1: sep p50 1.0/1.5/2.0/2.5 = 3.77/3.45/3.92/4.13; nearest safety @2.0 p50 6.52
+  S2: sep p50 1.0/1.5/2.0/2.5 = 4.08/3.56/2.25/1.45; nearest safety @2.0 p50 2.25
+  S3: sep p50 1.0/1.5/2.0/2.5 = 3.21/6.05/6.86/5.97; nearest safety @2.0 p50 7.89
+  W1: sep p50 1.0/1.5/2.0/2.5 = 7.06/5.01/3.2/1.58; nearest safety @2.0 p50 22.6
+  B: sep p50 1.0/1.5/2.0/2.5 = 1.38/3.42/4.15/4.71; nearest safety @2.0 p50 13.45
+  man defenders: {}
+  W1: defenders within 5 yd @2.0: [(('CB_W',), 12)]
+  covered: {'LB_M': [('zone:-->None', 12)], 'LB_W': [('zone:-->None', 11), ('zone:-->B', 1)], 'CB_S': [('zone:-->S1', 6), ('zone:-->S2', 6)], 'CB_W': [('zone:-->W1', 12)], 'NB': [('zone:-->S1', 12)], 'FS': [('zone:-->None', 12)], 'SS': [('zone:-->S2', 12)]}
+== c4 four_verts cover2 gun_doubles_11 press=None n=12
+  routes (('S1', 'go'), ('S2', 'seam'), ('W1', 'go'), ('W2', 'seam'), ('B', 'back_flat'))
+  S1: sep p50 1.0/1.5/2.0/2.5 = 2.14/4.61/7.46/8.57; nearest safety @2.0 p50 10.09
+  S2: sep p50 1.0/1.5/2.0/2.5 = 2.53/0.65/1.04/1.12; nearest safety @2.0 p50 12.84
+  W1: sep p50 1.0/1.5/2.0/2.5 = 3.24/5.12/7.08/9.0; nearest safety @2.0 p50 10.16
+  W2: sep p50 1.0/1.5/2.0/2.5 = 5.73/5.89/4.98/3.91; nearest safety @2.0 p50 10.41
+  B: sep p50 1.0/1.5/2.0/2.5 = 2.16/4.31/7.41/10.18; nearest safety @2.0 p50 23.62
+  man defenders: {}
+  covered: {'LB_M': [('zone:-->S2', 12)], 'LB_W': [('zone:-->S2', 12)], 'CB_S': [('zone:-->S1', 12)], 'CB_W': [('zone:-->W1', 12)], 'NB': [('zone:-->W2', 11), ('zone:-->S2', 1)], 'FS': [('zone:-->None', 12)], 'SS': [('zone:-->None', 12)]}
+== c4ctl four_verts cover3 gun_doubles_11 press=None n=12
+  routes (('S1', 'go'), ('S2', 'seam'), ('W1', 'go'), ('W2', 'seam'), ('B', 'back_flat'))
+  S1: sep p50 1.0/1.5/2.0/2.5 = 3.15/2.46/4.41/2.96; nearest safety @2.0 p50 4.7
+  S2: sep p50 1.0/1.5/2.0/2.5 = 2.53/0.8/1.1/2.5; nearest safety @2.0 p50 10.88
+  W1: sep p50 1.0/1.5/2.0/2.5 = 7.76/6.35/4.91/3.45; nearest safety @2.0 p50 19.86
+  W2: sep p50 1.0/1.5/2.0/2.5 = 3.07/1.67/1.17/1.61; nearest safety @2.0 p50 12.0
+  B: sep p50 1.0/1.5/2.0/2.5 = 2.15/4.31/7.41/10.32; nearest safety @2.0 p50 24.2
+  man defenders: {}
+  covered: {'LB_M': [('zone:-->S2', 12)], 'LB_W': [('zone:-->W2', 6), ('zone:-->None', 4)], 'CB_S': [('zone:-->S1', 11), ('zone:-->None', 1)], 'CB_W': [('zone:-->W1', 12)], 'NB': [('zone:-->W2', 12)], 'FS': [('zone:-->None', 12)], 'SS': [('zone:-->S1', 12)]}
+== c5 mesh cover1 gun_doubles_11 press=press n=12
+  routes (('S1', 'corner'), ('S2', 'mesh_under'), ('W1', 'go'), ('W2', 'shallow_high'), ('B', 'swing'))
+  S1: sep p50 1.0/1.5/2.0/2.5 = 1.04/1.24/0.86/1.06; nearest safety @2.0 p50 13.19
+  S2: sep p50 1.0/1.5/2.0/2.5 = 3.31/3.13/2.3/1.76; nearest safety @2.0 p50 2.55
+  W1: sep p50 1.0/1.5/2.0/2.5 = 1.03/1.25/0.97/1.18; nearest safety @2.0 p50 25.34
+  W2: sep p50 1.0/1.5/2.0/2.5 = 1.25/0.89/0.76/1.45; nearest safety @2.0 p50 6.37
+  B: sep p50 1.0/1.5/2.0/2.5 = 0.91/3.89/4.63/2.26; nearest safety @2.0 p50 11.18
+  man defenders: {'B': '7/12 with traffic, extra p50 0.66', 'S1': '0/12 with traffic, extra p50 0.19', 'W1': '0/12 with traffic, extra p50 0.1', 'W2': '0/12 with traffic, extra p50 0.17', 'S2': '0/12 with traffic, extra p50 1.38'}
+  mesh gap p50 3.17 S2 def to W2 p50 2.71 W2 def to S2 p50 4.5
+  covered: {'LB_M': [('zone:-->S2', 12)], 'LB_W': [('man:B->W2', 12)], 'CB_S': [('man:S1->S1', 12)], 'CB_W': [('man:W1->W1', 12)], 'NB': [('man:W2->W2', 12)], 'FS': [('zone:-->None', 12)], 'SS': [('man:S2->S2', 12)]}
+== c5ctl mesh cover3 gun_doubles_11 press=None n=12
+  routes (('S1', 'corner'), ('S2', 'mesh_under'), ('W1', 'go'), ('W2', 'shallow_high'), ('B', 'swing'))
+  S1: sep p50 1.0/1.5/2.0/2.5 = 2.0/2.09/2.34/3.51; nearest safety @2.0 p50 3.97
+  S2: sep p50 1.0/1.5/2.0/2.5 = 3.33/4.13/4.45/1.65; nearest safety @2.0 p50 8.56
+  W1: sep p50 1.0/1.5/2.0/2.5 = 7.01/4.96/3.15/1.56; nearest safety @2.0 p50 22.62
+  W2: sep p50 1.0/1.5/2.0/2.5 = 3.94/4.18/1.98/0.97; nearest safety @2.0 p50 12.52
+  B: sep p50 1.0/1.5/2.0/2.5 = 0.91/3.89/7.46/7.57; nearest safety @2.0 p50 17.14
+  man defenders: {}
+  mesh gap p50 1.0 S2 def to W2 p50 None W2 def to S2 p50 None
+  covered: {'LB_M': [('zone:-->S1', 10), ('zone:-->S2', 2)], 'LB_W': [('zone:-->W2', 12)], 'CB_S': [('zone:-->S1', 12)], 'CB_W': [('zone:-->W1', 12)], 'NB': [('zone:-->W2', 12)], 'FS': [('zone:-->None', 12)], 'SS': [('zone:-->S1', 12)]}
+== c5a mesh cover1 gun_doubles_11 press=press n=12
+  routes (('S1', 'corner'), ('S2', 'mesh_under_gap'), ('W1', 'go'), ('W2', 'shallow_high'), ('B', 'swing'))
+  S1: sep p50 1.0/1.5/2.0/2.5 = 1.04/1.24/0.86/1.06; nearest safety @2.0 p50 13.05
+  S2: sep p50 1.0/1.5/2.0/2.5 = 3.53/3.09/2.08/1.79; nearest safety @2.0 p50 2.29
+  W1: sep p50 1.0/1.5/2.0/2.5 = 1.03/1.25/0.97/1.18; nearest safety @2.0 p50 25.56
+  W2: sep p50 1.0/1.5/2.0/2.5 = 1.25/0.89/0.79/1.31; nearest safety @2.0 p50 6.35
+  B: sep p50 1.0/1.5/2.0/2.5 = 0.91/3.89/4.63/2.26; nearest safety @2.0 p50 11.87
+  man defenders: {'B': '7/12 with traffic, extra p50 0.65', 'S1': '0/12 with traffic, extra p50 0.19', 'W1': '0/12 with traffic, extra p50 0.1', 'W2': '0/12 with traffic, extra p50 0.21', 'S2': '0/12 with traffic, extra p50 1.2'}
+  mesh gap p50 2.57 S2 def to W2 p50 2.23 W2 def to S2 p50 3.95
+  covered: {'LB_M': [('zone:-->S2', 12)], 'LB_W': [('man:B->W2', 12)], 'CB_S': [('man:S1->S1', 12)], 'CB_W': [('man:W1->W1', 12)], 'NB': [('man:W2->W2', 12)], 'FS': [('zone:-->None', 12)], 'SS': [('man:S2->S2', 12)]}
+== c5b mesh cover1 gun_doubles_11 press=press n=12
+  routes (('S1', 'corner'), ('S2', 'mesh_under_gap'), ('W1', 'go'), ('W2', 'shallow_high'), ('B', 'swing'))
+  S1: sep p50 1.0/1.5/2.0/2.5 = 1.04/1.24/0.86/1.06; nearest safety @2.0 p50 13.47
+  S2: sep p50 1.0/1.5/2.0/2.5 = 3.2/3.21/2.33/1.69; nearest safety @2.0 p50 2.33
+  W1: sep p50 1.0/1.5/2.0/2.5 = 1.03/1.25/0.97/1.18; nearest safety @2.0 p50 25.2
+  W2: sep p50 1.0/1.5/2.0/2.5 = 1.25/0.89/0.74/1.48; nearest safety @2.0 p50 6.14
+  B: sep p50 1.0/1.5/2.0/2.5 = 0.91/3.89/4.63/2.26; nearest safety @2.0 p50 10.83
+  man defenders: {'B': '7/12 with traffic, extra p50 0.66', 'S1': '0/12 with traffic, extra p50 0.19', 'W1': '0/12 with traffic, extra p50 0.1', 'W2': '0/12 with traffic, extra p50 0.18', 'S2': '0/12 with traffic, extra p50 1.26'}
+  mesh gap p50 3.33 S2 def to W2 p50 2.88 W2 def to S2 p50 4.71
+  covered: {'LB_M': [('zone:-->S2', 12)], 'LB_W': [('man:B->W2', 12)], 'CB_S': [('man:S1->S1', 12)], 'CB_W': [('man:W1->W1', 12)], 'NB': [('man:W2->W2', 12)], 'FS': [('zone:-->None', 12)], 'SS': [('man:S2->S2', 12)]}
+== c6 fade_flat cover2 gun_doubles_11 press=None n=12
+  routes (('S1', 'go'), ('S2', 'flat'), ('W1', 'hitch'), ('W2', 'go'), ('B', 'back_flat'))
+  S1: sep p50 1.0/1.5/2.0/2.5 = 2.06/4.24/6.31/7.55; nearest safety @2.0 p50 9.77
+  S2: sep p50 1.0/1.5/2.0/2.5 = 2.31/3.0/2.02/3.54; nearest safety @2.0 p50 18.98
+  W1: sep p50 1.0/1.5/2.0/2.5 = 2.66/3.81/3.75/2.84; nearest safety @2.0 p50 14.34
+  W2: sep p50 1.0/1.5/2.0/2.5 = 4.67/5.87/8.35/7.29; nearest safety @2.0 p50 9.35
+  B: sep p50 1.0/1.5/2.0/2.5 = 2.15/4.32/7.41/9.43; nearest safety @2.0 p50 23.13
+  man defenders: {}
+  covered: {'LB_M': [('zone:-->S2', 5), ('zone:-->None', 4)], 'LB_W': [('zone:-->None', 12)], 'CB_S': [('zone:-->S1', 12)], 'CB_W': [('zone:-->W1', 12)], 'NB': [('zone:-->None', 8), ('zone:-->W2', 4)], 'FS': [('zone:-->None', 12)], 'SS': [('zone:-->None', 12)]}
+== c6ctl fade_flat cover3 gun_doubles_11 press=None n=12
+  routes (('S1', 'go'), ('S2', 'flat'), ('W1', 'hitch'), ('W2', 'go'), ('B', 'back_flat'))
+  S1: sep p50 1.0/1.5/2.0/2.5 = 3.15/2.46/3.21/1.56; nearest safety @2.0 p50 4.69
+  S2: sep p50 1.0/1.5/2.0/2.5 = 2.31/4.88/5.03/4.97; nearest safety @2.0 p50 5.03
+  W1: sep p50 1.0/1.5/2.0/2.5 = 8.17/7.5/9.27/11.3; nearest safety @2.0 p50 21.94
+  W2: sep p50 1.0/1.5/2.0/2.5 = 3.29/1.81/1.12/2.74; nearest safety @2.0 p50 12.8
+  B: sep p50 1.0/1.5/2.0/2.5 = 2.15/4.31/7.41/10.32; nearest safety @2.0 p50 24.22
+  man defenders: {}
+  covered: {'LB_M': [('zone:-->None', 5), ('zone:-->S2', 5)], 'LB_W': [('zone:-->None', 12)], 'CB_S': [('zone:-->S1', 12)], 'CB_W': [('zone:-->None', 12)], 'NB': [('zone:-->W2', 12)], 'FS': [('zone:-->None', 12)], 'SS': [('zone:-->S1', 11), ('zone:-->S2', 1)]}

@@ -77,3 +77,37 @@ A cell whose prediction does not appear goes to its owner through Integration, a
 - the trips checks: Coverage;
 - the corner's #2 read: Coverage;
 - the seen motion response: QB lane / Flex.
+
+## Results (20:30 UTC; nothing above edited)
+
+**Setup:**
+- 12 seeds per cell, `HOLD=2.6`: no throw before 2.6 s, so the coverage is measured to then. The read is not under test
+  here.
+- Old controller. The cells run as listed in out/matrix/cells.txt.
+- Cell 1 runs with `NOCHECK=1`. Cover 1 carries a structure check to cover1_banjo against bunch (coverages.ts:81), so
+  "plain man against bunch" exists only with the check removed. Without NOCHECK, cells 1 and 2 were the same play.
+- Summary: docs/reviews/data/2026-11-24-call-matrix/summary.txt (`scripts/diag/calls/matrix_agg.py`).
+
+| # | prediction | result | verdict |
+|---|---|---|---|
+| 1 | Bunch against press man: traffic frees #2/#3 | #2's separation at 1.5 s beat spread trips in 0 of 12 paired seeds (#3: 9 of 12). The defenders on #1 and #2 had others within 1.2 yd (11 and 9 of 12), but their path was only 0.09-0.14 yd longer. A delay over 0.5 yd in 3 of 24. | **Does not appear.** The bodies are there; they do not obstruct. |
+| 2 | Banjo removes cell 1's traffic | The banjo exchange is in the roles (CB_S zone on the first out). #2's separation was 1.06 against 0.83 in plain man. | Inconclusive: cell 1 had no advantage to remove. |
+| 3 | The trips check (Mable) isolates X | 12 of 12: only CB_W within 5 yd at 2.0 s, the nearest safety 22 yd away. The same in plain Cover 3, 12 of 12. Mable's difference is CB_W in man (X's separation 2.6 yd) against a zone third (3.2). | **Appears.** X is alone against Cover 3 too, which the teaching does not dispute: Cover 3's corner has his third. |
+| 4 | Four verticals against Cover 2: a #2 seam ≥ 3 yd at 2.5 s | 12 of 12 (Cover 3: 5 of 12). The #1 go was also ≥ 3 yd in 12 of 12. The hook defenders carried S2, the corners squatted, and the safeties sat about 10 yd from #1. | **Appears.** The stretch shows on #1 as well. |
+| 5 | Mesh against press man: the crossers' defenders are slowed | The crossers never meet: their closest point is 3.2 yd p50 (1.0 against zone). No crosser's defender was delayed (0 of 24). S2/W2 separation at 2.0 s: 2.3 / 0.8 against 4.5 / 2.1 against zone. | **Does not appear,** for two reasons below. |
+| 5a/5b | 0.4 / 1.2 yd crossing gap | MESH_GAP moved the under route's depth, but the closest point stayed 2.6 / 3.3 yd: timing, not depth, keeps them apart against man. | **Could not be staged** until the crossers' timing is fixed. |
+| 6 | Fade-flat against Cover 2: the corner squats on #2's flat; the fade opens | The fade is open (S1 > 2 yd at 2.0 s in 12 of 12, about 6 yd p50), but CB_S was nearest S2 in 0 of 12: he stays nearest #1 and loses him. The flat is > 2 yd open in 6 of 12. | **Outcome appears, mechanism does not:** the corner does not read #2. |
+
+**Missing mechanisms, by owner (through Integration):**
+1. **Coverage: no man defender is ever obstructed by an offensive body** (cells 1 and 5). The reviewer's §3B is
+   confirmed: defenders pass within 1.2 yd of other receivers with no extra path. There is no over or under the
+   traffic either; the teaching is "cornerbacks can be taught to always get over the mesh, while safeties and
+   linebackers can always be taught to stay under" (Waugh).
+2. **Coverage: the Cover 2 corner does not take the first man to the flat** (cell 6), the reviewer's §3A. He stays on
+   #1 and the fade still opens behind him, so the outcome looks right for the wrong reason.
+3. **Rules + Coaching (mine): mesh's crossers do not meet against press man** (cell 5). Against zone their closest
+   point is 1.0 yd; against press man 3.2 yd. One crosser is delayed at the line and the other runs on, so there is no
+   mesh point. The taught mesh has both crossers aim at the same landmark and time to it (Win With The Pass, Black41).
+   This blocks cells 5, 5a and 5b until it is fixed. Next: why, on a few plays (the jam on the H?), then a fix of the
+   crossers' timing to the mesh landmark.
+4. **Deferred cells** (splits, motion), unchanged.
