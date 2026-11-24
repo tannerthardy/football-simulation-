@@ -14,7 +14,7 @@ const { lastReleaseBelief } = await import(`${W}/src/sim/release-belief.ts`);
 const firsts: Record<string, number[]> = {}; const yac: number[] = []; const firstT: number[] = [];
 for (let seed = 1; seed <= N; seed++) {
   const sim: any = new PlaySim(nativeTraceSetup({ concept, coverage, seed, roster: 3, formation: 'gun_doubles_11', flip: false }));
-  let rel: number | null = null, tc: number | null = null, catcher: any = null; const brk = new Map<any, any>(); const atCatch = new Map<any, number>(); const touch = new Map<any, number>();
+  let rel: number | null = null, tc: number | null = null, catcher: any = null; const brk = new Map<any, any>(); const atCatch = new Map<any, number>() as Map<any, any>; const touch = new Map<any, number>() as Map<any, any>;
   const tick = sim.tick.bind(sim);
   sim.tick = () => { tick();
     if (rel === null && sim.ball?.kind === 'air') rel = sim.t;
