@@ -126,16 +126,18 @@ const SECOND_ARM_CLOSE = 0.15;
 /** `lock`: how much of the wrap the arms' geometry still locks (default
  * the hold's quality). A wrap that slides out to arm's length is a hand hold
  * again; the hands keep the grip they acquired (GRIP_HOLD). */
-/** ONE_ARM_PULL (see world.ts): one hand closed on a jersey holds until the cloth slips through it: the squeeze times
- * the friction on both faces of the cloth (fingers and palm), not the squeeze itself, which is a closed-grip isometric
- * force on a dynamometer handle (Tools, 2026-11-24). Stated choices, with ranges: squeeze 45-55 kg (Division I
- * dynamometer per hand, the existing assumption, now by strength rating and not scaled by body mass); hand-on-cloth
- * friction 0.61 (Seo et al. 2010: cotton on rubber; their range by material 0.40-1.10, verified by the outside
- * review), on two faces; a handful by quality as handHold (a pinch at q 0 is 0.3 of it). A 50 kg squeeze holds
- * 2 x 0.61 x 50 kg-force = 61 kg-force (range 40-121 kg-force over the friction range). The arm's pull at its
- * extension is the World's limit (gripCapacity). */
+/** ONE_ARM_PULL (see world.ts): one hand closed on a jersey holds until the cloth slips through it. Not the squeeze:
+ * a dynamometer squeeze is a closed-grip isometric force on a handle, not what a hand transmits through cloth (Tools,
+ * 2026-11-24). Measured instead (Tools' verification, full text): a one-arm pull with the arm extended on a judo-gi
+ * grip, 42 grapplers, men 444 N (Escobar-Molina et al. 2023, Front Sports Act Living; standard bar 498 +/- 104 N);
+ * bare-hand pulls on a handle 339-472 N (Seo, Armstrong & Young 2010), cut 42% by a cotton glove (friction-limited).
+ * Stated choice: 444 N for a full handful, by strength rating over +/- 1 SD of the grapplers' spread (21%); a pinch at
+ * quality 0 is 0.3 of it (handHold's handful law). Range: a jersey is tighter and slicker than a gi, so 250-444 N
+ * (Tools' bounded guess at the low end); not a measured jersey figure. The arm's pull at its extension is the World's
+ * limit (gripCapacity). */
+const GI_PULL = 444 / 0.9144; // N -> kg yd/s^2
 function clothSlip(d: Agent, q: number): number {
-  return 2 * 0.61 * (45 + 10 * d.r('strength')) * G * clamp(0.3 + 1.4 * q, 0, 1);
+  return GI_PULL * (1 + 0.21 * (2 * d.r('strength') - 1)) * clamp(0.3 + 1.4 * q, 0, 1);
 }
 export function gripForce(d: Agent, quality: number, lock = quality, hands = 2): number {
   const q = clamp(quality, 0, 1), l = clamp(lock, 0, 1);
