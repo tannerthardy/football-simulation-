@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "engine-95",
+  "id": "engine-98",
   "runSet": {
     "commit": "1b5415de99b5b7194eff045f3c37a07a4c54c1a9",
     "seeds": [
@@ -134,6 +134,8 @@
     "BREAK_LOOK": "on",
     "SEEN_EMPTY": "on",
     "DIR_CAP": "on",
+    "BALL_DRAG": "on",
+    "SPOT_LEAN": "on",
     "CARRY_POSTURE": "on",
     "CORNER_DROP": "on",
     "CARRY_TURN": "on",
@@ -210,7 +212,6 @@
     "PERIPH_ACUITY": "on",
     "FLIGHT_BREAK": "on",
     "FLIGHT_LEAD": "off",
-    "SPOT_LEAN": "off",
     "HEAD_FOLLOW": "on",
     "POCKET_CLIMB": "off",
     "BLOCK_SEEN": "on",

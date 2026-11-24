@@ -174,11 +174,11 @@ const ZONE_HOLD_LEAN_ROPE = 1.0 * ZONE_HOLD_SCALE;
  * the direction he was moving); the limit shrinks with his speed and is gone when he has stopped along it. Taught:
  * when the seam clears, settle and find the next threat; don't sprint back to a spot. */
 export const ZONE_HOLD_HANDOFF = (ZONE_HOLD_BITS & 64) !== 0;
-/** SPOT_LEAN (experimental, off; Coverage C14 2026-11-24): the settled spot dropper (spotUnderneath) slides with the
+/** SPOT_LEAN (default on, engine-98; `=0` restores; Coverage C14 2026-11-24): the settled spot dropper (spotUnderneath) slides with the
  * QB's eyes along ZONE_HOLD bit 32's held head-line point, not toward whichever receiver the eyes are on, leaning
  * harder the nearer that line runs through his zone (continuous); replaces the step to lerp(QB, receiver, 0.82) when
  * the eyes land on a receiver in his zone. Needs ZONE_HOLD bit 32. Taught: slide with the quarterback's eyes. */
-const SPOT_LEAN = process.env.SPOT_LEAN === '1';
+const SPOT_LEAN = process.env.SPOT_LEAN !== '0';
 const CARRY_LABEL = /^(open-carry-seam|carry-wall|carry-run-past)$/;
 const eyesHeld = new WeakMap<Agent, Agent>();
 const eyesCache = new WeakMap<Agent, { t: number; r: Agent | null }>();

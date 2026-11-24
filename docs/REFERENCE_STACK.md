@@ -2656,3 +2656,28 @@ As the ball carrier the numbers equal the flag off at every speed.
 **What it moves.** Ordinary games, 16 per arm (seeds 7-22; arms diverge after the first changed play): defender dives 789 / 802; dives still down at the whistle with the play live when he would have been up 120 / 134. Staged and paired (720 zone plays, 12 concepts x 5 coverages x 2 formations x 3 rosters x 2 seeds, identical until a defender dives): 239 plays have a defender dive in either arm and 3 differ (2 worse for the offense, 1 better); completions 422 / 422, zone YAC mean 7.22 / 7.22, 10+ yd YAC 61 / 61, missed-tackle then touchdown 1 / 1, touchdowns 23 / 24, yards per play 7.85 / 7.84. The repair is the diver's own time on the ground and almost never reaches the play.
 
 **Fixtures.** None moved. `npm test` (core and core-defaults, Node 22.22.0) on this tree and on clean develop fe150600 fails the same 29 files with the same failure counts (the Node-version and numeric ones already red on develop); the 6-test `down-rise-plant.test.ts` is new, listed in `test/engine-pin.json` defaults, and sets the flag explicitly for both arms. `dither-budget` passes with the flag on by default.
+
+## engine-96: the spiral's drag is the NFL ball's measured deceleration (2026-11-24)
+
+On: `BALL_DRAG` (Tools/Physics; `=0` restores the old constant). `DRAG_SPIRAL` 0.003027 /yd (C_d 0.099, a recalled value) becomes 0.0050 /yd
+(interval 0.0045-0.0057, C_d about 0.16 on the rulebook ball): the horizontal deceleration of BDB 2025 weeks 1-9 passes, release frames and the
+last 0.6 s excluded (`docs/reviews/2026-11-24-ball-drag-reconciliation.md`; build, bench and cards `2026-11-24-ball-drag-build.md`). A measured
+physical quantity of the ball, not fitted to an outcome; no attitude law. `solveLaunch` re-derives the release for the QB's flight time, so hang
+time and apex by distance do not move; the release is faster and the arrival slower (lone ball +0.3 to +1.2 and -0.3 to -0.8 yd/s).
+
+Card (Tools, 48 games a side, seeds 301-348, paired seeds; Integration's 6-seed card: completion about -0.8, designed runs not reproduced):
+completion .677 -> .682, uncontested drop .052 -> .058, breakup .097 -> .094, interception .012 -> .014; designed runs 3.79 -> 3.74 yd/carry (SE 0.27),
+run share .310 -> .310. Catch roll, actual run (8 games a side): ball speed p50 22.5 -> 21.9 yd/s, share over 24 yd/s 28.9% -> 23.7%.
+Not modelled: the NFL ball's decay roughly doubles 0.3-0.6 s before arrival (tracker smoothing near the catch, or the ball's nose-over at the end
+of the arc); the catch roll's 24 yd/s step is not what the NFL ball avoids on short throws (a catch-rebuild question, not drag).
+
+## engine-98: the settled spot dropper slides with the QB's seen eyes (2026-11-24)
+
+On: `SPOT_LEAN` (Coverage C14; `=0` restores). The settled spot dropper (`ZoneCoverage.spotUnderneath`) leans along ZONE_HOLD bit 32's
+held point on the QB's seen head line, harder the nearer that line runs through his zone, continuously; off, his target jumped from
+receiver to receiver with his read of the QB's eyes and to lerp(QB, receiver, 0.82) in his zone. Lands under Commit to a decision: the
+pre-throw spot-settle reversals 117 -> 66 (zone 0.448 -> 0.393/s, dither stage table), dither budget passes on.
+
+Card (Integration, 5 seeds x 16 games x 2 leagues, each against ref on engine-95): completion -0.2 / +1.3 / +0.2 / +2.8* / +1.0, yards
+per attempt +0.35 / +0.23 / -0.53* / -0.16 / +0.47, YAC +0.65 / +0.07 / -0.86* / -0.79* / +0.58, INT flat to -0.5: no consistent
+whole-game direction. Staged spot-zone pairs (960 plays): incompletions 178 -> 205, yards a play 8.15 -> 7.73.
