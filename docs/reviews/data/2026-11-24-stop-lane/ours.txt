@@ -16,6 +16,9 @@
 | out | #2 | 7.5-12 | 61 |  77% | -0.3 s | 28 | 2.90 | 2.0 |  93% |  21% | 2.2 |   4% | +0.2 |  29% /  64% /   0% /   7% /   0% |
 | out | #2 | 7.5-12 | 61 |  77% | break | 14 | 2.95 | 2.4 |  93% |  43% | 2.3 |   7% | +0.6 |  29% /  50% /   7% /  14% /   0% |
 
+the in-lane defender's movement label at the break (ours): man-open 18, lane 13, open-carry 4, spot-settle 2, curl-flat-widen 2, squat-sink 2, man-pedal 2, open-carry-cross 1, open-carry-wall 1, open-carry-seam 1
+all nearest defenders' labels at the break: man-pedal 73, man-open 63, lane 56, squat-sink 42, open-carry 38, wall 30, spot-settle 22, open-carry-seam 14, man-open-carry 11, open-carry-wall 10
+
 in the lane at the break, by coverage family (stop + out, both bands, #1 + #2):
   cover1    n   71: in the lane  17%, perp p50 1.5, dist p50 2.0
   cover2    n   57: in the lane   4%, perp p50 1.6, dist p50 2.8
@@ -43,6 +46,9 @@ in the lane at the break, by coverage family (stop + out, both bands, #1 + #2):
 | out | #2 | 3-7.5 | 78 |  15% | break | 66 | 2.20 | 2.8 |  83% |  26% | 2.1 |  27% | +0.1 |  26% /  45% /   8% /  21% /   0% |
 | out | #2 | 7.5-12 | 59 |  73% | -0.3 s | 35 | 2.90 | 2.3 |  89% |  54% | 1.8 |  37% | +0.5 |  40% /  40% /   0% /  20% /   0% |
 | out | #2 | 7.5-12 | 59 |  73% | break | 16 | 2.90 | 2.7 |  88% |  62% | 1.7 |  44% | +0.8 |  38% /  38% /   6% /  19% /   0% |
+
+the in-lane defender's movement label at the break (ours): lane 21, threat-sink 18, man-open 18, open-carry 12, man-pedal 5, open-carry-seam 5, squat-sink 5, spot-settle 2, (zone) 1, trap 1
+all nearest defenders' labels at the break: man-open 70, lane 66, threat-sink 57, squat-sink 55, man-pedal 48, spot-settle 39, open-carry 34, wall 22, open-carry-seam 15, curl-flat-widen 9
 
 in the lane at the break, by coverage family (stop + out, both bands, #1 + #2):
   cover1    n   86: in the lane  19%, perp p50 1.5, dist p50 2.0
