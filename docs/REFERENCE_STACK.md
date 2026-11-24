@@ -2673,4 +2673,4 @@ of the arc); the catch roll's 24 yd/s step is not what the NFL ball avoids on sh
 
 ## GRIP_MU and POSTURE_HOLD (Tools/Physics, 2026-11-24; both off, experimental)
 
-Off in the stack. `GRIP_MU` sets the shared traction coefficient (1 means 1.3; a number sets it); `POSTURE_HOLD` gives an engaged man's leg force a knee-angle shape, holds pad level against a vertical load his legs do not carry, and charges playing low a mobility cost across his face. Neither is on until the card (arms: ref, grip only, posture only, both) clears; see `docs/reviews/2026-11-24-blocking-phase1-design.md` and `2026-11-24-blocking-phase1-bench.md`.
+Off in the stack. `GRIP_MU` sets the shared traction coefficient (1 means 1.3; a number sets it); `POSTURE_HOLD` holds pad level against a vertical load his legs do not carry (dormant until Phase 2: the lifts the pad geometry gives are far below what legs hold) and charges playing low a mobility cost. Neither is on until the card (arms: ref, grip only, posture only, both) clears; see `docs/reviews/2026-11-24-blocking-phase1-design.md` and `2026-11-24-blocking-phase1-bench.md`.

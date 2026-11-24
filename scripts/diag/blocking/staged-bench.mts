@@ -11,7 +11,11 @@ import { readFileSync } from 'node:fs';
 const stack = JSON.parse(readFileSync('config/reference-stack.json', 'utf8')).flags;
 for (const [k, v] of Object.entries(stack)) if (v === 'on' && process.env[k] === undefined) process.env[k] = '1';
 const { contactFixture } = await import('../run-contact-technique.js');
-const { supportParams, legDrive, baseRadiusAt, comHeightAt } = await import('../../../src/physics/support.js');
+const { supportParams, legDrive, baseRadiusAt, comHeightAt, criticalDeviation, padHeightAt } = await import('../../../src/physics/support.js');
+// LEAN_BOUND=<k> (scratch, Integration 2026-11-24): the force-aimed lean is bounded by his posture through the engine's own geometry: the horizontal force a man can carry without a step
+// plus the step he can take is `m g x criticalDeviation(posture) / padHeight(posture)` (the capture-point deviation at which he must step or fall, over the height of the push), times k (1 = that bound).
+const LEAN_BOUND = process.env.LEAN_BOUND ? Number(process.env.LEAN_BOUND) : 0;
+const leanCapOf = (a: any) => { const su = a.body.support, sp = supportParams(a.profile); return LEAN_BOUND * a.profile.massKg * 10.73 * criticalDeviation(sp, su.posture, su.feetLock ?? 0, 1) / padHeightAt(sp, su.posture); };
 const CENTER_Y = 26.65, N = 0.9144;
 type Mod = { matched?: boolean; str?: number; mass?: number; massP?: number; press?: number; reach?: number; posture?: number; balance?: number; bend?: number; req?: number };
 type Case = { name: string; who: 'R' | 'B' | '-'; exp: 1 | -1 | 0; mod?: Mod; both?: { B: Mod; R: Mod }; note?: string };
@@ -45,8 +49,8 @@ function rep(kind: 'pass' | 'run', B: Mod, R: Mod, tr = false) {
   let first = -1;
   for (let k = 0; k < steps; k++) {
     const intents: any[] = sim.agents.map((a: any) => ({ vel: { x: 0, y: 0 }, facing: a.facing }));
-    intents[b.idx] = { vel: { x: bReq, y: 0 }, facing: 0, push: 1, posture: bPost };
-    intents[d.idx] = { vel: { x: -dReq, y: 0 }, facing: Math.PI, push: 1, posture: dPost };
+    intents[b.idx] = { vel: { x: bReq, y: 0 }, facing: 0, push: 1, posture: bPost, ...(LEAN_BOUND ? { leanCap: leanCapOf(b) } : {}) };
+    intents[d.idx] = { vel: { x: -dReq, y: 0 }, facing: Math.PI, push: 1, posture: dPost, ...(LEAN_BOUND ? { leanCap: leanCapOf(d) } : {}) };
     const sr = sim.world.step(intents, sim.dt); sim.t += sim.dt;
     const t = (k + 1) * sim.dt;
     const bind = (a: any, i: number) => {

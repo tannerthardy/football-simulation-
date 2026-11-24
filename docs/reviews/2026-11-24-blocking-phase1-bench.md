@@ -1,5 +1,7 @@
 # Blocking Phase 1: the flags and the bench gate (Tools/Physics, 2026-11-24)
 
+**Update 20:30: the leg-force-by-posture factor ('post' and 'both' columns below) was removed from the PR on Integration's ruling (a special case for engaged men that was not approved; the lean-bound test that might have replaced it is in `2026-11-24-blocking-phase1-lean-test.md` and does not).** The columns below show what it did and are kept as measured; the code no longer produces them. `POSTURE_HOLD` is now the (dormant) hold plus the mobility cost only.
+
 `GRIP_MU` and `POSTURE_HOLD` are built, **off**, in `tools/phase1` (not landed; the card is not run). This is the bench gate Integration asked for first, four arms on the
 same World-only staged bench as Phase 0 (`scripts/diag/blocking/staged-bench.mts`; setup and metric exactly as in `2026-11-24-blocking-staged-table.md`: the pair's mean velocity
 toward the offense's backfield, **+ = the blocker is driven back**, yd/s, change from each column's own base row):

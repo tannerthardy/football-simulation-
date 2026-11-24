@@ -43,14 +43,10 @@ describe('GRIP_MU: the shared traction coefficient', () => {
   });
 });
 
-describe('POSTURE_HOLD: legs push through the knee-angle curve; a hold under load', () => {
-  it('off is exactly the reference (an engaged push does not depend on pad level through the legs)', async () => {
+describe('POSTURE_HOLD: a hold under load (dormant at pad-geometry lifts) and a mobility cost', () => {
+  it('off is exactly the reference', async () => {
     const a = await rep({}, 1.0), b = await rep({ POSTURE_HOLD: '0' }, 1.0);
     expect(a.pair).toBe(b.pair);
-  });
-  it('on: a rusher who plays lower pushes harder through the legs, and the lower his pads the more he gains', async () => {
-    const tall = await rep({ POSTURE_HOLD: '1' }, 0.45), low = await rep({ POSTURE_HOLD: '1' }, 1.0);
-    expect(low.pair).toBeGreaterThan(tall.pair);
   });
   it('on: a man pushing straight on pays no mobility cost, a low man pushing across his face pays it', async () => {
     vi.stubEnv('POSTURE_HOLD', '1'); vi.resetModules();

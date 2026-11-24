@@ -343,25 +343,22 @@ const LEAN_PITCH = process.env.LEAN_PITCH !== '0';
  * unchanged, and the runner's side of the row is unchanged. */
 const GRASP_ARM_MOMENT = process.env.GRASP_ARM_MOMENT !== '0';
 const POSTURE_RATE = 2.5;
-/** POSTURE_HOLD (experimental, off; POSTURE_HOLD=1; =hold keeps only the hold, for the card's diagnosis; docs/reviews/2026-11-24-blocking-phase1-design.md
- * section 3). Pad level under load, for a man in a hands joint. Two stated choices, one shape:
- *  - Leg force at a pad level. The legs push through the knee-torque-angle curve (isometric knee extensor torque peaks near 70 degrees of flexion,
- *    Pincivero et al. 2004; a set lineman pushes best with hip and knee near 120 degrees, Martin and Beckham 2020), so an engaged man's push is
- *    `LEG_ANGLE_FLOOR + (1 - LEG_ANGLE_FLOOR) x posture` of his leg force: standing tall gives up leg force, playing low gives it back. Not applied to a
- *    man in the open (the gait has its own force-velocity law). The deepest posture (1.0) is already near the strongest angle, so there is no
- *    force cost to playing lower (the cost is mobility, MOBILITY below).
- *  - A hold. The vertical load the opponent's pad line puts on him (liftFelt, positive = lifting him) is carried by his legs at that angle,
- *    `HOLD_K x leg drive x the same shape`. Past that, the unheld part, as a share of his weight, moves his pads at up to POSTURE_RATE per second
- *    (he is stood up if the opponent is below him, sunk if the opponent presses down): at an unheld share of HOLD_FULL of his weight, the full rate.
- *    The work is the lift force times the pad-height change, charged to the opponent's energy (the lifter). The pair's vertical load stays equal and
- *    opposite (liftImp), so nothing is created.
- * MOBILITY: playing low costs first step and quickness, a stated choice (the force cost of playing low is none: posture 1.0 is already near the strongest angle):
- * the leg drive of an engaged man across his facing is scaled by `1 - MOBILITY_COST x posture x sin^2(angle off his facing)` (MOBILITY_COST 0.3, a choice;
- * `MOBILITY_COST=0` removes it), so a low man pushing straight on pays nothing and a low man beaten across his face pays most; and the gait's cut factor of an engaged man is scaled by
- * `1 - MOBILITY_COST x posture` (his first step and quickness), whichever way he moves. */
+/** POSTURE_HOLD (experimental, off; POSTURE_HOLD=1; docs/reviews/2026-11-24-blocking-phase1-design.md section 3, docs/reviews/2026-11-24-blocking-phase1-bench.md).
+ * DORMANT UNTIL PHASE 2: it does nothing at the lifts the pad geometry gives (0.06-0.2 body weights against about 1 body weight his legs hold), and it is not
+ * to be tuned to bind; the stand-up waits for an arm with a force behind it. Two pieces, for a man in a live hands joint:
+ *  - A hold. The vertical load the opponent's pad line puts on him (liftFelt, positive = lifting him) is carried by his legs at the knee angle,
+ *    `HOLD_K x leg drive x (LEG_ANGLE_FLOOR + (1 - LEG_ANGLE_FLOOR) x posture) x fatigue` (the isometric knee torque-angle shape: peak near 70 degrees of flexion,
+ *    Pincivero et al. 2004; a set lineman's best push has hip and knee near 120 degrees, Martin and Beckham 2020; the floor is a stated choice). Past that, the unheld
+ *    part, as a share of his weight, moves his pads at up to POSTURE_RATE per second (stood up if the opponent is below him, sunk if he presses down); the full rate
+ *    at an unheld share of HOLD_FULL of his weight. The work, lift force times pad height change, is charged to the opponent's energy (the lifter). The pair's vertical
+ *    load stays equal and opposite (liftImp), so nothing is created.
+ *  - A mobility cost, a stated choice (there is no force cost to playing low: posture 1.0 is already near the strongest angle): the leg drive of an engaged man across
+ *    his facing is scaled by `1 - MOBILITY_COST x posture x sin^2(angle off his facing)` (MOBILITY_COST 0.3, a choice; `MOBILITY_COST=0` removes it), and the gait's cut factor
+ *    by `1 - MOBILITY_COST x posture`, so a low man pushing straight on pays nothing. Not visible in the staged pair (the hands joint moves the pair as one block);
+ *    it can show only in the whole-game gate (the engaged lateral move at 2 s).
+ * Removed 2026-11-24 (Integration's ruling): a leg-force factor by posture for engaged men only: a special case that was not approved. */
 const POSTURE_HOLD_ENV = process.env.POSTURE_HOLD ?? '0';
 const POSTURE_HOLD = POSTURE_HOLD_ENV !== '0' && POSTURE_HOLD_ENV !== '';
-const LEG_ANGLE_ON = POSTURE_HOLD && POSTURE_HOLD_ENV !== 'hold';
 const LEG_ANGLE_FLOOR = 0.7, HOLD_K = 1, HOLD_FULL = 0.25, MOBILITY_COST = Number(process.env.MOBILITY_COST ?? 0.3);
 const legAngle = (posture: number): number => LEG_ANGLE_FLOOR + (1 - LEG_ANGLE_FLOOR) * posture;
 const DEFAULT_POSTURE = 0.2;
@@ -2145,9 +2142,8 @@ export class World {
     const muScale = TURF_MU_SCALE !== 1 && this.joints.some(j => j.kind === 'hands' && (j.a === b || j.b === b)) ? TURF_MU_SCALE : 1;
     const traction = muScale * (PAD_LEVERAGE ? sp.traction * clamp(1 - this.liftFelt[i] / (m * G), 0, 2) : sp.traction);
     const engagedHands = POSTURE_HOLD && this.joints.some(j => j.kind === 'hands' && !j.off && (j.a === b || j.b === b));
-    const angleFactor = LEG_ANGLE_ON && engagedHands ? legAngle(sup.posture) : 1;
     const pushForce = (muScale === 1 ? sp.pushForce : Math.min(legDrive(p), sp.traction * muScale))
-      * (HIP_BRACE ? 1 - this.hipUsed[i] : 1) * angleFactor;
+      * (HIP_BRACE ? 1 - this.hipUsed[i] : 1);
     report.groundImpulseLimit[i] += traction * h;
     this.recovery[i] = 0;
     const spinBefore=b.spin??0;
@@ -2225,7 +2221,7 @@ export class World {
             const vp = b.vel.x * ux + b.vel.y * uy;
             // Legs drive hardest straight ahead; sideways or backward far less.
             const dir = legDriveFactor(p, this.facingDelta(b.facing, Math.atan2(uy, ux))) * trunkPrice(b) * this.lowAcross(engagedHands, sup.posture, b.facing, Math.atan2(uy, ux));
-            const capacity = sp.pushForce * angleFactor * dir * clamp(1 - vp / p.vmax, 0, ECCENTRIC_GAIN) * fat * a * push;
+            const capacity = sp.pushForce * dir * clamp(1 - vp / p.vmax, 0, ECCENTRIC_GAIN) * fat * a * push;
             const mag = Math.min(capacity, L * (1 + clamp(intent.growth ?? PUSH_GROWTH, 0, PUSH_GROWTH)), m * ex / h, intent.leanCap ?? Infinity);
             tx = ux * mag; ty = uy * mag;
           }
