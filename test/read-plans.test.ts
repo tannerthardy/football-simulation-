@@ -2,9 +2,12 @@
  * installed. Every receiver it names runs a route in the concept (the back only when he releases), its drop is the
  * concept's, steps start on the plant or the first hitch (smash: the corner read on the hitch) and do not go backward, a key's answers are among its throws, and each expected
  * read exists. Nothing in the engine reads the plans yet. */
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { READ_PLANS } from '../src/playbook/read-plans.js';
-import { PASS_BY_ID as PASS, SCREEN_BY_ID } from '../src/playbook/concepts.js';
+
+// The plans are the taught versions: checked against the concepts installed as taught (CONCEPT_TAUGHT, #896).
+vi.stubEnv('CONCEPT_TAUGHT', '1');
+const { PASS_BY_ID: PASS, SCREEN_BY_ID } = await import('../src/playbook/concepts.js');
 const PASS_BY_ID = { ...PASS, ...SCREEN_BY_ID };
 import type { ReceiverRef } from '../src/playbook/types.js';
 

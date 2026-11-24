@@ -177,17 +177,21 @@ verbatim:
 2. `hot: HotRule[]`: one hot answer per side.
 3. `pick?: 'cushion' | 'shell' | 'leverage'`: what decides the flip.
 
-## Concept gaps
+## Concept gaps (decided: the concepts are corrected)
 
-Where our installed concept differs from the taught version, the plan carries an analogue or a missing piece.
-`CONCEPT_GAPS` in `read-plans.ts` is the list, kept so that a decision can correct the concept rather than bend the
-plan around it:
-- **slant_flat.** Taught, the back releases and is the checkdown ("throw the ball to the tailback", Klatt; the back in
-  the flat in Dunn's install). Ours has `back: 'block'`. The plan uses #3's hook (S3) as the checkdown from the first
-  hitch. ANALOGUE.
-- **quick_outs.** Taught, the back's shoot route is the outlet ("Back - Shoot route ... will always be an outlet",
-  Kratzer). Ours has `back: 'block'`. The plan has no checkdown.
-- **All four.** The hot answer is the generic replacement rule. No source names the rusher.
+Integration's decision is to correct the installed concepts to the taught versions, not bend the plans. The plans in
+`read-plans.ts` are the taught versions. `CONCEPT_TAUGHT` (#896, off) installs the concepts to match. While that flag is
+off, `CONCEPT_GAPS` records what each plan meets instead:
+- **slant_flat:** the back check-releases (Klatt). Flag off, he blocks, so there is no checkdown on the field.
+- **quick_outs:** the back runs the shoot (Kratzer). Flag off, he blocks, so there is no outlet.
+- **levels:** S1 runs the 5 yd in, S2 the 10-12 yd square-in (Brown). Flag off, the key pair is inverted.
+- **flood:** the backside slant is the backside hot (Miller). Flag off, W1 runs a dig.
+- **mesh:** a corner on both sides, the better one picked (Win With The Pass). Flag off, the flipped first read is a go.
+
+Curl-flat is not a gap: ours matches Heck's "Florida 4", whose sit (#3) is the blitz throw. All other hot answers
+marked GENERIC follow the replacement rule, because no source names the rusher.
+
+The consistency test checks the plans against the concepts with `CONCEPT_TAUGHT=1`.
 
 ## Sources
 

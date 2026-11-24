@@ -20,11 +20,11 @@ export const SLANT_FLAT: QbReadPlan = {
       keyRules: [{ cue: 'widens', throwTo: 'W1' }, { cue: 'jumps', throwTo: 'W1' }, { cue: 'sinks', throwTo: 'W2' }] },
   ],
   hot: [{ side: 'S', over: 1, answer: { ref: 'S1', timing: 'onBreak' } }, { side: 'W', over: 1, answer: { ref: 'W1', timing: 'onBreak' } }],
-  // ANALOGUE (concept gap, CONCEPT_GAPS): taught, the back is the checkdown; ours blocks, so #3's hook stands in.
-  checkdown: { ref: 'S3', fromStep: 1, timing: 'seenOpen' },
+  // Taught: the back (CONCEPT_TAUGHT, #896). While that flag is off ours blocks: CONCEPT_GAPS.
+  checkdown: { ref: 'B', fromStep: 1, timing: 'seenOpen' },
   confirm: null,
   expected: { cover0: 0, cover1: 0, cover2: 0, tampa2: 0, cover2man: 0, cover3: 0, cover4: 0, cover6: 0 },
-  source: 'docs/reviews/2026-11-24-read-plans.md#slant-flat-slant_flat (Klatt; Football Playbook Designer; Bowen, NFP; Bleacher Report slant; Hewitt; Browns cut-up). ANALOGUE: the checkdown (#3 hook for the back).',
+  source: 'docs/reviews/2026-11-24-read-plans.md#slant-flat-slant_flat (Klatt; Football Playbook Designer; Bowen, NFP; Bleacher Report slant; Hewitt; Browns cut-up). Checkdown: the back (CONCEPT_TAUGHT).',
 };
 
 /** Stick: key the flat defender outside-in on the plant: he fails to widen: the flat; widens: the stick. First hitch: the
@@ -69,11 +69,11 @@ export const QUICK_OUTS: QbReadPlan = {
     { step: 1, look: { kind: 'receiver', ref: 'S2' }, throws: [{ ref: 'S2', timing: 'onBreak' }] },
   ],
   hot: [{ side: 'S', over: 1, answer: { ref: 'S2', timing: 'onBreak' } }, { side: 'W', over: 1, answer: { ref: 'W2', timing: 'onBreak' } }],
-  // Concept gap (CONCEPT_GAPS): taught, the back's shoot route is the outlet; ours blocks, so there is none.
-  checkdown: null,
+  // Taught: the back's shoot (CONCEPT_TAUGHT, #896). While that flag is off ours blocks: CONCEPT_GAPS.
+  checkdown: { ref: 'B', fromStep: 1, timing: 'seenOpen' },
   confirm: null,
   expected: { cover2: 1, tampa2: 1, cover3: 0, cover4: 0 },
-  source: 'docs/reviews/2026-11-24-read-plans.md#quick-outs-quick_outs (Kratzer; Shaw; The QB Stable; Win With The Pass Cover 2 beaters; Brown, Grantland). Gap: no outlet (the back blocks).',
+  source: 'docs/reviews/2026-11-24-read-plans.md#quick-outs-quick_outs (Kratzer; Shaw; The QB Stable; Win With The Pass Cover 2 beaters; Brown, Grantland). Outlet: the back\'s shoot (CONCEPT_TAUGHT).',
 };
 
 // ------------------------------------------------------------------ dropback (docs/reviews/2026-11-24-read-plans.md)
@@ -135,14 +135,14 @@ export const DAGGER: QbReadPlan = {
 /** Mesh: the corner on the fifth step (to grass), then the mesh point (whichever crosser breaks open; the sit against
  * zone), then the back. (Win With The Pass; Black41 on Mumme / Leach; Throw Deep.) */
 export const MESH: QbReadPlan = {
-  conceptId: 'mesh', drop: 'gun5', readType: 'progression',
+  conceptId: 'mesh', drop: 'gun5', readType: 'progression', pick: 'cushion',
   reads: [
     { step: 0, look: { kind: 'receiver', ref: 'S1' }, throws: [{ ref: 'S1', timing: 'onBreak' }] },
     { step: 1, look: { kind: 'receiver', ref: 'S2' },
       throws: [{ ref: 'S2', timing: 'seenOpen' }, { ref: 'W2', timing: 'seenOpen' }, { ref: 'S3', timing: 'seenOpen' }] },
   ],
-  // The vertical as the hot against a big blitz with no safety deep (Black41, Holgorsen's mesh).
-  hot: [{ side: 'either', over: 1, answer: { ref: 'W1', timing: 'onBreak' } }],
+  // GENERIC hot (the crosser on the blitz side). The corners run both sides (CONCEPT_TAUGHT); he picks the better corner.
+  hot: [{ side: 'S', over: 1, answer: { ref: 'S2', timing: 'onBreak' } }, { side: 'W', over: 1, answer: { ref: 'W2', timing: 'onBreak' } }],
   checkdown: { ref: 'B', fromStep: 2, timing: 'seenOpen' },
   confirm: null,
   expected: {},
@@ -178,13 +178,12 @@ export const FLOOD: QbReadPlan = {
       keyRules: [{ cue: 'jumps', throwTo: 'S2' }, { cue: 'widens', throwTo: 'S2' }, { cue: 'sinks', throwTo: 'S3' }] },
     { step: 1, look: { kind: 'receiver', ref: 'W1' }, throws: [{ ref: 'W1', timing: 'onBreak' }, { ref: 'W2', timing: 'seenOpen' }] },
   ],
-  // The flat is hot (Miller). ANALOGUE (CONCEPT_GAPS): the taught backside hot is a slant; ours runs a dig and a
-  // shallow, and the shallow stands in.
-  hot: [{ side: 'S', over: 1, answer: { ref: 'S3', timing: 'onBreak' } }, { side: 'W', over: 1, answer: { ref: 'W2', timing: 'onBreak' } }],
+  // The flat is hot; the backside slant is hot vs a blitz from his side (Miller; the slant: CONCEPT_TAUGHT).
+  hot: [{ side: 'S', over: 1, answer: { ref: 'S3', timing: 'onBreak' } }, { side: 'W', over: 1, answer: { ref: 'W1', timing: 'onBreak' } }],
   checkdown: { ref: 'B', fromStep: 2, timing: 'seenOpen' },
   confirm: null,
   expected: { cover3: 0 },
-  source: 'docs/reviews/2026-11-24-read-plans.md#flood-flood (Miller GS; Bowen NFP and BR; YFO; Kou; Wide Zone Warriors). ANALOGUE: the backside hot. Variants: sail first (YFO); peek the vertical (Kou).',
+  source: 'docs/reviews/2026-11-24-read-plans.md#flood-flood (Miller GS; Bowen NFP and BR; YFO; Kou; Wide Zone Warriors). Backside slant (CONCEPT_TAUGHT). Variants: sail first (YFO); peek the vertical (Kou).',
 };
 
 /** Levels: an alert on the divide (seam) at the end of the drop, then short to deep on the defender between the
@@ -195,15 +194,16 @@ export const LEVELS: QbReadPlan = {
   reads: [
     { step: 0, look: { kind: 'receiver', ref: 'S3' }, throws: [{ ref: 'S3', timing: 'onBreak' }] },
     { step: 1, look: { kind: 'key', role: 'hook' },
-      throws: [{ ref: 'S2', timing: 'onBreak' }, { ref: 'S1', timing: 'onBreak' }],
-      keyRules: [{ cue: 'sinks', throwTo: 'S2' }, { cue: 'carries', throwTo: 'S2' }, { cue: 'jumps', throwTo: 'S1' }, { cue: 'squats', throwTo: 'S1' }] },
+      // Taught (CONCEPT_TAUGHT): S1 the 5 yd in (low), S2 the square-in (high).
+      throws: [{ ref: 'S1', timing: 'onBreak' }, { ref: 'S2', timing: 'onBreak' }],
+      keyRules: [{ cue: 'sinks', throwTo: 'S1' }, { cue: 'carries', throwTo: 'S1' }, { cue: 'jumps', throwTo: 'S2' }, { cue: 'squats', throwTo: 'S2' }] },
   ],
   // GENERIC hot.
-  hot: [{ side: 'S', over: 1, answer: { ref: 'S2', timing: 'onBreak' } }, { side: 'W', over: 1, answer: { ref: 'W2', timing: 'onBreak' } }],
+  hot: [{ side: 'S', over: 1, answer: { ref: 'S1', timing: 'onBreak' } }, { side: 'W', over: 1, answer: { ref: 'W2', timing: 'onBreak' } }],
   checkdown: { ref: 'B', fromStep: 1, timing: 'seenOpen' },
   confirm: 'mofSafety',
   expected: { cover2: 1 },
-  source: 'docs/reviews/2026-11-24-read-plans.md#levels-levels (Brown, smartfootball blogspot; Wilhite; Bowen NFP; Alert The Post). GENERIC hot. Concept gap: the routes are swapped (CONCEPT_GAPS).',
+  source: 'docs/reviews/2026-11-24-read-plans.md#levels-levels (Brown, smartfootball blogspot; Wilhite; Bowen NFP; Alert The Post). GENERIC hot. Routes as taught (CONCEPT_TAUGHT).',
 };
 
 /** Four verticals: the locked seam on the plant (a rhythm throw), the seam reader off the free safety on the first
@@ -323,20 +323,16 @@ export const WIDE_NOW_SCREEN = screenPlan('wide_now_screen', 'quick', 'W1', 'onB
 export const TUNNEL_SCREEN = screenPlan('tunnel_screen', 'quick', 'S1', 'seenOpen',
   'docs/reviews/2026-11-24-read-plans.md#screens (AFM: "at most, takes a three-step drop"; Coaches Insider, three screens).');
 
-/** Where an installed concept differs from the taught version the plan follows, so the plan carries an analogue or a
- * missing piece. These are concept-data questions (concepts.ts), listed for a decision to correct the concept, not to
- * bend the plan around it. Each also appears in docs/reviews/2026-11-24-read-plans.md, "Concept gaps". */
-export const CONCEPT_GAPS: ReadonlyArray<{ concept: string; taught: string; ours: string; plan: string }> = [
-  { concept: 'slant_flat', taught: 'the back releases as the checkdown ("throw the ball to the tailback", Klatt; the back in the flat in Dunn\'s install)',
-    ours: "back: 'block'", plan: 'ANALOGUE: #3 (S3) hook as the checkdown from the first hitch' },
-  { concept: 'quick_outs', taught: 'the back\'s shoot route is the outlet ("Back - Shoot route ... will always be an outlet", Kratzer)',
-    ours: "back: 'block'", plan: 'no checkdown (null)' },
-  { concept: 'levels', taught: 'the outside receiver runs the 5 yd in and the slot the 10-12 yd square-in (Brown); the divide route on the alert',
-    ours: "S1 dig, S2 short_in, S3 seam: the outside on the deep in, the slot on the short", plan: 'the key keeps high = S1 dig, low = S2 short in, as installed' },
-  { concept: 'flood', taught: 'the backside receiver runs a slant, hot against a blitz from his side (Miller, Gridiron Strategies)',
-    ours: 'W1 dig, W2 shallow', plan: 'ANALOGUE: W2 shallow as the backside hot' },
-  { concept: 'mesh', taught: 'a wheel or rail is the hot and the first read in the Holgorsen versions; the Air Raid corner, mesh, back',
-    ours: 'S1 corner, W1 go, back swing', plan: 'the Air Raid order; W1 go as the hot vertical' },
+/** Where the installed concept differs from the taught version these plans follow. Integration's decision: correct the
+ * concepts (CONCEPT_TAUGHT, #896), not the plans. Also in docs/reviews/2026-11-24-read-plans.md, "Concept gaps". */
+export const CONCEPT_GAPS: ReadonlyArray<{ concept: string; taught: string; whileOff: string }> = [
+  // Each is installed as taught by CONCEPT_TAUGHT (#896); the plans above are the taught versions. While that flag is
+  // off the installed concept differs, and `whileOff` says what the plan meets instead.
+  { concept: 'slant_flat', taught: 'the back check-releases as the checkdown (Klatt)', whileOff: 'the back blocks: no checkdown on the field' },
+  { concept: 'quick_outs', taught: 'the back runs the shoot, the outlet (Kratzer)', whileOff: 'the back blocks: no outlet' },
+  { concept: 'levels', taught: 'S1 the 5 yd in, S2 the 10-12 yd square-in (Brown)', whileOff: 'S1 runs the dig and S2 the short in: the key pair is inverted' },
+  { concept: 'flood', taught: 'the backside #1 runs a slant, the backside hot (Miller)', whileOff: 'W1 runs a dig: the backside hot is a dig' },
+  { concept: 'mesh', taught: 'a corner on both sides, the better one picked (Win With The Pass)', whileOff: 'W1 runs a go: the flipped first read is a go' },
 ];
 
 /** The authored plans by concept id. */
