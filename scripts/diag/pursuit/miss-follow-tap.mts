@@ -13,7 +13,7 @@ const { compilingPlan } = await import(`${W}/src/playbook/read-compiler/runtime.
 const { writeFileSync } = await import('node:fs');
 const GAMES = Number(process.argv[2] ?? 2), OUT = process.argv[3], FIRST = Number(process.argv[4] ?? 201);
 const r2 = (v: number) => Math.round(v * 100) / 100;
-const rows: any[] = []; const attempts: any[] = []; const st = new WeakMap<any, any>();
+const rows: any[] = []; const attempts: any[] = []; const plays = { catch: 0, run: 0 }; const st = new WeakMap<any, any>();
 const proto = PlaySim.prototype as any, tick = proto.tick, run = proto.run;
 proto.tick = function (this: any) {
   let s = st.get(this);
@@ -56,10 +56,11 @@ proto.tick = function (this: any) {
 };
 proto.run = function (this: any) {
   const r = run.call(this); const s = st.get(this);
+  if (s && this.offCall.kind === 'run') plays.run++; else if (s && this.isPass && this.stats?.completed && !this.scrambled) plays.catch++;
   if (s) { const e = this.endSpot; for (const o of s.open) { const { cx, dir, ...rec } = o.rec; rows.push({ ...rec, next: o.next, yardsAfter: e ? r2((e.x - cx) * dir) : null }); } }
   return r;
 };
 const rng = new Rng(FIRST);
 const home = generateTeam(rng, 'Ironmen', 'IRN', { strength: 0.55 }), away = generateTeam(rng, 'Comets', 'COM', { strength: 0.55 });
 for (let g = 0; g < GAMES; g++) { simulateGame(home, away, { seed: FIRST + g }); console.error(`game ${g + 1}/${GAMES}: ${rows.length} misses`); }
-writeFileSync(OUT, JSON.stringify({ games: GAMES, firstSeed: FIRST, rows, attempts })); console.log('misses', rows.length);
+writeFileSync(OUT, JSON.stringify({ games: GAMES, firstSeed: FIRST, rows, attempts, plays })); console.log('misses', rows.length);
