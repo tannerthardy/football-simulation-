@@ -52,9 +52,12 @@ No decision reads B's true profile.
   2. **unit between plays** (the huddle): each player on the field who added a `saw` or `felt` entry this play sends it
      to every teammate on the field.
      - Delay: until the next snap.
-     - Capacity: 2 items per player per huddle (*chosen*: the opponents he noticed most, by the size of the step).
-     - pLost = 0.15 − 0.13 × the receiver's awareness (*chosen*).
+     - Capacity: 2 items per player per huddle. **Stated choice, not measured:** the opponents he noticed most, by the
+       size of the step.
+     - pLost = 0.15 − 0.13 × the receiver's awareness. **Stated choice, not measured.**
      - pWrong = 0 in the first build.
+     - It reaches only that unit. The defense's players learn about the opposing offense and do not pass it to their
+       own offense (Integration's default, 2026-11-24).
 - **Pre-game film** enters each player's belief at kickoff as a `film` entry from "the staff": one report per (team, B,
   game), the same for every player on the team (§4.2). It is not a runtime channel yet. It is the coaches' message,
   delivered without friction until coaches are holders.
@@ -76,9 +79,9 @@ No decision reads B's true profile.
 
 - **His own body:** proprioception. What he feels of his own effort in contact is exact.
 - **Visible build:** height, weight / frame, and so size and radius. This is appearance, seen with a small error (§4.1).
-- **His teammates' capacities:** known from practice (proposed; §11).
-- **Physics and officials:** contact resolution (tackle.ts, engagement.ts force terms) is not a decision. Officials
-  (contact-holding.ts 506/511 reads true vmax) are a separate question (§11).
+- **His teammates' capacities:** known exactly, from practice (Integration's default, 2026-11-24; reversible).
+- **Physics and officials:** contact resolution (tackle.ts, engagement.ts force terms) is not a decision. Officials'
+  true-speed reads (contact-holding.ts 506/511) are out of scope (Integration's default).
 
 ## 4. Sources of evidence
 
@@ -184,9 +187,15 @@ contact, which he knows exactly: his own effort and his own displacement. It is 
 
 **What he learns is what the physics delivers.** The belief estimates B's effective strength as felt, whatever the
 engine's contact law produces.
-- Dependency: today the push contest is traction-capped (Flex's anchor diagnosis, engine-69; mass decides, strength
-  barely does). Until that is resolved, "felt" will mostly confirm mass and rarely surprise. The belief is still right;
-  the surprise arrives when the physics does.
+- **Dependency (re-measured on develop d31271e42 with `scripts/diag/effective-mass/anchor-staged.mts`):** both legs
+  already push at the traction limit.
+  - Power ×1.15 leaves the walk-back unchanged (1.16 → 1.16 yd/s).
+  - Blocker mass ×0.9 raises it to 1.57.
+  - The NFL's held pairs walk back 1.3–1.6 yd/s whatever the weights (3df1b2639).
+
+  Until the push contest stops being traction-capped, "felt" will mostly confirm mass and rarely surprise. The belief is
+  still right; the surprise arrives when the physics does. This went to Integration and Defense as a physics gap,
+  2026-11-24.
 
 **Consumers of felt strength** (each a decision a player makes on what he believes):
 - the pass blocker's set and the rusher's choice of move (a tackle walked back once sets deeper and anchors earlier; a
@@ -277,15 +286,17 @@ The first build does not add this channel; it is the template for it.
    We report the gap; we do not tune it.
 6. **Dither:** a dither-budget pass. **Cost:** a one-game profile, under 1% tick overhead.
 
-## 11. Questions for the user
+## 11. Decisions (Integration's defaults put to the user, 2026-11-24; reversible)
 
-1. Teammates' capacities known exactly (practice)? Proposed yes.
-2. The first build: players as holders, own observation plus the huddle channel, and film as the staff's kickoff message.
-   Enough, or should the sideline between series be its own channel from the start?
-3. Officials' judgements that read true speed today (contact-holding.ts 506/511): in this scope, or a separate officials
-   note?
-4. Snaps on film from experience years until the management layer counts snaps; a new staff `study` attribute at 0.5
-   default. Acceptable?
+1. Teammates' capacities are known exactly (practice).
+2. There is no team-wide record. The first build has players as holders, their own observation and the unit's
+   between-plays channel; the defense does not pass what it learns to its own offense.
+3. Officials' true-speed reads are out of scope.
+4. Film quality comes from experience years plus a staff `study` knob, a labelled stand-in until snaps are counted.
+
+Build order: step 1 adds the decision-information scan key for reads of another agent's capacity, so each later step
+lowers a counted row. Then one consumer per flagged step: coverage (DeepCoverage's cushion and the release-burst reads),
+then pursuit with Defense, then the QB with the QB lane, replacing QB_SCOUT's blend.
 
 ## 12. QB_SCOUT today and how it maps (QB lane)
 
