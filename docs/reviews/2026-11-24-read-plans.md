@@ -100,8 +100,10 @@ level" (Throw Deep).
 away from his man (Stanford Daily). Cover 2 is the contested case: the corner becomes the flat defender and can
 undercut, so the hole shot to the vertical is its answer (Throw Deep; Wilhite).
 
-**Pick (the flip):** `leverage`. "Pre-snap if the flat defender is lined up inside the Y, the QB knows it is very likely
-he will be throwing the shoot ... outside the Y, the QB is now thinking stick" (Ross, on Leach).
+**Pick: none.** Stick is a one-side concept, called to its side. "Pre-snap if the flat defender is lined up inside the
+Y, the QB knows it is very likely he will be throwing the shoot ... outside the Y, the QB is now thinking stick" (Ross,
+on Leach) is a lean on which throw comes on the stick side, not a flip of sides. The key read on the plant answers it.
+(Corrected 2026-11-24, after Flex asked what the leverage pick looks at: no source gives stick a side choice.)
 
 **Variants, not authored:**
 - Stick-first, then the arrow (Win With The Pass: "Stick, Arrow, Check Down"; one source).

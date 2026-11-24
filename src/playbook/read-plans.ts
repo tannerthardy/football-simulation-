@@ -32,7 +32,10 @@ export const SLANT_FLAT: QbReadPlan = {
 /** Stick: key the flat defender outside-in on the plant: he fails to widen: the flat; widens: the stick. First hitch: the
  * backside slant, then its stick. The back from the first hitch. (Throw Deep; Ross on Walsh, Mumme, Leach; Wilhite.) */
 export const STICK: QbReadPlan = {
-  conceptId: 'stick', drop: 'gun3', readType: 'key', pick: 'leverage',
+  // No pick: stick is a one-side concept, called to its side. Ross on Leach uses the flat defender's alignment against
+  // the stick receiver (inside the Y: expect the shoot; outside: expect the stick) as a lean on which throw comes, not a
+  // flip of sides; the key read on the plant answers that question post-snap (Flex asked, 2026-11-24).
+  conceptId: 'stick', drop: 'gun3', readType: 'key',
   reads: [
     { step: 0, look: { kind: 'key', role: 'flat' },
       throws: [{ ref: 'S3', timing: 'onBreak' }, { ref: 'S2', timing: 'onBreak' }],
