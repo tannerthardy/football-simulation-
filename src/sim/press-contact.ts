@@ -6,8 +6,10 @@ import type { Agent } from './agent.js';
 import type { PlaySim } from './playsim.js';
 
 /** Does defender `d` jam receiver `r` now (he is within reach and facing him: the caller checks the geometry)?
- * Press man: the call put him in press on this man. */
+ * Press man: the call put him in press on this man. C2_JAM: the Cover 2 corner's jam phase on this man. */
 export function jamWanted(d: Agent, r: Agent, sim: PlaySim): boolean {
   const spot = sim.defAlign.spots[d.slot as keyof typeof sim.defAlign.spots];
-  return !!spot?.press && spot.manTarget === r.slot;
+  if (spot?.press && spot.manTarget === r.slot) return true;
+  // C2_JAM: the Cover 2 corner in his jam phase on this receiver (ZoneCoverage.squatCorner's jamOn).
+  return (d.behavior as { jamOn?: Agent | null } | undefined)?.jamOn === r;
 }

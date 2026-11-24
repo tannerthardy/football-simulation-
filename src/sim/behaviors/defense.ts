@@ -108,6 +108,16 @@ const FLAT_SINK_DEPTH = 18;
  * hip turn (orientation.ts `sharp`). No jam (a follow-up: zone
  * corners have no press contact). */
 export const SQUAT_SINK = process.env.SQUAT_SINK === '1';
+/** C2_JAM (experimental, off; with SQUAT_SINK; Coverage C14 2026-11-24, docs/reviews/2026-11-24-cover2-jam-design.md):
+ * the Cover 2 hard corner jams #1 before he sinks. From his alignment he holds outside shade on #1 as he sees him and
+ * plays catch feet (holds his depth, gives ground only as #1 closes to a yard, never past 5 yd), facing him; within his
+ * reach the palm goes on (press-contact.ts: the same World hands joint, palm-follow and swipe as press man; from his
+ * outside shade it pushes #1 inside). The jam ends when #1 is level with him or by him, past 5 yd, cancels, on a run read
+ * or a throw; then the sink. With it the sink plays the hole only: the flat is conceded until the ball is thrown there
+ * (FLIGHT_BREAK) or #1 stops climbing and a flat threat takes him to his flat zone play (SQUAT_SINK's exits). */
+export const C2_JAM = process.env.C2_JAM === '1';
+/** C2_JAM: his outside shade on #1 (yd) and how far he gives ground as #1 closes (catch feet). */
+const JAM_SHADE = 0.6, JAM_GIVE = 1.0;
 /** Is this call's flat seat played by SQUAT_SINK (every Cover 2 form, Cover 6/8 half side, cloud; not Deuce's palms or DOT)?
  * The flag is read per call (not only at import) so a diagnostic replay can switch it for one play of a game. */
 export function squatSinkCall(sim: PlaySim): boolean {
@@ -2036,6 +2046,9 @@ export class ZoneCoverage implements Behavior {
 
   /** SQUAT_SINK: sinking under #1 (entered on his vertical stem, left when he cancels). */
   private squatSinking = false;
+  /** C2_JAM: the receiver he is jamming (read by press-contact.ts), and whether his jam phase is over for this play. */
+  jamOn: Agent | null = null;
+  private jamDone = false;
   /**
    * SQUAT_SINK: the squat corner's play before the throw (see SQUAT_SINK). Null hands him to his flat zone play (the flat
    * threat early, #1 in or stopping, a run read with #1 not releasing).
@@ -2055,6 +2068,18 @@ export class ZoneCoverage implements Behavior {
     // leave when #1 cancels (FLAT_CARRY's read) or stops climbing (under 1 yd/s upfield), far inside the entry.
     // Rules' hard-corner card (rows 3, 5b): on a pass read (the high hat) he zone-turns and sinks off #1's release, within
     // the first 5 yd of it; not after #1 has passed him.
+    // C2_JAM: the jam phase, before the sink (see C2_JAM).
+    if (C2_JAM && !this.jamDone) {
+      if (oDepth > myDepth - 0.3 || oDepth >= 5 || this.oneCancelled || believesRun(sim, a) || sim.ball.kind !== 'held'
+        || (sim.ball.kind === 'held' && sim.ball.carrier !== sim.qb)) { this.jamDone = true; this.jamOn = null; }
+      else {
+        this.jamOn = one;
+        a.tags.add('jam');
+        const tx = sim.los + dir * Math.min(5, Math.max(myDepth, oDepth + JAM_GIVE)), ty = o.pos.y + outside * JAM_SHADE;
+        return withFacingTechnique(track(a, { x: tx, y: clamp(ty, 0.5, FIELD_WIDTH - 0.5) }, { x: 0, y: o.vel.y },
+          { facing: angleTo(a.pos, o.pos), speed: 0.7, gain: 1.6 }), { label: 'jam-catch', key: o.vel });
+      }
+    }
     if (!this.squatSinking) this.squatSinking = !this.oneCancelled && !believesRun(sim, a) && oDepth >= 0.5 && oUp > 2.5 && oUp > 1.5 * oAcross;
     else if (this.oneCancelled || oUp < 1) this.squatSinking = false;
     // The flat threat: another receiver in or entering his area, 6 yd deep or less, moving toward the sideline.
@@ -2114,7 +2139,7 @@ export class ZoneCoverage implements Behavior {
     }
     let to: Vec2;
     const holeT = { x: sim.los + dir * Math.min(oDepth - SQUAT_UNDER, SQUAT_HOLE), y: o.pos.y + outside * 0.5 };
-    if (!threat) to = { x: sim.los + dir * Math.max((holeT.x - sim.los) * dir, myDepth - 0.5), y: holeT.y };
+    if (!threat || C2_JAM) to = { x: sim.los + dir * Math.max((holeT.x - sim.los) * dir, myDepth - 0.5), y: holeT.y };
     else {
       // The corner's hole shot is the ball under the safety, at the card's hole depth (row 5b: 10-12 yd); a ball beyond it
       // is the safety's, so #1's window is held to that depth on his line.
