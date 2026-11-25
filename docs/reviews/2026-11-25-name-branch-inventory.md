@@ -165,22 +165,33 @@ carry to reproduce today's football.
   - OL technique by slot label.
 
 **(4) Surprises, including information a player could not observe.**
-- **The receiver reads the defense's call.** behaviors/receiver.ts:864 and 900 read
-  `sim.defAlign.spots[d.slot]` and use `spot.press && spot.manTarget === a.slot` to find the corner pressing him, which
-  is the defender's private man assignment. A real receiver sees who is tight over him, not whom the defender was told
-  to cover. Under a disguise or a banjo the two differ.
-- **The passer knows bodies by label.**
-  - qbv2/drive.ts:167, qbmind.ts:424 and 842: `isDbSlot(sim.defCall.personnel, slot)`. He knows which bodies are DBs
-    from the defense's personnel package and slot label, not from their bodies.
-  - qbmind.ts:290-296 reads `dc.personnel` (the package by name) and `dc.front` for the canonical looks. QB_CANON_SEEN
-    marks this as "the personnel he sees".
-  - With QB_CANON_SEEN off, the fallback names `CB_S`/`CB_W` (424).
-  - Personnel is observable by counting; the label is not.
-- **Defenders read the offense's numbering and installed spots.**
-  - `offAlign.numbering` and `offAlign.spots[slot].backfield/pos`: behaviors/defense.ts 427, 890, 1466-1539,
-    1949-2557; coverage/defender.ts:124; coverage/reads.ts:162.
-  - The numbering is computed from the alignment, so it is observable. The installed spot (`home`) is the call's
-    intended spot, not where the man stood: equal at the snap, but read after motion as well.
+- **The receiver and the defense's call (corrected 2026-11-25; first written wrongly).** The receiver's
+  release does not read the defense's call on the default engine:
+  - **receiver.ts:901:** the `spot.press && spot.manTarget === a.slot` test sits under `if (!RELEASE_SEEN)`.
+    RELEASE_SEEN has been on since engine-45, and with it he releases around whoever he saw tight over him at the snap
+    (`tightAtSnap`: within 2.5 yd ahead and 1.5 yd across, seen positions). Already repaired; `=0` restores the old
+    path.
+  - **receiver.ts:865:** the jam's contact reads the corner's own call (press, and his man is this receiver). That is
+    legitimate for the corner, and the receiver only feels the hands, through the joint.
+  - **Found instead, two model gaps:** (i) the corner's jam is coded in the receiver's controller (`handleRelease`
+    creates the defender's hands joint), so one player's technique lives on another; (ii) only a man-press defender
+    ever jams. A zone corner rolled up (Cover 2's cloud corner, taught to jam #1) or a disguised press never puts
+    hands on, because the jam requires `press && manTarget === me`. That is a missing defender technique.
+- **Verdicts on the other two candidate leaks** (default engine, develop 82a796d1e; no code changed):
+  - **The passer knows DBs by label: live leak.** With QB_CANON_SEEN on, the corners are found by where he sees
+    them, but which bodies are DBs comes from the defense's personnel package and slot label:
+    `isDbSlot(sim.defCall.personnel, slot)` (qbv2/roles.ts:110) at qbmind.ts:424 and 842 and, with QB_V2 on since
+    engine-108, at qbv2/drive.ts:167. The canonical looks (qbmind.ts:290-299) take `dc.personnel` and the front call's
+    fields (front, edge, strength, mug, Sam on) as the visible alignment; the coverage is enumerated, not read. A
+    passer can see a DB's build and alignment, but the code reads the label, and a front that stems
+    (`defCall.frontStem`) is seen as called.
+  - **Defenders read the offense's installed spots: already repaired.** At the snap, motion's `finish` rewrites
+    `offAlign` from where each man actually stands: position, side, numbering and strength (playsim.ts:459,
+    `realignOffense`, motion.ts:366). So the reads after the snap (`spots[slot].pos` as `home`, `.backfield`,
+    `numbering`: behaviors/defense.ts 427, 1466-1539, 1949-2557; coverage/defender.ts:124; coverage/reads.ts:162)
+    are the pre-snap picture, exact and unperceived, as every defender has it. Two small gaps remain:
+    `backfield` can only be lost by motion, never gained (a receiver motioned into the backfield is not read as a
+    back), and `inline` keeps the installed value (a tight end motioned off the line stays inline).
 - **A structural requirement is a crash.** blocking.ts:1001 throws when split zone has no slicer (TE, FB or second
   back). Nothing in the call validates it beforehand: the playcaller weighs split zone down without an F (641-643),
   but the validator does not refuse it.
