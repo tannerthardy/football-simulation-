@@ -2,7 +2,7 @@
 
 Tools/Physics, 2026-11-25, for Integration. Read-only; no engine change. Develop `890558713`. Prompted by the user's
 question how many flags there are, and by PLAN's "at most 10 experimental flags". Scripts: `scripts/diag/flags/`
-(`inventory.py`, `offpath.py`, `classify.py`, `render.py`); data: `data/reviews/flags/flag-inventory.{tsv,json}` (one row per
+(`inventory.py`, `offpath.py`, `classify.py`, `render.py`); data: `data/reviews/flags/flag-inventory.tsv` (one row per
 flag: class, landing date, engine, read sites, last commit touching its read, open PRs, tests that set it to 0) and
 `data/reviews/flags/pinned-on-real-engine.tsv` (the legacy-pinned core files, one row each).
 
