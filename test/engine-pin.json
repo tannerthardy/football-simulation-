@@ -330,6 +330,7 @@
   "test/inside-stalk-access.test.ts",
   "test/installed-plan-unregistered.test.ts",
   "test/int-belief.test.ts",
+  "test/ir-roundtrip.test.ts",
   "test/joint-spacing-projection.test.ts",
   "test/joint-spacing.test.ts",
   "test/key-depth.test.ts",
