@@ -1,0 +1,27 @@
+# The deep catch: what bounds the receiver (Integration/Rules question, 2026-11-18)
+
+Base develop bcb27ea1 (engine defaults: BALL_EST 6145 = estimator + glance rule + receivers-only, RCV_KNOWS on, servo off). Measurement only; nothing built.
+
+## The two numbers are not the same quantity
+- **Rules' NFL 1.42 yd / 36% over 2 yd / completion .42** (scripts/diag/coverage/nfl_deep_place.py): PFF `passLength` >= 15 (line to the target point), every attempt with a targeted receiver, throwaways with a named target and uncatchable balls included.
+- **Mine, same NFL data** (`deep_arrival_nfl.py`; 2022 weeks 1-9, football >= 15 yd past the line at `pass_arrived`, named target, n 980, completion .62): median **0.89** yd, 12% over 2 yd (completions 0.80, incompletions 1.02). The distance depends on the arrival frame: median |ball - receiver| at -0.3 / -0.2 / -0.1 / 0 / +0.1 / +0.2 / +0.3 s is 4.41 / 3.03 / 1.81 / 0.89 / 0.61 / 0.47 / 0.41 yd (completions 0.30 by +0.3 s). The ball travels about 14 yd/s, so a tag 0.05-0.1 s early is a yard.
+- **The sim's 0.35 yd is the pinned ball:** after the arrival event `pinToHands` holds the ball 0.35 yd in front of the chest, and the arrival event is itself "the ball is inside the receiver's catch window" (horizontal radius `reach` 1.0 + `TRACKING_REACH_BONUS` 0.3, so at most 1.3 yd by construction).
+
+## Ours, staged (`deep-arrival-sim.ts`, n 282 throws, ball >= 15 yd past the line at the arrival event; 12 deep concepts x 6 coverages x 2 formations x 12 rosters x 4 seeds)
+- Arrival event: secure 208 (74%), pbu 42 (15%), miss 17 (6%), drop 15 (5%).
+- QB aim error (true landing vs aim) median 1.31 yd, 25% over 2 yd (NFL-like); the secure rate is **74% for aim error over 2 yd and 74% at or under 2 yd**: the receiver absorbs the QB's error.
+- Ball-to-receiver 2D: at the event 0.55 (secured 0.45), p75 0.82, 6% over 2 yd; 0.05 s before the event 1.27, 10% over 2 yd. NFL at `pass_arrived` 0.89, 12%. They bracket each other; there is no 1-yd gap on a like-for-like frame.
+- (a) When he knows the flight: 0.4 s after the throw (279 of 282; the glance rule's dwell is 0.10 s for the target times (1.5 - skill)). His estimated landing against the true landing: 1.92 yd at 1.0 s before arrival, 0.39 at 0.5 s, 0.16 at 0.25 s, 0.07 at 0.1 s. Mechanism (`glancePath`, ball-estimate.ts): the TRUE remaining flight from now, displaced by one correlated error per look along his line of sight (10% of his range to the ball) and across it (2%), times (1.5 - skill) and a shrink with the time held; the range shrinks as the ball nears. So he has no error from predicting the flight, only a displacement that goes to zero at the catch.
+- (b) The look: speed at arrival 6.89 yd/s (0.71 of his top speed), 6.94 at 0.5 s and 6.83 at 1.0 s before, against 6.84 yd/s for NFL deep targets at `pass_arrived`; hips 35 deg off his travel at 0.5 s before and 27 deg at arrival, trunk at its 55 deg limit. The directional cap prices a small amount; this is not the gap.
+- (c) The reach: radius 1.3 yd (the arm's reach plus the tracking bonus) up to `maxCatchHeight`; catch probability 0.985 - diff x (1.3 - hands), with diff 0.5 x (offset / reach)^2 at the edge. Secured balls are 0.45 yd from the body point at the event (NFL completions 0.80 at the tag frame, 0.30 by +0.3 s). Same order; not the gap.
+- Envelope (`deep-envelope.ts`, 57 plays; the aim moved at the throw, launch re-solved, flight time unchanged), share secured by the target: no offset 87%; short 1 / 3 / 5 yd 83 / 77 / 82%; lateral 1 / 3 / 5 yd 75 / 67 / 47%; long 1 / 2 / 3 / 4 yd 75 / 54 / 47 / 24%. A receiver at 7 yd/s who knows the flight by 0.4 s reaches 3 yd laterally in the remaining second, which is what the body model allows.
+- Adjustment: from his state 0.4 s after the throw to the arrival, his distance from straight running: ours 0.68 yd (p75 1.12; across 0.55, along -0.09; 0.9 s, n 282); NFL 1.30 yd (p75 2.27; across 0.86, along -0.36; 1.1 s, n 975). NFL receivers deviate about twice as much and slow slightly; ours barely adjust because the QB aims at the point his own installed route reaches.
+
+## Not a receiver limit, and a different finding
+- Ordinary games make few deep throws: 13 non-play-action throws with `stats.airYards` >= 15 in 16 games (about 2% of passes; the first game had 1 of 82), against 13.4% of NFL attempts (2022 weeks 1-9 `passLength` >= 15, non-PA). So the staged set is the only way to sample ours.
+- What the NFL number has that ours lacks is the QB side: throws that are not catchable for the named receiver (throwaways, overthrows, miscommunications), which our staged QB does not throw.
+
+## Which of (a)-(c)
+Neither (b) nor (c) carries a gap that is visible on a like-for-like operator. (a) makes him a near-perfect finisher: he knows the true flight by 0.4 s, his error is a displacement that vanishes at the catch, and the body can follow it up to 2-3 yd. If a bound is wanted, it belongs in (a): an estimate that carries flight-prediction error (spin, wind, drag, depth from a moving head) and does not collapse onto the true flight. I have no NFL measurement of how well receivers predict a landing point, so there is no number to set it from; the NFL-side observable is the adjustment size above (1.30 vs 0.68 yd) and completion against miss distance, which needs the aim point (BDB's `targetX/Y` is the receiver's own spot).
+
+Tools: `scripts/diag/receiver/` `deep_arrival_nfl.py`, `deep_adjust_nfl.py`, `deep-arrival-sim.ts` + `deep_arrival_sim_report.py`, `deep-envelope.ts`, `deep-arrival-games.ts`.
