@@ -1,0 +1,354 @@
+diff --git a/config/baseline.json b/config/baseline.json
+index bc222b095..12145ce1b 100644
+--- a/config/baseline.json
++++ b/config/baseline.json
+@@ -116,6 +116,7 @@
+     "TRACK_PURSUIT": "0",
+     "TRACK_TACKLE": "0",
+     "TRACK_FEEL": "0",
++    "SIGHT_BALL": "0",
+     "SIGHT_CARRIER": "0",
+     "SIGHT_COVER": "0",
+     "SIGHT_RECOG": "0",
+diff --git a/config/reference-stack.json b/config/reference-stack.json
+index c543a7d64..5d849ce8f 100644
+--- a/config/reference-stack.json
++++ b/config/reference-stack.json
+@@ -164,6 +164,7 @@
+     "PURSUIT_SPOT": "on",
+     "RELEASE_BELIEF": "on",
+     "TRACK_FEEL": "on",
++    "SIGHT_BALL": "off",
+     "SIGHT_CARRIER": "on",
+     "SIGHT_COVER": "on",
+     "SIGHT_RECOG": "on",
+diff --git a/docs/FLAGS.md b/docs/FLAGS.md
+index 6062d8cef..cbba6ada0 100644
+--- a/docs/FLAGS.md
++++ b/docs/FLAGS.md
+@@ -2,7 +2,7 @@
+ 
+ Every engine switch read from the environment, recounted from `src` at `57f50fc3` on 2026-10-22. This includes #210's promotion and #205's two additional default-on switches. Flags that are not on develop (parked, removed from a PR, or only on a side branch) are kept in [PARKED.md](PARKED.md) so the ideas are not lost. Registration rules are in [PLAN.md](PLAN.md): at most 10 experimental flags, and each expires two reviews after it lands.
+ 
+-There are 519 flags read from the environment in `src` (2026-11-25, engine-103: engine-102 plus PLAN_BREAK_BODY (on; Rules; counts corrected to Tools' inventory, docs/reviews/2026-11-25-flag-inventory.md); engine-102: engine-101 plus HANDOFF_FREEZE (on, a bug fix; Coverage); 2026-11-24, the QB quick-game landing: plus QB_V2 (off) and QB_QUICK_DRIFT (a mode, 0); 2026-11-24, engine-101: engine-100 plus BLOCK_FRAME (on; Defense); engine-100: engine-99 plus SCOUT_SEEN (on, leak removal; Flex); engine-99: engine-98 plus QB_SCOUT and QB_SCREEN_SEEN (on, leak removals; QB lane); engine-98: engine-97 plus HANDS_ON_ARMS, SECURE_SPLIT and SECURE_FACE_GEOM (on); recounted 2026-11-24, with CALL_COMPOSE (off, rules/call-compose) counted: BELIEVED_BODY (off, experimental; Flex) on top of engine-97; engine-97: engine-96 plus QB_SCAN and QB_CANON_SEEN (on, leak removals; Flex; recounted from `src`, the on count also takes in engine-96's BALL_DRAG); engine-96: engine-95 plus BALL_DRAG (on); engine-95: engine-94 plus THROWAWAY_FELT (on); engine-94: engine-93 plus FLIGHT_BREAK (on) and FLIGHT_LEAD (off, parked); engine-93: engine-92 plus HEAD_FOLLOW (on); engine-92: engine-91 plus PERIPH_ACUITY (on); engine-91: engine-90 plus STEM_WORK (on); engine-90: engine-89 plus READ_VERTICAL_LOS and BACK_CLEAR (on); engine-89: engine-88 plus FLAT_CARRY (on); engine-88: engine-87 plus FORECAST_FINISH and QB_ROLE_PATH (on), READ_WINDOW and QB_CLOSE_BELIEF (off); engine-87: engine-86 plus HALF_KEY (on); engine-86 was engine-85 plus MUSH_MATCH (on); engine-85 was engine-84 plus FLAT_SINK (on); engine-84 was engine-83 plus DOWN_RISE_PLANT (on); engine-83 was engine-82 plus QB_DRIVE, QB_RHYTHM_THROW, QB_ALIGN, QB_BODY_FOLLOW, QB_WINDOW_ARRIVE, QB_KEY_PLANT, QB_STICK, QB_PEEK_CLOCK, QB_MOF_READ, QB_DEEP_WAIT and QB_STANCE; QB_DRIVE, QB_RHYTHM_THROW, QB_WINDOW_ARRIVE, QB_KEY_PLANT and QB_STICK on): 396 are on unless set to `0`, 95 are off unless set to `1`, and 28 are numeric scales or modes (identity value unless listed in the stack's numeric section). The rows below carry each flag's history.
++There are 520 flags read from the environment in `src` (2026-11-25: plus SIGHT_BALL (off, experimental; Flex), recounted from `src`: 395 on unless set to `0`, 96 off unless set to `1`, 29 numeric or modes; 2026-11-25, engine-103: engine-102 plus PLAN_BREAK_BODY (on; Rules; counts corrected to Tools' inventory, docs/reviews/2026-11-25-flag-inventory.md); engine-102: engine-101 plus HANDOFF_FREEZE (on, a bug fix; Coverage); 2026-11-24, the QB quick-game landing: plus QB_V2 (off) and QB_QUICK_DRIFT (a mode, 0); 2026-11-24, engine-101: engine-100 plus BLOCK_FRAME (on; Defense); engine-100: engine-99 plus SCOUT_SEEN (on, leak removal; Flex); engine-99: engine-98 plus QB_SCOUT and QB_SCREEN_SEEN (on, leak removals; QB lane); engine-98: engine-97 plus HANDS_ON_ARMS, SECURE_SPLIT and SECURE_FACE_GEOM (on); recounted 2026-11-24, with CALL_COMPOSE (off, rules/call-compose) counted: BELIEVED_BODY (off, experimental; Flex) on top of engine-97; engine-97: engine-96 plus QB_SCAN and QB_CANON_SEEN (on, leak removals; Flex; recounted from `src`, the on count also takes in engine-96's BALL_DRAG); engine-96: engine-95 plus BALL_DRAG (on); engine-95: engine-94 plus THROWAWAY_FELT (on); engine-94: engine-93 plus FLIGHT_BREAK (on) and FLIGHT_LEAD (off, parked); engine-93: engine-92 plus HEAD_FOLLOW (on); engine-92: engine-91 plus PERIPH_ACUITY (on); engine-91: engine-90 plus STEM_WORK (on); engine-90: engine-89 plus READ_VERTICAL_LOS and BACK_CLEAR (on); engine-89: engine-88 plus FLAT_CARRY (on); engine-88: engine-87 plus FORECAST_FINISH and QB_ROLE_PATH (on), READ_WINDOW and QB_CLOSE_BELIEF (off); engine-87: engine-86 plus HALF_KEY (on); engine-86 was engine-85 plus MUSH_MATCH (on); engine-85 was engine-84 plus FLAT_SINK (on); engine-84 was engine-83 plus DOWN_RISE_PLANT (on); engine-83 was engine-82 plus QB_DRIVE, QB_RHYTHM_THROW, QB_ALIGN, QB_BODY_FOLLOW, QB_WINDOW_ARRIVE, QB_KEY_PLANT, QB_STICK, QB_PEEK_CLOCK, QB_MOF_READ, QB_DEEP_WAIT and QB_STANCE; QB_DRIVE, QB_RHYTHM_THROW, QB_WINDOW_ARRIVE, QB_KEY_PLANT and QB_STICK on): 396 are on unless set to `0`, 95 are off unless set to `1`, and 28 are numeric scales or modes (identity value unless listed in the stack's numeric section). The rows below carry each flag's history.
+ 
+ **Promotion (2026-11-09):** the reference stack `run-ref-4` is now the engine's default. The 90 flags it lists `on` are read as on unless set to `0` (rows marked "promoted" below); the rest are unchanged. Decisions and evidence for each flag are in [REFERENCE_STACK.md](REFERENCE_STACK.md); `npm run ref -- --list` is the current inventory, and `npm run ref -- --off -- <command>` runs the engine as it was before. The test suites still run on the pre-promotion engine (pinned in `vitest.config.ts`) until their recorded cases are re-recorded. The counts in the paragraph above predate all of this.
+ 
+@@ -507,6 +507,7 @@ There are 519 flags read from the environment in `src` (2026-11-25, engine-103:
+ | `PURSUIT_FIELD` | on | promoted 2026-11-12 (engine-49; `=0` restores); was experimental | defense (C9, the rally from 4+ yd on short zone catches: a seen-carrier pursuit by a coverage player keeps its request) | `src/sim/coverage-space.ts` (`containCoverage`, `asCarrierPursuit`), `src/sim/behaviors/defense.ts` (`pursueIfLive`) | Coverage containment zeroed a pursuing coverage player's velocity toward the sideline whenever he could not stop before it on half his lateral traction (5-8 yd from the line at pursuit speed): 47-56% of the first and second rally defenders' > 20 deg re-aims, undone and repeated, each losing speed (`scripts/diag/pass-operators/rally4.mts`). On: a pursuit of a carrier he has seen (pursueIfLive's chase of an observed holder, CATCH_CARRY's drive on the catcher) is not contained; drops, carries, catch anticipation, flight continuation and the rally to the ball's area stay contained. |
+ | `PURSUIT_COMMIT` | on | promoted 2026-11-13 (engine-58; `=0` restores); was experimental | defense (open-field pursuit, commitment rule) | `src/sim/behaviors/common.ts` (`commitMeeting` in `pursuitPoint`), `src/sim/behaviors/defense.ts` (`playObservedFlight`) | A pursuer keeps the meeting moment he chose on his current picture of the carrier until it is unreachable by 0.15 s (or a fallback becomes reachable with 0.1 s to spare), a fresh meeting is better by 0.3 s, it is under 0.15 s away or the target changes; before, the first reachable forecast sample was re-picked every tick, flipping between reachable and least-late fallback and jumping the meeting time on 9-13% of ticks, 35-40% of his aim-point turn (`scripts/diag/effective-mass/pursuit-weave.mts`). Also a defender playing the ball holds his last approach on the flight's last tick instead of standing (55 of 270 defenders within 8 yd of a catch asked for zero speed on that tick, 0 on). Pass pursuers' request turn p50 27 → 20 deg/s, pursuit reversed re-aims 0.411 → 0.371 /s (dither guard panel); reach within 1 yd unchanged. Test `test/pursuit-commit.test.ts`. |
+ | `BALL_EST` | 6145 (numeric bitmask; default since engine-72, 2026-11-16; `=0` restores the true ball flight for every player) | promoted for receivers with BREAK_LOOK and SEEN_EMPTY (three seeds, completion about -1.4 pts with the landing set, cause stated: post-sample steering is a physical redirect and the catch model); defenders still read the true flight (bits 2049/8192 on the Coverage branch); was: 6145 (receivers on their own sight of the ball) carded clean alone at engine-70 and is held on an interaction with the route and spacing holds; experimental, parked designs 1-4 and 6 (C14 coverage, 2026-11-14) | coverage / receivers | `src/sim/ball-estimate.ts`, `src/sim/possession-read.ts` (`acquireFlight`), `src/sim/behaviors/receiver.ts` (TrackBall, RouteRunner pre-release look), `src/sim/behaviors/defense.ts` (`playBall`), `src/sim/catching.ts` (`trackPen`) | set at first review. Each player's own estimate of a ball in flight from the ball he has seen, replacing the defender's and the receiver's copies of the true path. Bits: 1 the estimator; 2 removes catching.ts's tracking penalty (double-counts ballTracking); 4 a committed catch point moves with his estimate; 8 looming (time to contact); 16 the deep receiver looks back from his landmark depth, and the neck range narrows with speed (design 6); 32 incidental catches and defenders play the ball only on their own sight of it (passive sight included, reaction-gated). With HEAD=1 his looks are wants on the shared head (head.ts: want "ball" or "qb") and the neck range is neckRange; with HEAD off BALL_EST keeps its own head. Spec and results: `docs/reviews/2026-11-14-ball-in-air-spec.md`. Bit 64 (design 7, with TRUNK_TWIST; attempt 1 of 2, 2026-11-14): his look (`lookFor`, `preLook`, TrackBall past 3 yd) goes through the trunk before the hips: head and neck (`neckOf`), then the shoulders off the hips for what the neck cannot reach (to TRUNK_RANGE), then the hips only for what is left; the target is his own estimate (or the QB before he has one), never the true ball. 16 games seed 101, HEAD=1, TRUNK_TWIST on, out of view (ball past neck + 30 deg off his shoulders) 7 / 71: ball 90-120 deg off his run 29 / 22%, 120-180 deg 52 / 39%, flat 26 / 7%, back 23 / 10%, deep 74 / 72% (23 / 87: deep 69 / 61%); speed while tracking 120+ deg 4.95 / 5.58 yd/s, drift off his release line 0.62 / 0.30 yd/s; catch rates within noise (deep 52 / 44%, 23 / 87: 46 / 50%, n about 200). Bit 128 (defense only, 2026-11-14): the estimator for the defense alone (`acquireFlight`, and with bit 32 his own-sight play on the ball); receivers keep today's tracking. Cards as 129 then 161. Witness scripts/diag/risk/def-ball.ts. Bit 1024 (2026-11-15, attempt 1 of 2): the receiver's feet run on his own image of the ball (`src/sim/ball-servo.ts`; design note `docs/reviews/2026-11-15-receiver-feet-servo.md`): his speed changes with the optical acceleration of tan(elevation) (OAC) and he accelerates across his line of sight with the drift of the ball's bearing (proportional navigation, N 3), fit by least squares over his last 1.0 s of samples (at least 8 over 0.5 s), on a held command seeded from his route, handing over with 0.35 s left. Witness scripts/diag/risk/deep-track.ts (forced deep probe). Bit 1024 is the receiver's one card meaning (the receiver on his own sight): it carries bits 2, 4, 16 and 64, so `BALL_EST=1025` equals 1111; the single receiver bits remain for the parked designs' reads. Bit 2048 (the glance rule, 2026-11-15, the user's direction via Integration): once the ball has been in his own eyes for a dwell (0.10 s for the intended target, 0.15 s for anyone else, x (1.5 - skill)), his belief of the flight is the flight plus one correlated error per look, `BALL_GLANCE_DEPTH`% of his range along his line of sight and 2% across, x (1.5 - skill), shrinking with time held as sqrt(0.3 / (0.3 + held)) and growing with time looked away as (1 + age / 0.5); no look, nothing (`test/ball-glance.test.ts`). It carries 2/4/16/64 and turns the servo off; card `BALL_EST=2049`. Bit 4096 (receivers only, 2026-11-15, the mirror of bit 128): the estimator for the offense alone, defenders keep today's read of the flight; the receiver-side card is `BALL_EST=6145`. Under 2049 the defense's side moves YAC per reception 7.50 -> 14.10 (seed 11 x 16, `scripts/diag/risk/yac-split.ts`; receivers only 6.74): a defender without his own estimate never acquires a flight (`acquireFlight` returns empty), so the HONEST_READS post-catch path never starts for him. The fit and the servo stay as the deeper version. Closing speed for its lateral law is read from looming (his range over the ball's optical time to contact, TAU_SD), not differenced range. |
++| `SIGHT_BALL` | off | experimental (Flex with Coverage and Defense, 2026-11-25; Integration's ruling; for the honest-defender card) | coverage / receivers (sight of the ball) | `src/sim/ball-estimate.ts` (`glimpsesBall`, `seesBallAt`, `BallEstimates.glimpses` / `seesBall` / `hasEstimate`), `src/sim/release-evidence.ts` (ball cue) | One definition of a player's own sight of the ball, in one file. Glimpse: the ball in his recorded head's view cone (HEAD_CONE 90 deg; facing within 1.8 rad where no head is recorded) with a clear sight line; turns his head, nothing else (the look's trigger; release-evidence's ball cue). Sees: the same within the eye range (30 deg); the estimator's sample, now also needing the sight line (recorded positions and poses at that moment), receivers included. Sees it now (`seesBall`): a sample this tick or last, for the glance dwell: the hands gate. `hasEstimate` (seenReady) is a recent estimate, not sight, and never gates a play. Off: identical. Staged (`scripts/diag/coverage/sight-ball-stage.mts`, BALL_EST=2049, 5 cells x 12 seeds): glimpse equals sawAt's ball test on 56,742 of 56,742 queries; the sight line removes 6% of defenders' samples (1,487 -> 1,404), receivers' 814 -> 813; a defender tracking the flight with his head over 90 deg off the ball has seenReady on 20-22% of ticks and seesBall on 1-2% (Defense's 11 of 13 lane plays). Tests `test/sight-ball.test.ts`. |
+ | `BALL_EST_NECK_SPRINT` | 45 (numeric, degrees) | experimental (with BALL_EST bit 16) | coverage / receivers | `src/sim/ball-estimate.ts` (`neckOf`) | set at first review. Design 6 attempt 2 (parked): the head's useful range a side at his top speed (90 at a standstill, linear in his speed share); choice, sensitivity read at 60. The neck-range rule itself lives in HEAD (#720 has adopted it); this copy is BALL_EST's own head until the rebase onto #720, and must not drift from it |
+ | `BALL_GLANCE_DEPTH` | 10 (numeric, percent) | experimental (with BALL_EST bit 2048) | coverage / receivers | `src/sim/ball-estimate.ts` (`glanceSd`) | set at first review. The glance rule's error along his line of sight at a look's start, in percent of his range (depth, the hard axis); across it is 2%. Stated choice (read at 5 and 20), not fitted to completion. |
+ | `BREAK_LOOK` | on | promoted 2026-11-16 (engine-72; `=0` restores); was experimental (C14 pass game, 2026-11-16; attempt 1; with BALL_EST, carded on the glance 6145) | coverage / receivers (look timing) | `src/sim/behaviors/receiver.ts` (`RouteRunner.preLook`) | set at first review. A deep-family route the plan throws on its break (`BREAK_DECL` throw family `onBreak`: corner, post, seam read) gets the break-timed pre-look as well as design 6's depth look (DEEP_LOOK_DEPTH 12 yd), whichever comes first; a go, fade or seam (`seenOpen`) is unchanged. Without it, on the paired staged throws (`scripts/diag/catch/paired-throws.ts`, engine-70, 305 throws), three smash corners broken short of 12 yd and thrown on the break never sampled the ball under the glance (ball 150-175 deg behind his hips at his body-turn window). His own route and break are the cue; no new information. Declared clear-outs (compile.ts `CLEAR_OUTS`) are all goes, so none is affected. No new constants. |
+diff --git a/docs/reviews/2026-11-15-defender-throw-picture.md b/docs/reviews/2026-11-15-defender-throw-picture.md
+index 982527bc4..805345617 100644
+--- a/docs/reviews/2026-11-15-defender-throw-picture.md
++++ b/docs/reviews/2026-11-15-defender-throw-picture.md
+@@ -113,3 +113,19 @@ All three are outputs of this picture, so stage two needs no other input from th
+ 
+ One new bit for the defense's honest picture (proposed: BALL_EST bit 8192, off). It is carded alone, and against the
+ oracle with the receivers' glance (6145) on.
++
++## Sight of the ball: one definition (2026-11-25; Flex with Coverage and Defense, Integration's ruling)
++
++`SIGHT_BALL` (off; for the honest-defender card) puts it in one file, `src/sim/ball-estimate.ts`, as three named
++readings of the same looks. It replaces the earlier wording ("the glance cone with a dwell").
++
++| Reading | Test | Lets him | Does not let him |
++|---|---|---|---|
++| **Glimpse** (`glimpsesBall`, `BallEstimates.glimpses`) | the ball in his recorded head's view cone (HEAD_CONE, 90°; his facing within 1.8 rad where no head is recorded) with a clear sight line, at the moment his delay shows | turn his head toward it (Defense's look trigger); release-evidence's ball cue | know where it is, have a flight, play it |
++| **Sight** (`seesBallAt`, the estimator's sample) | the same, within the eye range (30°, near-central vision, where a ball can be fixed) | take a sample; the glance dwell counts these | — |
++| **Sees it now** (`BallEstimates.seesBall`) | a sample on this tick or the last, held for the glance dwell | the hands play (Defense's HANDS_SEEN gate) | — |
++| **Has an estimate** (`hasEstimate`, seenReady) | a recent sample (INCIDENTAL_FLIGHT_MAX_AGE) | move on his estimate | gate a play on the ball. A look he has turned away from still counts here, so it is not sight (Defense's stage: 11 of 13 lane plays with the head 104–177° off the ball) |
++
++The sight line is the bodies' recorded positions and poses at that moment (`lineOfSight`, as `sawAt`). Under
++SIGHT_BALL the estimator no longer samples a ball behind a body, receivers included. A seen catch is not on this list:
++it is the holder channel (`sim.see(a, R).carrying`), and bodies stay on `sawAt`.
+diff --git a/docs/reviews/data/2026-11-25-sight-ball-stage.md b/docs/reviews/data/2026-11-25-sight-ball-stage.md
+new file mode 100644
+index 000000000..43efdec67
+--- /dev/null
++++ b/docs/reviews/data/2026-11-25-sight-ball-stage.md
+@@ -0,0 +1,30 @@
++# SIGHT_BALL staged (Flex, 2026-11-25)
++
++`scripts/diag/coverage/sight-ball-stage.mts` on develop 7585be04f, 5 cells x 12 seeds.
++
++## BALL_EST=2049 (estimator for both sides), SIGHT_BALL=0
++
++glimpse vs sawAt (ball): agree 56742, disagree 0
++estimator samples taken: offense 814, defense 1487
++| defender tracking the flight | ticks | seenReady (has an estimate) | seesBall (sees it now) |
++|---|---|---|---|
++| head 30-90 deg off | 1437 | 28% | 1% |
++| head within 30 deg of the ball | 3379 | 75% | 22% |
++| head over 90 deg off | 291 | 20% | 1% |
++
++## BALL_EST=2049, SIGHT_BALL=1
++
++glimpse vs sawAt (ball): agree 56742, disagree 0
++estimator samples taken: offense 813, defense 1404
++| defender tracking the flight | ticks | seenReady (has an estimate) | seesBall (sees it now) |
++|---|---|---|---|
++| head 30-90 deg off | 1402 | 28% | 1% |
++| head within 30 deg of the ball | 3322 | 74% | 21% |
++| head over 90 deg off | 288 | 22% | 2% |
++
++## Default BALL_EST=6145 (receivers only)
++
++SIGHT_BALL=0: estimator samples taken: offense 824, defense 0
++SIGHT_BALL=1: estimator samples taken: offense 824, defense 0
++
++The head-off bins use the recorded head (else facing); the estimator keeps its own head under HEAD=0, so a few "sees it now" ticks with the recorded facing over 90 deg off are his neck turned to the ball.
+diff --git a/scripts/diag/coverage/sight-ball-stage.mts b/scripts/diag/coverage/sight-ball-stage.mts
+new file mode 100644
+index 000000000..183d9688d
+--- /dev/null
++++ b/scripts/diag/coverage/sight-ball-stage.mts
+@@ -0,0 +1,34 @@
++/** SIGHT_BALL staged (Flex, 2026-11-25): (1) the glimpse is release-evidence's old ball test (sawAt) exactly; (2) how many
++ * estimator samples the sight line removes, receivers and defenders; (3) the hands gate: per tick a defender is tracking the
++ * flight, seenReady ("has an estimate") against seesBall ("sees it now"), by how far his recorded head is off the ball.
++ * usage: BALL_EST=<mask> SIGHT_BALL=<0|1> node --import tsx scripts/diag/coverage/sight-ball-stage.mts */
++import { nativeTraceSetup } from '../command-trace.js';
++import { PlaySim } from '../../../src/sim/playsim.js';
++import { glimpsesBall } from '../../../src/sim/ball-estimate.js';
++import { sawAt } from '../../../src/sim/release-evidence.js';
++let agree = 0, disagree = 0; const samples = { O: 0, D: 0 };
++const gate: Record<string, { ready: number; sees: number; n: number }> = {};
++for (const [concept, coverage] of [['curl_flat', 'cover3'], ['stick', 'cover3'], ['slant_flat', 'cover1'], ['four_verts', 'cover1'], ['curl_flat', 'cover2']] as const) for (let seed = 1; seed <= 12; seed++) {
++  const sim: any = new PlaySim(nativeTraceSetup({ coverage, concept, seed, roster: 7, formation: 'gun_doubles_11', flip: false }));
++  for (let i = 0; i < 400 && sim.phase === 'live'; i++) {
++    sim.tick();
++    if (sim.ball.kind !== 'air') continue;
++    const b = sim.ball.flight.pos;
++    for (const a of sim.agents) {
++      if (a === sim.qb) continue;
++      for (const back of [0, 4]) { const x = sawAt(sim, a, back, { pos: { x: b.x, y: b.y } }, b.z) === glimpsesBall(sim, a, back, b); if (x) agree++; else disagree++; }
++      const est = sim.ballEstimates; if (!est) continue;
++      if (a.team === 'D' && est.samplesOf(a) > 0) {
++        const head = a.head ?? a.facing, off = Math.abs(Math.atan2(Math.sin(Math.atan2(b.y - a.pos.y, b.x - a.pos.x) - head), Math.cos(Math.atan2(b.y - a.pos.y, b.x - a.pos.x) - head))) * 180 / Math.PI;
++        const k = off < 30 ? 'head within 30 deg of the ball' : off < 90 ? 'head 30-90 deg off' : 'head over 90 deg off';
++        const g = (gate[k] ??= { ready: 0, sees: 0, n: 0 }); g.n++; if (est.seenReady(a, sim)) g.ready++; if (est.seesBall?.(a, sim)) g.sees++;
++      }
++    }
++  }
++  if (sim.ballEstimates) for (const a of sim.agents) samples[a.team as 'O' | 'D'] += sim.ballEstimates.samplesOf(a);
++}
++console.log(`BALL_EST=${process.env.BALL_EST ?? 6145} SIGHT_BALL=${process.env.SIGHT_BALL ?? 0}`);
++console.log(`glimpse vs sawAt (ball): agree ${agree}, disagree ${disagree}`);
++console.log(`estimator samples taken: offense ${samples.O}, defense ${samples.D}`);
++console.log('| defender tracking the flight | ticks | seenReady (has an estimate) | seesBall (sees it now) |\n|---|---|---|---|');
++for (const [k, g] of Object.entries(gate)) console.log(`| ${k} | ${g.n} | ${(100 * g.ready / g.n).toFixed(0)}% | ${(100 * g.sees / g.n).toFixed(0)}% |`);
+diff --git a/src/sim/ball-estimate.ts b/src/sim/ball-estimate.ts
+index 3a6533d94..987d6c849 100644
+--- a/src/sim/ball-estimate.ts
++++ b/src/sim/ball-estimate.ts
+@@ -42,6 +42,7 @@ import { naturalFlightFor } from './behaviors/qb.js';
+ import type { Agent } from './agent.js';
+ import { ReceiverForecast, type InstalledReceiverRoute } from './receiver-forecast.js';
+ import type { PlaySim } from './playsim.js';
++import { lineOfSight, SIGHT_PURE } from './sight.js';
+ 
+ /** BALL_EST is a bitmask (0 off): 1 the estimator; 4 a committed catch point moves with his estimate; 8 looming; 2 removes catching.ts's tracking penalty (ballTracking acts through
+  * the estimator; charging it again at the catch double-counts). */
+@@ -130,6 +131,35 @@ export function glanceSd(range: number, skillV: number, held: number, age: numbe
+  * flight. The mirror of bit 128, so the receiver's side can be carded without changing the defense's. */
+ export const BALL_EST_RCV_ONLY = (BALL_EST_BITS & 4096) !== 0 && !BALL_EST_DEF_ONLY;
+ export const BALL_EST_RCV = BALL_EST && !BALL_EST_DEF_ONLY;
++/** SIGHT_BALL (experimental, off; SIGHT_BALL=1; Flex with Coverage and Defense, 2026-11-25, Integration's ruling): one definition
++ * of a player's own sight of the ball, in this file, read three ways.
++ * - `glimpsesBall`: the ball within his recorded head's view cone (HEAD_CONE, 90 deg; his facing within 1.8 rad where no head
++ *   is recorded) with a clear sight line, at the moment asked. It lets him turn his head toward it (the look's trigger) and
++ *   gives him nothing else: no position, no flight, no play. release-evidence's ball cue is this test.
++ * - `seesBallAt`: the same within EYE (30 deg, near-central vision, where a ball can be fixed). The estimator's sample is this
++ *   test; with SIGHT_BALL on, a ball behind a body (recorded positions and poses then) is not sampled, for receivers too.
++ * - `BallEstimates.seesBall`: he sees it now: a sample on this tick or the last, for the glance dwell. The hands gate.
++ * `BallEstimates.hasEstimate` (formerly only seenReady) is different: he has a recent estimate, good enough to move on, which
++ * may come from a look he has since turned away from; it never gates a play on the ball. */
++export const SIGHT_BALL = process.env.SIGHT_BALL === '1';
++const VIEW_CONE = Math.PI / 2, VIEW_FACING = 1.8;
++function ballInSight(sim: PlaySim, a: Agent, back: number, b: Vec3, cone: number, headIn?: number | null): boolean {
++  const ro = sim.perception.recorded(a.idx, back * sim.dt);
++  if (!ro) return false;
++  const head = headIn ?? sim.perception.perceive(a.idx, back * sim.dt).head;
++  const brg = Math.atan2(b.y - ro.pos.y, b.x - ro.pos.x);
++  // No head recorded (not modelled for him): his facing, with sawAt's 1.8 rad for the view (the eye range is the eye range).
++  const noHead = head === null || head === undefined, lim = noHead && cone === VIEW_CONE ? VIEW_FACING : cone;
++  if (Math.abs(angDiff(brg, noHead ? ro.facing : head)) > lim) return false;
++  const point = { pos: { x: b.x, y: b.y }, profile: { radius: 0, heightYd: b.z / 0.936 }, body: { support: { state: 'up', posture: 0 } } } as unknown as Agent;
++  const posOf = (x: Agent) => x === point ? point.pos : sim.perception.recorded(x.idx, back * sim.dt)?.pos ?? null;
++  const poseOf = SIGHT_PURE ? (x: Agent) => x === point ? null : sim.perception.recorded(x.idx, back * sim.dt)?.pose ?? null : undefined;
++  return lineOfSight(sim.agents, a, point, b.z, posOf, poseOf);
++}
++/** SIGHT_BALL: the ball in his view cone with a clear line, `back` ticks ago (see above). Turns his head only. */
++export function glimpsesBall(sim: PlaySim, a: Agent, back: number, b: Vec3, head?: number | null): boolean { return ballInSight(sim, a, back, b, VIEW_CONE, head); }
++/** SIGHT_BALL: the ball within his eye range with a clear line, `back` ticks ago: a sample. */
++export function seesBallAt(sim: PlaySim, a: Agent, back: number, b: Vec3, head?: number | null): boolean { return ballInSight(sim, a, back, b, EYE, head); }
+ /** Is the estimator on for this player (his own estimate in place of the true flight)? */
+ export const estimatesFor = (a: { team: string }): boolean => BALL_EST && (BALL_EST_DEF_ONLY ? a.team === 'D' : BALL_EST_RCV_ONLY ? a.team === 'O' : true);
+ /** Design 6: landmark depth past the line (yd; measured, the NFL deep receiver's turn depth, GO/POST median 12.3/12.2). */
+@@ -293,6 +323,7 @@ export class BallEstimates {
+         if (tr0 && sim.t - tr0.attendT <= sim.dt + 1e-9 && tr0.flight === this.flight) continue;
+         const head = SHARED_HEAD ? (a.head ?? a.facing) : tr0 && tr0.flight === this.flight ? tr0.head : a.facing;
+         if (Math.abs(angDiff(Math.atan2(b.y - a.pos.y, b.x - a.pos.x), head)) > EYE) continue;
++        if (SIGHT_BALL && !seesBallAt(sim, a, 0, b, head)) continue;
+         if (!tr0) { tr0 = { flight: this.flight, head: a.facing, headT: sim.t, attendT: sim.t, lastSampleT: -Infinity, err: null, samples: [], pseudo: [], fit: null, fitT: -1, path: null, pathT: -1, jumps: 0 }; this.tracks.set(a, tr0); }
+         else tr0.attendT = sim.t;
+         if (!tr0.deliberate && tr0.passiveAt === undefined) tr0.passiveAt = sim.t;
+@@ -328,6 +359,8 @@ export class BallEstimates {
+       const then = [...tr.eyeHist].reverse().find((q) => q.t <= seen.t + 1e-9) ?? tr.eyeHist[0];
+       const bearing = Math.atan2(seen.p.y - then.y, seen.p.x - then.x);
+       if (Math.abs(angDiff(bearing, then.head)) > EYE) continue;
++      // SIGHT_BALL: and nothing stood across the line then.
++      if (SIGHT_BALL && !seesBallAt(sim, a, Math.round((sim.t - seen.t) / sim.dt), seen.p, then.head)) continue;
+       // The error carries over from his last sample, decaying with ERR_TAU; a fresh look starts a fresh error.
+       const gap = sim.t - tr.lastSampleT, rho = Number.isFinite(gap) ? Math.exp(-gap / ERR_TAU) : 0;
+       tr.lastSampleT = sim.t;
+@@ -475,6 +508,23 @@ export class BallEstimates {
+     return s ? { t: s.t, pos: { ...s.p } } : null;
+   }
+ 
++  /** SIGHT_BALL: he sees it now (the hands gate): a sample of this flight on this tick or the last, held for the glance dwell
++   * where the glance is on. A look he has turned away from is not sight. */
++  seesBall(a: Agent, sim: PlaySim): boolean {
++    const tr = this.tracks.get(a);
++    if (!tr || tr.flight !== this.flight || !tr.samples.length || sim.t - tr.lastSampleT > sim.dt + 1e-9) return false;
++    return !BALL_EST_GLANCE || this.glanceKnows(a, sim);
++  }
++  /** He has a recent estimate of this flight, good enough to move on (seenReady's reading, by its meaning). Not a hands gate. */
++  hasEstimate(a: Agent, sim: PlaySim): boolean { return this.seenReady(a, sim); }
++  /** SIGHT_BALL: he glimpses the ball now: at his pursuit delay, within his head's view cone, with a clear line. The look's
++   * trigger (turn the head); no position. */
++  glimpses(a: Agent, sim: PlaySim): boolean {
++    const back = Math.round(a.mind.observationDelay(PURSUIT_DELAY) / sim.dt), seen = this.ballAt(sim.t - back * sim.dt);
++    if (!seen) return false;
++    const tr = this.tracks.get(a), head = SHARED_HEAD ? a.head : tr && tr.flight === this.flight ? tr.head : undefined;
++    return glimpsesBall(sim, a, back, seen.p, head);
++  }
+   /** Bit 32: has he seen this flight himself recently enough to play it (his newest sample within catch-readiness's
+    * age bound), with his hands ready (a ball that caught his eye unlooked-for needs his reaction time first)? */
+   seenReady(a: Agent, sim: PlaySim): boolean {
+diff --git a/src/sim/release-evidence.ts b/src/sim/release-evidence.ts
+index 3989c816a..34269938b 100644
+--- a/src/sim/release-evidence.ts
++++ b/src/sim/release-evidence.ts
+@@ -18,6 +18,7 @@ import type { Vec3 } from '../core/vec.js';
+ import type { Agent } from './agent.js';
+ import type { PlaySim } from './playsim.js';
+ import { bodyHeight, lineOfSight, SHOULDER, SIGHT_PURE } from './sight.js';
++import { glimpsesBall, SIGHT_BALL } from './ball-estimate.js';
+ 
+ /** BALL_CUE_OWN (on; `=0` restores the ball cue timed on his sighting of the passer, and the stand in
+  * `playObservedFlight`): the ball in flight is his own percept at his own delay (#766). The switch was added at
+@@ -91,6 +92,7 @@ export function releaseEvidence(sim: PlaySim, observer: Agent): ReleaseCue[] {
+   const ballDelay = observer.mind.observationDelay(observer.profile.reactionTime);
+   const ballBack = BALL_CUE_OWN ? Math.round(ballDelay / sim.dt) : back, ballAt = BALL_CUE_OWN ? sim.t - ballBack * sim.dt : at;
+   const b = flight.find((f) => Math.abs(f.t - ballAt) < sim.dt / 2);
+-  if (b && sawAt(sim, observer, ballBack, { pos: { x: b.pos.x, y: b.pos.y } }, b.pos.z)) out.push({ kind: 'ball', at: ballAt, pos: b.pos });
++  // SIGHT_BALL: the one definition's glimpse (the same view cone and sight line, in ball-estimate.ts).
++  if (b && (SIGHT_BALL ? glimpsesBall(sim, observer, ballBack, b.pos) : sawAt(sim, observer, ballBack, { pos: { x: b.pos.x, y: b.pos.y } }, b.pos.z))) out.push({ kind: 'ball', at: ballAt, pos: b.pos });
+   return out;
+ }
+diff --git a/test/engine-pin.json b/test/engine-pin.json
+index 6609951ee..33955cd17 100644
+--- a/test/engine-pin.json
++++ b/test/engine-pin.json
+@@ -145,6 +145,7 @@
+  ],
+  "defaults": [
+   "test/acc-belief.test.ts",
++    "test/sight-ball.test.ts",
+   "test/acc-radius.test.ts",
+   "test/acquired-mesh-contradiction.test.ts",
+   "test/action-effort.test.ts",
+diff --git a/test/perception-producers.test.ts b/test/perception-producers.test.ts
+index 14040d68b..9c3416a83 100644
+--- a/test/perception-producers.test.ts
++++ b/test/perception-producers.test.ts
+@@ -21,13 +21,16 @@ describe('ball-estimate.ts is a perception producer', () => {
+     // Reviewed 2026-11-16 at the engine-71 refresh: the new exports are flags and constants (BALL_EST_DEEP_LOOK, _DEF_ONLY, _GLANCE, _INCIDENTAL, _MAN_LOOK, _RCV, _RCV_ONLY, _SERVO, _TRUNK; DEEP_LOOK_DEPTH/HOLD,
+     // GAZE_SEARCH, GLANCE_DEPTH/DWELL_TARGET/HOLD_REF, PHASE_BEHIND) and four functions whose inputs are a team, ratings or numbers (estimatesFor, glanceSd, lookAnyway, phaseJudgeSd): none takes or returns the true ball.
+     // Reviewed 2026-11-16 at the engine-72 refresh: SEEN_EMPTY is a flag constant (`process.env.SEEN_EMPTY !== '0'`); it takes and returns no ball.
++    // Reviewed 2026-11-25 (Flex, SIGHT_BALL): SIGHT_BALL is a flag constant; glimpsesBall and seesBallAt are the one sight test
++    // (view cone or eye range, plus the sight line, at a recorded moment) on a ball position the caller passes. Producers only:
++    // the estimator's own sampler and release-evidence's recorded ball. Decision code reads BallEstimates.glimpses / seesBall.
+     expect(names).toEqual([
+       'BALL_EST', 'BALL_EST_DEEP_LOOK', 'BALL_EST_DEF_ONLY', 'BALL_EST_GLANCE', 'BALL_EST_INCIDENTAL', 'BALL_EST_LOOMING',
+       'BALL_EST_MAN_LOOK', 'BALL_EST_MOVING_CHOICE', 'BALL_EST_NO_TRACKPEN', 'BALL_EST_RCV', 'BALL_EST_RCV_ONLY', 'BALL_EST_SERVO',
+       'BALL_EST_TRUNK', 'BallEstimates', 'DEEP_LOOK_DEPTH', 'DEEP_LOOK_HOLD', 'GAZE_SEARCH', 'GLANCE_DEPTH',
+       'GLANCE_DWELL_TARGET', 'GLANCE_HOLD_REF', 'LOOK_NECK', 'PHASE_BEHIND', 'PRE_LOOK_EARLY', 'PRE_LOOK_LATE',
+-      'PathSample', 'SEEN_EMPTY', 'bodyTurnLead', 'estimatesFor', 'fitFlight', 'glanceSd', 'lookAnyway',
+-      'lookJoints', 'neckOf', 'ownRoutes', 'phaseJudgeSd', 'sideOf'].sort());
++      'PathSample', 'SEEN_EMPTY', 'SIGHT_BALL', 'bodyTurnLead', 'estimatesFor', 'fitFlight', 'glanceSd', 'glimpsesBall', 'lookAnyway',
++      'lookJoints', 'neckOf', 'ownRoutes', 'phaseJudgeSd', 'seesBallAt', 'sideOf'].sort());
+   });
+ });
+ 
+diff --git a/test/sight-ball.test.ts b/test/sight-ball.test.ts
+new file mode 100644
+index 000000000..e2fb061ad
+--- /dev/null
++++ b/test/sight-ball.test.ts
+@@ -0,0 +1,58 @@
++// SIGHT_BALL (Flex with Coverage and Defense, 2026-11-25): one definition of a player's own sight of the ball. A glimpse is the
++// ball in his head's view cone with a clear line; sight is the same within his eye range; "sees it now" is a sample this tick
++// or the last, the hands gate, which a look he has turned away from does not pass.
++import { afterEach, describe, expect, it, vi } from 'vitest';
++
++afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
++async function scene() {
++  vi.stubEnv('SIGHT_BALL', '1'); vi.resetModules();
++  const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');
++  const { PlaySim } = await import('../src/sim/playsim.js');
++  const be = await import('../src/sim/ball-estimate.js');
++  const sim = new PlaySim({ ...nativeTraceSetup({ coverage: 'cover3', concept: 'stick', seed: 7, roster: 7, formation: 'gun_doubles_11', flip: false }), audibles: false }) as any;
++  const d = sim.slot('LB_W')!, other = sim.slot('LB_M')!;
++  for (const a of sim.agents) { a.body.vel = { x: 0, y: 0 }; if (a !== d && a !== other) a.body.pos = { x: 10, y: 1 + (a.idx % 20) * 0.5 }; }
++  d.body.pos = { x: 45, y: 26 }; d.body.facing = Math.PI; d.head = Math.PI; other.body.pos = { x: 60, y: 1 };
++  for (let i = 0; i < 6; i++) sim.recordPerception();
++  return { sim, d, other, be };
++}
++
++describe('SIGHT_BALL: one definition of sight of the ball', () => {
++  it('a glimpse needs the view cone and a clear line; sight needs the eye range', async () => {
++    const { sim, d, other, be } = await scene();
++    const ball = { x: 38, y: 26, z: 2 }; // straight ahead of his head, 7 yd
++    expect(be.glimpsesBall(sim, d, 0, ball)).toBe(true);
++    expect(be.seesBallAt(sim, d, 0, ball)).toBe(true);
++    const wide = { x: 41, y: 22, z: 2 }; // about 45 deg off his head: in view, not in his eye range
++    expect(be.glimpsesBall(sim, d, 0, wide)).toBe(true);
++    expect(be.seesBallAt(sim, d, 0, wide)).toBe(false);
++    expect(be.glimpsesBall(sim, d, 0, { x: 50, y: 26, z: 2 })).toBe(false); // behind him
++    other.body.pos = { x: 42, y: 26 }; sim.recordPerception(); // a body across the line
++    expect(be.glimpsesBall(sim, d, 0, ball)).toBe(false);
++    expect(be.seesBallAt(sim, d, 0, ball)).toBe(false);
++  });
++
++  it('the hands gate: a defender who looked and turned away has an estimate but does not see the ball', async () => {
++    vi.stubEnv('BALL_EST', '2049'); vi.stubEnv('SIGHT_BALL', '1'); vi.resetModules();
++    const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');
++    const { PlaySim } = await import('../src/sim/playsim.js');
++    let away = 0, readyAway = 0, seesAway = 0;
++    for (const [concept, coverage] of [['curl_flat', 'cover3'], ['stick', 'cover3'], ['slant_flat', 'cover1']] as const) for (let seed = 1; seed <= 6; seed++) {
++      const sim = new PlaySim(nativeTraceSetup({ coverage, concept, seed, roster: 7, formation: 'gun_doubles_11', flip: false })) as any;
++      for (let i = 0; i < 400 && sim.phase === 'live'; i++) {
++        sim.tick();
++        if (sim.ball.kind !== 'air') continue;
++        const b = sim.ball.flight.pos;
++        for (const a of sim.defense) {
++          if (!sim.ballEstimates.samplesOf(a)) continue;
++          const h = a.head ?? a.facing, brg = Math.atan2(b.y - a.pos.y, b.x - a.pos.x);
++          if (Math.abs(Math.atan2(Math.sin(brg - h), Math.cos(brg - h))) < Math.PI / 2) continue;
++          away++; if (sim.ballEstimates.hasEstimate(a, sim)) readyAway++; if (sim.ballEstimates.seesBall(a, sim)) seesAway++;
++        }
++      }
++    }
++    expect(away).toBeGreaterThan(20);
++    expect(readyAway / away).toBeGreaterThan(0.1); // "has an estimate" survives the turn
++    expect(seesAway / away).toBeLessThan(0.05); // "sees it now" does not
++  }, 300_000);
++});
