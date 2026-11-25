@@ -109,3 +109,28 @@ line). The true receiver reaches it at about 2.35 s and does not settle: he is s
 inside (y 15.2 → 13.0). V2's release at 2.0 s is anticipation, ahead of a landmark the body runs through.
 
 That the stick runs through its landmark is route execution, not the passer. Noted for Rules and Tools; not chased here.
+
+## Losing cell 3, stick vs cover3: not a read error
+
+Diagnostic: `scripts/diag/qbv2/stick-why.ts` (his key, picture against truth, and cue every 0.1 s) and `key-sequence.ts`
+with refs S2,S3.
+
+**His read matches truth.**
+- He keys the NB, and his cue reads "widens" on every tick from 1.0 s.
+- The picture is within about 0.3 yd of the true man.
+- On seed 2 the picture is late: about 2 yd off at 1.2–1.3 s, so the cue reads "squats" for two ticks, then widens.
+
+**What sends the ball to the flat is the bar, not the cue.**
+- The named stick (S2) judges P 0.70 but risk 0.05–0.12, over the bar's 0.0425 (BAR_RISK0). The flat (S3) judges
+  P 0.80 at risk 0.02.
+- choose() then falls back to the clear throw.
+- The risk is physical: the NB widens slowly (about 1.5 yd/s), so at the decision (1.6–1.8 s) he is still about 2.5 yd
+  outside the stick's catch point at its depth.
+- When the stick does clear (seed 2: P 0.74, risk 0.04), he throws it.
+- The flats he throws instead are open underneath the NB: 17/19 complete in the landing cells.
+
+**Verdict.** The coached rule (widens → the stick) is his intent, and he departs from it on what he sees: a tight stick
+window and an open flat. That is execution within the rule, not a misread. Nothing to change in V2.
+
+The #936 label calls this "widening" because he is 2 yd wider by the release. Its taught answer doesn't price how close
+a slow widener still is to the stick. This cell's 7/30 is therefore an operator-precedence reading, not a decision fault.
