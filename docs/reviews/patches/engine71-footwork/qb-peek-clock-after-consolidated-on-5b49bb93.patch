@@ -1,0 +1,202 @@
+diff --git a/config/baseline.json b/config/baseline.json
+index c45851867..9e80d34e5 100644
+--- a/config/baseline.json
++++ b/config/baseline.json
+@@ -265,6 +265,7 @@
+     "QB_WINDOW_ARRIVE": "0",
+     "QB_KEY_PLANT": "0",
+     "QB_STICK": "0",
++    "QB_PEEK_CLOCK": "0",
+     "TACKLE_SET": "0",
+     "EDGE_ARC": "0",
+     "POWER_AIM": "0",
+diff --git a/config/reference-stack.json b/config/reference-stack.json
+index f9f951397..2144845da 100644
+--- a/config/reference-stack.json
++++ b/config/reference-stack.json
+@@ -214,6 +214,7 @@
+     "QB_WINDOW_ARRIVE": "off",
+     "QB_KEY_PLANT": "off",
+     "QB_STICK": "off",
++    "QB_PEEK_CLOCK": "off",
+     "TACKLE_SET": "off",
+     "EDGE_ARC": "off",
+     "POWER_AIM": "on",
+diff --git a/docs/FLAGS.md b/docs/FLAGS.md
+index 968d3f539..e6cd4a1a7 100644
+--- a/docs/FLAGS.md
++++ b/docs/FLAGS.md
+@@ -2,7 +2,7 @@
+ 
+ Every engine switch read from the environment, recounted from `src` at `57f50fc3` on 2026-10-22. This includes #210's promotion and #205's two additional default-on switches. Flags that are not on develop (parked, removed from a PR, or only on a side branch) are kept in [PARKED.md](PARKED.md) so the ideas are not lost. Registration rules are in [PLAN.md](PLAN.md): at most 10 experimental flags, and each expires two reviews after it lands.
+ 
+-There are 469 flags read from the environment in `src` (recounted 2026-11-18, engine-78, plus QB_DRIVE, QB_RHYTHM_THROW, QB_ALIGN, QB_BODY_FOLLOW, QB_WINDOW_ARRIVE, QB_KEY_PLANT and QB_STICK): 351 are on unless set to `0`, 91 are off unless set to `1`, and 27 are numeric scales or modes (identity value unless listed in the stack's numeric section). The rows below carry each flag's history.
++There are 470 flags read from the environment in `src` (recounted 2026-11-18, engine-78, plus QB_DRIVE, QB_RHYTHM_THROW, QB_ALIGN, QB_BODY_FOLLOW, QB_WINDOW_ARRIVE, QB_KEY_PLANT, QB_STICK and QB_PEEK_CLOCK): 351 are on unless set to `0`, 92 are off unless set to `1`, and 27 are numeric scales or modes (identity value unless listed in the stack's numeric section). The rows below carry each flag's history.
+ 
+ **Promotion (2026-11-09):** the reference stack `run-ref-4` is now the engine's default. The 90 flags it lists `on` are read as on unless set to `0` (rows marked "promoted" below); the rest are unchanged. Decisions and evidence for each flag are in [REFERENCE_STACK.md](REFERENCE_STACK.md); `npm run ref -- --list` is the current inventory, and `npm run ref -- --off -- <command>` runs the engine as it was before. The test suites still run on the pre-promotion engine (pinned in `vitest.config.ts`) until their recorded cases are re-recorded. The counts in the paragraph above predate all of this.
+ 
+@@ -382,6 +382,7 @@ There are 469 flags read from the environment in `src` (recounted 2026-11-18, en
+ | `QB_WINDOW_ARRIVE` | off | experimental (QB lane, 2026-11-18; Integration's window repair) | quarterback | `src/sim/behaviors/qb.ts` (`window`, `arriveTime`) | His throw-window belief carries each defender's seen momentum through the defender's reaction before he redirects to the ball, at the catch point and along the flight. Off, the defender stood still for his reaction: a defender driving on the point was priced late (driven-on flat looked open) and one bailing was priced early (cushion hitch looked contested). |
+ | `QB_KEY_PLANT` | off | experimental (QB lane, 2026-11-18; Integration's item ii) | quarterback | `src/sim/behaviors/qb.ts` (`readKeyShell`, `keyLean`, `keyWaiting`) | On a keyed quick concept he reads the key on the plant, from what he has seen of it by then. An undeclared key gets no default: he throws the route its first lean gives (trusted at 0.25-0.75 of the commit margin by awareness and experience; chosen), or takes one hitch (0.35 s, chosen) to re-read and goes with the lean he has then, right or wrong. Off, the key was read at the plan's cue and an undeclared key got the concept's sitter default. |
+ | `QB_STICK` | off | experimental (QB lane, 2026-11-18; Integration's item iii, pump part 1) | quarterback | `src/sim/behaviors/qb.ts` (`pullDown`, `stickChange`, `stickBlocked`) | A started throw sticks: the delivery recheck pulls it down only on a perceived change past a margin since the decision (a defender now within 1.5 yd of the catch point having been beyond 2.5, one stepping into his reach of the low flight having been 1 yd beyond it, the receiver down or more than 2 yd off where he expected him). After such a pump the same man is not thrown until the cause clears a wider exit margin (defender beyond 4 yd from the point; receiver up and back on his route). Margins chosen. Off, QB_COMMIT's margin on the re-priced window or the plain re-priced value decided. |
++| `QB_PEEK_CLOCK` | off | experimental (QB lane, 2026-11-18; Integration's item v) | quarterback | `src/sim/behaviors/qb.ts` (the vertical peek in the read loop) | The vertical peek runs on his feet's clock as taught: the deep picture is read as it stands by one hitch after the plant (one stride of his drop) if the stems have not shown, a close vertical holds him at most to the second hitch, and a felt rush (urgency 0.5+) takes him off it at once. Off, the peek waited for every vertical to reach 12 yd, so a jammed seam held him to the 2.5-look cap (four_verts: eyes on the verticals to 3.35 s, checkdown open from 1.95 s). |
+ | `BRACE_EVIDENCE` | off | experimental (CARRIER_BRACE trigger, 2026-11-10) | ball carrier | `src/sim/behaviors/carrier.ts` (`BRACE_EVIDENCE`) | needs `CARRIER_BRACE`. He braces and lunges only at a man he sees free of blocks (no blocker he sees touching him) and squared up to him (seen facing within 45 deg of the line to the carrier). Trace on the fixed run set without it: 1.39 firings a run, 50% at engaged men, 30% at a free squared oncoming man, 33% followed by no contact; added breaks side +28, front +7 |
+ | `INFO_HONEST` | 63 | promoted 2026-11-14 (engine-61; all bits on; `=0` restores); was experimental (C14 coverage, 2026-11-13; information audit, intended on) | coverage | `src/sim/behaviors/defense.ts` (`infoHonest`; ManCoverage re-square, ZoneCoverage lanes / facing / eyes lean, `readsHandsAt`), `src/sim/coverage/judgment.ts`, `src/sim/coverage/techniques.ts` (Wall, Rob) | Coverage decisions read the defender's own picture, not true state. A bit mask: `INFO_HONEST=63` turns every item on; single items by bit (3 = 1, 6 = 2, 7 = 4, 8 = 8, 9 = 16, H = 32) for a per-item read. 3: deep help decisions freeze when he has seen the throw, not at the true release (was the default path with `JUDGE_SEEN_BALL` off). 6: a man carry stops re-squaring when he has seen the throw. 7: the judgment's protect-vertical carry starts its cushion from the receiver he saw. 8: the zone lean toward the QB's look goes to where he sees that receiver. 9: zone lanes and facing use where he sees the QB. H: the hands cue needs the receiver within 100 deg of his facing. From the coverage audit (items 1, 4, 5 and the loose ball are Defense's `HONEST_READS`; the ball path is the ball-in-air spec; the QB's motion and gaze move onto `QB_BODY_SEEN`). |
+ | `MAN_PHASE` | off | experimental (G3 coverage, 2026-11-10; measured with `WR_SNAP`, `QB_RHYTHM`, `PRESS_MIRROR`, `PRESS_RELEASE`) | man coverage | `src/sim/behaviors/defense.ts` (`ManCoverage.trackReceiver`, the leverage offset) | set at first review. Once his hips are open and the receiver is past 2 yd and running his stem (over 3 yd/s, mostly upfield), a man defender's leverage offset is an arm's length off the receiver's hip (their two body radii plus 0.7 of his arm) instead of 0.7 yd; on a plant or break he closes on the body as before. Pressed outside pairs (same operator on BDB 2025 weeks 1-3): CB-WR distance at 2.0 s 0.96 -> 1.09 yd (NFL 1.20), within 1.2 yd 79 -> 74% (NFL 51%); at 2.5 s 0.95 -> 1.22 (NFL 1.18). 732 dropbacks paired: +0.39 +/- 0.25 yd a pass play, completions 400 -> 407; to pressed receivers comp 18/45 -> 23/48 (NFL 44%), 7.31 -> 8.97 yd a throw (NFL 5.05); 17 plays moved by > 20 yd net +319 (catch and run). Second attempt (the first held the offset through a plant: +0.48 +/- 0.31, pressed hitches turned into 60-80 yd runs); stopped per the two-attempt rule. Test `test/man-phase.test.ts`. |
+diff --git a/scripts/diag/eyes/peek-staged.ts b/scripts/diag/eyes/peek-staged.ts
+new file mode 100644
+index 000000000..e5600e199
+--- /dev/null
++++ b/scripts/diag/eyes/peek-staged.ts
+@@ -0,0 +1,22 @@
++// node --import tsx scripts/diag/eyes/peek-staged.ts > rows.jsonl   (QB lane, 2026-11-18, QB_PEEK_CLOCK)
++// Every concept whose installed plan is a vertical peek, staged: 8 coverages x 3 rosters x 4 seeds, from gun doubles
++// and trips. Per play: when he left the peek, the throw (time, route, air), the result, sacks. Passive.
++import { PlaySim } from '../../../src/sim/playsim.js';
++import { nativeTraceSetup } from '../command-trace.js';
++import { PASS_BY_ID } from '../../../src/playbook/concepts.js';
++import { installedPlan } from '../../../src/playbook/read-compiler/runtime.js';
++const COVS = 'cover1 cover2man cover2 cover2_match tampa2 cover3 cover4 cover6'.split(' ');
++for (const formation of ['gun_doubles_11', 'gun_trips_11']) for (const [id, c] of Object.entries(PASS_BY_ID) as [string, any][]) {
++  let plan: any = null; try { plan = installedPlan(c, formation); } catch { plan = null; }
++  if (plan?.style !== 'vertical_peek') continue;
++  for (const coverage of COVS) for (const roster of [3, 7, 11]) for (const seed of [1, 2, 3, 4]) {
++    let sim: any; try { sim = new PlaySim(nativeTraceSetup({ coverage, concept: id, seed, roster, formation, flip: false })); } catch { continue; }
++    const dir = sim.attackDir(sim.offense[0].team); let offPeek: number | null = null;
++    const tick0 = sim.tick.bind(sim); sim.tick = () => { tick0(); const b: any = sim.qb.behavior; if (offPeek === null && b?.kind === 'qb-pass' && b.triDone) offPeek = +sim.t.toFixed(2); };
++    let thr: any = null; const tb = sim.throwBall.bind(sim);
++    sim.throwBall = (p: any, target: any, v0: any, intended: any, ...rest: any[]) => { if (p === sim.qb && !thr) thr = { t: +sim.t.toFixed(2), route: target?.behavior?.route?.id ?? null, back: target?.slot === 'RB', air: intended ? +((intended.x - sim.los) * dir).toFixed(1) : null }; return tb(p, target, v0, intended, ...rest); };
++    let res: any; try { res = sim.run(); } catch { continue; }
++    const ev = sim.events.map((e: any) => e.type);
++    console.log(JSON.stringify({ concept: id, formation, coverage, roster, seed, offPeek, thr, cmp: !!res.stats.completed, int: ev.includes('interception'), sack: ev.includes('sack'), yards: res.yards ?? 0 }));
++  }
++}
+diff --git a/scripts/diag/eyes/peek-trace.ts b/scripts/diag/eyes/peek-trace.ts
+new file mode 100644
+index 000000000..2cc8eb74f
+--- /dev/null
++++ b/scripts/diag/eyes/peek-trace.ts
+@@ -0,0 +1,21 @@
++// node --import tsx scripts/diag/eyes/peek-trace.ts concept coverage formation seed flip(0/1) [roster=7]
++// QB lane, 2026-11-18 (item v): the vertical peek's hold, every 0.1 s from the set until he leaves it: each vertical's
++// depth in his picture and his price of it, the peek's declare (shown), processed and close states, and the checkdown's
++// price. Passive except his own ready/evaluate.
++import { PlaySim } from '../../../src/sim/playsim.js';
++import { nativeTraceSetup } from '../command-trace.js';
++const [concept, coverage, formation, seedS, flipS, rosterS] = process.argv.slice(2);
++const sim: any = new PlaySim(nativeTraceSetup({ concept, coverage, formation, seed: Number(seedS), flip: flipS === '1', roster: Number(rosterS ?? 7) }));
++const dir = sim.attackDir(sim.offense[0].team); let next = 0; const rows: any[] = [];
++const tick = sim.tick.bind(sim);
++sim.tick = () => { tick(); const b: any = sim.qb.behavior; if (b?.kind !== 'qb-pass' || !b.plan?.peek || sim.t < next || b.phase === 'windup') return; next = sim.t + 0.1;
++  const tri = b.plan.triangle ?? []; const rid = (r: any) => r?.behavior?.route?.id ?? r?.slot;
++  const ev = (r: any) => { try { if (!b.ready(r, sim)) return '-'; const e = b.evaluate(sim.qb, sim, r, 0); return e ? `${e.P.toFixed(2)}/${e.intRisk.toFixed(3)}` : 'x'; } catch { return 'err'; } };
++  const out = b.reads.filter((r: any) => !tri.includes(r));
++  rows.push({ t: +sim.t.toFixed(2), phase: b.phase, triDone: !!b.triDone, setAt: +(b.setAt ?? -1).toFixed(2), readStart: +(b.readStart ?? -1).toFixed(2), peekDeclared: +(b.peekDeclared ?? -1).toFixed(2),
++    tri: tri.map((r: any) => `${r.slot}:${rid(r)} d${((b.has(sim, r).x - sim.los) * dir).toFixed(1)} ${ev(r)}`).join(' | '), outlet: out.map((r: any) => `${rid(r)} ${ev(r)}`).join(' | '), press: (() => { try { return +b.pressure(sim.qb, sim).time.toFixed(2); } catch { return null; } })() }); };
++let thr: any = null; const tb = sim.throwBall.bind(sim);
++sim.throwBall = (p: any, target: any, ...rest: any[]) => { if (p === sim.qb && !thr) thr = { t: +sim.t.toFixed(2), to: target?.behavior?.route?.id }; return tb(p, target, ...rest); };
++const res = sim.run();
++for (const r of rows) console.log(JSON.stringify(r));
++console.log(JSON.stringify({ thr, cmp: !!res.stats.completed, int: !!res.stats.interceptedBy }));
+diff --git a/src/sim/behaviors/qb.ts b/src/sim/behaviors/qb.ts
+index 9fc8d3fd4..362292209 100644
+--- a/src/sim/behaviors/qb.ts
++++ b/src/sim/behaviors/qb.ts
+@@ -217,6 +217,16 @@ const ACC_RADIUS = process.env.ACC_RADIUS === '1';
+  * the top of the drop: declared once he is set and the inside verticals have shown their stems (10 yd), instead of when
+  * every vertical is 12 yd downfield. docs/reviews/2026-11-13-qb-gather.md. */
+ const QB_PEEK = process.env.QB_PEEK === '1';
++/** QB_PEEK_CLOCK (experimental, off; QB_PEEK_CLOCK=1 turns it on): Integration's item (v), 2026-11-18. The vertical peek
++ * runs on his feet's clock, as taught ("top of the drop, hitch, check it down"): he reads the deep picture as it stands
++ * by one hitch after the plant (one stride of his own drop) if the verticals' stems have not shown by then, a vertical
++ * close to his bar holds him at most to the second hitch, and a rush he feels (urgency 0.5 or more) takes him off it
++ * at once. Off, the peek declared only when every vertical was 12 yd downfield, so a jammed seam (four_verts, a tight end
++ * rerouted back from 8.8 to 7.6 yd) held him to the 2.5-look cap: eyes on the verticals to 3.35 s with the checkdown
++ * priced 0.75 from 1.95 s, thrown at 4.30 s into the corner who had run to it. Off the peek he goes to the back, as the
++ * plan reads it ("the verticals as one look, then the back"); off, the installed order put the other side's verticals
++ * first (four_verts: S2, S1, W1, W2, then the outlet). */
++const QB_PEEK_CLOCK = process.env.QB_PEEK_CLOCK === '1';
+ /** QB_COMMIT (experimental, off; QB_COMMIT=1): the delivery recheck (pullDown) keeps a started throw unless what he now
+  * sees has clearly changed (the window at half the chance he threw it at, or its pick risk up by 0.12); off, any
+  * re-priced value below zero pumped it, so on contested verticals he started and pumped repeatedly.
+@@ -1085,6 +1095,8 @@ export class QBPass implements Behavior {
+   }
+ 
+   /** READ_PLAN: reads from the installed plan: the alert, the plan's order, any other route, the outlet last. */
++  /** READ_PLAN: the plan's outlet (the back), as installed; QB_PEEK_CLOCK sends a finished vertical peek to him. */
++  private planOutlet: Agent | null = null;
+   private initPlan(sim: PlaySim): boolean {
+     const p = installedPlan(this.concept, sim.offCall.formation.id);
+     if (!p) return false;
+@@ -1098,6 +1110,7 @@ export class QBPass implements Behavior {
+     push(alert);
+     for (const ref of p.order) push(ag(ref));
+     const outlet = ag(p.outlet);
++    this.planOutlet = outlet;
+     for (const o of sim.offense) if (o !== outlet && (QB_CALL_ROUTES ? this.receiverForecasts.has(o) : o.behavior instanceof RouteRunner)) push(o);
+     push(outlet);
+     if (!reads.length) return false;
+@@ -1783,14 +1796,22 @@ export class QBPass implements Behavior {
+         const shown = QB_PEEK ? tri.slice(0, 2).every((r) => (this.has(sim, r).x - sim.los) * dir >= 10)
+           : tri.every((r) => (this.has(sim, r).x - sim.los) * dir >= 12);
+         if (this.peekDeclared < 0 && shown) this.peekDeclared = t;
++        // QB_PEEK_CLOCK: the deep picture as it stands at his first hitch, stems shown or not.
++        const hitch1 = this.setAt >= 0 ? this.setAt + this.stride() : Infinity;
++        if (QB_PEEK_CLOCK && this.peekDeclared < 0 && t >= hitch1 - 1e-9) this.peekDeclared = t;
+         const processed = this.peekDeclared >= 0 && t - this.peekDeclared > 0.15 + 0.25 * (1 - a.r('decisionMaking'));
+         const close = tri.some((r) => { const e = this.ready(r, sim) ? this.evaluate(a, sim, r, u) : null; return !!e && e.P >= 0.85 * need && e.intRisk <= risk; });
+         done = (processed && !close) || held > 2.5 * dwell;
++        // QB_PEEK_CLOCK: a close vertical holds him to the second hitch, no longer; the rush takes him off it now.
++        if (QB_PEEK_CLOCK && ((this.setAt >= 0 && t >= this.setAt + 2 * this.stride() - 1e-9) || u >= 0.5)) done = true;
+       } else done = (held > 1.5 * dwell && tri.every((r) => this.ready(r, sim))) || held > 2.5 * dwell;
+       if (done) {
+         this.triDone = true;
+         const after = this.reads.findIndex((r) => !tri.includes(r));
+-        this.readIdx = after < 0 ? this.reads.length : after;
++        // QB_PEEK_CLOCK: a vertical peek is "the verticals as one look, then the back" (the plan's own reading; HonestNFL
++        // 112): off it, he goes to the outlet, not through the other side's verticals first.
++        const back = QB_PEEK_CLOCK && this.plan!.peek && this.planOutlet ? this.reads.indexOf(this.planOutlet) : -1;
++        this.readIdx = back >= 0 ? back : after < 0 ? this.reads.length : after;
+         this.readStart = t;
+       }
+     } else if (read && this.ready(read, sim)) {
+diff --git a/test/qb-peek-clock.test.ts b/test/qb-peek-clock.test.ts
+new file mode 100644
+index 000000000..251dd1123
+--- /dev/null
++++ b/test/qb-peek-clock.test.ts
+@@ -0,0 +1,34 @@
++/** QB_PEEK_CLOCK (behaviors/qb.ts): Integration's item (v), 2026-11-18. The vertical peek runs on his feet's clock: off
++ * it by his second hitch (two strides after the plant) at the latest, and off it to the back (the plan's outlet), not
++ * through the other side's verticals. Off: four_verts against cover2_match (seed 2, flipped) held the peek to 3.35 s. */
++import { readFileSync } from 'node:fs';
++import { afterEach, describe, expect, it, vi } from 'vitest';
++
++afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
++
++async function peek(flag: string) {
++  vi.resetModules();
++  const stack = JSON.parse(readFileSync(new URL('../config/reference-stack.json', import.meta.url), 'utf8'));
++  for (const [k, v] of Object.entries(stack.flags as Record<string, string>)) if (v === 'on') vi.stubEnv(k, '1');
++  for (const [k, v] of Object.entries(stack.numeric ?? {}) as [string, { default: number }][]) vi.stubEnv(k, String(v.default));
++  vi.stubEnv('QB_PEEK_CLOCK', flag);
++  const { PlaySim } = await import('../src/sim/playsim.js');
++  const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');
++  const sim: any = new PlaySim(nativeTraceSetup({ coverage: 'cover2_match', concept: 'four_verts', seed: 2, roster: 7, formation: 'gun_doubles_11', flip: true }));
++  let off: { t: number; setAt: number; stride: number; to: string | null } | null = null;
++  for (let i = 0; i < 400 && sim.phase === 'live' && sim.carrier === sim.qb && !off; i++) {
++    sim.tick(); const b: any = sim.qb.behavior;
++    if (b?.kind === 'qb-pass' && b.triDone) off = { t: sim.t, setAt: b.setAt, stride: b.stride(), to: b.reads[b.readIdx]?.slot ?? null };
++  }
++  return off!;
++}
++
++describe('QB_PEEK_CLOCK', () => {
++  it('leaves the vertical peek by the second hitch, to the back; off it held to 3.35 s', async () => {
++    const on = await peek('1'), off = await peek('0');
++    // Within two ticks of the clock (the read loop is not reached on every tick of the set).
++    expect(on.t).toBeLessThanOrEqual(on.setAt + 2 * on.stride + 0.1);
++    expect(on.to).toBe('RB');
++    expect(off.t).toBeGreaterThan(on.t + 0.5);
++  }, 300_000);
++});

@@ -1,0 +1,216 @@
+diff --git a/config/baseline.json b/config/baseline.json
+index ab142d1a1..d51efd04e 100644
+--- a/config/baseline.json
++++ b/config/baseline.json
+@@ -366,6 +366,8 @@
+     "STALK_CLOSE": "0",
+     "CLOUD_KILL": "0",
+     "SCREEN_QB": "0",
++    "QB_DRIVE": "0",
++    "QB_RHYTHM_THROW": "0",
+     "BACK_FRONT": "0",
+     "READ_PLAN": "0",
+     "OUTLET_LAST": "0",
+diff --git a/config/reference-stack.json b/config/reference-stack.json
+index 7dd01c253..352e7c606 100644
+--- a/config/reference-stack.json
++++ b/config/reference-stack.json
+@@ -124,6 +124,8 @@
+     "STALK_CLOSE": "on",
+     "CLOUD_KILL": "on",
+     "SCREEN_QB": "off",
++    "QB_DRIVE": "off",
++    "QB_RHYTHM_THROW": "off",
+     "ROUTE_CRAFT": "on",
+     "ROUTE_FILLET": "on",
+     "SPACING_HOLD": "on",
+diff --git a/docs/FLAGS.md b/docs/FLAGS.md
+index 8fe8f6fdc..7ae147c4a 100644
+--- a/docs/FLAGS.md
++++ b/docs/FLAGS.md
+@@ -2,7 +2,7 @@
+ 
+ Every engine switch read from the environment, recounted from `src` at `57f50fc3` on 2026-10-22. This includes #210's promotion and #205's two additional default-on switches. Flags that are not on develop (parked, removed from a PR, or only on a side branch) are kept in [PARKED.md](PARKED.md) so the ideas are not lost. Registration rules are in [PLAN.md](PLAN.md): at most 10 experimental flags, and each expires two reviews after it lands.
+ 
+-There are 461 flags read from the environment in `src` (recounted 2026-11-17, engine-77): 350 are on unless set to `0`, 84 are off unless set to `1`, and 27 are numeric scales or modes (identity value unless listed in the stack's numeric section). The rows below carry each flag's history.
++There are 463 flags read from the environment in `src` (recounted 2026-11-17, engine-77, plus QB_DRIVE and QB_RHYTHM_THROW): 350 are on unless set to `0`, 86 are off unless set to `1`, and 27 are numeric scales or modes (identity value unless listed in the stack's numeric section). The rows below carry each flag's history.
+ 
+ **Promotion (2026-11-09):** the reference stack `run-ref-4` is now the engine's default. The 90 flags it lists `on` are read as on unless set to `0` (rows marked "promoted" below); the rest are unchanged. Decisions and evidence for each flag are in [REFERENCE_STACK.md](REFERENCE_STACK.md); `npm run ref -- --list` is the current inventory, and `npm run ref -- --off -- <command>` runs the engine as it was before. The test suites still run on the pre-promotion engine (pinned in `vitest.config.ts`) until their recorded cases are re-recorded. The counts in the paragraph above predate all of this.
+ 
+@@ -238,6 +238,8 @@ There are 461 flags read from the environment in `src` (recounted 2026-11-17, en
+ | `STALK_CLOSE` | on | promoted 2026-11-14 (engine-66; `=0` restores); was experimental (screens, 2026-11-14; attempt 1 of 2) | screens | `src/sim/behaviors/screen.ts` (`ScreenBlocker.update`) | set at first review. A receiver's stalk as coached: before the ball is out he closes the cushion under control to a breakdown point 1.5 yd off his man on the man's line to the catch (a coaching figure), from what he sees of the man, then mirrors and puts his hands on the man's catch-side half; off, he worked to leverage no more than 0.5 yd past his alignment at 0.45 speed and let the man come. Why: on the now screen the stalk engaged no one on 71-75% of plays (screen-defense.mts, nickel Over, seeds 1-12 x both flips, SCREEN_QB=1); he set, came within 1.1 yd and the nickel ran by. Perimeter stalk on a DB (stalk_reference.py, BDB 2025 wk 1-6 vs screen lab): gap at 0.9 / 1.2 s NFL 2.0 / 1.1 yd, off 5.1 / 4.7, on 4.4 / 3.7; first contact before the catch NFL 1.0 s, off 0.0, on 0.5; never NFL 1 of 18, off 50 of 263, on 63 of 313. The rest of the gap starts at the snap: the stalk and his man begin 5.2 yd apart (NFL 3.7; our now-screen receiver is split 15.7 yd from the ball, NFL 13.1). It is not the man holding depth: over WR screens the NFL's man over the receiver goes from 4.3 to 4.6 yd deep by the throw on the now screen and 1.8 to 1.4 on the bubble (quick_screen_reference.py), as ours does; stalk_reference.py's "man down 1.1 yd by 1.2 s" is the man the stalk ends up engaging (selected by contact), not the flat defender. A flat-defender squeeze (FLAT_SQUEEZE, tried 2026-11-14, not kept) brought ours down 0.6 yd by the throw, more than the NFL. Stalk engagements (4 quick screens x 5 coverages x 24): now 50 -> 112, tunnel 54 -> 116; from behind 0-3% both arms. Now screen, stalk engaged no one 71-75% -> 8-25%; yards p50 Cover 3 2.4 -> 3.1, Quarters 0.1 -> 8.0 (NFL 5-6), tackler spread in Quarters CB 46 / FS 29 / NB 21% (NFL CB 47, ILB 25, FS 19, SS 14); open: Cover 3's nickel still wins through 63% (the block itself), Cover 2's squat corner makes every tackle (the coached answer is the kill against cloud; our kill reads press only), Cloud's breakaways (p50 19.7: the free-runner rally, Defense's). **Attempt 2 (2026-11-14), not kept:** the engaged stalk mirroring his man instead of `stand()` changed nothing (an engaged blocker's request does not move him; the contact does). Cover 3's losses are contact physics: the stalk engages 0.65 s before the catch but the contact ends after 0.45 s by separation (14 of 15; isolated run contact, grace 0, an arm apart), the nickel arriving at 3.3 yd/s against the stalk's 1.0; NFL contact holds to the catch. For the contact owner (does a receiver's grip cost a moving DB his momentum) and Defense (a DB playing the blocker breaks down and sheds rather than running through). Test `test/stalk-close.test.ts`. |
+ | `CLOUD_KILL` | on | promoted 2026-11-14 (engine-66; `=0` restores); was experimental (screens, 2026-11-14; QB lane reviews) | QB | `src/sim/qbmind.ts` (`screenLook`, `screenKill`, `rpoRead`) | set at first review. The coached rule "never throw a now screen against press or cloud": the now screen's installed kill, and the screen RPO's read, also take a defender he sees squatting over the screen receiver, whoever he is (a corner, a safety rolled down, an apex walked out; QB lane review: the rule is geometric), 2.2-5 yd off the line, from 0.5 yd inside him to 3 yd outside, with the press look's alignment noise, at the alignment after motion; off, only press killed it. No extra dice drawn, so the off arm is identical. Why: the now screen against Cover 2 (squat corners) was caught 24 of 24 and the corner made every tackle (yards p50 -0.3; screen-defense.mts, SCREEN_QB + STALK_CLOSE). On (seeds 1-12 x both flips): now screen killed vs Cover 2 22 of 24, Cover 3 0, Cloud (its squat corner on the other side) 0, Quarters 0, Cover 1 off 3; the RPO's read vs Cover 2 hands off 22 of 24; any-defender and corner-only windows give identical rows (no over-kill). Test `test/cloud-kill.test.ts`. |
+ | `SCREEN_QB` | off | experimental (screens, 2026-11-13; work in progress) | QB | `src/sim/behaviors/qb.ts` (screen bar and touch) | set at first review. Screens thrown as NFL quarterbacks throw them: a slow screen on its timing once the receiver is ready, at a low bar (min(thr, 0.3)); thrown firm, with a little air (x1.2) only over a rusher in his lane. NFL screens fly 0.5 s over 6-10 yd to the ball's arrival; the old float's 0.8 s was measured to the catch event. Screen lab, 8 seeds x 4 calls, off -> on: RB never thrown 25 -> 6%, flight 1.0 -> 0.6 s (NFL 0.5), throw 2.6 -> 2.45 s (2.3); TE never thrown 34 -> 22%, flight 0.75 -> 0.5 s (0.5), throw 3.15 -> 2.5 s (2.4). A dead quick screen (catcher covered or lane filled, in his picture, for his patience) is thrown away on his read; a clock one second past the timing is only the outer bound. A to-spot throw is rechecked by the rule it was thrown on and released to the spot (tunnel thrown 2.7 -> 1.8 s, NFL 1.6), and naturalFlight is refit to BDB 2025 pass_arrived. The tunnel's sell (behind the line), route and split come from tracking (`routes.ts`, `alignment.ts`, `assign.ts`): WR-in caught 40 -> 60% (NFL 91) (docs/reviews/2026-11-13-screen-qb.md) |
++| `QB_DRIVE` | off | experimental (QB lane, 2026-11-17; Integration's measurement) | quarterback / ball | `src/sim/behaviors/qb.ts` (`routeFlight`, `naturalFlightFor`) | His natural ball is the NFL's measured drive throw: flight T = 0.0731 + 0.03945 d + 0.00022 d^2 (d release to catch, yd), the median pass_forward to pass_arrived by air-yard band on BDB 2025 weeks 1-3 traditional dropbacks (0.70 s at 14.4 yd ... 2.50 s at 48.7; release speed 21-23 yd/s), fitted to flight times, never completions; off, 0.38 + 0.022 d + 0.00065 d^2 (15-20% slower short). Arm strength scales it as before; touch stays his priced choice; the receivers' expectation (BALL_EST) reads the same function. docs/reviews/2026-11-17-qb-drive.md |
++| `QB_RHYTHM_THROW` | off | experimental (QB lane, 2026-11-17; Integration's measurement) | quarterback | `src/sim/behaviors/qb.ts` (`startThrow`, the windup's weight transfer) | The rhythm throw released on the drop's last step: a throw started in the drop carries the drop's velocity into the plant, decaying to the stride by the delivery, and the release is charged for what is left by the platform terms. Off, every windup commanded a stride from zero, braking his drop out at the motion's start: 31% of NFL traditional dropbacks never slow below 1.2 yd/s before the release, ours 3% (one operator, drop-timing.ts / drop_timing_nfl.py). |
+ | `INT_BELIEF` | on | promoted 2026-11-12 (engine-48; `=0` restores); was experimental (risk work, his belief of interception risk, 2026-11-12) | QB | `src/sim/behaviors/qb.ts` (`window`) | set at first review. His interception risk is built as picks happen: a touch on the ball in flight ends a pick a fraction of the time (path terms ×`PATH_PICK` 0.2), the catch point's jumped-route and contest terms are weighted up (×`CATCH_PICK` 1.75), and defenders combine as probabilities, not a sum. How well he prices it is his knowledge (decision-making and experience): a two-sided multiplicative error of up to about ±30% in log for the least experienced. Weights fitted by likelihood on natural league throws (seeds 101/201, checked on 301/401) on the engine-47 candidate: calibrated against CATCH_CARRY, HANDS_CUE, CATCH_SPEED and CATCH_CHOICE on, and engine-46's defense with DEF_BELIEF on; re-read when the catch, tip or coverage rules change. 32 games per arm: priced over 5% 6.8% / 4.1% observed off, 6.4% / 5.1% on; sacks 131 → 121, yards a play 8.05 → 8.23, INT 46 → 49. Off: the summed terms (docs/reviews/2026-11-12-int-belief.md) |
+ | `PA_DROP` | on | promoted 2026-11-13 (engine-51; `=0` restores); was experimental (concept queue: play action, 2026-11-12) | QB, back | `src/sim/behaviors/qb.ts` (`dropSpec` 'pa', the fake), `src/sim/assign.ts` (the back's fake track) | set at first review. The play-action drop by the QB's alignment, from tracking (BDB 2025 traditional drop-backs with play action, weeks 1-3, `scripts/diag/concepts/nfl_pa_drop.py`): from the gun a mesh and a shallow set (NFL deepest 6.0 yd at 2.1 s; ours was 8.2 yd at 2.6 s), under center the fake carried on the drop (NFL 1.9 / 3.3 / 5.3 / 7.1 yd at 0.5 / 1.0 / 1.5 / 2.0 s), with a back aligned behind the QB faking on a track 1.5 yd beside him (off, his fake point sat on the QB's drop line and the QB dropped into him). Off: one drop (8.3 yd at 1.95 s) for both |
+ | `PA_CALL` | on | promoted 2026-11-13 (engine-51; `=0` restores); was experimental (concept queue: play action, 2026-11-12; work in progress) | play caller | `src/game/playcaller.ts` (`playActionTag`, `PA_TAG_RATE`) | set at first review. Play action is a tag on the call, not a family of its own: after the concept is chosen, the caller puts the run action on it at the NFL's rate for the down and distance and the QB's alignment (BDB 2025 drop-backs: under center about 80% in every situation; from the gun 24% on 1st down falling to 2-3% on 3rd and medium/long). Quick and drop-back concepts are eligible; screens and empty sets never; the three PA concepts already carry it. The tagged call is the same concept with the fake and the PA drop (use with PA_DROP). Drawn on its own stream. Situation and alignment only; team tendency later. Gate before carding: the PA premium on the tagged mix in the NFL's range (first read: gun +0.4 vs NFL +1.9 yd, under center +3.1 vs +2.5; PA share 25.3% vs 25.4%) |
+diff --git a/docs/reviews/2026-11-17-qb-drive.md b/docs/reviews/2026-11-17-qb-drive.md
+new file mode 100644
+index 000000000..04e1266a5
+--- /dev/null
++++ b/docs/reviews/2026-11-17-qb-drive.md
+@@ -0,0 +1,41 @@
++# QB_DRIVE (ball speed) and QB_RHYTHM_THROW (the rhythm throw), attempt 1, both off
++
++Integration, 2026-11-17, from the drop-timing measurement (scripts/diag/eyes/drop-timing.ts, drop_timing_nfl.py).
++
++Correction to that measurement: our flight was first measured to the moment the ball stopped being 'air', which
++includes CATCH_SECURE's securing window (about 0.28 s past the arrival). Measured to the throw's planned arrival
++(pass_arrived's counterpart) ours off is 0.85 / 0.91 s and 19.2 yd/s at 0-5 / 5-10 air yards: about 15% slow, not 25%.
++
++## A. QB_DRIVE
++
++Off: naturalFlightFor = 0.38 + 0.022 d + 0.00065 d^2 (d release to catch, Oct-08 BDB calibration; slow short because
++d is 14-16 yd on a short throw), a 1.05x floor on his arm's minimum flight, and a 1.2x touch option over 15 yd.
++NFL (BDB 2025 weeks 1-3, 2776 traditional dropbacks), flight p25/50/75 and release speed p50: 0-5 air 0.6/0.7/0.9 s,
++20.7 yd/s; 5-10 0.6/0.8/1.0, 22.4; 10-15 0.8/1.0/1.3, 22.7; 15-20 1.1/1.3/1.5, 23.2; 20-30 1.4/1.8/2.1, 21.8; 30+
++2.3/2.5/2.7, 21.0. Release speed is constant; depth is bought with loft (implied launch 11 to 35 deg).
++On: the natural flight is the fit to those medians, T = 0.0731 + 0.03945 d + 0.00022 d^2; arm scaling as before; touch
++stays his priced choice; the receivers' expectation reads the same function.
++Games (8, seed 11), off / on: flight 0.85 / 0.76 s (0-5), 0.91 / 0.77 (5-10), 1.22 / 1.04 (10-15); speed 19.2 / 22.1,
++19.2 / 22.2, 20.1 / 22.1; catches 439 of 649 / 463 of 678; breakups 79 / 62; ints 11 / 8; drops 29 / 39.
++Staged 1536: sacks 3.5 / 3.4%, completions 944 / 946, ints 14 / 10, yd 6.80 / 7.52, time to throw 2.95 / 3.00 s.
++The catch model's only speed term is +0.08 difficulty above 24 yd/s (catching.ts): **unsourced**; untouched. It is
++active: 26.7% of throws under QB_DRIVE have a mean flight speed over 24 yd/s (18.8% off).
++Drops 4.5 -> 5.8% (29 -> 39 of 649 / 678 throws): the catch difficulty is the ball's placement at the catch (stretch,
++high, low), the 24 yd/s term, a tracking penalty only on flights over 1.4 s, and the shoulder-tracking term, which
++falls with a shorter flight. So the faster ball raises it through two terms: the 24 yd/s term on more throws, and the
++placement at the catch (the receiver has less flight time to close an off-target ball before it reaches him). The
++closing-speed term does not act on drops. NFL check: none in this data (BDB 2025 has no drop flag; player_play has
++wasTargettedReceiver and no drop); a drop rate by ball speed needs charting data.
++
++## B. QB_RHYTHM_THROW
++
++What forces the stop: every windup commanded a stride ramping up from zero (his drop braked out at the motion's start),
++the drop itself decelerates onto the set point (his speed as the drop phase ends p50 1.44 yd/s), and the existing
++rhythm start (a throw started in the drop's last step) fires only when read 1 is ready now: 8 of 99 throws started in
++the drop on quick and short concepts. Built: a throw started in the drop carries the drop's velocity into the plant,
++decaying to the stride by the delivery, charged by the platform terms. Effect: none measurable (no-set throws 4% -> 3%,
++staged identical), because the start it acts on is rare. What would move it, not built (a second mechanism, for a
++ruling): the rhythm start gated on read 1 being ready by the release (t + windup >= ready, the anticipation the throw
++already prices), and the drop's last step not braked to the set point on a rhythm concept.
++
++Guard, scan, provenance and dither pass.
+diff --git a/scripts/diag/eyes/drop-timing.ts b/scripts/diag/eyes/drop-timing.ts
+new file mode 100644
+index 000000000..8f8d948ca
+--- /dev/null
++++ b/scripts/diag/eyes/drop-timing.ts
+@@ -0,0 +1,39 @@
++// node --import tsx scripts/diag/eyes/drop-timing.ts [seed] [games] > rows.jsonl
++// Integration (2026-11-17), Defense's positions operator applied to our games: per QB pass play (a throw from the pass
++// behavior), the snap to his set (the first time he is 1 yd or more from his snap spot and slower than 1.2 yd/s), his
++// drop depth at the set (yd behind the snap spot), the set to the release, the release to the catch (or the ball's
++// arrival), the throw's air yards (the catch point past the line) and the ball's speed (distance over flight). The call's
++// drop type and alignment. Same definitions as scripts/diag/eyes/drop_timing_nfl.py. Passive.
++import { Rng } from '../../../src/core/rng.js';
++import { simulateGame } from '../../../src/game/game.js';
++import { generateTeam } from '../../../src/league/team.js';
++import { PlaySim } from '../../../src/sim/playsim.js';
++const orig = PlaySim.prototype.run;
++PlaySim.prototype.run = function (this: PlaySim) {
++  const sim: any = this; if (!sim.isPass) return orig.apply(this);
++  const dir = sim.attackDir(sim.qb.team), snap = { x: sim.qb.pos.x, y: sim.qb.pos.y };
++  let setT = null as number | null, setDepth = null as number | null, rel: any = null, arrive = null as number | null;
++  const tb = sim.throwBall.bind(sim);
++  sim.throwBall = (p: any, target: any, v0: any, intended: any, arrivalT: number, away = false, ...rest: any[]) => {
++    if (p === sim.qb && !rel && !away && intended) rel = { planT: arrivalT - sim.t, natT: (p.behavior as any)?.naturalFlight?.(Math.hypot(intended.x - p.pos.x, intended.y - p.pos.y)) ?? null, t: sim.t, from: { x: p.pos.x, y: p.pos.y }, to: { x: intended.x, y: intended.y }, air: (intended.x - sim.los) * dir };
++    return tb(p, target, v0, intended, arrivalT, away, ...rest);
++  };
++  const tick = sim.tick.bind(sim);
++  sim.tick = () => {
++    tick();
++    const q = sim.qb, d = Math.hypot(q.pos.x - snap.x, q.pos.y - snap.y), v = Math.hypot(q.vel.x, q.vel.y);
++    if (setT === null && !rel && sim.carrier === q && d >= 1 && v < 1.2) { setT = sim.t; setDepth = (snap.x - q.pos.x) * dir; }
++    if (rel && arrive === null && sim.ball.kind !== 'air') arrive = sim.t;
++  };
++  const res: any = orig.apply(this);
++  if (rel) {
++    const call = sim.offCall, flight = arrive !== null ? arrive - rel.t : null, dist = Math.hypot(rel.to.x - rel.from.x, rel.to.y - rel.from.y);
++    console.log(JSON.stringify({ drop: call.pass?.drop ?? null, family: call.pass?.family ?? null, gun: call.formation.qb !== 'under', setT, setDepth: setDepth === null ? null : +setDepth.toFixed(2),
++      rel: +rel.t.toFixed(2), planT: +rel.planT.toFixed(2), natT: rel.natT === null ? null : +rel.natT.toFixed(2), flight: flight === null ? null : +flight.toFixed(2), air: +rel.air.toFixed(1), dist: +dist.toFixed(1), speed: flight ? +(dist / flight).toFixed(1) : null, cmp: !!res.stats?.completed,
++      fate: (() => { const ev = sim.events.map((e: any) => e.type); return ev.includes('interception') ? 'int' : res.stats?.completed ? 'catch' : ev.includes('pbu') || ev.includes('deflection') ? 'pbu' : ev.includes('drop') ? 'drop' : 'miss'; })() }));
++  }
++  return res;
++};
++const seed = Number(process.argv[2] ?? 11);
++const rng = new Rng(seed); const home = generateTeam(rng, 'Home', 'HOM'), away = generateTeam(rng, 'Away', 'AWY');
++for (let g = 0; g < Number(process.argv[3] ?? 4); g++) simulateGame(home, away, { seed: seed + g });
+diff --git a/src/sim/behaviors/qb.ts b/src/sim/behaviors/qb.ts
+index dfaa6fca0..a3a4d8c59 100644
+--- a/src/sim/behaviors/qb.ts
++++ b/src/sim/behaviors/qb.ts
+@@ -93,9 +93,30 @@ const PA_DROP = process.env.PA_DROP !== '0';
+ const SCREEN_QB = process.env.SCREEN_QB === '1';
+ /** The quarterback's natural flight time to a point d yd away for his arm (the measured fit below, scaled by his arm);
+  * shared with his receivers' expectation of his ball (BALL_EST). */
++/** QB_DRIVE (experimental, off; QB_DRIVE=1; Integration 2026-11-17): his natural ball is the NFL's measured drive throw.
++ * BDB 2025 weeks 1-3, traditional dropbacks, pass_forward to pass_arrived (scripts/diag/eyes/drop_timing_nfl.py): the
++ * median flight by air-yard band against the median release-to-catch distance, 0.70 s at 14.4 yd, 0.80 at 16.4, 1.00 at
++ * 21.9, 1.30 at 27.9, 1.80 at 35.1, 2.50 at 48.7 (release speed 21-23 yd/s at every depth; deeper balls trade it into
++ * loft, implied launch 11 deg short to 35 deg at 30+ air yards). Fitted to those flight times, never to completions.
++ * Off, 0.38 + 0.022 d + 0.00065 d^2 (0.83 s at 14.4 yd, 15-20% slower short: our ball 15-17 yd/s against 20-22). His arm
++ * scales it as before; touch over a defender (the slower option) stays his choice and is priced by its longer flight. */
++const QB_DRIVE = process.env.QB_DRIVE === '1';
++/** QB_RHYTHM_THROW (experimental, off; QB_RHYTHM_THROW=1; Integration 2026-11-17): the rhythm throw released on the
++ * last step of the drop. 31% of NFL traditional dropbacks never slow below 1.2 yd/s before the release (BDB 2025, the
++ * positions operator, scripts/diag/eyes/drop_timing_nfl.py); ours 3%: every windup commanded a stride ramping up from
++ * zero, so his drop's momentum was braked out at the motion's start whether he threw from his set or on the drop's last
++ * step. With it, a throw started in the drop (the existing rhythm start: on his last step, read 1 ready and worth it)
++ * carries the drop's velocity into the plant, decaying to the stride by the delivery (the plant step takes it out), and
++ * the release is charged for what is left by the platform terms (THROW_PLATFORM's translation, QB_ALIGN's rotation), not
++ * by a rule. */
++const QB_RHYTHM_THROW = process.env.QB_RHYTHM_THROW === '1';
++/** The route ball's natural flight before his arm's scaling (QB_DRIVE: the measured drive throw). */
++function routeFlight(d: number): number {
++  return QB_DRIVE ? 0.0731 + 0.03945 * d + 0.00022 * d * d : 0.38 + 0.022 * d + 0.00065 * d * d;
++}
+ export function naturalFlightFor(armSpeed: number, d: number): number {
+   const armEdge = clamp((armSpeed - 26) / 8, -0.5, 0.5);
+-  const base = SCREEN_QB ? 0.27 + 0.0173 * d + 0.00062 * d * d : 0.38 + 0.022 * d + 0.00065 * d * d;
++  const base = SCREEN_QB ? 0.27 + 0.0173 * d + 0.00062 * d * d : routeFlight(d);
+   return base * (1 - 0.12 * armEdge);
+ }
+ 
+@@ -794,6 +815,8 @@ export class QBPass implements Behavior {
+   private readonly clock: number;
+   private readonly armSpeed: number;
+   private fakeUntil = 0;
++  /** QB_RHYTHM_THROW: the drop's velocity a throw started on the drop's last step carries into the plant. */
++  private rhythmVel: Vec2 | null = null;
+   /** Diagnostics: when his play-action fake ended (null until then, or no fake). */
+   fakeEndAt: number | null = null;
+   private readonly mind: QBMind;
+@@ -1342,7 +1365,11 @@ export class QBPass implements Behavior {
+       }
+       if (this.pending) {
+         const loadTime = this.releaseAt - this.delivery(a) - this.motionAt;
+-        const s = STRIDE_SPEED * (1 - this.flick) * clamp((t - this.motionAt) / Math.max(loadTime, sim.dt), 0, 1);
++        const k = clamp((t - this.motionAt) / Math.max(loadTime, sim.dt), 0, 1);
++        const s = STRIDE_SPEED * (1 - this.flick) * k;
++        // QB_RHYTHM_THROW: the drop's velocity decays into the stride over the load (the plant step absorbs it).
++        const rv = this.rhythmVel;
++        if (rv) return { vel: { x: rv.x * (1 - k) + Math.cos(facing) * s, y: rv.y * (1 - k) + Math.sin(facing) * s }, facing };
+         return { vel: { x: Math.cos(facing) * s, y: Math.sin(facing) * s }, facing };
+       }
+       return { vel: { x: a.vel.x * 0.5, y: a.vel.y * 0.5 }, facing };
+@@ -2351,7 +2378,7 @@ export class QBPass implements Behavior {
+     // 2.5 s at 45), never faster than his arm allows. Stronger arms get there
+     // a little sooner.
+     const armEdge = clamp((this.armSpeed - 26) / 8, -0.5, 0.5);
+-    const natural = (d: number) => (0.38 + 0.022 * d + 0.00065 * d * d) * (1 - 0.12 * armEdge);
++    const natural = (d: number) => routeFlight(d) * (1 - 0.12 * armEdge);
+     let range = Math.hypot(current.x - a.pos.x, current.y - a.pos.y);
+     let T = Math.max(0.3, natural(range));
+     let Tmin = T;
+@@ -2660,6 +2687,8 @@ export class QBPass implements Behavior {
+   }
+ 
+   private startThrow(a: Agent, sim: PlaySim, ev: ThrowEval): MoveCommand {
++    // QB_RHYTHM_THROW: a throw started on the drop's last step carries the drop's velocity into the plant.
++    this.rhythmVel = QB_RHYTHM_THROW && this.phase === 'drop' ? { x: a.vel.x, y: a.vel.y } : null;
+     // Test staging: his own throws are held until the staged one (he keeps his drop and set).
+     if (sim.stagedThrow && !this.staging) return { vel: { x: a.vel.x * 0.5, y: a.vel.y * 0.5 }, facing: a.body.facing };
+     this.phase = 'windup';

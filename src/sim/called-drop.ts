@@ -1,3 +1,4 @@
+import { calledDrop } from './qbv2/call.js';
 import type { DropType } from '../playbook/types.js';
 import type { PlaySim } from './playsim.js';
 import { GUN_SNAP, snapSecured } from './ball-transfer.js';
@@ -16,22 +17,25 @@ const PA_DROP = process.env.PA_DROP !== '0';
 const CONCEPT_DROPS = process.env.CONCEPT_DROPS !== '0';
 const FIVE_GUN = (los: number) => ({ x: los - 8.8, time: 1.8 });
 const FIVE_UNDER = (los: number) => ({ x: los - 8.9, time: 2.0 });
-/** QB_QUICK_DRIFT (QB lane, off; bits: 1 = the drift's shape, 2 = V2 reads from the secure, the set is the throwing step,
+/** QB_QUICK_DRIFT (QB lane; 3 since engine-108, QB_QUICK_DRIFT=0 restores; bits: 1 = the drift's shape, 2 = V2 reads from the secure, the set is the throwing step,
  * read in qb.ts): the gun quick game is a short slow drift, not a two-yard step. Measured, not taught (Rules' qb_plant.py on
  * rules/route-chart d20d02418, 2022 BDB non-PA quick/flat throws released under 2.0 s, gun, n 437): he retreats 1.57 yd
  * (p25-75 1.14-2.03) from his snap depth at a peak of 1.65 yd/s and sets 1.60 s after the snap (1.50-1.70), the set being
  * the throwing step 0.2 s before the release; ours retreated 2.5 yd at 3.15 yd/s. 1.6 yd over 1.1 s from the secure
  * (0.49 s): the measured set less the secure. Under center unchanged. */
-export const QB_QUICK_DRIFT = Number(process.env.QB_QUICK_DRIFT ?? 0) | 0;
+export const QB_QUICK_DRIFT = Number(process.env.QB_QUICK_DRIFT ?? 3) | 0;
 const QUICK_DRIFT_YD = 1.6, QUICK_DRIFT_S = 1.1;
 
 /** Where and when the called drop puts the QB (los-relative x, seconds). */
-export function dropSpec(drop: DropType, qbStartX: number, los: number, gun: boolean): { x: number; time: number } {
+/** `screen`: a screen is thrown off the catch, not from a dropback, so QB_QUICK_DRIFT's shape (measured on quick and
+ * flat throws from a dropback) does not apply to it; its quick drop stays the two-yard step (with the drift on, the now
+ * and bunch screens left 0.3 s later and the tunnel's yards fell 10.3 -> 3.1 on the screen-lab panel). */
+export function dropSpec(drop: DropType, qbStartX: number, los: number, gun: boolean, screen = false): { x: number; time: number } {
   switch (drop) {
     // Depths at the throw match tracking (median 7.9 yd behind the line).
     case 'quick':
       // From the line (the gun snap spot 4.6 yd behind it), not qbStartX: the linemen ask with his live spot.
-      if (gun && (QB_QUICK_DRIFT & 1)) return { x: los - 4.6 - QUICK_DRIFT_YD, time: QUICK_DRIFT_S };
+      if (gun && !screen && (QB_QUICK_DRIFT & 1)) return { x: los - 4.6 - QUICK_DRIFT_YD, time: QUICK_DRIFT_S };
       return gun ? { x: los - 6.6, time: 0.75 } : { x: los - 5.0, time: 1.05 };
     case 'gun3':
       return gun ? { x: los - 7.3, time: 1.0 } : { x: los - 6.2, time: 1.3 };
@@ -61,7 +65,8 @@ export function dropSpec(drop: DropType, qbStartX: number, los: number, gun: boo
 export function calledLaunchX(sim: PlaySim): number | null {
   const concept = sim.offCall.pass;
   if (!concept) return null;
-  return dropSpec(concept.drop, sim.snapX[sim.qb.idx] ?? sim.los, sim.los, sim.offCall.formation.qb !== 'under').x;
+  // The drop the call runs (calledDrop: V2's plan drop on a call V2 takes), the one his feet take.
+  return dropSpec(calledDrop(concept), sim.snapX[sim.qb.idx] ?? sim.los, sim.los, sim.offCall.formation.qb !== 'under', concept.family === 'screen').x;
 }
 
 /** When the quarterback has the ball and starts his drop (s after the snap), from the call: from the gun, when the
@@ -76,8 +81,8 @@ export function plannedSnapAt(gun: boolean, qbSnap: { x: number; y: number }, ba
  * drop is timed to arrive at the set point at snap + the drop's time (QB_FOOTWORK bit 2 paces it evenly, the distance
  * left over the time left; without it he may get there sooner), and his hitches re-set his base at that depth (bit 1)
  * without moving it. Monotone in t. Play action's fake (a mesh, then the drop) is not modelled within the window. */
-export function plannedDropX(drop: DropType, gun: boolean, qbSnap: { x: number; y: number }, ballSpot: { x: number; y: number }, t: number): number {
-  const los = ballSpot.x, spec = dropSpec(drop, qbSnap.x, los, gun), t0 = plannedSnapAt(gun, qbSnap, ballSpot);
+export function plannedDropX(drop: DropType, gun: boolean, qbSnap: { x: number; y: number }, ballSpot: { x: number; y: number }, t: number, screen = false): number {
+  const los = ballSpot.x, spec = dropSpec(drop, qbSnap.x, los, gun, screen), t0 = plannedSnapAt(gun, qbSnap, ballSpot);
   const f = Math.min(1, Math.max(0, (t - t0) / Math.max(spec.time, 0.1)));
   return qbSnap.x + (spec.x - qbSnap.x) * f;
 }

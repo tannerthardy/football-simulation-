@@ -1,0 +1,1 @@
+WIP (stopped on usage, 2026-11-25): QB_V2 on + QB_QUICK_DRIFT=3 defaults, reference stack engine-107, FLAGS rows, on b05385076. Not done: REFERENCE_STACK section, full red-diff (was running, stopped), sorting new reds, scramble question (0 of 608), cell 1 re-run on engine-106. Baseline left as is (lists promoted flags as "0").

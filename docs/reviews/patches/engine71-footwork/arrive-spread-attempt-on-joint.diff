@@ -1,0 +1,58 @@
+diff --git a/src/sim/behaviors/qb.ts b/src/sim/behaviors/qb.ts
+index 355667241..1794ef38e 100644
+--- a/src/sim/behaviors/qb.ts
++++ b/src/sim/behaviors/qb.ts
+@@ -832,6 +832,17 @@ const QB_CLOSE_BELIEF = process.env.QB_CLOSE_BELIEF === '1';
+  * Everyone else is priced as before. Six-seed card (fe150600, off vs on): completion -0.6 pt, Y/A +0.34, INT +0.15 pt,
+  * YAC +0.03, 20+ plays +0.7 pt. */
+ const QB_ROLE_PATH = process.env.QB_ROLE_PATH !== '0';
++/** QB_ARRIVE_SPREAD (on in the joint catch landing; QB_ARRIVE_SPREAD=0 restores; QB lane, 2026-11-18): his uncertainty about
++ * when a defender gets to the ball, calibrated on what our defenders do (scripts/diag/eyes/arrive-cal.ts: every defender at
++ * every throw decision in 8 league games, his believed margin m against whether the defender was within reach of the ball
++ * at its arrival). Believed 0.2-0.5 s late: he priced a contest at 0.078, they arrived 0.248; 0.5-1 s: 0.007 against
++ * 0.076; over 1 s: 0 against 0.008 (35 of 4,333), and 15 of the 28 picks were by defenders he believed more than a second
++ * late. A logistic through those rates has its centre at m 0.03 s (he used 0.05: the margin is about unbiased) and its
++ * scale 0.29 s (he used 0.13: he was twice too sure). Also the roof carrier's ball-under-him no longer zeroes a defender
++ * who can arrive. Off: scale 0.13 and the zero. */
++const QB_ARRIVE_SPREAD = process.env.QB_ARRIVE_SPREAD !== '0';
++/** QB_ARRIVE_SPREAD: the logistic scale of his arrival margin (s), fitted by arrive-cal.ts (see above). */
++const ARRIVE_SPREAD = 0.29;
+ /** QB_CLOSE_BELIEF: his time (s) to play `pt` within `radius`: his seen velocity kept for `start` s, then the body's run at it. */
+ function bodyArrive(seen: { pos: { x: number; y: number }; vel: { x: number; y: number }; facing: number }, profile: any, speedScale: number,
+   pt: { x: number; y: number }, radius: number, start: number): number {
+@@ -1188,6 +1199,8 @@ export class QBPass implements Behavior {
+   private mofKey = false;
+   /** QB_DEEP_WAIT: the defenders he saw in a deep seat before the snap (he believes they wait for the ball). */
+   private deepWait = new Set<Agent>();
++  /** Diagnostics (no effect): marginProbe records every defender at the aimed point, not only those the window counts. */
++  marginProbeAll = false;
+   /** QB_MOF_READ / QB_DEEP_WAIT: his pre-snap picture of the shell and the seats, taken once at his first tick. */
+   private readShell(a: Agent, sim: PlaySim): void {
+     this.mofBuilt = true;
+@@ -2996,11 +3009,14 @@ export class QBPass implements Behavior {
+         const tt = carryTt !== null ? carryTt : deepZone ? bodyArrive(seen, dp, speedScale ?? 1, pt, dp.reach + 0.3, dzStart) : QB_ROLE_PATH && deepBail && !tied ? Math.max(total, bodyArrive(seen, dp, speedScale ?? 1, pt, dp.reach + 0.3, total)) : closeState && !tied ? cbArrive(pt, dp.reach + 0.3) : blind + (QB_WINDOW_ARRIVE && !tied ? arriveTime(mover, pt, dp.reach + 0.3, react) : timeToReach(mover, pt, dp.reach + 0.3) + react);
+         // BLITZ_READ: a defender he believes is rushing is going elsewhere, not to this point.
+         const m = tt - total + estimateError + (BLITZ_READ ? 3 * this.rushOf(d) : 0);
+-        const sCatch = PICTURE_AGE ? Math.hypot(0.13, spreadD, spreadR / Math.max(dp.vmax, 1e-3)) : 0.13;
++        const sCatch = PICTURE_AGE ? Math.hypot(QB_ARRIVE_SPREAD ? ARRIVE_SPREAD : 0.13, spreadD, spreadR / Math.max(dp.vmax, 1e-3)) : QB_ARRIVE_SPREAD ? ARRIVE_SPREAD : 0.13;
+         const sPath = PICTURE_AGE ? Math.hypot(0.1, spreadD) : 0.1;
+-        const contest = under ? 0 : 1 - logistic((m - 0.05) / sCatch);
++        // QB_ARRIVE_SPREAD: the roof carrier's ball-under-him rule no longer zeroes a man who can get there (6 of 28 picks in
++        // 8 games were by defenders it had priced out, three of them believed to arrive first).
++        const zeroUnder = under && !QB_ARRIVE_SPREAD;
++        const contest = zeroUnder ? 0 : 1 - logistic((m - 0.05) / sCatch);
+         // A defender who gets there well before the ball is sitting on the route.
+-        const first = under ? 0 : 1 - logistic((m + 0.3) / sCatch);
++        const first = zeroUnder ? 0 : 1 - logistic((m + 0.3) / sCatch);
+         pOpen *= 1 - contest * (0.55 + 0.3 * dBall);
+         // DEF_BELIEF: arriving after the ball but inside the securing window, he can still get it out.
+         if (DEF_BELIEF) {
+@@ -3032,7 +3048,7 @@ export class QBPass implements Behavior {
+           : Math.max(0, contest - first) * 0.08 * dBall;
+         intRisk += iPath + iJump + iContest;
+         intPath += iPath; intJump += iJump; intContest += iContest;
+-        if (marginTrace && pt === point && (contest > 0.05 || iPath + iJump + iContest > 0.001)) marginTrace.push({ slot: d.slot, m: +m.toFixed(3), first: +first.toFixed(3),
++        if (marginTrace && pt === point && (this.marginProbeAll || contest > 0.05 || iPath + iJump + iContest > 0.001)) marginTrace.push({ slot: d.slot, m: +m.toFixed(3), first: +first.toFixed(3),
+           contest: +contest.toFixed(3), roof, deepBail, under, deepZone, carry: carryTt !== null, dDepth: +((seen.pos.x - sim.los) * sim.attackDir(a.team)).toFixed(1), tDepth: +((target.x - sim.los) * sim.attackDir(a.team)).toFixed(1), dTgt: +Math.hypot(seen.pos.x - target.x, seen.pos.y - target.y).toFixed(1), blind: +blind.toFixed(3), react: +react.toFixed(3), wind: +wind.toFixed(3), total: +total.toFixed(3), touch: +touch.toFixed(4),
+           iPath: +iPath.toFixed(4), iJump: +iJump.toFixed(4), iContest: +iContest.toFixed(4), facingQB, ballSkills: +dBall.toFixed(2) });
+         if (INT_BELIEF) {

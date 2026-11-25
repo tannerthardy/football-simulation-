@@ -1,0 +1,206 @@
+diff --git a/src/sim/behaviors/qb.ts b/src/sim/behaviors/qb.ts
+index 5f43d19ea..178bd4904 100644
+--- a/src/sim/behaviors/qb.ts
++++ b/src/sim/behaviors/qb.ts
+@@ -2238,7 +2238,7 @@ export class QBPass implements Behavior {
+       a, sim, snapAt: this.snapAt, releaseZ: RELEASE_Z,
+       ratings: { playRecognition: a.r('playRecognition'), decisionMaking: a.r('decisionMaking'), composure: a.r('composure'), discipline: a.r('discipline'), experience: a.player.experience, anticipation: a.r('anticipation') },
+       estimate: (d) => this.mind.estimate(d), pictureAge: (d) => this.mind.pictureAge(d), pictureSpread: (d) => this.mind.pictureSpread?.(d) ?? 0.5,
+-      unseenFor: (d) => this.mind.unseenFor(d), seenSpread: (d) => this.mind.seenSpread(d), jobWeight: (d) => this.mind.jobWeight(d),
++      unseenFor: (d) => this.mind.unseenFor(d), seenSpread: (d) => this.mind.seenSpread(d), jobWeight: (d) => this.mind.jobWeight(d), seenAccel: (d) => this.mind.seenAccel(d),
+       seenHead: (d) => sim.see(a, d).head ?? null,
+       forecast: (r) => this.receiverForecasts.get(r),
+       clearHalf: () => this.mind.clearHalf,
+@@ -2263,6 +2263,7 @@ export class QBPass implements Behavior {
+       shouldScramble: () => this.shouldScramble(a, sim, false),
+       scramble: () => this.scramble(a, sim),
+       pocketMove: (read) => this.pocketMove(a, sim, read),
++      stepTo: (r) => { if (FW_HIPS) this.shoulderOn = r; },
+       traceRead: (read, target) => qbRead(sim, a, { read, target, stage: 'qb-cycle' }),
+       traceStage: (cmd) => qbStage(sim, 'qb-cycle', a, { vel: cmd.vel, facing: cmd.facing }),
+     };
+diff --git a/src/sim/qbmind.ts b/src/sim/qbmind.ts
+index b92bf0dff..6e6e17317 100644
+--- a/src/sim/qbmind.ts
++++ b/src/sim/qbmind.ts
+@@ -193,6 +193,10 @@ interface Memory {
+   facing: number;
+   t: number;
+   latency?: number;
++  /** QB_V2: an earlier sighting's velocity and time (at least SEEN_ACCEL_GAP before), so his own pictures show a change
++   * of motion (seenAccel). Carried across updates; no truth. */
++  refVel?: Vec2;
++  refT?: number;
+   /** PERIPH_ACUITY: the look's position and velocity uncertainty (yd, yd/s), from its eccentricity. */
+   sigP?: number;
+   sigV?: number;
+@@ -226,6 +230,8 @@ const POST_SIG_SIGMA = [0.6, 0.3, 0.18];
+ /** His estimate of an unseen defender (QBMind.estimate): dead reckoning from the sighting up to this horizon (s), and a
+  * blend toward his belief of the man's job (the expected spot) from EST_BLEND_START over EST_BLEND_SPAN (s). */
+ export const EST_DR_HORIZON = 0.5, EST_BLEND_START = 0.2, EST_BLEND_SPAN = 1.0;
++/** Two of his sightings show a change of motion when they are SEEN_ACCEL_GAP to SEEN_ACCEL_SPAN apart (s). Chosen. */
++export const SEEN_ACCEL_GAP = 0.15, SEEN_ACCEL_SPAN = 0.6;
+ 
+ export class QBMind {
+   /** Coverage recognition 0–1 (play recognition + experience). */
+@@ -519,11 +525,11 @@ export class QBMind {
+       // Bodies right around him are felt, not seen; pocket presence handles them.
+       if (ang < this.clearHalf * (0.65 + 0.35 * mind.focus) || dist < 3) {
+         const e = PERIPH_ACUITY && dist >= 3 ? this.periphSeen(mind, d.player.id, clear, ang, dist) : null;
+-        this.memory.set(d, { pos: e ? e.pos : clear.pos, vel: e ? e.vel : clear.vel, facing: clear.facing, t: sim.t, latency: clear.age ?? 0, sigP: e?.sigP, sigV: e?.sigV });
++        this.memory.set(d, { pos: e ? e.pos : clear.pos, vel: e ? e.vel : clear.vel, facing: clear.facing, t: sim.t, latency: clear.age ?? 0, sigP: e?.sigP, sigV: e?.sigV, ...this.refOf(d, sim.t) });
+       } else if (ang < this.periphHalf * (0.85 + 0.15 * mind.focus)) {
+         const s = sim.see(qb, d, 1.7);
+         const e = PERIPH_ACUITY ? this.periphSeen(mind, d.player.id, s, ang, dist) : null;
+-        this.memory.set(d, { pos: e ? e.pos : s.pos, vel: e ? e.vel : s.vel, facing: s.facing, t: sim.t - 0.1, latency: s.age ?? 0, sigP: e?.sigP, sigV: e?.sigV });
++        this.memory.set(d, { pos: e ? e.pos : s.pos, vel: e ? e.vel : s.vel, facing: s.facing, t: sim.t - 0.1, latency: s.age ?? 0, sigP: e?.sigP, sigV: e?.sigV, ...this.refOf(d, sim.t - 0.1) });
+       }
+     }
+     // Existing recognition milestones summarize this acquired look and its
+@@ -597,6 +603,26 @@ export class QBMind {
+     return m ? Math.max(0, this.sim.t - m.t) : 0;
+   }
+ 
++  /** The reference sighting a new picture keeps: the previous one once it is SEEN_ACCEL_GAP old, else the one held. */
++  private refOf(d: Agent, t: number): { refVel?: Vec2; refT?: number } {
++    const m = this.memory.get(d);
++    if (!m || m.t <= 0) return {};
++    if (m.refT === undefined || t - m.refT > SEEN_ACCEL_SPAN) return { refVel: { ...m.vel }, refT: m.t };
++    return t - m.t >= SEEN_ACCEL_GAP && t - m.refT > 2 * SEEN_ACCEL_GAP ? { refVel: { ...m.vel }, refT: m.t } : { refVel: m.refVel, refT: m.refT };
++  }
++
++  /** QB_V2 (QB lane, 2026-11-25): the change of a defender's motion his own pictures show (yd/s^2): his latest seen
++   * velocity against an earlier sighting's, over the time between them; zero without two sightings in the span. Measured
++   * case: men running at the catch point were seen about 1 yd/s slower than they ran (accelerating over a 0.5 s-old
++   * picture), believed 0.05 to arrive and arriving 0.38 (n 26). */
++  seenAccel(d: Agent): Vec2 {
++    const m = this.memory.get(d);
++    if (!m || m.refVel === undefined || m.refT === undefined) return { x: 0, y: 0 };
++    const dt = m.t - m.refT;
++    if (dt < SEEN_ACCEL_GAP || dt > SEEN_ACCEL_SPAN) return { x: 0, y: 0 };
++    return { x: (m.vel.x - m.refVel.x) / dt, y: (m.vel.y - m.refVel.y) / dt };
++  }
++
+   /** QB_V2 (card spec §1, Integration's ruling 2026-11-25): how far his estimate of a defender has moved from the
+    * sighting to his belief of the man's job (the expected spot): the estimate's own blend weight, 0-1. 0 with no memory. */
+   jobWeight(d: Agent): number {
+diff --git a/src/sim/qbv2/drive.ts b/src/sim/qbv2/drive.ts
+index 68434f1f2..1eefc3cb7 100644
+--- a/src/sim/qbv2/drive.ts
++++ b/src/sim/qbv2/drive.ts
+@@ -34,6 +34,7 @@ export interface V2Host {
+   unseenFor(d: Agent): number;
+   seenSpread(d: Agent): number;
+   jobWeight(d: Agent): number;
++  seenAccel(d: Agent): V;
+   /** His receiver's predicted position `ahead` s from now (his forecast), and the forecast's break (absolute time). */
+   predict(r: Agent, ahead: number): V | null;
+   breakAt(r: Agent): number | null;
+@@ -98,6 +99,8 @@ export function catchFrom(spread: number | undefined): number {
+ const CUE_ENTER = 1.5, CUE_EXIT = 0.8;
+ /** A sitting key's read changes only when the other landmark is nearer him by this much (yd; chosen). */
+ const SIT_SWITCH = 0.5;
++/** The span over which his seen change of motion is carried forward (s): the estimate's dead-reckoning horizon. */
++const EST_DR = 0.5;
+ 
+ export class V2Drive {
+   cycle: Cycle;
+@@ -275,8 +278,14 @@ export class V2Drive {
+       // His picture shows the man as he was a sensing delay ago (QBMind's estimate does not project it; QB lane 2026-11-25,
+       // a press corner on the slant believed 1.6 yd behind and at half his speed while watched): carried forward over the
+       // delay at his seen velocity, and the delay counts as time the man may have changed it (the judge's advance).
+-      const delay = Math.max(0, h.pictureAge(d) - h.unseenFor(d)), pos = { x: e.pos.x + e.vel.x * delay, y: e.pos.y + e.vel.y * delay };
+-      return { id: d.idx, pos, vel: e.vel, facing: e.facing, spread: h.seenSpread(d), age: delay + h.unseenFor(d), job: h.jobWeight(d), spreadDR: h.pictureSpread(d), facesPasser: faces,
++      // And his change of motion as his own pictures show it, carried over the delay too (a man accelerating at the point
++      // was seen 1 yd/s slow, QB lane 2026-11-25), bounded by his believed body: acceleration and top speed.
++      const delay = Math.max(0, h.pictureAge(d) - h.unseenFor(d)), bd = h.body(d), aMax = bd.vmax / Math.max(bd.tau, 1e-3);
++      const ac0 = h.seenAccel(d), acL = Math.hypot(ac0.x, ac0.y), ac = acL > aMax ? { x: ac0.x * aMax / acL, y: ac0.y * aMax / acL } : ac0;
++      const dt = Math.min(delay, EST_DR), v1 = { x: e.vel.x + ac.x * dt, y: e.vel.y + ac.y * dt }, s1 = Math.hypot(v1.x, v1.y);
++      const vel = s1 > bd.vmax ? { x: v1.x * bd.vmax / s1, y: v1.y * bd.vmax / s1 } : v1;
++      const pos = { x: e.pos.x + (e.vel.x + vel.x) / 2 * dt + e.vel.x * (delay - dt), y: e.pos.y + (e.vel.y + vel.y) / 2 * dt + e.vel.y * (delay - dt) };
++      return { id: d.idx, pos, vel, facing: e.facing, spread: h.seenSpread(d), age: delay + h.unseenFor(d), job: h.jobWeight(d), spreadDR: h.pictureSpread(d), facesPasser: faces,
+         vmax: b.vmax, accel: b.vmax / Math.max(b.tau, 1e-3), reach: b.reach, leap: b.reactReach + 0.5 * (b.maxCatchHeight - b.reactReach), ballSkills: h.ballSkills(d) };
+     });
+     const j = judge(q, defs);
+diff --git a/src/sim/qbv2/host.ts b/src/sim/qbv2/host.ts
+index 6ad3fbccd..315302329 100644
+--- a/src/sim/qbv2/host.ts
++++ b/src/sim/qbv2/host.ts
+@@ -32,6 +32,8 @@ export interface PasserView {
+   seenSpread(d: Agent): number;
+   /** How far his estimate of a defender has moved to his belief of the man's job (0-1; card spec §1). */
+   jobWeight(d: Agent): number;
++  /** The change of his motion his own pictures show (yd/s^2), zero without two sightings. */
++  seenAccel(d: Agent): Vec2;
+   seenHead(d: Agent): number | null;
+   /** His forecast of a receiver (the install he knows, updated from what he sees). */
+   forecast(r: Agent): ReceiverForecast | undefined;
+@@ -63,6 +65,9 @@ export interface PasserView {
+   pocketMove(read: Agent | undefined): MoveCommand;
+   /** His eyes on the receiver he throws to (the play's shared record of where the passer is looking). */
+   setEyes(r: Agent): void;
++  /** The reset step: his feet and hips turn to the new read's receiver as his eyes go (the coached one-hitch reset), his
++   * own footwork; the body turns at its own rate. */
++  stepTo(r: Agent): void;
+   /** Tracing hooks (the harness's qb-trace). */
+   traceRead(read: number, target: string | null): void;
+   traceStage(cmd: MoveCommand): void;
+@@ -89,7 +94,7 @@ export function makeHost(v: PasserView, felt: number, pocket: PocketTest, planDr
+   return {
+     a, sim, releaseZ: v.releaseZ, snapAt: v.snapAt,
+     estimate: (d) => v.estimate(d), seenHead: (d) => v.seenHead(d), pictureAge: (d) => v.pictureAge(d), pictureSpread: (d) => v.pictureSpread(d),
+-    unseenFor: (d) => v.unseenFor(d), seenSpread: (d) => v.seenSpread(d), jobWeight: (d) => v.jobWeight(d),
++    unseenFor: (d) => v.unseenFor(d), seenSpread: (d) => v.seenSpread(d), jobWeight: (d) => v.jobWeight(d), seenAccel: (d) => v.seenAccel(d),
+     predict: (rc, ahead) => v.forecast(rc)?.predict(sim.t, ahead) ?? null,
+     breakAt: (rc) => v.forecast(rc)?.breakAt() ?? null,
+     timingAt: (rc) => { const f = v.forecast(rc); return f ? f.turnAt() ?? f.breakAt() : null; },
+@@ -128,6 +133,10 @@ export class V2Wiring {
+       this.read = v2.cycle.readIdx;
+       const rd = v2.plan.reads[this.read];
+       v.traceRead(this.read, rd ? (rd.look.kind === 'receiver' ? rd.look.ref : `${rd.look.side ?? 'S'}:${rd.look.role}`) : null);
++      // The reset comes with a hitch: feet and hips with the eyes, not square until the look resolves (Integration's
++      // ruling, 2026-11-25; measured: the body held square 0.5 s, then turned about 85 deg inside the windup).
++      const nr = rd ? (rd.look.kind === 'receiver' ? rd.look.ref : rd.throws[0]?.ref) : null, na = nr ? v2.target(h, nr) : null;
++      if (this.read > 0 && na) v.stepTo(na);
+     }
+     const rd = v2.plan.reads[v2.cycle.readIdx], ref = rd ? (rd.look.kind === 'receiver' ? rd.look.ref : rd.throws[0]?.ref) : null;
+     const readAgent = ref ? v2.target(h, ref) ?? undefined : undefined;
+diff --git a/src/sim/qbv2/judge.ts b/src/sim/qbv2/judge.ts
+index 6394fb9ca..d2c68fa22 100644
+--- a/src/sim/qbv2/judge.ts
++++ b/src/sim/qbv2/judge.ts
+@@ -135,6 +135,16 @@ export const LANE_PICK = 0.3;
+ export const LANE_NEAR = 3;
+ 
+ const hyp = (a: V2, b: V2) => Math.hypot(a.x - b.x, a.y - b.y);
++/** A zone defender's break on the ball (QB lane, 2026-11-25; measured on the staged cells: of 70 drivers 39 never closed on
++ * the point in flight, the rest from a median 0.24 s after the release, lane men 0.49 s): a man settled in his zone (slow in
++ * the passer's picture) breaks a reaction after his cue; one already running at the point is on his way. Smooth in his
++ * seen speed toward the point, no step: the full delay settled, none from REACT_ZONE_RUN yd/s. Chosen from that census. */
++export const REACT_ZONE = 0.2, REACT_ZONE_RUN = 2;
++const zoneReact = (d: SeenDefender, p: V2): number => {
++  const L = hyp(d.pos, p); if (L < 1e-3) return 0;
++  const toward = (d.vel.x * (p.x - d.pos.x) + d.vel.y * (p.y - d.pos.y)) / L;
++  return REACT_ZONE * (1 - Math.min(1, Math.max(0, toward / REACT_ZONE_RUN)));
++};
+ /** How fast an unseen man's velocity typically changes (yd/s^2): not his top acceleration, which assumes he spent the
+  * whole unseen time accelerating at the point (chosen; staged V2: top acceleration made every belief too wide). */
+ export const UNSEEN_DRIFT = 2.5;
+@@ -272,7 +282,7 @@ export function judge(q: ThrowQuestion, defs: SeenDefender[]): Judgment {
+     let best: number | null = null, near: number | null = null;
+     q.path.forEach((p, i) => {
+       if (i === 0 || !origin || hyp(p, origin) < LANE_CLEAR || (q.ballHeightAt(p) ?? Infinity) > d.leap || hyp(d.pos, p) > DRIVE_RANGE) return;
+-      const tPass = q.windup + q.flight * (i / Math.max(n, 1)), tArr = arriveTime(d, p, d.reach, q.windup + (d.facesPasser ? 0 : ARM_LEAD)), m = tPass - tArr;
++      const tPass = q.windup + q.flight * (i / Math.max(n, 1)), tArr = arriveTime(d, p, d.reach, q.windup + (d.facesPasser ? 0 : ARM_LEAD) + zoneReact(d, p)), m = tPass - tArr;
+       if (best === null || m > best) best = m;
+       if (hyp(p, q.catchAt) <= LANE_NEAR && (near === null || m > near)) near = m;
+     });
+@@ -287,7 +297,7 @@ export function judge(q: ThrowQuestion, defs: SeenDefender[]): Judgment {
+   }
+   const driverOf = (d: SeenDefender): RoleJudged | null => {
+     if (hyp(d.pos, q.catchAt) > DRIVE_RANGE) return null;
+-    const start = q.windup + (d.facesPasser ? 0 : ARM_LEAD), tArr = arriveTime(d, q.catchAt, d.reach + PLAY_CLEAR, start);
++    const start = q.windup + (d.facesPasser ? 0 : ARM_LEAD) + zoneReact(d, q.catchAt), tArr = arriveTime(d, q.catchAt, d.reach + PLAY_CLEAR, start);
+     const margin = tBall - tArr, { sigma, pArrive } = arrival(d, recvSig, tArr, margin);
+     return { id: d.id, role: 'driver', margin, sigma, pArrive, pPlay: pArrive * PLAY_BREAKUP, pPick: pArrive * PLAY_BREAKUP * PICK_OF_PLAY * (0.5 + d.ballSkills) };
+   };

@@ -1,0 +1,287 @@
+diff --git a/config/baseline.json b/config/baseline.json
+index 92e01ae59..26f1b159b 100644
+--- a/config/baseline.json
++++ b/config/baseline.json
+@@ -340,6 +340,7 @@
+     "QB_POCKET": "0",
+     "QB_BREAK": "0",
+     "QB_RELOOK": "0",
++    "THROWAWAY_FELT": "0",
+     "READ_WINDOW": "0",
+     "QB_KEY_MAN": "0",
+     "QB_KEY_THROW": "0",
+diff --git a/config/reference-stack.json b/config/reference-stack.json
+index 6388271ce..1638e64b3 100644
+--- a/config/reference-stack.json
++++ b/config/reference-stack.json
+@@ -1,6 +1,6 @@
+ {
+   "schemaVersion": 1,
+-  "id": "engine-94",
++  "id": "engine-95",
+   "runSet": {
+     "commit": "1b5415de99b5b7194eff045f3c37a07a4c54c1a9",
+     "seeds": [
+@@ -306,6 +306,7 @@
+     "QB_POCKET": "off",
+     "QB_BREAK": "off",
+     "QB_RELOOK": "on",
++    "THROWAWAY_FELT": "on",
+     "READ_WINDOW": "off",
+     "QB_KEY_MAN": "on",
+     "QB_KEY_THROW": "off",
+diff --git a/docs/FLAGS.md b/docs/FLAGS.md
+index 9e436f483..e4d0faa97 100644
+--- a/docs/FLAGS.md
++++ b/docs/FLAGS.md
+@@ -2,7 +2,7 @@
+ 
+ Every engine switch read from the environment, recounted from `src` at `57f50fc3` on 2026-10-22. This includes #210's promotion and #205's two additional default-on switches. Flags that are not on develop (parked, removed from a PR, or only on a side branch) are kept in [PARKED.md](PARKED.md) so the ideas are not lost. Registration rules are in [PLAN.md](PLAN.md): at most 10 experimental flags, and each expires two reviews after it lands.
+ 
+-There are 502 flags read from the environment in `src` (recounted 2026-11-24, engine-94: engine-93 plus FLIGHT_BREAK (on) and FLIGHT_LEAD (off, parked); engine-93: engine-92 plus HEAD_FOLLOW (on); engine-92: engine-91 plus PERIPH_ACUITY (on); engine-91: engine-90 plus STEM_WORK (on); engine-90: engine-89 plus READ_VERTICAL_LOS and BACK_CLEAR (on); engine-89: engine-88 plus FLAT_CARRY (on); engine-88: engine-87 plus FORECAST_FINISH and QB_ROLE_PATH (on), READ_WINDOW and QB_CLOSE_BELIEF (off); engine-87: engine-86 plus HALF_KEY (on); engine-86 was engine-85 plus MUSH_MATCH (on); engine-85 was engine-84 plus FLAT_SINK (on); engine-84 was engine-83 plus DOWN_RISE_PLANT (on); engine-83 was engine-82 plus QB_DRIVE, QB_RHYTHM_THROW, QB_ALIGN, QB_BODY_FOLLOW, QB_WINDOW_ARRIVE, QB_KEY_PLANT, QB_STICK, QB_PEEK_CLOCK, QB_MOF_READ, QB_DEEP_WAIT and QB_STANCE; QB_DRIVE, QB_RHYTHM_THROW, QB_WINDOW_ARRIVE, QB_KEY_PLANT and QB_STICK on): 382 are on unless set to `0`, 92 are off unless set to `1`, and 28 are numeric scales or modes (identity value unless listed in the stack's numeric section). The rows below carry each flag's history.
++There are 503 flags read from the environment in `src` (recounted 2026-11-24, engine-95: engine-94 plus THROWAWAY_FELT (on); engine-94: engine-93 plus FLIGHT_BREAK (on) and FLIGHT_LEAD (off, parked); engine-93: engine-92 plus HEAD_FOLLOW (on); engine-92: engine-91 plus PERIPH_ACUITY (on); engine-91: engine-90 plus STEM_WORK (on); engine-90: engine-89 plus READ_VERTICAL_LOS and BACK_CLEAR (on); engine-89: engine-88 plus FLAT_CARRY (on); engine-88: engine-87 plus FORECAST_FINISH and QB_ROLE_PATH (on), READ_WINDOW and QB_CLOSE_BELIEF (off); engine-87: engine-86 plus HALF_KEY (on); engine-86 was engine-85 plus MUSH_MATCH (on); engine-85 was engine-84 plus FLAT_SINK (on); engine-84 was engine-83 plus DOWN_RISE_PLANT (on); engine-83 was engine-82 plus QB_DRIVE, QB_RHYTHM_THROW, QB_ALIGN, QB_BODY_FOLLOW, QB_WINDOW_ARRIVE, QB_KEY_PLANT, QB_STICK, QB_PEEK_CLOCK, QB_MOF_READ, QB_DEEP_WAIT and QB_STANCE; QB_DRIVE, QB_RHYTHM_THROW, QB_WINDOW_ARRIVE, QB_KEY_PLANT and QB_STICK on): 383 are on unless set to `0`, 92 are off unless set to `1`, and 28 are numeric scales or modes (identity value unless listed in the stack's numeric section). The rows below carry each flag's history.
+ 
+ **Promotion (2026-11-09):** the reference stack `run-ref-4` is now the engine's default. The 90 flags it lists `on` are read as on unless set to `0` (rows marked "promoted" below); the rest are unchanged. Decisions and evidence for each flag are in [REFERENCE_STACK.md](REFERENCE_STACK.md); `npm run ref -- --list` is the current inventory, and `npm run ref -- --off -- <command>` runs the engine as it was before. The test suites still run on the pre-promotion engine (pinned in `vitest.config.ts`) until their recorded cases are re-recorded. The counts in the paragraph above predate all of this.
+ 
+@@ -197,6 +197,7 @@ There are 502 flags read from the environment in `src` (recounted 2026-11-24, en
+ | `QB_POCKET` | off | experimental (QB lane, P2: movement in the pocket, 2026-11-13; third and last build; read on engine-59 and held off: the slide has no continuation, so it is resolved in the out-of-pocket work, not carded) | quarterback | `src/sim/behaviors/qb.ts` (`pocketDecide`, from `pocketMove`) | set at first review. His feet follow one decision on the nearest body he feels inside 2.2-3.4 yd (by pocket presence): at the edge, the existing climb; in front or inside, a 1.25 yd slide toward his read's side (else away from the body) at up to 3 yd/s, held until reached, closed or lapsed, one per body until it is 0.5 yd nearer; nobody inside, `QB_GATHER`'s hitch or his set point, with no drift. Replaces pocketMove's climb on any wide defender within 4-5.5 yd and its 3.5 yd repulsion. Decided by `scripts/diag/escape/qb-pocket.py` (direction by where the body is), the lateral on long holds, completion on throws within 0.3 s of a slide and the sack share with a rusher within 2 yd. Attempts 1 and 2 are `docs/reviews/patches/2026-11-13-qb-pocket-attempt{1,2}.patch` |
+ | `QB_BREAK` | off | experimental (QB lane, the out-of-pocket phase, 2026-11-14; work in progress; acts with `QB_POCKET`, wants `THROW_PLATFORM`) | quarterback | `src/sim/behaviors/qb.ts` (`tryBreak`, `outTick`, `pocketDecide`) | Leaving the pocket with the ball up: he breaks to a side when he feels a free rusher (or one he has slid from who keeps coming), under the alarm with no throw, or when his clock runs out, if a spot outside beats the pursuers he feels. Out there he throws on the move at his own bar, tucks and runs, throws it away with a short motion, stops and sets, or keeps moving to a held destination. Shows `carryPosture` 'up' until he tucks. Read on engine-61 (`docs/reviews/2026-11-13-qb-pocket.md`): he leaves on the rush on 2.9-5.5% of dropbacks against the NFL's 9.1%, and what he does once out has the NFL's shape. |
+ | `QB_RELOOK` | on | promoted 2026-11-14 (engine-63; `=0` restores); was experimental (QB lane, information rule, 2026-11-14; staged test `test/qb-relook.test.ts`; read once on engine-61) | quarterback | `src/sim/behaviors/qb.ts` (the read loop's out-of-reads branch) | Running out of reads gives him nothing for free. Off: the best man on the whole field at his bar less 0.1, the moment his progression ends. On: back to his first read and through them again one look at a time, at his own bar; with `QB_BREAK`, leaving with the ball up is the other answer at that moment. |
++| `THROWAWAY_FELT` | on | promoted 2026-11-24 (engine-95; `=0` restores); QB lane with Integration | throwaway decision | `src/sim/behaviors/qb.ts` (`awayDecision`, the timer block, READ_WINDOW out of reads) | He throws the ball away on what he perceives, not on a timer. Off, a fixed per-passer timer from the set (2.5 + composure + 0.6 pocketPresence s) threw it away once it ran out: 24 of 24 timer throwaways from a clean pocket, 19 with a man clearing his bar. On, the timer stays as his urgency (lower bar, the checkdown, the scramble drill); he throws it away with the rush on him (felt pressure: enter 0.6, exit 0.4) or outside the pocket by his own position (enter 4.5 yd, exit 3.5) when no option clears his bar; READ_WINDOW out of reads in a clean pocket keeps working. Same 16 games: completion 65.8 -> 68.0%, throwaways 34 -> 19, INT flat, sacks 92 -> 96 (5 of 29 clean-pocket holds, at 6.3 s). docs/reviews/2026-11-23-step-clock.md, "THROWAWAY_FELT". |
+ | `READ_WINDOW` | off | experimental (QB lane, 2026-11-18; Integration; not yet a finished repair: engine-88 section) | quarterback | `src/sim/behaviors/qb.ts` (the read loop, `bestOption`) | On a quick concept a read his eyes have moved off is dead for the play (kept on the read he ends each tick on): the relook, a reset and a late key flip never reopen it; out of live reads, the plan's checkdown once, then the best live option, else the ball comes out now (the pocket break, a scramble, or thrown away). Off, a passed quick read (the flat) came back at 2.6-3.1 s and was thrown across the field at 3.1-3.5 s, led up the sideline. |
+ | `QB_KEY_MAN` | on | promoted 2026-11-14 (engine-65; `=0` restores); was experimental (QB lane with Rules+Coaching's `PLAN_KEYS`, 2026-11-14; first build; staged test `test/qb-key-man.test.ts`) | quarterback | `src/sim/behaviors/qb.ts` (`keyMan`, `readKey`, `gazePoint`) | His key read is taken on the defender the concept names (picked before the snap by the role's alignment rule: the corner, the apex, the hook player, the deep man), not on whoever is nearest the line between the two routes. His eyes go to that man in the drop; at the cue he reads the man's movement (sinking gives the low man, jumping the low route gives the high man), or where he stands if he is not moving along the stretch. No fresh picture of him, or nobody named: no key read, and the order stands. |
+ | `QB_KEY_THROW` | off | experimental (QB lane, 2026-11-14; the re-diagnosed design after two window-test forms; acts with `QB_KEY_MAN`) | quarterback | `src/sim/behaviors/qb.ts` (the read loop's `keyHold`) | He stays on the key read's answer through its break (up to 1.2 s after the read) instead of moving on at his dwell, and throws it when it passes his price like any read. The key chooses the look; it does not stand in for the price. The earlier forms threw the answer on window tests in place of the price and are removed with `QB_KEY_DANGER` (corner routes targeted on 26-30% of routes against the NFL's 14%, the added throws where the deep man was a hard run from the ball). Decided by corner targets per route by the over-the-top man's reach (`scripts/diag/eyes/corner_danger.py`) and time to throw on keyed concepts. |
+diff --git a/docs/REFERENCE_STACK.md b/docs/REFERENCE_STACK.md
+index ca2331067..c2b9c0050 100644
+--- a/docs/REFERENCE_STACK.md
++++ b/docs/REFERENCE_STACK.md
+@@ -611,6 +611,35 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
+ On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
+ 
+ 
++## engine-95: the ball goes away on what he perceives (2026-11-24)
++
++On: `THROWAWAY_FELT` (QB lane with Integration). Off, a fixed per-passer timer from the set (2.5 + 1.0 composure + 0.6
++pocketPresence + N(0, 0.25) s) threw the ball away once it ran out (over 0.8 s by a per-tick chance, or 2.2 s), without
++asking whether anyone was open or whether he felt pressure: an invented timer, not football.
++
++Taught: a passer throws it away because the rush is on him and nobody is there, or he is out of the pocket with nobody;
++with a clean pocket he keeps working, checks down or moves. On:
++
++- The timer no longer throws the ball away. It stays as his sense of time: it raises his urgency (his bar drops toward
++  the checkdown), calls the scramble drill, and his break or scramble.
++- He throws it away with the rush on him (felt pressure from the rush: enter 0.6, exit 0.4; chosen) or outside the
++  pocket by his own position (4.5 yd from the ball's line sideways, exit 3.5 yd; chosen), when no option clears his bar.
++  Under imminent pressure the existing no-throw path still answers first.
++- READ_WINDOW's quick game out of reads in a clean pocket keeps working (the best live option at the lowered bar, his
++  break or scramble); its dead-read rule is unchanged.
++
++Same 16 games (seeds 11-18, 19-26), engine-94 without the clock, off / on (`scripts/diag/eyes/dropback-outcome.ts`):
++
++| | off | on |
++|---|---|---|
++| completion (throwaways as attempts) | 65.8% | 68.0% |
++| thrown away | 34 (timer 24, pressure 10) | 19 (pressure) |
++| INT | 1.38% | 1.40% |
++| sacks | 92 (6.39%) | 96 (6.77%) |
++| scrambles | 39 | 28 |
++| time to throw p50 | 2.36 s | 2.31 s |
++| clean-pocket holds (timer out, felt < 0.4, in the pocket) | 23: 19 thrown away | 29: 10 complete, 5 sacked (p50 6.31 s, 2.15 s after the timer) |
++
+ ## engine-94: one break on the throw (2026-11-24)
+ 
+ On: `FLIGHT_BREAK` (Coverage C14 with Defense; Integration's paired card). `FLIGHT_LEAD` is present but off and
+diff --git a/scripts/diag/eyes/dropback-outcome.ts b/scripts/diag/eyes/dropback-outcome.ts
+new file mode 100644
+index 000000000..4e94a145e
+--- /dev/null
++++ b/scripts/diag/eyes/dropback-outcome.ts
+@@ -0,0 +1,62 @@
++// QB lane 2026-11-24 (Integration, THROWAWAY_FELT): one row per dropback. The outcome (a pass by its result: complete,
++// interception, thrown away, contested, drop, miss, off target; a sack; a scramble; else other), time from the snap to
++// the throw, the qb.ts line that called his throwAway (a hook; null when the ball was not thrown away by it) and his
++// felt state there, and the first time the timer had run out (barNow.clock >= 1) while his felt pressure was under 0.4
++// and he was inside the pocket (|y - ballY| < 3.5 yd): a clean-pocket hold the old timer would have ended. For those,
++// whether the play ended in a sack, and when. Measurement only; THROWAWAY_FELT on and =0 on the same seeds.
++//   node --import tsx scripts/diag/eyes/dropback-outcome.ts <seed> <games> > rows.jsonl
++import { Rng } from '../../../src/core/rng.js';
++import { simulateGame } from '../../../src/game/game.js';
++import { generateTeam, leagueSample } from '../../../src/league/team.js';
++import { PlaySim } from '../../../src/sim/playsim.js';
++
++const seed = Number(process.argv[2] ?? 11), games = Number(process.argv[3] ?? 4);
++PlaySim.prototype.run = ((orig) => function (this: any) {
++  const sim: any = this; if (!sim.isPass) return orig.apply(this);
++  let qbb: any = null, rel: any = null, away: any = null, clean: number | null = null; const hooked = new Set<any>();
++  const tb = sim.throwBall.bind(sim);
++  sim.throwBall = (p: any, target: any, v0: any, intended: any, arrivalT: number, throwaway = false, ...rest: any[]) => {
++    if (p === sim.qb && !rel) rel = { t: sim.t, away: !!throwaway || !target };
++    return tb(p, target, v0, intended, arrivalT, throwaway, ...rest);
++  };
++  const t0 = sim.tick.bind(sim);
++  sim.tick = () => {
++    t0();
++    const b: any = sim.qb.behavior;
++    if (b?.kind === 'qb-pass' && typeof b.throwAway === 'function') {
++      qbb = b;
++      if (!hooked.has(b)) {
++        hooked.add(b); const ta = b.throwAway.bind(b);
++        b.throwAway = (a: any, s: any, at?: any) => {
++          if (!away) { const st = String(new Error().stack ?? ''), m = st.match(/qb\.ts:(\d+)/); away = { line: m ? +m[1] : null, felt: +(b.barNow?.urgency ?? 0).toFixed(2), side: +Math.abs(a.pos.y - s.ballY).toFixed(1) }; }
++          return ta(a, s, at);
++        };
++      }
++      const bn = b.barNow;
++      if (clean === null && !rel && sim.carrier === sim.qb && bn && bn.clock >= 1 && bn.urgency < 0.4 && Math.abs(sim.qb.pos.y - sim.ballY) < 3.5) clean = sim.t;
++    }
++  };
++  const res = orig.apply(this);
++  if (qbb) {
++    const ev = sim.events as any[], has = (k: string, from = 0) => ev.some((e) => e.type === k && e.t >= from - 1e-6);
++    const defIdx = new Set(sim.defense.map((d: any) => d.idx)), snap = qbb.snapAt ?? 0;
++    let out: string;
++    if (rel) {
++      const from = rel.t;
++      if (rel.away) out = 'throwaway';
++      else if (has('interception', from)) out = 'int';
++      else if (sim.stats.completed || has('catch', from)) out = 'complete';
++      else if (ev.some((e) => e.t >= from && (e.type === 'pbu' || e.type === 'deflection') && defIdx.has(e.a))) out = 'contested';
++      else if (has('drop', from)) out = 'drop';
++      else if (has('miss', from)) out = 'miss';
++      else out = 'offTarget';
++    } else if (has('sack')) out = 'sack';
++    else if (has('scramble')) out = 'scramble';
++    else out = 'other';
++    const sk = ev.find((e) => e.type === 'sack');
++    console.log(JSON.stringify({ seed, out, ttt: rel ? +(rel.t - snap).toFixed(2) : null, away: rel?.away ? away : null, awayBy: qbb.awayBy ?? null,
++      clean: clean === null ? null : +(clean - snap).toFixed(2), tSack: sk ? +(sk.t - snap).toFixed(2) : null, scramble: has('scramble') }));
++  }
++  return res;
++})(PlaySim.prototype.run);
++for (let g = 0; g < games; g++) { const s = seed + g, rng = new Rng(s); const home = generateTeam(rng, 'Ironmen', 'IRN', { strength: 0.55 }), away = generateTeam(rng, 'Comets', 'COM', { strength: 0.55 }); simulateGame(leagueSample(home, s), leagueSample(away, s), { seed: s }); }
+diff --git a/scripts/diag/eyes/dropback_outcome_table.py b/scripts/diag/eyes/dropback_outcome_table.py
+new file mode 100644
+index 000000000..4c0c29f6a
+--- /dev/null
++++ b/scripts/diag/eyes/dropback_outcome_table.py
+@@ -0,0 +1,29 @@
++"""QB lane 2026-11-24: dropback-outcome.ts rows, THROWAWAY_FELT off against on on the same seeds. Per dropback: sacks,
++scrambles, passes and their results (completion over passes thrown, throwaways counted as attempts), throwaways by the
++qb.ts line that called them, time to throw; the clean-pocket holds (the timer out, felt pressure under 0.4, inside the
++pocket) and how they ended, with the sack times.
++usage: python3 -I dropback_outcome_table.py name=a.jsonl,... ..."""
++import sys, json
++from collections import Counter
++
++
++def q(v, p=.5): v = sorted(v); return v[int(p * (len(v) - 1))] if v else float('nan')
++
++
++for arg in sys.argv[1:]:
++    name, paths = arg.split('=', 1); R = []
++    for p in paths.split(','): R += [json.loads(l) for l in open(p) if l.startswith('{')]
++    n = len(R); P = [r for r in R if r['ttt'] is not None]; c = Counter(r['out'] for r in R)
++    print(f"== {name}: dropbacks {n}, passes {len(P)}")
++    print(f"   sacks {c['sack']} ({c['sack'] / n:.2%}) | scrambles {sum(r['scramble'] for r in R)} ({sum(r['scramble'] for r in R) / n:.2%}) | other {c['other']}")
++    print(f"   of passes: complete {c['complete'] / len(P):.1%}, INT {c['int']} ({c['int'] / len(P):.2%}), thrown away {c['throwaway']} ({c['throwaway'] / len(P):.1%}), contested {c['contested'] / len(P):.1%}, off target {c['offTarget'] / len(P):.1%}")
++    print(f"   time to throw p25/50/75 {q([r['ttt'] for r in P], .25):.2f}/{q([r['ttt'] for r in P]):.2f}/{q([r['ttt'] for r in P], .75):.2f} s")
++    A = [r['away'] for r in R if r['away']]
++    print(f"   throwaways by calling line: {Counter(a['line'] for a in A).most_common(8)}; felt < 0.4 at the throwaway: {sum(a['felt'] < 0.4 for a in A)}")
++    by = Counter(); [by.update(r['awayBy'] or {}) for r in R]; print(f"   decided throwaways by what he perceived: {dict(by)}")
++    C = [r for r in R if r['clean'] is not None]; cc = Counter(r['out'] for r in C)
++    print(f"   clean-pocket holds (timer out, felt < 0.4, in the pocket): {len(C)} ({len(C) / n:.1%}) -> {dict(cc)}")
++    S = [r for r in C if r['out'] == 'sack']
++    if S: print(f"      sacked: {len(S)} ({len(S) / n:.2%} of dropbacks), at p25/50/75 {q([r['tSack'] for r in S], .25):.2f}/{q([r['tSack'] for r in S]):.2f}/{q([r['tSack'] for r in S], .75):.2f} s, {q([r['tSack'] - r['clean'] for r in S]):.2f} s after the timer ran out (p50)")
++    T = [r for r in C if r['ttt'] is not None and r['out'] != 'throwaway']
++    if T: print(f"      thrown, not away: {len(T)}, complete {sum(r['out'] == 'complete' for r in T) / len(T):.0%}, time to throw p50 {q([r['ttt'] for r in T]):.2f}")
+diff --git a/src/sim/behaviors/qb.ts b/src/sim/behaviors/qb.ts
+index 457a9f4a8..d6943e2dd 100644
+--- a/src/sim/behaviors/qb.ts
++++ b/src/sim/behaviors/qb.ts
+@@ -486,6 +486,23 @@ const QB_RELOOK = process.env.QB_RELOOK !== '0';
+  * stood until sacked, slant_flat sacks 1 -> 24 of 252). A read his eyes moved off is kept on the read he ends each tick
+  * on, so a key reorder within the tick cannot reopen it. Off, a passed quick read could come back and be thrown across the field at 3.1-3.5 s. */
+ const READ_WINDOW = process.env.READ_WINDOW === '1';
++/** THROWAWAY_FELT (on; THROWAWAY_FELT=0 restores; QB lane with Integration, 2026-11-24): he throws the ball away on what he
++ * perceives, not on a timer. Before, a fixed per-passer timer from the set (2.5 + composure + 0.6 pocketPresence s) threw
++ * the ball away once it ran out, without asking whether anyone was open or whether he felt pressure: 24 of 24 timer
++ * throwaways (33 of 33 with QB_STEP_CLOCK) came from a clean pocket (felt pressure under 0.5), 19 (21) with a man
++ * clearing his bar (docs/reviews/2026-11-23-step-clock.md, "What throws the ball away"). Now:
++ * - the timer no longer throws the ball away; it stays as his urgency (it raises u, lowers his bar, drives him to the
++ *   checkdown, and still calls the scramble drill and his break or scramble);
++ * - he throws it away when he feels pressure, or is outside the pocket, and no option clears his bar;
++ * - READ_WINDOW's quick game out of reads in a clean pocket keeps working (the best live option at the lowered bar each
++ *   tick, his break or scramble) rather than throwing it away; its dead-read rule is unchanged. */
++const THROWAWAY_FELT = process.env.THROWAWAY_FELT !== '0';
++/** THROWAWAY_FELT: felt pressure (his urgency from the rush, 0-1) at which he feels the rush on him, and below which it
++ * has left him (chosen: the exit well under the entry, so a rush that hovers does not toggle his throwaway). */
++const FELT_ENTER = 0.6, FELT_EXIT = 0.4;
++/** THROWAWAY_FELT: how far from the ball's line, sideways, his own position puts him outside the pocket, and back inside
++ * it (yd; chosen: the entry is the existing pocket width, 4.5 yd; the exit 1 yd inside it). */
++const OUT_ENTER = 4.5, OUT_EXIT = 3.5;
+ /** QB_KEY_MAN (experimental, off; QB_KEY_MAN=1; with READ_PLAN's defender keys): his key read is taken on the defender
+  * the concept names, not on whoever is nearest the line between the two routes (on corner_flat that was the middle
+  * linebacker once the corner sank under the corner route). Before the snap he picks the man by the role's alignment
+@@ -1790,6 +1807,13 @@ export class QBPass implements Behavior {
+     const clockUrgency = clamp((timeSet + this.snapAt + this.drop.time - this.clock) / 0.8, 0, 1);
+     // BLITZ_READ: believed rushers beyond his protection's count shorten how long he thinks he has.
+     const u = Math.max(urgency, clockUrgency, BLITZ_READ ? (BLITZ_SKILL ? clamp(0.7 * this.freeU, 0, 0.7) : clamp(0.4 * this.rushExcess, 0, 0.7)) : 0);
++    // THROWAWAY_FELT: whether he feels the rush on him and whether his own position has him outside the pocket, each with
++    // an entry and an exit margin.
++    if (THROWAWAY_FELT) {
++      this.feltOn = this.feltOn ? urgency > FELT_EXIT : urgency >= FELT_ENTER;
++      const side = Math.abs(a.pos.y - sim.ballY);
++      this.outOn = this.outOn ? side > OUT_EXIT : side >= OUT_ENTER;
++    }
+     if (u > 0.5) this.underPressure++;
+ 
+     // Look-off: veterans hold the safety with their eyes before the first read.
+@@ -2020,7 +2044,10 @@ export class QBPass implements Behavior {
+         // thrown away), not held in the pocket waiting for his clock (off this branch, 24 of 252 slant_flat snaps were
+         // sacks at 4-5 s after his reads ran out at about 2.8 s).
+         if (!QB_BREAK && this.shouldScramble(a, sim, false)) return this.scramble(a, sim);
+-        return this.throwAway(a, sim);
++        // THROWAWAY_FELT: thrown away only with the rush on him or outside the pocket; in a clean pocket he keeps working
++        // (the best live option at a bar his urgency lowers, each tick; his break or scramble).
++        if (!THROWAWAY_FELT) return this.throwAway(a, sim);
++        const away = this.awayDecision(a, sim, u, thr, maxInt); if (away) return away;
+       }
+     } else if (!read && QB_RELOOK) {
+       // QB_RELOOK: his reads are done and nothing was there. He moves and reads on (QB_BREAK), or goes back to his
+@@ -2080,8 +2107,11 @@ export class QBPass implements Behavior {
+       if (QB_BREAK) { if (this.tryBreak(a, sim, 'clock')) return this.outTick(a, sim); }
+       else if (this.shouldScramble(a, sim, false)) return this.scramble(a, sim);
+       const over = timeSet + this.snapAt + this.drop.time - this.clock;
+-      if (timeSet > 1.4 + this.clock * 0.5 && this.outsidePocket(a, sim) && sim.dice('qb', a).chance(0.06)) return this.throwAway(a, sim);
+-      if ((over > 0.8 && sim.dice('qb', a).chance(0.06 + 0.1 * a.r('awareness'))) || over > 2.2) return this.throwAway(a, sim);
++      if (THROWAWAY_FELT) { const away = this.awayDecision(a, sim, u, thr, maxInt); if (away) return away; }
++      else {
++        if (timeSet > 1.4 + this.clock * 0.5 && this.outsidePocket(a, sim) && sim.dice('qb', a).chance(0.06)) return this.throwAway(a, sim);
++        if ((over > 0.8 && sim.dice('qb', a).chance(0.06 + 0.1 * a.r('awareness'))) || over > 2.2) return this.throwAway(a, sim);
++      }
+     }
+     // Mobile QBs leave the pocket when coverage holds and the lane is there.
+     if (!QB_BREAK && timeSet > 1.0 && this.readIdx >= 2 && this.shouldScramble(a, sim, false) && sim.dice('qb', a).chance(0.06 + 0.14 * a.r('elusiveness'))) {
+@@ -3460,6 +3490,22 @@ export class QBPass implements Behavior {
+   private out: { side: number; since: number; dest: Vec2; until: number; decideAt: number; clearSince: number | null; away: number | null; best: ThrowEval | null; thr: number; risk: number; order: Agent[]; idx: number } | null = null;
+   /** QB_RELOOK diagnostics (no effect): how many times his reads ran out on this play. */
+   relooks = 0;
++  /** THROWAWAY_FELT: he feels the rush on him; his own position has him outside the pocket (each with its margins). */
++  private feltOn = false;
++  private outOn = false;
++  /** THROWAWAY_FELT diagnostics (no effect): throwaways he decided, by what he perceived. */
++  awayBy: Record<string, number> = {};
++  /** THROWAWAY_FELT: the ball goes away when he feels the rush or is outside the pocket and no option clears his bar (the
++   * out-of-reads bar: P within 0.1 of his threshold, interception risk within 0.03 of his limit); an option that clears
++   * is thrown. Null: he keeps working. */
++  private awayDecision(a: Agent, sim: PlaySim, u: number, thr: number, maxInt: number): MoveCommand | null {
++    if (!this.feltOn && !this.outOn) return null;
++    const best = this.bestOption(a, sim, u);
++    if (best && best.P >= thr - 0.1 && best.intRisk <= maxInt + 0.03) { const go = this.startIfFinish(a, sim, best); if (go) return go; }
++    const why = this.feltOn ? 'felt' : 'outside';
++    this.awayBy[why] = (this.awayBy[why] ?? 0) + 1;
++    return this.throwAway(a, sim);
++  }
+   /** QB_BREAK: he has stopped and set outside the pocket on this play. */
+   private hasSet = false;
+   /** QB_BREAK diagnostics (no effect): what he did out there and when. */

@@ -1,0 +1,113 @@
+diff --git a/config/baseline.json b/config/baseline.json
+index d4d49161f..848bff8c7 100644
+--- a/config/baseline.json
++++ b/config/baseline.json
+@@ -268,6 +268,7 @@
+     "QB_PEEK_CLOCK": "0",
+     "QB_MOF_READ": "0",
+     "QB_DEEP_WAIT": "0",
++    "QB_STANCE": "0",
+     "TACKLE_SET": "0",
+     "EDGE_ARC": "0",
+     "POWER_AIM": "0",
+diff --git a/config/reference-stack.json b/config/reference-stack.json
+index 0e049360e..0e7bc98ef 100644
+--- a/config/reference-stack.json
++++ b/config/reference-stack.json
+@@ -217,6 +217,7 @@
+     "QB_PEEK_CLOCK": "off",
+     "QB_MOF_READ": "off",
+     "QB_DEEP_WAIT": "off",
++    "QB_STANCE": "off",
+     "TACKLE_SET": "off",
+     "EDGE_ARC": "off",
+     "POWER_AIM": "on",
+diff --git a/docs/FLAGS.md b/docs/FLAGS.md
+index 12a775c31..b89dc726e 100644
+--- a/docs/FLAGS.md
++++ b/docs/FLAGS.md
+@@ -2,7 +2,7 @@
+ 
+ Every engine switch read from the environment, recounted from `src` at `57f50fc3` on 2026-10-22. This includes #210's promotion and #205's two additional default-on switches. Flags that are not on develop (parked, removed from a PR, or only on a side branch) are kept in [PARKED.md](PARKED.md) so the ideas are not lost. Registration rules are in [PLAN.md](PLAN.md): at most 10 experimental flags, and each expires two reviews after it lands.
+ 
+-There are 483 flags read from the environment in `src` (recounted 2026-11-18, engine-80, plus QB_DRIVE, QB_RHYTHM_THROW, QB_ALIGN, QB_BODY_FOLLOW, QB_WINDOW_ARRIVE, QB_KEY_PLANT, QB_STICK, QB_PEEK_CLOCK, QB_MOF_READ and QB_DEEP_WAIT): 362 are on unless set to `0`, 94 are off unless set to `1`, and 27 are numeric scales or modes (identity value unless listed in the stack's numeric section). The rows below carry each flag's history.
++There are 484 flags read from the environment in `src` (recounted 2026-11-18, engine-80, plus QB_DRIVE, QB_RHYTHM_THROW, QB_ALIGN, QB_BODY_FOLLOW, QB_WINDOW_ARRIVE, QB_KEY_PLANT, QB_STICK, QB_PEEK_CLOCK, QB_MOF_READ, QB_DEEP_WAIT and QB_STANCE): 362 are on unless set to `0`, 95 are off unless set to `1`, and 27 are numeric scales or modes (identity value unless listed in the stack's numeric section). The rows below carry each flag's history.
+ 
+ **Promotion (2026-11-09):** the reference stack `run-ref-4` is now the engine's default. The 90 flags it lists `on` are read as on unless set to `0` (rows marked "promoted" below); the rest are unchanged. Decisions and evidence for each flag are in [REFERENCE_STACK.md](REFERENCE_STACK.md); `npm run ref -- --list` is the current inventory, and `npm run ref -- --off -- <command>` runs the engine as it was before. The test suites still run on the pre-promotion engine (pinned in `vitest.config.ts`) until their recorded cases are re-recorded. The counts in the paragraph above predate all of this.
+ 
+@@ -396,6 +396,7 @@ There are 483 flags read from the environment in `src` (recounted 2026-11-18, en
+ | `QB_PEEK_CLOCK` | off | experimental (QB lane, 2026-11-18; Integration's item v) | quarterback | `src/sim/behaviors/qb.ts` (the vertical peek in the read loop) | The vertical peek runs on his feet's clock as taught: the deep picture is read as it stands by one hitch after the plant (one stride of his drop) if the stems have not shown, a close vertical holds him at most to the second hitch, and a felt rush (urgency 0.5+) takes him off it at once. Off, the peek waited for every vertical to reach 12 yd, so a jammed seam held him to the 2.5-look cap (four_verts: eyes on the verticals to 3.35 s, checkdown open from 1.95 s). |
+ | `QB_MOF_READ` | off | experimental (QB lane, 2026-11-18; Integration, after item v) | quarterback | `src/sim/behaviors/qb.ts` (`readShell`, `applyKey`) | A vertical peek read off the middle of the field: the shell from his pre-snap picture; two-high, the safety on his side keyed between the seam and the outside vertical; one-high, the middle safety keyed between the near and far seams; read at the first hitch on QB_KEY_READ's displacement read, the answer thrown at the second, then the back. Off, his side's verticals were looked at inside-out whatever the shell. |
+ | `QB_DEEP_WAIT` | off | experimental (QB lane, 2026-11-18) | quarterback | `src/sim/behaviors/qb.ts` (`readShell`, `window`) | His belief of when a deep zone defender starts toward a throw, by the seat he saw pre-snap: a man 12 yd or deeper, or against one-high the widest off corner (5 yd+), waits for the ball (goes at the release, then his reaction); quarters safeties and everyone underneath key the motion. Wrong when the coverage is disguised. Off, every defender facing him keyed the motion. Depths chosen. |
++| `QB_STANCE` | off | experimental (QB lane, 2026-11-18; Integration with Defense's base-side finding) | quarterback | `src/sim/behaviors/qb.ts` (`bodyFacing`, `motionFacing`) | His throwing stance: while he reads and loads, his chest is open 51.5 deg to his throwing-arm side of the man he is set to (front shoulder at him), rotating square into the throw only in the delivery's last ~0.27 s. NFL shoulders 0.3-0.6 s before the release: chest right of the throw line 91%, median 51.5 deg (BDB 2025 wk 1-2, n 1,998). Off, his chest was squared to the read and the target. Right-handed for everyone (no roster handedness). |
+ | `BRACE_EVIDENCE` | off | experimental (CARRIER_BRACE trigger, 2026-11-10) | ball carrier | `src/sim/behaviors/carrier.ts` (`BRACE_EVIDENCE`) | needs `CARRIER_BRACE`. He braces and lunges only at a man he sees free of blocks (no blocker he sees touching him) and squared up to him (seen facing within 45 deg of the line to the carrier). Trace on the fixed run set without it: 1.39 firings a run, 50% at engaged men, 30% at a free squared oncoming man, 33% followed by no contact; added breaks side +28, front +7 |
+ | `INFO_HONEST` | 63 | promoted 2026-11-14 (engine-61; all bits on; `=0` restores); was experimental (C14 coverage, 2026-11-13; information audit, intended on) | coverage | `src/sim/behaviors/defense.ts` (`infoHonest`; ManCoverage re-square, ZoneCoverage lanes / facing / eyes lean, `readsHandsAt`), `src/sim/coverage/judgment.ts`, `src/sim/coverage/techniques.ts` (Wall, Rob) | Coverage decisions read the defender's own picture, not true state. A bit mask: `INFO_HONEST=63` turns every item on; single items by bit (3 = 1, 6 = 2, 7 = 4, 8 = 8, 9 = 16, H = 32) for a per-item read. 3: deep help decisions freeze when he has seen the throw, not at the true release (was the default path with `JUDGE_SEEN_BALL` off). 6: a man carry stops re-squaring when he has seen the throw. 7: the judgment's protect-vertical carry starts its cushion from the receiver he saw. 8: the zone lean toward the QB's look goes to where he sees that receiver. 9: zone lanes and facing use where he sees the QB. H: the hands cue needs the receiver within 100 deg of his facing. From the coverage audit (items 1, 4, 5 and the loose ball are Defense's `HONEST_READS`; the ball path is the ball-in-air spec; the QB's motion and gaze move onto `QB_BODY_SEEN`). |
+ | `MAN_PHASE` | off | experimental (G3 coverage, 2026-11-10; measured with `WR_SNAP`, `QB_RHYTHM`, `PRESS_MIRROR`, `PRESS_RELEASE`) | man coverage | `src/sim/behaviors/defense.ts` (`ManCoverage.trackReceiver`, the leverage offset) | set at first review. Once his hips are open and the receiver is past 2 yd and running his stem (over 3 yd/s, mostly upfield), a man defender's leverage offset is an arm's length off the receiver's hip (their two body radii plus 0.7 of his arm) instead of 0.7 yd; on a plant or break he closes on the body as before. Pressed outside pairs (same operator on BDB 2025 weeks 1-3): CB-WR distance at 2.0 s 0.96 -> 1.09 yd (NFL 1.20), within 1.2 yd 79 -> 74% (NFL 51%); at 2.5 s 0.95 -> 1.22 (NFL 1.18). 732 dropbacks paired: +0.39 +/- 0.25 yd a pass play, completions 400 -> 407; to pressed receivers comp 18/45 -> 23/48 (NFL 44%), 7.31 -> 8.97 yd a throw (NFL 5.05); 17 plays moved by > 20 yd net +319 (catch and run). Second attempt (the first held the offset through a plant: +0.48 +/- 0.31, pressed hitches turned into 60-80 yd runs); stopped per the two-attempt rule. Test `test/man-phase.test.ts`. |
+diff --git a/src/sim/behaviors/qb.ts b/src/sim/behaviors/qb.ts
+index 5752753ce..76a35fd08 100644
+--- a/src/sim/behaviors/qb.ts
++++ b/src/sim/behaviors/qb.ts
+@@ -249,6 +249,18 @@ const QB_MOF_READ = process.env.QB_MOF_READ === '1';
+  * coverage is disguised. Off, every defender facing him keyed the motion (THROW_REACT), one start-time belief for all;
+  * with DEEP_GATE the Cover 2/3 deep seats go on the seen ball, so he priced them a reaction early. Depths chosen. */
+ const QB_DEEP_WAIT = process.env.QB_DEEP_WAIT === '1';
++/** QB_STANCE (experimental, off; QB_STANCE=1 turns it on): his throwing stance. While he reads and loads, his chest is
++ * open to his throwing-arm side by STANCE_OPEN from the man he is set to, his front shoulder at him, and his trunk
++ * rotates square into the throw only in the delivery's last STANCE_OPEN / TURN_RATE before the release. NFL passers,
++ * shoulders ('o') averaged 0.3-0.6 s before the release (Defense's base-side operator, BDB 2025 weeks 1-2, n 1,998):
++ * the chest is to the right of the throw line on 91% of throws, median 51.5 deg (p25-p75 30-69; 66 deg on throws to
++ * his left, 37 to his right). Off, ours squared his chest to the read and to the target (median 2 deg, either side
++ * evenly: the throw went to his base's side 74% against the NFL's 61%, and a body read gained from it). Everyone throws
++ * right-handed here: the roster carries no handedness. */
++const QB_STANCE = process.env.QB_STANCE === '1';
++const STANCE_OPEN = 51.5 * Math.PI / 180;
++/** QB_STANCE: his chest for a man at bearing `b`, front shoulder to him (right-handed: chest turned clockwise). */
++const stanceFor = (b: number) => (QB_STANCE ? b - STANCE_OPEN : b);
+ const DEEP_SEAT = 12, OFF_CORNER = 5;
+ /** QB_COMMIT (experimental, off; QB_COMMIT=1): the delivery recheck (pullDown) keeps a started throw unless what he now
+  * sees has clearly changed (the window at half the chance he threw it at, or its pick risk up by 0.12); off, any
+@@ -3045,7 +3057,11 @@ export class QBPass implements Behavior {
+   /** The facing his throwing motion asks for: square to the target, or with
+    * SHOULDERS_SET the shoulders closing on it through the motion. */
+   private motionFacing(a: Agent, sim: PlaySim, ev: ThrowEval): number {
+-    const to = angleTo(a.pos, ev.point);
++    const bearing = angleTo(a.pos, ev.point);
++    // QB_STANCE: through the load his chest stays open to the target; the trunk rotates square into the throw over the
++    // delivery's last STANCE_OPEN / TURN_RATE (about 0.27 s), arriving square at the release.
++    const rotT = STANCE_OPEN / TURN_RATE, left = this.releaseAt - sim.t - sim.dt;
++    const to = QB_STANCE ? bearing - STANCE_OPEN * clamp(left / rotT, 0, 1) : bearing;
+     // QB_ALIGN: the throwing turn: his stride and hips bring the trunk round at TURN_RATE after TURN_BASE, from where it
+     // faced at the decision; an armed throw is released before it is all the way round.
+     if (QB_ALIGN) {
+@@ -3077,10 +3093,10 @@ export class QBPass implements Behavior {
+       if (QB_BODY_FOLLOW) {
+         if (r !== this.followRead) { this.followRead = r; this.followAt = sim.t; }
+         if (sim.t - this.followAt < TURN_BASE) return a.body.facing;
+-        const A = wrapAngle(angleTo(a.pos, this.has(sim, r)) - a.body.facing);
++        const A = wrapAngle(stanceFor(angleTo(a.pos, this.has(sim, r))) - a.body.facing);
+         return a.body.facing + Math.sign(A) * Math.min(Math.abs(A), TURN_RATE * sim.dt);
+       }
+-      return angleTo(a.pos, this.has(sim, r));
++      return stanceFor(angleTo(a.pos, this.has(sim, r)));
+     }
+     const at = (r: Agent) => QB_FACE_SEEN ? this.has(sim, r) : r.pos;
+     // QB_BODY_FOLLOW without bit 2 (his shoulders follow his eyes): the same reset, toward the read his eyes are on.
+@@ -3088,15 +3104,15 @@ export class QBPass implements Behavior {
+       if (!read) return a.body.facing;
+       if (read !== this.followRead) { this.followRead = read; this.followAt = sim.t; }
+       if (sim.t - this.followAt < TURN_BASE) return a.body.facing;
+-      const A = wrapAngle(angleTo(a.pos, at(read)) - a.body.facing);
++      const A = wrapAngle(stanceFor(angleTo(a.pos, at(read))) - a.body.facing);
+       return a.body.facing + Math.sign(A) * Math.min(Math.abs(A), TURN_RATE * sim.dt);
+     }
+-    if (!SHOULDERS_SET) return read ? angleTo(a.pos, at(read)) : 0;
++    if (!SHOULDERS_SET) return read ? stanceFor(angleTo(a.pos, at(read))) : 0;
+     const eyes = read ?? null;
+     if (eyes !== this.eyesRead) { this.eyesRead = eyes; this.eyesAt = sim.t; }
+     if (!this.shoulderRead) this.shoulderRead = this.reads[0] ?? eyes;
+     if (eyes && eyes !== this.shoulderRead && sim.t - this.eyesAt >= SHOULDER_SETTLE) this.shoulderRead = eyes;
+-    return this.shoulderRead ? angleTo(a.pos, at(this.shoulderRead)) : a.body.facing;
++    return this.shoulderRead ? stanceFor(angleTo(a.pos, at(this.shoulderRead))) : a.body.facing;
+   }
+ 
+   /** Whether the committed throw, re-aimed as it would now leave his hand, is

@@ -1,0 +1,37 @@
+diff --git a/src/sim/behaviors/qb.ts b/src/sim/behaviors/qb.ts
+index 5f43d19ea..ba43a08a2 100644
+--- a/src/sim/behaviors/qb.ts
++++ b/src/sim/behaviors/qb.ts
+@@ -2263,6 +2263,7 @@ export class QBPass implements Behavior {
+       shouldScramble: () => this.shouldScramble(a, sim, false),
+       scramble: () => this.scramble(a, sim),
+       pocketMove: (read) => this.pocketMove(a, sim, read),
++      stepTo: (r) => { if (FW_HIPS) this.shoulderOn = r; },
+       traceRead: (read, target) => qbRead(sim, a, { read, target, stage: 'qb-cycle' }),
+       traceStage: (cmd) => qbStage(sim, 'qb-cycle', a, { vel: cmd.vel, facing: cmd.facing }),
+     };
+diff --git a/src/sim/qbv2/host.ts b/src/sim/qbv2/host.ts
+index 6ad3fbccd..90cf13db6 100644
+--- a/src/sim/qbv2/host.ts
++++ b/src/sim/qbv2/host.ts
+@@ -63,6 +63,9 @@ export interface PasserView {
+   pocketMove(read: Agent | undefined): MoveCommand;
+   /** His eyes on the receiver he throws to (the play's shared record of where the passer is looking). */
+   setEyes(r: Agent): void;
++  /** The reset step: his feet and hips turn to the new read's receiver as his eyes go (the coached one-hitch reset), his
++   * own footwork; the body turns at its own rate. */
++  stepTo(r: Agent): void;
+   /** Tracing hooks (the harness's qb-trace). */
+   traceRead(read: number, target: string | null): void;
+   traceStage(cmd: MoveCommand): void;
+@@ -128,6 +131,10 @@ export class V2Wiring {
+       this.read = v2.cycle.readIdx;
+       const rd = v2.plan.reads[this.read];
+       v.traceRead(this.read, rd ? (rd.look.kind === 'receiver' ? rd.look.ref : `${rd.look.side ?? 'S'}:${rd.look.role}`) : null);
++      // The reset comes with a hitch: feet and hips with the eyes, not square until the look resolves (Integration's
++      // ruling, 2026-11-25; measured: the body held square 0.5 s, then turned about 85 deg inside the windup).
++      const nr = rd ? (rd.look.kind === 'receiver' ? rd.look.ref : rd.throws[0]?.ref) : null, na = nr ? v2.target(h, nr) : null;
++      if (this.read > 0 && na) v.stepTo(na);
+     }
+     const rd = v2.plan.reads[v2.cycle.readIdx], ref = rd ? (rd.look.kind === 'receiver' ? rd.look.ref : rd.throws[0]?.ref) : null;
+     const readAgent = ref ? v2.target(h, ref) ?? undefined : undefined;

@@ -1,0 +1,279 @@
+diff --git a/config/baseline.json b/config/baseline.json
+index c2b90e4f9..42fd1b737 100644
+--- a/config/baseline.json
++++ b/config/baseline.json
+@@ -259,6 +259,7 @@
+     "FREE_BOUND": "0",
+     "SET_DECIDE": "0",
+     "SHOULDERS_SET": "0",
++    "QB_ALIGN": "0",
+     "TACKLE_SET": "0",
+     "EDGE_ARC": "0",
+     "POWER_AIM": "0",
+diff --git a/config/reference-stack.json b/config/reference-stack.json
+index fbc9780df..9a16aacf6 100644
+--- a/config/reference-stack.json
++++ b/config/reference-stack.json
+@@ -205,6 +205,7 @@
+     "FREE_BOUND": "off",
+     "SET_DECIDE": "off",
+     "SHOULDERS_SET": "off",
++    "QB_ALIGN": "off",
+     "TACKLE_SET": "off",
+     "EDGE_ARC": "off",
+     "POWER_AIM": "on",
+diff --git a/docs/FLAGS.md b/docs/FLAGS.md
+index 2275c8012..6fc2d1a9a 100644
+--- a/docs/FLAGS.md
++++ b/docs/FLAGS.md
+@@ -2,7 +2,7 @@
+ 
+ Every engine switch read from the environment, recounted from `src` at `57f50fc3` on 2026-10-22. This includes #210's promotion and #205's two additional default-on switches. Flags that are not on develop (parked, removed from a PR, or only on a side branch) are kept in [PARKED.md](PARKED.md) so the ideas are not lost. Registration rules are in [PLAN.md](PLAN.md): at most 10 experimental flags, and each expires two reviews after it lands.
+ 
+-There are 460 flags read from the environment in `src` (recounted 2026-11-17, engine-75 + QB_INTENT, DEEP_BREAK): 349 are on unless set to `0`, 86 are off unless set to `1`, and 25 are numeric scales or modes (identity value unless listed in the stack's numeric section). The rows below carry each flag's history.
++There are 461 flags read from the environment in `src` (recounted 2026-11-17, engine-75 + QB_INTENT, DEEP_BREAK, QB_ALIGN): 349 are on unless set to `0`, 87 are off unless set to `1`, and 25 are numeric scales or modes (identity value unless listed in the stack's numeric section). The rows below carry each flag's history.
+ 
+ **Promotion (2026-11-09):** the reference stack `run-ref-4` is now the engine's default. The 90 flags it lists `on` are read as on unless set to `0` (rows marked "promoted" below); the rest are unchanged. Decisions and evidence for each flag are in [REFERENCE_STACK.md](REFERENCE_STACK.md); `npm run ref -- --list` is the current inventory, and `npm run ref -- --off -- <command>` runs the engine as it was before. The test suites still run on the pre-promotion engine (pinned in `vitest.config.ts`) until their recorded cases are re-recorded. The counts in the paragraph above predate all of this.
+ 
+@@ -373,6 +373,7 @@ There are 460 flags read from the environment in `src` (recounted 2026-11-17, en
+ | `RUSH_INTENT` | off | experimental (the rusher between moves, 2026-11-12) | pass rush | `src/sim/engagement.ts` (`rushIntent`; `stepPassRep` rusher request) | between moves a pass rusher's request is an intent he chose from what he feels and sees (his leverage phi x side, his speed, the blocker giving ground): edge (with leverage: the blocker's outside hip at his bend pace, 0.6 + 0.25 bend of vmax, push 0.5), power (momentum and a blocker giving ground: at the QB through his chest, 0.55 vmax, push 1) or stall (neither: fight the hands at 1.2 yd/s, push 0.6, may lose); preference by finesse/bend vs power/mass; kept at least his reaction time and changed only on a leverage change over 0.2 or the blocker's ground flipping; 'power' no longer sticks after a bull/long-arm window. Move selection and the roll untouched. Evidence: half an edge rusher's engaged time was the default 0.9 vmax at push 0.75 toward a sideways corner; engaged edge rushers ran across 3.0 vs NFL 2.1 yd/s and at the QB 1.4 vs 2.5 (rusher-state.mts, rusher-engaged.py). docs/reviews/2026-11-12-rusher-intent.md |
+ | `SET_DECIDE` | off | experimental (sacks: escape, set-phase decision, 2026-11-11) | quarterback | `src/sim/behaviors/qb.ts` (`setDecide`, before the hot path) | one decision under pressure: when where he stands he no longer has the time he still needs (rest of the current read + a windup) before a felt rusher can reach him, he moves first to the reachable spot (climb, slide or out of the box at 2.2 yd/s) that leaves the most felt time to contact, holding the direction for one reaction time and reading as he goes; a lane from there is an escape (existing scramble check); only when no spot buys time is he trapped and the existing hot path decides. Nothing runs with nobody near. Design and gates: docs/reviews/2026-11-10-tackle-forms.md (Set-phase decision under pressure) |
+ | `SHOULDERS_SET` | off | experimental (QB in the pocket: throw mechanics, 2026-11-11) | quarterback | `src/sim/behaviors/qb.ts` (`bodyFacing`, `turnTime`, `motionFacing`, `startThrow`) | his body is not his eyes: after the drop his front shoulder sets to his first read, and his feet go to a read only once his eyes have held it for `SHOULDER_SETTLE` (0.3 s, a reaction time, not fitted); the throw requests the turn, which lasts `TURN_BASE + angle / TURN_RATE` (0.12 s + 190 deg/s, estimated from the NFL turn into the throw by angle, qb-release.py) and ends at the release; the motion lasts at least that. Off: the body faces the read and no throw turns. `sim.qbEyes` stays gaze. Bench: scripts/diag/effective-mass/qb-turn-bench.mts (World yaw) and throw-turn.mts; test/shoulders-set.test.ts |
++| `QB_ALIGN` | off | experimental (QB lane, 2026-11-17; the user via Integration) | quarterback | `src/sim/behaviors/qb.ts` (`alignPlan`, `alignCost`, `motionFacing`, `release`, the look-off) | A throw is powered from the ground up, so his trunk's alignment to the target at the release is part of it. Off, the turn from his decision-time facing (over 45 deg off on 42% of staged throws) was free yaw inside the windup: square at every release, nothing charged. On, the turn is a throwing turn at SHOULDERS_SET's NFL-fitted rate; on his believed time he resets (waits for it, full throw, the shoulder turn is the tell) or arms it (release on the windup, the unturned angle costs top ball speed and miss, 1.5x across the body, his throw-on-the-move keeping half). The look-off moves his eyes only. Coefficients chosen, checked for order only. Right-handed passer assumed. docs/reviews/2026-11-17-qb-align.md |
+ | `BRACE_EVIDENCE` | off | experimental (CARRIER_BRACE trigger, 2026-11-10) | ball carrier | `src/sim/behaviors/carrier.ts` (`BRACE_EVIDENCE`) | needs `CARRIER_BRACE`. He braces and lunges only at a man he sees free of blocks (no blocker he sees touching him) and squared up to him (seen facing within 45 deg of the line to the carrier). Trace on the fixed run set without it: 1.39 firings a run, 50% at engaged men, 30% at a free squared oncoming man, 33% followed by no contact; added breaks side +28, front +7 |
+ | `INFO_HONEST` | 63 | promoted 2026-11-14 (engine-61; all bits on; `=0` restores); was experimental (C14 coverage, 2026-11-13; information audit, intended on) | coverage | `src/sim/behaviors/defense.ts` (`infoHonest`; ManCoverage re-square, ZoneCoverage lanes / facing / eyes lean, `readsHandsAt`), `src/sim/coverage/judgment.ts`, `src/sim/coverage/techniques.ts` (Wall, Rob) | Coverage decisions read the defender's own picture, not true state. A bit mask: `INFO_HONEST=63` turns every item on; single items by bit (3 = 1, 6 = 2, 7 = 4, 8 = 8, 9 = 16, H = 32) for a per-item read. 3: deep help decisions freeze when he has seen the throw, not at the true release (was the default path with `JUDGE_SEEN_BALL` off). 6: a man carry stops re-squaring when he has seen the throw. 7: the judgment's protect-vertical carry starts its cushion from the receiver he saw. 8: the zone lean toward the QB's look goes to where he sees that receiver. 9: zone lanes and facing use where he sees the QB. H: the hands cue needs the receiver within 100 deg of his facing. From the coverage audit (items 1, 4, 5 and the loose ball are Defense's `HONEST_READS`; the ball path is the ball-in-air spec; the QB's motion and gaze move onto `QB_BODY_SEEN`). |
+ | `MAN_PHASE` | off | experimental (G3 coverage, 2026-11-10; measured with `WR_SNAP`, `QB_RHYTHM`, `PRESS_MIRROR`, `PRESS_RELEASE`) | man coverage | `src/sim/behaviors/defense.ts` (`ManCoverage.trackReceiver`, the leverage offset) | set at first review. Once his hips are open and the receiver is past 2 yd and running his stem (over 3 yd/s, mostly upfield), a man defender's leverage offset is an arm's length off the receiver's hip (their two body radii plus 0.7 of his arm) instead of 0.7 yd; on a plant or break he closes on the body as before. Pressed outside pairs (same operator on BDB 2025 weeks 1-3): CB-WR distance at 2.0 s 0.96 -> 1.09 yd (NFL 1.20), within 1.2 yd 79 -> 74% (NFL 51%); at 2.5 s 0.95 -> 1.22 (NFL 1.18). 732 dropbacks paired: +0.39 +/- 0.25 yd a pass play, completions 400 -> 407; to pressed receivers comp 18/45 -> 23/48 (NFL 44%), 7.31 -> 8.97 yd a throw (NFL 5.05); 17 plays moved by > 20 yd net +319 (catch and run). Second attempt (the first held the offset through a plant: +0.48 +/- 0.31, pressed hitches turned into 60-80 yd runs); stopped per the two-attempt rule. Test `test/man-phase.test.ts`. |
+diff --git a/docs/reviews/2026-11-17-qb-align.md b/docs/reviews/2026-11-17-qb-align.md
+new file mode 100644
+index 000000000..24358e66f
+--- /dev/null
++++ b/docs/reviews/2026-11-17-qb-align.md
+@@ -0,0 +1,50 @@
++# QB_ALIGN: the throw's body alignment (attempt 1, off)
++
++The user via Integration, 2026-11-17: zone defenders now read the quarterback before the throw (eyes, then shoulders
++and front foot). If his eyes and body point one way and he throws the other, that should cost him power and accuracy.
++
++## Diagnosis (develop 2f5315d9, engine-74; scripts/diag/eyes/release-align.ts, 307 staged throws)
++
++- His trunk off the target line at the decision: p50 29 deg, p90 79; over 45 deg 42%, over 90 deg 4%.
++- At the release: p50 1 deg, p90 9; never over 45. The turn was the body's free yaw inside the 0.4 s windup.
++- The windup did not lengthen with the turn (0.53 s at 0-15 deg, 0.43 s at 45-90), and the release error (1.04 / 0.94 /
++  1.05 / 0.71 yd by bin) and the ball's pace (0.050-0.055 s a yard) did not change: no time, speed or miss charged.
++- No foot exists in the production body; his motion at the release stands for the stride (off the line p90 9 deg).
++- SHOULDERS_SET (off) has a throwing turn fitted to the NFL turn into the throw (TURN_BASE + A / TURN_RATE, qb-release.py:
++  15-45 deg 0.3 s, 45-90 0.5 s, 90-180 0.7 s), but no choice to throw without it and no cost for an unturned angle.
++
++## The model
++
++A throw is powered from the ground up. The turn into it is a throwing turn (stride, hips, shoulders) at SHOULDERS_SET's
++rate. On his believed time (his pressure clock beyond the turn plus 0.25 s) he either resets (the release waits for the
++turn; full throw; the shoulders and stride turning are what defenders read) or arms it (the release on the windup,
++turned as far as a throwing turn gets in it). The angle still unturned at the release is thrown with less of his body:
++top ball speed x (1 - 0.25 s), miss x (1 + 1.0 s), s a smoothstep of the unturned angle to 90 deg, 1.5x across the body
++(a right-handed passer is assumed: a target to his left), his throw-on-the-move keeping half. Priced in his window as he
++would throw it. The look-off moves his eyes only; his body stays set to the real read.
++
++Coefficients are chosen, checked for order only (set and aligned < stepping open < arm throw off-platform < across the
++body): the kinetic chain's lower body and trunk give roughly half of a throw's speed, an arm throw keeps the shoulder and
++arm, so a quarter of the top speed is lost at 90 deg unturned; the miss doubles there; across the body is worse than the
++open side.
++
++One platform model: THROW_PLATFORM prices the release's translation (his velocity along and across the target line);
++QB_ALIGN prices the trunk's rotation; both act on the same release (its miss and its arm speed). The gather (QB_GATHER_THROW)
++and QB_FOOTWORK's steps and shoulders-on-a-step set where his trunk faces before the decision; QB_ALIGN starts from
++that facing.
++
++## Gate (staged)
++
++| measure | off | on |
++|---|---|---|
++| release off the target line p50 / p90 | 1 / 9 deg | 7 / 22 deg |
++| windup on turns over 53 deg | 0.40 s | 0.60 s (reset 94%) |
++| armed throws | - | 6 of 296: turn p50 68 deg, unturned 66, ball speed 0.84, miss 1.63x; errors 6-11 yd |
++| release error by bin 0-15 / 15-45 deg | 0.97 / 2.22 yd (n 299 / 8) | 0.96 / 1.07 yd (n 179 / 113) |
++| look-off plays (release off p50) | 166 (1 deg) | 157 (7 deg) |
++| 8 concepts x 192, sacks / completions / ints / yd | 3.5% / 942 / 16 / 6.51 | 3.9% / 902 / 13 / 6.05 |
++| time to throw, mean / median | 3.09 / 2.95 s | 3.14 / 3.05 s |
++| plays with no throw | 148 | 175 |
++
++The cost is the turn's time (he resets on nearly every big turn); arming is rare because he believes he has the time.
++Guard, scan, dither, qb-footwork-drop and read-plan pass.
+diff --git a/scripts/diag/eyes/release-align.ts b/scripts/diag/eyes/release-align.ts
+new file mode 100644
+index 000000000..e799ffa59
+--- /dev/null
++++ b/scripts/diag/eyes/release-align.ts
+@@ -0,0 +1,33 @@
++// [flags] node --import tsx scripts/diag/eyes/release-align.ts > rows.jsonl
++// Integration / the user (2026-11-17): at the release, how far off the target line his body is. One row per QB throw on
++// staged dropbacks: his trunk facing off the target line at the decision (startThrow) and at the release (deg), his
++// velocity's direction off the target line and his speed at the release (his stride: there is no foot in the
++// production body, so his motion stands for it), the windup's length, the release error (yd), the flight time against
++// the minimum for the distance (the ball's pace), and the result. Passive.
++import { PlaySim } from '../../../src/sim/playsim.js';
++import { nativeTraceSetup } from '../command-trace.js';
++const DEG = 180 / Math.PI, off = (a: number, b: number) => Math.abs(Math.atan2(Math.sin(a - b), Math.cos(a - b))) * DEG;
++const CONCEPTS = 'smash mesh flood drive dagger y_cross stick curl_flat four_verts trips_outs'.split(' ');
++for (const concept of CONCEPTS) for (const coverage of ['cover1', 'cover2', 'cover3', 'cover4']) for (const roster of [3, 7, 11]) for (const seed of [1, 2, 3]) {
++  let sim: any; try { sim = new PlaySim(nativeTraceSetup({ coverage, concept, seed, roster, formation: 'gun_doubles_11', flip: false })); } catch { continue; }
++  let dec: any = null, row: any = null, hooked = false;
++  const tick0 = sim.tick.bind(sim);
++  sim.tick = () => { tick0(); const b: any = sim.qb.behavior; if (b?.kind === 'qb-pass' && b.lookOff && !b.lookOffSeen) { b.lookOffSeen = true; b.lookOffDecoy = b.lookOff.decoy?.slot ?? null; }
++    if (!hooked && b?.kind === 'qb-pass') { hooked = true; const st0 = b.startThrow.bind(b);
++    b.startThrow = (a: any, s: any, ev: any) => { const r = st0(a, s, ev); if (b.phase === 'windup' && !dec && ev?.point) dec = { t: s.t, off: off(a.body.facing, Math.atan2(ev.point.y - a.pos.y, ev.point.x - a.pos.x)), head: a.head }; return r; }; } };
++  const tb = sim.throwBall.bind(sim);
++  sim.throwBall = (p: any, target: any, v0: any, intended: any, arrivalT: number, away = false, ...rest: any[]) => {
++    if (p === sim.qb && !row && !away && intended) {
++      const b: any = p.behavior, line = Math.atan2(intended.y - p.pos.y, intended.x - p.pos.x), sp = Math.hypot(p.vel.x, p.vel.y);
++      const aim = b.releaseRec?.aim, dist = Math.hypot(intended.x - p.pos.x, intended.y - p.pos.y);
++      row = { concept, coverage, roster, seed, t: +sim.t.toFixed(2), windup: dec ? +(sim.t - dec.t).toFixed(2) : null, decOff: dec ? +dec.off.toFixed(0) : null,
++        relOff: +off(p.body.facing, line).toFixed(0), velOff: sp > 0.3 ? +off(Math.atan2(p.vel.y, p.vel.x), line).toFixed(0) : null, speed: +sp.toFixed(1),
++        headOff: p.head !== null && p.head !== undefined ? +off(p.head, line).toFixed(0) : null, dist: +dist.toFixed(1), flick: +(b.flick ?? 0).toFixed(2),
++        err: aim ? +Math.hypot(aim.x - intended.x, aim.y - intended.y).toFixed(2) : null, T: +(arrivalT - sim.t).toFixed(2),
++        align: b.alignRec ?? null, lookOff: !!b.lookOffSeen, target: target?.slot ?? null, decoy: b.lookOffDecoy ?? null };
++    }
++    return tb(p, target, v0, intended, arrivalT, away, ...rest);
++  };
++  let res: any; try { res = sim.run(); } catch { continue; }
++  if (row) console.log(JSON.stringify({ ...row, cmp: !!res.stats?.completed, int: !!res.stats?.interceptedBy, sacked: !!res.stats?.sacked }));
++}
+diff --git a/src/sim/behaviors/qb.ts b/src/sim/behaviors/qb.ts
+index dfaa6fca0..78a1cb9da 100644
+--- a/src/sim/behaviors/qb.ts
++++ b/src/sim/behaviors/qb.ts
+@@ -638,6 +638,27 @@ const SHOULDER_SETTLE = 0.3;
+  * 90-180 0.7 s), not to yards or completions. */
+ const TURN_BASE = 0.12;
+ const TURN_RATE = 190 * Math.PI / 180;
++/** QB_ALIGN (experimental, off; QB_ALIGN=1; the user via Integration, 2026-11-17): a throw is powered from the ground
++ * up (the stride toward the target, then the hips, then the shoulders), so his body's alignment to the target at the
++ * release is part of the throw. Off, the turn from where his trunk faced at the decision (over 45 deg off on 42% of
++ * staged throws, over 90 on 4%) was the body's free yaw inside the 0.4 s windup: square at every release, no time, no
++ * ball speed or miss charged (scripts/diag/eyes/release-align.ts). With it the turn into a throw is a throwing turn at
++ * SHOULDERS_SET's rate (TURN_BASE + A / TURN_RATE, fitted to the NFL turn into the throw, qb-release.py), and he
++ * chooses, on his believed time: reset (wait for the turn, then a full throw; his shoulders and stride turning are the
++ * tell) or arm it (release on the windup with the turn he can make in it; the rest is thrown with less of his body: a
++ * lower top ball speed and a larger miss, more so across the body than to the open side, his throw-on-the-move skill
++ * keeping part of it). Priced in his window as he would throw it. The look-off moves his eyes only; his body stays on
++ * the real read. One platform model with THROW_PLATFORM (his motion along / across the target line) and the gather:
++ * this prices the trunk's rotation, THROW_PLATFORM the translation; both act on the same release. A right-handed passer
++ * is assumed (no handedness in the player model): across the body is a target to his left of his trunk. */
++const QB_ALIGN = process.env.QB_ALIGN === '1';
++/** QB_ALIGN, chosen, checked for order only (set and aligned < stepping open < arm throw off-platform < across the
++ * body), never fitted to completions: the share of top ball speed an arm-only throw loses 90 deg unturned (the lower
++ * body and trunk give roughly half of a throw's speed in the kinetic chain; an arm throw keeps the shoulder and arm, so
++ * a quarter is lost), the miss multiplier there (doubled), and across the body against the open side (1.5x). */
++const ALIGN_SPEED_LOSS = 0.25, ALIGN_SIGMA = 1.0, ALIGN_ACROSS = 1.5;
++/** QB_ALIGN: his believed time beyond a reset's turn that he wants before he takes it (s, chosen). */
++const ALIGN_RESET_SPARE = 0.25;
+ /** READ_PLAN (experimental, off; READ_PLAN=1 turns it on): he runs the read plan compiled from the routes
+  * (src/playbook/read-compiler, docs/reviews/2026-11-11-read-compiler-phase0.md) instead of the concept's
+  * hand-written progression. The plan is his intent; he executes it from what he sees:
+@@ -1072,6 +1093,8 @@ export class QBPass implements Behavior {
+     return ((p.pos.x - lo.x) * sx + (p.pos.y - lo.y) * sy) / L2;
+   }
+   private keyFlipped = false;
++  /** QB_ALIGN diagnostics (no effect): the last throw's turn, reset or armed, residual angle and cost. */
++  alignRec: { reset: boolean; turn: number; resid: number | null; speedK: number | null; sigK: number | null } | null = null;
+   private readKeyShell(a: Agent, sim: PlaySim): void {
+     const k = this.plan!.key!;
+     const d = this.keyDisp(a, sim);
+@@ -1481,7 +1504,8 @@ export class QBPass implements Behavior {
+     }
+     if (this.lookOff && t < this.lookOff.until && pressure.time > 0.6) {
+       sim.qbEyes = this.lookOff.decoy;
+-      return this.pocketMove(a, sim, this.lookOff.decoy);
++      // QB_ALIGN: a look-off moves his eyes; his body stays set to the real read.
++      return this.pocketMove(a, sim, QB_ALIGN ? this.reads[0] ?? this.lookOff.decoy : this.lookOff.decoy);
+     }
+ 
+     // READ_PLAN: the key, read at the plan's cue unless the rush has already taken over.
+@@ -2338,7 +2362,8 @@ export class QBPass implements Behavior {
+       if ((pose !== null && pose !== undefined && pose !== 'up') || (this.checkRelease(r) && !this.seenOut(r))) return null;
+     } else if (r.isDown(sim.t) || r.engagement) return null;
+     // SHOULDERS_SET: his motion to this man includes the turn to him (as startThrow will make it).
+-    const wind = (SHOULDERS_SET ? Math.max(this.windup(a), this.turnTime(a, sim.see(a, r).pos)) : this.windup(a))
++    const alignR = QB_ALIGN ? this.alignPlan(a, sim, sim.see(a, r).pos) : null;
++    const wind = (alignR ? Math.max(this.windup(a), alignR.turnT) : SHOULDERS_SET ? Math.max(this.windup(a), this.turnTime(a, sim.see(a, r).pos)) : this.windup(a))
+       // QB_EYES: priced at the release after the rest of his processing on this man.
+       + (QB_EYES ? Math.max(0, this.processing(a) - (this.eyesOn === r ? sim.t - this.eyesOnAt : 0)) : 0);
+     const from: Vec3 = { x: a.pos.x, y: a.pos.y, z: RELEASE_Z };
+@@ -2558,6 +2583,8 @@ export class QBPass implements Behavior {
+     // ACC_RADIUS: how far from his aim the ball can land and still be caught grows with the flight, as the receiver
+     // sees it and runs under it, and with his ball skills (our own catches: about 1.9 yd on short balls, 3 on long
+     // ones; scripts/diag/eyes/catch-radius.ts). Off: a fixed 1.35 yd whatever the flight.
++    // QB_ALIGN: an armed throw (no time to reset) is priced with what it keeps of his body.
++    if (QB_ALIGN) { const pl = this.alignPlan(a, sim, point); if (!pl.reset) sigma *= this.alignCost(a, pl.resid, pl.across).sigK; }
+     const radius = ACC_RADIUS ? 1.6 + 0.9 * T + 0.4 * (r.r('ballSkills') - 0.5) : 1.35;
+     const pAcc = Math.exp(-(sigma * sigma) / (2 * radius * radius));
+     // He knows his own accuracy: the ball can land anywhere in his miss, and an
+@@ -2674,7 +2701,11 @@ export class QBPass implements Behavior {
+     const base = this.windup(a);
+     // SHOULDERS_SET: the motion lasts at least the turn it has to make.
+     this.turnFrom = a.body.facing;
+-    this.turnT = SHOULDERS_SET ? this.turnTime(a, ev.point) : 0;
++    // QB_ALIGN: reset (the release waits for the throwing turn) or arm it (the release on the windup, turned as far as
++    // a throwing turn gets in it).
++    const alignP = QB_ALIGN ? this.alignPlan(a, sim, ev.point) : null;
++    if (alignP) this.alignRec = { reset: alignP.reset, turn: +Math.abs(wrapAngle(angleTo(a.pos, ev.point) - a.body.facing)).toFixed(3), resid: null, speedK: null, sigK: null };
++    this.turnT = alignP ? (alignP.reset ? alignP.turnT : 0) : SHOULDERS_SET ? this.turnTime(a, ev.point) : 0;
+     const plain = sim.t + base;
+     this.releaseAt = this.turnT > base ? sim.t + this.turnT : plain;
+     this.motionAt = sim.t;
+@@ -2695,10 +2726,32 @@ export class QBPass implements Behavior {
+     return TURN_BASE + Math.abs(wrapAngle(angleTo(a.pos, p) - a.body.facing)) / TURN_RATE;
+   }
+ 
++  /** QB_ALIGN: the throw to `p` as he would make it now: the turn it needs (signed, + to his left), whether he resets
++   * (waits for the turn) or arms it, the release delay, and what an armed throw keeps (from the residual angle). */
++  private alignPlan(a: Agent, sim: PlaySim, p: Vec2): { reset: boolean; turnT: number; resid: number; across: boolean } {
++    const A = wrapAngle(angleTo(a.pos, p) - a.body.facing), base = this.windup(a);
++    const canTurn = TURN_RATE * Math.max(0, base - TURN_BASE), turnT = TURN_BASE + Math.abs(A) / TURN_RATE;
++    if (Math.abs(A) <= canTurn) return { reset: true, turnT: base, resid: 0, across: A > 0 };
++    const time = this.pressure(a, sim).time;
++    if (time > turnT + ALIGN_RESET_SPARE) return { reset: true, turnT, resid: 0, across: A > 0 };
++    return { reset: false, turnT: base, resid: Math.abs(A) - canTurn, across: A > 0 };
++  }
++  /** QB_ALIGN: what an unturned angle costs a throw: top ball speed kept and the miss multiplier. */
++  private alignCost(a: Agent, resid: number, across: boolean): { speedK: number; sigK: number } {
++    const x = clamp(resid / (Math.PI / 2), 0, 1), sm = x * x * (3 - 2 * x), side = across ? ALIGN_ACROSS : 1, keep = 1 - 0.5 * a.r('throwOnRun');
++    return { speedK: 1 - ALIGN_SPEED_LOSS * sm * side * keep, sigK: 1 + ALIGN_SIGMA * sm * side * keep };
++  }
++
+   /** The facing his throwing motion asks for: square to the target, or with
+    * SHOULDERS_SET the shoulders closing on it through the motion. */
+   private motionFacing(a: Agent, sim: PlaySim, ev: ThrowEval): number {
+     const to = angleTo(a.pos, ev.point);
++    // QB_ALIGN: the throwing turn: his stride and hips bring the trunk round at TURN_RATE after TURN_BASE, from where it
++    // faced at the decision; an armed throw is released before it is all the way round.
++    if (QB_ALIGN) {
++      const A = wrapAngle(to - this.turnFrom), k = TURN_RATE * Math.max(0, sim.t - this.motionAt - TURN_BASE);
++      return this.turnFrom + Math.sign(A) * Math.min(Math.abs(A), k);
++    }
+     if (!SHOULDERS_SET || this.turnT <= 0) return to;
+     // The turn ends at the release: the step and hip and shoulder rotation are
+     // the motion's last turnT seconds, after the load (NFL: shoulders closing on
+@@ -2775,6 +2828,13 @@ export class QBPass implements Behavior {
+     if (plat) this.flick = Math.max(this.flick, plat.flick);
+     // A flick: thrown with the arm alone, without the full coil and step [D].
+     sigma *= 1 + 0.8 * this.flick;
++    // QB_ALIGN: the angle his trunk is still short of the target at the release, thrown with less of his body.
++    let alignSpeed = 1;
++    if (QB_ALIGN) {
++      const A = wrapAngle(angleTo(a.pos, point) - a.body.facing), c = this.alignCost(a, Math.max(0, Math.abs(A) - 0.15), A > 0);
++      sigma *= c.sigK; alignSpeed = c.speedK;
++      if (this.alignRec) this.alignRec = { ...this.alignRec, resid: +Math.abs(A).toFixed(3), speedK: +c.speedK.toFixed(3), sigK: +c.sigK.toFixed(3) };
++    }
+     const dice = sim.dice('throw', a);
+     sigma *= Math.exp(dice.normal(0, 0.2 * (1 - a.r('consistency'))));
+     const miss: Vec3 = {
+@@ -2790,7 +2850,7 @@ export class QBPass implements Behavior {
+       this.platformRec = { sigma: plat.sigma, flick: plat.flick, speed: a.speed };
+     }
+     // Without the legs and trunk, less on the ball [D].
+-    let T = Math.max(ev.T * (1 + dice.normal(0, 0.03)), minFlightTime(from, miss, this.armSpeed * (1 - 0.2 * this.flick)));
++    let T = Math.max(ev.T * (1 + dice.normal(0, 0.03)), minFlightTime(from, miss, this.armSpeed * alignSpeed * (1 - 0.2 * this.flick)));
+     // Test staging (PlaySetup.stagedThrow with an aim): the ball goes to the recorded point in the recorded flight time.
+     const staged = sim.stagedThrow;
+     if (staged?.aim && staged.T !== undefined) { miss.x = staged.aim.x; miss.y = staged.aim.y; miss.z = staged.aim.z; T = staged.T; }

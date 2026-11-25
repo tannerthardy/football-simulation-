@@ -1,0 +1,226 @@
+diff --git a/config/baseline.json b/config/baseline.json
+index 9e80d34e5..9859106c8 100644
+--- a/config/baseline.json
++++ b/config/baseline.json
+@@ -266,6 +266,8 @@
+     "QB_KEY_PLANT": "0",
+     "QB_STICK": "0",
+     "QB_PEEK_CLOCK": "0",
++    "QB_MOF_READ": "0",
++    "QB_DEEP_WAIT": "0",
+     "TACKLE_SET": "0",
+     "EDGE_ARC": "0",
+     "POWER_AIM": "0",
+diff --git a/config/reference-stack.json b/config/reference-stack.json
+index 2144845da..77f95d48b 100644
+--- a/config/reference-stack.json
++++ b/config/reference-stack.json
+@@ -215,6 +215,8 @@
+     "QB_KEY_PLANT": "off",
+     "QB_STICK": "off",
+     "QB_PEEK_CLOCK": "off",
++    "QB_MOF_READ": "off",
++    "QB_DEEP_WAIT": "off",
+     "TACKLE_SET": "off",
+     "EDGE_ARC": "off",
+     "POWER_AIM": "on",
+diff --git a/docs/FLAGS.md b/docs/FLAGS.md
+index e6cd4a1a7..cdd3dcba6 100644
+--- a/docs/FLAGS.md
++++ b/docs/FLAGS.md
+@@ -2,7 +2,7 @@
+ 
+ Every engine switch read from the environment, recounted from `src` at `57f50fc3` on 2026-10-22. This includes #210's promotion and #205's two additional default-on switches. Flags that are not on develop (parked, removed from a PR, or only on a side branch) are kept in [PARKED.md](PARKED.md) so the ideas are not lost. Registration rules are in [PLAN.md](PLAN.md): at most 10 experimental flags, and each expires two reviews after it lands.
+ 
+-There are 470 flags read from the environment in `src` (recounted 2026-11-18, engine-78, plus QB_DRIVE, QB_RHYTHM_THROW, QB_ALIGN, QB_BODY_FOLLOW, QB_WINDOW_ARRIVE, QB_KEY_PLANT, QB_STICK and QB_PEEK_CLOCK): 351 are on unless set to `0`, 92 are off unless set to `1`, and 27 are numeric scales or modes (identity value unless listed in the stack's numeric section). The rows below carry each flag's history.
++There are 472 flags read from the environment in `src` (recounted 2026-11-18, engine-78, plus QB_DRIVE, QB_RHYTHM_THROW, QB_ALIGN, QB_BODY_FOLLOW, QB_WINDOW_ARRIVE, QB_KEY_PLANT, QB_STICK, QB_PEEK_CLOCK, QB_MOF_READ and QB_DEEP_WAIT): 351 are on unless set to `0`, 94 are off unless set to `1`, and 27 are numeric scales or modes (identity value unless listed in the stack's numeric section). The rows below carry each flag's history.
+ 
+ **Promotion (2026-11-09):** the reference stack `run-ref-4` is now the engine's default. The 90 flags it lists `on` are read as on unless set to `0` (rows marked "promoted" below); the rest are unchanged. Decisions and evidence for each flag are in [REFERENCE_STACK.md](REFERENCE_STACK.md); `npm run ref -- --list` is the current inventory, and `npm run ref -- --off -- <command>` runs the engine as it was before. The test suites still run on the pre-promotion engine (pinned in `vitest.config.ts`) until their recorded cases are re-recorded. The counts in the paragraph above predate all of this.
+ 
+@@ -383,6 +383,8 @@ There are 470 flags read from the environment in `src` (recounted 2026-11-18, en
+ | `QB_KEY_PLANT` | off | experimental (QB lane, 2026-11-18; Integration's item ii) | quarterback | `src/sim/behaviors/qb.ts` (`readKeyShell`, `keyLean`, `keyWaiting`) | On a keyed quick concept he reads the key on the plant, from what he has seen of it by then. An undeclared key gets no default: he throws the route its first lean gives (trusted at 0.25-0.75 of the commit margin by awareness and experience; chosen), or takes one hitch (0.35 s, chosen) to re-read and goes with the lean he has then, right or wrong. Off, the key was read at the plan's cue and an undeclared key got the concept's sitter default. |
+ | `QB_STICK` | off | experimental (QB lane, 2026-11-18; Integration's item iii, pump part 1) | quarterback | `src/sim/behaviors/qb.ts` (`pullDown`, `stickChange`, `stickBlocked`) | A started throw sticks: the delivery recheck pulls it down only on a perceived change past a margin since the decision (a defender now within 1.5 yd of the catch point having been beyond 2.5, one stepping into his reach of the low flight having been 1 yd beyond it, the receiver down or more than 2 yd off where he expected him). After such a pump the same man is not thrown until the cause clears a wider exit margin (defender beyond 4 yd from the point; receiver up and back on his route). Margins chosen. Off, QB_COMMIT's margin on the re-priced window or the plain re-priced value decided. |
+ | `QB_PEEK_CLOCK` | off | experimental (QB lane, 2026-11-18; Integration's item v) | quarterback | `src/sim/behaviors/qb.ts` (the vertical peek in the read loop) | The vertical peek runs on his feet's clock as taught: the deep picture is read as it stands by one hitch after the plant (one stride of his drop) if the stems have not shown, a close vertical holds him at most to the second hitch, and a felt rush (urgency 0.5+) takes him off it at once. Off, the peek waited for every vertical to reach 12 yd, so a jammed seam held him to the 2.5-look cap (four_verts: eyes on the verticals to 3.35 s, checkdown open from 1.95 s). |
++| `QB_MOF_READ` | off | experimental (QB lane, 2026-11-18; Integration, after item v) | quarterback | `src/sim/behaviors/qb.ts` (`readShell`, `applyKey`) | A vertical peek read off the middle of the field: the shell from his pre-snap picture; two-high, the safety on his side keyed between the seam and the outside vertical; one-high, the middle safety keyed between the near and far seams; read at the first hitch on QB_KEY_READ's displacement read, the answer thrown at the second, then the back. Off, his side's verticals were looked at inside-out whatever the shell. |
++| `QB_DEEP_WAIT` | off | experimental (QB lane, 2026-11-18) | quarterback | `src/sim/behaviors/qb.ts` (`readShell`, `window`) | His belief of when a deep zone defender starts toward a throw, by the seat he saw pre-snap: a man 12 yd or deeper, or against one-high the widest off corner (5 yd+), waits for the ball (goes at the release, then his reaction); quarters safeties and everyone underneath key the motion. Wrong when the coverage is disguised. Off, every defender facing him keyed the motion. Depths chosen. |
+ | `BRACE_EVIDENCE` | off | experimental (CARRIER_BRACE trigger, 2026-11-10) | ball carrier | `src/sim/behaviors/carrier.ts` (`BRACE_EVIDENCE`) | needs `CARRIER_BRACE`. He braces and lunges only at a man he sees free of blocks (no blocker he sees touching him) and squared up to him (seen facing within 45 deg of the line to the carrier). Trace on the fixed run set without it: 1.39 firings a run, 50% at engaged men, 30% at a free squared oncoming man, 33% followed by no contact; added breaks side +28, front +7 |
+ | `INFO_HONEST` | 63 | promoted 2026-11-14 (engine-61; all bits on; `=0` restores); was experimental (C14 coverage, 2026-11-13; information audit, intended on) | coverage | `src/sim/behaviors/defense.ts` (`infoHonest`; ManCoverage re-square, ZoneCoverage lanes / facing / eyes lean, `readsHandsAt`), `src/sim/coverage/judgment.ts`, `src/sim/coverage/techniques.ts` (Wall, Rob) | Coverage decisions read the defender's own picture, not true state. A bit mask: `INFO_HONEST=63` turns every item on; single items by bit (3 = 1, 6 = 2, 7 = 4, 8 = 8, 9 = 16, H = 32) for a per-item read. 3: deep help decisions freeze when he has seen the throw, not at the true release (was the default path with `JUDGE_SEEN_BALL` off). 6: a man carry stops re-squaring when he has seen the throw. 7: the judgment's protect-vertical carry starts its cushion from the receiver he saw. 8: the zone lean toward the QB's look goes to where he sees that receiver. 9: zone lanes and facing use where he sees the QB. H: the hands cue needs the receiver within 100 deg of his facing. From the coverage audit (items 1, 4, 5 and the loose ball are Defense's `HONEST_READS`; the ball path is the ball-in-air spec; the QB's motion and gaze move onto `QB_BODY_SEEN`). |
+ | `MAN_PHASE` | off | experimental (G3 coverage, 2026-11-10; measured with `WR_SNAP`, `QB_RHYTHM`, `PRESS_MIRROR`, `PRESS_RELEASE`) | man coverage | `src/sim/behaviors/defense.ts` (`ManCoverage.trackReceiver`, the leverage offset) | set at first review. Once his hips are open and the receiver is past 2 yd and running his stem (over 3 yd/s, mostly upfield), a man defender's leverage offset is an arm's length off the receiver's hip (their two body radii plus 0.7 of his arm) instead of 0.7 yd; on a plant or break he closes on the body as before. Pressed outside pairs (same operator on BDB 2025 weeks 1-3): CB-WR distance at 2.0 s 0.96 -> 1.09 yd (NFL 1.20), within 1.2 yd 79 -> 74% (NFL 51%); at 2.5 s 0.95 -> 1.22 (NFL 1.18). 732 dropbacks paired: +0.39 +/- 0.25 yd a pass play, completions 400 -> 407; to pressed receivers comp 18/45 -> 23/48 (NFL 44%), 7.31 -> 8.97 yd a throw (NFL 5.05); 17 plays moved by > 20 yd net +319 (catch and run). Second attempt (the first held the offset through a plant: +0.48 +/- 0.31, pressed hitches turned into 60-80 yd runs); stopped per the two-attempt rule. Test `test/man-phase.test.ts`. |
+diff --git a/scripts/diag/eyes/peek-staged.ts b/scripts/diag/eyes/peek-staged.ts
+index e5600e199..d9a29d926 100644
+--- a/scripts/diag/eyes/peek-staged.ts
++++ b/scripts/diag/eyes/peek-staged.ts
+@@ -11,12 +11,12 @@ for (const formation of ['gun_doubles_11', 'gun_trips_11']) for (const [id, c] o
+   if (plan?.style !== 'vertical_peek') continue;
+   for (const coverage of COVS) for (const roster of [3, 7, 11]) for (const seed of [1, 2, 3, 4]) {
+     let sim: any; try { sim = new PlaySim(nativeTraceSetup({ coverage, concept: id, seed, roster, formation, flip: false })); } catch { continue; }
+-    const dir = sim.attackDir(sim.offense[0].team); let offPeek: number | null = null;
+-    const tick0 = sim.tick.bind(sim); sim.tick = () => { tick0(); const b: any = sim.qb.behavior; if (offPeek === null && b?.kind === 'qb-pass' && b.triDone) offPeek = +sim.t.toFixed(2); };
++    const dir = sim.attackDir(sim.offense[0].team); let offPeek: number | null = null, key: any = null;
++    const tick0 = sim.tick.bind(sim); sim.tick = () => { tick0(); const b: any = sim.qb.behavior; if (offPeek === null && b?.kind === 'qb-pass' && b.triDone) offPeek = +sim.t.toFixed(2); if (!key && b?.kind === 'qb-pass' && b.keyRead && b.plan?.key) key = { at: +b.keyRead.at.toFixed(2), to: b.keyRead.throwTo, mode: b.keyRead.mode ?? null, role: b.plan.key.role, man: b.plan.key.man?.slot ?? null, target: (b.keyRead.throwTo === 'low' ? b.plan.key.low : b.plan.key.high)?.slot ?? null }; };
+     let thr: any = null; const tb = sim.throwBall.bind(sim);
+-    sim.throwBall = (p: any, target: any, v0: any, intended: any, ...rest: any[]) => { if (p === sim.qb && !thr) thr = { t: +sim.t.toFixed(2), route: target?.behavior?.route?.id ?? null, back: target?.slot === 'RB', air: intended ? +((intended.x - sim.los) * dir).toFixed(1) : null }; return tb(p, target, v0, intended, ...rest); };
++    sim.throwBall = (p: any, target: any, v0: any, intended: any, ...rest: any[]) => { if (p === sim.qb && !thr) thr = { t: +sim.t.toFixed(2), slot: target?.slot ?? null, route: target?.behavior?.route?.id ?? null, back: target?.slot === 'RB', air: intended ? +((intended.x - sim.los) * dir).toFixed(1) : null }; return tb(p, target, v0, intended, ...rest); };
+     let res: any; try { res = sim.run(); } catch { continue; }
+     const ev = sim.events.map((e: any) => e.type);
+-    console.log(JSON.stringify({ concept: id, formation, coverage, roster, seed, offPeek, thr, cmp: !!res.stats.completed, int: ev.includes('interception'), sack: ev.includes('sack'), yards: res.yards ?? 0 }));
++    console.log(JSON.stringify({ concept: id, formation, coverage, roster, seed, offPeek, key, thr, cmp: !!res.stats.completed, int: ev.includes('interception'), sack: ev.includes('sack'), yards: res.yards ?? 0 }));
+   }
+ }
+diff --git a/scripts/diag/eyes/seam-truth.ts b/scripts/diag/eyes/seam-truth.ts
+new file mode 100644
+index 000000000..a93786ecf
+--- /dev/null
++++ b/scripts/diag/eyes/seam-truth.ts
+@@ -0,0 +1,36 @@
++// node --import tsx scripts/diag/eyes/seam-truth.ts > rows.jsonl   (QB lane, 2026-11-18)
++// The vertical peek's routes at his second hitch, priced and then checked against the truth: his throws are held
++// (sim.stagedThrow, the staging hook), so the play runs on with no ball; at the hitch each ready vertical's window
++// (P, pOpen, intRisk, the aimed point and flight T) and the key's answer, then at the hitch + T the receiver's real
++// distance from the aimed point and the nearest defender's distance from the receiver and from the point.
++import { PlaySim } from '../../../src/sim/playsim.js';
++import { nativeTraceSetup } from '../command-trace.js';
++import { PASS_BY_ID } from '../../../src/playbook/concepts.js';
++import { installedPlan } from '../../../src/playbook/read-compiler/runtime.js';
++const COVS = 'cover1 cover2man cover2 cover2_match tampa2 cover3 cover3_match cover4 cover6'.split(' ');
++for (const formation of ['gun_doubles_11', 'gun_trips_11']) for (const [id, c] of Object.entries(PASS_BY_ID) as [string, any][]) {
++  let plan: any = null; try { plan = installedPlan(c, formation); } catch { plan = null; }
++  if (plan?.style !== 'vertical_peek') continue;
++  for (const coverage of COVS) for (const roster of [3, 7, 11]) for (const seed of [1, 2, 3, 4]) {
++    let sim: any; try { sim = new PlaySim(nativeTraceSetup({ coverage, concept: id, seed, roster, formation, flip: false })); } catch { continue; }
++    sim.stagedThrow = { held: true };
++    const dir = sim.attackDir(sim.offense[0].team), X = (p: any) => +((p.x - sim.los) * dir).toFixed(1);
++    let hitch: any = null; const pend: any[] = [];
++    const tick0 = sim.tick.bind(sim);
++    sim.tick = () => { tick0(); const b: any = sim.qb.behavior;
++      if (!hitch && b?.kind === 'qb-pass' && b.setAt >= 0 && sim.t >= b.setAt + 2 * b.stride() - 1e-9) {
++        hitch = { t: +sim.t.toFixed(2), key: b.keyRead ? { to: b.keyRead.throwTo, target: (b.keyRead.throwTo === 'low' ? b.plan.key.low : b.plan.key.high)?.slot, role: b.plan.key.role } : null, v: [] as any[] };
++        for (const o of sim.offense.filter((o: any) => ['go', 'seam', 'fade'].includes(o.behavior?.route?.id))) {
++          let ev: any = null; try { ev = b.ready(o, sim) ? b.evaluate(sim.qb, sim, o, 0) : null; } catch {}
++          if (!ev) continue;
++          const row: any = { r: `${o.slot}:${o.behavior.route.id}`, P: +ev.P.toFixed(3), pOpen: +ev.parts.pOpen.toFixed(3), iR: +ev.intRisk.toFixed(3), aim: X(ev.point), T: +ev.T.toFixed(2) };
++          hitch.v.push(row); pend.push({ o, row, at: sim.t + ev.T + b.windup(sim.qb), pt: { x: ev.point.x, y: ev.point.y } });
++        } }
++      for (const p of pend) if (!p.done && sim.t >= p.at - 1e-9) { p.done = true;
++        const nd = Math.min(...sim.defense.map((d: any) => Math.hypot(d.pos.x - p.o.pos.x, d.pos.y - p.o.pos.y)));
++        const np = Math.min(...sim.defense.map((d: any) => Math.hypot(d.pos.x - p.pt.x, d.pos.y - p.pt.y)));
++        Object.assign(p.row, { recvOff: +Math.hypot(p.o.pos.x - p.pt.x, p.o.pos.y - p.pt.y).toFixed(1), defToRecv: +nd.toFixed(1), defToPt: +np.toFixed(1), sackedBy: sim.phase !== 'live' }); } };
++    try { sim.run(); } catch { continue; }
++    console.log(JSON.stringify({ concept: id, formation, coverage, roster, seed, hitch }));
++  }
++}
+diff --git a/src/sim/behaviors/qb.ts b/src/sim/behaviors/qb.ts
+index 362292209..5752753ce 100644
+--- a/src/sim/behaviors/qb.ts
++++ b/src/sim/behaviors/qb.ts
+@@ -227,6 +227,29 @@ const QB_PEEK = process.env.QB_PEEK === '1';
+  * plan reads it ("the verticals as one look, then the back"); off, the installed order put the other side's verticals
+  * first (four_verts: S2, S1, W1, W2, then the outlet). */
+ const QB_PEEK_CLOCK = process.env.QB_PEEK_CLOCK === '1';
++/** QB_MOF_READ (experimental, off; QB_MOF_READ=1 turns it on; with READ_PLAN, QB_KEY_MAN, QB_KEY_READ): Integration's
++ * follow-up to item (v), 2026-11-18. A vertical peek (four verticals, any plan that reads two or more verticals as one
++ * look) is read as taught, off the middle of the field: the shell from his pre-snap picture (middle open or closed),
++ * the safety's movement read at his first hitch, the throw at the second on anticipation; covered, the back.
++ * - Two-high: the seams split the safeties; the key is the man in the middle hole between them (the Mike who carries a
++ *   seam: Tampa's pipe, Cover 2's hole), between his seam (low) and the far seam (high): the seam he does not carry.
++ *   (A first form keyed his side's safety between his seam and the outside vertical; held-ball truth at the arrival,
++ *   seam-truth.ts: its seam was open 34% against the other seam's 65%.) Without a far seam, his side's safety.
++ * - One-high: the key is the middle safety, between the seam on his side (low) and the far seam (high): the seam away
++ *   from where he goes. (The bender under him is a route we do not install.)
++ * - Built on the defender-key machinery (QB_KEY_READ's displacement read, its commit margin, one re-key on a move back
++ *   the other way): a safety who shows one way and comes back can beat it, the pick this read risks.
++ * Off, the peek looked at his side's verticals inside-out, whatever the shell. */
++const QB_MOF_READ = process.env.QB_MOF_READ === '1';
++/** QB_DEEP_WAIT (experimental, off; QB_DEEP_WAIT=1 turns it on): his belief of when a deep zone defender starts toward a
++ * throw, by the seat he saw him in before the snap. A deep-half, deep-middle or deep-third player waits for the ball:
++ * a man he saw 12 yd or deeper, or against a one-high shell an off corner (5 yd or deeper, the widest on his side),
++ * goes at the release plus his reaction, not on the motion. A quarters safety (two-high, shallower than 12 yd) and
++ * everyone underneath still key the motion. It is his belief from the shell and alignment he read, wrong when the
++ * coverage is disguised. Off, every defender facing him keyed the motion (THROW_REACT), one start-time belief for all;
++ * with DEEP_GATE the Cover 2/3 deep seats go on the seen ball, so he priced them a reaction early. Depths chosen. */
++const QB_DEEP_WAIT = process.env.QB_DEEP_WAIT === '1';
++const DEEP_SEAT = 12, OFF_CORNER = 5;
+ /** QB_COMMIT (experimental, off; QB_COMMIT=1): the delivery recheck (pullDown) keeps a started throw unless what he now
+  * sees has clearly changed (the window at half the chance he threw it at, or its pick risk up by 0.12); off, any
+  * re-priced value below zero pumped it, so on contested verticals he started and pumped repeatedly.
+@@ -1095,6 +1118,51 @@ export class QBPass implements Behavior {
+   }
+ 
+   /** READ_PLAN: reads from the installed plan: the alert, the plan's order, any other route, the outlet last. */
++  /** QB_MOF_READ: the middle-field key has been built (once, at his first tick). */
++  private mofBuilt = false;
++  private mofKey = false;
++  /** QB_DEEP_WAIT: the defenders he saw in a deep seat before the snap (he believes they wait for the ball). */
++  private deepWait = new Set<Agent>();
++  /** QB_MOF_READ / QB_DEEP_WAIT: his pre-snap picture of the shell and the seats, taken once at his first tick. */
++  private readShell(a: Agent, sim: PlaySim): void {
++    this.mofBuilt = true;
++    const dir = sim.attackDir(a.team), oneHigh = this.mind.pSingleHigh() >= 0.5;
++    const D = sim.defense.map((d) => { const p = sim.see(a, d).pos; return { d, p, depth: (p.x - sim.los) * dir, y: p.y - sim.ballY }; });
++    if (QB_DEEP_WAIT) {
++      for (const x of D) if (x.depth >= DEEP_SEAT) this.deepWait.add(x.d);
++      if (oneHigh) for (const side of [-1, 1]) {
++        const wide = D.filter((x) => Math.sign(x.y) === side && x.depth >= 0).sort((u, v) => Math.abs(v.y) - Math.abs(u.y))[0];
++        if (wide && wide.depth >= OFF_CORNER) this.deepWait.add(wide.d);
++      }
++    }
++    if (!QB_MOF_READ || !QB_KEY_MAN || !QB_KEY_READ || !this.plan?.peek || !this.plan.triangle || this.plan.key) return;
++    const tri = this.plan.triangle, at = (r: Agent) => this.has(sim, r);
++    const side = Math.sign(tri.reduce((s, r) => s + (at(r).y - sim.ballY), 0)) || 1;
++    const byWidth = [...tri].sort((u, v) => Math.abs(at(u).y - sim.ballY) - Math.abs(at(v).y - sim.ballY));
++    const seam = byWidth[0], outside = byWidth[byWidth.length - 1];
++    const deep = D.filter((x) => x.depth >= 9);
++    let man: Agent | null = null, low = seam, high = outside;
++    // The far seam: the inside vertical on the other side.
++    const far = this.reads.filter((r) => !tri.includes(r) && this.receiverForecasts.get(r)?.prior.declRule === 'vertical' && Math.sign(at(r).y - sim.ballY) === -side)
++      .sort((u, v) => Math.abs(at(u).y - sim.ballY) - Math.abs(at(v).y - sim.ballY))[0];
++    if (oneHigh) {
++      // The middle safety: the deep man nearest the middle, between the two seams.
++      man = deep.sort((u, v) => Math.abs(u.y) - Math.abs(v.y))[0]?.d ?? null;
++      if (far) high = far;
++    } else if (far) {
++      // Two-high: the seams split the safeties; the man who decides which is the one in the middle hole between them
++      // (the Mike who carries a seam: Tampa's pipe, Cover 2's middle hole), off the ball and nearest the middle.
++      man = D.filter((x) => x.depth >= 3 && x.depth < 9).sort((u, v) => Math.abs(u.y) - Math.abs(v.y))[0]?.d ?? null;
++      high = far;
++    } else {
++      // No far seam: the safety on his side, between his seam and his outside vertical.
++      man = deep.filter((x) => Math.sign(x.y) === side).sort((u, v) => Math.abs(u.y) - Math.abs(v.y))[0]?.d ?? null;
++    }
++    if (!man || low === high) return;
++    this.keySnap = { ...sim.see(a, man).pos };
++    this.plan.key = { low, high, cueBy: this.snapAt + this.drop.time + this.stride(), deep: true, role: oneHigh ? 'deep_middle' : high === far ? 'middle_hole' : 'deep_half', man, sits: null };
++    this.mofKey = true;
++  }
+   /** READ_PLAN: the plan's outlet (the back), as installed; QB_PEEK_CLOCK sends a finished vertical peek to him. */
+   private planOutlet: Agent | null = null;
+   private initPlan(sim: PlaySim): boolean {
+@@ -1263,7 +1331,9 @@ export class QBPass implements Behavior {
+   private applyKey(sim: PlaySim, throwTo: 'low' | 'high'): void {
+     const k = this.plan!.key!;
+     const first = throwTo === 'low' ? k.low : k.high, second = first === k.low ? k.high : k.low;
+-    this.reads = [first, second, ...this.reads.filter((r) => r !== first && r !== second)];
++    // QB_MOF_READ: the seam the key gives, then the back (covered: check it down); the peek's one look is this read.
++    if (this.mofKey) { const back = this.planOutlet; this.reads = [first, ...(back && back !== first ? [back] : []), ...this.reads.filter((r) => r !== first && r !== back)]; this.triDone = true; }
++    else this.reads = [first, second, ...this.reads.filter((r) => r !== first && r !== second)];
+     this.readIdx = 0;
+     this.readStart = sim.t;
+     this.keyAnswer = { target: first, toHigh: throwTo === 'high', at: sim.t };
+@@ -1404,6 +1474,7 @@ export class QBPass implements Behavior {
+     const t = sim.t;
+     if (sim.carrier !== a) { if (QB_BREAK) a.carryPosture = null; return stand(); }
+     if (QB_TICK_PICTURE) this.takePictures(a, sim);
++    if ((QB_MOF_READ || QB_DEEP_WAIT) && !this.mofBuilt) this.readShell(a, sim);
+     const facingDown = 0;
+     // Wrapped up by a tackler he cannot start a throw (with only a hand on him he
+     // still can); a throw already on its way comes out, wobbling.
+@@ -2711,7 +2782,8 @@ export class QBPass implements Behavior {
+       // reads the release itself. Weighted by his own man/zone belief.
+       const pMan = this.mind.pMan();
+       const facingBlind = THROW_REACT ? pMan * wind + (1 - pMan) * Math.max(0, wind - dp.reactionTime) : 0;
+-      const blind = facingQB ? facingBlind : onTarget ? Math.min(untilBreak, wind) : wind;
++      // QB_DEEP_WAIT: a man he saw in a deep seat waits for the ball: he goes at the release, then his reaction.
++      const blind = facingQB ? (QB_DEEP_WAIT && this.deepWait.has(d) ? wind : facingBlind) : onTarget ? Math.min(untilBreak, wind) : wind;
+       let mover = { pos: { x: seen.pos.x + seen.vel.x * blind, y: seen.pos.y + seen.vel.y * blind }, vel: seen.vel, profile: dp, speedScale: bel ? 1 : d.speedScale };
+       // DEF_BELIEF: the man on the target goes partly where the target goes.
+       if (DEF_BELIEF && Math.hypot(seen.pos.x - target.x, seen.pos.y - target.y) < 4) {

@@ -1,0 +1,70 @@
+diff --git a/src/sim/qbv2/cycle.ts b/src/sim/qbv2/cycle.ts
+index ae5571d82..993bdc4be 100644
+--- a/src/sim/qbv2/cycle.ts
++++ b/src/sim/qbv2/cycle.ts
+@@ -121,7 +121,7 @@ export class Cycle {
+     // Escape both ways (audit §1 #5): out of the pocket (the host's test carries enter and exit margins) he escapes; back
+     // inside, with the rush not on him, he resumes where he was.
+     if (s.outside && this.state !== 'escape') { this.beforeEscape = this.state; this.state = 'escape'; }
+-    else if (!s.outside && this.state === 'escape' && (this.pressure === 'clean' || this.pressure === 'felt')) this.state = this.beforeEscape === 'drop' ? 'read' : this.beforeEscape;
++    else if (!s.outside && this.state === 'escape' && (this.pressure === 'clean' || this.pressure === 'felt')) { this.state = this.beforeEscape === 'drop' ? 'read' : this.beforeEscape; this.escIdx = -1; }
+     if (this.state === 'drop') {
+       if (s.now < (s.readFrom ?? s.plantAt)) { this.looks.update(null, false, s.now, s.tau); return { kind: 'look', target: null }; }
+       this.state = 'read';
+@@ -207,9 +207,22 @@ export class Cycle {
+     return { kind: 'move' };
+   }
+ 
+-  /** Out of the pocket (ported by phase): the reads' throws judged as they are; away when the rush is on him. */
++  /** Out of the pocket (the outside reviewer's second read, 2026-11-25: a passer who has left the pocket still has eyes
++   * and a back). His eyes work the reads one at a time, a stride on each, from where he was; the reads' throws as he sees
++   * them, then the checkdown (its step no longer applies: the structure is gone); away only when the rush is about to get
++   * him or is on him (imminent, contact), not when it is merely felt: running is what he is doing about a felt rush. */
++  private escIdx = -1;
++  private escSince = 0;
+   private onEscape(s: CycleSenses): Intent {
+-    for (const r of this.plan.reads) { const j = this.choose(s, r); if (j) return this.commit(s, { kind: 'throw', judged: j }); }
+-    return this.pressure === 'clean' ? { kind: 'escape' } : { kind: 'away' };
++    const reads = this.plan.reads;
++    if (this.escIdx < 0) { this.escIdx = Math.max(0, Math.min(this.readIdx, reads.length - 1)); this.escSince = s.now; }
++    const r = reads[this.escIdx], t = r ? this.target(r) : null;
++    if (t) {
++      this.looks.update(t, s.inClear(t), s.now, s.tau);
++      if (s.now - this.escSince >= s.stride && reads.length > 1) { this.escIdx = (this.escIdx + 1) % reads.length; this.escSince = s.now; }
++    }
++    for (const rd of reads) { const j = this.choose(s, rd); if (j) return this.commit(s, { kind: 'throw', judged: j }); }
++    if (this.plan.checkdown) { const j = s.judge({ ref: this.plan.checkdown.ref, timing: this.plan.checkdown.timing }); if (j && j.P >= s.bar.P && j.risk <= s.bar.risk) return this.commit(s, { kind: 'throw', judged: j }); }
++    return this.pressure === 'imminent' || this.pressure === 'contact' ? { kind: 'away' } : { kind: 'escape' };
+   }
+ }
+diff --git a/test/qbv2-cycle.test.ts b/test/qbv2-cycle.test.ts
+index 209c9766e..60aff5980 100644
+--- a/test/qbv2-cycle.test.ts
++++ b/test/qbv2-cycle.test.ts
+@@ -89,6 +89,26 @@ describe('QB_V2 cycle: a covered read marked kill', () => {
+     expect(tr[tr.length - 1].i.kind).toBe('away');
+   });
+ 
++  it('out of the pocket his eyes work the reads, a felt rush does not throw it away, and the checkdown is there', () => {
++    const c = new Cycle({ ...STUB_SLANT_FLAT, checkdown: { ref: 'B', fromStep: 1, timing: 'seenOpen' } });
++    run(c, 0, 1.2, (t) => senses({ now: t }, {}));
++    const looks = new Set<string>();
++    let away = false;
++    for (let t = 1.25; t <= 2.5; t += 0.05) {
++      const i = c.tick(senses({ now: t, outside: true, felt: 0.7 }, {}));
++      if (i.kind === 'away') away = true;
++      if (c.looks.current) looks.add(JSON.stringify(c.looks.current));
++    }
++    expect(c.state).toBe('escape');
++    expect(away).toBe(false); // felt only: he keeps running
++    expect(looks.size).toBeGreaterThan(1); // his eyes moved across the reads
++    const i = c.tick(senses({ now: 2.55, outside: true, felt: 0.7 }, { B: 0.8 }));
++    expect(i.kind === 'throw' && i.judged.option.ref).toBe('B'); // the back, from outside the pocket
++    const c2 = new Cycle(STUB_SLANT_FLAT); run(c2, 0, 1.2, (t) => senses({ now: t }, {}));
++    c2.tick(senses({ now: 1.25, outside: true, felt: 0.9 }, {}));
++    expect(c2.tick(senses({ now: 1.3, outside: true, felt: 0.9 }, {})).kind).toBe('away'); // imminent: away
++  });
++
+   it('escape is left when he is back inside the pocket (audit §1 #5)', () => {
+     const c = new Cycle(STUB_SLANT_FLAT);
+     run(c, 0, 1.2, (t) => senses({ now: t }, {}));

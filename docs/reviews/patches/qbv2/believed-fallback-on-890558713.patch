@@ -1,0 +1,99 @@
+diff --git a/src/sim/behaviors/qb.ts b/src/sim/behaviors/qb.ts
+index 07103efef..66b5eca39 100644
+--- a/src/sim/behaviors/qb.ts
++++ b/src/sim/behaviors/qb.ts
+@@ -37,7 +37,7 @@ import { HEAD_RATE as SHARED_HEAD_RATE, turnHead } from '../head.js';
+ import { angleTo, goTo, stand } from './common.js';
+ import { RouteRunner } from './receiver.js';
+ import type { QBMind } from '../qbmind.js';
+-import { believedProfile, typicalAt } from '../believed.js';
++import { believedProfile, typicalOrLeague } from '../believed.js';
+ import type { PhysicalProfile } from '../../players/physical.js';
+ import type { ReplayTelemetryFrame } from '../types.js';
+ import { ReceiverForecast, type InstalledReceiverRoute } from '../receiver-forecast.js';
+@@ -979,13 +979,12 @@ const QB_HEAD = process.env.QB_HEAD !== '0';
+  * play's dice. */
+ export function scoutReport(a: Agent, d: Agent): { profile: PhysicalProfile; ballSkills: number; manCoverage: number } {
+   const key = `${a.player.id}|${d.player.id}`;
+-  const typ = typicalAt(d.player.position);
++  const typ = typicalOrLeague(d.player.position); // never his own values (second read, 2026-11-25)
+   const k = clamp(SCOUT0 + SCOUT_AWARE * a.r('playRecognition') + SCOUT_EXP * Math.min(1, a.player.experience / 8), 0, 1);
+   const film = new Rng(hashString(key));
+   const err = FILM_ERR * Math.sqrt(FILM_FLOOR * FILM_FLOOR + (1 - FILM_FLOOR * FILM_FLOOR) / (1 + d.player.experience / FILM_YEARS));
+   let out: { profile: PhysicalProfile; ballSkills: number; manCoverage: number };
+-  if (!typ) out = { profile: d.profile, ballSkills: d.r('ballSkills'), manCoverage: d.r('manCoverage') };
+-  else {
++  {
+     const prof: Record<string, unknown> = { ...d.profile };
+     for (const [f, t] of Object.entries(typ.profile)) {
+       const v = (d.profile as unknown as Record<string, unknown>)[f];
+@@ -3290,10 +3289,9 @@ export class QBPass implements Behavior {
+     if (!b && QB_SCOUT) { b = scoutReport(a, d); this.believed.set(d, b); }
+     if (!b) {
+       const k = clamp(SCOUT0 + SCOUT_AWARE * a.r('awareness') + SCOUT_EXP * Math.min(1, a.player.experience / 8), 0, 1);
+-      const typ = typicalAt(d.player.position);
+-      b = typ ? { profile: believedProfile(d.profile, typ.profile, k), ballSkills: typ.ratings.ballSkills + (d.r('ballSkills') - typ.ratings.ballSkills) * k,
+-          manCoverage: typ.ratings.manCoverage + (d.r('manCoverage') - typ.ratings.manCoverage) * k }
+-        : { profile: d.profile, ballSkills: d.r('ballSkills'), manCoverage: d.r('manCoverage') };
++      const typ = typicalOrLeague(d.player.position); // never his own values (second read, 2026-11-25)
++      b = { profile: believedProfile(d.profile, typ.profile, k), ballSkills: typ.ratings.ballSkills + (d.r('ballSkills') - typ.ratings.ballSkills) * k,
++        manCoverage: typ.ratings.manCoverage + (d.r('manCoverage') - typ.ratings.manCoverage) * k };
+       this.believed.set(d, b);
+     }
+     return b;
+diff --git a/src/sim/believed.ts b/src/sim/believed.ts
+index 7439d5195..0d0915b3a 100644
+--- a/src/sim/believed.ts
++++ b/src/sim/believed.ts
+@@ -10,6 +10,7 @@ import { derivePhysical, type PhysicalProfile } from '../players/physical.js';
+ import { r01, RATING_KEYS, type Player, type Position, type RatingKey } from '../players/types.js';
+ 
+ const TEAMS = 12;
++const LEAGUE = '*league*';
+ let cache: Map<Position, { profile: PhysicalProfile; ratings: Record<RatingKey, number> }> | null = null;
+ 
+ function build(): NonNullable<typeof cache> {
+@@ -25,6 +26,8 @@ function build(): NonNullable<typeof cache> {
+     }
+   }
+   const out = new Map<Position, { profile: PhysicalProfile; ratings: Record<RatingKey, number> }>();
++  // The league-typical defensive starter (every position pooled), for a man at a position with no starters in the sample.
++  by.set(LEAGUE as Position, [...by.values()].flat());
+   for (const [position, players] of by) {
+     const sum: Record<string, number> = {}, count: Record<string, number> = {};
+     const ratings = Object.fromEntries(RATING_KEYS.map((k) => [k, 0])) as Record<RatingKey, number>;
+@@ -44,6 +47,14 @@ export function typicalAt(position: Position): { profile: PhysicalProfile; ratin
+   return cache.get(position) ?? null;
+ }
+ 
++/** The typical defensive starter at a position, or, for a position with no starters in the sample, the league-typical
++ * defensive starter: never the man's own values (the outside reviewer's second read, 2026-11-25: the fallback read the
++ * true profile and ratings exactly). */
++export function typicalOrLeague(position: Position): { profile: PhysicalProfile; ratings: Record<RatingKey, number> } {
++  cache ??= build();
++  return cache.get(position) ?? cache.get(LEAGUE as Position)!;
++}
++
+ /** `truth` as believed by someone who knows the man to degree k (0 = only his position, 1 = exactly). */
+ export function believedProfile(truth: PhysicalProfile, typical: PhysicalProfile, k: number): PhysicalProfile {
+   const out: Record<string, unknown> = { ...truth };
+diff --git a/test/believed-fallback.test.ts b/test/believed-fallback.test.ts
+new file mode 100644
+index 000000000..1ec5b2fa3
+--- /dev/null
++++ b/test/believed-fallback.test.ts
+@@ -0,0 +1,14 @@
++// The believed body never falls back to a man's true values (the outside reviewer's second read, 2026-11-25): a position
++// with no defensive starters in the typical sample gets the league-typical defensive starter.
++import { describe, expect, it } from 'vitest';
++import { typicalAt, typicalOrLeague } from '../src/sim/believed.js';
++
++describe('believed body fallback', () => {
++  it('a defensive position keeps its own typical; any other gets the league-typical starter, never null', () => {
++    expect(typicalOrLeague('CB')).toBe(typicalAt('CB'));
++    expect(typicalAt('WR')).toBeNull();
++    const t = typicalOrLeague('WR');
++    expect(t.profile).toBeTruthy();
++    expect(t.ratings.ballSkills).toBeGreaterThan(0);
++  });
++});

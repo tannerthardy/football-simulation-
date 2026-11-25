@@ -1,0 +1,2323 @@
+diff --git a/scripts/diag/eyes/cov-id-games.ts b/scripts/diag/eyes/cov-id-games.ts
+new file mode 100644
+index 000000000..9691732c0
+--- /dev/null
++++ b/scripts/diag/eyes/cov-id-games.ts
+@@ -0,0 +1,22 @@
++// QB lane 2026-11-18: his coverage belief against the truth in league games (pass plays): at 0.6, 1.1 and 1.6 s after
++// the snap and at his set, the top coverage and its mass, his pMan and pSingleHigh; the truth's man / shell.
++//   SEED=101 GAMES=1 node --import tsx scripts/diag/eyes/cov-id-games.ts > rows.jsonl
++import { Rng } from '../../../src/core/rng.js';
++import { simulateGame } from '../../../src/game/game.js';
++import { generateTeam, leagueSample } from '../../../src/league/team.js';
++import { PlaySim } from '../../../src/sim/playsim.js';
++const seed = Number(process.env.SEED ?? 101), games = Number(process.env.GAMES ?? 1);
++let n = 0; const orig = PlaySim.prototype.run;
++PlaySim.prototype.run = function (this: any) { n++; const sim: any = this; if (!sim.isPass) return orig.apply(this);
++  const rec: Record<string, any> = {}; const tick0 = sim.tick.bind(sim);
++  const snap = (m: any) => { const top = Object.entries(m.belief as Record<string, number>).sort((u, v) => v[1] - u[1])[0]; return { top: top[0], p: +top[1].toFixed(3), pMan: +m.pMan().toFixed(3), p1: +m.pSingleHigh().toFixed(3) }; };
++  sim.tick = () => { tick0(); const m: any = sim.qbMind; const b: any = sim.qb.behavior; if (!m?.belief) return;
++    for (const t of [0.3, 0.6, 1.1, 1.6]) if (!rec['t' + t] && Math.abs(sim.t - t) < 0.026) rec['t' + t] = snap(m);
++    if (!rec.set && b?.kind === 'qb-pass' && b.setAt >= 0) rec.set = { at: +sim.t.toFixed(2), ...snap(m) }; };
++  const res = orig.apply(this); const cov: any = sim.defCall?.coverage;
++  console.log(JSON.stringify({ seed, play: n, concept: sim.offCall?.pass?.id, formation: sim.offCall?.formation?.id, coverage: cov?.id, man: cov?.man, shell: cov?.shell, ...rec,
++    int: sim.events.some((e: any) => e.type === 'interception'), throwT: sim.throwAt >= 0 ? +sim.throwAt.toFixed(2) : null }));
++  return res; };
++for (let g = 0; g < games; g++) { const s = seed + g, rng = new Rng(s);
++  const home = generateTeam(rng, 'Ironmen', 'IRN', { strength: 0.55 }), away = generateTeam(rng, 'Comets', 'COM', { strength: 0.55 });
++  simulateGame(leagueSample(home, s), leagueSample(away, s), { seed: s }); }
+diff --git a/scripts/diag/eyes/cov-sig-fit.ts b/scripts/diag/eyes/cov-sig-fit.ts
+new file mode 100644
+index 000000000..af540a7aa
+--- /dev/null
++++ b/scripts/diag/eyes/cov-sig-fit.ts
+@@ -0,0 +1,75 @@
++// QB lane 2026-11-18: his learned picture of each coverage after the snap (qbmind.ts POST_SIG, docs/reviews/
++// 2026-11-18-coverage-certainty.md). From his own looks only: QBMind.postFeaturesObserved() on his memory (his delayed,
++// noisy pictures, filled where his eyes went), never true defender state. Per coverage, at 0.5 / 0.8 / 1.2 s after the
++// snap: the mean and the spread (sd) of [defenders heading deep, middle of the field closed, coverage players turned].
++// Staged plays (every coverage; formations, concepts, rosters, seeds, flips varied) and league games (the formations and
++// calls a passer meets) are pooled.
++//   node --import tsx scripts/diag/eyes/cov-sig-fit.ts [games] > src/sim/coverage-signatures.ts
++// Re-run when the defense changes; test/coverage-signatures.test.ts fails when a coverage drifts outside its template.
++import { Rng } from '../../../src/core/rng.js';
++import { simulateGame } from '../../../src/game/game.js';
++import { generateTeam, leagueSample } from '../../../src/league/team.js';
++import { COVERAGES } from '../../../src/playbook/defense.js';
++import { PlaySim } from '../../../src/sim/playsim.js';
++import { nativeTraceSetup } from '../command-trace.js';
++
++const TIMES = [0.5, 0.8, 1.2];
++const games = Number(process.argv[2] ?? 4);
++const rows = new Map<string, number[][][]>(); // coverage -> time index -> samples of [deep, mof, turned]
++const push = (cov: string, k: number, f: number[]) => {
++  const r = rows.get(cov) ?? TIMES.map(() => [] as number[][]); rows.set(cov, r); r[k].push(f);
++};
++/** Record his observed features at each time on one play (until the throw, or the last time). */
++function sample(sim: any, cov: string, maxTicks = 40) {
++  const seen = new Set<number>();
++  for (let i = 0; i < maxTicks && sim.phase === 'live'; i++) {
++    sim.tick();
++    for (let k = 0; k < TIMES.length; k++) if (!seen.has(k) && Math.abs(sim.t - TIMES[k]) < 0.026) {
++      seen.add(k); push(cov, k, sim.qbMind.postFeaturesObserved());
++    }
++    if (seen.size === TIMES.length || sim.ball.kind === 'air') break;
++  }
++}
++
++// Staged: every coverage, 24 plays each.
++const FORMS = ['gun_doubles_11', 'gun_trips_11', 'ace_12', 'gun_empty_11', 'gun_bunch_11', 'ace_11', 'pistol_12', 'i_pro_21'];
++const CONCEPTS = ['curl_flat', 'smash', 'four_verts', 'mesh', 'dagger', 'slant_flat'];
++for (const c of COVERAGES) for (let i = 0; i < 24; i++) {
++  let sim: any;
++  try { sim = new PlaySim(nativeTraceSetup({ coverage: c.id, concept: CONCEPTS[i % CONCEPTS.length], formation: FORMS[(i * 5) % FORMS.length], roster: 1 + (i % 12), seed: 1 + Math.floor(i / 6), flip: i % 2 === 1 })); }
++  catch { continue; }
++  sample(sim, c.id);
++}
++
++// League: pass plays as called in games.
++const orig = PlaySim.prototype.run;
++PlaySim.prototype.run = function (this: any) {
++  const sim: any = this;
++  if (!sim.isPass || !sim.defCall?.coverage) return orig.apply(this);
++  const tick0 = sim.tick.bind(sim), seen = new Set<number>();
++  sim.tick = () => { tick0(); for (let k = 0; k < TIMES.length; k++) if (!seen.has(k) && sim.ball.kind !== 'air' && Math.abs(sim.t - TIMES[k]) < 0.026) { seen.add(k); push(sim.defCall.coverage.id, k, sim.qbMind.postFeaturesObserved()); } };
++  return orig.apply(this);
++};
++for (let g = 0; g < games; g++) {
++  const seed = 201 + g, rng = new Rng(seed);
++  const home = generateTeam(rng, 'Ironmen', 'IRN', { strength: 0.55 }), away = generateTeam(rng, 'Comets', 'COM', { strength: 0.55 });
++  simulateGame(leagueSample(home, seed), leagueSample(away, seed), { seed });
++}
++
++const out: Record<string, { n: number[]; mean: number[][]; sd: number[][] }> = {};
++for (const c of COVERAGES) {
++  const r = rows.get(c.id); if (!r) continue;
++  const stat = (xs: number[][], j: number) => { const v = xs.map((x) => x[j]); const m = v.reduce((s, x) => s + x, 0) / v.length;
++    return { m, sd: Math.sqrt(v.reduce((s, x) => s + (x - m) ** 2, 0) / Math.max(1, v.length - 1)) }; };
++  out[c.id] = { n: r.map((xs) => xs.length),
++    mean: r.map((xs) => [0, 1, 2].map((j) => +stat(xs, j).m.toFixed(3))),
++    sd: r.map((xs) => [0, 1, 2].map((j) => +stat(xs, j).sd.toFixed(3))) };
++}
++process.stdout.write(`/** His learned post-snap picture of each coverage (QBMind.postSnapRead), fitted from his own looks: generated by
++ * scripts/diag/eyes/cov-sig-fit.ts (staged plays for every coverage, plus ${games} league games), ${new Date().toISOString().slice(0, 10)}. Do not edit by hand; re-run
++ * the script when the defense changes (test/coverage-signatures.test.ts fails when a coverage drifts outside it).
++ * Per coverage, at TIMES s after the snap: the mean and sd of [defenders heading deep, middle closed, players turned],
++ * and the number of looks. */
++export const SIG_TIMES = ${JSON.stringify(TIMES)};
++export const COVERAGE_SIGNATURES: Record<string, { n: number[]; mean: number[][]; sd: number[][] }> = ${JSON.stringify(out, null, 1)};
++`);
+diff --git a/scripts/diag/eyes/man-belief-harm.ts b/scripts/diag/eyes/man-belief-harm.ts
+new file mode 100644
+index 000000000..605c9f30a
+--- /dev/null
++++ b/scripts/diag/eyes/man-belief-harm.ts
+@@ -0,0 +1,27 @@
++// QB lane 2026-11-18 (Integration, the user's correction): what the "man" belief does in pricing, per defender. At each
++// throw decision, the window's rows for defenders facing the QB (marginProbe) with his pMan; after the play, whether that
++// defender keyed the arm (the defense's readArm tag: a zone reader with his eyes on the QB) and the coverage.
++import { Rng } from '../../../src/core/rng.js';
++import { simulateGame } from '../../../src/game/game.js';
++import { generateTeam, leagueSample } from '../../../src/league/team.js';
++import { PlaySim } from '../../../src/sim/playsim.js';
++const seed = Number(process.env.SEED ?? 101), games = Number(process.env.GAMES ?? 2);
++const orig = PlaySim.prototype.run;
++PlaySim.prototype.run = function (this: any) { const sim: any = this; if (!sim.isPass) return orig.apply(this);
++  let dec: any = null, hooked = false; const tick0 = sim.tick.bind(sim);
++  sim.tick = () => { const b: any = sim.qb.behavior;
++    if (!hooked && b?.kind === 'qb-pass') { hooked = true; b.marginProbe = true; const st = b.startThrow.bind(b);
++      b.startThrow = (a: any, s: any, ev: any) => { const keys = (slot: string) => { const d = s.defense.find((x: any) => x.slot === slot); if (!d) return null;
++          const ang = Math.atan2(s.qb.pos.y - d.pos.y, s.qb.pos.x - d.pos.x), zoneEyes = d.behavior?.constructor?.name === 'ZoneCoverage' || d.behavior?.zoneEyes === true;
++          return { facing: Math.cos(d.body.facing - ang) > (zoneEyes ? -0.2 : 0.1), zoneEyes, beh: d.behavior?.constructor?.name ?? null }; };
++        if (!dec) dec = { t: +s.t.toFixed(2), pMan: +b.mind.pMan().toFixed(3), target: ev.target.slot, P: ev.P, iR: ev.intRisk,
++        rows: (b.marginLast ?? []).filter((m: any) => m.facingQB).map((m: any) => ({ truth: keys(m.slot), slot: m.slot, m: m.m, first: m.first, blind: m.blind, react: m.react, wind: m.wind, pReads: m.pReads })) }; return st(a, s, ev); }; }
++    tick0(); };
++  const res = orig.apply(this);
++  if (dec) { const cov: any = sim.defCall?.coverage;
++    for (const r of dec.rows) { const d = sim.defense.find((x: any) => x.slot === r.slot); r.readArm = !!d?.tags?.has?.('readArm'); r.picked = sim.events.some((e: any) => e.type === 'interception' && sim.agents[e.a] === d); }
++    console.log(JSON.stringify({ coverage: cov?.id, man: cov?.man, ...dec, int: sim.events.some((e: any) => e.type === 'interception') })); }
++  return res; };
++for (let g = 0; g < games; g++) { const s = seed + g, rng = new Rng(s);
++  const home = generateTeam(rng, 'Ironmen', 'IRN', { strength: 0.55 }), away = generateTeam(rng, 'Comets', 'COM', { strength: 0.55 });
++  simulateGame(leagueSample(home, s), leagueSample(away, s), { seed: s }); }
+diff --git a/scripts/diag/eyes/turned-check.ts b/scripts/diag/eyes/turned-check.ts
+new file mode 100644
+index 000000000..7f0c92c60
+--- /dev/null
++++ b/scripts/diag/eyes/turned-check.ts
+@@ -0,0 +1,13 @@
++// QB lane 2026-11-18: the "turned" cue (QBMind.postFeaturesObserved) on man coverage: each coverage defender's true speed
++// and facing against the QB, and his remembered facing and speed, at 0.8 and 1.2 s.
++import { PlaySim } from '../../../src/sim/playsim.js';
++import { nativeTraceSetup } from '../command-trace.js';
++for (const coverage of ['cover1', 'cover0', 'cover3']) for (const seed of [1, 2]) {
++  const sim: any = new PlaySim(nativeTraceSetup({ coverage, concept: 'four_verts', seed, roster: 7, formation: 'gun_doubles_11', flip: false }));
++  for (let i = 0; i < 30; i++) { sim.tick();
++    if (Math.abs(sim.t - 0.8) < 0.026 || Math.abs(sim.t - 1.2) < 0.026) {
++      const qb = sim.qb, m = sim.qbMind;
++      const rows = sim.defense.filter((d: any) => d.pos.x - sim.los > 2).map((d: any) => { const toQB = Math.atan2(qb.pos.y - d.pos.y, qb.pos.x - d.pos.x); const mem = m.memory.get(d);
++        return `${d.slot} true v${Math.hypot(d.vel.x, d.vel.y).toFixed(1)} cos${Math.cos(d.body.facing - toQB).toFixed(2)} | mem ${mem ? 'v' + Math.hypot(mem.vel.x, mem.vel.y).toFixed(1) + ' cos' + Math.cos(mem.facing - Math.atan2(qb.pos.y - mem.pos.y, qb.pos.x - mem.pos.x)).toFixed(2) + ' age' + (sim.t - mem.t).toFixed(2) : '-'}`; });
++      console.log(coverage, seed, sim.t.toFixed(2), 'turned', m.postFeaturesObserved()[2].toFixed(2)); rows.forEach((r: string) => console.log('   ', r)); } }
++}
+diff --git a/src/sim/behaviors/qb.ts b/src/sim/behaviors/qb.ts
+index ce91637cf..7bb519464 100644
+--- a/src/sim/behaviors/qb.ts
++++ b/src/sim/behaviors/qb.ts
+@@ -832,6 +832,15 @@ const QB_CLOSE_BELIEF = process.env.QB_CLOSE_BELIEF === '1';
+  * Everyone else is priced as before. Six-seed card (fe150600, off vs on): completion -0.6 pt, Y/A +0.34, INT +0.15 pt,
+  * YAC +0.03, 20+ plays +0.7 pt. */
+ const QB_ROLE_PATH = process.env.QB_ROLE_PATH !== '0';
++/** QB_DEF_ROLE (experimental, off; QB_DEF_ROLE=1 turns it on; QB lane, 2026-11-18, after the user's correction: a match
++ * or split-field call has no single man/zone label): a defender facing the passer is priced by what the passer sees him
++ * doing, not by a whole-defense man/zone belief. Running with a receiver (within 3.5 yd, moving with him, not closing on
++ * him fast): man on that receiver for this throw, he reads the release. Facing the passer with no receiver near him
++ * moving with him: a zone reader, he reads the arm. Neither clear: the prior, his belief that this defender's seat is a
++ * zone seat (QBMind.pZoneSeat, over his coverage belief, per slot). Off: every facing defender weighted by pMan. */
++const QB_DEF_ROLE = process.env.QB_DEF_ROLE === '1' || process.env.QB_DEF_ROLE === '2';
++/** QB_DEF_ROLE=2 (diagnostic): the seat prior alone, no behavior test. */
++const QB_DEF_ROLE_SEAT = process.env.QB_DEF_ROLE === '2';
+ /** QB_CLOSE_BELIEF: his time (s) to play `pt` within `radius`: his seen velocity kept for `start` s, then the body's run at it. */
+ function bodyArrive(seen: { pos: { x: number; y: number }; vel: { x: number; y: number }; facing: number }, profile: any, speedScale: number,
+   pt: { x: number; y: number }, radius: number, start: number): number {
+@@ -1186,6 +1195,24 @@ export class QBPass implements Behavior {
+   /** QB_MOF_READ: the middle-field key has been built (once, at his first tick). */
+   private mofBuilt = false;
+   private mofKey = false;
++  /** QB_DEF_ROLE: whether a defender facing him reads the passer (1: a zone reader, keys the arm) or a receiver (0: man on
++   * him for this throw), from what he sees: the defender's picture and his forecasts of the receivers; else the prior. */
++  private readsPasser(sim: PlaySim, d: Agent, seen: { pos: Vec2; vel: Vec2 }, team: Agent['team']): number {
++    if (QB_DEF_ROLE_SEAT) return this.mind.pZoneSeat(d.slot);
++    const sp = Math.hypot(seen.vel.x, seen.vel.y);
++    let near = false;
++    for (const o of sim.offense) {
++      const f = this.receiverForecasts.get(o); if (!f || o === sim.qb) continue;
++      const now = this.has(sim, o), nx = f.predict(sim.t, 0.1) ?? now, vx = (nx.x - now.x) / 0.1, vy = (nx.y - now.y) / 0.1, vs = Math.hypot(vx, vy);
++      const dd = Math.hypot(seen.pos.x - now.x, seen.pos.y - now.y);
++      if (dd > 3.5) continue;
++      near = true;
++      const closingOn = dd > 1e-6 ? ((seen.vel.x - vx) * (now.x - seen.pos.x) + (seen.vel.y - vy) * (now.y - seen.pos.y)) / dd : 0;
++      if (vs > 1.5 && sp > 1.5 && closingOn < 1.5 && (seen.vel.x * vx + seen.vel.y * vy) / (sp * vs) > 0.7) return 0;
++    }
++    if (!near) return 1;
++    return this.mind.pZoneSeat(d.slot);
++  }
+   /** QB_DEEP_WAIT: the defenders he saw in a deep seat before the snap (he believes they wait for the ball). */
+   private deepWait = new Set<Agent>();
+   /** QB_MOF_READ / QB_DEEP_WAIT: his pre-snap picture of the shell and the seats, taken once at his first tick. */
+@@ -2952,9 +2979,10 @@ export class QBPass implements Behavior {
+       // THROW_REACT: no defender breaks on the ball before it is in the air.
+       // One facing him in zone keys the motion, so he goes at the release or
+       // a reaction after the motion starts, whichever is later; one in man
+-      // reads the release itself. Weighted by his own man/zone belief.
+-      const pMan = this.mind.pMan();
+-      const facingBlind = THROW_REACT ? pMan * wind + (1 - pMan) * Math.max(0, wind - dp.reactionTime) : 0;
++      // reads the release itself. Weighted by his own man/zone belief (QB_DEF_ROLE: by what he sees this defender doing).
++      let pReads = 1 - this.mind.pMan();
++      if (QB_DEF_ROLE && facingQB) pReads = this.readsPasser(sim, d, seen, a.team);
++      const facingBlind = THROW_REACT ? (1 - pReads) * wind + pReads * Math.max(0, wind - dp.reactionTime) : 0;
+       // QB_DEEP_WAIT: a man he saw in a deep seat waits for the ball: he goes at the release, then his reaction.
+       const blind = facingQB ? (QB_DEEP_WAIT && this.deepWait.has(d) ? wind : facingBlind) : onTarget ? Math.min(untilBreak, wind) : wind;
+       let mover = { pos: { x: seen.pos.x + seen.vel.x * blind, y: seen.pos.y + seen.vel.y * blind }, vel: seen.vel, profile: dp, speedScale: bel ? 1 : d.speedScale };
+@@ -2974,7 +3002,7 @@ export class QBPass implements Behavior {
+         const age = this.mind.pictureAge(d), A = dp.vmax / Math.max(dp.tau, 1e-3);
+         spreadD = Math.min(0.5 * A * age * age, dp.vmax * age) / Math.max(dp.vmax, 1e-3);
+       }
+-      return { d, dp, dBall, blind, mover, react, leap, spreadD, facingQB, tied, closeState, roof, deepBail, carryAt, seen, speedScale: mover.speedScale, estimateError: a.mind.judgment(`reach:${d.slot}`) * noise };
++      return { d, dp, dBall, blind, mover, react, leap, spreadD, facingQB, tied, closeState, roof, deepBail, carryAt, seen, pReads, speedScale: mover.speedScale, estimateError: a.mind.judgment(`reach:${d.slot}`) * noise };
+     });
+     // A ball that arrives at `pt`: who contests it at the catch, who can get a
+     // hand on it on the way, and how many of those become picks.
+@@ -2995,7 +3023,7 @@ export class QBPass implements Behavior {
+     const at = (pt: Vec3) => {
+       let pOpen = 1, pClear = 1, intRisk = 0, pSecure = 1, intPath = 0, intJump = 0, intContest = 0, noPathPick = 1, noCatchPick = 1;
+       const v0 = dragFreeLaunch(from, pt, T);
+-      for (const { d, dp, dBall, blind, mover, react, leap, spreadD, facingQB, tied, closeState, roof, deepBail, carryAt, seen, speedScale, estimateError } of defenders) {
++      for (const { d, dp, dBall, blind, mover, react, leap, spreadD, facingQB, tied, closeState, roof, deepBail, carryAt, seen, pReads, speedScale, estimateError } of defenders) {
+         // QB_CLOSE_BELIEF: an occupied man starts from the ball seen in the air (the release, a not-facing reaction); one
+         // moving away from his own start time; both run the engine's body from what he sees.
+         const cbStart = closeState === 'occupied' || (closeState === 'away' && !facingQB) ? wind + dp.reactionTime * 1.8 : blind + react;
+@@ -3050,7 +3078,7 @@ export class QBPass implements Behavior {
+         intPath += iPath; intJump += iJump; intContest += iContest;
+         if (marginTrace && pt === point && (contest > 0.05 || iPath + iJump + iContest > 0.001)) marginTrace.push({ slot: d.slot, m: +m.toFixed(3), first: +first.toFixed(3),
+           contest: +contest.toFixed(3), roof, deepBail, under, deepZone, carry: carryTt !== null, dDepth: +((seen.pos.x - sim.los) * sim.attackDir(a.team)).toFixed(1), tDepth: +((target.x - sim.los) * sim.attackDir(a.team)).toFixed(1), dTgt: +Math.hypot(seen.pos.x - target.x, seen.pos.y - target.y).toFixed(1), blind: +blind.toFixed(3), react: +react.toFixed(3), wind: +wind.toFixed(3), total: +total.toFixed(3), touch: +touch.toFixed(4),
+-          iPath: +iPath.toFixed(4), iJump: +iJump.toFixed(4), iContest: +iContest.toFixed(4), facingQB, ballSkills: +dBall.toFixed(2) });
++          iPath: +iPath.toFixed(4), iJump: +iJump.toFixed(4), iContest: +iContest.toFixed(4), facingQB, ballSkills: +dBall.toFixed(2), pReads: +pReads.toFixed(3) });
+         if (INT_BELIEF) {
+           noPathPick *= 1 - clamp(iPath * PATH_PICK * intBelief, 0, 0.95);
+           noCatchPick *= 1 - clamp((iJump + iContest) * CATCH_PICK * intBelief, 0, 0.95);
+diff --git a/src/sim/coverage-signatures.ts b/src/sim/coverage-signatures.ts
+new file mode 100644
+index 000000000..393381ab7
+--- /dev/null
++++ b/src/sim/coverage-signatures.ts
+@@ -0,0 +1,1976 @@
++/** His learned post-snap picture of each coverage (QBMind.postSnapRead), fitted from his own looks: generated by
++ * scripts/diag/eyes/cov-sig-fit.ts (staged plays for every coverage, plus 4 league games), 2026-11-18. Do not edit by hand; re-run
++ * the script when the defense changes (test/coverage-signatures.test.ts fails when a coverage drifts outside it).
++ * Per coverage, at TIMES s after the snap: the mean and sd of [defenders heading deep, middle closed, players turned],
++ * and the number of looks. */
++export const SIG_TIMES = [0.5, 0.8, 1.2];
++export const COVERAGE_SIGNATURES: Record<string, { n: number[]; mean: number[][]; sd: number[][] }> = {
++ "cover0": {
++  "n": [
++   57,
++   57,
++   57
++  ],
++  "mean": [
++   [
++    0.178,
++    0.071,
++    0.002
++   ],
++   [
++    0.202,
++    0.107,
++    0.005
++   ],
++   [
++    0.396,
++    0.214,
++    0.003
++   ]
++  ],
++  "sd": [
++   [
++    0.413,
++    0.16,
++    0.013
++   ],
++   [
++    0.434,
++    0.227,
++    0.027
++   ],
++   [
++    0.498,
++    0.265,
++    0.022
++   ]
++  ]
++ },
++ "cover1": {
++  "n": [
++   61,
++   61,
++   61
++  ],
++  "mean": [
++   [
++    0.998,
++    0.787,
++    0.005
++   ],
++   [
++    1.025,
++    0.84,
++    0
++   ],
++   [
++    1.23,
++    0.852,
++    0
++   ]
++  ],
++  "sd": [
++   [
++    0.305,
++    0.29,
++    0.021
++   ],
++   [
++    0.316,
++    0.279,
++    0
++   ],
++   [
++    0.418,
++    0.239,
++    0
++   ]
++  ]
++ },
++ "cover1_lurk": {
++  "n": [
++   27,
++   27,
++   27
++  ],
++  "mean": [
++   [
++    1.138,
++    0.946,
++    0
++   ],
++   [
++    1.145,
++    0.959,
++    0
++   ],
++   [
++    1.473,
++    0.882,
++    0
++   ]
++  ],
++  "sd": [
++   [
++    0.029,
++    0.045,
++    0
++   ],
++   [
++    0.031,
++    0.038,
++    0
++   ],
++   [
++    0.151,
++    0.072,
++    0
++   ]
++  ]
++ },
++ "cover1_lurk_trips": {
++  "n": [
++   24,
++   24,
++   24
++  ],
++  "mean": [
++   [
++    1.142,
++    0.949,
++    0
++   ],
++   [
++    1.15,
++    0.953,
++    0
++   ],
++   [
++    1.491,
++    0.886,
++    0
++   ]
++  ],
++  "sd": [
++   [
++    0.029,
++    0.028,
++    0
++   ],
++   [
++    0.031,
++    0.027,
++    0
++   ],
++   [
++    0.172,
++    0.073,
++    0
++   ]
++  ]
++ },
++ "cover1_banjo": {
++  "n": [
++   25,
++   25,
++   25
++  ],
++  "mean": [
++   [
++    1.095,
++    0.877,
++    0
++   ],
++   [
++    1.102,
++    0.967,
++    0
++   ],
++   [
++    1.341,
++    0.871,
++    0
++   ]
++  ],
++  "sd": [
++   [
++    0.033,
++    0.057,
++    0
++   ],
++   [
++    0.033,
++    0.059,
++    0
++   ],
++   [
++    0.164,
++    0.066,
++    0
++   ]
++  ]
++ },
++ "cover1_off": {
++  "n": [
++   38,
++   38,
++   36
++  ],
++  "mean": [
++   [
++    1.186,
++    0.889,
++    0.003
++   ],
++   [
++    1.207,
++    0.929,
++    0.004
++   ],
++   [
++    1.468,
++    0.896,
++    0
++   ]
++  ],
++  "sd": [
++   [
++    0.295,
++    0.15,
++    0.02
++   ],
++   [
++    0.316,
++    0.111,
++    0.027
++   ],
++   [
++    0.26,
++    0.086,
++    0
++   ]
++  ]
++ },
++ "cover1_robber": {
++  "n": [
++   41,
++   41,
++   41
++  ],
++  "mean": [
++   [
++    1.08,
++    0.832,
++    0.008
++   ],
++   [
++    1.138,
++    0.88,
++    0.003
++   ],
++   [
++    1.482,
++    0.884,
++    0
++   ]
++  ],
++  "sd": [
++   [
++    0.341,
++    0.265,
++    0.027
++   ],
++   [
++    0.339,
++    0.24,
++    0.017
++   ],
++   [
++    0.412,
++    0.207,
++    0
++   ]
++  ]
++ },
++ "cover1_double": {
++  "n": [
++   28,
++   28,
++   28
++  ],
++  "mean": [
++   [
++    1.148,
++    0.936,
++    0.004
++   ],
++   [
++    1.153,
++    0.948,
++    0
++   ],
++   [
++    1.499,
++    0.894,
++    0
++   ]
++  ],
++  "sd": [
++   [
++    0.051,
++    0.109,
++    0.019
++   ],
++   [
++    0.048,
++    0.044,
++    0
++   ],
++   [
++    0.187,
++    0.075,
++    0
++   ]
++  ]
++ },
++ "cover2man": {
++  "n": [
++   27,
++   27,
++   27
++  ],
++  "mean": [
++   [
++    1.892,
++    0.555,
++    0
++   ],
++   [
++    1.906,
++    0.515,
++    0
++   ],
++   [
++    1.988,
++    0.493,
++    0
++   ]
++  ],
++  "sd": [
++   [
++    0.321,
++    0.121,
++    0
++   ],
++   [
++    0.318,
++    0.187,
++    0
++   ],
++   [
++    0.297,
++    0.21,
++    0
++   ]
++  ]
++ },
++ "pounder": {
++  "n": [
++   25,
++   25,
++   25
++  ],
++  "mean": [
++   [
++    1.944,
++    0.475,
++    0
++   ],
++   [
++    2.025,
++    0.442,
++    0
++   ],
++   [
++    2.34,
++    0.403,
++    0
++   ]
++  ],
++  "sd": [
++   [
++    0.204,
++    0.139,
++    0
++   ],
++   [
++    0.137,
++    0.107,
++    0
++   ],
++   [
++    0.174,
++    0.112,
++    0
++   ]
++  ]
++ },
++ "finger": {
++  "n": [
++   24,
++   24,
++   24
++  ],
++  "mean": [
++   [
++    2.048,
++    0.493,
++    0
++   ],
++   [
++    2.078,
++    0.46,
++    0
++   ],
++   [
++    2.388,
++    0.46,
++    0
++   ]
++  ],
++  "sd": [
++   [
++    0.058,
++    0.067,
++    0
++   ],
++   [
++    0.035,
++    0.109,
++    0
++   ],
++   [
++    0.173,
++    0.165,
++    0
++   ]
++  ]
++ },
++ "rolex": {
++  "n": [
++   24,
++   24,
++   24
++  ],
++  "mean": [
++   [
++    2.038,
++    0.482,
++    0
++   ],
++   [
++    2.097,
++    0.394,
++    0
++   ],
++   [
++    2.394,
++    0.359,
++    0
++   ]
++  ],
++  "sd": [
++   [
++    0.074,
++    0.102,
++    0
++   ],
++   [
++    0.039,
++    0.162,
++    0
++   ],
++   [
++    0.158,
++    0.167,
++    0
++   ]
++  ]
++ },
++ "cover3": {
++  "n": [
++   52,
++   52,
++   52
++  ],
++  "mean": [
++   [
++    1.478,
++    0.717,
++    0.006
++   ],
++   [
++    2.023,
++    0.86,
++    0.002
++   ],
++   [
++    2.819,
++    0.894,
++    0.015
++   ]
++  ],
++  "sd": [
++   [
++    0.432,
++    0.233,
++    0.024
++   ],
++   [
++    0.49,
++    0.222,
++    0.017
++   ],
++   [
++    0.806,
++    0.107,
++    0.046
++   ]
++  ]
++ },
++ "cover3_trips": {
++  "n": [
++   36,
++   36,
++   36
++  ],
++  "mean": [
++   [
++    1.431,
++    0.752,
++    0
++   ],
++   [
++    2.11,
++    0.894,
++    0
++   ],
++   [
++    2.961,
++    0.866,
++    0.004
++   ]
++  ],
++  "sd": [
++   [
++    0.353,
++    0.239,
++    0
++   ],
++   [
++    0.462,
++    0.183,
++    0
++   ],
++   [
++    0.709,
++    0.118,
++    0.024
++   ]
++  ]
++ },
++ "cover3_match": {
++  "n": [
++   50,
++   50,
++   48
++  ],
++  "mean": [
++   [
++    1.409,
++    0.74,
++    0
++   ],
++   [
++    1.987,
++    0.854,
++    0
++   ],
++   [
++    2.753,
++    0.861,
++    0
++   ]
++  ],
++  "sd": [
++   [
++    0.398,
++    0.241,
++    0
++   ],
++   [
++    0.544,
++    0.243,
++    0
++   ],
++   [
++    0.735,
++    0.133,
++    0
++   ]
++  ]
++ },
++ "cover3_clue": {
++  "n": [
++   26,
++   26,
++   26
++  ],
++  "mean": [
++   [
++    1.333,
++    0.875,
++    0
++   ],
++   [
++    2.208,
++    0.988,
++    0
++   ],
++   [
++    3.585,
++    0.873,
++    0.005
++   ]
++  ],
++  "sd": [
++   [
++    0.139,
++    0.058,
++    0
++   ],
++   [
++    0.396,
++    0.01,
++    0
++   ],
++   [
++    0.63,
++    0.066,
++    0.028
++   ]
++  ]
++ },
++ "cover3_seam": {
++  "n": [
++   37,
++   37,
++   37
++  ],
++  "mean": [
++   [
++    1.382,
++    0.845,
++    0
++   ],
++   [
++    2.033,
++    0.95,
++    0
++   ],
++   [
++    2.794,
++    0.887,
++    0
++   ]
++  ],
++  "sd": [
++   [
++    0.26,
++    0.123,
++    0
++   ],
++   [
++    0.403,
++    0.129,
++    0
++   ],
++   [
++    0.642,
++    0.066,
++    0
++   ]
++  ]
++ },
++ "cover3_buzz": {
++  "n": [
++   46,
++   46,
++   46
++  ],
++  "mean": [
++   [
++    1.788,
++    0.687,
++    0.002
++   ],
++   [
++    2.17,
++    0.805,
++    0.002
++   ],
++   [
++    2.719,
++    0.929,
++    0.009
++   ]
++  ],
++  "sd": [
++   [
++    0.465,
++    0.218,
++    0.015
++   ],
++   [
++    0.658,
++    0.206,
++    0.016
++   ],
++   [
++    0.835,
++    0.079,
++    0.035
++   ]
++  ]
++ },
++ "cover3_cloud": {
++  "n": [
++   26,
++   26,
++   26
++  ],
++  "mean": [
++   [
++    1.944,
++    0.584,
++    0.008
++   ],
++   [
++    2.146,
++    0.672,
++    0.006
++   ],
++   [
++    2.486,
++    0.821,
++    0.005
++   ]
++  ],
++  "sd": [
++   [
++    0.298,
++    0.17,
++    0.039
++   ],
++   [
++    0.44,
++    0.228,
++    0.033
++   ],
++   [
++    0.687,
++    0.18,
++    0.028
++   ]
++  ]
++ },
++ "cover3_mable": {
++  "n": [
++   31,
++   31,
++   31
++  ],
++  "mean": [
++   [
++    1.345,
++    0.802,
++    0
++   ],
++   [
++    1.837,
++    0.918,
++    0
++   ],
++   [
++    2.614,
++    0.859,
++    0
++   ]
++  ],
++  "sd": [
++   [
++    0.296,
++    0.162,
++    0
++   ],
++   [
++    0.384,
++    0.166,
++    0
++   ],
++   [
++    0.5,
++    0.147,
++    0
++   ]
++  ]
++ },
++ "cover9": {
++  "n": [
++   24,
++   24,
++   24
++  ],
++  "mean": [
++   [
++    2.13,
++    0.527,
++    0
++   ],
++   [
++    2.675,
++    0.64,
++    0
++   ],
++   [
++    3.458,
++    0.881,
++    0.006
++   ]
++  ],
++  "sd": [
++   [
++    0.129,
++    0.098,
++    0
++   ],
++   [
++    0.392,
++    0.23,
++    0
++   ],
++   [
++    0.554,
++    0.082,
++    0.029
++   ]
++  ]
++ },
++ "cover9_strap": {
++  "n": [
++   24,
++   24,
++   24
++  ],
++  "mean": [
++   [
++    2.13,
++    0.52,
++    0
++   ],
++   [
++    2.658,
++    0.587,
++    0
++   ],
++   [
++    3.371,
++    0.857,
++    0
++   ]
++  ],
++  "sd": [
++   [
++    0.129,
++    0.115,
++    0
++   ],
++   [
++    0.392,
++    0.241,
++    0
++   ],
++   [
++    0.477,
++    0.093,
++    0
++   ]
++  ]
++ },
++ "cover9_clue": {
++  "n": [
++   24,
++   24,
++   24
++  ],
++  "mean": [
++   [
++    2.131,
++    0.508,
++    0
++   ],
++   [
++    2.704,
++    0.588,
++    0
++   ],
++   [
++    3.682,
++    0.857,
++    0.055
++   ]
++  ],
++  "sd": [
++   [
++    0.13,
++    0.104,
++    0
++   ],
++   [
++    0.385,
++    0.24,
++    0
++   ],
++   [
++    0.572,
++    0.087,
++    0.076
++   ]
++  ]
++ },
++ "cover9_grab": {
++  "n": [
++   24,
++   24,
++   24
++  ],
++  "mean": [
++   [
++    2.135,
++    0.538,
++    0
++   ],
++   [
++    2.684,
++    0.709,
++    0
++   ],
++   [
++    3.409,
++    0.897,
++    0
++   ]
++  ],
++  "sd": [
++   [
++    0.119,
++    0.085,
++    0
++   ],
++   [
++    0.386,
++    0.182,
++    0
++   ],
++   [
++    0.519,
++    0.072,
++    0
++   ]
++  ]
++ },
++ "cover2": {
++  "n": [
++   32,
++   32,
++   32
++  ],
++  "mean": [
++   [
++    1.91,
++    0.545,
++    0
++   ],
++   [
++    1.966,
++    0.483,
++    0
++   ],
++   [
++    2.259,
++    0.487,
++    0
++   ]
++  ],
++  "sd": [
++   [
++    0.269,
++    0.136,
++    0
++   ],
++   [
++    0.325,
++    0.193,
++    0
++   ],
++   [
++    0.543,
++    0.182,
++    0
++   ]
++  ]
++ },
++ "cover2_match": {
++  "n": [
++   33,
++   33,
++   32
++  ],
++  "mean": [
++   [
++    1.888,
++    0.522,
++    0.003
++   ],
++   [
++    1.909,
++    0.501,
++    0
++   ],
++   [
++    2.122,
++    0.514,
++    0
++   ]
++  ],
++  "sd": [
++   [
++    0.365,
++    0.165,
++    0.019
++   ],
++   [
++    0.417,
++    0.217,
++    0
++   ],
++   [
++    0.373,
++    0.213,
++    0
++   ]
++  ]
++ },
++ "cover2_wild": {
++  "n": [
++   27,
++   27,
++   27
++  ],
++  "mean": [
++   [
++    1.937,
++    0.545,
++    0
++   ],
++   [
++    1.96,
++    0.482,
++    0
++   ],
++   [
++    2.143,
++    0.462,
++    0
++   ]
++  ],
++  "sd": [
++   [
++    0.267,
++    0.143,
++    0
++   ],
++   [
++    0.264,
++    0.196,
++    0
++   ],
++   [
++    0.279,
++    0.17,
++    0
++   ]
++  ]
++ },
++ "cover2_invert": {
++  "n": [
++   25,
++   25,
++   25
++  ],
++  "mean": [
++   [
++    1.56,
++    0.349,
++    0
++   ],
++   [
++    1.179,
++    0.254,
++    0
++   ],
++   [
++    1.289,
++    0.27,
++    0
++   ]
++  ],
++  "sd": [
++   [
++    0.256,
++    0.124,
++    0
++   ],
++   [
++    0.367,
++    0.172,
++    0
++   ],
++   [
++    0.401,
++    0.153,
++    0
++   ]
++  ]
++ },
++ "tampa2": {
++  "n": [
++   32,
++   32,
++   32
++  ],
++  "mean": [
++   [
++    1.885,
++    0.503,
++    0.006
++   ],
++   [
++    1.941,
++    0.483,
++    0.003
++   ],
++   [
++    2.328,
++    0.551,
++    0.003
++   ]
++  ],
++  "sd": [
++   [
++    0.397,
++    0.188,
++    0.035
++   ],
++   [
++    0.438,
++    0.203,
++    0.02
++   ],
++   [
++    0.506,
++    0.189,
++    0.02
++   ]
++  ]
++ },
++ "deuce": {
++  "n": [
++   28,
++   28,
++   28
++  ],
++  "mean": [
++   [
++    2.014,
++    0.513,
++    0
++   ],
++   [
++    2.036,
++    0.463,
++    0
++   ],
++   [
++    2.227,
++    0.487,
++    0
++   ]
++  ],
++  "sd": [
++   [
++    0.025,
++    0.068,
++    0
++   ],
++   [
++    0.024,
++    0.152,
++    0
++   ],
++   [
++    0.151,
++    0.188,
++    0
++   ]
++  ]
++ },
++ "deuce_dot": {
++  "n": [
++   28,
++   28,
++   28
++  ],
++  "mean": [
++   [
++    1.971,
++    0.514,
++    0.004
++   ],
++   [
++    1.995,
++    0.463,
++    0
++   ],
++   [
++    2.181,
++    0.462,
++    0
++   ]
++  ],
++  "sd": [
++   [
++    0.187,
++    0.127,
++    0.021
++   ],
++   [
++    0.192,
++    0.196,
++    0
++   ],
++   [
++    0.284,
++    0.217,
++    0
++   ]
++  ]
++ },
++ "cover4": {
++  "n": [
++   35,
++   35,
++   35
++  ],
++  "mean": [
++   [
++    1.942,
++    0.463,
++    0
++   ],
++   [
++    2.119,
++    0.434,
++    0
++   ],
++   [
++    2.611,
++    0.412,
++    0
++   ]
++  ],
++  "sd": [
++   [
++    0.412,
++    0.192,
++    0
++   ],
++   [
++    0.367,
++    0.172,
++    0
++   ],
++   [
++    0.554,
++    0.122,
++    0
++   ]
++  ]
++ },
++ "cover4_meg": {
++  "n": [
++   32,
++   32,
++   32
++  ],
++  "mean": [
++   [
++    1.965,
++    0.429,
++    0
++   ],
++   [
++    2.051,
++    0.386,
++    0
++   ],
++   [
++    2.605,
++    0.393,
++    0
++   ]
++  ],
++  "sd": [
++   [
++    0.493,
++    0.127,
++    0
++   ],
++   [
++    0.495,
++    0.13,
++    0
++   ],
++   [
++    0.614,
++    0.128,
++    0
++   ]
++  ]
++ },
++ "cover4_palms": {
++  "n": [
++   27,
++   27,
++   27
++  ],
++  "mean": [
++   [
++    2.14,
++    0.452,
++    0
++   ],
++   [
++    2.246,
++    0.417,
++    0
++   ],
++   [
++    2.775,
++    0.403,
++    0
++   ]
++  ],
++  "sd": [
++   [
++    0.162,
++    0.096,
++    0
++   ],
++   [
++    0.177,
++    0.102,
++    0
++   ],
++   [
++    0.415,
++    0.106,
++    0
++   ]
++  ]
++ },
++ "cover4_box": {
++  "n": [
++   27,
++   27,
++   27
++  ],
++  "mean": [
++   [
++    2.102,
++    0.448,
++    0
++   ],
++   [
++    2.489,
++    0.411,
++    0
++   ],
++   [
++    3.115,
++    0.422,
++    0
++   ]
++  ],
++  "sd": [
++   [
++    0.198,
++    0.103,
++    0
++   ],
++   [
++    0.295,
++    0.097,
++    0
++   ],
++   [
++    0.327,
++    0.118,
++    0
++   ]
++  ]
++ },
++ "cover4_book_read": {
++  "n": [
++   31,
++   31,
++   31
++  ],
++  "mean": [
++   [
++    2.035,
++    0.467,
++    0.006
++   ],
++   [
++    2.102,
++    0.426,
++    0.004
++   ],
++   [
++    2.503,
++    0.416,
++    0
++   ]
++  ],
++  "sd": [
++   [
++    0.221,
++    0.109,
++    0.025
++   ],
++   [
++    0.205,
++    0.135,
++    0.022
++   ],
++   [
++    0.231,
++    0.124,
++    0
++   ]
++  ]
++ },
++ "cover4_poach": {
++  "n": [
++   28,
++   28,
++   28
++  ],
++  "mean": [
++   [
++    2.014,
++    0.462,
++    0
++   ],
++   [
++    2.091,
++    0.43,
++    0
++   ],
++   [
++    2.548,
++    0.413,
++    0
++   ]
++  ],
++  "sd": [
++   [
++    0.273,
++    0.113,
++    0
++   ],
++   [
++    0.244,
++    0.105,
++    0
++   ],
++   [
++    0.369,
++    0.113,
++    0
++   ]
++  ]
++ },
++ "cover4_stubbie": {
++  "n": [
++   28,
++   28,
++   28
++  ],
++  "mean": [
++   [
++    1.952,
++    0.509,
++    0
++   ],
++   [
++    2.024,
++    0.476,
++    0
++   ],
++   [
++    2.466,
++    0.424,
++    0
++   ]
++  ],
++  "sd": [
++   [
++    0.325,
++    0.177,
++    0
++   ],
++   [
++    0.314,
++    0.157,
++    0
++   ],
++   [
++    0.315,
++    0.106,
++    0
++   ]
++  ]
++ },
++ "cover6": {
++  "n": [
++   32,
++   32,
++   32
++  ],
++  "mean": [
++   [
++    2.017,
++    0.521,
++    0
++   ],
++   [
++    2.058,
++    0.503,
++    0
++   ],
++   [
++    2.489,
++    0.467,
++    0
++   ]
++  ],
++  "sd": [
++   [
++    0.232,
++    0.157,
++    0
++   ],
++   [
++    0.265,
++    0.185,
++    0
++   ],
++   [
++    0.408,
++    0.156,
++    0
++   ]
++  ]
++ },
++ "cover6_area": {
++  "n": [
++   25,
++   25,
++   25
++  ],
++  "mean": [
++   [
++    2.072,
++    0.473,
++    0
++   ],
++   [
++    2.134,
++    0.382,
++    0
++   ],
++   [
++    2.467,
++    0.364,
++    0
++   ]
++  ],
++  "sd": [
++   [
++    0.085,
++    0.11,
++    0
++   ],
++   [
++    0.066,
++    0.158,
++    0
++   ],
++   [
++    0.238,
++    0.142,
++    0
++   ]
++  ]
++ },
++ "cover6_book": {
++  "n": [
++   27,
++   27,
++   27
++  ],
++  "mean": [
++   [
++    1.957,
++    0.485,
++    0
++   ],
++   [
++    2.014,
++    0.419,
++    0
++   ],
++   [
++    2.334,
++    0.417,
++    0
++   ]
++  ],
++  "sd": [
++   [
++    0.169,
++    0.117,
++    0
++   ],
++   [
++    0.167,
++    0.183,
++    0
++   ],
++   [
++    0.167,
++    0.169,
++    0
++   ]
++  ]
++ },
++ "cover6_rev": {
++  "n": [
++   29,
++   29,
++   29
++  ],
++  "mean": [
++   [
++    2.024,
++    0.506,
++    0
++   ],
++   [
++    2.064,
++    0.462,
++    0
++   ],
++   [
++    2.311,
++    0.424,
++    0
++   ]
++  ],
++  "sd": [
++   [
++    0.228,
++    0.111,
++    0
++   ],
++   [
++    0.226,
++    0.118,
++    0
++   ],
++   [
++    0.328,
++    0.138,
++    0
++   ]
++  ]
++ },
++ "cover8_trix": {
++  "n": [
++   31,
++   31,
++   31
++  ],
++  "mean": [
++   [
++    2.051,
++    0.483,
++    0
++   ],
++   [
++    2.079,
++    0.455,
++    0
++   ],
++   [
++    2.266,
++    0.429,
++    0
++   ]
++  ],
++  "sd": [
++   [
++    0.215,
++    0.127,
++    0
++   ],
++   [
++    0.213,
++    0.149,
++    0
++   ],
++   [
++    0.31,
++    0.189,
++    0
++   ]
++  ]
++ },
++ "split_quarters_2man": {
++  "n": [
++   28,
++   28,
++   28
++  ],
++  "mean": [
++   [
++    2.112,
++    0.476,
++    0
++   ],
++   [
++    2.176,
++    0.402,
++    0
++   ],
++   [
++    2.721,
++    0.41,
++    0
++   ]
++  ],
++  "sd": [
++   [
++    0.084,
++    0.097,
++    0
++   ],
++   [
++    0.071,
++    0.144,
++    0
++   ],
++   [
++    0.296,
++    0.135,
++    0
++   ]
++  ]
++ },
++ "cover2man_banjo": {
++  "n": [
++   24,
++   24,
++   24
++  ],
++  "mean": [
++   [
++    2.051,
++    0.519,
++    0
++   ],
++   [
++    2.066,
++    0.471,
++    0
++   ],
++   [
++    2.215,
++    0.469,
++    0
++   ]
++  ],
++  "sd": [
++   [
++    0.035,
++    0.062,
++    0
++   ],
++   [
++    0.029,
++    0.137,
++    0
++   ],
++   [
++    0.125,
++    0.196,
++    0
++   ]
++  ]
++ },
++ "pounder_banjo": {
++  "n": [
++   24,
++   24,
++   24
++  ],
++  "mean": [
++   [
++    1.929,
++    0.46,
++    0
++   ],
++   [
++    1.995,
++    0.427,
++    0
++   ],
++   [
++    2.151,
++    0.432,
++    0
++   ]
++  ],
++  "sd": [
++   [
++    0.098,
++    0.09,
++    0
++   ],
++   [
++    0.038,
++    0.092,
++    0
++   ],
++   [
++    0.127,
++    0.128,
++    0
++   ]
++  ]
++ },
++ "finger_banjo": {
++  "n": [
++   24,
++   24,
++   24
++  ],
++  "mean": [
++   [
++    1.994,
++    0.492,
++    0
++   ],
++   [
++    2.021,
++    0.453,
++    0
++   ],
++   [
++    2.171,
++    0.475,
++    0
++   ]
++  ],
++  "sd": [
++   [
++    0.064,
++    0.067,
++    0
++   ],
++   [
++    0.036,
++    0.112,
++    0
++   ],
++   [
++    0.131,
++    0.174,
++    0
++   ]
++  ]
++ },
++ "rolex_banjo": {
++  "n": [
++   24,
++   24,
++   24
++  ],
++  "mean": [
++   [
++    1.986,
++    0.487,
++    0
++   ],
++   [
++    2.04,
++    0.412,
++    0
++   ],
++   [
++    2.194,
++    0.398,
++    0
++   ]
++  ],
++  "sd": [
++   [
++    0.073,
++    0.096,
++    0
++   ],
++   [
++    0.031,
++    0.164,
++    0
++   ],
++   [
++    0.122,
++    0.189,
++    0
++   ]
++  ]
++ }
++};
+diff --git a/src/sim/qbmind.ts b/src/sim/qbmind.ts
+index 4bae7445e..31c3f77ab 100644
+--- a/src/sim/qbmind.ts
++++ b/src/sim/qbmind.ts
+@@ -30,6 +30,7 @@
+  * a loaded box, or check to a run against a light two-high box. Box counts
+  * are as noisy as the rest of his picture.
+  */
++import { COVERAGE_SIGNATURES, SIG_TIMES } from './coverage-signatures.js';
+ import { angleDiff, clamp, logistic, type Vec2 } from '../core/vec.js';
+ import type { ReceiverPicture } from './receiver-forecast.js';
+ import type { RouteKeyPicture } from './route-read.js';
+@@ -159,6 +160,18 @@ type Features = number[];
+ 
+ const PRE_SIGMA = [0.3, 0.25, 0.3, 0.13, 0.35, 0.7];
+ const POST_SIG_SIGMA = [0.6, 0.3, 0.18];
++/** QB_COV_FIT (experimental, off; QB_COV_FIT=1 turns it on; QB lane, 2026-11-18, docs/reviews/2026-11-18-coverage-certainty.md):
++ * his post-snap read uses his learned picture of our coverages: COVERAGE_SIGNATURES, fitted from his own looks
++ * (scripts/diag/eyes/cov-sig-fit.ts, every coverage, the mean and spread by time since the snap), and a likelihood with
++ * a way back. Off, POST_SIG (fitted 2026-10-08 for eight coverages; every other coverage got [2.5, 0.5, 0.1]) and a
++ * sharp Gaussian: when every template misfit (our deep players now play shallower and later), the least-bad (cover0)
++ * took 0.995 from one look (cover3_seam, seed 101 play 35). */
++const QB_COV_FIT = process.env.QB_COV_FIT === '1';
++/** QB_COV_FIT: the broad component of each feature's likelihood (chosen). About one look in twenty misses a defender or
++ * catches one mid-move, so no single feature of one look rules a coverage out by more than about 3 log units. */
++const COV_OUTLIER = 0.05;
++/** QB_COV_FIT: each feature's range, for the broad component (deep defenders 0-5; middle closed and turned 0-1). */
++const COV_RANGE = [5, 1, 1];
+ 
+ export class QBMind {
+   /** Coverage recognition 0–1 (play recognition + experience). */
+@@ -244,6 +257,19 @@ export class QBMind {
+     return s;
+   }
+ 
++  /** QB_DEF_ROLE: his belief that the defender in `slot` sits in a zone seat (reads the passer), not a man seat: over his
++   * coverage belief, each coverage's role for that slot (a named role's kind; an unnamed slot fills an underneath zone seat
++   * unless the call is man). A split-field call gives different seats on its two sides, so no side model is needed. */
++  pZoneSeat(slot: string): number {
++    let s = 0;
++    for (const c of COVERAGES) {
++      const b = this.belief[c.id] ?? 0; if (!b) continue;
++      const role = (c.roles as Record<string, { kind: string } | undefined>)[slot];
++      if (role ? role.kind === 'zone' : !c.man) s += b;
++    }
++    return s;
++  }
++
+   /** Belief mass on a single-high (middle closed) look. */
+   pSingleHigh(): number {
+     let s = 0;
+@@ -374,6 +400,20 @@ export class QBMind {
+     return [deep, mof, cov ? turned / cov : 0];
+   }
+ 
++  /** QB_COV_FIT: his learned mean and spread of a coverage's features at time t after the snap, interpolated. */
++  private fittedSignature(c: Coverage, t: number): { mean: number[]; sd: number[] } | null {
++    const sig = COVERAGE_SIGNATURES[c.id];
++    if (!sig) return null;
++    const T = SIG_TIMES, at = (xs: number[][]) => {
++      if (t <= T[0]) return xs[0];
++      if (t >= T[T.length - 1]) return xs[T.length - 1];
++      let k = 0; while (k < T.length - 2 && t >= T[k + 1]) k++;
++      const f = (t - T[k]) / (T[k + 1] - T[k]);
++      return xs[k].map((v, j) => v + (xs[k + 1][j] - v) * f);
++    };
++    return { mean: at(sig.mean), sd: at(sig.sd) };
++  }
++
+   private postFeaturesCanon(c: Coverage, t: number): Features {
+     const sig = POST_SIG[c.id];
+     if (!sig) return [2.5, 0.5, 0.1];
+@@ -395,9 +435,19 @@ export class QBMind {
+     const w = weight * (0.35 + 0.65 * this.rec);
+     const logp: Record<string, number> = {};
+     for (const c of COVERAGES) {
+-      const f = this.postFeaturesCanon(c, this.sim.t);
+       let ll = 0;
+-      for (let k = 0; k < f.length; k++) ll -= ((obs[k] - f[k]) / (POST_SIG_SIGMA[k] * ns)) ** 2 / 2;
++      const fit = QB_COV_FIT ? this.fittedSignature(c, this.sim.t) : null;
++      if (fit) {
++        // His learned spread plus his own processing noise; a broad component so one look cannot rule a coverage out.
++        for (let k = 0; k < obs.length; k++) {
++          const sd = Math.hypot(fit.sd[k], 0.5 * POST_SIG_SIGMA[k] * ns);
++          const g = Math.exp(-(((obs[k] - fit.mean[k]) / sd) ** 2) / 2) / (sd * Math.sqrt(2 * Math.PI));
++          ll += Math.log((1 - COV_OUTLIER) * g + COV_OUTLIER / COV_RANGE[k]);
++        }
++      } else {
++        const f = this.postFeaturesCanon(c, this.sim.t);
++        for (let k = 0; k < f.length; k++) ll -= ((obs[k] - f[k]) / (POST_SIG_SIGMA[k] * ns)) ** 2 / 2;
++      }
+       logp[c.id] = Math.log(Math.max(1e-6, this.belief[c.id] ?? 0)) + w * ll;
+     }
+     this.belief = normalize(logp);

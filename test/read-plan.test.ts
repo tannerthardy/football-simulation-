@@ -12,6 +12,9 @@ function referenceEngine(plan: string, forecast: string) {
   for (const [k, v] of Object.entries(flags)) if (v === 'on') vi.stubEnv(k, '1');
   for (const k of ['QB_KEY_READ', 'QB_EDGE_THREAT', 'QB_HEAD', 'QB_CALL_ROUTES', 'QB_FOOTWORK', 'CONCEPT_DROPS', 'CONCEPT_FIT', 'BACK_AS_THREE', 'PA_TABLES', 'QUICK_HITCH', 'VERTS_KEYS', 'CURL_SINK', 'SETTLE_DEPTH', 'CRAFT_HOLD', 'CRAFT_EXIT', 'ROUTE_LANDMARK', 'RELEASE_COMMIT', 'PA_HINGE', 'EDGE_SET', 'POCKET_DROP', 'POWER_AIM', 'END_KEY', 'LOOSE_OWN', 'ZONE_HOLD', 'OFF_PEDAL']) vi.stubEnv(k, '0'); // engine-73: scenes recorded before this group of the engine-73 landing; QB to re-record with it on
   vi.stubEnv('READ_PLAN', plan); vi.stubEnv('FORECAST_BREAK', forecast);
+  // QB_V2 (engine-108, QB lane, pinned test-only): READ_PLAN is the old controller's plan runner. With V2 on, the quick
+  // game's staged concepts (quick outs here) run V2's own plan instead, so this file pins the old passer it tests.
+  vi.stubEnv('QB_V2', '0');
 }
 
 type Mode = 'natural' | 'sink' | 'jump';

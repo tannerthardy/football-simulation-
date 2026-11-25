@@ -1,0 +1,213 @@
+<title>QB Vision Film</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a film-room strip. One play at a time, three passers side by side on one clock, the telestrator's cones over an all-22 view; the scrub bar is the film's own timeline. */
+:root {
+  --bg: #eef0ec; --panel: #f8f9f6; --ink: #1d2420; --muted: #5d6862; --rule: #cfd5cf;
+  --turf: #dfe8dc; --turf-line: #b9c8b6; --los: #3a6bb3; --first: #c99a1e;
+  --off: #1f4e8c; --def: #b23a2e; --ball: #7a4a1c;
+  --cone-wide: rgba(201, 154, 30, 0.13); --cone-clear: rgba(201, 154, 30, 0.42); --read: #c99a1e;
+  --accent: #2c6e5a;
+  --f-display: 'Barlow Condensed', 'Arial Narrow', sans-serif; --f-body: 'IBM Plex Sans', system-ui, sans-serif; --f-mono: 'IBM Plex Mono', ui-monospace, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #121614; --panel: #19201c; --ink: #e5ebe6; --muted: #98a59e; --rule: #2c3530;
+  --turf: #1d2a22; --turf-line: #2f4236; --los: #6e9be0; --first: #e0b54a;
+  --off: #79a8ee; --def: #ef7d6f; --ball: #d9a26a;
+  --cone-wide: rgba(224, 181, 74, 0.12); --cone-clear: rgba(224, 181, 74, 0.38); --read: #e0b54a; --accent: #6cc3a5; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #121614; --panel: #19201c; --ink: #e5ebe6; --muted: #98a59e; --rule: #2c3530;
+  --turf: #1d2a22; --turf-line: #2f4236; --los: #6e9be0; --first: #e0b54a;
+  --off: #79a8ee; --def: #ef7d6f; --ball: #d9a26a;
+  --cone-wide: rgba(224, 181, 74, 0.12); --cone-clear: rgba(224, 181, 74, 0.38); --read: #e0b54a; --accent: #6cc3a5; color-scheme: dark }
+body { background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 15px; line-height: 1.5; }
+.wrap { max-width: 1180px; margin: 0 auto; padding-block: 28px 48px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: flex; flex-direction: column; gap: 22px; }
+h1 { font-family: var(--f-display); font-weight: 700; font-size: 2.4rem; letter-spacing: 0.01em; margin: 0; line-height: 1.05; text-wrap: balance; }
+.lede { color: var(--muted); max-width: 68ch; margin: 6px 0 0; }
+.plays { display: flex; flex-wrap: wrap; gap: 8px; }
+.plays button { font-family: var(--f-display); font-weight: 500; font-size: 1.05rem; letter-spacing: 0.03em; text-transform: uppercase; background: var(--panel); color: var(--ink); border: 1px solid var(--rule); border-radius: 4px; padding: 6px 12px; cursor: pointer; }
+.plays button[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.plays button:focus-visible, .ctl button:focus-visible, .ctl input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ctl { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; font-family: var(--f-mono); font-size: 0.85rem; color: var(--muted); }
+.ctl button { font-family: var(--f-mono); background: var(--accent); color: var(--bg); border: 0; border-radius: 4px; padding: 6px 14px; cursor: pointer; min-width: 74px; }
+.ctl input[type=range] { flex: 1 1 260px; min-width: 0; accent-color: var(--accent); }
+.clock { font-variant-numeric: tabular-nums; color: var(--ink); min-width: 5ch; }
+.grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+@media (max-width: 760px) { .grid { grid-template-columns: minmax(0, 1fr); } }
+.pane { background: var(--panel); border: 1px solid var(--rule); border-radius: 6px; padding: 12px; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.pane h2 { font-family: var(--f-display); font-weight: 700; font-size: 1.3rem; margin: 0; letter-spacing: 0.02em; display: flex; justify-content: space-between; gap: 8px; }
+.pane h2 span { font-family: var(--f-mono); font-weight: 400; font-size: 0.8rem; color: var(--muted); align-self: center; }
+canvas { width: 100%; height: auto; aspect-ratio: 53.3 / 46; display: block; border-radius: 3px; max-width: 100%; }
+.stat { font-family: var(--f-mono); font-size: 0.8rem; color: var(--muted); display: grid; grid-template-columns: auto 1fr; gap: 2px 10px; font-variant-numeric: tabular-nums; }
+.stat b { color: var(--ink); font-weight: 500; }
+.meter { height: 6px; background: var(--rule); border-radius: 3px; overflow: hidden; }
+.meter i { display: block; height: 100%; background: var(--read); width: 0; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 0.85rem; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.sw { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
+.notes { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
+.notes section { min-width: 0; }
+.notes h3 { font-family: var(--f-display); font-size: 1.15rem; margin: 0 0 4px; letter-spacing: 0.02em; }
+.notes p { margin: 0; color: var(--muted); max-width: 65ch; }
+.tbl { overflow-x: auto; }
+table { border-collapse: collapse; font-family: var(--f-mono); font-size: 0.8rem; font-variant-numeric: tabular-nums; min-width: 640px; }
+th, td { text-align: right; padding: 4px 10px; border-bottom: 1px solid var(--rule); }
+th:first-child, td:first-child { text-align: left; }
+th { color: var(--muted); font-weight: 500; }
+.err { color: var(--def); font-family: var(--f-mono); }
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>QB Vision Film</h1>
+    <p class="lede">The same six staged plays, one passer at three levels of his reading ratings (recognition, decision-making, awareness, composure, discipline, anticipation, consistency at 35, 60 and 88; experience 0, 4 and 10). His arm, accuracy and body do not change, so any difference is how he reads. Engine-92 with the step clock and the honest defender price on (QB_STEP_CLOCK, QB_DEF_START, QB_BAT_HEIGHT).</p>
+  </header>
+
+  <div class="plays" id="plays" role="group" aria-label="Choose a play"></div>
+
+  <div class="ctl">
+    <button id="play" type="button">Play</button>
+    <input id="scrub" type="range" min="0" max="100" value="0" step="1" aria-label="Play clock">
+    <span class="clock" id="clock">0.00 s</span>
+    <label><input id="slow" type="checkbox"> half speed</label>
+  </div>
+
+  <div class="legend">
+    <span><i class="sw" style="background:var(--off)"></i>offense</span>
+    <span><i class="sw" style="background:var(--def)"></i>defense</span>
+    <span><i class="sw" style="background:var(--cone-clear)"></i>clear cone (separation is read here)</span>
+    <span><i class="sw" style="background:var(--cone-wide)"></i>periphery (motion, rough position)</span>
+    <span><i class="sw" style="border:2px solid var(--read)"></i>current read; the fill is how resolved his look is</span>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <div class="notes">
+    <section><h3>How a look resolves</h3><p>From when his clear cone holds the man, his picture of the separation sharpens as 1 − e^(−t/τ). τ is his processing as perception, slower under pressure and when the coverage disagrees with what he expected before the snap. At a read's step he moves on only once the look clears how sure he needs to be.</p></section>
+    <section><h3>What rating changes</h3><p>Only τ, how sure he needs to be, and how pressure moves both. No completion, sack or interception is set by a rating; they follow from where his eyes were and what his picture said.</p></section>
+    <section><h3>What to watch</h3><p>Whether the three passers' eyes leave the same read at the same moment, how full the read ring is when they leave, and whether the throw comes earlier for the better reader.</p></section>
+  </div>
+
+  <div class="tbl">
+    <table>
+      <caption style="text-align:left;caption-side:top;color:var(--muted);font-family:var(--f-body);padding-bottom:6px">Staged panel (256 plays per row, clock on), from the clock's own log of each read he left</caption>
+      <thead><tr><th>passer</th><th>resolved when he leaves (p50)</th><th>his need</th><th>reads held past the step</th><th>held, p50 / p90</th><th>completions</th><th>sacks</th></tr></thead>
+      <tbody>
+        <tr><td>dart (fair processing, low composure and discipline)</td><td>0.50</td><td>0.45</td><td>34%</td><td>0.05 / 0.15 s</td><td>157</td><td>15</td></tr>
+        <tr><td>low (35)</td><td>0.53</td><td>0.47</td><td>45%</td><td>0.10 / 0.20 s</td><td>151</td><td>15</td></tr>
+        <tr><td>mid (60)</td><td>0.65</td><td>0.60</td><td>55%</td><td>0.15 / 0.25 s</td><td>163</td><td>16</td></tr>
+        <tr><td>high (88)</td><td>0.78</td><td>0.74</td><td>58%</td><td>0.15 / 0.35 s</td><td>174</td><td>12</td></tr>
+        <tr><td>stare (slow processing, high composure and discipline)</td><td>0.75</td><td>0.74</td><td>75%</td><td>0.30 / 0.45 s</td><td>149</td><td>17</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+(() => {
+  const LEVELS = [[35, 'Low reader'], [60, 'Middle reader'], [88, 'High reader']];
+  const NAMES = { curl_flat: 'Curl-flat', smash: 'Smash', dagger: 'Dagger', mesh: 'Mesh', flood: 'Flood', stick: 'Stick' };
+  const COV = { cover1: 'Cover 1', cover2: 'Cover 2', cover3: 'Cover 3', cover4: 'Cover 4' };
+  const grid = document.getElementById('grid'), playsEl = document.getElementById('plays');
+  const scrub = document.getElementById('scrub'), clock = document.getElementById('clock'), btn = document.getElementById('play'), slow = document.getElementById('slow');
+  let data = [], playKey = null, t = 0, tMax = 5, running = false, last = 0;
+  let C = {};
+  const readTokens = () => { const s = getComputedStyle(document.documentElement); for (const k of ['turf', 'turf-line', 'los', 'off', 'def', 'ball', 'cone-wide', 'cone-clear', 'read', 'ink', 'muted']) C[k] = s.getPropertyValue('--' + k).trim(); };
+  readTokens();
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { readTokens(); draw(); });
+  new MutationObserver(() => { readTokens(); draw(); }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+
+  const panes = LEVELS.map(([lv, label]) => {
+    const el = document.createElement('div'); el.className = 'pane';
+    el.innerHTML = `<h2>${label}<span>ratings ${lv}</span></h2><canvas width="640" height="552"></canvas><div class="meter" aria-hidden="true"><i></i></div><div class="stat"></div>`;
+    grid.appendChild(el);
+    return { lv, el, cv: el.querySelector('canvas'), meter: el.querySelector('.meter i'), stat: el.querySelector('.stat') };
+  });
+
+  function frameAt(p, tt) { const F = p.frames; let lo = 0, hi = F.length - 1; while (lo < hi) { const m = (lo + hi + 1) >> 1; if (F[m].t <= tt) lo = m; else hi = m - 1; } return F[lo]; }
+
+  function drawPane(pane, p) {
+    const cv = pane.cv, g = cv.getContext('2d'), W = cv.width, H = cv.height;
+    // Downfield is up: field x (yards past the line) maps to the vertical, field y (0..53.3 across) to the horizontal.
+    const back = 11, ahead = 35, sx = W / 53.33, sy = H / (back + ahead);
+    const X = (y) => y * sx, Y = (x) => H - (x - (p.los - back)) * sy;
+    g.fillStyle = C.turf; g.fillRect(0, 0, W, H);
+    g.strokeStyle = C['turf-line']; g.lineWidth = 1;
+    for (let yd = Math.ceil((p.los - back) / 5) * 5; yd <= p.los + ahead; yd += 5) { g.beginPath(); g.moveTo(0, Y(yd)); g.lineTo(W, Y(yd)); g.stroke(); }
+    for (const hy of [23.58, 29.75]) { g.beginPath(); g.setLineDash([4, 6]); g.moveTo(X(hy), 0); g.lineTo(X(hy), H); g.stroke(); g.setLineDash([]); }
+    g.strokeStyle = C.los; g.lineWidth = 2; g.beginPath(); g.moveTo(0, Y(p.los)); g.lineTo(W, Y(p.los)); g.stroke();
+    const f = frameAt(p, t);
+    const qb = f.o.find((o) => o[0] === 'QB');
+    // The passer's cones along his head, while he holds the ball.
+    if (qb && f.head !== null) {
+      const cx = X(qb[2]), cy = Y(qb[1]);
+      const ang = (a) => [Math.sin(a), -Math.cos(a)];
+      const wedge = (half, fill, R) => {
+        g.fillStyle = fill; g.beginPath(); g.moveTo(cx, cy);
+        for (let k = 0; k <= 24; k++) { const a = f.head - half + (2 * half * k) / 24; const dx = Math.cos(a), dy = Math.sin(a); g.lineTo(cx + dy * R * sx, cy - dx * R * sy); }
+        g.closePath(); g.fill();
+      };
+      wedge(p.periphHalf, C['cone-wide'], 60); wedge(p.clearHalf, C['cone-clear'], 60);
+    }
+    // The current read: a ring, filled as far as his look has resolved.
+    if (f.cur) {
+      const r = f.o.find((o) => o[0] === f.cur);
+      if (r) {
+        const cx = X(r[2]), cy = Y(r[1]), R = 15;
+        g.strokeStyle = C.read; g.lineWidth = 3; g.beginPath(); g.arc(cx, cy, R, 0, Math.PI * 2); g.stroke();
+        if (f.res !== null) { g.fillStyle = C['cone-clear']; g.beginPath(); g.moveTo(cx, cy); g.arc(cx, cy, R, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * f.res); g.closePath(); g.fill(); }
+      }
+    }
+    const dot = (o, col, lab) => {
+      const cx = X(o[2]), cy = Y(o[1]); g.fillStyle = col; g.beginPath(); g.arc(cx, cy, 7, 0, Math.PI * 2); g.fill();
+      if (lab) { g.fillStyle = C.ink; g.font = '600 15px "IBM Plex Mono", monospace'; g.fillText(o[0], cx + 9, cy - 8); }
+    };
+    for (const o of f.d) dot(o, C.def, false);
+    for (const o of f.o) dot(o, C.off, ['QB', 'X', 'Y', 'Z', 'H', 'RB', 'F'].includes(o[0]));
+    if (f.ball) { g.fillStyle = C.ball; g.beginPath(); g.ellipse(X(f.ball[1]), Y(f.ball[0]), 6, 4, 0, 0, Math.PI * 2); g.fill(); }
+    // Text under the film.
+    const out = p.int ? 'intercepted' : p.sack ? 'sacked' : p.cmp ? 'complete' : p.thrown ? 'incomplete' : 'no throw';
+    pane.meter.style.width = ((f.res ?? 0) * 100).toFixed(0) + '%';
+    pane.stat.innerHTML = `<span>read now</span><b>${f.cur ?? '—'}${f.res !== null && f.cur ? ' · resolved ' + f.res.toFixed(2) : ''}</b>` +
+      `<span>phase</span><b>${f.ph ?? 'ball out'}</b><span>throw</span><b>${p.thrown ? p.thrown.slot + ' at ' + p.thrown.t.toFixed(2) + ' s' : '—'}</b><span>result</span><b>${out}</b>`;
+  }
+
+  function draw() {
+    if (!playKey) return;
+    for (const pane of panes) { const p = data.find((d) => d.concept + '|' + d.coverage === playKey && d.level === pane.lv); if (p) drawPane(pane, p); }
+    clock.textContent = t.toFixed(2) + ' s'; scrub.value = String(Math.round((t / tMax) * 100));
+  }
+  function choose(key) {
+    playKey = key; t = 0;
+    tMax = Math.max(...data.filter((d) => d.concept + '|' + d.coverage === key).map((d) => d.frames[d.frames.length - 1].t));
+    for (const b of playsEl.children) b.setAttribute('aria-pressed', String(b.dataset.key === key));
+    draw();
+  }
+  function loop(now) {
+    if (!running) return;
+    const dt = last ? (now - last) / 1000 : 0; last = now;
+    t = Math.min(tMax, t + dt * (slow.checked ? 0.5 : 1));
+    draw();
+    if (t >= tMax) { running = false; btn.textContent = 'Replay'; return; }
+    requestAnimationFrame(loop);
+  }
+  btn.addEventListener('click', () => {
+    if (running) { running = false; btn.textContent = 'Play'; return; }
+    if (t >= tMax) t = 0;
+    running = true; last = 0; btn.textContent = 'Pause'; requestAnimationFrame(loop);
+  });
+  scrub.addEventListener('input', () => { running = false; btn.textContent = 'Play'; t = (Number(scrub.value) / 100) * tMax; draw(); });
+
+  fetch('film.json').then((r) => r.json()).then((d) => {
+    data = d;
+    const keys = [...new Set(d.map((p) => p.concept + '|' + p.coverage))];
+    for (const k of keys) {
+      const [c, cv] = k.split('|'); const b = document.createElement('button'); b.type = 'button'; b.dataset.key = k;
+      b.textContent = (NAMES[c] ?? c) + ' · ' + (COV[cv] ?? cv); b.addEventListener('click', () => choose(k)); playsEl.appendChild(b);
+    }
+    choose(keys[1] ?? keys[0]);
+  }).catch(() => { grid.innerHTML = '<p class="err">The film data did not load. Reload the page to try again.</p>'; });
+})();
+</script>

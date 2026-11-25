@@ -1,0 +1,395 @@
+diff --git a/config/baseline.json b/config/baseline.json
+index 26f1b159b..6608e1ed6 100644
+--- a/config/baseline.json
++++ b/config/baseline.json
+@@ -370,6 +370,8 @@
+     "QB_HONEST_FEEL": "0",
+     "THROW_PLATFORM": "0",
+     "QB_BELIEVED_DEF": "0",
++    "QB_SCOUT": "0",
++    "QB_SCREEN_SEEN": "0",
+     "QB_SEEN_MAN": "0",
+     "QB_SEEN_OUT": "0",
+     "QB_SEEN_REC": "0",
+diff --git a/config/reference-stack.json b/config/reference-stack.json
+index 1638e64b3..4a83fbc9d 100644
+--- a/config/reference-stack.json
++++ b/config/reference-stack.json
+@@ -1,6 +1,6 @@
+ {
+   "schemaVersion": 1,
+-  "id": "engine-95",
++  "id": "engine-96",
+   "runSet": {
+     "commit": "1b5415de99b5b7194eff045f3c37a07a4c54c1a9",
+     "seeds": [
+@@ -333,6 +333,8 @@
+     "QB_HONEST_FEEL": "on",
+     "THROW_PLATFORM": "off",
+     "QB_BELIEVED_DEF": "on",
++    "QB_SCOUT": "on",
++    "QB_SCREEN_SEEN": "on",
+     "QB_SEEN_MAN": "on",
+     "QB_SEEN_OUT": "on",
+     "QB_SEEN_REC": "on",
+diff --git a/docs/FLAGS.md b/docs/FLAGS.md
+index e4d0faa97..3a51d1187 100644
+--- a/docs/FLAGS.md
++++ b/docs/FLAGS.md
+@@ -2,7 +2,7 @@
+ 
+ Every engine switch read from the environment, recounted from `src` at `57f50fc3` on 2026-10-22. This includes #210's promotion and #205's two additional default-on switches. Flags that are not on develop (parked, removed from a PR, or only on a side branch) are kept in [PARKED.md](PARKED.md) so the ideas are not lost. Registration rules are in [PLAN.md](PLAN.md): at most 10 experimental flags, and each expires two reviews after it lands.
+ 
+-There are 503 flags read from the environment in `src` (recounted 2026-11-24, engine-95: engine-94 plus THROWAWAY_FELT (on); engine-94: engine-93 plus FLIGHT_BREAK (on) and FLIGHT_LEAD (off, parked); engine-93: engine-92 plus HEAD_FOLLOW (on); engine-92: engine-91 plus PERIPH_ACUITY (on); engine-91: engine-90 plus STEM_WORK (on); engine-90: engine-89 plus READ_VERTICAL_LOS and BACK_CLEAR (on); engine-89: engine-88 plus FLAT_CARRY (on); engine-88: engine-87 plus FORECAST_FINISH and QB_ROLE_PATH (on), READ_WINDOW and QB_CLOSE_BELIEF (off); engine-87: engine-86 plus HALF_KEY (on); engine-86 was engine-85 plus MUSH_MATCH (on); engine-85 was engine-84 plus FLAT_SINK (on); engine-84 was engine-83 plus DOWN_RISE_PLANT (on); engine-83 was engine-82 plus QB_DRIVE, QB_RHYTHM_THROW, QB_ALIGN, QB_BODY_FOLLOW, QB_WINDOW_ARRIVE, QB_KEY_PLANT, QB_STICK, QB_PEEK_CLOCK, QB_MOF_READ, QB_DEEP_WAIT and QB_STANCE; QB_DRIVE, QB_RHYTHM_THROW, QB_WINDOW_ARRIVE, QB_KEY_PLANT and QB_STICK on): 383 are on unless set to `0`, 92 are off unless set to `1`, and 28 are numeric scales or modes (identity value unless listed in the stack's numeric section). The rows below carry each flag's history.
++There are 505 flags read from the environment in `src` (recounted 2026-11-24, engine-96: engine-95 plus QB_SCOUT (on) and QB_SCREEN_SEEN (on); engine-95: engine-94 plus THROWAWAY_FELT (on); engine-94: engine-93 plus FLIGHT_BREAK (on) and FLIGHT_LEAD (off, parked); engine-93: engine-92 plus HEAD_FOLLOW (on); engine-92: engine-91 plus PERIPH_ACUITY (on); engine-91: engine-90 plus STEM_WORK (on); engine-90: engine-89 plus READ_VERTICAL_LOS and BACK_CLEAR (on); engine-89: engine-88 plus FLAT_CARRY (on); engine-88: engine-87 plus FORECAST_FINISH and QB_ROLE_PATH (on), READ_WINDOW and QB_CLOSE_BELIEF (off); engine-87: engine-86 plus HALF_KEY (on); engine-86 was engine-85 plus MUSH_MATCH (on); engine-85 was engine-84 plus FLAT_SINK (on); engine-84 was engine-83 plus DOWN_RISE_PLANT (on); engine-83 was engine-82 plus QB_DRIVE, QB_RHYTHM_THROW, QB_ALIGN, QB_BODY_FOLLOW, QB_WINDOW_ARRIVE, QB_KEY_PLANT, QB_STICK, QB_PEEK_CLOCK, QB_MOF_READ, QB_DEEP_WAIT and QB_STANCE; QB_DRIVE, QB_RHYTHM_THROW, QB_WINDOW_ARRIVE, QB_KEY_PLANT and QB_STICK on): 385 are on unless set to `0`, 92 are off unless set to `1`, and 28 are numeric scales or modes (identity value unless listed in the stack's numeric section). The rows below carry each flag's history.
+ 
+ **Promotion (2026-11-09):** the reference stack `run-ref-4` is now the engine's default. The 90 flags it lists `on` are read as on unless set to `0` (rows marked "promoted" below); the rest are unchanged. Decisions and evidence for each flag are in [REFERENCE_STACK.md](REFERENCE_STACK.md); `npm run ref -- --list` is the current inventory, and `npm run ref -- --off -- <command>` runs the engine as it was before. The test suites still run on the pre-promotion engine (pinned in `vitest.config.ts`) until their recorded cases are re-recorded. The counts in the paragraph above predate all of this.
+ 
+@@ -226,6 +226,8 @@ There are 503 flags read from the environment in `src` (recounted 2026-11-24, en
+ | `QB_HONEST_FEEL` | on | promoted 2026-11-14 (engine-63; `=0` restores); was experimental (QB lane, information rule, 2026-11-13; read on engine-57 and engine-59, flat; in the honesty batch) | quarterback | `src/sim/behaviors/qb.ts` (`felt`, `freeBound`, `pressure`, `evade`) | set at first review. His pressure picture reads only what he has perceived: the behind-his-shoulder test uses his plain picture of the man, pressure's distance is to the felt position, and he evades the felt position. Off, all four read the rusher's true position. Decided by its own row (alarm rate, felt against true time to contact at the alarm, sacks), expecting him to feel pressure later; a loss is repaired by perception, not by the leak |
+ | `THROW_PLATFORM` | off | experimental (QB lane, throw mechanics, 2026-11-13; first build, not yet read) | quarterback | `src/sim/behaviors/qb.ts` (`platform`, `missSigma`, `release`) | set at first review. What moving costs a throw, continuously: stepping toward the target is free up to a stride; the rest of his velocity is carried by the ball and the share he does not correct (by throw-on-run) is a miss along his motion, growing with flight time; moving across or away from the target takes his base out (an arm throw). Replaces the 1.15-1.6x step at 2.2 yd/s. Decided by ball against aim by platform (`scripts/diag/eyes/deep-split.ts`) and the ordering set < stepping in < drifting away < across the body; a set throw is unchanged. Never fitted to completions |
+ | `QB_BELIEVED_DEF` | on | promoted 2026-11-14 (engine-63; `=0` restores); was experimental (QB lane, information rule, 2026-11-13; staged test `test/qb-believed-def.test.ts`; game rows flat) | quarterback | `src/sim/behaviors/qb.ts` (`believe`, `seenTied`, in `window`, `screenDead`, `updateRush`), `src/sim/believed.ts` | set at first review. In pricing a throw he no longer reads each defender's true physical profile and exact ball-skills rating, or the sim's engagement record: body and ball skills are the position's typical values corrected toward the man's own by how well he knows the opponent (awareness and experience), fixed for the play; tied up is an offensive body within arm's length of the defender in his pictures. Decided by its own row (his priced chance against outcomes by defender quality, completion, INT); a loss is repaired by preparation as a mechanism, not by the leak |
++| `QB_SCOUT` | on | promoted 2026-11-24 (engine-96; `=0` restores); QB lane, plan of record §1.6 | perception (what he believes of a defender's body) | `src/sim/behaviors/qb.ts` (`scoutReport`, `believe`, `bodyFor`) | What he believes of a defender's body and ball skills is a scouting report fixed before the game per passer and defender: the position's typical plus his share (playRecognition, experience) of a film reading that errs by 6% of typical, falling with the defender's experience to a third of that. Off, the belief was the man's truth pulled toward the typical by a rating, and the felt rush, the stick checks, pocket movement and the screen check read rushers' and defenders' true profile and fatigue outright; on, all of them read the report, with no fatigue. Same 16 games: see docs/reviews/2026-11-23-step-clock.md, "§1.6". |
++| `QB_SCREEN_SEEN` | on | promoted 2026-11-24 (engine-96; `=0` restores); QB lane, §1.6 | perception (screen check) | `src/sim/behaviors/qb.ts` (screen check) | The screen check's "blocked" is whether he sees one of his men on the defender (his picture, `seenTied`), not the defender's true engagement. |
+ | `QB_SEEN_MAN` | on | promoted 2026-11-14 (engine-63; `=0` restores); was experimental (QB lane, information rule, 2026-11-13; staged test `test/qb-seen-man.test.ts` on its main site; no game row yet) | quarterback | `src/sim/qbmind.ts` (`expectedPos`, `quickCheck`), `src/sim/behaviors/qb.ts` (sets `receiverAt`) | set at first review. A man defender he is not looking at is remembered on his receiver where the quarterback's own forecast has that receiver, not on the receiver's true position; with no belief to place a defender he falls back to his last picture, not the true position; the check at the line reads corner depth with his alignment noise. Decided by its own row (estimate error for unseen man defenders, interceptions against man); a loss is repaired by perception, not by the leak |
+ | `QB_SEEN_OUT` | on | promoted 2026-11-14 (engine-63; `=0` restores); was experimental (QB lane, information rule, 2026-11-13; staged test `test/qb-seen-out.test.ts`; game rows near flat) | quarterback | `src/sim/behaviors/qb.ts` (`seenOut`, `checkRelease`, `breakClock`, `ready`) | Whether a check-release man is out on his route comes from the quarterback's own picture placing him on his installed release route (then he stays out), not from the man's behaviour object; gates the rhythm outlet, his readiness and his place in the hot order. A slow screen's settle is read from where the quarterback has the receiver. |
+ | `QB_SEEN_REC` | on | promoted 2026-11-14 (engine-63; `=0` restores); was experimental (QB lane, information rule, 2026-11-14; first build) | quarterback | `src/sim/behaviors/qb.ts` (`has`, `evaluate`, `orderReads`) | The remaining reads of his own receivers' true state use where he has them (his forecast, else his delayed picture): a receiver's side for the look-off and the hot side, the verticals' stems for the peek, the clear-look test, the fallback target point, and the man-coverage reorder (with his picture of the defender). A receiver is down when his delayed picture shows him off his feet; a block is the call or an unseen check-release man, not the engagement record. With `QB_BELIEVED_DEF` the reorder also uses the defender's believed speed and man coverage. |
+diff --git a/docs/REFERENCE_STACK.md b/docs/REFERENCE_STACK.md
+index c2b9c0050..991939048 100644
+--- a/docs/REFERENCE_STACK.md
++++ b/docs/REFERENCE_STACK.md
+@@ -611,6 +611,33 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
+ On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
+ 
+ 
++## engine-96: what he believes of a defender is a scouting report (2026-11-24)
++
++On: `QB_SCOUT` and `QB_SCREEN_SEEN` (QB lane, plan of record §1.6: true-state reads in the passer's decision).
++
++- `QB_SCOUT`: what he believes of a defender's body and ball skills is a scouting report, fixed before the game per
++  passer and defender. It is the position's typical plus his share (playRecognition, experience) of a film reading. Film
++  errs: 6% of typical on each trait at no snaps on film, falling with the defender's experience to a floor of a third
++  of that (chosen). Off, the belief was the man's truth pulled toward the typical by a rating. The felt rush, the stick
++  checks, pocket movement and the screen check read rushers' and defenders' true profile and fatigue outright; on,
++  they all read the report, with no fatigue (he cannot see it). True fatigue reads in qb.ts fall 10 → 3
++  (decision-information scan).
++- `QB_SCREEN_SEEN`: the screen check's "blocked" is whether he sees one of his men on the defender, not the true
++  engagement.
++
++Same 16 games (seeds 11-18, 19-26), `scripts/diag/eyes/dropback-outcome.ts`:
++
++| | both off | QB_SCOUT only | both on |
++|---|---|---|---|
++| dropbacks | 1417 | 1444 | 1444 |
++| completion | 68.0% | 69.2% | 69.2% |
++| sacks | 96 (6.77%) | 94 (6.51%) | 94 (6.51%) |
++| INT | 18 | 19 | 19 |
++| thrown away | 19 | 17 | 17 |
++| time to throw p50 | 2.31 s | 2.31 s | 2.31 s |
++
++QB_SCREEN_SEEN changes no play on these seeds (the screen check's engaged case is rare); it removes the read.
++
+ ## engine-95: the ball goes away on what he perceives (2026-11-24)
+ 
+ On: `THROWAWAY_FELT` (QB lane with Integration). Off, a fixed per-passer timer from the set (2.5 + 1.0 composure + 0.6
+diff --git a/src/sim/behaviors/qb.ts b/src/sim/behaviors/qb.ts
+index d6943e2dd..698ba5905 100644
+--- a/src/sim/behaviors/qb.ts
++++ b/src/sim/behaviors/qb.ts
+@@ -15,6 +15,7 @@
+  * margins; accuracy turns into a miss distance on the actual throw.
+  */
+ import { FIELD_WIDTH } from '../../core/field.js';
++import { Rng, hashString } from '../../core/rng.js';
+ import { clamp, logistic, wrapAngle, type Vec2, type Vec3 } from '../../core/vec.js';
+ import { arcPoint, dragFreeLaunch, minFlightTime, qbArmSpeed, solveLaunch, DRAG_SPIRAL } from '../../physics/ball.js';
+ import { stepBody, type Body, type MoveCommand } from '../../physics/kinematics.js';
+@@ -433,6 +434,23 @@ const QB_HONEST_FEEL = process.env.QB_HONEST_FEEL !== '0';
+  * A loss from this is repaired by preparation as a mechanism (film study raising how well he knows them), not by the
+  * leak. SCOUT constants are chosen. */
+ const QB_BELIEVED_DEF = process.env.QB_BELIEVED_DEF !== '0';
++/** QB_SCOUT (on; QB_SCOUT=0 restores; QB lane, 2026-11-24, docs/reviews/2026-11-24-qb-decision-plan.md §1.6): what he
++ * believes of a defender's body and ball skills is a scouting report, never the man's truth scaled by a rating. The
++ * report is the position's typical plus what film showed of the man, fixed before the game for each passer and
++ * defender. Film is not truth: it reads each trait with an error that falls with the snaps on film (the defender's
++ * experience) to a floor that stays (film shows him against other offenses), and the passer takes in a share of it by
++ * his playRecognition and experience. Off, the report was the man's true profile pulled toward the typical by
++ * awareness, and the felt rush, the stick checks, pocket movement and the screen check read the rushers' and
++ * defenders' true profile and fatigue (`speedScale`) outright. On, every one of them reads the report, with no fatigue
++ * (he cannot see it). */
++const QB_SCOUT = process.env.QB_SCOUT !== '0';
++/** QB_SCOUT: the film's error on a trait, as a share of the position's typical value, at no snaps on film and the floor
++ * share that stays however many (chosen: 6% of typical; a third of it stays). FILM_YEARS: the experience that halves the
++ * sample part (chosen). */
++const FILM_ERR = 0.06, FILM_FLOOR = 1 / 3, FILM_YEARS = 2;
++/** QB_SCREEN_SEEN (on; QB_SCREEN_SEEN=0 restores; QB lane, 2026-11-24, §1.6): the screen check's "blocked" is whether
++ * he sees one of his men on the defender (his picture), not the defender's true engagement. */
++const QB_SCREEN_SEEN = process.env.QB_SCREEN_SEEN !== '0';
+ /** QB_SEEN_OUT (experimental, off; QB_SEEN_OUT=1; information rule): whether a check-release man is out on his route is
+  * no longer read from the man's behaviour object. He is out once the quarterback's own picture has placed him on his
+  * installed release route (the forecast's progress, from a look or his peripheral view), and he then stays out. It
+@@ -942,6 +960,31 @@ const HEAD_RATE = 400 * Math.PI / 180;
+  * head is, then the glance. */
+ const QB_HEAD = process.env.QB_HEAD !== '0';
+ 
++/** QB_SCOUT: the scouting report a passer carries into the game on a defender (see QB_SCOUT): the position's typical
++ * plus his share of what film showed, film reading each trait with an error that falls with the defender's snaps on
++ * film to a floor. Drawn from a hash of the passer's and defender's ids, so it is the same report on every play (fixed
++ * before the game; no cache: a different man, or the same man changed, gets his own film) and never draws from the
++ * play's dice. */
++export function scoutReport(a: Agent, d: Agent): { profile: PhysicalProfile; ballSkills: number; manCoverage: number } {
++  const key = `${a.player.id}|${d.player.id}`;
++  const typ = typicalAt(d.player.position);
++  const k = clamp(SCOUT0 + SCOUT_AWARE * a.r('playRecognition') + SCOUT_EXP * Math.min(1, a.player.experience / 8), 0, 1);
++  const film = new Rng(hashString(key));
++  const err = FILM_ERR * Math.sqrt(FILM_FLOOR * FILM_FLOOR + (1 - FILM_FLOOR * FILM_FLOOR) / (1 + d.player.experience / FILM_YEARS));
++  let out: { profile: PhysicalProfile; ballSkills: number; manCoverage: number };
++  if (!typ) out = { profile: d.profile, ballSkills: d.r('ballSkills'), manCoverage: d.r('manCoverage') };
++  else {
++    const prof: Record<string, unknown> = { ...d.profile };
++    for (const [f, t] of Object.entries(typ.profile)) {
++      const v = (d.profile as unknown as Record<string, unknown>)[f];
++      if (typeof v === 'number' && typeof t === 'number') prof[f] = t + (v + film.normal(0, err * Math.abs(t)) - t) * k;
++    }
++    const rate = (r: 'ballSkills' | 'manCoverage') => clamp(typ.ratings[r] + (d.r(r) + film.normal(0, err) - typ.ratings[r]) * k, 0, 1);
++    out = { profile: prof as unknown as PhysicalProfile, ballSkills: rate('ballSkills'), manCoverage: rate('manCoverage') };
++  }
++  return out;
++}
++
+ export class QBPass implements Behavior {
+   readonly kind = 'qb-pass';
+   private phase: 'snap' | 'drop' | 'set' | 'windup' = 'snap';
+@@ -2138,8 +2181,8 @@ export class QBPass implements Behavior {
+   stickKept = 0;
+   stickKeptLast = false;
+   /** QB_STICK: a defender's distance in his picture to the low part of the flight from `from` to `pt` (beyond his leap: no lane). */
+-  private laneDist(sim: PlaySim, d: Agent, from: Vec3, pt: Vec3, T: number, at: Vec2): number {
+-    const v0 = dragFreeLaunch(from, pt, T), leap = d.profile.reactReach + 0.5 * (d.profile.maxCatchHeight - d.profile.reactReach);
++  private laneDist(a: Agent, sim: PlaySim, d: Agent, from: Vec3, pt: Vec3, T: number, at: Vec2): number {
++    const dp = QB_SCOUT ? this.bodyOf(a, d) : d.profile, v0 = dragFreeLaunch(from, pt, T), leap = dp.reactReach + 0.5 * (dp.maxCatchHeight - dp.reactReach);
+     let best = Infinity;
+     for (const f of [0.3, 0.45, 0.6, 0.75, 0.88]) { const b = arcPoint(from, v0, T * f); if (b.z > leap + 0.1) continue; best = Math.min(best, Math.hypot(b.x - at.x, b.y - at.y)); }
+     return best;
+@@ -2154,7 +2197,7 @@ export class QBPass implements Behavior {
+     const from: Vec3 = { x: a.pos.x, y: a.pos.y, z: RELEASE_Z }, onPt = new Map<Agent, number>(), lane = new Map<Agent, number>();
+     for (const { d, at } of this.stickDefs(a, sim, ev.target)) {
+       onPt.set(d, Math.hypot(at.x - ev.point.x, at.y - ev.point.y));
+-      lane.set(d, this.laneDist(sim, d, from, ev.point, ev.T, at) - d.profile.reach);
++      lane.set(d, this.laneDist(a, sim, d, from, ev.point, ev.T, at) - (QB_SCOUT ? this.bodyOf(a, d) : d.profile).reach);
+     }
+     const recvAt = this.receiverForecasts.get(ev.target)?.predict(sim.t, recheckIn) ?? null;
+     this.stickPic = { target: ev.target, point: { x: ev.point.x, y: ev.point.y }, recvAt: recvAt ? { x: recvAt.x, y: recvAt.y } : null, onPt, lane };
+@@ -2172,7 +2215,7 @@ export class QBPass implements Behavior {
+     for (const { d, at } of this.stickDefs(a, sim, r)) {
+       const was = pic.onPt.get(d) ?? Infinity, now = Math.hypot(at.x - point.x, at.y - point.y);
+       if (now <= STICK_ON && was > STICK_ON + STICK_GAP) return { kind: 'on-point', d };
+-      const wasL = pic.lane.get(d) ?? Infinity, nowL = this.laneDist(sim, d, from, point, ev.T, at) - d.profile.reach;
++      const wasL = pic.lane.get(d) ?? Infinity, nowL = this.laneDist(a, sim, d, from, point, ev.T, at) - (QB_SCOUT ? this.bodyOf(a, d) : d.profile).reach;
+       if (nowL <= 0 && wasL > STICK_GAP) return { kind: 'in-lane', d };
+     }
+     return null;
+@@ -2746,7 +2789,7 @@ export class QBPass implements Behavior {
+       // still make up).
+       const closing = ((seen.vel.x - a.vel.x) * px + (seen.vel.y - a.vel.y) * py) / L;
+       const paced = Math.min(3, Math.max(0, L - 0.8) / Math.max(closing, 0.5));
+-      const sprint = timeToReach({ pos: r, vel: seen.vel, profile: d.profile, speedScale: d.speedScale }, a.pos, 0.8);
++      const sprint = timeToReach({ pos: r, vel: seen.vel, ...this.bodyFor(a, d) }, a.pos, 0.8);
+       hold = Math.max(hold, paced - sprint);
+     }
+     return hold;
+@@ -2779,7 +2822,7 @@ export class QBPass implements Behavior {
+     for (const d of sim.defense) {
+       if (d.isDown(sim.t)) continue;
+       const seen = this.felt(a, sim, d);
+-      let tt = timeToReach({ pos: seen.pos, vel: seen.vel, profile: d.profile, speedScale: d.speedScale }, a.pos, 0.8) + this.held(a, d, sim);
++      let tt = timeToReach({ pos: seen.pos, vel: seen.vel, ...this.bodyFor(a, d) }, a.pos, 0.8) + this.held(a, d, sim);
+       if (FREE_BOUND) tt = Math.min(tt, this.freeBound(a, sim, d, seen));
+       if (tt < best) {
+         best = tt;
+@@ -2882,8 +2925,9 @@ export class QBPass implements Behavior {
+       const along = ((seen.pos.x - a.pos.x) * dx + (seen.pos.y - a.pos.y) * dy) / len;
+       const off = Math.abs((seen.pos.x - a.pos.x) * dy - (seen.pos.y - a.pos.y) * dx) / len;
+       if (along > 0 && along < Math.min(4, 0.45 * len) && off < 1.5) inLane = true;
+-      const mover = { pos: seen.pos, vel: seen.vel, profile: d.profile, speedScale: d.speedScale };
+-      if (timeToReach(mover, pt, d.profile.reach) + (d.engagement ? 0.5 : 0) < T + 0.35) closing = true;
++      const mover = { pos: seen.pos, vel: seen.vel, ...this.bodyFor(a, d) };
++      const engaged = QB_SCREEN_SEEN ? this.seenTied(a, sim, d, seen.pos) : !!d.engagement;
++      if (timeToReach(mover, pt, QB_SCOUT ? mover.profile.reach : d.profile.reach) + (engaged ? 0.5 : 0) < T + 0.35) closing = true;
+     }
+     const seenR = this.mind.estimate(r);
+     const away = (seenR.vel.x * dx + seenR.vel.y * dy) / len;
+@@ -3134,6 +3178,7 @@ export class QBPass implements Behavior {
+   private believed = new Map<Agent, { profile: PhysicalProfile; ballSkills: number; manCoverage: number }>();
+   private believe(a: Agent, d: Agent): { profile: PhysicalProfile; ballSkills: number; manCoverage: number } {
+     let b = this.believed.get(d);
++    if (!b && QB_SCOUT) { b = scoutReport(a, d); this.believed.set(d, b); }
+     if (!b) {
+       const k = clamp(SCOUT0 + SCOUT_AWARE * a.r('awareness') + SCOUT_EXP * Math.min(1, a.player.experience / 8), 0, 1);
+       const typ = typicalAt(d.player.position);
+@@ -3146,7 +3191,11 @@ export class QBPass implements Behavior {
+   }
+ 
+   /** The body he takes a defender to have: his belief about the man (QB_BELIEVED_DEF), else the man's own. */
+-  private bodyOf(a: Agent, d: Agent): PhysicalProfile { return QB_BELIEVED_DEF ? this.believe(a, d).profile : d.profile; }
++  private bodyOf(a: Agent, d: Agent): PhysicalProfile { return QB_BELIEVED_DEF || QB_SCOUT ? this.believe(a, d).profile : d.profile; }
++  /** QB_SCOUT: a defender's body as he believes it, for a reach estimate: the report, with no fatigue he cannot see. */
++  private bodyFor(a: Agent, d: Agent): { profile: PhysicalProfile; speedScale: number } {
++    return QB_SCOUT ? { profile: this.believe(a, d).profile, speedScale: 1 } : { profile: d.profile, speedScale: d.speedScale };
++  }
+ 
+   /** QB_BELIEVED_DEF: whether he sees a defender tied up: an offensive body other than `except` within arm's length of
+    * where he has the defender, on his own picture of that teammate. */
+@@ -3468,7 +3517,7 @@ export class QBPass implements Behavior {
+       let margin = Infinity;
+       for (const { d, seen, held } of threats) {
+         // A rusher still in a block is held as long as the pressure check feels him held.
+-        const tt = timeToReach({ pos: seen.pos, vel: seen.vel, profile: d.profile, speedScale: d.speedScale }, q, 1) + held;
++        const tt = timeToReach({ pos: seen.pos, vel: seen.vel, ...this.bodyFor(a, d) }, q, 1) + held;
+         margin = Math.min(margin, tt - myT);
+       }
+       if (margin > 0.35) open++;
+@@ -3830,7 +3879,7 @@ export class QBPass implements Behavior {
+     const older = sim.perception.perceive(d.idx, age + sim.dt);
+     const ax = (seen.vel.x - older.vel.x) / sim.dt, ay = (seen.vel.y - older.vel.y) / sim.dt;
+     let vx = seen.vel.x + ax * age, vy = seen.vel.y + ay * age;
+-    const v = Math.hypot(vx, vy), cap = d.profile.vmax * (d.speedScale ?? 1);
++    const v = Math.hypot(vx, vy), body = this.bodyFor(a, d), cap = body.profile.vmax * (body.speedScale ?? 1);
+     if (v > cap) { vx *= cap / v; vy *= cap / v; }
+     return { pos: { x: seen.pos.x + 0.5 * ax * age * age, y: seen.pos.y + 0.5 * ay * age * age }, vel: { x: vx, y: vy } };
+   }
+@@ -3842,7 +3891,7 @@ export class QBPass implements Behavior {
+     for (const d of sim.defense) {
+       if (d.isDown(sim.t)) continue;
+       const seen = this.feltClosing(a, sim, d);
+-      if (timeToReach({ pos: seen.pos, vel: seen.vel, profile: d.profile, speedScale: d.speedScale }, a.pos, 0.8) + this.held(a, d, sim) < need) return false;
++      if (timeToReach({ pos: seen.pos, vel: seen.vel, ...this.bodyFor(a, d) }, a.pos, 0.8) + this.held(a, d, sim) < need) return false;
+     }
+     return true;
+   }
+@@ -3887,7 +3936,7 @@ export class QBPass implements Behavior {
+       let best = Infinity;
+       for (const { d, seen } of threats) {
+         best = Math.min(best,
+-          timeToReach({ pos: seen.pos, vel: seen.vel, profile: d.profile, speedScale: d.speedScale }, q, 0.8) + detour(seen.pos, q, d.profile.radius));
++          timeToReach({ pos: seen.pos, vel: seen.vel, ...this.bodyFor(a, d) }, q, 0.8) + detour(seen.pos, q, d.profile.radius));
+         if (bounded) best = Math.min(best, this.freeBound(a, sim, d, seen, q));
+       }
+       return best - need;
+@@ -3938,7 +3987,7 @@ export class QBPass implements Behavior {
+     const ttc = (q: Vec2) => {
+       let best = Infinity;
+       for (const { d, seen, held } of threats) best = Math.min(best,
+-        timeToReach({ pos: seen.pos, vel: seen.vel, profile: d.profile, speedScale: d.speedScale }, q, 0.8) + held - horizon);
++        timeToReach({ pos: seen.pos, vel: seen.vel, ...this.bodyFor(a, d) }, q, 0.8) + held - horizon);
+       return best;
+     };
+     const stay = ttc(a.pos);
+diff --git a/test/acc-radius.test.ts b/test/acc-radius.test.ts
+index 9be84cb7f..81c1eee53 100644
+--- a/test/acc-radius.test.ts
++++ b/test/acc-radius.test.ts
+@@ -30,6 +30,7 @@ async function throws(flag: string) {
+   // (ACC_RADIUS) he throws the vertical on 7 of 10 (median 2.3 s, 2 check-downs) and on 10 of 10 (all by 3.2 s), so the
+   // off arm's check-down premise is gone. Pinned off here to keep ACC_RADIUS's own contrast; ACC_RADIUS is held.
+   vi.stubEnv('QB_ROLE_PATH', '0');
++  vi.stubEnv('QB_SCOUT', '0'); // engine-96 (QB lane to re-record): the four_verts two-high scenes were recorded with the passer's belief of defenders' true bodies; on the scouting report the on-time vertical's median moves 2.9 -> 3.3 s on this panel
+   vi.stubEnv('ACC_RADIUS', flag);
+   const { PlaySim } = await import('../src/sim/playsim.js');
+   const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');
+diff --git a/test/arrival-lead.test.ts b/test/arrival-lead.test.ts
+index a0d89c201..e6fbd8ef5 100644
+--- a/test/arrival-lead.test.ts
++++ b/test/arrival-lead.test.ts
+@@ -57,6 +57,7 @@ async function plays(flag: string) {
+   // the lead's own effect is not reached (on and off medians are identical, 2.34 yd). Owner: Coverage. Remove this test with
+   // ARRIVE_LEAD when FLIGHT_BREAK=0's paths (flightApproach's fixed catch-point drive) are retired.
+   vi.stubEnv('FLIGHT_BREAK', '0');
++  vi.stubEnv('QB_SCOUT', '0'); // engine-96 (QB lane to re-record): the scene's throws were recorded with the passer's belief of rushers' and defenders' true bodies; QB_SCOUT moves which short throws he makes (median lead 5 against 5 on this panel)
+   const { Rng } = await import('../src/core/rng.js');
+   const { generateTeam, pickDefense, pickOffense } = await import('../src/league/team.js');
+   const { PASS_BY_ID } = await import('../src/playbook/concepts.js');
+diff --git a/test/engine-pin.json b/test/engine-pin.json
+index 1429e3408..1fde99d94 100644
+--- a/test/engine-pin.json
++++ b/test/engine-pin.json
+@@ -438,6 +438,7 @@
+   "test/qb-relook.test.ts",
+   "test/qb-rhythm.test.ts",
+   "test/qb-running-cue.test.ts",
++  "test/qb-scout.test.ts",
+   "test/qb-seen-man.test.ts",
+   "test/qb-seen-out.test.ts",
+   "test/qb-seen-rec.test.ts",
+diff --git a/test/information-guard-allowlist.ts b/test/information-guard-allowlist.ts
+index bc2c4964a..0a9455b57 100644
+--- a/test/information-guard-allowlist.ts
++++ b/test/information-guard-allowlist.ts
+@@ -68,7 +68,7 @@ export const INFORMATION_DEBT: InformationDebt[] = [
+   { file: 'src/sim/behaviors/qb.ts', key: 'agent.isDown', reads: 6, class: 'unreviewed', owner: 'QB', since: '2026-11-13', why: "another player's true off-feet state; sim.see(...).pose is the delayed cue" },
+   { file: 'src/sim/behaviors/qb.ts', key: 'agent.pos', reads: 8, class: 'leak', owner: 'QB', since: '2026-11-13', why: "another player's true position; read it through sim.see(a, other)" },
+   { file: 'src/sim/behaviors/qb.ts', key: 'agent.pos', reads: 14, class: 'unreviewed', owner: 'QB', since: '2026-11-13', why: "another player's true position; read it through sim.see(a, other) (one is new since engine-71, listed 2026-11-16: the QB_FACE_SEEN-off branch of `at(r)`; `this.has(sim, r)` is the seen read) (two more listed at engine-73, 2026-11-16: `grassLanding` reads his own position as `sim.qb.pos`, a self read the scanner cannot tell; `GRASS_READ` is off)" },
+-  { file: 'src/sim/behaviors/qb.ts', key: 'agent.speedScale', reads: 9, class: 'unreviewed', owner: 'QB', since: '2026-11-13', why: "another player's true fatigue; a defender sees a fade, not the tank" },
++  { file: 'src/sim/behaviors/qb.ts', key: 'agent.speedScale', reads: 2, class: 'unreviewed', owner: 'QB', since: '2026-11-13', why: "another player's true fatigue; a defender sees a fade, not the tank (QB_SCOUT, 2026-11-24, took 7: what remains is its own off path and window()'s fallback without QB_BELIEVED_DEF)" },
+   { file: 'src/sim/behaviors/qb.ts', key: 'agent.vel', reads: 4, class: 'unreviewed', owner: 'QB', since: '2026-11-13', why: "another player's true velocity; read it through sim.see(a, other)" },
+   { file: 'src/sim/behaviors/qb.ts', key: 'sim.bond', reads: 1, class: 'unreviewed', owner: 'QB', since: '2026-11-13', why: "the true tackle bond" },
+   { file: 'src/sim/behaviors/qb.ts', key: 'sim.carrier', reads: 2, class: 'unreviewed', owner: 'QB', since: '2026-11-13', why: "the true holder" },
+diff --git a/test/qb-believed-def.test.ts b/test/qb-believed-def.test.ts
+index 7e0d3b0c5..1cfbe29bc 100644
+--- a/test/qb-believed-def.test.ts
++++ b/test/qb-believed-def.test.ts
+@@ -15,6 +15,7 @@ type Man = 'elite' | 'typical' | 'poor';
+ async function scene(flag: string) {
+   vi.resetModules();
+   vi.stubEnv('QB_BELIEVED_DEF', flag);
++  vi.stubEnv('QB_SCOUT', '0'); // engine-96 (QB lane): this file holds the old contract (belief = truth pulled toward the typical by a rating); QB_SCOUT replaces it with a per-game scouting report (test/qb-scout.test.ts). Retire with QB_BELIEVED_DEF's old path.
+   const { PlaySim } = await import('../src/sim/playsim.js');
+   const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');
+   const { typicalAt } = await import('../src/sim/believed.js');
+diff --git a/test/qb-scout.test.ts b/test/qb-scout.test.ts
+new file mode 100644
+index 000000000..7cd5a3d72
+--- /dev/null
++++ b/test/qb-scout.test.ts
+@@ -0,0 +1,41 @@
++// QB_SCOUT (QB lane, 2026-11-24): what the passer believes of a defender is a scouting report fixed before the game,
++// the position's typical plus his share of a film reading that errs, less with more of the defender on film.
++import { describe, expect, it } from 'vitest';
++import { scoutReport } from '../src/sim/behaviors/qb.js';
++
++const r01 = (k: string, v: number) => (k === 'x' ? 0 : v);
++function man(id: string, position: string, experience: number, ratings: Record<string, number>, profile: Record<string, number>) {
++  return { player: { id, position, experience }, profile, r: (k: string) => ratings[k] ?? r01(k, 0.5) } as any;
++}
++const passer = (id: string, rec: number, exp: number) => man(id, 'QB', exp, { playRecognition: rec }, {});
++const corner = (id: string, exp: number, vmax: number) => man(id, 'CB', exp, { ballSkills: 0.9, manCoverage: 0.9 }, { vmax, reach: 1, reactReach: 2.3, maxCatchHeight: 3.2, radius: 0.35 });
++
++describe('QB_SCOUT: the scouting report', () => {
++  it('is the same report for the same passer and defender every time, and a new one for a different man', () => {
++    const q = passer('q1', 0.8, 6), c = corner('c1', 4, 10.4);
++    expect(scoutReport(q, c)).toEqual(scoutReport(q, c));
++    expect(scoutReport(q, corner('c2', 4, 10.4)).profile.vmax).not.toBe(scoutReport(q, c).profile.vmax);
++  });
++
++  it('a passer who studies more is closer to the man than one who does not, on average', () => {
++    let near = 0, far = 0;
++    for (let i = 0; i < 200; i++) {
++      const c = corner(`c${i}`, 6, 10.9);
++      near += Math.abs(scoutReport(passer(`s${i}`, 1, 10), c).profile.vmax - 10.9);
++      far += Math.abs(scoutReport(passer(`n${i}`, 0, 0), c).profile.vmax - 10.9);
++    }
++    expect(near).toBeLessThan(far);
++  });
++
++  it('film errs less on a man with more snaps on film, never to zero', () => {
++    const spread = (exp: number) => {
++      const v: number[] = [];
++      for (let i = 0; i < 400; i++) v.push(scoutReport(passer(`q${i}`, 1, 10), corner(`c${exp}-${i}`, exp, 10.4)).profile.vmax);
++      const m = v.reduce((a, b) => a + b, 0) / v.length;
++      return Math.sqrt(v.reduce((a, b) => a + (b - m) ** 2, 0) / v.length);
++    };
++    const rookie = spread(0), vet = spread(12);
++    expect(vet).toBeLessThan(rookie);
++    expect(vet).toBeGreaterThan(0);
++  });
++});

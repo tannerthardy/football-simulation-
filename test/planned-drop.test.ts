@@ -29,10 +29,12 @@ describe('plannedDropX', () => {
     const { PlaySim } = await import('../src/sim/playsim.js');
     const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');
     const { plannedDropX } = await import('../src/sim/called-drop.js');
+    // The drop the call runs (V2's plan drop on a call V2 takes: stick from the gun is the quick drift, not gun3).
+    const { calledDrop } = await import('../src/sim/qbv2/call.js');
     let worst = 0, n = 0;
     for (const concept of ['smash', 'dagger', 'four_verts', 'stick']) for (const coverage of ['cover1', 'cover3']) {
       const sim: any = new PlaySim(nativeTraceSetup({ coverage, concept, seed: 1, roster: 7, formation: 'gun_doubles_11', flip: false }));
-      const snap = { x: sim.qb.pos.x, y: sim.qb.pos.y }, ball = { x: sim.los, y: sim.ballY }, drop = sim.offCall.pass.drop;
+      const snap = { x: sim.qb.pos.x, y: sim.qb.pos.y }, ball = { x: sim.los, y: sim.ballY }, drop = calledDrop(sim.offCall.pass);
       for (let i = 0; i < 80 && sim.phase === 'live' && sim.carrier === sim.qb; i++) {
         sim.tick(); const b: any = sim.qb.behavior;
         if (b?.kind !== 'qb-pass' || b.phase !== 'drop') continue;

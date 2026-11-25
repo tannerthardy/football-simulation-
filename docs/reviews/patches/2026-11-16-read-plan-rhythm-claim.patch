@@ -1,0 +1,50 @@
+diff --git a/test/read-plan.test.ts b/test/read-plan.test.ts
+index 9a27ea8f..04003906 100644
+--- a/test/read-plan.test.ts
++++ b/test/read-plan.test.ts
+@@ -10,7 +10,6 @@ afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
+ function referenceEngine(plan: string, forecast: string) {
+   const flags: Record<string, string> = JSON.parse(readFileSync(new URL('../config/reference-stack.json', import.meta.url), 'utf8')).flags;
+   for (const [k, v] of Object.entries(flags)) if (v === 'on') vi.stubEnv(k, '1');
+-  vi.stubEnv('CRAFT_HOLD', '0'); // engine-70: with the hold the flat's release lands the throw at 2.40 s against a strict < 2.4; the QB lane to trace and restate
+   vi.stubEnv('READ_PLAN', plan); vi.stubEnv('FORECAST_BREAK', forecast);
+ }
+ 
+@@ -32,7 +31,7 @@ async function run(opts: { concept: string; coverage: string; seed: number; form
+     cb.behavior = { kind: orig.kind, update: (a: any, s: any) => s.t < 0.6 ? orig.update(a, s)
+       : goTo(a, opts.key === 'sink' ? { x: s.los + 15 * dir, y: s1.pos.y } : { x: s.los + 3 * dir, y: s2.pos.y + 3 * ss }, { speed: 0.95 }) };
+   }
+-  let qb: any = null, target: any = null, movedOn = -1, rushIn: number | null = null;
++  let qb: any = null, target: any = null, movedOn = -1, rushIn: number | null = null, startAt: number | null = null;
+   const tick = sim.tick.bind(sim);
+   sim.tick = () => {
+     const air = sim.ball.kind === 'air';
+@@ -49,10 +48,11 @@ async function run(opts: { concept: string; coverage: string; seed: number; form
+       }));
+     }
+     if (!air && sim.ball.kind === 'air' && !target) target = sim.ball.target;
++    if (qb && startAt === null && qb.phase === 'windup') startAt = sim.t;
+   };
+   const res = sim.run();
+   const pumps = res.events.filter((e: any) => e.type === 'pump').length;
+-  return { seed: opts.seed, pumps, plan: qb?.plan?.style ?? null, keyRead: qb?.keyRead ?? null, rushIn, throwAt: sim.throwAt as number, target: target ? ref(target) as string : null, movedOn };
++  return { seed: opts.seed, pumps, startAt, setAt: qb?.setAt ?? null, plan: qb?.plan?.style ?? null, keyRead: qb?.keyRead ?? null, rushIn, throwAt: sim.throwAt as number, target: target ? ref(target) as string : null, movedOn };
+ }
+ 
+ describe('READ_PLAN', () => {
+@@ -89,7 +89,14 @@ describe('READ_PLAN', () => {
+         // plant's re-check (1.80 s), he pumps and throws the flat one motion later (2.75 s); a known sensitivity under
+         // diagnosis (docs/reviews/2026-11-12-window-defenders.md), not a rhythm break: his read never leaves the flat.
+         if (r.seed === 2 && r.pumps) expect(r.throwAt, JSON.stringify(r)).toBeLessThan(2.9);
+-        else expect(r.throwAt, JSON.stringify(r)).toBeLessThan(2.4);
++        // On rhythm: the flat from his set, his eyes never off it, the throw started within a hitch of his set. (Until
++        // engine-70 this was a clock, release < 2.4 s. With CRAFT_HOLD the flat bends round the man in his lane and is
++        // 1.8 yd shallower and 0.8 yd/s slower at 1.7 s, so his throw starts when that route is ready, 2.00-2.30 s
++        // against 1.75, and releases at 2.40-2.70 s: the clock measured the receiver's route, not the rhythm.)
++        else {
++          expect(r.movedOn, JSON.stringify(r)).toBeLessThan(0);
++          expect((r.startAt ?? 99) - (r.setAt ?? 0), JSON.stringify(r)).toBeLessThanOrEqual(0.4);
++        }
+       } else {
+         expect(r.target, JSON.stringify(r)).not.toBeNull();
+         expect(r.target, JSON.stringify(r)).not.toBe('S1');

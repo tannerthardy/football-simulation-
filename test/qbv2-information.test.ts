@@ -65,7 +65,8 @@ describe('QB_V2 information guard', () => {
   });
 
   it('covers every module in src/sim/qbv2 (a new file is scanned or listed as pure)', () => {
-    const pure = ['judge.ts'];
+    // call.ts: which calls V2 takes and the drop a call runs, from the call alone (no Agent, no picture).
+    const pure = ['judge.ts', 'call.ts'];
     expect(files.filter((f) => !AGENT_FILES.includes(f) && !pure.includes(f))).toEqual([]);
   });
 });

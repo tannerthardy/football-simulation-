@@ -1,0 +1,180 @@
+diff --git a/scripts/diag/qbv2/stage.ts b/scripts/diag/qbv2/stage.ts
+index 45398c42b..ab05d4fc2 100644
+--- a/scripts/diag/qbv2/stage.ts
++++ b/scripts/diag/qbv2/stage.ts
+@@ -110,7 +110,7 @@ for (let seed = s0; seed <= s1; seed++) {
+     ball: thrown?.at ?? null, split: thrown?.split ? { ...thrown.split, reaim: decAim?.x != null && thrown.pt ? r2(Math.hypot(decAim.x - thrown.pt.x, decAim.y - thrown.pt.y)) : null, decToRel: decAim ? r2(thrown.t - decAim.t) : null } : null, dist: thrown?.dist ?? null, qbDepth: thrown?.qbDepth ?? null, qbSpeed: thrown?.qbSpeed ?? null,
+     catchEv: [...new Set(ev.filter((e) => thrown && e.t >= thrown.t && ['catch', 'drop', 'miss', 'pbu', 'deflection', 'interception', 'incomplete', 'secure'].includes(e.type)).map((e) => `${e.type}:${sim.agents[e.a]?.team === sim.qb.team ? 'O' : 'D'}${sim.agents[e.a]?.slot ?? ''}`))],
+     belief: thrown?.belief ?? null, roles: (thrown?.roles ?? []).map((r: any) => ({ ...r, arrived: !!r.arrived || ev.some((e) => ['pbu', 'deflection', 'interception'].includes(e.type) && e.a === r.id), slot: sim.agents[r.id].slot, picked: ev.some((e) => e.type === 'interception' && e.a === r.id), played: ev.some((e) => ['pbu', 'deflection', 'interception'].includes(e.type) && e.a === r.id) })),
+-    intents: qbb?.v2Intents ?? null, trace,
++    intents: qbb?.v2Intents ?? null, stale: qbb?.v2?.cycle?.staleLooks ?? null, trace,
+     // TRACK=1 (Rules' operator check): the targeted receiver's 10 Hz track from the snap, [t, x past the line, y], with
+     // the line and the ball's side (y), to the throw + 1.2 s.
+     ...(process.env.TRACK === '1' && thrown?.idx != null ? { los: r2(sim.los), ballY: r2(sim.ballY), track: (tr[thrown.idx] ?? []).filter((x) => x[0] <= thrown.t + 1.2).map((x) => [r2(x[0]), r2(x[1] - sim.los), r2(x[2])]) } : {}) }));
+diff --git a/src/sim/qbv2/cycle.ts b/src/sim/qbv2/cycle.ts
+index ae5571d82..b2b1ee6d9 100644
+--- a/src/sim/qbv2/cycle.ts
++++ b/src/sim/qbv2/cycle.ts
+@@ -111,6 +111,8 @@ export class Cycle {
+ 
+   /** The wiring could not start the committed throw (no finish, a dwell gate, no mechanics): back to where he was, so
+    * pressure and the pocket are looked at again (audit §1 #1: the latched intent was replayed until he was sacked). */
++  /** Ticks a stale key held the judgment for a look (the diagnostic count). */
++  staleLooks = 0;
+   uncommit(): void { if (this.state === 'throw') { this.state = this.beforeCommit; this.decision = null; } }
+ 
+   /** One tick. */
+@@ -143,7 +145,15 @@ export class Cycle {
+     const t = this.target(r);
+     this.looks.update(t, s.inClear(t), s.now, s.tau);
+     const res = this.looks.resolved(t);
+-    if (res >= s.need) {
++    // A stale key is looked at before it is judged (card spec §1, Integration's note: the coached answer to an old
++    // picture is a look at him, not a judgment on the age-shifted number). Stale: a key look he resolved earlier but has
++    // not had in his clear cone for longer than one look of his (tau), by his own eye history (the picture's own age
++    // carries his perception delay, about 0.3 s even while he looks, so it cannot tell a stale look from a fresh one).
++    // While his eyes can still get there this tick is the look; out of reach, he judges on what he has.
++    const since = this.looks.sinceClear(t, s.now);
++    const stale = r.look.kind === 'key' && since !== null && since > s.tau && s.canReach(t);
++    if (stale) this.staleLooks++;
++    if (res >= s.need && !stale) {
+       const j = this.choose(s, r); if (j) return this.commit(s, { kind: 'throw', judged: j });
+       if (r.onCovered === 'kill' && r.throws[0]) return this.commit(s, { kind: 'kill', ref: r.throws[0].ref });
+     }
+diff --git a/src/sim/qbv2/judge.ts b/src/sim/qbv2/judge.ts
+index 3594b5c65..1234a860c 100644
+--- a/src/sim/qbv2/judge.ts
++++ b/src/sim/qbv2/judge.ts
+@@ -130,18 +130,18 @@ export const LANE_PICK = 0.3;
+ export const LANE_NEAR = 3;
+ 
+ const hyp = (a: V2, b: V2) => Math.hypot(a.x - b.x, a.y - b.y);
+-/** His spread on a man's arrival (s): the picture's own spread, plus what the man may have done since he was last seen
+- * (an aged picture: he can have changed his velocity by up to his acceleration times the age, and that carries to the
+- * point over the time it takes), plus the receiver's spread; over the man's speed. Information-honest: a man last seen
+- * widening 0.6 s ago is a wide belief, not a certain one (staged V2, 2026-11-24, the field nickel). */
+ /** How fast an unseen man's velocity typically changes (yd/s^2): not his top acceleration, which assumes he spent the
+  * whole unseen time accelerating at the point (chosen; staged V2: top acceleration made every belief too wide). */
+ export const UNSEEN_DRIFT = 2.5;
+-function arriveSigma(d: SeenDefender, recvSig: number, horizon: number, margin?: number): number {
+-  // An aged picture widens his belief, but never in the throw's favour (audit §3 #2): for a man the picture has arriving
+-  // early (margin > 0), a wider spread would lower his arrival chance and so raise the throw's, so age is not counted there.
+-  const age = margin !== undefined && margin > 0 ? 0 : d.age ?? 0, unknown = 0.5 * UNSEEN_DRIFT * age * age + UNSEEN_DRIFT * age * Math.max(0, horizon);
+-  return Math.hypot(ARRIVE_SIGMA0, Math.hypot(d.spread + unknown, recvSig) / Math.max(d.vmax, 1e-3));
++/** Picture age (card spec §1, accepted; a caution the passer applies, a stated choice, not a claim that unseen men
++ * close): the spread keeps only observation and forecast noise, and time out of sight acts one way, as the distance an
++ * unseen man may have advanced toward the point (never assumed to have left it), in seconds of his arrival. Identical to
++ * the fresh picture at age 0; his arrival chance never falls with age, whatever the margin. */
++function arrival(d: SeenDefender, recvSig: number, horizon: number, margin: number): { sigma: number; pArrive: number } {
++  const v = Math.max(d.vmax, 1e-3), age = d.age ?? 0;
++  const sigma = Math.hypot(ARRIVE_SIGMA0, Math.hypot(d.spread, recvSig) / v);
++  const advance = (0.5 * UNSEEN_DRIFT * age * age + UNSEEN_DRIFT * age * Math.max(0, horizon)) / v;
++  return { sigma, pArrive: phi((margin + advance) / sigma) };
+ }
+ const phi = (z: number) => 0.5 * (1 + Math.tanh(0.7978845608 * (z + 0.044715 * z * z * z)));
+ 
+@@ -207,7 +207,7 @@ export function judge(q: ThrowQuestion, defs: SeenDefender[]): Judgment {
+   const recvSig = Math.hypot(q.receiverSpread, LOOK_SEP * (1 - q.res), q.placeSpread ?? 0);
+   const cov = findCoverer(q, defs);
+   const add = (d: SeenDefender, role: Role, tArr: number) => {
+-    const margin = tBall - tArr, sigma = arriveSigma(d, recvSig, tArr, margin), pArrive = phi(margin / sigma);
++    const margin = tBall - tArr, { sigma, pArrive } = arrival(d, recvSig, tArr, margin);
+     roles.push({ id: d.id, role, margin, sigma, pArrive, pPlay: pArrive * PLAY_BREAKUP, pPick: pArrive * PLAY_BREAKUP * PICK_OF_PLAY * (0.5 + d.ballSkills) });
+   };
+   if (cov) {
+@@ -257,8 +257,8 @@ export function judge(q: ThrowQuestion, defs: SeenDefender[]): Judgment {
+       if (hyp(p, q.catchAt) <= LANE_NEAR && (near === null || m > near)) near = m;
+     });
+     if (best === null || best <= -0.3) return null;
+-    const sigma = arriveSigma(d, q.placeSpread ?? 0, q.windup + q.flight, best);
+-    return { margin: best, sigma, pArrive: phi(best / sigma), rusher: false, pNear: near === null ? 0 : phi(near / sigma) };
++    const h = q.windup + q.flight, { sigma, pArrive } = arrival(d, q.placeSpread ?? 0, h, best);
++    return { margin: best, sigma, pArrive, rusher: false, pNear: near === null ? 0 : arrival(d, q.placeSpread ?? 0, h, near).pArrive };
+   };
+   // The coverer can also undercut the route and take the ball on its line, short of the catch point: the higher of the two.
+   if (cov) {
+@@ -268,7 +268,7 @@ export function judge(q: ThrowQuestion, defs: SeenDefender[]): Judgment {
+   const driverOf = (d: SeenDefender): RoleJudged | null => {
+     if (hyp(d.pos, q.catchAt) > DRIVE_RANGE) return null;
+     const start = q.windup + (d.facesPasser ? 0 : ARM_LEAD), tArr = arriveTime(d, q.catchAt, d.reach + PLAY_CLEAR, start);
+-    const margin = tBall - tArr, sigma = arriveSigma(d, recvSig, tArr, margin), pArrive = phi(margin / sigma);
++    const margin = tBall - tArr, { sigma, pArrive } = arrival(d, recvSig, tArr, margin);
+     return { id: d.id, role: 'driver', margin, sigma, pArrive, pPlay: pArrive * PLAY_BREAKUP, pPick: pArrive * PLAY_BREAKUP * PICK_OF_PLAY * (0.5 + d.ballSkills) };
+   };
+   for (const d of defs) {
+diff --git a/src/sim/qbv2/look.ts b/src/sim/qbv2/look.ts
+index 60ce747be..c3bdfdc1c 100644
+--- a/src/sim/qbv2/look.ts
++++ b/src/sim/qbv2/look.ts
+@@ -10,7 +10,7 @@ export type LookTarget = { kind: 'receiver'; ref: string } | { kind: 'key'; role
+ 
+ export const lookKey = (t: LookTarget): string => (t.kind === 'receiver' ? `r:${t.ref}` : `k:${t.role}`);
+ 
+-interface LookRecord { since: number | null; res: number; first: number | null; dueAt: number | null }
++interface LookRecord { since: number | null; res: number; first: number | null; dueAt: number | null; lastClear: number | null }
+ 
+ export class Looks {
+   private recs = new Map<string, LookRecord>();
+@@ -22,10 +22,11 @@ export class Looks {
+     for (const [k, r] of this.recs) if (!target || k !== lookKey(target)) r.since = null;
+     this.current = target;
+     if (!target) return;
+-    const k = lookKey(target), r = this.recs.get(k) ?? { since: null, res: 0, first: null, dueAt: null };
++    const k = lookKey(target), r = this.recs.get(k) ?? { since: null, res: 0, first: null, dueAt: null, lastClear: null };
+     this.recs.set(k, r);
+     if (!inClear) { r.since = null; return; }
+     if (r.since === null) r.since = now;
++    r.lastClear = now;
+     if (r.first === null) r.first = now;
+     r.res = Math.max(r.res, 1 - Math.exp(-(now - r.since) / Math.max(tau, 1e-3)));
+   }
+@@ -33,6 +34,9 @@ export class Looks {
+   /** How resolved his picture of this target is (0 to 1). */
+   resolved(target: LookTarget): number { return this.recs.get(lookKey(target))?.res ?? 0; }
+ 
++  /** How long since this target was last in his clear cone (s); null if never. */
++  sinceClear(target: LookTarget, now: number): number | null { const c = this.recs.get(lookKey(target))?.lastClear; return c == null ? null : now - c; }
++
+   /** Whether the look is resolving now (the target inside his clear cone this tick). */
+   resolving(target: LookTarget): boolean { return this.recs.get(lookKey(target))?.since !== null && this.recs.has(lookKey(target)); }
+ 
+diff --git a/test/qbv2-cycle.test.ts b/test/qbv2-cycle.test.ts
+index 209c9766e..1d70e0f1c 100644
+--- a/test/qbv2-cycle.test.ts
++++ b/test/qbv2-cycle.test.ts
+@@ -28,6 +28,17 @@ describe('QB_V2 cycle (module E) on the stub slant-flat plan', () => {
+     expect(th!.t).toBeGreaterThanOrEqual(1.0 + 0.2 * Math.log(1 / 0.4) - 0.06); // resolved past need 0.6 at tau 0.2
+   });
+ 
++  it('a stale key is looked at before it is judged; out of reach of his eyes, he judges on what he has (card spec §1)', () => {
++    // Resolved by 1.2 s with no cue; his eyes lose the key from 1.3 s; at 1.6 s the throw is there. Stride 2: no step intervenes.
++    const f = (reach: boolean) => (t: number) => t < 1.3 ? senses({ now: t, stride: 2 }) : t < 1.58
++      ? senses({ now: t, stride: 2, inClear: () => false, canReach: () => reach })
++      : senses({ now: t, stride: 2, inClear: () => t >= 1.63, canReach: () => reach }, { S1: 0.8 }, 'widens');
++    const look = run(new Cycle(STUB_SLANT_FLAT), 0, 1.8, f(true)).find((x) => x.i.kind === 'throw');
++    expect(look!.t).toBeGreaterThanOrEqual(1.63); // 1.6 is a look: the key has been out of his cone 0.3 s > tau 0.2
++    const blind = run(new Cycle(STUB_SLANT_FLAT), 0, 1.8, f(false)).find((x) => x.i.kind === 'throw');
++    expect(blind!.t).toBeCloseTo(1.6, 2);
++  });
++
+   it('a look that cannot resolve (outside his cone, head cannot get there) does not hold: the eyes move on the next step', () => {
+     const c = new Cycle(STUB_SLANT_FLAT);
+     const tr = run(c, 0, 1.6, (t) => senses({ now: t, inClear: () => false, canReach: () => false }, {}));
+diff --git a/test/qbv2-judge.test.ts b/test/qbv2-judge.test.ts
+index 726298fe1..5714ba2d6 100644
+--- a/test/qbv2-judge.test.ts
++++ b/test/qbv2-judge.test.ts
+@@ -69,6 +69,13 @@ describe('QB_V2 judgment (module D)', () => {
+     expect(rusher.risk).toBeLessThan(0.03);
+   });
+ 
++  it('picture age acts one way: identical at age 0, the throw never rises with age whatever the margin (card spec §1)', () => {
++    for (const [x, y] of [[11.5, 19.5], [8, 15], [6, 12]]) {
++      const q = { ...stop(), breakIn: null, receiverAt: () => ({ x: 12, y: 20 }) };
++      let prev = judge(q, [def(2, x, y, 0, 0, { age: 0 })]).P;
++      for (const age of [0.2, 0.5, 0.8, 1.2]) { const P = judge(q, [def(2, x, y, 0, 0, { age })]).P; expect(P).toBeLessThanOrEqual(prev + 1e-9); prev = P; }
++    }
++  });
+   it('an aged picture of a man arriving early never raises the throw (audit §3 #2)', () => {
+     const q = { ...stop(), breakIn: null, receiverAt: () => ({ x: 12, y: 20 }) };
+     const fresh = judge(q, [def(2, 11.5, 19.5, 0, 0, { age: 0 })]), old = judge(q, [def(2, 11.5, 19.5, 0, 0, { age: 0.8 })]);

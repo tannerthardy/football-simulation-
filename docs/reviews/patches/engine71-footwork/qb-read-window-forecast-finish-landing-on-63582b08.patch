@@ -1,0 +1,425 @@
+diff --git a/config/baseline.json b/config/baseline.json
+index b1297c5a1..d17249aca 100644
+--- a/config/baseline.json
++++ b/config/baseline.json
+@@ -333,6 +333,7 @@
+     "QB_POCKET": "0",
+     "QB_BREAK": "0",
+     "QB_RELOOK": "0",
++    "READ_WINDOW": "0",
+     "QB_KEY_MAN": "0",
+     "QB_KEY_THROW": "0",
+     "PLAN_CLOCK": "0",
+@@ -433,6 +434,7 @@
+     "ROB_COMMIT": "0",
+     "CARRY_TURN": "0",
+     "FORECAST_HOLD": "0",
++    "FORECAST_FINISH": "0",
+     "QB_RHYTHM": "0",
+     "WR_SNAP": "0",
+     "GRIP_REACH": "0",
+diff --git a/config/reference-stack.json b/config/reference-stack.json
+index a31cc04fe..3278887ec 100644
+--- a/config/reference-stack.json
++++ b/config/reference-stack.json
+@@ -1,6 +1,6 @@
+ {
+   "schemaVersion": 1,
+-  "id": "engine-84",
++  "id": "engine-87",
+   "runSet": {
+     "commit": "1b5415de99b5b7194eff045f3c37a07a4c54c1a9",
+     "seeds": [
+@@ -147,6 +147,7 @@
+     "CATCH_CARRY": "on",
+     "FORECAST_BREAK": "on",
+     "FORECAST_HOLD": "on",
++    "FORECAST_FINISH": "on",
+     "GAP_CLIMB": "on",
+     "GAZE": "off",
+     "PERCEIVE_TRACK": "off",
+@@ -298,6 +299,7 @@
+     "QB_POCKET": "off",
+     "QB_BREAK": "off",
+     "QB_RELOOK": "on",
++    "READ_WINDOW": "on",
+     "QB_KEY_MAN": "on",
+     "QB_KEY_THROW": "off",
+     "PLAN_CLOCK": "on",
+diff --git a/docs/FLAGS.md b/docs/FLAGS.md
+index 78979f1a7..6fed0b460 100644
+--- a/docs/FLAGS.md
++++ b/docs/FLAGS.md
+@@ -2,7 +2,7 @@
+ 
+ Every engine switch read from the environment, recounted from `src` at `57f50fc3` on 2026-10-22. This includes #210's promotion and #205's two additional default-on switches. Flags that are not on develop (parked, removed from a PR, or only on a side branch) are kept in [PARKED.md](PARKED.md) so the ideas are not lost. Registration rules are in [PLAN.md](PLAN.md): at most 10 experimental flags, and each expires two reviews after it lands.
+ 
+-There are 487 flags read from the environment in `src` (recounted 2026-11-18, engine-84: engine-83 plus DOWN_RISE_PLANT (on); engine-83 was engine-82 plus QB_DRIVE, QB_RHYTHM_THROW, QB_ALIGN, QB_BODY_FOLLOW, QB_WINDOW_ARRIVE, QB_KEY_PLANT, QB_STICK, QB_PEEK_CLOCK, QB_MOF_READ, QB_DEEP_WAIT and QB_STANCE; QB_DRIVE, QB_RHYTHM_THROW, QB_WINDOW_ARRIVE, QB_KEY_PLANT and QB_STICK on): 370 are on unless set to `0`, 89 are off unless set to `1`, and 28 are numeric scales or modes (identity value unless listed in the stack's numeric section). The rows below carry each flag's history.
++There are 489 flags read from the environment in `src` (recounted 2026-11-18, engine-87 (provisional): engine-84 plus READ_WINDOW and FORECAST_FINISH (on); engine-84: engine-83 plus DOWN_RISE_PLANT (on); engine-83 was engine-82 plus QB_DRIVE, QB_RHYTHM_THROW, QB_ALIGN, QB_BODY_FOLLOW, QB_WINDOW_ARRIVE, QB_KEY_PLANT, QB_STICK, QB_PEEK_CLOCK, QB_MOF_READ, QB_DEEP_WAIT and QB_STANCE; QB_DRIVE, QB_RHYTHM_THROW, QB_WINDOW_ARRIVE, QB_KEY_PLANT and QB_STICK on): 372 are on unless set to `0`, 89 are off unless set to `1`, and 28 are numeric scales or modes (identity value unless listed in the stack's numeric section). The rows below carry each flag's history.
+ 
+ **Promotion (2026-11-09):** the reference stack `run-ref-4` is now the engine's default. The 90 flags it lists `on` are read as on unless set to `0` (rows marked "promoted" below); the rest are unchanged. Decisions and evidence for each flag are in [REFERENCE_STACK.md](REFERENCE_STACK.md); `npm run ref -- --list` is the current inventory, and `npm run ref -- --off -- <command>` runs the engine as it was before. The test suites still run on the pre-promotion engine (pinned in `vitest.config.ts`) until their recorded cases are re-recorded. The counts in the paragraph above predate all of this.
+ 
+@@ -196,6 +196,7 @@ There are 487 flags read from the environment in `src` (recounted 2026-11-18, en
+ | `QB_POCKET` | off | experimental (QB lane, P2: movement in the pocket, 2026-11-13; third and last build; read on engine-59 and held off: the slide has no continuation, so it is resolved in the out-of-pocket work, not carded) | quarterback | `src/sim/behaviors/qb.ts` (`pocketDecide`, from `pocketMove`) | set at first review. His feet follow one decision on the nearest body he feels inside 2.2-3.4 yd (by pocket presence): at the edge, the existing climb; in front or inside, a 1.25 yd slide toward his read's side (else away from the body) at up to 3 yd/s, held until reached, closed or lapsed, one per body until it is 0.5 yd nearer; nobody inside, `QB_GATHER`'s hitch or his set point, with no drift. Replaces pocketMove's climb on any wide defender within 4-5.5 yd and its 3.5 yd repulsion. Decided by `scripts/diag/escape/qb-pocket.py` (direction by where the body is), the lateral on long holds, completion on throws within 0.3 s of a slide and the sack share with a rusher within 2 yd. Attempts 1 and 2 are `docs/reviews/patches/2026-11-13-qb-pocket-attempt{1,2}.patch` |
+ | `QB_BREAK` | off | experimental (QB lane, the out-of-pocket phase, 2026-11-14; work in progress; acts with `QB_POCKET`, wants `THROW_PLATFORM`) | quarterback | `src/sim/behaviors/qb.ts` (`tryBreak`, `outTick`, `pocketDecide`) | Leaving the pocket with the ball up: he breaks to a side when he feels a free rusher (or one he has slid from who keeps coming), under the alarm with no throw, or when his clock runs out, if a spot outside beats the pursuers he feels. Out there he throws on the move at his own bar, tucks and runs, throws it away with a short motion, stops and sets, or keeps moving to a held destination. Shows `carryPosture` 'up' until he tucks. Read on engine-61 (`docs/reviews/2026-11-13-qb-pocket.md`): he leaves on the rush on 2.9-5.5% of dropbacks against the NFL's 9.1%, and what he does once out has the NFL's shape. |
+ | `QB_RELOOK` | on | promoted 2026-11-14 (engine-63; `=0` restores); was experimental (QB lane, information rule, 2026-11-14; staged test `test/qb-relook.test.ts`; read once on engine-61) | quarterback | `src/sim/behaviors/qb.ts` (the read loop's out-of-reads branch) | Running out of reads gives him nothing for free. Off: the best man on the whole field at his bar less 0.1, the moment his progression ends. On: back to his first read and through them again one look at a time, at his own bar; with `QB_BREAK`, leaving with the ball up is the other answer at that moment. |
++| `READ_WINDOW` | on | default (engine-87 provisional, QB lane, 2026-11-18; Integration) | quarterback | `src/sim/behaviors/qb.ts` (the read loop, `bestOption`) | On a quick concept a read his eyes have moved off is dead for the play (kept on the read he ends each tick on): the relook, a reset and a late key flip never reopen it; out of live reads, the plan's checkdown once, then the best live option, else the pocket break or throwaway. Off, a passed quick read (the flat) came back at 2.6-3.1 s and was thrown across the field at 3.1-3.5 s, led up the sideline. |
+ | `QB_KEY_MAN` | on | promoted 2026-11-14 (engine-65; `=0` restores); was experimental (QB lane with Rules+Coaching's `PLAN_KEYS`, 2026-11-14; first build; staged test `test/qb-key-man.test.ts`) | quarterback | `src/sim/behaviors/qb.ts` (`keyMan`, `readKey`, `gazePoint`) | His key read is taken on the defender the concept names (picked before the snap by the role's alignment rule: the corner, the apex, the hook player, the deep man), not on whoever is nearest the line between the two routes. His eyes go to that man in the drop; at the cue he reads the man's movement (sinking gives the low man, jumping the low route gives the high man), or where he stands if he is not moving along the stretch. No fresh picture of him, or nobody named: no key read, and the order stands. |
+ | `QB_KEY_THROW` | off | experimental (QB lane, 2026-11-14; the re-diagnosed design after two window-test forms; acts with `QB_KEY_MAN`) | quarterback | `src/sim/behaviors/qb.ts` (the read loop's `keyHold`) | He stays on the key read's answer through its break (up to 1.2 s after the read) instead of moving on at his dwell, and throws it when it passes his price like any read. The key chooses the look; it does not stand in for the price. The earlier forms threw the answer on window tests in place of the price and are removed with `QB_KEY_DANGER` (corner routes targeted on 26-30% of routes against the NFL's 14%, the added throws where the deep man was a hard run from the ball). Decided by corner targets per route by the over-the-top man's reach (`scripts/diag/eyes/corner_danger.py`) and time to throw on keyed concepts. |
+ | `PLAN_CLOCK` | on | promoted 2026-11-16 (engine-70; `=0` restores); was experimental (QB lane, 2026-11-15; a clock bug in DECLARED_BREAK's readiness, found checking the plan's step times before footwork-keyed reads) | quarterback | `src/sim/behaviors/qb.ts` (`planBreakAt`) | The installed break time is read on the play clock. The compiler times breaks as its sampled play's sim.t; `planBreakAt` added the snap-secured time again, so where his forecast could not place a break he believed it 0.3-0.5 s late (engine-68, `scripts/diag/escape/rhythm-check.ts`: true minus compiled p50 -0.05 s; his belief minus true p50 +0.49 s off, +0.10 s on). |
+@@ -290,6 +291,7 @@ There are 487 flags read from the environment in `src` (recounted 2026-11-18, en
+ | `ROUTE_SHAPE` | on | promoted 2026-11-18 (engine-82; `=0` restores); was experimental (routes, 2026-11-14; attempt 1 of 2) | routes | `src/playbook/routes.ts` (`SHAPES`) | set at first review. The in and out breaks as taught past about 8 yd and on the speed out: rolls, not square plants (USA Football, Coaching the Wide Receiver: Square Break, Speed Drop, Speed Cut; Viqtory Sports' dig: push to 10, speed cut, flatten at 12). speed out 4 yd stem bending out (4 / 5.5 / 6.5 deep), out 9 / 11 / 11.5, deep out 12 / 14 / 14.5, dig 10 / 12 / 12.3, each at s 1 under the fillet; the short in stays a square cut. Matched breaks (route_break.py, Cover 3, fillet + effort on), NFL WR weeks 1-3 in brackets: dig and out v_min / v_in .89 (.88 / .89), heading 0.8-1.5 s after the break 70-76 deg (72-74), break at 2.7 s (2.8); speed out .97 (1.01), 71 deg (68). Off: .59-.81, 78-86 deg. Open: the turn inside the operator's windows is 66-67 deg against the NFL's 52-53 (our roll is tighter in its first half); v_in into the deep break 5.6 against 6.6. Read times: the dig and out concepts (drive, dagger, levels, pa_post_dig, comebacks, flood, pa_shot) become ready 0.5-0.7 s earlier, the break starting at 9-10 yd where it was planted at 10-12. The out's closest approach to the sideline by 3.5 s p10 9.2 yd (off 9.4). Test `test/route-shape.test.ts`. |
+ | `FORECAST_BREAK` | on | promoted 2026-11-11 (engine-32; `=0` restores); was experimental (2026-11-11; found in read-compiler Phase 1) | QB | `src/sim/receiver-forecast.ts` (`pathBreak`); `src/sim/route-motion.ts` (`ext` on continuation points) | set at first review. The break the QB expects is on the installed route, not on the continuation the path adds past it. Off, a flat, arrow, swing or back's flat takes its break from the continuation's turn at the sideline margin, so the QB expects it about 6 s after the snap and the receiver is not "ready" until the hand-written order runs out (a flat open at 0.77 completion went unthrown; the concept-menu report's unexecuted fade-flat and corner-flat). Evidence in `docs/reviews/2026-11-11-forecast-break.md`. Test `test/forecast-break.test.ts`. |
+ | `FORECAST_HOLD` | on | promoted 2026-11-12 (engine-44; `=0` restores); was experimental (risk work, pumps at the plant, 2026-11-12) | QB | `src/sim/receiver-forecast.ts` (`inferProgress`, `HOLD_TOL`, `ReceiverForecast.holdTol`) | set at first review. A receiver a little off his drawn line, running along it (heading within about 53 deg), is still running his route: the picture is placed on the route within HOLD_TOL by phase (stem 1.2, after the break 1.6, no break 1.5 yd: the 90th percentile of measured drift on the engine-42 panel), held as the QB's belief (`holdTol`). Stopped, cutting across, or farther off falls back to observed motion as before. Off: only within the body radius (about 0.3 yd), so a fresh picture during the windup often flipped the forecast to a straight line and pumped the throw (docs/reviews/2026-11-12-forecast-hold.md). Only the QB's receiver forecasts use it |
++| `FORECAST_FINISH` | on | default (engine-87 provisional, QB lane, 2026-11-18) | quarterback / forecast | `src/sim/receiver-forecast.ts` (`extend`) | A route whose last point is its finish (ROUTE_FINISH: an out that runs out of field stops at its margin) ends there in the forecast, as the receiver does. Off, it kept his velocity past it: the speed out was led out of bounds (2-3 yd from the sideline). A flat on its extension is not held: under ROUTE_END he runs on, and the forecast follows him. |
+ | `WRAP_FOOT` | off | retired, inert (tackle finish, 2026-11-08; #418 deletes the recovery coupling it scaled, 2026-11-09) | physics | `src/sim/tackle.ts:72` | set at first review. A tackle hold constrains the carrier's corrective step only by its secure leg share (`legs·secure`), not `legs + (1−legs)·secure`; a secure half-leg wrap no longer pins the step (docs/reviews/tackle-finish-length.md) |
+ | `LEG_ALLOMETRY` | on | promoted 2026-11-09 (run-ref-4; `=0` restores); was experimental (push contest, 2026-11-09) | physics | `src/physics/support.ts:113` | set at first review. Leg drive scales with mass^0.69 at a fixed rating (NFL combine fit within positions), normalised at 110 kg; traction, arm and press unchanged (docs/reviews/push-contest-traction.md). Promotion: Tanner and Primary |
+ | `GAZE` | off | experimental (G10 field of view, stage 1, 2026-11-09) | engine | `src/sim/playsim.ts:122` | set at first review. A chasing defender sees opponents only within ±90° of his gaze (head turns toward his man at 6 rad/s within ±90° of body facing) or in contact; others from his last in-view sighting. Motion projection (constant acceleration, 1.0 s) saturates at read skill 0.5; above it, opponents his assignment makes his are projected by the tracking prior (`src/sim/anticipation-prior.ts`, empty until a table is committed), conditioned on his own run/pass read. Model assumptions (docs/reviews/field-of-view-proposal.md) |
+diff --git a/docs/REFERENCE_STACK.md b/docs/REFERENCE_STACK.md
+index 5db79c024..a9f172afa 100644
+--- a/docs/REFERENCE_STACK.md
++++ b/docs/REFERENCE_STACK.md
+@@ -2,7 +2,7 @@
+ 
+ One combination of experimental flags that Run Game, Defense, Flex and Coverage all measure against. Before this, each agent tested on its own mix (the FLAT_PRESS / ZONE_RUN back-and-forth on 2026-11-09 came from two different flag sets), and no list of anyone's stack existed in the repository.
+ 
+-- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-84`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
++- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-87` (provisional). From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
+ - **The code:** `run/G3-oz-backfield` a749beb7 + `defense/G2-stance-tell` a0cb0789 (#411) + `defense/G2-lb-start` (#416, with #409) + `claude/quirky-franklin-9lbwbp` (#417, with #415) + develop 6676dfc2.
+ - **Since 2026-11-09 the stack is the engine's default.** The flags listed `on` are read as on unless set to `0`; a bare command in a clean shell and `npm run ref -- <command>` run the same engine. `npm run ref -- --off -- <command>` runs the legacy engine (every listed flag off). `test/reference-stack.test.ts` fails if the file and the code defaults ever disagree. See "Promotion" below.
+ 
+@@ -609,6 +609,65 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
+ On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
+ 
+ 
++## engine-87 (provisional): a passed quick read stays passed; the forecast stops an out at its finish (2026-11-18)
++
++On: `READ_WINDOW` and `FORECAST_FINISH` (two flags, one engine step; QB lane; records docs/reviews/2026-11-18-late-cross.md
++and 2026-11-18-forecast-finish.md on claude/exciting-cori-hc8l4u). On develop 63582b08 (engine-84). The number is
++provisional: Integration renumbers it if 85 (Coverage's `FLAT_SINK`) and 86 (Rules' `HALF_KEY`) do not land first.
++
++**What it repairs.** engine-83's never-touched long runs (Defense, via Integration): slant_flat from trips threw H's flat
++at 3.1 s or later, after his reads had run out and the relook or a late key flip put him back on it. The ball was led
++8-10 yd up the sideline onto the flat's extension, and caught 12-16 yd deep with the nearest defender 4-7 yd away. Taught
++slant-flat throws the flat on the plant to its landmark, or not at all.
++
++**READ_WINDOW: on a quick concept a read his eyes have moved off is dead for the play.**
++- The progression advances on its own clock (the dwell and the plan's beats), unchanged.
++- Kept on the read he ends each tick on, so a move that a later reorder (a key flip) or reset undoes within the tick
++  still counts. Neither QB_RELOOK, a reset nor a key flip reopens a dead read.
++- Out of live reads, the plan's checkdown gets one more look, then the best live option, else the existing pocket break
++  or throwaway.
++- Only quick concepts (`concept.family === 'quick'`) are touched.
++
++**FORECAST_FINISH: an out that finishes is forecast to stop at its finish.**
++- Under ROUTE_FINISH an outward route that runs out of field stops at its margin, in bounds. The forecast kept his
++  velocity past it, so the speed out was led 2-3 yd from the sideline instead of to the numbers.
++- On, a route whose last point is its finish ends there in the forecast, as the receiver does. Rules' out-trace with
++  ROUTE_SHAPE: quick-out completions 42 -> 44 of 56, miss on completions 0.91 -> 0.78 yd.
++- The extension-lead part proposed in the late-cross record is not in this landing. Under ROUTE_END a flat past his
++  declared points runs on up the sideline, so a forecast holding him at his landmark would be a false belief that
++  steers the aim. The late flat is a decision, and READ_WINDOW removes it on its own (below). Tried in this landing, the
++  hold also moved three other lanes' fixtures (forecast-break, pursuit-commit, rush-lean-bound), because the defenders'
++  ball estimate shares the forecast. Without it, none move.
++
++**Late-cross probe** (`scripts/diag/eyes/late-cross.ts`, slant_flat from gun_trips_11 × 8 coverages × 3 rosters × 4
++seeds × flip, 176 plays, on this tree):
++
++| arm | throws | late (3.1 s+) and long (1.3 s+ flight) | flats with a 1.3 s+ flight | completions | 20+ yd plays | yards a throw |
++|---|---|---|---|---|---|---|
++| both off (engine-84) | 176 | 49 | 52 | 120 | 36 | 15.5 |
++| READ_WINDOW only | 92 | 0 | 0 | 61 | 2 | 8.1 |
++| FORECAST_FINISH only | 176 | 49 | 52 | 120 | 36 | 15.5 (no finish routes on this concept) |
++| both (engine-87) | 92 | 0 | 0 | 61 | 2 | 8.1 |
++
++With READ_WINDOW the other 84 plays end in a throwaway, a scramble or a sack instead of the late flat.
++
++**Games** (an earlier READ_WINDOW, without the per-tick bookkeeping, on engine-83 fe150600; 8 games, seeds 11 and 31),
++off -> on:
++- completion 0.694 -> 0.694;
++- time to throw p50 2.70 -> 2.70;
++- sacks 4.6% -> 5.8%, throwaways 5.1% -> 6.2%;
++- interceptions 9 -> 14. 4 of the 14 are on quick concepts, the only plays the flag changes; none is on a reopened
++  read. The other 10 are on concepts it does not touch (game divergence).
++
++Integration cards this landing on six seeds.
++
++**Fixtures.** `test/read-window.test.ts` is new (listed in `test/engine-pin.json`):
++- slant_flat from trips, 32 plays: off, 21 throws go to a read he had moved off and 13 are late flats; on, none of either;
++- quick_outs from trips, the QB's 4 s forecast of each out with a finish: off, 152 of 208 put him more than 3 yd past it
++  toward the sideline (up to 10.8 yd); on, none (at most 1.9 yd, the forecast body braking).
++
++No existing fixture moves (full `npm test`, core and core-defaults, against clean 63582b08).
++
+ ## engine-83: the quarterback's ball, window, key and committed throw (2026-11-18)
+ 
+ On: `QB_DRIVE`, `QB_RHYTHM_THROW`, `QB_WINDOW_ARRIVE`, `QB_KEY_PLANT`, `QB_STICK` (QB lane; records
+diff --git a/scripts/diag/eyes/late-cross.ts b/scripts/diag/eyes/late-cross.ts
+new file mode 100644
+index 000000000..b90dc0080
+--- /dev/null
++++ b/scripts/diag/eyes/late-cross.ts
+@@ -0,0 +1,23 @@
++// QB lane 2026-11-18: engine-83's late cross-field throws (slant_flat from trips). Per staged play: the throw (time,
++// target route, his P / intRisk / planned flight T), whether QB_STICK kept a throw the old recheck would have pulled,
++// his phase and read position, the target's route state (path index vs length, finished?), the receiver vs the aim at
++// the release, the nearest defender at the catch, and YAC.
++import { PlaySim } from '../../../src/sim/playsim.js';
++import { nativeTraceSetup } from '../command-trace.js';
++const C = (process.env.LC_CONCEPTS ?? 'slant_flat').split(',');
++for (const concept of C) for (const coverage of ['cover1', 'cover2', 'cover2_match', 'cover3', 'cover3_match', 'cover4', 'cover6', 'tampa2']) for (const roster of [3, 7, 11]) for (const seed of [1, 2, 3, 4]) for (const flip of [false, true]) {
++  let sim: any; try { sim = new PlaySim(nativeTraceSetup({ coverage, concept, seed, roster, formation: 'gun_trips_11', flip })); } catch { continue; }
++  const dir = sim.attackDir(sim.offense[0].team), X = (p: any) => +((p.x - sim.los) * dir).toFixed(1), Y = (p: any) => +(p.y - sim.ballY).toFixed(1);
++  let thr: any = null, catchAt: any = null;
++  const tb = sim.throwBall.bind(sim);
++  sim.throwBall = (p: any, target: any, v0: any, intended: any, arrivalT: number, away = false, ...rest: any[]) => { if (p === sim.qb && !thr && target && intended && !away) { const b: any = p.behavior, r = b.throwRec, rr: any = target.behavior;
++    thr = { t: +sim.t.toFixed(2), decT: r ? +r.t.toFixed(2) : null, slot: target.slot, route: rr?.route?.id ?? null, P: r ? +r.P.toFixed(3) : null, iR: r ? +r.intRisk.toFixed(3) : null, T: +(arrivalT - sim.t).toFixed(2),
++      phase: b.phase, out: !!b.out, readIdx: b.readIdx, nReads: b.reads?.length, readsTo: b.reads?.map((x: any) => x.slot + ':' + (x.behavior?.route?.id ?? '')).join(' '), kept: !!b.stickKeptLast,
++      pathIdx: rr?.idx ?? null, pathLen: rr?.path?.length ?? null, settled: rr?.settled ?? null, finishAt: rr?.path?.length ? [X(rr.path[rr.path.length - 1].p), Y(rr.path[rr.path.length - 1].p)] : null,
++      rec: [X(target.pos), Y(target.pos)], aim: [X(intended), Y(intended)], toSide: +Math.min(intended.y, 53.33 - intended.y).toFixed(1) }; }
++    return tb(p, target, v0, intended, arrivalT, away, ...rest); };
++  const tick0 = sim.tick.bind(sim);
++  sim.tick = () => { tick0(); if (thr && !catchAt && sim.ball.kind === 'held' && sim.ball.carrier?.team === sim.offense[0].team && sim.ball.carrier !== sim.qb) { const c = sim.ball.carrier; catchAt = { at: [X(c.pos), Y(c.pos)], nd: +Math.min(...sim.defense.map((d: any) => Math.hypot(d.pos.x - c.pos.x, d.pos.y - c.pos.y))).toFixed(1) }; } };
++  let res: any; try { res = sim.run(); } catch { continue; }
++  if (thr) console.log(JSON.stringify({ concept, coverage, roster, seed, flip, thr, catchAt, cmp: !!res.stats.completed, yards: +(res.yards ?? 0).toFixed(1), touched: sim.events.some((e: any) => e.type === 'tackle' || e.type === 'contact_tackle') }));
++}
+diff --git a/src/sim/behaviors/qb.ts b/src/sim/behaviors/qb.ts
+index e383832ad..1314af206 100644
+--- a/src/sim/behaviors/qb.ts
++++ b/src/sim/behaviors/qb.ts
+@@ -474,6 +474,14 @@ const QB_BREAK = process.env.QB_BREAK === '1';
+  * With QB_BREAK, moving is the other answer at that moment: he leaves with the ball up when a spot outside is there,
+  * and reads on from it. */
+ const QB_RELOOK = process.env.QB_RELOOK !== '0';
++/** READ_WINDOW (default since engine-87, provisional; READ_WINDOW=0 turns it off): Integration, 2026-11-18 (engine-83's late cross-field
++ * flats, docs/reviews/2026-11-18-late-cross.md). On a quick concept a read is live through its window and dead once he
++ * has moved off it: the progression advances on its own clock (the dwell and the plan's beats, as before), and a read he
++ * has passed is never reopened, not by the relook when his reads run out (QB_RELOOK sent him back to read 0, the flat,
++ * at 2.6-3.1 s) and not by a late flip of the key read (which reapplied the pair and reset him to its first route).
++ * Out of live reads, the plan's checkdown (its outlet) is still live; nothing there, he breaks the pocket or throws it
++ * away as before. Off, a passed quick read could come back and be thrown across the field at 3.1-3.5 s. */
++const READ_WINDOW = process.env.READ_WINDOW !== '0';
+ /** QB_KEY_MAN (experimental, off; QB_KEY_MAN=1; with READ_PLAN's defender keys): his key read is taken on the defender
+  * the concept names, not on whoever is nearest the line between the two routes (on corner_flat that was the middle
+  * linebacker once the corner sank under the corner route). Before the snap he picks the man by the role's alignment
+@@ -1177,6 +1185,11 @@ export class QBPass implements Behavior {
+   }
+   /** READ_PLAN: the plan's outlet (the back), as installed; QB_PEEK_CLOCK sends a finished vertical peek to him. */
+   private planOutlet: Agent | null = null;
++  /** READ_WINDOW: reads he has moved off on a quick concept (dead for the play), and the read he was on last tick. */
++  private expired = new Set<Agent>();
++  private lastLive: Agent | null = null;
++  private outletSeen = false;
++  private readWindow(): boolean { return READ_WINDOW && this.concept.family === 'quick'; }
+   private initPlan(sim: PlaySim): boolean {
+     const p = installedPlan(this.concept, sim.offCall.formation.id);
+     if (!p) return false;
+@@ -1482,6 +1495,16 @@ export class QBPass implements Behavior {
+     return clamp(hitIn - 0.05 - this.delivery(a), Math.min(full, 0.05), full);
+   }
+ 
++  /** READ_WINDOW: the read he ended the last tick on, against the one before. Any read his eyes have moved off is dead for
++   * the play (the plan's checkdown keeps one more look). Kept on the read he finished each tick on, so a move that a
++   * later reorder (a key flip) or reset undoes within a tick still counts. */
++  private noteRead(): void {
++    if (!this.readWindow() || this.setAt < 0) return;
++    const cur = this.reads[this.readIdx] ?? null, prev = this.lastLive;
++    if (prev && prev !== cur) { if (prev === this.planOutlet) this.outletSeen = true; else this.expired.add(prev); }
++    this.lastLive = cur;
++  }
++
+   update(a: Agent, sim: PlaySim): MoveCommand {
+     const t = sim.t;
+     if (sim.carrier !== a) { if (QB_BREAK) a.carryPosture = null; return stand(); }
+@@ -1491,6 +1514,7 @@ export class QBPass implements Behavior {
+     // Wrapped up by a tackler he cannot start a throw (with only a hand on him he
+     // still can); a throw already on its way comes out, wobbling.
+     if (heldBy(a, sim) >= 0.6 && this.phase !== 'windup') return stand();
++    this.noteRead();
+ 
+     // Eyes: what he looks at is what he sees; everything else is memory and belief.
+     let gaze = this.gazePoint(sim);
+@@ -1789,6 +1813,10 @@ export class QBPass implements Behavior {
+       const k = target ? this.reads.indexOf(target) : -1;
+       if (k >= 0) { this.readIdx = k; this.readStart = t; if (HOT_LOOK) this.triDone = true; }
+     }
++    // READ_WINDOW: a reset, a relook or a reordered progression never lands on a read he has moved off (noteRead).
++    if (this.readWindow() && this.setAt >= 0) {
++      while (this.reads[this.readIdx] && this.expired.has(this.reads[this.readIdx])) this.readIdx++;
++    }
+     let read = this.reads[this.readIdx];
+     // QB_FOOTWORK bit 8: a grass read is decided by its step (the plant for read 1), with no dwell: not thrown by then,
+     // he is on to his next read.
+@@ -1924,6 +1952,17 @@ export class QBPass implements Behavior {
+         this.readIdx++;
+         this.readStart = t;
+       }
++    } else if (!read && this.readWindow()) {
++      // READ_WINDOW: out of reads, only a live one can come back (the checkdown); with none, the best live option, else he
++      // breaks the pocket or throws it away (the existing outcomes), never a read he passed.
++      this.relooks++;
++      const live = this.reads.findIndex((r) => !this.expired.has(r) && !(r === this.planOutlet && this.outletSeen));
++      if (live >= 0) { this.readIdx = live; this.readStart = t; }
++      else {
++        const best = this.bestOption(a, sim, u);
++        if (best && best.P >= thr - 0.1 && best.intRisk <= maxInt + 0.03) { const go = this.startIfFinish(a, sim, best); if (go) return go; }
++        if (QB_BREAK && this.tryBreak(a, sim, 'reads')) return this.outTick(a, sim);
++      }
+     } else if (!read && QB_RELOOK) {
+       // QB_RELOOK: his reads are done and nothing was there. He moves and reads on (QB_BREAK), or goes back to his
+       // first read and through them again, one look at a time.
+@@ -2924,6 +2963,7 @@ export class QBPass implements Behavior {
+   private bestOption(a: Agent, sim: PlaySim, urgency: number): ThrowEval | null {
+     let best: ThrowEval | null = null;
+     for (const r of this.reads) {
++      if (this.readWindow() && this.expired.has(r)) continue; // READ_WINDOW: a passed read is dead
+       if (!this.ready(r, sim) && urgency < 0.8) continue;
+       const ev = this.evaluate(a, sim, r, urgency);
+       if (ev && (!best || ev.value > best.value)) best = ev;
+diff --git a/src/sim/receiver-forecast.ts b/src/sim/receiver-forecast.ts
+index 8a97f056e..14f097771 100644
+--- a/src/sim/receiver-forecast.ts
++++ b/src/sim/receiver-forecast.ts
+@@ -91,6 +91,15 @@ const FORECAST_BREAK = process.env.FORECAST_BREAK !== '0';
+  * route while moving along it (about the 90th percentile of observed drift); moving against it, or farther off, is
+  * still a contradiction and falls back to his observed motion. */
+ const FORECAST_HOLD = process.env.FORECAST_HOLD !== '0';
++/** FORECAST_FINISH (default since engine-87, provisional; FORECAST_FINISH=0 turns it off; QB lane, 2026-11-18): the
++ * forecast honours the route's finish (ROUTE_FINISH: an outward route that runs out of field stops at its margin, in
++ * bounds). Past the last point of a 'continue' route the forecast kept his velocity, so an out finishing 5 yd from the
++ * sideline was forecast running on past it and out of bounds (quick_outs, cover3, trips, seed 2, flipped, ROUTE_SHAPE: the
++ * ball aimed 2.2 yd from the sideline while he stopped at 5): the speed out was led to the boundary instead of the
++ * numbers. On, a route whose last point is its finish ends there, as the receiver does. A flat on its extension is not
++ * held: under ROUTE_END he runs on up the sideline, and the forecast follows him (the late cross-field flat is a decision,
++ * READ_WINDOW's; docs/reviews/2026-11-18-late-cross.md). */
++const FORECAST_FINISH = process.env.FORECAST_FINISH !== '0';
+ /** FORECAST_HOLD: how far off its drawn line a run route still reads as that route, by route phase: the 90th
+  * percentile of receivers' drift while moving along the route (engine-42 forced-concept panel,
+  * scripts/diag/read-plan/forecast-drift.ts): on the stem 1.19 yd, after the break 1.63 (the cut is rounded), on a
+@@ -258,7 +267,7 @@ export class ReceiverForecast {
+       if (c.estimate.motion === 'observed-motion') cmd = { vel: { ...p!.vel }, cutSkill };
+       else if (c.estimate.sampledAt + i * this.dt < (prior.startDelay ?? 0)
+         && (!p || (Math.hypot(p.vel.x, p.vel.y) < 1e-6 && st.idx === 0))) cmd = { vel: { x: 0, y: 0 } };
+-      else if (done) cmd = active.end === 'continue' ? { vel: body.vel }
++      else if (done) cmd = active.end === 'continue' && !(FORECAST_FINISH && active.path[active.path.length - 1]?.finish) ? { vel: body.vel }
+         : { vel: arriveVelocity(body, active.path[active.path.length - 1]?.p ?? body.pos, body.profile.vmax * 0.6, 0) };
+       else {
+         // ROUTE_LANDMARK: he runs the rest of a route with a declared vertex from where he is seen, as the receiver does.
+diff --git a/test/engine-pin.json b/test/engine-pin.json
+index 8143c081e..20604fd7a 100644
+--- a/test/engine-pin.json
++++ b/test/engine-pin.json
+@@ -447,6 +447,7 @@
+   "test/rat-coverage.test.ts",
+   "test/reach-contact.test.ts",
+   "test/read-plan.test.ts",
++  "test/read-window.test.ts",
+   "test/receiver-depth.test.ts",
+   "test/receiver-eligibility-gh.test.ts",
+   "test/receiver-flat-release.test.ts",
+diff --git a/test/read-window.test.ts b/test/read-window.test.ts
+new file mode 100644
+index 000000000..ed4541382
+--- /dev/null
++++ b/test/read-window.test.ts
+@@ -0,0 +1,100 @@
++/** READ_WINDOW (behaviors/qb.ts) and FORECAST_FINISH (receiver-forecast.ts), engine-87 provisional, QB lane 2026-11-18
++ * (docs/reviews/2026-11-18-late-cross.md, 2026-11-18-forecast-finish.md). slant_flat from trips, the plays where
++ * engine-83 threw the flat at 3.1 s+ led up the sideline:
++ * 1. READ_WINDOW: on a quick concept no throw goes to a read he has moved off (the plan's checkdown keeps one more
++ *    look), so no late cross-field flat; off, both happen.
++ * 2. FORECAST_FINISH (quick_outs, ROUTE_FINISH): an out that finishes at its margin is forecast to stop there, as the
++ *    receiver does; off, the forecast runs him on toward the sideline. */
++import { readFileSync } from 'node:fs';
++import { afterEach, describe, expect, it, vi } from 'vitest';
++
++afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
++
++async function panel(rw: string, ff: string) {
++  vi.resetModules();
++  const stack = JSON.parse(readFileSync(new URL('../config/reference-stack.json', import.meta.url), 'utf8'));
++  for (const [k, v] of Object.entries(stack.flags as Record<string, string>)) if (v === 'on') vi.stubEnv(k, '1');
++  for (const [k, v] of Object.entries(stack.numeric ?? {}) as [string, { default: number }][]) vi.stubEnv(k, String(v.default));
++  vi.stubEnv('READ_WINDOW', rw); vi.stubEnv('FORECAST_FINISH', ff);
++  const { PlaySim } = await import('../src/sim/playsim.js');
++  const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');
++  let reopened = 0, lateFlat = 0, throws = 0;
++  for (const coverage of ['cover2', 'cover3', 'cover6', 'tampa2']) for (const roster of [3, 11]) for (const seed of [1, 3]) for (const flip of [false, true]) {
++    const sim: any = new PlaySim(nativeTraceSetup({ coverage, concept: 'slant_flat', seed, roster, formation: 'gun_trips_11', flip }));
++    const movedOff = new Set<unknown>(); let prev: unknown = null, done = false;
++    const tb = sim.throwBall.bind(sim);
++    sim.throwBall = (p: any, target: any, v0: any, intended: any, arrivalT: number, away = false, ...rest: any[]) => {
++      if (p === sim.qb && !done && target && intended && !away) {
++        done = true; throws++;
++        const b: any = p.behavior;
++        if (movedOff.has(target) && target !== b.planOutlet) reopened++;
++        if (sim.t >= 3.1 && arrivalT - sim.t >= 1.3 && target.behavior?.route?.id === 'flat') lateFlat++;
++      }
++      return tb(p, target, v0, intended, arrivalT, away, ...rest);
++    };
++    const tick0 = sim.tick.bind(sim);
++    sim.tick = () => {
++      tick0();
++      const b: any = sim.qb.behavior;
++      if (done || b?.kind !== 'qb-pass' || !b.reads) return;
++      const cur = b.reads[b.readIdx] ?? null;
++      if (prev && cur !== prev) movedOff.add(prev);
++      prev = cur;
++    };
++    try { sim.run(); } catch { /* a play that cannot finish staging */ }
++  }
++  return { reopened, lateFlat, throws };
++}
++
++/** The QB's 4 s forecast of each out with a finish (ROUTE_FINISH), taken 1.0-1.6 s after the snap: how far past the
++ * finish toward the sideline it puts him (far: more than 3 yd; on, what remains is the forecast body braking from its
++ * last point, about 2 yd). */
++async function outs(ff: string) {
++  vi.resetModules();
++  const stack = JSON.parse(readFileSync(new URL('../config/reference-stack.json', import.meta.url), 'utf8'));
++  for (const [k, v] of Object.entries(stack.flags as Record<string, string>)) if (v === 'on') vi.stubEnv(k, '1');
++  for (const [k, v] of Object.entries(stack.numeric ?? {}) as [string, { default: number }][]) vi.stubEnv(k, String(v.default));
++  vi.stubEnv('FORECAST_FINISH', ff);
++  const { PlaySim } = await import('../src/sim/playsim.js');
++  const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');
++  let n = 0, far = 0, max = 0;
++  for (const coverage of ['cover2', 'cover3']) for (const seed of [1, 2]) for (const flip of [false, true]) {
++    const sim: any = new PlaySim(nativeTraceSetup({ coverage, concept: 'quick_outs', seed, roster: 7, formation: 'gun_trips_11', flip }));
++    const tick0 = sim.tick.bind(sim);
++    sim.tick = () => {
++      tick0();
++      const b: any = sim.qb.behavior;
++      if (b?.kind !== 'qb-pass' || sim.ball.kind !== 'held' || sim.ball.carrier !== sim.qb) return;
++      if (sim.t < 1.0 || sim.t > 1.6) return;
++      for (const o of sim.offense) {
++        const r: any = o.behavior, end = r?.path?.[r.path.length - 1];
++        if (!end?.finish) continue;
++        const f = b.receiverForecasts?.get(o)?.predict(sim.t, 4.0);
++        if (!f) continue;
++        // Past the finish toward the sideline (yd): the forecast running him on to the boundary.
++        const mid = sim.ballY, d = Math.abs(f.y - mid) - Math.abs(end.p.y - mid);
++        n++; max = Math.max(max, d); if (d > 3) far++;
++      }
++    };
++    try { sim.run(); } catch { /* a play that cannot finish staging */ }
++  }
++  return { n, far, max };
++}
++
++describe('READ_WINDOW and FORECAST_FINISH', () => {
++  it('a passed quick read is not thrown, and no late flat is led up the sideline', async () => {
++    const off = await panel('0', '0'), on = await panel('1', '1');
++    console.log('read-window off', JSON.stringify(off), 'on', JSON.stringify(on));
++    expect(off.reopened).toBeGreaterThan(0);
++    expect(off.lateFlat).toBeGreaterThan(0);
++    expect(on.reopened).toBe(0);
++    expect(on.lateFlat).toBe(0);
++  }, 600_000);
++  it('an out with a finish is forecast to stop on it', async () => {
++    const off = await outs('0'), on = await outs('1');
++    console.log('forecast-finish off', JSON.stringify(off), 'on', JSON.stringify(on));
++    expect(on.n).toBeGreaterThan(10);
++    expect(off.far).toBeGreaterThan(0);
++    expect(on.far).toBe(0);
++  }, 600_000);
++});
