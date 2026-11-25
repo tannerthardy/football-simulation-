@@ -180,6 +180,9 @@ export const SPLITS: Split[] = [
   { id: 'playAction', label: 'Play action', key: (p) => (p.kind === 'run' ? 'run' : p.playAction ? 'PA' : 'no PA') },
   { id: 'personnel', label: 'Personnel', key: (p) => p.personnel },
   { id: 'quarter', label: 'Quarter', key: (p) => `Q${p.quarter}` },
+  // The calls QB_V2 takes, labelled in every arm (PlayRec.qbV2Call), so the same calls compare across arms; the tag of the
+  // plays V2 actually read is PlayRec.qbV2 (scripts/diag/qbv2/card-split.ts reads both).
+  { id: 'qbV2', label: 'QB_V2 call', key: (p) => (p.kind === 'run' ? 'run' : p.qbV2Call ? 'V2 call' : 'other pass') },
 ];
 
 /**

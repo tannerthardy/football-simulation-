@@ -25,6 +25,7 @@ import { deriveOfficialPossessionStats } from './possession-stats.js';
 import { deriveOfficialPlayStats, type OfficialPlayCredit, type OfficialStatsTreatment } from './official-play-stats.js';
 import type { OffSlot, OffensivePlayCall, DefensivePlayCall } from '../playbook/types.js';
 import { routeOfAgent } from '../sim/behaviors/receiver.js';
+import { qbV2Call } from '../sim/behaviors/qb.js';
 import { BELIEVED_BODY, BeliefStore } from '../sim/believed-body.js';
 
 export type Side = 'home' | 'away';
@@ -126,6 +127,9 @@ export interface PlayPlan {
   rushers?: number;
   /** Coverage shown before the snap, if disguised. */
   shown?: string;
+  /** The call is one QB_V2 takes (a staged concept whose read plan fits it), whether or not QB_V2 is on: the same calls in
+   * both arms of a V2 card. A label only; no behaviour reads it. */
+  qbV2Call?: boolean;
   /** Structure the secondary checked against (e.g. `trips`, `bunch_strong`), if it made a check. */
   checkedOn?: string;
 }
@@ -759,6 +763,7 @@ export class Game {
       rushers: sim.defAlign.rushers.length,
       shown: defCall.shown?.id,
       checkedOn: sim.defCall.check?.when,
+      ...(ranCall.kind === 'pass' && qbV2Call(ranCall.pass!) ? { qbV2Call: true } : {}),
     };
     // Each player's first installed route (family:id; replay order), a diagnostic label no behavior reads.
     if (this.opts.record && r.frames) logEntry.routes = sim.agents.map((a) => routeOfAgent.get(a) ?? null);
