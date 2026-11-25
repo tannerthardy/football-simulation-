@@ -72,7 +72,7 @@ export const BALL_EST_INCIDENTAL = (BALL_EST_BITS & 32) !== 0;
  * BALL_EST_INCIDENTAL (bit 32) does the same for everyone and also moves receivers' catch readiness and the release and
  * throw beliefs. Needs BALL_EST's sensing (on in the engine default); with BALL_EST off the old test stands. Not seenReady
  * (a sample up to 0.5 s old); the shared seesBall (SIGHT_BALL) replaces handsSees when it lands. */
-export const HANDS_SEEN = process.env.HANDS_SEEN === '1';
+export const HANDS_SEEN = process.env.HANDS_SEEN !== '0';
 /** HANDS_SEEN: his peripheral cone for a ball (half-angle, rad). */
 export const handsCone = (a: Agent): number => (45 + 24 * clamp(a.r('vision'), 0, 1)) * Math.PI / 180;
 /** Bit 64 (design 7, with TRUNK_TWIST): he keeps his estimated ball in view through his trunk before his hips. A look

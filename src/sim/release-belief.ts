@@ -56,7 +56,7 @@ export function lastReleaseBelief(sim: PlaySim, a: Agent): ReleaseBelief | undef
  * - believing it thrown, he pursues a carrier he sees, else the flight he has, else turns downfield.
  * Stated choices: LOAD_BEAT 0.35 s (the delivery he expects from a load he sees: the measured median load-to-release
  * here), PULL_MARGIN 0.1 s (enter when he is that much late, back to rushing only when that much early). */
-export const RUSH_RELEASE = process.env.RUSH_RELEASE === '1';
+export const RUSH_RELEASE = process.env.RUSH_RELEASE !== '0';
 export const LOAD_BEAT = 0.35, PULL_MARGIN = 0.1;
 
 /** His release belief this tick (updated from this tick's cues on first use). */

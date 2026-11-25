@@ -2847,3 +2847,28 @@ Card e141 (4 seeds x 32 games against engine-104), together, by seed: completion
 attempt -0.52, -0.37, +0.05, +0.14; nothing consistent. Landed on the staged repair. Not carded on top of
 engine-105's three flags.
 Open: the corner does not sink under a corner route by #2 (smash) in either arm; that is the half safety's ball today.
+
+
+## engine-107: the rusher's own release, hands plays on a seen ball, hand travel (2026-11-25)
+
+On: `RUSH_RELEASE`, `HANDS_SEEN` (Defense), `HAND_TRAVEL` (Tools); each `=0` restores. Card e142: 4 seeds x 32 games
+against engine-106, each its own arm.
+
+- `RUSH_RELEASE`: replaces a timer that dissolved every pass-protection engagement 0.35 s after the true release. On
+  the passer's load as he sees it, a rusher judges from his own picture whether he can get there before the ball
+  leaves: if so he keeps rushing; if not he pulls up, and comes off the block to run to the ball once he believes it
+  thrown. The engagement ends when the rusher believes the ball thrown, the blocker's pass set has ended on his own
+  picture, and the hands joint carries no load. Staged: a rusher 3 yd away standing pulls up (before: he hit the
+  passer 0.3-0.5 s after the release); one 1.5 yd away at 5 yd/s is unchanged, sack included. Engaged rushers turn
+  toward the catch at a median 0.60 s after the release (0.85). By seed: completion +2.1, +0.9, +1.0, -0.3; YAC
+  -0.43, -0.07, -1.02, -0.59; sack rate -0.1, -0.4, -0.6, 0.0. Batted balls stay on the existing roll (PARKED).
+- `HANDS_SEEN`: a defender's hands play on a ball in flight needs the ball in his own head cone for his reaction
+  time; otherwise the ball can only strike his body. Before, his shoulders alone decided it and he played the true
+  ball: on 6 games about half the defense's plays on the ball were by men not looking at it (breakups 55 -> 29,
+  interceptions 9 -> 4). By seed: completion +2.3, +2.8, +3.5, -1.3; interception rate +0.3, -0.9, -1.3, -0.2. A leak
+  removal; completion rises until the estimator stack and the man look are in.
+- `HAND_TRAVEL`: unloaded hand travel (press fit, hand offset, re-fit after a shed) at 5 yd/s, a stated choice inside
+  measured punch speeds, separate from `ARM_SPEED`, which stays the contact solver's loaded ceiling (unsourced; GAPS).
+  Re-fit over a 0.6 yd gap 0.2 -> 0.12 s. By seed: completion -1.3, +0.9, -0.6, -1.8; nothing consistent.
+
+The three were not carded together.
