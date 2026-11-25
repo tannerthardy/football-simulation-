@@ -21,13 +21,19 @@ describe('ball-estimate.ts is a perception producer', () => {
     // Reviewed 2026-11-16 at the engine-71 refresh: the new exports are flags and constants (BALL_EST_DEEP_LOOK, _DEF_ONLY, _GLANCE, _INCIDENTAL, _MAN_LOOK, _RCV, _RCV_ONLY, _SERVO, _TRUNK; DEEP_LOOK_DEPTH/HOLD,
     // GAZE_SEARCH, GLANCE_DEPTH/DWELL_TARGET/HOLD_REF, PHASE_BEHIND) and four functions whose inputs are a team, ratings or numbers (estimatesFor, glanceSd, lookAnyway, phaseJudgeSd): none takes or returns the true ball.
     // Reviewed 2026-11-16 at the engine-72 refresh: SEEN_EMPTY is a flag constant (`process.env.SEEN_EMPTY !== '0'`); it takes and returns no ball.
+    // Reviewed 2026-11-25 (Flex): FLIGHT_REVISE is a flag constant (`process.env.FLIGHT_REVISE !== '0'`); it takes and returns no ball.
+    // Reviewed 2026-11-25 (Flex, SIGHT_BALL): SIGHT_BALL is a flag constant; glimpsesBall and seesBallAt are the one sight test
+    // (view cone or eye range, plus the sight line, at a recorded moment) on a ball position the caller passes. Producers only:
+    // the estimator's own sampler and release-evidence's recorded ball. Decision code reads BallEstimates.glimpses / seesBall.
+    // Reviewed 2026-11-25 (Coverage, the honest defender): ARM_LOOK, BALL_EST_DEF_PICTURE, BALL_EST_FLIGHT_SETTLE and
+    // FLIGHT_SETTLE_SPAN are flag constants; they take and return no ball.
     expect(names).toEqual([
-      'BALL_EST', 'BALL_EST_DEEP_LOOK', 'BALL_EST_DEF_ONLY', 'BALL_EST_GLANCE', 'BALL_EST_INCIDENTAL', 'BALL_EST_LOOMING',
+      'ARM_LOOK', 'BALL_EST', 'BALL_EST_DEEP_LOOK', 'BALL_EST_DEF_ONLY', 'BALL_EST_DEF_PICTURE', 'BALL_EST_FLIGHT_SETTLE', 'BALL_EST_GLANCE', 'BALL_EST_INCIDENTAL', 'BALL_EST_LOOMING',
       'BALL_EST_MAN_LOOK', 'BALL_EST_MOVING_CHOICE', 'BALL_EST_NO_TRACKPEN', 'BALL_EST_RCV', 'BALL_EST_RCV_ONLY', 'BALL_EST_SERVO',
-      'BALL_EST_TRUNK', 'BallEstimates', 'DEEP_LOOK_DEPTH', 'DEEP_LOOK_HOLD', 'GAZE_SEARCH', 'GLANCE_DEPTH',
+      'BALL_EST_TRUNK', 'BallEstimates', 'DEEP_LOOK_DEPTH', 'DEEP_LOOK_HOLD', 'FLIGHT_REVISE', 'FLIGHT_SETTLE_SPAN', 'GAZE_SEARCH', 'GLANCE_DEPTH',
       'GLANCE_DWELL_TARGET', 'GLANCE_HOLD_REF', 'LOOK_NECK', 'PHASE_BEHIND', 'PRE_LOOK_EARLY', 'PRE_LOOK_LATE',
-      'PathSample', 'SEEN_EMPTY', 'bodyTurnLead', 'estimatesFor', 'fitFlight', 'glanceSd', 'lookAnyway',
-      'lookJoints', 'neckOf', 'ownRoutes', 'phaseJudgeSd', 'sideOf'].sort());
+      'PathSample', 'SEEN_EMPTY', 'SIGHT_BALL', 'bodyTurnLead', 'estimatesFor', 'fitFlight', 'glanceSd', 'glimpsesBall', 'lookAnyway',
+      'lookJoints', 'neckOf', 'ownRoutes', 'phaseJudgeSd', 'seesBallAt', 'sideOf'].sort());
   });
 });
 

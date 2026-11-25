@@ -116,6 +116,8 @@
     "TRACK_PURSUIT": "0",
     "TRACK_TACKLE": "0",
     "TRACK_FEEL": "0",
+    "FLIGHT_REVISE": "0",
+    "SIGHT_BALL": "0",
     "SIGHT_CARRIER": "0",
     "SIGHT_COVER": "0",
     "SIGHT_RECOG": "0",

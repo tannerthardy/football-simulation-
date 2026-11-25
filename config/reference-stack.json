@@ -164,6 +164,8 @@
     "PURSUIT_SPOT": "on",
     "RELEASE_BELIEF": "on",
     "TRACK_FEEL": "on",
+    "FLIGHT_REVISE": "on",
+    "SIGHT_BALL": "off",
     "SIGHT_CARRIER": "on",
     "SIGHT_COVER": "on",
     "SIGHT_RECOG": "on",

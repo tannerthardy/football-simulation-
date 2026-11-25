@@ -38,7 +38,7 @@ import { OPEN_FIELD, playsBall } from '../open-field.js';
 import { DeepCoverage, StemAcceleration, stemStopped } from '../coverage-leverage.js';
 import { facingTechnique, roundedTurnTime, withFacingTechnique } from '../coverage/orientation.js';
 import { SNAP_REACT } from '../snap-count.js';
-import { BALL_EST, BALL_EST_DEF_PICTURE, BALL_EST_FLIGHT_SETTLE, BALL_EST_MAN_LOOK, FLIGHT_SETTLE_SPAN, estimatesFor, lookAnyway, lookJoints, neckOf, PHASE_BEHIND, PHASE_SIDE, phaseJudgeSd } from '../ball-estimate.js';
+import { BALL_EST, BALL_EST_DEF_PICTURE, BALL_EST_FLIGHT_SETTLE, BALL_EST_MAN_LOOK, FLIGHT_REVISE, FLIGHT_SETTLE_SPAN, estimatesFor, lookAnyway, lookJoints, neckOf, PHASE_BEHIND, PHASE_SIDE, phaseJudgeSd } from '../ball-estimate.js';
 import { acquireFlight, anticipatedCatcher, catchOpportunity, flightLanded, hasObservedFlight, observedHolder, QB_RELEASE, qbRunning, qbRunningAtLine, rememberCatchOpportunity, rememberedFlight, unresolvedBallArea } from '../possession-read.js';
 import { seenEngaged } from '../seen-contact.js';
 import { BALL_CUE_OWN } from '../release-evidence.js';
@@ -3119,6 +3119,10 @@ function playBelievedBall(a: Agent, sim: PlaySim, man: Agent | null, continueCov
     return stopDrop(sim, continueCoverage());
   }
   a.tags.add('onBall');
+  // FLIGHT_REVISE: with his own estimator he re-reads it each tick (each new sample revises it, and its catch opportunity is
+  // re-recorded); the record stands in only while his estimate is empty.
+  const fresh = FLIGHT_REVISE && estimatesFor(a) ? acquireFlight(a, sim) : [];
+  if (fresh.length) return playObservedFlight(a, sim, fresh, true);
   const path = hasObservedFlight(a) ? rememberedFlight(a, sim.t) : null;
   const flight = path ?? (sim.ball.kind === 'air' ? acquireFlight(a, sim) : []);
   // Bit 16384: on his own estimate, a catch point only once it has settled; until then the ball's direction.

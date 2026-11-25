@@ -18,6 +18,7 @@ import type { Vec3 } from '../core/vec.js';
 import type { Agent } from './agent.js';
 import type { PlaySim } from './playsim.js';
 import { bodyHeight, lineOfSight, SHOULDER, SIGHT_PURE } from './sight.js';
+import { glimpsesBall, SIGHT_BALL } from './ball-estimate.js';
 
 /** BALL_CUE_OWN (on; `=0` restores the ball cue timed on his sighting of the passer, and the stand in
  * `playObservedFlight`): the ball in flight is his own percept at his own delay (#766). The switch was added at
@@ -91,6 +92,7 @@ export function releaseEvidence(sim: PlaySim, observer: Agent): ReleaseCue[] {
   const ballDelay = observer.mind.observationDelay(observer.profile.reactionTime);
   const ballBack = BALL_CUE_OWN ? Math.round(ballDelay / sim.dt) : back, ballAt = BALL_CUE_OWN ? sim.t - ballBack * sim.dt : at;
   const b = flight.find((f) => Math.abs(f.t - ballAt) < sim.dt / 2);
-  if (b && sawAt(sim, observer, ballBack, { pos: { x: b.pos.x, y: b.pos.y } }, b.pos.z)) out.push({ kind: 'ball', at: ballAt, pos: b.pos });
+  // SIGHT_BALL: the one definition's glimpse (the same view cone and sight line, in ball-estimate.ts).
+  if (b && (SIGHT_BALL ? glimpsesBall(sim, observer, ballBack, b.pos) : sawAt(sim, observer, ballBack, { pos: { x: b.pos.x, y: b.pos.y } }, b.pos.z))) out.push({ kind: 'ball', at: ballAt, pos: b.pos });
   return out;
 }

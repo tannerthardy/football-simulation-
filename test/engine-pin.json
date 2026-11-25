@@ -145,6 +145,8 @@
  ],
  "defaults": [
   "test/acc-belief.test.ts",
+    "test/flight-revise.test.ts",
+    "test/sight-ball.test.ts",
   "test/acc-radius.test.ts",
   "test/acquired-mesh-contradiction.test.ts",
   "test/action-effort.test.ts",
