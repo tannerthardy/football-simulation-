@@ -90,3 +90,24 @@ squat corner under a short out. Both are V2 judge items, after this lands.
   reads the true profile.
 - `npm test` on the combined tree: see the message to Integration. 10 failures are pre-existing on develop (QB_STICK,
   CATCH_CARRY, delayed visible help).
+
+## Note added after landing (#947): the delay projection is an interim caution
+
+The delay projection in drive.ts (his picture carried forward over its sensing delay at the seen velocity) is **wrong in
+principle**. It is kept for now as an interim caution standing in for the estimate's velocity lag (Integration's ruling,
+2026-11-25, option 1). It is to be removed when perception velocity is honest. That fault has been routed to Flex, with
+`docs/reviews/patches/qbv2/diag/proj-err.ts` as the reproducer.
+
+Measured over every non-lineman at 1.2 s (5 staged cells × 15 seeds), QBMind.estimate's position is already near-current,
+and projecting it makes position worse:
+
+| Sightings | Estimate as is | Projected | Estimate's velocity error |
+|---|---|---|---|
+| In the clear cone | 0.25 yd | 0.60 yd | 1.45 yd/s |
+| Peripheral | 0.83 yd | 1.28 yd | 1.62 yd/s |
+
+The earlier premise, that the estimate returns the sensed picture unprojected, came from one accelerating press corner.
+There the real error is velocity.
+
+Removing the projection alone gives cmp 181 against 189, and P 0.83 believed against 0.78 actual. It acts as caution on
+moving men whose velocity he under-reads.
