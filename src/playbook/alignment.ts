@@ -241,6 +241,10 @@ export interface OffSpot {
   backfield: boolean;
   /** Attached tight end. */
   inline: boolean;
+  /** On the line of scrimmage at the snap (the legal-position fact Rule 5 / 7 read: the five linemen, an attached end, a
+   * receiver set on the ball); everyone else, the quarterback included, is a back. A motion man is always off the line
+   * (canMotion), so motion never changes it. Absent on a spot built elsewhere: see playbook/eligibility.ts. */
+  onLine?: boolean;
 }
 
 export interface OffenseAlignment {
@@ -401,11 +405,11 @@ export function alignOffense(formation: Formation, flip: boolean, los: number, b
     ? { LT: T, LG: line.cg, C: 0, RG: -line.cg, RT: -T } : { LT: 2.6, LG: 1.3, C: 0, RG: -1.3, RT: -2.6 };
   const depthOf = olDepth(ctx);
   for (const [slot, off] of Object.entries(olOff)) {
-    spots[slot] = { slot: slot as OffSlot, pos: { x: los - depthOf[slot as LineSlot], y: ballY + off }, side: off > 0 ? 'L' : off < 0 ? 'R' : 'C', backfield: false, inline: false };
+    spots[slot] = { slot: slot as OffSlot, pos: { x: los - depthOf[slot as LineSlot], y: ballY + off }, side: off > 0 ? 'L' : off < 0 ? 'R' : 'C', backfield: false, inline: false, onLine: true };
   }
   // Under center the QB's body is ~1.7 yd behind the line (NFL tracking at the snap): the center is in between.
   const qbDepth = formation.qb === 'under' ? 1.6 : formation.qb === 'pistol' ? PISTOL_QB_DEPTH : GUN_QB_DEPTH;
-  spots.QB = { slot: 'QB', pos: { x: los - qbDepth, y: ballY }, side: 'C', backfield: true, inline: false };
+  spots.QB = { slot: 'QB', pos: { x: los - qbDepth, y: ballY }, side: 'C', backfield: true, inline: false, onLine: false };
 
   // First pass: wide/inline/wing/fixed; second pass: slots (need #1 position).
   const entries = Object.entries(formation.slots) as Array<[SkillSlot, NonNullable<Formation['slots'][SkillSlot]>]>;
@@ -482,6 +486,8 @@ export function alignOffense(formation: Formation, flip: boolean, los: number, b
       side,
       backfield,
       inline: a.split === 'inline' && !offEnd.has(slot),
+      // TE_OFF: an end set off the ball is a back; the wide receiver brought up outside him is on the line.
+      onLine: onLine && !offEnd.has(slot),
     };
   }
 

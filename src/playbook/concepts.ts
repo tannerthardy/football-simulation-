@@ -11,7 +11,7 @@ import { BASE_COMPOSITIONS, compileComposition, MENU_COMPOSITIONS } from './call
  * concepts are built from compositions (src/playbook/calls: a half-field concept per side or one full-field concept,
  * tags and the back's job) instead of the literals below. Each composition compiles to exactly its literal
  * (test/call-compose.test.ts), so on changes nothing yet. The literals stay as the off path. */
-export const CALL_COMPOSE = process.env.CALL_COMPOSE === '1';
+export const CALL_COMPOSE = process.env.CALL_COMPOSE !== '0';
 
 /** Today's concepts as literals: the off path, and the golden reference for CALL_COMPOSE's compositions. */
 export const legacyBaseConcepts = (): PassConcept[] => [
@@ -246,7 +246,7 @@ if (CONCEPT_DROPS) for (const c of [...BASE_PASS_CONCEPTS, ...MENU_CONCEPTS]) if
  * drop", Viqtory Sports), keeps the 6 yd hitch. NFL witness, not target: PFF's HITCH stops before the throw (#1, BDB
  * 2025 weeks 1-3) peak at 4-5 yd with a second hump at 10-13 (the curl); ours stopped at 5.5-6, between them
  * (scripts/diag/routes/nfl_one_stops.py; Defense's quarters-corner operator). */
-const QUICK_HITCH = process.env.QUICK_HITCH !== '0';
+export const QUICK_HITCH = process.env.QUICK_HITCH !== '0';
 if (QUICK_HITCH) for (const c of [...BASE_PASS_CONCEPTS, ...MENU_CONCEPTS]) if (c.family === 'quick') for (const side of [c.strong, c.weak])
   for (const n of [1, 2, 3, 4] as const) if (side[n] === 'hitch') side[n] = 'quick_hitch';
 /** VERTS_QUICK (on since engine-67; split from CONCEPT_DROPS 2026-11-14, one flag one meaning): four verticals is "a

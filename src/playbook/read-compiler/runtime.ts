@@ -289,6 +289,9 @@ export function installedPlan(concept: PassConcept, formationId: string): Instal
       // PLAN_KEYS: the coached key, its cue at the top of the drop when the low route is first a throw (the
       // compiler's own rule: at the set, or 0.2 s before the low route is ready); the pair leads the order.
       let k = PLAN_KEYS && (PLAN_KEYS_2 || !SECOND_KEYS.has(tableId)) && (PLAN_KEYS_3 || !THIRD_KEYS.has(tableId)) ? KEYS[tableId] ?? (PLAN_ROLES ? ROLE_KEYS[tableId] : undefined) : undefined;
+      // CALL_COMPOSE: levels has two named versions. The key is the coached pair of routes (the in under the dig), so
+      // with the outside short in (S1 the in, S2 the dig) it reads the same routes at their receivers.
+      if (k && tableId === 'levels' && concept.strong[1] === 'short_in') k = { ...k, low: k.high, high: k.low };
       // PLAN_ROLES: a key is the coached pair of routes, so it holds in every formation: its refs are resolved by the
       // routes the concept installs at them (S1 -> strong 1, W2 -> weak 2, B -> the back), preferring the same side.
       if (k && PLAN_ROLES) {

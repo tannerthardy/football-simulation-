@@ -10,7 +10,7 @@
  * The weights of the concepts that fit are kept as they are and renormalize among themselves by the draw (no CALL_MIX
  * refit). The motion is drawn first, as today: the fit is judged on what it leaves.
  */
-import { alignOffense, type AlignContext } from '../playbook/alignment.js';
+import { alignOffense, type AlignContext, type OffenseAlignment } from '../playbook/alignment.js';
 import type { Formation, MotionCall, OffSlot, PassConcept, ReceiverRef } from '../playbook/types.js';
 import type { PhysicalProfile } from '../players/physical.js';
 import { planMotion, realignOffense } from '../sim/motion.js';
@@ -40,12 +40,18 @@ export interface FieldContext { los: number; ctx: AlignContext; bodies: Partial<
 /** The receiver references on the field at the snap: the formation as aligned, then the called motion's set spot. A
  * motion the planner would not run (illegal, no lane, too long) leaves the formation as aligned, as the play does. */
 export function fieldRefs(f: Formation, flip: boolean, ballY: number, motion: MotionCall | undefined, at: FieldContext): Set<ReceiverRef> {
+  const off = fieldAlignment(f, flip, ballY, motion, at);
+  return new Set((Object.keys(off.numbering) as ReceiverRef[]).filter((r) => off.numbering[r]));
+}
+
+/** The offense at the snap as `fieldRefs` numbers it: the formation as aligned, then the called motion's set spot. */
+export function fieldAlignment(f: Formation, flip: boolean, ballY: number, motion: MotionCall | undefined, at: FieldContext): OffenseAlignment {
   let off = alignOffense(f, flip, at.los, ballY, at.ctx);
   const body = (slot: string) => at.bodies[slot as OffSlot] ?? NOMINAL;
   const plan = motion ? planMotion(off, motion, body(motion.slot),
     Object.values(off.spots).map((sp) => ({ slot: sp.slot, pos: sp.pos, radius: body(sp.slot).radius }))) : null;
   if (plan) off = realignOffense(off, (slot) => (slot === plan.slot ? plan.snapPos : undefined));
-  return new Set((Object.keys(off.numbering) as ReceiverRef[]).filter((r) => off.numbering[r]));
+  return off;
 }
 
 /** Whether the field has every receiver the concept's read names (an inner list: any one of them). */
