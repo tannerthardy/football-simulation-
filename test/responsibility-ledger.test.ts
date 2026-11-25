@@ -10,6 +10,7 @@ import { createHash } from 'node:crypto';
 import { describe, expect, it, vi } from 'vitest';
 import { Rng } from '../src/core/rng.js';
 import { RunBlocker, type Combination } from '../src/sim/behaviors/blocking.js';
+import { BLOCK_FRAME } from '../src/sim/engagement.js';
 import { PlaySim } from '../src/sim/playsim.js';
 import { dutyTimeline, initialJobCensus } from '../src/sim/responsibility-views.js';
 import { LOAD_PRESENT } from '../src/sim/responsibility-ledger.js';
@@ -197,7 +198,9 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     // Graded against the initial job there is no member load; the ledger also says why. With run-read
     // attention (a defender who has read run sees a blocker in front of him and in range on the ordinary
     // delay), DT_S tackles at 3.1 and LB_W never contacts the carrier, so the job is '?' rather than 'U'.
-    expect(job.stratum).toBe('?');
+    // BLOCK_FRAME (a released defender re-blocked only from in front of his path, inside his frame): LB_W is not
+    // re-blocked from outside his frame and reaches the carrier, so the job is 'U' (no member load, a carrier contact).
+    expect(job.stratum).toBe(BLOCK_FRAME ? 'U' : '?');
     expect(job.responsibility).toMatchObject({ threatRereadAfterRelease: true });
     expect(job.responsibility.otherClimbTargets.map(p.slot)).toEqual(['LB_M']);
   });

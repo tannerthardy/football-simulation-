@@ -288,3 +288,24 @@ tracks body height and bend (correlation with the defender's mass +0.53, with hi
 | lower pads: the strongest single lever | +0.29 / -0.59 (pass, run, mu 1.1); pass rep +0.09 / +0.01 at mu 1.3, 0.00 at 1.5; run rep still +0.25 / +0.49 at 1.3 | **agrees at today's grip; disagrees once legs bind**: pad level reaches only the traction cap (and balance), so the lever vanishes where legs bind (the reason for posture under load) |
 | hands inside: a sixth to a quarter more push along the line, plus control of the turn | not representable | missing |
 | balance can bind for upright or pass-set men | offset / base radius 0.03-0.14 (pass), 0.07-0.56 (run); lean 44-49 degrees | **not tested** for upright men; at the leans held grip or legs bind first |
+
+## 6. Source status for the figures in this file (what Tools has and has not verified)
+
+- **Verified by Tools from the primary document:** Penn State Supercleat report (static 1.50-1.68, dynamic 1.31-1.47 at 245 lb).
+- **Opened by a research subagent (abstract or full text as stated in the Phase 0 note), not re-opened by Tools:** Kent et al. 2015 (both papers), Seo, Armstrong & Young 2010, Escobar-Molina 2023, Martin & Beckham 2020, Green et al. 2019, Bayne & Kat, Pincivero 2004, Piorkowski 2011, Sarabon 2021.
+- **Not verified by Tools, and not found by the subagent:** **Preatoni et al. 2015's pack figures (sustained 0.93-0.97 x pack weight, engagement peak 1.88-1.94 x)**: none of the abstracts it opened gives a body-weight multiple and the full text returned 403; **Lum, Haff & Barbosa 2020's 90 degree sticking point**: that paper is a review and the angle is a second-hand statement, so it is not a primary source for the bench-press sticking region; the reviewer's "2.8 kN preload" is the vertical load in Kent's first paper, and 2.8 kN is the bottom of the grass range in its companion, not a preload there.
+- Any ratio to body weight in this file is my division unless stated.
+
+## 7. Correction to the press rows (2026-11-24, found while writing the Phase 2 step 2 accounting)
+
+The "stronger arms (press x1.3)" rows of every table above (0.00 on every row, "the hands force never reaches the arm budget") are **a bench artifact, not a finding**. The hands joint's compressive limit is set by the controller from the actor's press when the joint is made
+(`setContactHands`: `joint.push = pressForce(actor) x (0.35 + 0.65 |control|)`), and the bench edited the profile after the fixture built the joint, so the limit never changed. With the limit updated by the same ratio (`staged-bench.mts`, 2026-11-24):
+
+| row | pass rep | run rep |
+|---|---|---|
+| joint push limit at the fixture | 1,668 N | 1,196 N |
+| hands force, base | 1,453 N (leg-limited: below the limit) | **1,093 N (at 0.91 of the limit: the arms bind)** |
+| blocker's press x1.3: hands force | 1,444 N (no change) | **1,421 N** |
+| blocker's press x1.3: pair, change | +0.01 | **-0.04** |
+
+So in the run rep the blocker's arms **do** limit the contact at control 0, and a 30% stronger press raises the hands force 30% and walks the blocker back 0.04 yd/s less (right way, small: the leg contest dominates). In the pass rep the legs bind and the press is inert. **The defender's arms are not in the contact at all** when the joint's actor is the blocker (one actor budget per joint: `pressUnits(actor)`): the rusher's "stronger arms" row is a missing mechanism, not zero. `reach` is read only through the extension the controller sets (`joint.extension`), which the bench does not update; that row stays a missing mechanism until Phase 2 step 2 gives the arm a length.
