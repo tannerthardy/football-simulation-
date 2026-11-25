@@ -1,0 +1,38 @@
+diff --git a/src/sim/spacing.ts b/src/sim/spacing.ts
+index 511e2fc8..c5a568d4 100644
+--- a/src/sim/spacing.ts
++++ b/src/sim/spacing.ts
+@@ -166,12 +166,13 @@ function forecastPeers(a:Agent, original:Intent, peers:readonly PeerPicture[], c
+ }
+ 
+ function gatherForMotion(a:Agent, original:Intent, peers:readonly PeerPicture[], forecast:MotionForecast, context?:SpacingContext):Intent {
++  const dbg=(globalThis as any).__sp as undefined|((a:Agent,l:string)=>void);
+   const near=forecastPeers(a,original,peers,context);
+-  if(!near.length)return original;
++  if(!near.length){dbg?.(a,'none');return original;}
+   const samples=forecast(original);
+   const clearances=near.map(peer=>sweptClearance(a,samples,peer));
+   const worst=Math.min(...clearances);
+-  if(worst>=0)return original;
++  if(worst>=0){dbg?.(a,'clear');return original;}
+   if(RB_STEER&&(a.behavior.kind==='carrier'||(a.behavior as {plan?:{kind?:string}}).plan?.kind==='lead')){
+     // Bend around the teammate at the requested pace: the smallest bend
+     // that clears every peer and still makes progress along the request.
+@@ -179,7 +180,7 @@ function gatherForMotion(a:Agent, original:Intent, peers:readonly PeerPicture[],
+     for(const off of [.2,-.2,.4,-.4,.6,-.6,.8,-.8]){
+       const h=h0+off,bent:Intent={...original,vel:{x:Math.cos(h)*sp,y:Math.sin(h)*sp}};
+       const path=forecast(bent);
+-      if(path.every(sample=>sample.support==='up')&&peers.every(peer=>sweptClearance(a,path,peer)>=0))return bent;
++      if(path.every(sample=>sample.support==='up')&&peers.every(peer=>sweptClearance(a,path,peer)>=0)){dbg?.(a,'bend'+off);return bent;}
+     }
+   }
+   // Yield speed while continuing the turn when that already clears traffic.
+@@ -212,7 +213,7 @@ function gatherForMotion(a:Agent, original:Intent, peers:readonly PeerPicture[],
+         if(next>=achieved){chosen=command;achieved=next;}
+       }else upper=scale;
+     }
+-    return chosen;
++    dbg?.(a,'slow'+chosen.vel.x.toFixed(0));return chosen;
+   }
+   const gather:Intent={...original,vel:{x:0,y:0}};
+   const gathered=forecast(gather);

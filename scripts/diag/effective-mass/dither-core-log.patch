@@ -1,0 +1,31 @@
+diff --git a/scripts/diag/effective-mass/dither-core.ts b/scripts/diag/effective-mass/dither-core.ts
+index 4bed6f460..68db454d0 100644
+--- a/scripts/diag/effective-mass/dither-core.ts
++++ b/scripts/diag/effective-mass/dither-core.ts
+@@ -68,6 +68,9 @@ export function watch(sim: PlaySimT, acc: Acc): void {
+     : k === 'stageAll' ? (st: string, I: { vel?: { x: number; y: number } }[]) => I.forEach((c, i) => put(s.agents[i], st, c))
+     : () => undefined });
+   const hist = new Map<object, Row[]>();
++  // Diagnostic only: __ditherLog collects one row per re-aim and per reversal (play ordinal, player, time, controller, stage); nothing in the suite reads it.
++  const G0 = globalThis as { __ditherLog?: unknown[]; __ditherPlay?: number };
++  const LOG = G0.__ditherLog, PLAY = (G0.__ditherPlay = (G0.__ditherPlay ?? 0) + 1);
+   // Facing: per player, the recent requested facings (t, rad) and the re-aims awaiting reversal.
+   const fh = new Map<object, { t: number; f: number }[]>(), fpend = new Map<object, { before: number; t: number; g: string; done?: boolean }[]>();
+   const fang = (a: number, b: number) => Math.abs(((b - a) * 180 / Math.PI + 540) % 360 - 180);
+@@ -108,13 +111,14 @@ export function watch(sim: PlaySimT, acc: Acc): void {
+       const first = ORDER.find(st => turned(p.st[st], r.st[st]) || stopped(p.st[st], r.st[st]));
+       const src = r.mode !== p.mode ? 'mode switch' : first ? STAGE_NAME[first] : 'unattributed';
+       G.reaims++; (G.src[src] ??= { n: 0, reversed: 0, dv: [] }).n++;
++      LOG?.push({ k: 'reaim', play: PLAY, idx: a.idx, slot: (a as unknown as { slot?: string }).slot, team: (a as unknown as { team?: string }).team, t: Math.round(s.t * 100) / 100, g: r.g, src, mode: r.mode });
+       r.settle = src; r.change = { before: p.req, t: s.t, src, g: r.g };
+     }
+-    for (const H of hist.values()) {
++    for (const [ag, H] of hist) {
+       const r = H[H.length - 1];
+       for (const q of H.slice(0, -1)) {
+         if (!q.change || q.change.done || s.t - q.change.t > 0.3 + 1e-9) continue;
+-        if (sp(r.req) > 1 && ang(q.change.before, r.req) <= 20) { q.change.done = true; const Q = grp(acc, q.change.g); Q.reversed++; Q.src[q.change.src].reversed++; }
++        if (sp(r.req) > 1 && ang(q.change.before, r.req) <= 20) { q.change.done = true; const Q = grp(acc, q.change.g); Q.reversed++; Q.src[q.change.src].reversed++; LOG?.push({ k: 'rev', play: PLAY, idx: (ag as { idx: number }).idx, slot: (ag as unknown as { slot?: string }).slot, team: (ag as unknown as { team?: string }).team, t: Math.round(q.change.t * 100) / 100, g: q.change.g, src: q.change.src }); }
+       }
+     }
+   };
