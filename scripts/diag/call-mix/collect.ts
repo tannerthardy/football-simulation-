@@ -8,6 +8,7 @@ import { simulateGame } from '../../../src/game/game.js';
 import { OffensiveCoordinator, DefensiveCoordinator } from '../../../src/game/playcaller.js';
 import { generateTeam, leagueSample } from '../../../src/league/team.js';
 import { PASS_CONCEPTS } from '../../../src/playbook/concepts.js';
+import { dropSpec } from '../../../src/sim/called-drop.js';
 
 const arg = (k: string, d: string) => { const i = process.argv.indexOf(k); return i >= 0 ? process.argv[i + 1] : d; };
 const seed = Number(arg('--seed', '101')), games = Number(arg('--games', '16'));
@@ -56,10 +57,15 @@ for (game = start; game < start + games; game++) {
       const isPass = sim.offCall.kind === 'pass';
       const routes = isPass ? sim.offense.filter((a: any) => a !== sim.qb && !['LT', 'LG', 'C', 'RG', 'RT'].includes(a.slot))
         .map((a: any) => ({ slot: a.slot, ref: sim.offAlign.refOf[a.slot] ?? null, route: routeOf(sim, a) })) : [];
+      // The call as made (the refit's inputs): gun or under center, the concept's drop, an RPO tag, and the called set's
+      // displacement from the snap spot (dropSpec; BDB's dropbackDistance is the achieved one, read beside it).
+      const oc = sim.offCall, gun = oc.formation?.qb !== 'under', drop = oc.pass?.drop ?? null, rpo = !!oc.rpo;
+      const set = drop ? Math.abs(sim.qb.pos.x - dropSpec(drop, sim.qb.pos.x, sim.los, gun).x) : null;
+      const call = { gun, drop, rpo, set: set === null ? null : +set.toFixed(2) };
       const r = sim.run();
       const s = sim.stats;
       // Runs that stayed runs: one short row (the label names an RPO kept as a run).
-      if (!isPass && !s.attempted && !s.sacked) { out({ rec: 'run', game, down: sim.down, dist: +(sim.firstDownX - sim.los).toFixed(1), label: sim.offCall.label, yards: +r.yards.toFixed(2) }); return r; }
+      if (!isPass && !s.attempted && !s.sacked) { out({ rec: 'run', game, down: sim.down, dist: +(sim.firstDownX - sim.los).toFixed(1), label: sim.offCall.label, yards: +r.yards.toFixed(2), ...call }); return r; }
       const tgt = s.target ? sim.offense.find((a: any) => a.player.id === s.target) : null;
       const dc = sim.defCall;
       out({ rec: 'play', game, seed: seed + game, play: playNo, off: offAbbr, q: quarter, clock,
@@ -69,7 +75,7 @@ for (game = start; game < start + games; game++) {
         rushers: sim.defAlign.rushers.length, depth,
         target: tgt ? { slot: tgt.slot, ref: sim.offAlign.refOf[tgt.slot] ?? null, route: routeOf(sim, tgt) } : null, routes,
         yards: +r.yards.toFixed(2), outcome: r.outcome, att: !!s.attempted, cmp: !!s.completed, sack: !!s.sacked, int: !!s.interceptedBy || r.events.some((e: any) => e.type === 'interception'),
-        scramble: !!s.scramble, throwaway: !!s.throwaway, air: s.airYards ?? null, cAir: s.completedAirYards ?? null, yac: s.yac ?? null, ttt: s.timeToThrow ?? null, pressured: !!s.pressured });
+        scramble: !!s.scramble, throwaway: !!s.throwaway, air: s.airYards ?? null, cAir: s.completedAirYards ?? null, yac: s.yac ?? null, ttt: s.timeToThrow ?? null, pressured: !!s.pressured, ...call });
       return r;
     } } as any });
   out({ rec: 'game', game, seed: seed + game, score: res.score, plays: res.log.length, quarters: res.log.filter((p: any) => p.kind === 'pass' || p.kind === 'run').map((p: any) => p.quarter) });
