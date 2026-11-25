@@ -33,17 +33,24 @@ describe('planFor: composed read plans', () => {
     }
   });
 
-  it('the backside read is the backside half\'s own: its flat key, its first quick route, or none', () => {
+  it('the backside gives one reset as taught: a reset, the flat only, or none', () => {
+    // curl-flat: the flat-defender key (curl if he widens, flat if he sits)
+    const cf = planFor(withWeak(authored('stick'), 'curl_flat'))!;
+    expect(cf.reads.at(-1)).toMatchObject({ step: 1, look: { kind: 'key', role: 'flat', side: 'W' } });
+    // slant-flat late: the flat only
     const sf = planFor(withWeak(authored('stick'), 'slant_flat'))!;
-    expect(sf.reads.at(-1)).toMatchObject({ step: 1, look: { kind: 'key', role: 'flat', side: 'W' } });
-    const sg = planFor(withWeak(authored('slant_flat'), 'slant_go'))!;
-    expect(sg.reads.at(-1)).toMatchObject({ step: 1, look: { kind: 'receiver', ref: 'W1' }, throws: [{ ref: 'W1', timing: 'onBreak' }] });
-    expect(sg.hot.find((h) => h.side === 'W')?.answer.ref).toBe('W1');
-    const gh = planFor(withWeak(authored('quick_outs'), 'go_hook'))!;
-    expect(gh.reads.every(isFront)).toBe(true);
-    expect(gh.hot.some((h) => h.side === 'W')).toBe(false);
+    expect(sf.reads.at(-1)).toMatchObject({ step: 1, look: { kind: 'receiver', ref: 'W2' }, throws: [{ ref: 'W2', timing: 'seenOpen' }] });
+    // an interior settle: the slot's hitch, a hook
+    expect(planFor(withWeak(authored('quick_outs'), 'hitches'))!.reads.at(-1)).toMatchObject({ look: { kind: 'receiver', ref: 'W2' } });
+    expect(planFor(withWeak(authored('quick_outs'), 'go_hook'))!.reads.at(-1)).toMatchObject({ look: { kind: 'receiver', ref: 'W2' } });
+    // none: a late slant, a quick out, a go pair; the hot is still the half's first quick route
+    for (const [id, half] of [['slant_flat', 'slant_go'], ['quick_outs', 'slant_stick'], ['slant_flat', 'hitch_go'], ['stick', 'fade_flat']] as const) {
+      const p = planFor(withWeak(authored(id), half))!;
+      expect(p.reads.every(isFront), `${id} / ${half}`).toBe(true);
+    }
+    expect(planFor(withWeak(authored('slant_flat'), 'slant_go'))!.hot.find((h) => h.side === 'W')?.answer.ref).toBe('W1');
     expect(backsideRead({ 1: 'go', 2: 'seam' }, 1)).toBeNull();
-    expect(backsideRead({ 1: 'hitch', 2: 'go' }, 1)?.throws.map((t) => t.ref)).toEqual(['W1']);
+    expect(backsideRead({ 1: 'quick_out', 2: 'quick_hitch' }, 1)?.throws.map((t) => t.ref)).toEqual(['W2']);
   });
 
   it('the side pick holds only on the authored backside: otherwise the concept is run to its called side', () => {

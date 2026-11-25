@@ -6,6 +6,7 @@
  */
 import type { PlanRead, QbReadPlan } from '../sim/qbv2/plan.js';
 import { getRoute } from './routes.js';
+import { HALF_CONCEPTS } from './calls/halves.js';
 import { PASS_BY_ID, SCREEN_BY_ID } from './concepts.js';
 import { asBackThree } from '../game/concept-fit.js';
 import type { PassConcept, ReceiverRef } from './types.js';
@@ -505,22 +506,41 @@ const isFront = (r: PlanRead): boolean => (r.look.kind === 'key' ? r.look.side !
  * (hook, out, curl, dig) or a crosser has not, so it is not read on the reset. */
 const isQuickRoute = (id: string | undefined): boolean => !!id && ['quick', 'flat'].includes(getRoute(id).family);
 
-/** The backside read a composed call takes on the reset, from the backside half's own routes.
- * - A slant-flat half keeps its taught key on the flat defender (Klatt: "reset to the backside's slant-flat").
- * - Otherwise his eyes go to the half's first quick route in number order (#1, then #2) and he throws its quick routes
- *   in that order, the looked-at one on its break (the family rule).
- * - A half with no quick route (a go or seam pair, comeback-seam, dig-shallow) gets no backside read: coaches do not
- *   reset to clear-outs on a quick drop; the play goes to the checkdown.
- * Null when there is none. */
+/** What a backside half gives on the one reset (the first hitch), as taught: reads are tied to the feet, and a late arrival on a
+ * timing route is a throw into a closing window (the outside reviewer's second read, docs/reviews/2026-11-25-qbv2-second-read.md
+ * §2, checked against ours). "One reset, not three": after it, the checkdown.
+ * - reset: a read that still fits the later clock. Curl-flat: key the flat defender, the curl if he widens, the flat if he
+ *   sits. An interior settle (the slot's hitch, a hook): "An interior settle (spacing) can be a reset".
+ * - flat: slant-flat late is the flat or the checkdown ("The slant window closes with each hitch").
+ * - none: an outside quick hitch ("the corner plants and drives"), a quick out ("any hesitation lets the corner undercut
+ *   it"), a stick ("Never come back to it once left"), a late slant (double slants, slant-go, slant-stick), fade-flat and
+ *   a go or seam pair (pre-snap only), and every other half: the play goes to the checkdown.
+ * Keyed by the half's routes (the quick hitch counts as the hitch). */
+const BACKSIDE_RESET: Record<string, { reset: PlanRead['look']; throws: ReceiverRef[]; keyRules?: PlanRead['keyRules'] } | { flat: ReceiverRef }> = {
+  curl_flat: { reset: { kind: 'key', role: 'flat', side: 'W' }, throws: ['W1', 'W2'],
+    keyRules: [{ cue: 'widens', throwTo: 'W1' }, { cue: 'jumps', throwTo: 'W1' }, { cue: 'sinks', throwTo: 'W2' }, { cue: 'squats', throwTo: 'W2' }, { cue: 'none', throwTo: 'W2' }] },
+  hitches: { reset: { kind: 'receiver', ref: 'W2' }, throws: ['W2'] },
+  quick_out_hitch: { reset: { kind: 'receiver', ref: 'W2' }, throws: ['W2'] },
+  slant_hitch: { reset: { kind: 'receiver', ref: 'W2' }, throws: ['W2'] },
+  go_hitch: { reset: { kind: 'receiver', ref: 'W2' }, throws: ['W2'] },
+  go_hook: { reset: { kind: 'receiver', ref: 'W2' }, throws: ['W2'] },
+  slant_flat: { flat: 'W2' },
+};
+
+const asHitch = (r: string | undefined) => (r === 'quick_hitch' ? 'hitch' : r ?? null);
+/** The half a side runs, by its routes (null when no half matches). */
+function halfOf(side: PassConcept['weak']): string | null {
+  for (const h of HALF_CONCEPTS) if (([1, 2, 3, 4] as const).every((n) => asHitch(side[n]) === (h.routes[n] ?? null))) return h.id;
+  return null;
+}
+
+/** The backside read a composed call takes on the reset (step `step`), from BACKSIDE_RESET by the backside half; null
+ * when the half gives none (the play goes to the checkdown). */
 export function backsideRead(weak: PassConcept['weak'], step: number): PlanRead | null {
-  if (weak[1] === 'slant' && weak[2] === 'flat')
-    return { step, look: { kind: 'key', role: 'flat', side: 'W' },
-      throws: [{ ref: 'W2', timing: 'onBreak' }, { ref: 'W1', timing: 'onBreak' }],
-      keyRules: [{ cue: 'widens', throwTo: 'W1' }, { cue: 'jumps', throwTo: 'W1' }, { cue: 'sinks', throwTo: 'W2' }, { cue: 'none', throwTo: 'W2' }] };
-  const quick = ([1, 2, 3, 4] as const).filter((n) => isQuickRoute(weak[n])).map((n) => `W${n}` as ReceiverRef);
-  if (!quick.length) return null;
-  return { step, look: { kind: 'receiver', ref: quick[0] },
-    throws: quick.map((ref, i) => ({ ref, timing: i === 0 ? 'onBreak' : 'seenOpen' })) };
+  const half = halfOf(weak), e = half ? BACKSIDE_RESET[half] : undefined;
+  if (!e) return null;
+  if ('flat' in e) return { step, look: { kind: 'receiver', ref: e.flat }, throws: [{ ref: e.flat, timing: 'seenOpen' }] };
+  return { step, look: e.reset, throws: e.throws.map((ref) => ({ ref, timing: 'seenOpen' as const })), ...(e.keyRules ? { keyRules: e.keyRules } : {}) };
 }
 
 const sameSide = (a: PassConcept['weak'], b: PassConcept['weak']): boolean =>
@@ -579,14 +599,15 @@ function compose(plan: QbReadPlan, on: NonNullable<ReturnType<typeof authoredCal
     if (isFront(r)) { index.set(i, reads.length); reads.push(r); }
   });
   if (at < 0 && back) reads.push(back);
-  const wHot = back ? (() => { const ref = back.look.kind === 'receiver' ? back.look.ref : 'W1'; return { side: 'W' as const, over: 1, answer: { ref, timing: 'onBreak' as const } }; })() : null;
+  const hotN = ([1, 2, 3, 4] as const).find((n) => isQuickRoute(call.weak[n]));
+  const wHot = hotN ? { side: 'W' as const, over: 1, answer: { ref: `W${hotN}` as ReceiverRef, timing: 'onBreak' as const } } : null;
   const hadW = plan.hot.some((h) => h.side === 'W');
   const hot = [...plan.hot.filter((h) => h.side !== 'W'), ...(hadW && wHot ? [wHot] : [])];
   const expected = plan.expected && Object.fromEntries(Object.entries(plan.expected)
     .filter(([, i]) => i !== undefined && index.has(i)).map(([k, i]) => [k, index.get(i!)!]));
   const alert = plan.alert && index.has(plan.alert.read) ? { ...plan.alert, read: index.get(plan.alert.read)! } : undefined;
   const out: QbReadPlan = { ...plan, reads, hot, checkdown, expected,
-    source: `${plan.source} Composed (planFor): backside ${JSON.stringify(call.weak)}, ${back ? 'its quick read' : 'no backside read'}.` };
+    source: `${plan.source} Composed (planFor): backside ${halfOf(call.weak) ?? JSON.stringify(call.weak)}, ${back ? 'its reset' : 'no reset (the checkdown)'}.` };
   delete out.pick; delete out.pickShell; delete out.alert;
   if (alert) out.alert = alert;
   return out;
