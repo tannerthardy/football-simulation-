@@ -51,6 +51,14 @@ const ROUTE_CLEAR = process.env.ROUTE_CLEAR !== '0';
  * state or engagement record; the convoy's target choice, its fit and its timing use the seen defender, and a teammate
  * turns to the convoy when his picture shows the catcher with the ball (`ConvoyCue`), not at the true catch. Contact
  * itself stays physics. Off: the true reads (docs/reviews/2026-11-13-information-leak-sweep.md, Rules + Coaching). */
+/** SCRAMBLE_SEEN (experimental, off; Flex, 2026-11-24; outside audit, offense #1): the scramble drill finds grass away from the
+ * defenders where he sees them and works back to the passer where he sees him, not their true positions. */
+export const SCRAMBLE_SEEN = process.env.SCRAMBLE_SEEN !== '0';
+/** TRACK_SEEN (experimental, off; Flex, 2026-11-24; outside audit, offense #5): his ball tracking ends when his own estimate
+ * has the ball down, not on the tick the true ball stops flying. */
+export const TRACK_SEEN = process.env.TRACK_SEEN !== '0';
+/** Off TRACK_SEEN (and without BALL_EST) the tracker runs only while the ball is in the air. */
+type AirBall = Extract<PlaySim['ball'], { kind: 'air' }>;
 export const RCV_SEEN = process.env.RCV_SEEN !== '0';
 const isDownFor = (a: Agent, sim: PlaySim, o: Agent): boolean => RCV_SEEN ? seenDown(sim, a, o) : o.isDown(sim.t);
 const isTakenFor = (a: Agent, sim: PlaySim, d: Agent): boolean => RCV_SEEN ? seenTaken(sim, a, d, 'my-team') : !!d.engagement;
@@ -304,6 +312,15 @@ const PRESS_RELEASE = process.env.PRESS_RELEASE !== '0';
  * - The receiver's own look for the ball (preLook) keeps today's number (`lookBreakTime`), so no receiver behaviour
  *   changes. */
 const PLAN_BREAK_BODY = process.env.PLAN_BREAK_BODY !== '0';
+/** RELEASE_ZONE (on since engine-104; RELEASE_ZONE=0 restores; Rules + Coaching, 2026-11-24, the call-theory matrix's
+ * mesh cell): the release is how he gets to his stem, so it ends where his route's first point is.
+ * - Once he is as deep as that point (or past it in his route), he runs his route.
+ * - Off, the release around a man he saw tight at the snap held while that man stayed 0-5 yd ahead and in his lane.
+ *   A press man who trails him a little deeper, as a man defender does, kept him releasing upfield. Mesh's high crosser
+ *   against Cover 1 press climbed to 6.3 yd against his route's 4.5-5 yd, so the crossers passed about 3 yd apart.
+ *   scripts/diag/calls/mesh_hdepth.mts on rules/matrix: 4.3-4.5 yd with the release off.
+ * - A go's first point is at 4 yd, so its release is unchanged; a crosser's or a slant's ends at its turn. */
+const RELEASE_ZONE = process.env.RELEASE_ZONE !== '0';
 /** RELEASE_SEEN (off; RELEASE_SEEN=1 turns it on): a receiver releases around any defender he saw tight over him at
  * the snap (within RELEASE_TIGHT_DEPTH ahead and RELEASE_TIGHT_WIDTH either side, as he saw them), not only the one
  * the defence's call made his press-man corner, an assignment he cannot know. The release side and how cleanly he
@@ -680,16 +697,19 @@ export class RouteRunner implements Behavior {
    */
   private scrambleDrill(a: Agent, sim: PlaySim): MoveCommand {
     const qb = sim.qb;
+    // SCRAMBLE_SEEN: the passer where he sees him (a teammate's picture: his own sight, no reading delay).
+    const qbAt = SCRAMBLE_SEEN ? sim.see(a, qb).pos : qb.pos;
     if (!this.drill || sim.t >= this.drill.at) {
       const depth = a.pos.x - sim.los;
       const baseX = sim.los + (depth > 14 ? Math.max(10, depth - 9) : clamp(depth + 2, 4, 12));
-      const baseY = a.pos.y + (qb.pos.y - a.pos.y) * (depth > 14 ? 0.15 : 0.35);
+      const baseY = a.pos.y + (qbAt.y - a.pos.y) * (depth > 14 ? 0.15 : 0.35);
       let best: Vec2 = { x: baseX, y: baseY };
       let bestScore = -Infinity;
       for (const [dx, dy] of [[0, 0], [0, 4], [0, -4], [3, 0], [-3, 0], [2, 3], [2, -3]]) {
         const p = { x: Math.min(OPP_GOAL_X + 8, baseX + dx), y: clamp(baseY + dy, 2, FIELD_WIDTH - 2) };
         let near = Infinity;
-        for (const d of sim.defense) near = Math.min(near, Math.hypot(d.pos.x - p.x, d.pos.y - p.y));
+        // SCRAMBLE_SEEN: grass away from the defenders where he sees them (his delayed picture), not where they are.
+        for (const d of sim.defense) { const at = SCRAMBLE_SEEN ? sim.see(a, d).pos : d.pos; near = Math.min(near, Math.hypot(at.x - p.x, at.y - p.y)); }
         const score = Math.min(near, 6) - 0.15 * Math.hypot(p.x - a.pos.x, p.y - a.pos.y);
         if (score > bestScore) {
           bestScore = score;
@@ -698,7 +718,7 @@ export class RouteRunner implements Behavior {
       }
       this.drill = { at: sim.t + 0.5, spot: best };
     }
-    return goTo(a, this.drill.spot, { speed: 0.85, facing: angleTo(a.pos, qb.pos) });
+    return goTo(a, this.drill.spot, { speed: 0.85, facing: angleTo(a.pos, qbAt) });
   }
 
   /** RELEASE_THROUGH: the press release carried him wide of his stem. Stem points just ahead of him (under
@@ -863,6 +883,8 @@ export class RouteRunner implements Behavior {
         });
       }
       const candidates = RELEASE_SEEN ? this.tightAtSnap ?? [] : sim.defense;
+      // RELEASE_ZONE: past his route's first point, the release is done: his route takes over.
+      if (RELEASE_ZONE && (this.idx > 0 || (this.path[0] && a.pos.x - sim.los >= this.path[0].p.x - sim.los - 0.25))) return null;
       for (const d of candidates) {
         if (!RELEASE_SEEN) {
           const spot = sim.defAlign.spots[d.slot as keyof typeof sim.defAlign.spots];
@@ -958,7 +980,13 @@ export class TrackBall implements Behavior {
   }
 
   update(a: Agent, sim: PlaySim): MoveCommand {
-    if (sim.ball.kind !== 'air') return this.fallback.update(a, sim);
+    // TRACK_SEEN: under BALL_EST he tracks the flight he has seen until his own estimate has it down (its last sample past),
+    // not until the true ball stops flying: a receiver with his back turned does not know the tick the ball lands elsewhere.
+    if (TRACK_SEEN && BALL_EST && sim.ballEstimates) {
+      // His estimate has the ball down (its last sample is past): the flight is over as far as he knows.
+      const seen = sim.ballEstimates.estimate(a, sim);
+      if (seen.length && seen[seen.length - 1].t < sim.t) return this.fallback.update(a, sim);
+    } else if (sim.ball.kind !== 'air') return this.fallback.update(a, sim);
     // BALL_EST design 3: his own perception replaces the legacy reaction gate (in series with it, it delayed him
     // twice). He attends from the release; his head still has to come round at its own rate before he samples.
     if (!BALL_EST && sim.t < this.reactAt) return this.fallback.update(a, sim);
@@ -1018,7 +1046,7 @@ export class TrackBall implements Behavior {
     // Arrive on time, keep running through if the ball is leading him.
     const need = dist / dtArr;
     // BALL_EST: he faces where he believes the ball is, not where it is.
-    const facing = BALL_EST ? angleTo(a.pos, path[0]) : angleTo(a.pos, { x: sim.ball.flight.pos.x, y: sim.ball.flight.pos.y });
+    const facing = BALL_EST ? angleTo(a.pos, path[0]) : angleTo(a.pos, { x: (sim.ball as AirBall).flight.pos.x, y: (sim.ball as AirBall).flight.pos.y });
     if (dist < 0.5) return { vel: { x: a.vel.x * 0.5, y: a.vel.y * 0.5 }, facing };
     const run0 = runThrough(a, target, { speed: clamp(need / a.profile.vmax, 0.35, 1) });
     // TRUNK_TWIST: within 3 yd he turns his shoulders to the ball and keeps the gait on his path, so a receiver looking

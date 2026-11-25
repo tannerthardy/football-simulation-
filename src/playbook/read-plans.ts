@@ -19,10 +19,10 @@ export const SLANT_FLAT: QbReadPlan = {
   reads: [
     { step: 0, look: { kind: 'key', role: 'flat' },
       throws: [{ ref: 'S2', timing: 'onBreak' }, { ref: 'S1', timing: 'onBreak' }],
-      keyRules: [{ cue: 'widens', throwTo: 'S1' }, { cue: 'jumps', throwTo: 'S1' }, { cue: 'sinks', throwTo: 'S2' }, { cue: 'none', throwTo: 'S2' }] },
+      keyRules: [{ cue: 'widens', throwTo: 'S1' }, { cue: 'jumps', throwTo: 'S1' }, { cue: 'sinks', throwTo: 'S2' }, { cue: 'squats', throwTo: 'S2' }, { cue: 'none', throwTo: 'S2' }] },
     { step: 1, look: { kind: 'key', role: 'flat', side: 'W' },
       throws: [{ ref: 'W2', timing: 'onBreak' }, { ref: 'W1', timing: 'onBreak' }],
-      keyRules: [{ cue: 'widens', throwTo: 'W1' }, { cue: 'jumps', throwTo: 'W1' }, { cue: 'sinks', throwTo: 'W2' }, { cue: 'none', throwTo: 'W2' }] },
+      keyRules: [{ cue: 'widens', throwTo: 'W1' }, { cue: 'jumps', throwTo: 'W1' }, { cue: 'sinks', throwTo: 'W2' }, { cue: 'squats', throwTo: 'W2' }, { cue: 'none', throwTo: 'W2' }] },
   ],
   hot: [{ side: 'S', over: 1, answer: { ref: 'S1', timing: 'onBreak' } }, { side: 'W', over: 1, answer: { ref: 'W1', timing: 'onBreak' } }],
   // Taught: the back checks and releases (a CALL_COMPOSE setting, #903). Installed default: he blocks (CONCEPT_GAPS).
@@ -85,14 +85,14 @@ export const QUICK_OUTS: QbReadPlan = {
     { step: 0, look: { kind: 'key', role: 'corner' },
       throws: [{ ref: 'S1', timing: 'onBreak' }, { ref: 'S2', timing: 'onBreak' }],
       keyRules: [{ cue: 'bails', throwTo: 'S1' }, { cue: 'sinks', throwTo: 'S1' }, { cue: 'carries', throwTo: 'S1' },
-        { cue: 'squats', throwTo: 'S2' }, { cue: 'jumps', throwTo: 'S2' }, { cue: 'none', throwTo: 'S1' }] },
+        { cue: 'squats', throwTo: 'S2' }, { cue: 'jumps', throwTo: 'S2' }, { cue: 'widens', throwTo: 'S2' }, { cue: 'none', throwTo: 'S1' }] },
     // The apex second: the out is gone (or not judged open: the apex widening into its window is that throw's lane
     // defender), so #2's hitch inside him: "Apex widening into the window: move inside or backside" (the outside
     // reviewer's notes, docs/reviews/2026-11-24-qbv2-outside-audit.md §4). Only the hitch is thrown from this read, so
     // nothing the apex does, 'none' included, sends the ball to the out.
     { step: 0, look: { kind: 'key', role: 'flat' },
       throws: [{ ref: 'S2', timing: 'onBreak' }],
-      keyRules: [{ cue: 'widens', throwTo: 'S2' }, { cue: 'jumps', throwTo: 'S2' }, { cue: 'none', throwTo: 'S2' }] },
+      keyRules: [{ cue: 'widens', throwTo: 'S2' }, { cue: 'jumps', throwTo: 'S2' }, { cue: 'sinks', throwTo: 'S2' }, { cue: 'squats', throwTo: 'S2' }, { cue: 'none', throwTo: 'S2' }] },
     // "progression continuing on the weak side" (Kratzer): the backside quick out on the first hitch.
     { step: 1, look: { kind: 'receiver', ref: 'W1' }, throws: [{ ref: 'W1', timing: 'onBreak' }] },
   ],
@@ -114,11 +114,14 @@ export const DOUBLE_SLANTS: QbReadPlan = {
   reads: [
     // "Basically, he is reading the outside linebacker or the flat defender." "When the Y breaks his slant and the Sam
     // follows him, the QB knows that the Z is open." "If the Sam would have buzzed to the flat like a traditional cover
-    // 3 or cover 4, the QB would have thrown the inside slant." Progression: "Inside Slant, Outside Slant." A cue the
-    // source does not name (he sinks, or nobody is there) answers with that order.
+    // 3 or cover 4, the QB would have thrown the inside slant." Progression: "Inside Slant, Outside Slant."
     { step: 0, look: { kind: 'key', role: 'flat' },
       throws: [{ ref: 'S2', timing: 'onBreak' }, { ref: 'S1', timing: 'onBreak' }],
-      keyRules: [{ cue: 'carries', throwTo: 'S1' }, { cue: 'widens', throwTo: 'S2' }, { cue: 'jumps', throwTo: 'S2' }] },
+      keyRules: [{ cue: 'carries', throwTo: 'S1' }, { cue: 'widens', throwTo: 'S2' }, { cue: 'jumps', throwTo: 'S2' },
+        // He sits on the inside slant: the outside one behind him (Stanford Daily's rule for its key, "If he decides to
+        // cover the inside slant, then the quarterback will throw it to the receiver running an outside slant"). He sinks,
+        // or nobody is there: no source says; the progression's order, inside first ("Inside Slant, Outside Slant").
+        { cue: 'squats', throwTo: 'S1' }, { cue: 'sinks', throwTo: 'S2' }, { cue: 'none', throwTo: 'S2' }] },
   ],
   // GENERIC hot: the slants are the quick game's built-in hots (Brown, Grantland); the backside's short route on its side.
   hot: [{ side: 'S', over: 1, answer: { ref: 'S2', timing: 'onBreak' } }, { side: 'W', over: 1, answer: { ref: 'W2', timing: 'onBreak' } }],
@@ -142,7 +145,7 @@ export const CURL_FLAT: QbReadPlan = {
   reads: [
     { step: 0, look: { kind: 'key', role: 'flat' },
       throws: [{ ref: 'S2', timing: 'onBreak' }, { ref: 'S1', timing: 'seenOpen' }],
-      keyRules: [{ cue: 'widens', throwTo: 'S1' }, { cue: 'jumps', throwTo: 'S1' }, { cue: 'sinks', throwTo: 'S2' }, { cue: 'none', throwTo: 'S2' }] },
+      keyRules: [{ cue: 'widens', throwTo: 'S1' }, { cue: 'jumps', throwTo: 'S1' }, { cue: 'sinks', throwTo: 'S2' }, { cue: 'squats', throwTo: 'S2' }, { cue: 'none', throwTo: 'S2' }] },
   ],
   // The sit over the ball (#3) is the blitz throw in the five-step version ours runs (Heck, "Florida 4").
   hot: [{ side: 'either', over: 1, answer: { ref: 'S3', timing: 'onBreak' } }],
@@ -159,7 +162,9 @@ export const SMASH: QbReadPlan = {
   reads: [
     { step: 1, look: { kind: 'key', role: 'corner' },
       throws: [{ ref: 'S1', timing: 'onBreak' }, { ref: 'S2', timing: 'onBreak' }],
-      keyRules: [{ cue: 'sinks', throwTo: 'S1' }, { cue: 'bails', throwTo: 'S1' }, { cue: 'squats', throwTo: 'S2' }, { cue: 'jumps', throwTo: 'S2' }] },
+      // In between, or nobody over #1: "The QB should keep his eyes high and throw the hitch"; "do not force the smash" (Fisher).
+      keyRules: [{ cue: 'sinks', throwTo: 'S1' }, { cue: 'bails', throwTo: 'S1' }, { cue: 'squats', throwTo: 'S2' }, { cue: 'jumps', throwTo: 'S2' },
+        { cue: 'widens', throwTo: 'S1' }, { cue: 'none', throwTo: 'S1' }] },
   ],
   // GENERIC hot.
   hot: [{ side: 'S', over: 1, answer: { ref: 'S1', timing: 'onBreak' } }, { side: 'W', over: 1, answer: { ref: 'W1', timing: 'onBreak' } }],
@@ -177,7 +182,9 @@ export const DAGGER: QbReadPlan = {
   reads: [
     { step: 0, look: { kind: 'key', role: 'curl' },
       throws: [{ ref: 'S1', timing: 'onBreak' }, { ref: 'S3', timing: 'seenOpen' }],
-      keyRules: [{ cue: 'sinks', throwTo: 'S3' }, { cue: 'jumps', throwTo: 'S1' }, { cue: 'widens', throwTo: 'S1' }] },
+      // "As long as the alley/nickel defender doesn't get depth and an inside position ... a throwing window open for the dig": a sit, or nobody there, is the dig.
+      keyRules: [{ cue: 'sinks', throwTo: 'S3' }, { cue: 'jumps', throwTo: 'S1' }, { cue: 'widens', throwTo: 'S1' },
+        { cue: 'squats', throwTo: 'S1' }, { cue: 'none', throwTo: 'S1' }] },
   ],
   // GENERIC hot.
   hot: [{ side: 'S', over: 1, answer: { ref: 'S3', timing: 'onBreak' } }, { side: 'W', over: 1, answer: { ref: 'W2', timing: 'onBreak' } }],
@@ -213,7 +220,9 @@ export const Y_CROSS: QbReadPlan = {
     { step: 0, look: { kind: 'receiver', ref: 'W1' }, throws: [{ ref: 'W1', timing: 'onBreak' }] },
     { step: 1, look: { kind: 'key', role: 'hook' },
       throws: [{ ref: 'S2', timing: 'seenOpen' }, { ref: 'S3', timing: 'seenOpen' }],
-      keyRules: [{ cue: 'sinks', throwTo: 'S3' }, { cue: 'jumps', throwTo: 'S2' }, { cue: 'squats', throwTo: 'S2' }] },
+      // "If the Will LB fails to gain significant depth, the QB should look to hit the crosser": any cue but a sink, and nobody there, is the crosser.
+      keyRules: [{ cue: 'sinks', throwTo: 'S3' }, { cue: 'jumps', throwTo: 'S2' }, { cue: 'squats', throwTo: 'S2' },
+        { cue: 'widens', throwTo: 'S2' }, { cue: 'none', throwTo: 'S2' }] },
   ],
   // Front-side pressure: the flat (Kolste). The backside has none (the back stays in).
   hot: [{ side: 'S', over: 1, answer: { ref: 'S3', timing: 'onBreak' } }],
@@ -230,7 +239,9 @@ export const FLOOD: QbReadPlan = {
   reads: [
     { step: 0, look: { kind: 'key', role: 'curl' },
       throws: [{ ref: 'S3', timing: 'onBreak' }, { ref: 'S2', timing: 'onBreak' }],
-      keyRules: [{ cue: 'jumps', throwTo: 'S2' }, { cue: 'widens', throwTo: 'S2' }, { cue: 'sinks', throwTo: 'S3' }] },
+      // "the SS to shorten his drop ... so they can target the TE on the 7" (Bowen): a sit is the out; nobody in the flat: "The primary read, though, is the flat route. If it is open, hit it immediately" (Miller).
+      keyRules: [{ cue: 'jumps', throwTo: 'S2' }, { cue: 'widens', throwTo: 'S2' }, { cue: 'sinks', throwTo: 'S3' },
+        { cue: 'squats', throwTo: 'S2' }, { cue: 'none', throwTo: 'S3' }] },
     { step: 1, look: { kind: 'receiver', ref: 'W1' }, throws: [{ ref: 'W1', timing: 'onBreak' }, { ref: 'W2', timing: 'seenOpen' }] },
   ],
   // The flat is hot; the backside slant is hot vs a blitz from his side (Miller; the slant: taught setting).
@@ -253,7 +264,9 @@ export const LEVELS: QbReadPlan = {
     { step: 1, look: { kind: 'key', role: 'hook' },
       // Taught (setting): S1 the 5 yd in (low), S2 the square-in (high).
       throws: [{ ref: 'S1', timing: 'onBreak' }, { ref: 'S2', timing: 'onBreak' }],
-      keyRules: [{ cue: 'sinks', throwTo: 'S1' }, { cue: 'carries', throwTo: 'S1' }, { cue: 'jumps', throwTo: 'S2' }, { cue: 'squats', throwTo: 'S2' }] },
+      // He flows across to take one away: "the quarterback will drop it off to the runningback underneath" (Brown): move on. Nobody between the levels: short first ("read short-to-deep").
+      keyRules: [{ cue: 'sinks', throwTo: 'S1' }, { cue: 'carries', throwTo: 'S1' }, { cue: 'jumps', throwTo: 'S2' }, { cue: 'squats', throwTo: 'S2' },
+        { cue: 'none', throwTo: 'S1' }], moveOn: ['widens'] },
   ],
   // GENERIC hot.
   hot: [{ side: 'S', over: 1, answer: { ref: 'S1', timing: 'onBreak' } }, { side: 'W', over: 1, answer: { ref: 'W2', timing: 'onBreak' } }],
@@ -287,7 +300,9 @@ export const VERTS_HITCH: QbReadPlan = {
   reads: [
     { step: 0, look: { kind: 'key', role: 'mofSafety' },
       throws: [{ ref: 'S2', timing: 'onBreak' }, { ref: 'S3', timing: 'onBreak' }],
-      keyRules: [{ cue: 'widens', throwTo: 'S3' }, { cue: 'carries', throwTo: 'S3' }] },
+      // "he stays middle: #2 seam": sinking, sitting or driving down in the middle all leave the seam his; nobody there (two-high): the seam.
+      keyRules: [{ cue: 'widens', throwTo: 'S3' }, { cue: 'carries', throwTo: 'S3' },
+        { cue: 'sinks', throwTo: 'S2' }, { cue: 'squats', throwTo: 'S2' }, { cue: 'jumps', throwTo: 'S2' }, { cue: 'none', throwTo: 'S2' }] },
     { step: 1, look: { kind: 'receiver', ref: 'W2' }, throws: [{ ref: 'W2', timing: 'onBreak' }] },
   ],
   // GENERIC hot.
@@ -310,7 +325,9 @@ export const PA_POST_DIG: QbReadPlan = {
   reads: [
     { step: 1, look: { kind: 'key', role: 'mofSafety' },
       throws: [{ ref: 'S1', timing: 'onBreak' }, { ref: 'S2', timing: 'onBreak' }],
-      keyRules: [{ cue: 'jumps', throwTo: 'S1' }, { cue: 'squats', throwTo: 'S1' }, { cue: 'sinks', throwTo: 'S2' }, { cue: 'bails', throwTo: 'S2' }] },
+      // Nobody in the middle: the post ("the middle of the field is completely open"). Widening off the middle is not taught: move on.
+      keyRules: [{ cue: 'jumps', throwTo: 'S1' }, { cue: 'squats', throwTo: 'S1' }, { cue: 'sinks', throwTo: 'S2' }, { cue: 'bails', throwTo: 'S2' },
+        { cue: 'none', throwTo: 'S1' }], moveOn: ['widens'] },
     { step: 2, look: { kind: 'receiver', ref: 'W1' }, throws: [{ ref: 'W1', timing: 'seenOpen' }] },
   ],
   hot: [],
@@ -327,7 +344,9 @@ export const PA_SHOT: QbReadPlan = {
   reads: [
     { step: 1, look: { kind: 'key', role: 'mofSafety' },
       throws: [{ ref: 'S2', timing: 'onBreak' }, { ref: 'W2', timing: 'onBreak' }],
-      keyRules: [{ cue: 'jumps', throwTo: 'S2' }, { cue: 'squats', throwTo: 'S2' }, { cue: 'sinks', throwTo: 'W2' }, { cue: 'bails', throwTo: 'W2' }] },
+      // Nobody in the middle: the post (the read's own logic: the middle is open). Widening off the middle is not taught: move on.
+      keyRules: [{ cue: 'jumps', throwTo: 'S2' }, { cue: 'squats', throwTo: 'S2' }, { cue: 'sinks', throwTo: 'W2' }, { cue: 'bails', throwTo: 'W2' },
+        { cue: 'none', throwTo: 'S2' }], moveOn: ['widens'] },
     { step: 2, look: { kind: 'receiver', ref: 'W1' }, throws: [{ ref: 'W1', timing: 'seenOpen' }, { ref: 'S1', timing: 'seenOpen' }] },
   ],
   hot: [],
@@ -347,7 +366,9 @@ export const PA_FLOOD: QbReadPlan = {
     { step: 0, look: { kind: 'receiver', ref: 'S1' }, throws: [{ ref: 'S1', timing: 'onBreak' }] },
     { step: 1, look: { kind: 'key', role: 'curl' },
       throws: [{ ref: 'S2', timing: 'onBreak' }, { ref: 'S3', timing: 'seenOpen' }],
-      keyRules: [{ cue: 'jumps', throwTo: 'S2' }, { cue: 'widens', throwTo: 'S2' }, { cue: 'sinks', throwTo: 'S3' }] },
+      // He sits low (shortens his drop): the sail over him; nobody in the flat: the flat (Bowen; Miller's flat first).
+      keyRules: [{ cue: 'jumps', throwTo: 'S2' }, { cue: 'widens', throwTo: 'S2' }, { cue: 'sinks', throwTo: 'S3' },
+        { cue: 'squats', throwTo: 'S2' }, { cue: 'none', throwTo: 'S3' }] },
     { step: 2, look: { kind: 'receiver', ref: 'W1' }, throws: [{ ref: 'W1', timing: 'seenOpen' }] },
   ],
   // The flat is the hot against one-man pressure (Coaches Insider, screens and play action).
@@ -406,7 +427,7 @@ export const FADE_FLAT: QbReadPlan = {
     { step: 0, look: { kind: 'key', role: 'flat' },
       throws: [{ ref: 'S2', timing: 'onBreak' }, { ref: 'S1', timing: 'seenOpen' }],
       keyRules: [{ cue: 'sinks', throwTo: 'S2' }, { cue: 'carries', throwTo: 'S2' }, { cue: 'squats', throwTo: 'S1' }, { cue: 'jumps', throwTo: 'S1' },
-        { cue: 'none', throwTo: 'S2' }] },
+        { cue: 'widens', throwTo: 'S1' }, { cue: 'none', throwTo: 'S2' }] },
     { step: 1, look: { kind: 'receiver', ref: 'S3' }, throws: [{ ref: 'S3', timing: 'seenOpen' }] },
     { step: 1, look: { kind: 'receiver', ref: 'W1' }, throws: [{ ref: 'W1', timing: 'seenOpen' }] },
   ],

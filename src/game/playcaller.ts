@@ -19,14 +19,16 @@ import { overallAt, ROLE_BY_ID, roleSuitability } from '../players/roles.js';
 import { r01, type Player } from '../players/types.js';
 import type { ManPreference } from '../playbook/alignment.js';
 import { coverageHasNamedZonePlayers, pressureIsInstallable } from '../playbook/call-integrity.js';
-import { PASS_CONCEPTS, RPO_CONCEPTS, RUN_BY_ID, RUN_CONCEPTS, SCREEN_BY_ID } from '../playbook/concepts.js';
+import { CALL_COMPOSE, PASS_CONCEPTS, RPO_CONCEPTS, RUN_BY_ID, RUN_CONCEPTS, SCREEN_BY_ID } from '../playbook/concepts.js';
+import { baseWeight, drawSetting, variantOf } from '../playbook/calls/axes.js';
+import { callEligibility } from './call-eligibility.js';
 import { COVERAGE_BY_ID, FRONTS, MENU_FRONTS, NICKEL_FRONT_IDS, PRESSURES } from '../playbook/defense.js';
 import { FORMATION_BY_ID, FORMATIONS } from '../playbook/formations.js';
 import type { Coverage, DefPersonnelId, DefSlot, DefensivePlayCall, Formation, MotionCall, OffensivePlayCall, OffSlot, PassConcept, PersonnelId, ReceiverRef, RunConcept, SkillSlot, ZoneStyle } from '../playbook/types.js';
 import { DEF_PERSONNEL, OFF_PERSONNEL } from '../playbook/types.js';
 import { alignStyle, pickOffense, type CoverageSystem, type Team } from '../league/team.js';
 import { motionEnabled } from '../sim/motion.js';
-import { CALL_MIX, callMixWeight } from './call-mix.js';
+import { CALL_MIX, CALL_MIX_TILT, callMixWeight, COMPOSE_NORM } from './call-mix.js';
 import { asBackThree, backIsThree, CONCEPT_FIT, conceptFits, fieldRefs } from './concept-fit.js';
 import { derivePhysical } from '../players/physical.js';
 
@@ -460,6 +462,10 @@ export class OffensiveCoordinator {
       // CONCEPT_FIT: only the concepts whose read's receivers are on the field after the called motion.
       const fields = CONCEPT_FIT ? this.conceptFields(s, formation, flip, motion) : undefined;
       let concept = this.choosePass(s, formation, defense, fields && new Set(PASS_CONCEPTS.filter((c) => conceptFits(c, fields.get(c.id)!)).map((c) => c.id)));
+      // CALL_COMPOSE: the call's open axes (the half's version, the backside half, the back's job, tags), by NFL share,
+      // on their own stream (src/playbook/calls/axes.ts).
+      if (CALL_COMPOSE) concept = variantOf(concept, drawSetting(concept.id, this.rng.fork(`call-axes:${this.axisCalls++}`)),
+        callEligibility(formation, flip, s.ballY, motion, { los: 10 + s.yardline, ctx: {}, bodies: {} }));
       // PA_CALL: play action as a tag on the call, at the NFL's rate for this situation and alignment.
       if (PA_CALL) concept = this.playActionTag(concept, s, formation);
       // BACK_AS_THREE: from a field with no #3, the back is #3 to the flat.
@@ -564,6 +570,8 @@ export class OffensiveCoordinator {
   }
   private paTags = 0;
   private screenCalls = 0;
+  /** CALL_COMPOSE: draws of a call's open axes, each on its own forked stream. */
+  private axisCalls = 0;
 
   /** CONCEPT_FIT: each pool concept's field at the snap, after the called motion, aligned as the play aligns it (its
    * routes set the receivers' room), with this team's bodies. */
@@ -585,12 +593,15 @@ export class OffensiveCoordinator {
     const weights: Array<[PassConcept, number]> = [];
     const offered = fitting ? PASS_CONCEPTS.filter((c) => fitting.has(c.id)) : PASS_CONCEPTS;
     for (const c of offered.length ? offered : PASS_CONCEPTS) {
-      let w = 1;
-      if (c.family === 'quick') w *= thirdShort ? 2.2 : longYd ? 0.6 : 1.1;
-      if (c.family === 'dropback') w *= longYd ? 1.6 : 1;
+      // CALL_COMPOSE: the composition's NFL share (relative to the pool's mean) in place of an even 1 per concept.
+      let w = CALL_COMPOSE ? baseWeight(c.id) : 1;
+      // CALL_COMPOSE: each situation and talent term divided by its mean (call-mix.ts COMPOSE_NORM), so it moves calls
+      // between situations without raising its family's total over the NFL share the base weight already holds.
+      if (c.family === 'quick') w *= (thirdShort ? 2.2 : longYd ? 0.6 : 1.1) / (CALL_COMPOSE ? COMPOSE_NORM.quick : 1);
+      if (c.family === 'dropback') w *= (longYd ? 1.6 : 1) / (CALL_COMPOSE ? COMPOSE_NORM.dropback : 1);
       if (c.family === 'playaction') w *= earlyDown && !s.hurry ? (underCenter ? 2.2 : 1.1) : 0.15;
-      if (c.id === 'four_verts' || c.id === 'pa_shot') w *= 0.5 + arm;
-      if (c.id === 'comebacks' && s.hurry) w *= 2;
+      if (c.id === 'four_verts' || c.id === 'pa_shot') w *= (0.5 + arm) / (CALL_COMPOSE ? COMPOSE_NORM.arm : 1);
+      if (c.id === 'comebacks') w *= (s.hurry ? 2 : 1) / (CALL_COMPOSE ? COMPOSE_NORM.hurry : 1);
       // Feature our best players: weight by the first read's talent.
       const first = c.progression[0];
       const slot = firstReadSlot(f, first);
@@ -601,7 +612,8 @@ export class OffensiveCoordinator {
       }
       w *= this.learned(`pass:${c.family}:${c.id}`);
       // CALL_MIX: the route classes this down and distance calls for (src/game/call-mix.ts).
-      if (CALL_MIX) w *= callMixWeight(c, s.down, s.distance);
+      // Under CALL_COMPOSE only its situational tilt: the base weight is already the NFL share (call-mix.ts CALL_MIX_TILT).
+      if (CALL_MIX) w *= callMixWeight(c, s.down, s.distance, CALL_COMPOSE ? CALL_MIX_TILT : undefined);
       weights.push([c, w]);
     }
     void defense;
