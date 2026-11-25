@@ -30,6 +30,7 @@
  * a loaded box, or check to a run against a light two-high box. Box counts
  * are as noisy as the rest of his picture.
  */
+import { isDbSlot } from './qbv2/roles.js'; // QB_CANON_SEEN: one defensive-back rule with QB_V2 (the visible package's CB / S slots)
 import { angleDiff, clamp, logistic, type Vec2 } from '../core/vec.js';
 import type { ReceiverPicture } from './receiver-forecast.js';
 import type { RouteKeyPicture } from './route-read.js';
@@ -222,6 +223,10 @@ type Features = number[];
 const PRE_SIGMA = [0.3, 0.25, 0.3, 0.13, 0.35, 0.7];
 const POST_SIG_SIGMA = [0.6, 0.3, 0.18];
 
+/** His estimate of an unseen defender (QBMind.estimate): dead reckoning from the sighting up to this horizon (s), and a
+ * blend toward his belief of the man's job (the expected spot) from EST_BLEND_START over EST_BLEND_SPAN (s). */
+export const EST_DR_HORIZON = 0.5, EST_BLEND_START = 0.2, EST_BLEND_SPAN = 1.0;
+
 export class QBMind {
   /** Coverage recognition 0–1 (play recognition + experience). */
   readonly rec: number;
@@ -407,7 +412,7 @@ export class QBMind {
     }
     depths.sort((a, b) => b.d - a.d);
     const width = depths.length >= 2 ? Math.abs(depths[0].y - depths[1].y) / 10 : 0;
-    const cbs = QB_CANON_SEEN ? cornersSeen([...pos].map(([slot, p]) => ({ p, db: isDbSeen(sim.defCall.personnel, slot) })), los, by) : ['CB_S', 'CB_W'].map((s) => pos.get(s as DefSlot)).filter((p): p is Vec2 => !!p);
+    const cbs = QB_CANON_SEEN ? cornersSeen([...pos].map(([slot, p]) => ({ p, db: isDbSlot(sim.defCall.personnel, slot) })), los, by) : ['CB_S', 'CB_W'].map((s) => pos.get(s as DefSlot)).filter((p): p is Vec2 => !!p);
     const cbDepth = cbs.length ? cbs.reduce((s, p) => s + (p.x - los), 0) / cbs.length / 7 : 0.8;
     let press = 0;
     for (const o of sim.offense) {
@@ -585,6 +590,28 @@ export class QBMind {
     return Math.hypot(m.sigP ?? 0, (m.sigV ?? 0) * age);
   }
 
+  /** QB_V2 (card spec §1, Integration 2026-11-25): how long he has had no new observation of a defender (s): the time
+   * since his last sighting, clear or peripheral, without the sensing delay (a man he watches is 0). 0 with no memory. */
+  unseenFor(d: Agent): number {
+    const m = this.memory.get(d);
+    return m ? Math.max(0, this.sim.t - m.t) : 0;
+  }
+
+  /** QB_V2 (card spec §1, Integration's ruling 2026-11-25): how far his estimate of a defender has moved from the
+   * sighting to his belief of the man's job (the expected spot): the estimate's own blend weight, 0-1. 0 with no memory. */
+  jobWeight(d: Agent): number {
+    const m = this.memory.get(d);
+    return m ? clamp((this.sim.t - m.t - EST_BLEND_START) / EST_BLEND_SPAN, 0, 1) : 0;
+  }
+
+  /** QB_V2: his uncertainty about a defender from the look itself (yd): the look's position error and its velocity error
+   * over the sensing delay only, not grown with unseen time (that is the judge's one-way advance). 0 without the flag. */
+  seenSpread(d: Agent): number {
+    const m = this.memory.get(d);
+    if (!PERIPH_ACUITY || !m) return 0;
+    return Math.hypot(m.sigP ?? 0, (m.sigV ?? 0) * (m.latency ?? 0));
+  }
+
   /** Age of his picture of a defender: memory age plus its sensing latency.
    * Zero when he has no memory of him (the estimate is then a fresh look). */
   pictureAge(d: Agent): number {
@@ -599,10 +626,10 @@ export class QBMind {
     if (!m) return sim.see(this.qb, d);
     const age = sim.t - m.t;
     if (age < 0.12) return this.recordEstimate(d, { pos: m.pos, vel: m.vel, facing: m.facing }, age);
-    const k = Math.min(age, 0.5);
+    const k = Math.min(age, EST_DR_HORIZON);
     const dr = { x: m.pos.x + m.vel.x * k, y: m.pos.y + m.vel.y * k };
     const exp = this.expectedPos(d);
-    const w = clamp((age - 0.2) / 1.0, 0, 1);
+    const w = clamp((age - EST_BLEND_START) / EST_BLEND_SPAN, 0, 1);
     return this.recordEstimate(d, {
       pos: { x: dr.x + (exp.x - dr.x) * w, y: dr.y + (exp.y - dr.y) * w },
       vel: { x: m.vel.x * (1 - w), y: m.vel.y * (1 - w) },
@@ -801,7 +828,7 @@ export class QBMind {
     if (QB_SCAN || QB_CANON_SEEN) {
       // QB_SCAN / QB_CANON_SEEN: the corners where his scan shows them (by where they stand, not their labels).
       const seenPos = sim.defense.map((d) => QB_SCAN ? this.scanned(d) : this.standing(d));
-      const cbs = QB_CANON_SEEN ? cornersSeen(seenPos.map((p, i) => ({ p, db: isDbSeen(sim.defCall.personnel, sim.defense[i].slot) })), sim.los, sim.ballY)
+      const cbs = QB_CANON_SEEN ? cornersSeen(seenPos.map((p, i) => ({ p, db: isDbSlot(sim.defCall.personnel, sim.defense[i].slot) })), sim.los, sim.ballY)
         : sim.defense.filter((d) => d.slot === 'CB_S' || d.slot === 'CB_W').map((d) => QB_SCAN ? this.scanned(d) : this.standing(d));
       depth = cbs.length ? cbs.reduce((s, p) => s + p.x - sim.los, 0) / cbs.length : 6;
     } else {
@@ -829,11 +856,6 @@ export function cornersSeen(pts: Array<{ p: Vec2; db: boolean }>, los: number, b
   return out;
 }
 
-/** QB_CANON_SEEN: a defensive back by the personnel he sees (CB / S slots of the visible package). */
-function isDbSeen(personnel: DefPersonnelId, slot: string): boolean {
-  const g = DEF_PERSONNEL[personnel]?.[slot as DefSlot];
-  return g === 'CB' || g === 'S';
-}
 
 function normalize(logp: Record<string, number>): Record<string, number> {
   const m = Math.max(...Object.values(logp));

@@ -158,14 +158,24 @@ fade against press. Neither is authored: neither is a route ours runs from this 
 
 ## Quick outs (`quick_outs`)
 
-**Read: a pick of side by the corners' cushion, then a key on that side's flat defender at the plant.**
-Revised 2026-11-24, on the QB lane's and Integration's request: his eyes go to the flat defender in the drop, so the
-picture judged at the plant is fresh.
-- Sinks, carries or bails: #1's out on its break.
-- Squats, jumps or widens: #2's hitch.
+**Read: a pick of side by the corners' cushion, then the corner over #1, then the apex, at the plant.**
+Revised 2026-11-25 (Integration and the QB lane's corrected scorecard): keyed on the apex, V2 threw the out into a
+squatting Cover 2 corner on 21 of 30, because the apex had dropped inside and "no flat defender" read as "throw the
+out". The corner over #1 is the first check in every coverage:
+- Corner off, sinking, carrying or bailing: #1's out on its break. Nobody over or outside #1 when he looks (`none`):
+  the out is uncovered.
+- Corner tight, squatting or jumping: not the out. "If the corner is off, we take the speed out. If the corner is hard
+  and has safety help ... that side of the field is closed" (Shaw); "Pre-snap, the QB will read the corners. If a soft
+  corner to the quick side, go to quick out" (Kratzer); "Corner tight or squatting, or a trap corner: do not throw it"
+  (the outside reviewer's notes, docs/reviews/2026-11-24-qbv2-outside-audit.md §4).
+- Then the apex, with only #2's hitch thrown from that read: "Apex widening into the window: move inside or backside"
+  (same notes). An apex widening into the out's window when the corner has bailed is the out's lane defender, judged on
+  that throw; the out not judged open moves his eyes to the apex read. Nothing the apex does, `none` included, throws
+  the out.
 - First hitch: the backside #1.
-- Sources for the key: "the apex (flat) defender: he widens to the out: #1 hitch inside him; he sits on the hitch: #2
-  out" (hitch_out's read line); the flat defender "sinks under the curl… hit the speed out" (Gridiron Strategies).
+- Earlier revision (2026-11-24): the apex as the only key ("the apex (flat) defender: he widens to the out: #1 hitch
+  inside him; he sits on the hitch: #2 out", hitch_out's read line; "sinks under the curl ... hit the speed out",
+  Gridiron Strategies).
 - Before the revision, the plan was a structure read: #1, then #2.
 - "Pre-snap, the QB will read the corners. If a soft corner to the quick side, go to quick out to X with progression
   continuing on the weak side ... If both corners are pressing, you have a mismatch and can go to a fade adjustment"
@@ -187,14 +197,70 @@ concept owner: a back release would restore the taught outlet.
 (Kratzer); the speed out at 4-6 yd (Shaw).
 
 **Expected by coverage family:**
-- Cover 3 and Cover 4: the key (index 0) gives #1's quick out. "It works best when you have soft corners in cover 3
-  or cover 4" (Kratzer).
-- Cover 2: the key (index 0) gives #2's hitch. The squatting corner takes the out (Win With The Pass, Cover 2
-  beaters).
+- Cover 3 and Cover 4: the corner read (index 0) gives #1's quick out. "It works best when you have soft corners in
+  cover 3 or cover 4" (Kratzer).
+- Cover 2 and Tampa 2: the corner squats, so the apex read (index 1) gives #2's hitch. The squatting corner takes the
+  out (Win With The Pass, Cover 2 beaters).
 
 **Pick (the flip):** `cushion`, the softer corner.
 
 **Variants:** #1 fade with an inside quick out (Win With The Pass, "Brown"); fade conversion against press.
+
+## Double slants (`double_slants`)
+
+Added 2026-11-25 (Integration). Each quote was re-fetched and matched verbatim on 2026-11-25.
+
+**Read: a key on the flat defender, on the bounce step; inside slant, then outside.**
+- "Basically, he is reading the outside linebacker or the flat defender." "He is simply reading the Sam Backer."
+  Progression: "Inside Slant, Outside Slant." (Win With The Pass, "RED - All Slant", Streelman.)
+- He follows #2's slant (`carries`): #1's slant behind him. "When the Y breaks his slant and the Sam follows him, the
+  QB knows that the Z is open."
+- He buzzes to the flat (`widens`, `jumps`): #2's slant. "If the Sam would have buzzed to the flat like a traditional
+  cover 3 or cover 4, the QB would have thrown the inside slant."
+- Any cue the source does not name (he sinks, or nobody is there) answers with the progression's order, inside first.
+  `none` is not authored: no source says what an empty flat means here.
+
+**Key: a choice between two sources.** Stanford Daily keys the Mike instead: "The quarterback will then read the mike
+linebacker (linebacker aligned to the strong side) to see which receiver he covers. If he decides to cover the inside
+slant, then the quarterback will throw it to the receiver running an outside slant." "Instead, if the mike drops to
+cover the outside slant, the inside slant will be open." The standard here is the flat defender. That matches the quick
+game's other keys (slant-flat, stick, quick outs), and the role resolver already finds him. The Mike key is recorded
+as a later scheme option.
+
+**Drop:** "RED is a 0 step route." "He doesn't get depth. He simply squares his shoulders and feet, takes a quick bounce
+step, and delivers the ball." Ours: `quick`.
+
+**Taught routes and ours:** "a slot receiver will run a "skinny" slant while an outside receiver will run a regular
+slant route" (Stanford Daily). Neither source has a third route in the read. Ours adds #3 to the flat, and the install
+calls it only with a #3. The plan reads only #1 and #2, so it fits both. Calling it from 2x2 without a #3 is a
+concept and formation question, not a read one.
+
+**Hot:** GENERIC (the inside slant on its side; the backside's short route). **Checkdown:** none taught. Ours blocks the
+back; a composed call that releases him gets him (`planFor`).
+
+**Expected:** the key (index 0) in Cover 1, Cover 2, 2-man, Cover 3 and Cover 4. "tries to expose Cover 2 zone and man
+coverages" (Stanford Daily). The read itself names Cover 3 and Cover 4's flat defender (Win With The Pass).
+
+## Quick-game gaps: hitch-out, seam-slant, double outs, trips outs (2026-11-25)
+
+Not authored. Integration's rule: an invented read would score as "taught" on the decision scorecard, so its failures
+could not be told from the passer's. Searched on 2026-11-25 (WebSearch, then fetch):
+- **Pages opened:** Gridiron Strategies' quick passing game (Owl and Hank); the USA Football blog on teaching Hank;
+  Win With The Pass's Cover 2 beaters; Glazier's vertical-hitch concept.
+- **Pages that would not load:** smartfootball.com (403), X&O Labs (403), two SlideShare quick-passing decks, and the
+  USA Football "Speed Cut" blog (timed out).
+- **Not tried:** the CoachTube "Trips Double Outs" lesson (paid) and the Coverdale Quicks document (Scribd).
+
+| concept | what was found | why it is not authored |
+|---|---|---|
+| hitch-out (#1 hitch, #2 quick out) | Gridiron Strategies treats quick out and hitch as separate pre-snap choices ("If a soft corner to the quick side, go to quick out"); Hank's curl/flat rule is a five-step concept with a 12-yd hook. | no primary source keys this pair |
+| seam-slant (#1 go, #2 slant, #3 hitch) | only the vertical-hitch concept (hitches outside, slot seams), which runs other routes | no source |
+| double outs (#1 out at 10, #2 quick out) | "one of the two quick outs will be open" (Win With The Pass, Trips Double Brown): two quick outs, no key | no key or reaction taught |
+| trips outs (#1 go, #2 out, #3 quick out) | the same Win With The Pass line | no key or reaction taught |
+
+The outside reviewer's second read (docs/reviews/2026-11-25-qbv2-second-read.md §3) gives reads for all four, from
+tertiary sources. None was re-opened to a primary source here. They are the place to start if a primary source is
+found, for example the CoachTube or Coverdale material.
 
 ## Fade-flat (`fade_flat`)
 
@@ -253,6 +319,55 @@ one" (Texans).
 **Release:** "win with an outside release in press-man, to stack on top of the defensive back" (Bowen). Keep "3 to 5
 yards between him and the sideline" (Marinelli). AFQ says reduce splits for room, while Bowen notes a plus split
 leaves only the fade or the comeback from an outside release.
+
+## Composed plans (`planFor`; CALL_COMPOSE step 3 for the quick game, 2026-11-25)
+
+A call is composed from a frontside half, a backside half and the back's job, each drawn by NFL share. The plans above
+were each authored on one whole-field version, so with CALL_COMPOSE on they fit only their own draw: quick_outs 17%,
+slant_flat 16%, stick 4% of their calls (4,000 draws). `planFor(call)` composes the plan the way the call is composed:
+- **The frontside is the authored plan's:** its reads, key rules, frontside hot and alert, unchanged. The call must run
+  the routes they use, or it takes no plan.
+- **The backside:** the authored backside when the call's backside is the authored one (then, with the authored back,
+  the authored plan itself). Otherwise one reset on the authored reset's step where one is taught for that half, and after it the checkdown.
+  Reads are tied to the feet, and a late arrival on a timing route is a throw into a closing window. The second source
+  is the outside reviewer's second read, docs/reviews/2026-11-25-qbv2-second-read.md §2; its sources are partly
+  tertiary, so each entry below is that table checked against ours.
+
+  | backside half | on the reset |
+  |---|---|
+  | curl-flat | reset: key the flat defender, the curl if he widens, the flat if he sits ("its depth fits a later clock") |
+  | hitches, speed out-hitch, slant-hitch, go-hitch, go-hook | reset: #2's settle ("An interior settle (spacing) can be a reset") |
+  | slant-flat | the flat only ("The slant window closes with each hitch; late, take the flat or the checkdown") |
+  | double slants, slant-go, slant-stick, an outside quick hitch, a quick out, a stick, fade-flat, a go or seam pair, every other half | none: no taught reset was found for the half as a backside (the second read found none either, and warns against several), so the play goes to the checkdown |
+
+  The W hot is still that half's first quick route (Hewitt's replacement rule): the hot is thrown on the blitz, not
+  late.
+- **The back:** a checkdown only when the call releases him, on the route the call gave him, seen open.
+- **The side pick** (cushion) holds only on the authored backside: otherwise there is no mirror half, and the concept
+  is run to its called side.
+
+Fit with `planFor`, same 4,000 draws (#903 head; the frontside matched on every draw):
+
+| plan | whole-field fit | planFor | identical to the authored plan | no reset (the checkdown) | back in, no checkdown |
+|---|---|---|---|---|---|
+| quick_outs | 17.1% | 100% | 38.9% | 0% | 32.2% |
+| slant_flat | 15.9% | 100% | 19.8% | 46.3% | 14.7% |
+| stick | 3.6% | 100% | 3.8% | 15.0% | 0% |
+| hitches | 44.3% | 100% | 49.1% | 0% | 21.0% |
+| fade_flat | 7.0% | 100% | 0% | 75.5% | 5.5% |
+| curl_flat | 83.7% | 100% | 23.4% | 0% | 6.5% |
+
+**Disputed resets, kept (Integration, 2026-11-25).** A reset that a primary source teaches stays; the second read's
+"don't" rows rest on tertiary sources and do not overrule one. A plan lists where his eyes may go; whether the late
+throw is there is the passer's judgment of the corner, not the plan's to forbid. A late out thrown into a driving
+corner is a judgment fault to be seen, not hidden.
+- quick_outs → the backside quick out: "progression continuing on the weak side" (Kratzer). The second read: do not
+  reset to a quick out.
+- stick → the backside slant, then its stick: "If there was any hesitation for the quarterback on the stick side he
+  would shuffle back and work the backside" (Ross, on Leach). The second read: a late slant closes, and the stick is
+  never come back to.
+- slant_flat → the backside slant-flat's key: reset "to the backside's slant-flat" (Klatt). The second read: late, the
+  flat or the checkdown.
 
 ## The schema additions (agreed with the QB lane)
 
