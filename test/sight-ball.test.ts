@@ -45,7 +45,7 @@ describe('SIGHT_BALL: one definition of sight of the ball', () => {
         const b = sim.ball.flight.pos;
         for (const a of sim.defense) {
           if (!sim.ballEstimates.samplesOf(a)) continue;
-          const h = a.head ?? a.facing, brg = Math.atan2(b.y - a.pos.y, b.x - a.pos.x);
+          const h = sim.ballEstimates.headOf(a) ?? a.head ?? a.facing, brg = Math.atan2(b.y - a.pos.y, b.x - a.pos.x);
           if (Math.abs(Math.atan2(Math.sin(brg - h), Math.cos(brg - h))) < Math.PI / 2) continue;
           away++; if (sim.ballEstimates.hasEstimate(a, sim)) readyAway++; if (sim.ballEstimates.seesBall(a, sim)) seesAway++;
         }
