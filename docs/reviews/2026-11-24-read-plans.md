@@ -206,6 +206,62 @@ concept owner: a back release would restore the taught outlet.
 
 **Variants:** #1 fade with an inside quick out (Win With The Pass, "Brown"); fade conversion against press.
 
+## Double slants (`double_slants`)
+
+Added 2026-11-25 (Integration). Each quote was re-fetched and matched verbatim on 2026-11-25.
+
+**Read: a key on the flat defender, on the bounce step; inside slant, then outside.**
+- "Basically, he is reading the outside linebacker or the flat defender." "He is simply reading the Sam Backer."
+  Progression: "Inside Slant, Outside Slant." (Win With The Pass, "RED - All Slant", Streelman.)
+- He follows #2's slant (`carries`): #1's slant behind him. "When the Y breaks his slant and the Sam follows him, the
+  QB knows that the Z is open."
+- He buzzes to the flat (`widens`, `jumps`): #2's slant. "If the Sam would have buzzed to the flat like a traditional
+  cover 3 or cover 4, the QB would have thrown the inside slant."
+- Any cue the source does not name (he sinks, or nobody is there) answers with the progression's order, inside first.
+  `none` is not authored: no source says what an empty flat means here.
+
+**Key: a choice between two sources.** Stanford Daily keys the Mike instead: "The quarterback will then read the mike
+linebacker (linebacker aligned to the strong side) to see which receiver he covers. If he decides to cover the inside
+slant, then the quarterback will throw it to the receiver running an outside slant." "Instead, if the mike drops to
+cover the outside slant, the inside slant will be open." The standard here is the flat defender. That matches the quick
+game's other keys (slant-flat, stick, quick outs), and the role resolver already finds him. The Mike key is recorded
+as a later scheme option.
+
+**Drop:** "RED is a 0 step route." "He doesn't get depth. He simply squares his shoulders and feet, takes a quick bounce
+step, and delivers the ball." Ours: `quick`.
+
+**Taught routes and ours:** "a slot receiver will run a "skinny" slant while an outside receiver will run a regular
+slant route" (Stanford Daily). Neither source has a third route in the read. Ours adds #3 to the flat, and the install
+calls it only with a #3. The plan reads only #1 and #2, so it fits both. Calling it from 2x2 without a #3 is a
+concept and formation question, not a read one.
+
+**Hot:** GENERIC (the inside slant on its side; the backside's short route). **Checkdown:** none taught. Ours blocks the
+back; a composed call that releases him gets him (`planFor`).
+
+**Expected:** the key (index 0) in Cover 1, Cover 2, 2-man, Cover 3 and Cover 4. "tries to expose Cover 2 zone and man
+coverages" (Stanford Daily). The read itself names Cover 3 and Cover 4's flat defender (Win With The Pass).
+
+## Quick-game gaps: hitch-out, seam-slant, double outs, trips outs (2026-11-25)
+
+Not authored. Integration's rule: an invented read would score as "taught" on the decision scorecard, so its failures
+could not be told from the passer's. Searched on 2026-11-25 (WebSearch, then fetch):
+- **Pages opened:** Gridiron Strategies' quick passing game (Owl and Hank); the USA Football blog on teaching Hank;
+  Win With The Pass's Cover 2 beaters; Glazier's vertical-hitch concept.
+- **Pages that would not load:** smartfootball.com (403), X&O Labs (403), two SlideShare quick-passing decks, and the
+  USA Football "Speed Cut" blog (timed out).
+- **Not tried:** the CoachTube "Trips Double Outs" lesson (paid) and the Coverdale Quicks document (Scribd).
+
+| concept | what was found | why it is not authored |
+|---|---|---|
+| hitch-out (#1 hitch, #2 quick out) | Gridiron Strategies treats quick out and hitch as separate pre-snap choices ("If a soft corner to the quick side, go to quick out"); Hank's curl/flat rule is a five-step concept with a 12-yd hook. | no primary source keys this pair |
+| seam-slant (#1 go, #2 slant, #3 hitch) | only the vertical-hitch concept (hitches outside, slot seams), which runs other routes | no source |
+| double outs (#1 out at 10, #2 quick out) | "one of the two quick outs will be open" (Win With The Pass, Trips Double Brown): two quick outs, no key | no key or reaction taught |
+| trips outs (#1 go, #2 out, #3 quick out) | the same Win With The Pass line | no key or reaction taught |
+
+The outside reviewer's second read (docs/reviews/2026-11-25-qbv2-second-read.md §3) gives reads for all four, from
+tertiary sources. None was re-opened to a primary source here. They are the place to start if a primary source is
+found, for example the CoachTube or Coverdale material.
+
 ## Fade-flat (`fade_flat`)
 
 Sources: 90 quotes, each checked verbatim against its saved page (scratchpad pages7, quotes7.tsv; 0 misses).

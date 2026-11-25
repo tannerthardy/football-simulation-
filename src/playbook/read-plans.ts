@@ -104,6 +104,33 @@ export const QUICK_OUTS: QbReadPlan = {
   source: 'docs/reviews/2026-11-24-read-plans.md#quick-outs-quick_outs (Kratzer; Shaw; The QB Stable; Win With The Pass Cover 2 beaters; Brown, Grantland; Gridiron Strategies curl/speed out). Outlet: the back\'s shoot.',
 };
 
+/** Double slants: key the flat defender (the Sam) on the bounce step; inside slant, then outside: he follows #2's slant,
+ * #1's behind him; he buzzes to the flat, #2's. (Win With The Pass, "RED - All Slant"; the Mike-key version, Stanford
+ * Daily, is a later scheme option.) */
+export const DOUBLE_SLANTS: QbReadPlan = {
+  // Taught as two slants, the slot's skinny slant inside the outside receiver's (Stanford Daily); no third route is part
+  // of the read. Ours adds #3 to the flat (the install's needs S3): the plan does not read him.
+  conceptId: 'double_slants', drop: 'quick', readType: 'key',
+  reads: [
+    // "Basically, he is reading the outside linebacker or the flat defender." "When the Y breaks his slant and the Sam
+    // follows him, the QB knows that the Z is open." "If the Sam would have buzzed to the flat like a traditional cover
+    // 3 or cover 4, the QB would have thrown the inside slant." Progression: "Inside Slant, Outside Slant." A cue the
+    // source does not name (he sinks, or nobody is there) answers with that order.
+    { step: 0, look: { kind: 'key', role: 'flat' },
+      throws: [{ ref: 'S2', timing: 'onBreak' }, { ref: 'S1', timing: 'onBreak' }],
+      keyRules: [{ cue: 'carries', throwTo: 'S1' }, { cue: 'widens', throwTo: 'S2' }, { cue: 'jumps', throwTo: 'S2' }] },
+  ],
+  // GENERIC hot: the slants are the quick game's built-in hots (Brown, Grantland); the backside's short route on its side.
+  hot: [{ side: 'S', over: 1, answer: { ref: 'S2', timing: 'onBreak' } }, { side: 'W', over: 1, answer: { ref: 'W2', timing: 'onBreak' } }],
+  // No checkdown is taught; ours blocks the back. A composed call that releases him gets one (planFor).
+  checkdown: null,
+  confirm: null,
+  // "tries to expose Cover 2 zone and man coverages" (Stanford Daily); the read names Cover 3 and Cover 4's flat
+  // defender (Win With The Pass).
+  expected: { cover1: 0, cover2: 0, cover2man: 0, cover3: 0, cover4: 0 },
+  source: 'docs/reviews/2026-11-24-read-plans.md#double-slants-double_slants (Win With The Pass, RED - All Slant; Stanford Daily film study). GENERIC hot. Key choice: the flat defender (the Mike key is a later scheme option).',
+};
+
 // ------------------------------------------------------------------ dropback (docs/reviews/2026-11-24-read-plans.md)
 // The hot answers marked GENERIC follow the replacement rule (the route on the blitz side; Hewitt): no source names one.
 
@@ -425,7 +452,7 @@ export function backThreePlan(p: QbReadPlan): QbReadPlan {
   };
 }
 
-const BASE_PLANS = [SLANT_FLAT, STICK, FADE_FLAT, HITCHES, QUICK_OUTS, CURL_FLAT, SMASH, DAGGER, MESH, Y_CROSS, FLOOD, LEVELS, FOUR_VERTS, VERTS_HITCH,
+const BASE_PLANS = [SLANT_FLAT, STICK, FADE_FLAT, HITCHES, QUICK_OUTS, DOUBLE_SLANTS, CURL_FLAT, SMASH, DAGGER, MESH, Y_CROSS, FLOOD, LEVELS, FOUR_VERTS, VERTS_HITCH,
   PA_POST_DIG, PA_SHOT, PA_FLOOD, RB_SLIP_SCREEN, TE_SCREEN, BUBBLE_SCREEN, BUNCH_NOW_SCREEN, WIDE_NOW_SCREEN, TUNNEL_SCREEN];
 
 /** The authored plans by concept id, with the back-as-#3 version of each concept that has one (`<id>+b3`). */
@@ -585,7 +612,7 @@ function compose(plan: QbReadPlan, on: NonNullable<ReturnType<typeof authoredCal
   const weakSame = sameSide(call.weak, on.weak);
   const b3 = plan.conceptId.endsWith('+b3');
   const checkdown = b3 || call.back === 'block' ? (b3 ? plan.checkdown : null)
-    : plan.checkdown ?? { ref: 'B', fromStep: Math.min(1, Math.max(...plan.reads.map((r) => r.step))), timing: 'seenOpen' };
+    : plan.checkdown ?? { ref: 'B', fromStep: 1, timing: 'seenOpen' };
   if (weakSame) {
     if (call.back === on.back || JSON.stringify(checkdown) === JSON.stringify(plan.checkdown)) return plan;
     return { ...plan, checkdown };
