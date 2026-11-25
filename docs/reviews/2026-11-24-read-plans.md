@@ -369,6 +369,34 @@ corner is a judgment fault to be seen, not hidden.
 - slant_flat → the backside slant-flat's key: reset "to the backside's slant-flat" (Klatt). The second read: late, the
   flat or the checkdown.
 
+## Every cue answered (2026-11-25)
+
+The passer's key cue is one of `widens`, `sinks`, `jumps`, `squats` (a sit, resolved by where he sits) or `none`.
+A cue a read did not name answered nothing and his eyes left at once: a sitting slant-flat apex named no throw
+(Integration, from the QB lane's trace, sf_c3 seed 4). Every key read now answers each one, either by a rule or by
+listing it in the read's `moveOn` (the taught answer is "nothing here: the next read"). `test/read-plan-cues.test.ts`
+holds it, for the '+b3' versions and planFor's composed resets too.
+
+| plan, read | added | source |
+|---|---|---|
+| slant_flat 0 and 1 | squats: the flat | "sits inside or sinks: the flat" (the outside notes §4; Walsh in Ross) |
+| curl_flat 0 | squats: the flat | "If the SS or Will hang on the curl, throw the flat" (Bowen) |
+| fade_flat 1 | widens: the fade | "If the Cornerback stays in the flats to jump on the Out, then throw" the fade |
+| quick_outs 0 (corner) | widens: not the out (#2) | he works onto the out's landing: "If the corner is hard ... that side of the field is closed" (Shaw) |
+| quick_outs 1 (apex) | sinks, squats: #2 | only the hitch is thrown from this read, judged; nothing sends the ball to the out |
+| double_slants 0 | squats: #1; sinks, none: #2 | Stanford Daily's rule for its key ("cover the inside slant ... outside slant"); otherwise the progression, "Inside Slant, Outside Slant" |
+| smash 0 | widens, none: the hitch | "keep his eyes high and throw the hitch"; "do not force the smash" (Fisher) |
+| dagger 0 | squats, none: the dig | "doesn't get depth and an inside position ... a throwing window open for the dig" (Longo via Ross) |
+| y_cross 1 | widens, none: the crosser | "If the Will LB fails to gain significant depth ... hit the crosser" (Throw Deep) |
+| flood 0, pa_flood 1 | squats: the out or sail; none: the flat | "shorten his drop ... target the TE on the 7" (Bowen); "The primary read ... is the flat route" (Miller) |
+| levels 1 | none: the short in; widens: move on | "read short-to-deep"; flows over: "drop it off to the runningback" (Brown) |
+| verts_hitch 0 | sinks, squats, jumps, none: the seam | "he stays middle: #2 seam" |
+| pa_post_dig 0, pa_shot 0 | none: the post; widens: move on | "the middle of the field is completely open"; a safety widening off the middle is not taught |
+
+`squats` and `widens` naming different throws lets the passer tell a sit by where he sits (drive.ts `sitsWhere`): over
+one route's landmark he has taken it. That now applies on slant-flat, curl-flat and double slants. Behaviour changes on
+the staged slant_flat and quick_outs cells, so their baselines want a re-run.
+
 ## The schema additions (agreed with the QB lane)
 
 The QB lane accepted all three, in `plan.ts` at 9a8a3902 (claude/exciting-cori-hc8l4u), which this branch carries

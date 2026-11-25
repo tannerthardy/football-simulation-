@@ -295,6 +295,9 @@ export interface PlayStats {
   /** Native event ledger; absence retains the historical singular reduction. */
   fumbles?: Array<{ playerId: string; team: TeamSide; lost: boolean; recoveredBy?: string; t?: number }>;
   passer?: string;
+  /** QB_V2 ran this play's read (a staged concept whose plan fits the call); absent otherwise. The eligibility tag for
+   * reading a whole-game card on V2's plays. */
+  qbV2?: boolean;
   target?: string;
   receiver?: string;
   rusher?: string;

@@ -2783,3 +2783,25 @@ the ball keeps the old number, so no receiver behaviour changes.
 Card e140 (2 seeds x 32 games, against engine-102): every row unchanged, exactly, and a game digest is identical with
 it on: the default passer's throws do not turn on this number. It is on for the rebuilt passer (`QB_V2`, off), whose
 forecast does.
+
+
+## engine-104: composed calls, the release ends at the stem, two receiver leaks removed (2026-11-25)
+
+On: `CALL_COMPOSE`, `RELEASE_ZONE` (Rules), `SCRAMBLE_SEEN`, `TRACK_SEEN` (Flex); each `=0` restores. Each was its own
+arm on card e140 (4 seeds x 32 games, against engine-102; the fifth seed was not run); they were not carded together.
+
+- `CALL_COMPOSE`: a pass call is composed as a coordinator builds it (a frontside concept, a backside half, the back's
+  job, by formation) instead of drawn from whole-field plays. By seed: completion +3.0, +2.0, +1.2, +0.9 points; yards
+  an attempt +0.46, +0.11, +0.42, +0.11; YAC +0.28, +0.16, +0.93, +0.64. A consistent, modest rise: the composed
+  backside halves give the passer a second quick answer. It is landed for the football (calls as they are built), not
+  for the number; completion was already at the top of the NFL band.
+- `RELEASE_ZONE`: a receiver's release around a man tight over him ends when he reaches his route's first point,
+  instead of holding while that man stays ahead of him (mesh's high crosser climbed to 6.3 yd against a 4.5-5 yd
+  route). By seed: completion +2.0, +1.7, -1.7, -0.1; nothing consistent.
+- `SCRAMBLE_SEEN`, `TRACK_SEEN`: the scramble drill steers on the receiver's own picture of defenders and the passer,
+  and the ball tracker follows the flight he has seen, in place of true positions and true air state. By seed:
+  completion +2.4, +0.8, -0.4, -0.2; nothing consistent. Leak removals.
+
+Not landed from the same card: `TRAIL_LEVERAGE` (Defense, #892): completion +3.7, +0.1, -1.7, +0.7, nothing
+consistent, and no gain on the staged cases it was built for; it stays on its branch. `QB_SCREEN_SEEN=0` moved no row
+by any amount, so that leak removal (on since engine-99) costs nothing.

@@ -3,6 +3,7 @@
  * changes nothing. Checked before the install passes (the literals) and after them (PASS_BY_ID, flag off vs on). */
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { BASE_COMPOSITIONS, compileComposition, MENU_COMPOSITIONS } from '../src/playbook/calls/compositions.js';
+import { AXES } from '../src/playbook/calls/axes.js';
 import { FULL_CONCEPTS, HALF_CONCEPTS } from '../src/playbook/calls/halves.js';
 import { legacyBaseConcepts, legacyMenuConcepts } from '../src/playbook/concepts.js';
 
@@ -23,9 +24,10 @@ describe('CALL_COMPOSE step 1', () => {
     for (let i = 0; i < legacy.length; i++) expect(compileComposition(comps[i]), legacy[i].id).toStrictEqual(legacy[i]);
   });
 
-  it('every half and full concept is used, and compiling never shares route objects with the tables', () => {
+  it('every half and full concept is used (by a composition or, from step 2, an axis), and compiling never shares route objects with the tables', () => {
     const comps = [...BASE_COMPOSITIONS, ...MENU_COMPOSITIONS];
     const used = new Set(comps.flatMap((c) => ('full' in c.routes ? [c.routes.full] : [c.routes.strong, c.routes.weak])));
+    for (const a of Object.values(AXES)) for (const o of [...(a.strong ?? []), ...(a.weak ?? [])]) used.add(o.value);
     for (const h of HALF_CONCEPTS) expect(used.has(h.id), h.id).toBe(true);
     for (const f of FULL_CONCEPTS) expect(used.has(f.id), f.id).toBe(true);
     const a = compileComposition(comps[0]);

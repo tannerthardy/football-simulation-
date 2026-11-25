@@ -62,6 +62,9 @@ const QB_V2 = process.env.QB_V2 === '1';
 /** QB_V2 runs V2 on the concepts it was staged and calibrated on (the quick game, 2026-11-24); widening it to the other
  * plans is a later change, after they are staged. */
 const QB_V2_STAGED = new Set(['quick_outs', 'slant_flat', 'stick']);
+/** Whether QB_V2 would take this call's read: a staged concept whose read plan fits the call (planFor). A property of the
+ * call alone, so a scorecard can label the same calls in an arm with V2 off. */
+export function qbV2Call(call: PassConcept): boolean { return QB_V2_STAGED.has(call.id) && planFor(call) !== null; }
 const CATCH_Z = 1.3;
 
 /** What the no-throw behaviour is told when the throw decision has nothing acceptable this tick (the seam between
@@ -1630,9 +1633,12 @@ export class QBPass implements Behavior {
       // as a checkdown only when the call releases him; the authored call returns the authored plan itself.
       const plan = QB_V2 && QB_V2_STAGED.has(this.concept.id) ? planFor(this.concept) : null;
       this.v2 = plan ? new V2Drive(plan) : null;
+      if (this.v2) sim.qbV2 = true;
       if (this.v2) {
         // His feet run the plan's drop (Rules: stick is one step from the gun though the installed concept's drop says gun3).
         if (plan!.drop !== this.concept.drop) this.drop = dropSpec(plan!.drop, a.pos.x, sim.los, sim.offCall.formation.qb !== 'under');
+        // His forecasts carry the installed shape through his picture and leave the route only on evidence (shapeCarry).
+        for (const f of this.receiverForecasts.values()) f.shapeCarry = true;
         // At the snap: the pre-snap decision (Flex's module B) on his own picture: the side by the plan's pick, the alert,
         // the hot. Protectors are the call's pass protection by side of the ball; the box half-width a stated 5 yd a side
         // until the alignment's core edge is read.
@@ -1842,8 +1848,10 @@ export class QBPass implements Behavior {
         this.phase = 'set';
         this.setAt = t;
         this.readStart = t;
-        // QB_FOOTWORK bit 2: his shoulders set at the plant, to the read he is on.
-        if (FW_HIPS) this.shoulderOn = this.reads[this.readIdx] ?? this.reads[0] ?? null;
+        // QB_FOOTWORK bit 2: his shoulders set at the plant, to the read he is on. With V2 that is V2's read (on the gun
+        // quick drift V2 reads from the secure, so by the plant it may be past read 0: setting the old controller's read
+        // here turned him back square to the front and his eyes could not reach the backside; QB lane 2026-11-25, sf_c3).
+        if (FW_HIPS) this.shoulderOn = (this.v2 && this.v2h ? this.v2ReadAgent() : null) ?? this.reads[this.readIdx] ?? this.reads[0] ?? null;
       } else {
         // Rhythm: on the last step of his drop he can already start his load,
         // so a timing throw comes out as he hits his set point rather than
@@ -2266,6 +2274,12 @@ export class QBPass implements Behavior {
       traceRead: (read, target) => qbRead(sim, a, { read, target, stage: 'qb-cycle' }),
       traceStage: (cmd) => qbStage(sim, 'qb-cycle', a, { vel: cmd.vel, facing: cmd.facing }),
     };
+  }
+  /** The receiver V2's current read is on (its look, or a key read's first throw), or null. */
+  private v2ReadAgent(): Agent | null {
+    const v2 = this.v2, h = this.v2h; if (!v2 || !h) return null;
+    const rd = v2.plan.reads[v2.cycle.readIdx], ref = rd ? (rd.look.kind === 'receiver' ? rd.look.ref : rd.throws[0]?.ref) : null;
+    return ref ? v2.target(h, ref) : null;
   }
   /** QB_QUICK_DRIFT bit 2 applies: V2 on a gun quick drop. */
   private v2Drift(): boolean { return !!this.v2 && (QB_QUICK_DRIFT & 2) !== 0 && this.v2.cycle.plan.drop === 'quick' && this.formationGun; }
