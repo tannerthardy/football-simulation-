@@ -17,6 +17,7 @@ nfl = [a for a in argv if '=' not in a][0]
 sims = {a.split('=', 1)[0]: a.split('=', 1)[1].split(',') for a in argv if '=' in a}
 GROUP = {'CB': 'CB', 'S': 'S', 'SS': 'S', 'FS': 'S', 'DB': 'CB', 'LB': 'LB', 'ILB': 'LB', 'MLB': 'LB', 'OLB': 'LB', 'DE': 'DL', 'DT': 'DL', 'NT': 'DL', 'EDGE': 'DL', 'DL': 'DL'}
 BANDS = [(0, 2, '0-2'), (2, 4, '2-4'), (4, 7, '4-7'), (7, 10, '7-10')]
+BLK = {'T', 'G', 'C', 'OT', 'OG', 'TE', 'RB', 'FB', 'HB'}
 def rows_of(path, src):
     rows = []; plays = []
     for l in gzip.open(path, 'rt'):
@@ -41,7 +42,11 @@ def rows_of(path, src):
                 return (vx * dx + vy * dy) / n
             cs = [closing(f) for f in range(c, c + 21)]
             st = next((k / 10.0 for k, v in enumerate(cs) if v >= 1.5), None)
-            rows.append(dict(src=src, id=p.get('id'), pos=p['players'][i]['pos'], grp=GROUP.get(p['players'][i]['pos'], '?'), man=man, d0=d0, band=next(n for lo, hi, n in BANDS if lo <= d0 < hi),
+            # engaged at the catch, inferred from positions (the same rule both sides): an offensive player who did not run a route (OL, TE, a back or a receiver blocking; not the catcher, not the QB) within 1.5 yd of him (centres) on at least 4 of the 5 frames c-3 .. c+1
+            blk = [j for j, o in enumerate(p['players']) if o['side'] == 'O' and j != r and o['pos'] != 'QB' and not o.get('route')]
+            inf = any(sum(1 for f in range(c - 3, c + 2) if math.hypot(X[i, f] - X[j, f], Y[i, f] - Y[j, f]) <= 1.5) >= 4 for j in blk)
+            tru = bool(p['eng'][i][c]) if p.get('eng') else None
+            rows.append(dict(src=src, id=p.get('id'), pos=p['players'][i]['pos'], inf=inf, tru=tru, grp=GROUP.get(p['players'][i]['pos'], '?'), man=man, d0=d0, band=next(n for lo, hi, n in BANDS if lo <= d0 < hi),
                              c0=cs[0], c5=cs[5], start=st))
     return rows, plays
 data = {'NFL': rows_of(nfl, 'NFL')}
@@ -69,6 +74,28 @@ def table(title, sel):
 table('All defenders in range', [('all', lambda r: True)])
 table('By position group', [(g, (lambda g: lambda r: r['grp'] == g)(g)) for g in ('CB', 'S', 'LB', 'DL')])
 table('By the play\'s man / zone label', [('man', lambda r: r['man']), ('zone', lambda r: not r['man'])])
+P('### Engaged and not engaged at the catch (engaged = a non-route offensive player (not the catcher or the QB) within 1.5 yd on at least 4 of the 5 frames c-3 .. c+1: inferred from positions, the same rule both sides; "engine" = the sim\'s own `engagement` at the catch frame)\n')
+P('| sample | rule | band (yd) | engaged n | engaged closing at the catch p50 | engaged at +0.5 s p50 | not engaged n | not engaged closing at the catch p50 | not engaged at +0.5 s p50 |'); P('|---|---|---|---|---|---|---|---|---|')
+for lab, (R, _) in data.items():
+    for rule, key in (('inferred', 'inf'), ('engine', 'tru')):
+        if rule == 'engine' and lab == 'NFL': continue
+        for lo, hi, bn in BANDS + [(0, 10, 'all')]:
+            S = [r for r in R if lo <= r['d0'] < hi and r[key] is not None]
+            E, N = [r for r in S if r[key]], [r for r in S if not r[key]]
+            if len(S) < 15: continue
+            f = lambda L, k: f'{q([r[k] for r in L], 50):.1f}' if len(L) >= 8 else '-'
+            P(f'| {lab} | {rule} | {bn} | {len(E)} | {f(E, "c0")} | {f(E, "c5")} | {len(N)} | {f(N, "c0")} | {f(N, "c5")} |')
+P('')
+P('### How reliable the inferred rule is (sim, against the engine\'s own engagement at the catch)\n')
+P('| sample | band (yd) | defenders | engine says engaged | inferred engaged | both | engine only (missed) | inferred only (false) | precision | recall |'); P('|---|---|---|---|---|---|---|---|---|---|')
+for lab, (R, _) in data.items():
+    if lab == 'NFL': continue
+    for lo, hi, bn in BANDS + [(0, 10, 'all')]:
+        S = [r for r in R if lo <= r['d0'] < hi and r['tru'] is not None]
+        if len(S) < 15: continue
+        a = sum(1 for r in S if r['tru']); b = sum(1 for r in S if r['inf']); both = sum(1 for r in S if r['tru'] and r['inf'])
+        P(f'| {lab} | {bn} | {len(S)} | {a} | {b} | {both} | {a - both} | {b - both} | {both / b if b else float("nan"):.2f} | {both / a if a else float("nan"):.2f} |')
+P('')
 P('### Catch to first contact (any defender within 1 yd of the catcher) and yards after the catch\n')
 P('| sample | plays | first contact p25 / p50 / p75 (s) | no contact before the end of the play | YAC mean (yd) | YAC p50 |'); P('|---|---|---|---|---|---|')
 for lab, (_, pl) in data.items():
