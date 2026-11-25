@@ -23,7 +23,9 @@ function contest(distance: number) {
   sim.throwBall(sim.qb, r, { x: 15, y: 0, z: 0 }, { x: 50, y: 26, z: 2 }, 1.5);
   sim.t = 1.5;
   stageSight(sim, d); // HANDS_SEEN: 'looking' is his sight of the ball
-  sim.rng.next = () => 0; // Exercise the contested-interception branch.
+  // Exercise the contested-interception branch. Not 0: a forced 0 never leaves Rng.gaussian's `while (u === 0)` (a hang
+  // on any branch that draws a normal; Coverage met it under the estimator); 1e-12 takes the same chance branches.
+  sim.rng.next = () => 1e-12;
   resolveCatchOpportunities(sim, { x: 49.9, y: 26, z: 2 }, { x: 50.1, y: 26, z: 2 });
   return { sim, d };
 }
