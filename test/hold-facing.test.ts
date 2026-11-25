@@ -67,7 +67,8 @@ describe('HOLD_FACING', () => {
   it('off: the side holder spins with the runner; on: he keeps his facing', async () => {
     // The pinned play (seed 1957, DT_S) was recorded on the legacy tackle. With the tackle package (TACKLE_REACH /
     // REACH_TIME) the play changes before the hold, so the same bounds are a search over the pinned scan's range.
-    const pkg = process.env.TACKLE_REACH === '1' || process.env.REACH_TIME === '1';
+    // On in the environment or in the reference stack (the stack's 'on' flags are what turn() stubs).
+    const pkg = ['TACKLE_REACH', 'REACH_TIME'].some(k => process.env[k] === '1' || stack[k] === 'on');
     if (!pkg) {
       const off = await turn('0'), on = await turn('1');
       expect(off.held && off.side).toBe(true); expect(on.held && on.side).toBe(true);
