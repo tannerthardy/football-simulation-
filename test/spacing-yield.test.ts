@@ -9,7 +9,7 @@ import { PASS_BY_ID } from '../src/playbook/concepts.js';
 import { COVERAGE_BY_ID, FRONT_BY_ID } from '../src/playbook/defense.js';
 import { FORMATION_BY_ID } from '../src/playbook/formations.js';
 import { PlaySim } from '../src/sim/playsim.js';
-import { spaceTeammates } from '../src/sim/spacing.js';
+import { HEADWAY_HOLD, spaceTeammates } from '../src/sim/spacing.js';
 
 function stage(side: number, lateral: number) {
   const sim = new PlaySim({
@@ -38,7 +38,7 @@ describe('moving teammate gathers', () => {
     const commands: Intent[] = [];
     // HEADWAY_HOLD: the closing limit is left a body width beyond its entry, so the full request returns smoothly two ticks
     // later (off: tick 14 at once; on: 7.9, 8.9, then 9.0 at tick 16); the window is that much longer under the flag.
-    const ticks = process.env.HEADWAY_HOLD === '1' ? 18 : 16;
+    const ticks = HEADWAY_HOLD ? 18 : 16;
     for (let k = 0; k < ticks; k++) {
       const intents: Intent[] = [structuredClone(request), { vel: { x: 0, y: 0 } }];
       spaceTeammates([a, b], intents, (_a, target) => target, { now: world.time });
