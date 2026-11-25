@@ -24,6 +24,7 @@ import type { ScreenJob } from '../../playbook/types.js';
 import type { Agent, Behavior } from '../agent.js';
 import type { PlaySim } from '../playsim.js';
 import { goTo, runThrough, stand, track } from './common.js';
+import { bodyRadius } from '../../physics/bodyshape.js';
 import { LATE, carrierLane, fitOn, meetOnTrack, matchThreats, threatOf, type Candidate, type Lane, type Threat } from './space-block.js';
 
 /** A blocker's decision beat: how often he re-reads whom to take. */
@@ -37,6 +38,40 @@ const ON_MAN = 4;
  * a DB, stalk_reference.py): gap 3.7 yd at the snap, 2.0 at 0.9 s, 1.1 at 1.2 s, first contact 1.0 s before the
  * catch, never 1 of 18; ours off: 5.5, 5.1, 4.7, at the catch, never 50 of 263. */
 export const STALK_CLOSE = process.env.STALK_CLOSE !== '0';
+/** LINE_DEPTH (on by default; LINE_DEPTH=0 restores; Run Game, 2026-11-25, Integration's ruling): before the throw a
+ * released lineman's limit is his own depth past the line (8-3-1: an ineligible man more than a yard downfield while a
+ * legal forward pass is still possible), not his target's. His downfield request tapers to nothing as his rearmost point
+ * (centre less his body's radius, as the rule and test/screen-install.test.ts measure it) nears the line + LINE_LIMIT,
+ * the line as he knows it from the snap; while the passer holds the ball long he sells the pass at the line and holds
+ * there until the ball is out (or the passer is a runner), then blocks the screen. Off, the limit was keyed on his man:
+ * he slid only while his man was more than 0.8 yd past the line, so a man at the line drew his fit downfield: te_screen
+ * seed 5 with the tackle package (the passer, still 7.7 yd behind the line, lasting about a second longer) put the RT
+ * 2.05 yd downfield at 6.25 s. Applied to his final request (after teammate spacing). Stated choices: the limit less a
+ * 0.1 yd margin; once he is within his own stopping distance of it plus LINE_PAD (0.5 yd), nothing after his own
+ * decision adds downfield speed, and he goes downfield only as fast as he can still stop before it. The stopping rate is
+ * LINE_BRAKE (0.6) of his profile brake: te_screen seed 5's RT, asked for nothing downfield, shed only about 3.5 m/s²
+ * from 4.4 m/s, so a cap at full profile brake started too late and he reached 1.03 yd. */
+export const LINE_DEPTH = process.env.LINE_DEPTH !== '0';
+const LINE_LIMIT = 1, LINE_MARGIN = 0.1, LINE_BRAKE = 0.6, LINE_PAD = 0.5;
+/** LINE_DEPTH: the limit on a released lineman's final request (after teammate spacing, which can otherwise carry him
+ * downfield: te_screen seed 5's RT asked back toward the line at 5 yd/s and spacing turned it into 3 yd/s downfield). */
+export function capLineDepth(sim: PlaySim, a: Agent, intent: { vel: Vec2 }, decided?: { vel: Vec2 }): void {
+  if (!LINE_DEPTH || !(a.behavior instanceof ScreenBlocker) || !a.behavior.isLineman || a.engagement) return;
+  const passer = sim.carrier === sim.qb ? sim.qb : null;
+  if (sim.ball.kind !== 'held' || !passer) return;
+  const dir = sim.attackDir(a.team);
+  // A passer who has crossed the line can no longer throw a legal forward pass: no limit then.
+  if ((passer.pos.x - sim.los) * dir > 0) return;
+  const room = LINE_LIMIT - LINE_MARGIN - (a.pos.x - sim.los) * dir + bodyRadius(a.body, 1, 0);
+  // Only once he is within his own stopping distance of it (plus LINE_PAD): a release that never nears it is untouched.
+  const v = Math.max(0, a.vel.x * dir), brake = LINE_BRAKE * a.profile.brake;
+  if (room > v * v / (2 * brake) + LINE_PAD) return;
+  // Nothing after his own decision (teammate spacing) may carry him further downfield than he asked, and he goes
+  // downfield only as fast as he can still stop before the limit on his own braking.
+  const own = decided ? decided.vel.x * dir : Infinity;
+  const allowed = Math.max(0, Math.min(own, Math.sqrt(2 * brake * Math.max(0, room))));
+  if (intent.vel.x * dir > allowed) intent.vel = { x: dir * allowed, y: intent.vel.y };
+}
 /** Where he breaks down: this far off the man, on the man's line to the catch (yd). A coaching figure (about a yard
  * and a half), not a fit. */
 const STALK_BREAK = 1.5;
@@ -45,6 +80,8 @@ export class ScreenBlocker implements Behavior {
   readonly kind = 'screen-block';
   /** Keep this job through the catch: it is the screen's blocking, not a generic convoy. */
   readonly keepAfterCatch = true;
+  /** LINE_DEPTH: an ineligible lineman released on the screen (the rule's limit applies to him). */
+  get isLineman(): boolean { return this.lineman; }
   target: Agent | null = null;
   private retargetAt = -1;
   readonly home: Vec2;

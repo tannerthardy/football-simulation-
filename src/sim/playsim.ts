@@ -1,3 +1,4 @@
+import { LINE_DEPTH, capLineDepth } from './behaviors/screen.js';
 import { BELIEVED_BODY, BeliefStore } from './believed-body.js';
 import { shouldersOf } from '../physics/kinematics.js';
 /**
@@ -1672,6 +1673,9 @@ export class PlaySim {
       this.intents[a.idx] = { ...this.intents[a.idx], vel: { x: 0, y: 0 }, facing: a.facing,
         push: 0, dive: undefined, lunge: undefined, posture: a.body.support!.posture };
     }
+    // LINE_DEPTH (behaviors/screen.ts): a released lineman's final request keeps him within a yard of the line before
+    // the throw (8-3-1), after every stage that could carry him downfield.
+    if (LINE_DEPTH) for (const a of this.agents) capLineDepth(this, a, this.intents[a.idx], this.cmds[a.idx]);
     commandTrace?.stage('snap-guard', this.intents);
     ledger?.stageAll('snap-guard', this.intents);
     commandTrace?.final(this.intents);
