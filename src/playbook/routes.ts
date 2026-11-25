@@ -54,6 +54,25 @@ const ROUTE_TABLE: Record<string, RouteDef> = {
       { id: 'under', end: 'continue', points: [{ d: 10, l: -.4, s: .4 }, { d: 10.5, l: -16 }] },
     ] } },
   // Quick game
+  // Double moves (Rules + Coaching, 2026-11-25; Defense's and Coverage's staged question, the man defender's look for the
+  // ball). Routes only: no concept, call or plan runs them. "Double moves normally work better vs man coverage"; sell "at
+  // least three steps. This is enough to get the cover man to trigger and bite on the initial route" (FirstDown PlayBook,
+  // receiver double moves).
+  // Out-and-up: "the receiver run a 5-yard out, but when they take 3 steps to the outside, they will convert it to a go
+  // route ... speed players must sell out before transitioning to the go route" (Viqtory). "When the defense is jumping
+  // outs ... Good against: Flat defenders, squat corners" (cfbtrack). The shaped quick out's first move (rounded at 4 yd,
+  // as ours runs it), three steps out to 5.5 yd and 2.5 yd outward, a plant there (the second move) and up the sideline,
+  // room kept to the boundary. Against press his release carries him wide first, as it does the quick out's.
+  out_and_up: { id: 'out_and_up', family: 'deep', depth: 25, end: 'continue',
+    points: [{ d: 4, l: 0, s: 0.9 }, { d: 5.5, l: 2.5, s: 0.45, cut: true }, { d: 20, l: 3.5 }, { d: 50, l: 4 }] },
+  // Sluggo (slant-and-go): "When he gets about halfway through what would be a typical Slant route, the receiver will break
+  // it off ... he'll need to plant his inside foot ... take a straight-line sprint straight downfield" (FootballAdvantage).
+  // The sell: "As he makes his first break, he will turn his head to help sell the first-move. On the 3rd step out of his
+  // 1st break, he will use a 2nd bam step to get out of the break" (Kolste, "3x3 Bam"). "The cornerback begins to come down
+  // hill to cover the slant stem" (Inside the Pylon). The slant's stem and break, halfway down its leg, a plant, then
+  // straight up. Variant not authored: cutting toward the back pylon against a closed middle (Inside the Pylon).
+  sluggo: { id: 'sluggo', family: 'deep', depth: 25, end: 'continue',
+    points: [{ d: 2, l: 0, s: 0.75 }, { d: 4.25, l: -2.25, s: 0.4, cut: true }, { d: 50, l: -2.75 }] },
   hitch: { id: 'hitch', family: 'quick', depth: 5, end: 'settle', points: [{ d: 6, l: 0, s: 0.2 }, { d: 5, l: 0.3, s: 0 }] },
   // QUICK_HITCH (concepts.ts): the quick game's hitch, planted at 5 yd ("every receiver is running a 5-yard hitch", the
   // quick game off a three-step, one step from the gun for "any route that breaks at 5 yards or under", Viqtory Sports);
