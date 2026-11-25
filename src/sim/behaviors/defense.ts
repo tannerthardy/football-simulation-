@@ -122,7 +122,7 @@ export const HONEST_READS = process.env.HONEST_READS !== '0';
  * the flight to the catch (catch-carry, flight continuation, ball rally) comes when his own estimate says the ball has
  * arrived or he sees it in the air near him, not on the true end of the air state; a flight he has acquired is his to
  * play until his estimate resolves it. */
-export const HONEST_FLIGHT = process.env.HONEST_FLIGHT === '1';
+export const HONEST_FLIGHT = process.env.HONEST_FLIGHT !== '0';
 /** HONEST_FLIGHT's drive on a catch: from this long before his estimate's arrival to this long after (a catch's securing beat). */
 const DRIVE_LEAD = 0.05, DRIVE_SECURE = SECURE_BEAT;
 /** INFO_HONEST (off; INFO_HONEST=63 turns every item on; single items by their

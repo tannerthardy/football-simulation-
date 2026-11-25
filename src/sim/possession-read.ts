@@ -15,7 +15,7 @@ const flights = new WeakMap<Agent, { acquiredAt: number; path: FlightSample[];
 /** HONEST_FLIGHT (defense.ts): a catch's securing beat after the arrival he estimated. During it no picture of the
  * receiver shows the ball yet (a receiver securing it is not carrying it), so only a picture taken after it refutes
  * the catch. */
-const HONEST_FLIGHT_READ = process.env.HONEST_FLIGHT === '1';
+const HONEST_FLIGHT_READ = process.env.HONEST_FLIGHT !== '0';
 export const SECURE_BEAT = 0.4;
 /** Called only after the existing throw-recognition gate. Copy the acquired
  * trajectory, never an intended receiver or a private catch result. */

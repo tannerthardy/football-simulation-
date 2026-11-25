@@ -353,3 +353,28 @@ blockers, the sideline, the cutback lane. So it belongs to step 3, and the track
 
 When `PERCEIVE_ANTICIPATE` is built, pursuit lead against the NFL's is its first witness. It must rise from the carrier's
 seen options (lanes, blockers, boundary), and be wrong when the carrier takes the other one.
+
+## 11. Step 1f: the passer's watched look (QB_TRACK_LOOK, Flex, 2026-11-25)
+
+**Finding (QB lane's proj-err, Integration's ruling).** The passer's estimate of a watched defender had position about
+right (0.25 yd) but velocity off by about 1.5 yd/s on men changing speed. The cause is §1's a·delay lag:
+`Perception.perceive` returns the delayed sample's velocity unchanged and carries only position forward. Staged with
+one defender accelerating at 5 yd/s² across his clear cone (`scripts/diag/perception/velocity-lag-stage.mts`): seen
+and believed velocity were the truth 0.25 s earlier (lag 1.25 yd/s), and peripherally about 0.5 s × a. There was no
+smoothing, prior blend or decay. An acceleration term in `perceive` for every observer was considered and withdrawn,
+because this design rules out direct perception of acceleration over these windows (§3).
+
+**Step.** A defender or receiver in the passer's clear cone is a man he is watching. His picture now comes through
+the tracking channel (`track()` for defenders; the tracking latency from the record for his own receivers, who as
+teammates have no sight-line test in his look). Membership in the cone is still decided on the choice-reaction
+picture. Peripheral and unseen men stay on `see()`.
+
+**Staged.**
+- The acceleration test: clear-cone lag 1.25 → 0.5 yd/s (two ticks of TRACK_LATENCY × a); peripheral unchanged.
+- proj-err (5 cells × 15 seeds, every non-lineman at 1.2 s), clear-cone sightings: position error 0.25 → 0.19 yd,
+  velocity error 1.45 → 1.06 yd/s; peripheral and unseen unchanged.
+- The QB lane removes its interim forward projection against this. The residual lag on a bursting press corner is the
+  honest read, covered by their one-way allowance over the delay.
+
+**Next group, not started:** 1c, man mirror (Coverage), with its own restage. That is a defender tracking the man he
+is covering, the same channel on the coverer's side.

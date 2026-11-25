@@ -104,7 +104,7 @@ describe('ARRIVE_LEAD: an underneath zone defender leads the catcher on a short 
     const median = (v: number[]) => [...v].sort((p, q) => p - q)[Math.floor(v.length / 2)];
     expect(off.length).toBeGreaterThan(5);
     expect(on.length).toBeGreaterThan(5);
-    if (process.env.HONEST_FLIGHT === '1') {
+    if (process.env.HONEST_FLIGHT !== '0') {
       // HONEST_FLIGHT: his drive re-reads the catch on his own estimate every tick, so the lead comes without ARRIVE_LEAD
       // (develop 5a62a70e, this panel: medians off/on 1.96 / 2.45 with it off, 2.49 / 2.45 with it on). ARRIVE_LEAD must
       // not take it away, and without it he leads at least as far as ARRIVE_LEAD did with HONEST_FLIGHT off.

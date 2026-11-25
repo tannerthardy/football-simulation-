@@ -164,6 +164,7 @@
     "PURSUIT_SPOT": "on",
     "RELEASE_BELIEF": "on",
     "TRACK_FEEL": "on",
+    "QB_TRACK_LOOK": "on",
     "SIGHT_CARRIER": "on",
     "SIGHT_COVER": "on",
     "SIGHT_RECOG": "on",

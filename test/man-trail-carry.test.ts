@@ -94,7 +94,7 @@ describe('CATCH_CARRY: man trail', () => {
       // (catch-anticipation), with or without the carry, so a trailer is not left mirroring for the carry to rescue: the
       // carry must not slow him, and without it he closes at least as well as the carry did with HONEST_FLIGHT off
       // (mesh cover1 doubles s10: off/on -0.84 / -0.87, against -0.99 for the carry with it off).
-      if (process.env.HONEST_FLIGHT === '1' && off <= 0) {
+      if (process.env.HONEST_FLIGHT !== '0' && off <= 0) {
         expect(on).toBeGreaterThan(off - 0.3);
         expect(off).toBeGreaterThan(await closing('1', c, '0') - 0.3);
       } else if (off <= 0) expect(on).toBeGreaterThan(off + 0.1); else expect(on).toBeGreaterThan(off - 0.3);
