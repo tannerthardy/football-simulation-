@@ -27,10 +27,13 @@ async function run(opts: { concept: string; coverage: string; seed: number; form
   const s1 = sim.offense.find((o: any) => ref(o) === 'S1'), s2 = sim.offense.find((o: any) => ref(o) === 'S2');
   if (opts.key && opts.key !== 'natural') {
     // The strong corner (the flat defender in Cover 2) plays his coverage to 0.6 s, then sinks under the corner
-    // route or jumps the flat.
+    // route or jumps the flat. Jumping, he drives on the flat receiver. Until engine-105 he drove to a fixed spot 3 yd
+    // past the line: he reached it before the 1.7 s cue and was settling back off it at the cue (in truth 0.4-2.2 yd/s
+    // toward the high route on seeds 1-6). The jump was read only on a stale picture that still had him coming down.
+    // With QB_TRACK_LOOK's fresher picture he read the settle-back as a sink.
     const cb = sim.defense.find((d: any) => d.slot === 'CB_S'), orig = cb.behavior;
     cb.behavior = { kind: orig.kind, update: (a: any, s: any) => s.t < 0.6 ? orig.update(a, s)
-      : goTo(a, opts.key === 'sink' ? { x: s.los + 15 * dir, y: s1.pos.y } : { x: s.los + 3 * dir, y: s2.pos.y + 3 * ss }, { speed: 0.95 }) };
+      : goTo(a, opts.key === 'sink' ? { x: s.los + 15 * dir, y: s1.pos.y } : { x: s2.pos.x + 1 * dir, y: s2.pos.y }, { speed: 0.95 }) };
   }
   let qb: any = null, target: any = null, movedOn = -1, rushIn: number | null = null, startAt: number | null = null;
   const tick = sim.tick.bind(sim);
