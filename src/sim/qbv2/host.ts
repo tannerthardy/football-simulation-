@@ -27,6 +27,11 @@ export interface PasserView {
   estimate(d: Agent): { pos: Vec2; vel: Vec2; facing: number };
   pictureAge(d: Agent): number;
   pictureSpread(d: Agent): number;
+  /** Time with no new observation of him (s; 0 while watched) and the look's own spread (yd), apart from unseen time. */
+  unseenFor(d: Agent): number;
+  seenSpread(d: Agent): number;
+  /** How far his estimate of a defender has moved to his belief of the man's job (0-1; card spec §1). */
+  jobWeight(d: Agent): number;
   seenHead(d: Agent): number | null;
   /** His forecast of a receiver (the install he knows, updated from what he sees). */
   forecast(r: Agent): ReceiverForecast | undefined;
@@ -84,6 +89,7 @@ export function makeHost(v: PasserView, felt: number, pocket: PocketTest, planDr
   return {
     a, sim, releaseZ: v.releaseZ, snapAt: v.snapAt,
     estimate: (d) => v.estimate(d), seenHead: (d) => v.seenHead(d), pictureAge: (d) => v.pictureAge(d), pictureSpread: (d) => v.pictureSpread(d),
+    unseenFor: (d) => v.unseenFor(d), seenSpread: (d) => v.seenSpread(d), jobWeight: (d) => v.jobWeight(d),
     predict: (rc, ahead) => v.forecast(rc)?.predict(sim.t, ahead) ?? null,
     breakAt: (rc) => v.forecast(rc)?.breakAt() ?? null,
     timingAt: (rc) => { const f = v.forecast(rc); return f ? f.turnAt() ?? f.breakAt() : null; },

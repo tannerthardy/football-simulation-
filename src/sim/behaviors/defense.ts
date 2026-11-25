@@ -98,9 +98,13 @@ const FLAT_SINK_DEPTH = 18;
  * #1 when #1's out broke into the flat he had left; and nothing in the sink read #1's own out-break under him, so he kept
  * sinking with him. On, #1's out-break ends the sink; as the taught standard (patient: outside leverage, eyes through #1
  * to the passer, break up the short route on the throw) he holds outside leverage at his depth and FLIGHT_BREAK drives
- * him on the throw. FLAT_SIT_MODE=jump (the trap variant, jumping the break before the throw) played the staged quick
+ * him on the throw. FLAT_SIT_JUMP (the trap variant, jumping the break before the throw) played the staged quick
  * out no better and gave the out-and-up about 0.4 yd more. */
 const FLAT_SINK_ONE = process.env.FLAT_SINK_ONE === '1';
+/** FLAT_SIT_JUMP (experimental, off; with FLAT_SINK_ONE): the trap variant of the sit on #1's out, a later scheme option:
+ * he jumps the break, downhill to #1's depth and outside-in on where #1 will be 0.5 s on, before the throw. Off, the
+ * taught standard: he holds outside leverage at his depth and drives on the throw. */
+const FLAT_SIT_JUMP = process.env.FLAT_SIT_JUMP === '1';
 const SINK_ENTER = 2, SINK_EXIT = 1;
 /** SEEN_EYES (default on; SEEN_EYES=0 restores the QB's internal read target): a zone defender
  * reads the QB's look from what he sees of him, not from the QB's internal
@@ -2067,9 +2071,9 @@ export class ZoneCoverage implements Behavior {
       if (this.flatSit) {
         const q0 = sim.see(a, sim.qb);
         // The patient standard: he holds his depth with outside leverage on #1 and drives on the throw he sees
-        // (FLIGHT_BREAK). FLAT_SIT_MODE=jump is the trap variant (a later scheme option): downhill to #1's depth on the
-        // break, before the throw.
-        const hold = process.env.FLAT_SIT_MODE !== 'jump';
+        // (FLIGHT_BREAK). FLAT_SIT_JUMP is the trap variant (a later scheme option): downhill to #1's depth on the break,
+        // before the throw.
+        const hold = !FLAT_SIT_JUMP;
         const to = hold ? { x: a.pos.x, y: clamp(v.s.pos.y + outS * 0.5, 0.5, FIELD_WIDTH - 0.5) }
           : { x: v.s.pos.x, y: clamp(v.s.pos.y + v.s.vel.y * 0.5 + outS * 0.5, 0.5, FIELD_WIDTH - 0.5) };
         return withFacingTechnique(track(a, to, { x: 0, y: v.s.vel.y }, { facing: angleTo(a.pos, q0.pos), speed: 1, gain: 1.8 }),

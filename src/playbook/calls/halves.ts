@@ -25,8 +25,11 @@ export const HALF_CONCEPTS: HalfConcept[] = [
   half('curl_flat', 'Curl-Flat', { 1: 'curl', 2: 'flat' }),
   half('flood', 'Flood', { 1: 'go', 2: 'out', 3: 'flat' }),
   half('dagger', 'Dagger', { 1: 'dig', 2: 'seam', 3: 'shallow' }),
-  // Levels, outside-deep-in version (the outside receiver on the dig, the slot on the short in; NFL 31% of levels).
+  // Levels: two named versions, neither the core (user decision 2026-11-24). Outside deep in: the outside receiver on the
+  // dig, the slot on the short in (today's). Outside short in: the outside receiver on the 5 yd in, the slot on the 10-12
+  // yd square-in ("Peyton's favorite pass play: levels", Chris Brown). Called by NFL share (CALL_COMPOSE step 2).
   half('levels_outside_deep', 'Levels (outside deep in)', { 1: 'dig', 2: 'short_in' }),
+  half('levels_outside_short', 'Levels (outside short in)', { 1: 'short_in', 2: 'dig' }),
   half('comeback_dig', 'Comeback-Dig', { 1: 'comeback', 2: 'dig' }),
   half('fade_flat', 'Fade-Flat', { 1: 'go', 2: 'flat' }),
   half('hitch_post', 'Hitch-Post', { 1: 'hitch', 2: 'post', 3: 'flat' }),

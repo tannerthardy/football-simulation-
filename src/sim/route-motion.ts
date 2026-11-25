@@ -293,6 +293,31 @@ export function firstBreakDepth(start: Vec2, los: number, path: readonly PathPoi
 export function inGetOff(fromStart: number, sinceStart: number, readTime: number): boolean {
   return fromStart < GETOFF_STEP || sinceStart < readTime;
 }
+/** PLAN_BREAK_BODY: the time his own body takes to run his route to its break from a standstill: the same stepBody,
+ * get-off drive and arrive profile the run uses. It steps along the route's path by distance (`legs`: each point's
+ * distance along the path from his start and its through-speed fraction `s`, to the break point), approaching each
+ * speed-controlled point with the steering's arriveVelocity. The path's bends are counted by their length, not stepped
+ * as turns. */
+export function bodyRunTime(profile: Readonly<PhysicalProfile>, routeRunning: number, effort: number, readTime: number,
+  legs: ReadonlyArray<{ at: number; s?: number }>, breakDepth: number, defenderAhead: number, getoff: boolean): number {
+  const dt = 0.02, top = profile.vmax * effort;
+  const end = legs.length ? legs[legs.length - 1].at : 0;
+  const body: Body = { pos: { x: 0, y: 0 }, vel: { x: 0, y: 0 }, facing: 0, energy: 1, sprintLoad: 0, profile: profile as PhysicalProfile };
+  let i = 0;
+  for (let t = 0; t < 6; t += dt) {
+    while (i < legs.length - 1 && body.pos.x >= legs[i].at - 1e-6) i++;
+    const leg = legs[i];
+    const through = leg.s !== undefined ? leg.s * top : top;
+    const v = arriveVelocity(body, { x: leg.at, y: 0 }, top, through);
+    const cmd: MoveCommand = { vel: { x: Math.max(v.x, through * 0.999), y: 0 } };
+    if (getoff && inGetOff(body.pos.x, t, readTime)) cmd.drive = getOffDrive(routeRunning, breakDepth, defenderAhead);
+    stepBody(body, cmd, dt);
+    // At the break point: within the arrive profile's 0.15 yd stop, or settled into a point that ends at rest.
+    if (body.pos.x >= end - 0.15 || (i === legs.length - 1 && through < 0.3 && body.pos.x >= end - 0.5 && Math.abs(body.vel.x) < 0.5)) return t + dt;
+  }
+  return 6;
+}
+
 /** LINE_START: the time the get-off costs him to reach `depth` yd from a standstill, against a full start, from the
  * same body law (a straight run at route effort). Used for his expected break time. */
 export function getOffLoss(profile: Readonly<PhysicalProfile>, routeRunning: number, effort: number, readTime: number,

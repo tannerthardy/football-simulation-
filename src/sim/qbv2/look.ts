@@ -10,7 +10,7 @@ export type LookTarget = { kind: 'receiver'; ref: string } | { kind: 'key'; role
 
 export const lookKey = (t: LookTarget): string => (t.kind === 'receiver' ? `r:${t.ref}` : `k:${t.role}`);
 
-interface LookRecord { since: number | null; res: number; first: number | null; dueAt: number | null }
+interface LookRecord { since: number | null; res: number; first: number | null; dueAt: number | null; lastClear: number | null }
 
 export class Looks {
   private recs = new Map<string, LookRecord>();
@@ -22,16 +22,20 @@ export class Looks {
     for (const [k, r] of this.recs) if (!target || k !== lookKey(target)) r.since = null;
     this.current = target;
     if (!target) return;
-    const k = lookKey(target), r = this.recs.get(k) ?? { since: null, res: 0, first: null, dueAt: null };
+    const k = lookKey(target), r = this.recs.get(k) ?? { since: null, res: 0, first: null, dueAt: null, lastClear: null };
     this.recs.set(k, r);
     if (!inClear) { r.since = null; return; }
     if (r.since === null) r.since = now;
+    r.lastClear = now;
     if (r.first === null) r.first = now;
     r.res = Math.max(r.res, 1 - Math.exp(-(now - r.since) / Math.max(tau, 1e-3)));
   }
 
   /** How resolved his picture of this target is (0 to 1). */
   resolved(target: LookTarget): number { return this.recs.get(lookKey(target))?.res ?? 0; }
+
+  /** How long since this target was last in his clear cone (s); null if never. */
+  sinceClear(target: LookTarget, now: number): number | null { const c = this.recs.get(lookKey(target))?.lastClear; return c == null ? null : now - c; }
 
   /** Whether the look is resolving now (the target inside his clear cone this tick). */
   resolving(target: LookTarget): boolean { return this.recs.get(lookKey(target))?.since !== null && this.recs.has(lookKey(target)); }
