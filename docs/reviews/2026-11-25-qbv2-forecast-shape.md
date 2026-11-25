@@ -112,4 +112,7 @@ On 7585be04f with the patch:
   - one picture 3 yd off his line: observed motion at once;
   - parallel and 2.5 yd off: the shape is carried;
   - 45° off: not carried.
-- `npm test`: see the message to Integration.
+- `npm test` on 7585be04f with the patch: 42 failed, 4515 passed (609 files).
+- The 24 files with failures, plus the forecast test, run on develop 60715327d clean and with the patch: the same 41
+  failures in both (clean 41 failed / 76 passed; patched 41 failed / 77 passed, the extra pass being the new test). None
+  comes from the patch. Every change is behind `shapeCarry`, which only QB_V2 sets.
