@@ -267,6 +267,7 @@
     "HANDS_ON_ARMS": "0",
     "SECURE_SPLIT": "0",
     "SECURE_FACE_GEOM": "0",
+    "HANDOFF_FREEZE": "0",
     "BALL_DRAG": "0",
     "POCKET_CLIMB": "0",
     "BLOCK_SEEN": "0",

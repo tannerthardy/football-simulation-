@@ -2758,3 +2758,16 @@ On: `HANDS_ON_ARMS`, `SECURE_SPLIT`, `SECURE_FACE_GEOM` (`=0` restores each). Pl
 - **SECURE_FACE_GEOM (C).** `facingBall` in the securing window dotted the defender's shoulders with the ball's velocity, which `pinToHands` sets to the receiver's; a trailing defender running with him and looking at the ball scored c = -1 and took the 0.6 penalty on his hand play. During securing "facing the ball" is now geometric: his shoulders toward the ball's position (same -0.35 threshold).
 
 Same-seed numbers, 8 games per arm (seeds 101-108; arms diverge after the first changed play; `scripts/diag/catch/catch_fixes_card.mts`), base | A | B | C | all three: attempts 673 | 673 | 690 | 673 | 690; completion .750 | .750 | .746 | .750 | .746; drops 28 | 28 | 32 | 28 | 32 (contested 5 | 5 | 7 | 5 | 7, uncontested 23 | 23 | 25 | 23 | 25); breakups 47 | 47 | 48 | 47 | 48; interceptions 11 | 11 | 12 | 11 | 12; securing dislodges by hand 4 | 4 | 3 | 4 | 3, by the hit 0 | 0 | 1 | 0 | 1. A and C changed nothing in 8 games: the events are rare. Counted over 16 games with all three on (a tap on the same code): A fires 26 times (1.6 per game), lowering the catch chance by 0.079 on average (from a mean .861: about 2.1 expected completions in 16 games); B gives 19 body arrivals after a hand play (of 118 first attempts); C changes the facing test on 51 of 118 hand attempts (geometric sees, velocity did not) and 2 the other way, restoring the full hand factor for a trailing defender who is looking at the ball. Expect contested completions to fall slightly (A), more dislodges on the body's arrival (B), and more hand dislodges against a trailing defender (C); none is distinguishable from noise at this sample, and none is offset. The QB's believed drop rate (DROP_BELIEF 0.165 - 0.13 hands) was fitted with these defects in; flagged for the QB lane's calibration contract, not refitted.
+
+
+## engine-102: a zone defender handed off from motion can stop (2026-11-25)
+
+On: `HANDOFF_FREEZE` (Coverage; `=0` restores). A bug fix in the hand-off from motion (ZONE_HOLD bit 64): the point he
+can stop at is fixed at the hand-off (where he was, his speed then, 0.8 of his braking). It was re-placed a stopping
+distance ahead of him every tick, so it ran ahead at his own speed and he never slowed (a Cover 2 hook handed off a
+seam at 13.6 yd was still asking for +5.7 yd/s downfield at 14.6 yd, 3.2 s).
+Staged (`scripts/diag/coverage/handoff-stage.mts`, 437 plays): underneath depth at the throw p50 -0.0 to -0.2 yd,
+p75 -0.2 to -0.5; Cover 2 four verts, hooks 12.5 / 16.1 / 17.1 -> 11.8 / 15.7 / 16.7 yd.
+Card e139 (5 seeds x 32 games, against engine-101), by seed: completion -2.4, -3.3, -1.2, -0.2, +2.2 points; yards an
+attempt -0.54, -0.10, +0.02, +0.08, -0.11; YAC -0.28, +0.21, -0.10, +0.10, -0.56. Nothing else moves on more than one
+seed. Landed as a bug fix with a small effect in the direction of the mechanism (shallower hooks under the throw).
