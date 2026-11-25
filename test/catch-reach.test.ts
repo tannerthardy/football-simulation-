@@ -1,4 +1,8 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
+// BALL_EST pinned to the receivers-only estimator (Coverage C14, 2026-11-25): this file tests the physical reach envelope,
+// not perception. The scene jumps from the throw to the catch with no ticks between, so under the honest defender
+// (26657: a defender plays only a ball he has sampled) the in-phase defender has never seen the ball and cannot play it.
+vi.hoisted(() => { process.env.BALL_EST = '6145'; });
 import { Rng } from '../src/core/rng.js';
 import { generateTeam, pickDefense, pickOffense } from '../src/league/team.js';
 import { PASS_BY_ID } from '../src/playbook/concepts.js';
@@ -21,7 +25,10 @@ function contest(distance: number) {
   d.tags.add('looking');
   sim.throwBall(sim.qb, r, { x: 15, y: 0, z: 0 }, { x: 50, y: 26, z: 2 }, 1.5);
   sim.t = 1.5;
-  sim.rng.next = () => 0; // Exercise the contested-interception branch.
+  // Exercise the contested-interception branch. Not exactly 0: Rng.gaussian redraws a zero (while (u === 0)), so any normal
+  // draw on this stream (the honest defender's estimator draws them as the catch resolves) never returned (Coverage C14,
+  // 2026-11-25, the run with BALL_EST 26657 on hung here). Any probability comparison resolves as with 0.
+  sim.rng.next = () => 1e-12;
   resolveCatchOpportunities(sim, { x: 49.9, y: 26, z: 2 }, { x: 50.1, y: 26, z: 2 });
   return { sim, d };
 }

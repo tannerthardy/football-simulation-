@@ -6,9 +6,47 @@ import type { Agent } from './agent.js';
 import type { Perceived } from './perception.js';
 import type { PlaySim } from './playsim.js';
 import { estimatesFor } from './ball-estimate.js';
+import { sawAt } from './release-evidence.js';
+
+/** ACQ_SEEN (experimental, off; Coverage C14, ported 2026-11-25 from coverage/C14-break-look, docs/reviews/
+ * 2026-11-15-defender-throw-picture.md, the seen-catch link): `acquiredAt` is when he last saw the ball in flight (under
+ * BALL_EST, his own last sample), not the moment he last asked for his flight. observedHolder drops any held-body picture
+ * older than it ("he saw an unheld ball after it"); a defender on his own estimate asks every tick while that estimate
+ * still has the ball up, after the catch too, so `acquiredAt` was always "now" and every picture of the catcher holding
+ * the ball was dropped until his estimate landed (attended defenders started on the carrier 0.8-1.15 s after the catch,
+ * against 0.35-0.55 s for those never attended; def-late.ts, engine-71). The oracle path (the true flight copied) is
+ * unchanged: first acquisition kept as before. */
+const ACQ_SEEN = process.env.ACQ_SEEN === '1';
+/** TRACKED_CATCH (experimental, off; Coverage C14, ported 2026-11-25): perception's fast/slow split for a catch. A receiver
+ * who has been in his view for TRACKED_CATCH_SPAN before now (sawAt's rule: his recorded head cone, else 1.8 rad of his body
+ * facing, with a clear line of sight, on every tick of the span) is a man he is tracking, and the ball arriving into him is
+ * a tracked event: he reads the catcher through the tracking loop (`track()`, its latency), not the choice-reaction
+ * `see()`. A catch outside his view over that span, or one he turns to after the fact, keeps the recognition delay; a ball
+ * still being secured is not yet `carrying` and stays unread either way. Skill enters through the loop's latency. */
+const TRACKED_CATCH = process.env.TRACKED_CATCH === '1';
+const TRACKED_CATCH_SPAN = Number(process.env.TRACKED_CATCH_SPAN ?? 30) / 100;
+/** TRACKED_CATCH: per observer and target, how many ticks running (to `t`) he has had the target in view; one sight test
+ * per pair per tick, rebuilt from his recorded view after a gap. Offensive linemen are never catchers and are skipped. */
+const trackedRun = new WeakMap<Agent, Map<Agent, { t: number; run: number }>>();
+const LINEMEN = new Set(['LT', 'LG', 'C', 'RG', 'RT']);
+function trackedOver(a: Agent, sim: PlaySim, target: Agent): boolean {
+  if (!target.profile || LINEMEN.has(target.slot)) return false; // a body with no profile (a test stand-in), or a lineman
+  const n = Math.round(TRACKED_CATCH_SPAN / sim.dt), h = target.profile.heightYd * 0.7;
+  let m = trackedRun.get(a);
+  if (!m) { m = new Map(); trackedRun.set(a, m); }
+  const r = m.get(target);
+  if (r && Math.abs(r.t - sim.t) < 1e-9) return r.run > n;
+  let run: number;
+  if (r && Math.abs(sim.t - r.t - sim.dt) < 1e-9) run = sawAt(sim, a, 0, target, h) ? r.run + 1 : 0;
+  else { run = 0; while (run <= n && sawAt(sim, a, run, target, h)) run++; }
+  m.set(target, { t: sim.t, run });
+  return run > n;
+}
 
 export interface PossessionRead { target: Agent; cue: Perceived }
 type FlightSample = PlaySim['ballPath'][number];
+/** ACQ_SEEN: when he first acquired this play's flight (set once). */
+const firstAcquired = new WeakMap<Agent, number>();
 const flights = new WeakMap<Agent, { acquiredAt: number; path: FlightSample[];
   opportunity?: { receiver: Agent; t: number }; resolved?: boolean }>();
 
@@ -24,10 +62,17 @@ export function acquireFlight(a: Agent, sim: PlaySim): FlightSample[] {
   const own = estimatesFor(a) && !!sim.ballEstimates;
   const path = own ? sim.ballEstimates.estimate(a, sim).map(p => ({ ...p })) : sim.ballPath.map(p => ({ ...p }));
   if (own && !path.length) return path;
+  // ACQ_SEEN: his last sample of the ball; with none yet (a flight from his release prior alone), the moment he first
+  // acquired it, kept, not refreshed.
+  // (The fallback is his first acquisition, kept apart from acquiredAt: a flight re-acquired every tick, as FLIGHT_REVISE
+  // does, would otherwise make it "now" again.)
+  if (own && ACQ_SEEN && !firstAcquired.has(a)) firstAcquired.set(a, sim.t);
+  const seenAt = own && ACQ_SEEN ? sim.ballEstimates.lastSeen(a)?.t ?? firstAcquired.get(a) : undefined;
+  const acquiredAt = seenAt ?? sim.t;
   // HONEST_FLIGHT: a re-estimate of the flight he is already playing keeps the catch hypothesis he formed on it (his
   // own judgment, refuted or replaced only by what he perceives); off, each acquisition starts without one.
   const prev = HONEST_FLIGHT_READ ? flights.get(a) : undefined;
-  flights.set(a, prev && !prev.resolved && prev.opportunity ? { acquiredAt: sim.t, path, opportunity: prev.opportunity } : { acquiredAt: sim.t, path });
+  flights.set(a, prev && !prev.resolved && prev.opportunity ? { acquiredAt, path, opportunity: prev.opportunity } : { acquiredAt, path });
   return path;
 }
 
@@ -93,7 +138,7 @@ export function observedHolder(a: Agent, sim: PlaySim, blocker?: Agent): Possess
   const flight = flights.get(a);
   for (const target of sim.opponents(a)) {
     if (target === blocker) continue;
-    const cue = sim.see(a, target);
+    const cue = TRACKED_CATCH && target !== sim.qb && trackedOver(a, sim, target) ? sim.track(a, target, 1, true) : sim.see(a, target);
     if (cue.carrying !== true) continue;
     if (cue.age === undefined) { unknownTime = true; continue; }
     // The observer subsequently saw an unheld ball in flight. An earlier

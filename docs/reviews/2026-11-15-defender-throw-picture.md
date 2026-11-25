@@ -113,3 +113,19 @@ All three are outputs of this picture, so stage two needs no other input from th
 
 One new bit for the defense's honest picture (proposed: BALL_EST bit 8192, off). It is carded alone, and against the
 oracle with the receivers' glance (6145) on.
+
+## Sight of the ball: one definition (2026-11-25; Flex with Coverage and Defense, Integration's ruling)
+
+`SIGHT_BALL` (off; for the honest-defender card) puts it in one file, `src/sim/ball-estimate.ts`, as three named
+readings of the same looks. It replaces the earlier wording ("the glance cone with a dwell").
+
+| Reading | Test | Lets him | Does not let him |
+|---|---|---|---|
+| **Glimpse** (`glimpsesBall`, `BallEstimates.glimpses`) | the ball in his recorded head's view cone (HEAD_CONE, 90°; his facing within 1.8 rad where no head is recorded) with a clear sight line, at the moment his delay shows | turn his head toward it (Defense's look trigger); release-evidence's ball cue | know where it is, have a flight, play it |
+| **Sight** (`seesBallAt`, the estimator's sample) | the same, within the eye range (30°, near-central vision, where a ball can be fixed) | take a sample; the glance dwell counts these | — |
+| **Sees it now** (`BallEstimates.seesBall`) | a sample on this tick or the last, held for the glance dwell | the hands play (Defense's HANDS_SEEN gate) | — |
+| **Has an estimate** (`hasEstimate`, seenReady) | a recent sample (INCIDENTAL_FLIGHT_MAX_AGE) | move on his estimate | gate a play on the ball. A look he has turned away from still counts here, so it is not sight (Defense's stage: 11 of 13 lane plays with the head 104–177° off the ball) |
+
+The sight line is the bodies' recorded positions and poses at that moment (`lineOfSight`, as `sawAt`). Under
+SIGHT_BALL the estimator no longer samples a ball behind a body, receivers included. A seen catch is not on this list:
+it is the holder channel (`sim.see(a, R).carrying`), and bodies stay on `sawAt`.
