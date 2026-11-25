@@ -1,0 +1,313 @@
+diff --git a/config/baseline.json b/config/baseline.json
+index bc222b095..a41038264 100644
+--- a/config/baseline.json
++++ b/config/baseline.json
+@@ -116,6 +116,7 @@
+     "TRACK_PURSUIT": "0",
+     "TRACK_TACKLE": "0",
+     "TRACK_FEEL": "0",
++    "FLIGHT_REVISE": "0",
+     "SIGHT_CARRIER": "0",
+     "SIGHT_COVER": "0",
+     "SIGHT_RECOG": "0",
+diff --git a/config/reference-stack.json b/config/reference-stack.json
+index c543a7d64..a2925fc00 100644
+--- a/config/reference-stack.json
++++ b/config/reference-stack.json
+@@ -164,6 +164,7 @@
+     "PURSUIT_SPOT": "on",
+     "RELEASE_BELIEF": "on",
+     "TRACK_FEEL": "on",
++    "FLIGHT_REVISE": "on",
+     "SIGHT_CARRIER": "on",
+     "SIGHT_COVER": "on",
+     "SIGHT_RECOG": "on",
+diff --git a/docs/FLAGS.md b/docs/FLAGS.md
+index 6062d8cef..d96fd16f1 100644
+--- a/docs/FLAGS.md
++++ b/docs/FLAGS.md
+@@ -2,7 +2,7 @@
+ 
+ Every engine switch read from the environment, recounted from `src` at `57f50fc3` on 2026-10-22. This includes #210's promotion and #205's two additional default-on switches. Flags that are not on develop (parked, removed from a PR, or only on a side branch) are kept in [PARKED.md](PARKED.md) so the ideas are not lost. Registration rules are in [PLAN.md](PLAN.md): at most 10 experimental flags, and each expires two reviews after it lands.
+ 
+-There are 519 flags read from the environment in `src` (2026-11-25, engine-103: engine-102 plus PLAN_BREAK_BODY (on; Rules; counts corrected to Tools' inventory, docs/reviews/2026-11-25-flag-inventory.md); engine-102: engine-101 plus HANDOFF_FREEZE (on, a bug fix; Coverage); 2026-11-24, the QB quick-game landing: plus QB_V2 (off) and QB_QUICK_DRIFT (a mode, 0); 2026-11-24, engine-101: engine-100 plus BLOCK_FRAME (on; Defense); engine-100: engine-99 plus SCOUT_SEEN (on, leak removal; Flex); engine-99: engine-98 plus QB_SCOUT and QB_SCREEN_SEEN (on, leak removals; QB lane); engine-98: engine-97 plus HANDS_ON_ARMS, SECURE_SPLIT and SECURE_FACE_GEOM (on); recounted 2026-11-24, with CALL_COMPOSE (off, rules/call-compose) counted: BELIEVED_BODY (off, experimental; Flex) on top of engine-97; engine-97: engine-96 plus QB_SCAN and QB_CANON_SEEN (on, leak removals; Flex; recounted from `src`, the on count also takes in engine-96's BALL_DRAG); engine-96: engine-95 plus BALL_DRAG (on); engine-95: engine-94 plus THROWAWAY_FELT (on); engine-94: engine-93 plus FLIGHT_BREAK (on) and FLIGHT_LEAD (off, parked); engine-93: engine-92 plus HEAD_FOLLOW (on); engine-92: engine-91 plus PERIPH_ACUITY (on); engine-91: engine-90 plus STEM_WORK (on); engine-90: engine-89 plus READ_VERTICAL_LOS and BACK_CLEAR (on); engine-89: engine-88 plus FLAT_CARRY (on); engine-88: engine-87 plus FORECAST_FINISH and QB_ROLE_PATH (on), READ_WINDOW and QB_CLOSE_BELIEF (off); engine-87: engine-86 plus HALF_KEY (on); engine-86 was engine-85 plus MUSH_MATCH (on); engine-85 was engine-84 plus FLAT_SINK (on); engine-84 was engine-83 plus DOWN_RISE_PLANT (on); engine-83 was engine-82 plus QB_DRIVE, QB_RHYTHM_THROW, QB_ALIGN, QB_BODY_FOLLOW, QB_WINDOW_ARRIVE, QB_KEY_PLANT, QB_STICK, QB_PEEK_CLOCK, QB_MOF_READ, QB_DEEP_WAIT and QB_STANCE; QB_DRIVE, QB_RHYTHM_THROW, QB_WINDOW_ARRIVE, QB_KEY_PLANT and QB_STICK on): 396 are on unless set to `0`, 95 are off unless set to `1`, and 28 are numeric scales or modes (identity value unless listed in the stack's numeric section). The rows below carry each flag's history.
++There are 520 flags read from the environment in `src` (2026-11-25: plus FLIGHT_REVISE (on, acts only with the defense estimator; Flex), recounted from `src`: 396 on unless set to `0`, 95 off unless set to `1`, 29 numeric or modes; 2026-11-25, engine-103: engine-102 plus PLAN_BREAK_BODY (on; Rules; counts corrected to Tools' inventory, docs/reviews/2026-11-25-flag-inventory.md); engine-102: engine-101 plus HANDOFF_FREEZE (on, a bug fix; Coverage); 2026-11-24, the QB quick-game landing: plus QB_V2 (off) and QB_QUICK_DRIFT (a mode, 0); 2026-11-24, engine-101: engine-100 plus BLOCK_FRAME (on; Defense); engine-100: engine-99 plus SCOUT_SEEN (on, leak removal; Flex); engine-99: engine-98 plus QB_SCOUT and QB_SCREEN_SEEN (on, leak removals; QB lane); engine-98: engine-97 plus HANDS_ON_ARMS, SECURE_SPLIT and SECURE_FACE_GEOM (on); recounted 2026-11-24, with CALL_COMPOSE (off, rules/call-compose) counted: BELIEVED_BODY (off, experimental; Flex) on top of engine-97; engine-97: engine-96 plus QB_SCAN and QB_CANON_SEEN (on, leak removals; Flex; recounted from `src`, the on count also takes in engine-96's BALL_DRAG); engine-96: engine-95 plus BALL_DRAG (on); engine-95: engine-94 plus THROWAWAY_FELT (on); engine-94: engine-93 plus FLIGHT_BREAK (on) and FLIGHT_LEAD (off, parked); engine-93: engine-92 plus HEAD_FOLLOW (on); engine-92: engine-91 plus PERIPH_ACUITY (on); engine-91: engine-90 plus STEM_WORK (on); engine-90: engine-89 plus READ_VERTICAL_LOS and BACK_CLEAR (on); engine-89: engine-88 plus FLAT_CARRY (on); engine-88: engine-87 plus FORECAST_FINISH and QB_ROLE_PATH (on), READ_WINDOW and QB_CLOSE_BELIEF (off); engine-87: engine-86 plus HALF_KEY (on); engine-86 was engine-85 plus MUSH_MATCH (on); engine-85 was engine-84 plus FLAT_SINK (on); engine-84 was engine-83 plus DOWN_RISE_PLANT (on); engine-83 was engine-82 plus QB_DRIVE, QB_RHYTHM_THROW, QB_ALIGN, QB_BODY_FOLLOW, QB_WINDOW_ARRIVE, QB_KEY_PLANT, QB_STICK, QB_PEEK_CLOCK, QB_MOF_READ, QB_DEEP_WAIT and QB_STANCE; QB_DRIVE, QB_RHYTHM_THROW, QB_WINDOW_ARRIVE, QB_KEY_PLANT and QB_STICK on): 396 are on unless set to `0`, 95 are off unless set to `1`, and 28 are numeric scales or modes (identity value unless listed in the stack's numeric section). The rows below carry each flag's history.
+ 
+ **Promotion (2026-11-09):** the reference stack `run-ref-4` is now the engine's default. The 90 flags it lists `on` are read as on unless set to `0` (rows marked "promoted" below); the rest are unchanged. Decisions and evidence for each flag are in [REFERENCE_STACK.md](REFERENCE_STACK.md); `npm run ref -- --list` is the current inventory, and `npm run ref -- --off -- <command>` runs the engine as it was before. The test suites still run on the pre-promotion engine (pinned in `vitest.config.ts`) until their recorded cases are re-recorded. The counts in the paragraph above predate all of this.
+ 
+@@ -507,6 +507,7 @@ There are 519 flags read from the environment in `src` (2026-11-25, engine-103:
+ | `PURSUIT_FIELD` | on | promoted 2026-11-12 (engine-49; `=0` restores); was experimental | defense (C9, the rally from 4+ yd on short zone catches: a seen-carrier pursuit by a coverage player keeps its request) | `src/sim/coverage-space.ts` (`containCoverage`, `asCarrierPursuit`), `src/sim/behaviors/defense.ts` (`pursueIfLive`) | Coverage containment zeroed a pursuing coverage player's velocity toward the sideline whenever he could not stop before it on half his lateral traction (5-8 yd from the line at pursuit speed): 47-56% of the first and second rally defenders' > 20 deg re-aims, undone and repeated, each losing speed (`scripts/diag/pass-operators/rally4.mts`). On: a pursuit of a carrier he has seen (pursueIfLive's chase of an observed holder, CATCH_CARRY's drive on the catcher) is not contained; drops, carries, catch anticipation, flight continuation and the rally to the ball's area stay contained. |
+ | `PURSUIT_COMMIT` | on | promoted 2026-11-13 (engine-58; `=0` restores); was experimental | defense (open-field pursuit, commitment rule) | `src/sim/behaviors/common.ts` (`commitMeeting` in `pursuitPoint`), `src/sim/behaviors/defense.ts` (`playObservedFlight`) | A pursuer keeps the meeting moment he chose on his current picture of the carrier until it is unreachable by 0.15 s (or a fallback becomes reachable with 0.1 s to spare), a fresh meeting is better by 0.3 s, it is under 0.15 s away or the target changes; before, the first reachable forecast sample was re-picked every tick, flipping between reachable and least-late fallback and jumping the meeting time on 9-13% of ticks, 35-40% of his aim-point turn (`scripts/diag/effective-mass/pursuit-weave.mts`). Also a defender playing the ball holds his last approach on the flight's last tick instead of standing (55 of 270 defenders within 8 yd of a catch asked for zero speed on that tick, 0 on). Pass pursuers' request turn p50 27 → 20 deg/s, pursuit reversed re-aims 0.411 → 0.371 /s (dither guard panel); reach within 1 yd unchanged. Test `test/pursuit-commit.test.ts`. |
+ | `BALL_EST` | 6145 (numeric bitmask; default since engine-72, 2026-11-16; `=0` restores the true ball flight for every player) | promoted for receivers with BREAK_LOOK and SEEN_EMPTY (three seeds, completion about -1.4 pts with the landing set, cause stated: post-sample steering is a physical redirect and the catch model); defenders still read the true flight (bits 2049/8192 on the Coverage branch); was: 6145 (receivers on their own sight of the ball) carded clean alone at engine-70 and is held on an interaction with the route and spacing holds; experimental, parked designs 1-4 and 6 (C14 coverage, 2026-11-14) | coverage / receivers | `src/sim/ball-estimate.ts`, `src/sim/possession-read.ts` (`acquireFlight`), `src/sim/behaviors/receiver.ts` (TrackBall, RouteRunner pre-release look), `src/sim/behaviors/defense.ts` (`playBall`), `src/sim/catching.ts` (`trackPen`) | set at first review. Each player's own estimate of a ball in flight from the ball he has seen, replacing the defender's and the receiver's copies of the true path. Bits: 1 the estimator; 2 removes catching.ts's tracking penalty (double-counts ballTracking); 4 a committed catch point moves with his estimate; 8 looming (time to contact); 16 the deep receiver looks back from his landmark depth, and the neck range narrows with speed (design 6); 32 incidental catches and defenders play the ball only on their own sight of it (passive sight included, reaction-gated). With HEAD=1 his looks are wants on the shared head (head.ts: want "ball" or "qb") and the neck range is neckRange; with HEAD off BALL_EST keeps its own head. Spec and results: `docs/reviews/2026-11-14-ball-in-air-spec.md`. Bit 64 (design 7, with TRUNK_TWIST; attempt 1 of 2, 2026-11-14): his look (`lookFor`, `preLook`, TrackBall past 3 yd) goes through the trunk before the hips: head and neck (`neckOf`), then the shoulders off the hips for what the neck cannot reach (to TRUNK_RANGE), then the hips only for what is left; the target is his own estimate (or the QB before he has one), never the true ball. 16 games seed 101, HEAD=1, TRUNK_TWIST on, out of view (ball past neck + 30 deg off his shoulders) 7 / 71: ball 90-120 deg off his run 29 / 22%, 120-180 deg 52 / 39%, flat 26 / 7%, back 23 / 10%, deep 74 / 72% (23 / 87: deep 69 / 61%); speed while tracking 120+ deg 4.95 / 5.58 yd/s, drift off his release line 0.62 / 0.30 yd/s; catch rates within noise (deep 52 / 44%, 23 / 87: 46 / 50%, n about 200). Bit 128 (defense only, 2026-11-14): the estimator for the defense alone (`acquireFlight`, and with bit 32 his own-sight play on the ball); receivers keep today's tracking. Cards as 129 then 161. Witness scripts/diag/risk/def-ball.ts. Bit 1024 (2026-11-15, attempt 1 of 2): the receiver's feet run on his own image of the ball (`src/sim/ball-servo.ts`; design note `docs/reviews/2026-11-15-receiver-feet-servo.md`): his speed changes with the optical acceleration of tan(elevation) (OAC) and he accelerates across his line of sight with the drift of the ball's bearing (proportional navigation, N 3), fit by least squares over his last 1.0 s of samples (at least 8 over 0.5 s), on a held command seeded from his route, handing over with 0.35 s left. Witness scripts/diag/risk/deep-track.ts (forced deep probe). Bit 1024 is the receiver's one card meaning (the receiver on his own sight): it carries bits 2, 4, 16 and 64, so `BALL_EST=1025` equals 1111; the single receiver bits remain for the parked designs' reads. Bit 2048 (the glance rule, 2026-11-15, the user's direction via Integration): once the ball has been in his own eyes for a dwell (0.10 s for the intended target, 0.15 s for anyone else, x (1.5 - skill)), his belief of the flight is the flight plus one correlated error per look, `BALL_GLANCE_DEPTH`% of his range along his line of sight and 2% across, x (1.5 - skill), shrinking with time held as sqrt(0.3 / (0.3 + held)) and growing with time looked away as (1 + age / 0.5); no look, nothing (`test/ball-glance.test.ts`). It carries 2/4/16/64 and turns the servo off; card `BALL_EST=2049`. Bit 4096 (receivers only, 2026-11-15, the mirror of bit 128): the estimator for the offense alone, defenders keep today's read of the flight; the receiver-side card is `BALL_EST=6145`. Under 2049 the defense's side moves YAC per reception 7.50 -> 14.10 (seed 11 x 16, `scripts/diag/risk/yac-split.ts`; receivers only 6.74): a defender without his own estimate never acquires a flight (`acquireFlight` returns empty), so the HONEST_READS post-catch path never starts for him. The fit and the servo stay as the deeper version. Closing speed for its lateral law is read from looming (his range over the ball's optical time to contact, TAU_SD), not differenced range. |
++| `FLIGHT_REVISE` | on | defect fix, on at landing (`=0` restores; Flex, 2026-11-25; Integration's scope of the defense's flight, item (a)) | coverage (a defender's flight under the estimator) | `src/sim/ball-estimate.ts` (`BallEstimates.estimate`), `src/sim/behaviors/defense.ts` (`playBall`) | Acts only where the estimator is on for a defender (not under the default BALL_EST 6145, so the default engine is unchanged). Two defects froze his flight: the release seed (the ball at the passer's seen hand and a point along his seen shoulder line) fitted a trajectory by itself, and once recorded, playBall kept that record and never re-read his estimate. Now a defender's path needs one sample of his own (the seed still shapes the fit), and while playing the ball he re-reads his estimate each tick. Staged (`scripts/diag/coverage/defender-flight-stage.mts`, BALL_EST=2049, 5 cells x 16 seeds): his recorded flight at the true arrival, after 0.4-0.6 s of watching, 9.8 -> 0.45 yd (0.2-0.4 s: 10.2 -> 4.1); by cell 9-16 -> 3-4.7 yd; back-turned man defenders on slants still record nothing. Data: docs/reviews/data/2026-11-25-flight-revise-stage.md. Tests `test/flight-revise.test.ts`. |
+ | `BALL_EST_NECK_SPRINT` | 45 (numeric, degrees) | experimental (with BALL_EST bit 16) | coverage / receivers | `src/sim/ball-estimate.ts` (`neckOf`) | set at first review. Design 6 attempt 2 (parked): the head's useful range a side at his top speed (90 at a standstill, linear in his speed share); choice, sensitivity read at 60. The neck-range rule itself lives in HEAD (#720 has adopted it); this copy is BALL_EST's own head until the rebase onto #720, and must not drift from it |
+ | `BALL_GLANCE_DEPTH` | 10 (numeric, percent) | experimental (with BALL_EST bit 2048) | coverage / receivers | `src/sim/ball-estimate.ts` (`glanceSd`) | set at first review. The glance rule's error along his line of sight at a look's start, in percent of his range (depth, the hard axis); across it is 2%. Stated choice (read at 5 and 20), not fitted to completion. |
+ | `BREAK_LOOK` | on | promoted 2026-11-16 (engine-72; `=0` restores); was experimental (C14 pass game, 2026-11-16; attempt 1; with BALL_EST, carded on the glance 6145) | coverage / receivers (look timing) | `src/sim/behaviors/receiver.ts` (`RouteRunner.preLook`) | set at first review. A deep-family route the plan throws on its break (`BREAK_DECL` throw family `onBreak`: corner, post, seam read) gets the break-timed pre-look as well as design 6's depth look (DEEP_LOOK_DEPTH 12 yd), whichever comes first; a go, fade or seam (`seenOpen`) is unchanged. Without it, on the paired staged throws (`scripts/diag/catch/paired-throws.ts`, engine-70, 305 throws), three smash corners broken short of 12 yd and thrown on the break never sampled the ball under the glance (ball 150-175 deg behind his hips at his body-turn window). His own route and break are the cue; no new information. Declared clear-outs (compile.ts `CLEAR_OUTS`) are all goes, so none is affected. No new constants. |
+diff --git a/docs/reviews/data/2026-11-25-flight-revise-stage.md b/docs/reviews/data/2026-11-25-flight-revise-stage.md
+new file mode 100644
+index 000000000..8a04e8921
+--- /dev/null
++++ b/docs/reviews/data/2026-11-25-flight-revise-stage.md
+@@ -0,0 +1,70 @@
++# FLIGHT_REVISE staged (Flex, 2026-11-25)
++
++`scripts/diag/coverage/defender-flight-stage.mts` on develop 7585be04f: per thrown play (5 cells x 16 seeds), the
++non-lineman defender nearest the true landing at the throw. "Recorded" is acquireFlight's store (what his play on the
++ball reads); "own first sample" is the estimator's first sample of the ball in his eyes.
++
++## Default (BALL_EST=6145: defenders copy the true flight)
++
++| case | n | no flight recorded | flight recorded after release (s) | own first sample after release (s) | his recorded flight at the true arrival time, off the ball (yd) |
++|---|---|---|---|---|---|
++| curl_flat vs cover2 | zone | back to QB | 11 | 0 | 0.35 | - (0) | 0.00 |
++| curl_flat vs cover2 | zone | back turned | 5 | 0 | 0.30 | - (0) | 0.00 |
++| curl_flat vs cover3 | zone | back to QB | 10 | 0 | 0.35 | - (0) | 0.00 |
++| curl_flat vs cover3 | zone | back turned | 6 | 0 | 0.35 | - (0) | 0.00 |
++| four_verts vs cover1 | man | back turned | 6 | 1 | 1.60 | - (0) | 0.00 |
++| slant_flat vs cover1 | man | back to QB | 1 | 0 | 0.55 | - (0) | 3.98 |
++| slant_flat vs cover1 | man | back turned | 7 | 0 | 1.00 | - (0) | 3.39 |
++| slant_flat vs cover1 | zone | back to QB | 8 | 0 | 0.30 | - (0) | 0.00 |
++| stick vs cover3 | zone | back to QB | 16 | 0 | 0.35 | - (0) | 0.00 |
++
++## Estimator on for the defense (BALL_EST=2049), FLIGHT_REVISE off
++
++| case | n | no flight recorded | flight recorded after release (s) | own first sample after release (s) | his recorded flight at the true arrival time, off the ball (yd) |
++|---|---|---|---|---|---|
++| curl_flat vs cover2 | zone | back to QB | 11 | 1 | 0.35 | 0.50 (8) | 14.06 |
++| curl_flat vs cover2 | zone | back turned | 5 | 3 | 1.20 | 0.95 (4) | 2.13 |
++| curl_flat vs cover3 | zone | back to QB | 10 | 0 | 0.75 | 0.50 (7) | 9.82 |
++| curl_flat vs cover3 | zone | back turned | 6 | 0 | 0.80 | 0.55 (3) | 9.35 |
++| four_verts vs cover1 | man | back turned | 6 | 5 | 0.70 | - (0) | 22.53 |
++| slant_flat vs cover1 | man | back to QB | 1 | 0 | 0.55 | - (0) | 13.07 |
++| slant_flat vs cover1 | man | back turned | 7 | 7 | - | 0.85 (1) | - |
++| slant_flat vs cover1 | zone | back to QB | 8 | 0 | 0.30 | 0.15 (6) | 11.39 |
++| stick vs cover3 | zone | back to QB | 16 | 0 | 0.35 | 0.20 (9) | 15.75 |
++
++| time since his own first sample | ticks | his recorded flight at the true arrival, off the ball (yd, median) |
++|---|---|---|
++| 0.0-0.2 s | 8 | 16.85 |
++| 0.2-0.4 s | 142 | 10.16 |
++| 0.4-0.6 s | 116 | 9.80 |
++| 0.6+ s | 188 | 10.75 |
++
++
++## Estimator on for the defense (BALL_EST=2049), FLIGHT_REVISE on
++
++| case | n | no flight recorded | flight recorded after release (s) | own first sample after release (s) | his recorded flight at the true arrival time, off the ball (yd) |
++|---|---|---|---|---|---|
++| curl_flat vs cover2 | zone | back to QB | 11 | 1 | 0.60 | 0.40 (10) | 4.10 |
++| curl_flat vs cover2 | zone | back turned | 5 | 3 | 1.20 | 0.95 (4) | 3.93 |
++| curl_flat vs cover3 | zone | back to QB | 10 | 0 | 0.75 | 0.50 (10) | 3.14 |
++| curl_flat vs cover3 | zone | back turned | 6 | 0 | 0.80 | 0.55 (6) | 3.76 |
++| four_verts vs cover1 | man | back turned | 6 | 5 | 0.95 | 0.75 (1) | 22.53 |
++| slant_flat vs cover1 | man | back to QB | 1 | 0 | 0.80 | 0.60 (1) | 3.87 |
++| slant_flat vs cover1 | man | back turned | 7 | 7 | - | 0.85 (1) | - |
++| slant_flat vs cover1 | zone | back to QB | 8 | 0 | 0.35 | 0.15 (8) | 4.74 |
++| stick vs cover3 | zone | back to QB | 16 | 2 | 0.40 | 0.20 (14) | 2.99 |
++
++| time since his own first sample | ticks | his recorded flight at the true arrival, off the ball (yd, median) |
++|---|---|---|
++| 0.0-0.2 s | 15 | 14.59 |
++| 0.2-0.4 s | 218 | 4.08 |
++| 0.4-0.6 s | 169 | 0.45 |
++| 0.6+ s | 346 | 0.78 |
++
++
++Notes:
++- The default's slant_flat man rows (3.4-4.0 yd with the true copy) are this stage's measurement, not a stale copy:
++  on those plays the ball's path is rewritten in flight (the recorded path starts 0.4-0.9 s after the release while
++  the ball is still in the air; a touched ball). The defender copies the current path; the stage compares it with the
++  first path's landing.
++- Back-turned man defenders on slants record nothing with the estimator either way (7 of 7): no look, no flight.
+diff --git a/scripts/diag/coverage/defender-flight-stage.mts b/scripts/diag/coverage/defender-flight-stage.mts
+new file mode 100644
+index 000000000..715f86d22
+--- /dev/null
++++ b/scripts/diag/coverage/defender-flight-stage.mts
+@@ -0,0 +1,42 @@
++/** Defender's flight picture (Flex, 2026-11-25, Integration's scope of BALL_EST bit 4096): with the default (receivers
++ * only) every defender past throw recognition copies the true flight; with the estimator on for the defense he has only
++ * what he has seen. Per thrown play, the defender nearest the true landing at the throw: his coverage kind, whether his
++ * back was to the passer at the release (facing > 90 deg off the passer), when he first had a flight recorded
++ * (acquireFlight's store) and his own first sample of the ball, and how far his recorded landing is from the true one.
++ * Read-only observers (hasObservedFlight, rememberedFlight, firstSeenAt). usage: BALL_EST=<mask> node --import tsx scripts/diag/coverage/defender-flight-stage.mts */
++import { nativeTraceSetup } from '../command-trace.js';
++import { PlaySim } from '../../../src/sim/playsim.js';
++import { hasObservedFlight, rememberedFlight } from '../../../src/sim/possession-read.js';
++const med = (a: number[]) => { const b = a.filter(Number.isFinite).sort((p, q) => p - q); return b.length ? b[Math.floor(b.length / 2)].toFixed(2) : '-'; };
++const byWatch: Record<string, number[]> = {};
++const rows: Record<string, { n: number; never: number; tRec: number[]; tSeen: number[]; err: number[] }> = {};
++for (const [concept, coverage] of [['curl_flat', 'cover3'], ['stick', 'cover3'], ['curl_flat', 'cover2'], ['four_verts', 'cover1'], ['slant_flat', 'cover1']] as const) for (let seed = 1; seed <= 16; seed++) {
++  const sim: any = new PlaySim(nativeTraceSetup({ coverage, concept, seed, roster: 7, formation: 'gun_doubles_11', flip: false }));
++  let D: any = null, kind = '', back = false, landing: any = null, tRec = NaN, t0 = NaN;
++  for (let i = 0; i < 400 && sim.phase === 'live'; i++) {
++    sim.tick();
++    if (sim.throwAt >= 0 && !D && sim.ball.kind === 'air' && sim.ballPath?.length) {
++      t0 = sim.throwAt; landing = sim.ballPath.at(-1);
++      D = sim.defense.filter((d: any) => !/^(DE|DT|NT)/.test(d.slot)).sort((a: any, b: any) => Math.hypot(a.pos.x - landing.x, a.pos.y - landing.y) - Math.hypot(b.pos.x - landing.x, b.pos.y - landing.y))[0];
++      kind = D.behavior?.kind ?? '?';
++      const toQb = Math.atan2(sim.qb.pos.y - D.pos.y, sim.qb.pos.x - D.pos.x), off = Math.abs(Math.atan2(Math.sin(D.body.facing - toQb), Math.cos(D.body.facing - toQb)));
++      back = off > Math.PI / 2;
++    }
++    if (D && Number.isNaN(tRec) && hasObservedFlight(D)) tRec = sim.t - t0;
++    const fs = D ? sim.ballEstimates?.firstSeenAt?.(D) : undefined, rp = D && fs !== undefined ? rememberedFlight(D, 0) : null;
++    if (rp?.length && sim.ball.kind === 'air') { const at = rp.reduce((b: any, p: any) => Math.abs(p.t - landing.t) < Math.abs(b.t - landing.t) ? p : b, rp[0]); const w = sim.t - fs!; const k = w < 0.2 ? '0.0-0.2 s' : w < 0.4 ? '0.2-0.4 s' : w < 0.6 ? '0.4-0.6 s' : '0.6+ s'; (byWatch[k] ??= []).push(Math.hypot(at.x - landing.x, at.y - landing.y)); }
++    if (D && sim.ball.kind !== 'air') break;
++  }
++  if (!D) continue;
++  const key = `${concept} vs ${coverage} | ${kind} | back ${back ? 'turned' : 'to QB'}`;
++  const r = (rows[key] ??= { n: 0, never: 0, tRec: [], tSeen: [], err: [] }); r.n++;
++  const seen = sim.ballEstimates?.firstSeenAt?.(D); if (seen !== undefined) r.tSeen.push(seen - t0);
++  if (Number.isNaN(tRec)) r.never++; else r.tRec.push(tRec);
++  // His recorded flight at the true flight's end time (the catch or landing), against where the ball truly was then.
++  const path = rememberedFlight(D, 0) ?? null;
++  if (path?.length) { const at = path.reduce((b: any, p: any) => Math.abs(p.t - landing.t) < Math.abs(b.t - landing.t) ? p : b, path[0]); r.err.push(Math.hypot(at.x - landing.x, at.y - landing.y)); }
++}
++console.log(`BALL_EST=${process.env.BALL_EST ?? 'default 6145'}\n| case | n | no flight recorded | flight recorded after release (s) | own first sample after release (s) | his recorded flight at the true arrival time, off the ball (yd) |\n|---|---|---|---|---|---|`);
++for (const [k, r] of Object.entries(rows).sort()) console.log(`| ${k} | ${r.n} | ${r.never} | ${med(r.tRec)} | ${med(r.tSeen)} (${r.tSeen.length}) | ${med(r.err)} |`);
++console.log('\n| time since his own first sample | ticks | his recorded flight at the true arrival, off the ball (yd, median) |\n|---|---|---|');
++for (const k of ['0.0-0.2 s', '0.2-0.4 s', '0.4-0.6 s', '0.6+ s']) if (byWatch[k]) console.log(`| ${k} | ${byWatch[k].length} | ${med(byWatch[k])} |`);
+diff --git a/scripts/diag/perception/proj-err.mts b/scripts/diag/perception/proj-err.mts
+new file mode 100644
+index 000000000..e69de29bb
+diff --git a/scripts/diag/perception/velocity-lag-stage.mts b/scripts/diag/perception/velocity-lag-stage.mts
+new file mode 100644
+index 000000000..e69de29bb
+diff --git a/src/sim/ball-estimate.ts b/src/sim/ball-estimate.ts
+index 3a6533d94..d3b4a258e 100644
+--- a/src/sim/ball-estimate.ts
++++ b/src/sim/ball-estimate.ts
+@@ -131,6 +131,13 @@ export function glanceSd(range: number, skillV: number, held: number, age: numbe
+ export const BALL_EST_RCV_ONLY = (BALL_EST_BITS & 4096) !== 0 && !BALL_EST_DEF_ONLY;
+ export const BALL_EST_RCV = BALL_EST && !BALL_EST_DEF_ONLY;
+ /** Is the estimator on for this player (his own estimate in place of the true flight)? */
++/** FLIGHT_REVISE (on; `=0` restores; Flex, 2026-11-25, Integration's scope of the defense's flight, item (a)): acts only where
++ * the estimator is on for a defender. Two defects froze his flight. (1) The release seed (the ball at the passer's seen hand and
++ * a point along his seen shoulder line) fitted a flight by itself: a belief about direction stood as a trajectory before he had
++ * seen the ball. For a defender a path now needs at least one sample of his own; the seed still shapes the fit once he has one.
++ * (2) Once he had recorded a flight, playBall kept that record and never asked again, so his later samples never revised it; a
++ * defender playing the ball now re-reads his own estimate each tick (keeping the record only while the estimate is empty). */
++export const FLIGHT_REVISE = process.env.FLIGHT_REVISE !== '0';
+ export const estimatesFor = (a: { team: string }): boolean => BALL_EST && (BALL_EST_DEF_ONLY ? a.team === 'D' : BALL_EST_RCV_ONLY ? a.team === 'O' : true);
+ /** Design 6: landmark depth past the line (yd; measured, the NFL deep receiver's turn depth, GO/POST median 12.3/12.2). */
+ export const DEEP_LOOK_DEPTH = 12;
+@@ -409,7 +416,11 @@ export class BallEstimates {
+       this.seed(a, sim, tr);
+       if (tr.samples.length + tr.pseudo.length >= 2) { const nf = fitFlight([...tr.pseudo, ...tr.samples], sim.ball.flight.drag); if (finiteFit(nf)) { tr.fit = nf; tr.fitT = sim.t; tr.path = null; } }
+     }
+-    return this.glancePath(a, sim, tr) ?? (tr.fit ? this.pathOf(sim, tr) : []);
++    const glance = this.glancePath(a, sim, tr);
++    if (glance) return glance;
++    // FLIGHT_REVISE: for a defender the seed alone is a direction, not a flight.
++    if (FLIGHT_REVISE && a.team === 'D' && !tr.samples.length) return [];
++    return tr.fit ? this.pathOf(sim, tr) : [];
+   }
+ 
+   /** Design 4: before the throw he is looking for the QB this tick (his head turns to him in sense()). */
+diff --git a/src/sim/behaviors/defense.ts b/src/sim/behaviors/defense.ts
+index 130d80047..076495ae6 100644
+--- a/src/sim/behaviors/defense.ts
++++ b/src/sim/behaviors/defense.ts
+@@ -38,7 +38,7 @@ import { OPEN_FIELD, playsBall } from '../open-field.js';
+ import { DeepCoverage, StemAcceleration, stemStopped } from '../coverage-leverage.js';
+ import { facingTechnique, roundedTurnTime, withFacingTechnique } from '../coverage/orientation.js';
+ import { SNAP_REACT } from '../snap-count.js';
+-import { BALL_EST, BALL_EST_MAN_LOOK, estimatesFor, lookAnyway, lookJoints, neckOf, PHASE_BEHIND, PHASE_SIDE, phaseJudgeSd } from '../ball-estimate.js';
++import { BALL_EST, BALL_EST_MAN_LOOK, estimatesFor, FLIGHT_REVISE, lookAnyway, lookJoints, neckOf, PHASE_BEHIND, PHASE_SIDE, phaseJudgeSd } from '../ball-estimate.js';
+ import { acquireFlight, anticipatedCatcher, catchOpportunity, flightLanded, hasObservedFlight, observedHolder, QB_RELEASE, qbRunning, qbRunningAtLine, rememberCatchOpportunity, rememberedFlight, unresolvedBallArea } from '../possession-read.js';
+ import { seenEngaged } from '../seen-contact.js';
+ import { BALL_CUE_OWN } from '../release-evidence.js';
+@@ -3096,6 +3096,10 @@ function playBelievedBall(a: Agent, sim: PlaySim, man: Agent | null, continueCov
+     return stopDrop(sim, continueCoverage());
+   }
+   a.tags.add('onBall');
++  // FLIGHT_REVISE: with his own estimator he re-reads it each tick (each new sample revises it, and its catch opportunity is
++  // re-recorded); the record stands in only while his estimate is empty.
++  const fresh = FLIGHT_REVISE && estimatesFor(a) && sim.ball.kind === 'air' ? acquireFlight(a, sim) : [];
++  if (fresh.length) return playObservedFlight(a, sim, fresh, true);
+   const path = hasObservedFlight(a) ? rememberedFlight(a, sim.t) : null;
+   return playObservedFlight(a, sim, path ?? (sim.ball.kind === 'air' ? acquireFlight(a, sim) : []), !path);
+ }
+diff --git a/test/engine-pin.json b/test/engine-pin.json
+index 6609951ee..3da3b935e 100644
+--- a/test/engine-pin.json
++++ b/test/engine-pin.json
+@@ -145,6 +145,7 @@
+  ],
+  "defaults": [
+   "test/acc-belief.test.ts",
++    "test/flight-revise.test.ts",
+   "test/acc-radius.test.ts",
+   "test/acquired-mesh-contradiction.test.ts",
+   "test/action-effort.test.ts",
+diff --git a/test/flight-revise.test.ts b/test/flight-revise.test.ts
+new file mode 100644
+index 000000000..14062b828
+--- /dev/null
++++ b/test/flight-revise.test.ts
+@@ -0,0 +1,45 @@
++// FLIGHT_REVISE (Flex, 2026-11-25; Integration's scope of the defense's flight, item (a)): with the estimator on for the
++// defense, a defender's flight comes from his own samples (the release seed alone is a direction, not a flight) and each new
++// sample revises it, so it closes on the ball as he watches. Off the defense estimator nothing changes (BALL_EST default).
++import { afterEach, describe, expect, it, vi } from 'vitest';
++
++afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
++async function watchErrors(flag: string) {
++  vi.stubEnv('BALL_EST', '2049'); vi.stubEnv('FLIGHT_REVISE', flag); vi.resetModules();
++  const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');
++  const { PlaySim } = await import('../src/sim/playsim.js');
++  const { rememberedFlight } = await import('../src/sim/possession-read.js');
++  const late: number[] = [], seedOnly: boolean[] = [];
++  for (let seed = 1; seed <= 6; seed++) {
++    const sim = new PlaySim(nativeTraceSetup({ coverage: 'cover3', concept: 'stick', seed, roster: 7, formation: 'gun_doubles_11', flip: false })) as any;
++    let D: any = null, landing: any = null;
++    for (let i = 0; i < 400 && sim.phase === 'live'; i++) {
++      sim.tick();
++      if (sim.throwAt >= 0 && !D && sim.ball.kind === 'air') {
++        landing = sim.ballPath.at(-1);
++        D = sim.defense.filter((d: any) => !/^(DE|DT|NT)/.test(d.slot)).sort((a: any, b: any) => Math.hypot(a.pos.x - landing.x, a.pos.y - landing.y) - Math.hypot(b.pos.x - landing.x, b.pos.y - landing.y))[0];
++      }
++      if (!D || sim.ball.kind !== 'air') continue;
++      const first = sim.ballEstimates.firstSeenAt(D), path = rememberedFlight(D, 0);
++      if (first === undefined && path?.length) seedOnly.push(true); // a flight before any sample of his own
++      if (first !== undefined && sim.t - first >= 0.4 && path?.length) {
++        const at = path.reduce((b: any, p: any) => Math.abs(p.t - landing.t) < Math.abs(b.t - landing.t) ? p : b, path[0]);
++        late.push(Math.hypot(at.x - landing.x, at.y - landing.y));
++      }
++    }
++  }
++  late.sort((a, b) => a - b);
++  return { median: late[Math.floor(late.length / 2)], n: late.length, seedOnly: seedOnly.length };
++}
++
++describe('FLIGHT_REVISE: a defender\'s flight from his own looks', () => {
++  it('after 0.4 s of watching his flight is close to the ball; before, it was the frozen early guess', async () => {
++    const off = await watchErrors('0'), on = await watchErrors('1');
++    expect(on.n).toBeGreaterThan(10);
++    expect(on.median).toBeLessThan(1.5);
++    expect(off.median).toBeGreaterThan(5);
++  }, 300_000);
++  it('no flight from the release seed alone', async () => {
++    expect((await watchErrors('1')).seedOnly).toBe(0);
++  }, 300_000);
++});
+diff --git a/test/perception-producers.test.ts b/test/perception-producers.test.ts
+index 14040d68b..ccfd989fa 100644
+--- a/test/perception-producers.test.ts
++++ b/test/perception-producers.test.ts
+@@ -21,10 +21,11 @@ describe('ball-estimate.ts is a perception producer', () => {
+     // Reviewed 2026-11-16 at the engine-71 refresh: the new exports are flags and constants (BALL_EST_DEEP_LOOK, _DEF_ONLY, _GLANCE, _INCIDENTAL, _MAN_LOOK, _RCV, _RCV_ONLY, _SERVO, _TRUNK; DEEP_LOOK_DEPTH/HOLD,
+     // GAZE_SEARCH, GLANCE_DEPTH/DWELL_TARGET/HOLD_REF, PHASE_BEHIND) and four functions whose inputs are a team, ratings or numbers (estimatesFor, glanceSd, lookAnyway, phaseJudgeSd): none takes or returns the true ball.
+     // Reviewed 2026-11-16 at the engine-72 refresh: SEEN_EMPTY is a flag constant (`process.env.SEEN_EMPTY !== '0'`); it takes and returns no ball.
++    // Reviewed 2026-11-25 (Flex): FLIGHT_REVISE is a flag constant (`process.env.FLIGHT_REVISE !== '0'`); it takes and returns no ball.
+     expect(names).toEqual([
+       'BALL_EST', 'BALL_EST_DEEP_LOOK', 'BALL_EST_DEF_ONLY', 'BALL_EST_GLANCE', 'BALL_EST_INCIDENTAL', 'BALL_EST_LOOMING',
+       'BALL_EST_MAN_LOOK', 'BALL_EST_MOVING_CHOICE', 'BALL_EST_NO_TRACKPEN', 'BALL_EST_RCV', 'BALL_EST_RCV_ONLY', 'BALL_EST_SERVO',
+-      'BALL_EST_TRUNK', 'BallEstimates', 'DEEP_LOOK_DEPTH', 'DEEP_LOOK_HOLD', 'GAZE_SEARCH', 'GLANCE_DEPTH',
++      'BALL_EST_TRUNK', 'BallEstimates', 'DEEP_LOOK_DEPTH', 'DEEP_LOOK_HOLD', 'FLIGHT_REVISE', 'GAZE_SEARCH', 'GLANCE_DEPTH',
+       'GLANCE_DWELL_TARGET', 'GLANCE_HOLD_REF', 'LOOK_NECK', 'PHASE_BEHIND', 'PRE_LOOK_EARLY', 'PRE_LOOK_LATE',
+       'PathSample', 'SEEN_EMPTY', 'bodyTurnLead', 'estimatesFor', 'fitFlight', 'glanceSd', 'lookAnyway',
+       'lookJoints', 'neckOf', 'ownRoutes', 'phaseJudgeSd', 'sideOf'].sort());
+diff --git a/test/qb-track-look.test.ts b/test/qb-track-look.test.ts
+new file mode 100644
+index 000000000..e69de29bb
