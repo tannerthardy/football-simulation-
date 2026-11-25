@@ -30,6 +30,7 @@
  * a loaded box, or check to a run against a light two-high box. Box counts
  * are as noisy as the rest of his picture.
  */
+import { isDbSlot } from './qbv2/roles.js'; // QB_CANON_SEEN: one defensive-back rule with QB_V2 (the visible package's CB / S slots)
 import { angleDiff, clamp, logistic, type Vec2 } from '../core/vec.js';
 import type { ReceiverPicture } from './receiver-forecast.js';
 import type { RouteKeyPicture } from './route-read.js';
@@ -407,7 +408,7 @@ export class QBMind {
     }
     depths.sort((a, b) => b.d - a.d);
     const width = depths.length >= 2 ? Math.abs(depths[0].y - depths[1].y) / 10 : 0;
-    const cbs = QB_CANON_SEEN ? cornersSeen([...pos].map(([slot, p]) => ({ p, db: isDbSeen(sim.defCall.personnel, slot) })), los, by) : ['CB_S', 'CB_W'].map((s) => pos.get(s as DefSlot)).filter((p): p is Vec2 => !!p);
+    const cbs = QB_CANON_SEEN ? cornersSeen([...pos].map(([slot, p]) => ({ p, db: isDbSlot(sim.defCall.personnel, slot) })), los, by) : ['CB_S', 'CB_W'].map((s) => pos.get(s as DefSlot)).filter((p): p is Vec2 => !!p);
     const cbDepth = cbs.length ? cbs.reduce((s, p) => s + (p.x - los), 0) / cbs.length / 7 : 0.8;
     let press = 0;
     for (const o of sim.offense) {
@@ -801,7 +802,7 @@ export class QBMind {
     if (QB_SCAN || QB_CANON_SEEN) {
       // QB_SCAN / QB_CANON_SEEN: the corners where his scan shows them (by where they stand, not their labels).
       const seenPos = sim.defense.map((d) => QB_SCAN ? this.scanned(d) : this.standing(d));
-      const cbs = QB_CANON_SEEN ? cornersSeen(seenPos.map((p, i) => ({ p, db: isDbSeen(sim.defCall.personnel, sim.defense[i].slot) })), sim.los, sim.ballY)
+      const cbs = QB_CANON_SEEN ? cornersSeen(seenPos.map((p, i) => ({ p, db: isDbSlot(sim.defCall.personnel, sim.defense[i].slot) })), sim.los, sim.ballY)
         : sim.defense.filter((d) => d.slot === 'CB_S' || d.slot === 'CB_W').map((d) => QB_SCAN ? this.scanned(d) : this.standing(d));
       depth = cbs.length ? cbs.reduce((s, p) => s + p.x - sim.los, 0) / cbs.length : 6;
     } else {
@@ -829,11 +830,6 @@ export function cornersSeen(pts: Array<{ p: Vec2; db: boolean }>, los: number, b
   return out;
 }
 
-/** QB_CANON_SEEN: a defensive back by the personnel he sees (CB / S slots of the visible package). */
-function isDbSeen(personnel: DefPersonnelId, slot: string): boolean {
-  const g = DEF_PERSONNEL[personnel]?.[slot as DefSlot];
-  return g === 'CB' || g === 'S';
-}
 
 function normalize(logp: Record<string, number>): Record<string, number> {
   const m = Math.max(...Object.values(logp));

@@ -28,10 +28,12 @@ export type ThrowTiming = 'onBreak' | 'seenOpen';
 export type KeyRole = 'flat' | 'curl' | 'hook' | 'apex' | 'corner' | 'mofSafety' | 'overhang' | (string & {});
 
 /** What the key defender does, as the passer sees it (from his movement in the passer's picture).
+ * `jumps`: drives on a route (pass side); `fills`: steps downhill into his run fit (an RPO's conflict defender; told
+ * apart by direction in his picture, toward the line and the mesh against toward a receiver).
  * `none`: he has looked at the key's area and no defender fills the role there (for the flat defender: nobody
  * underneath, not bailing and inside about 7 yd, over or outside #2 between the box and the sideline). It is something
  * he sees, not a role that failed to resolve: a side he has not looked at yet is not read, and `none` does not fire. */
-export type KeyCue = 'sinks' | 'widens' | 'squats' | 'carries' | 'bails' | 'jumps' | 'blitzes' | 'none';
+export type KeyCue = 'sinks' | 'widens' | 'squats' | 'carries' | 'bails' | 'jumps' | 'blitzes' | 'fills' | 'none';
 
 export interface ThrowOption {
   ref: ReceiverRef;
