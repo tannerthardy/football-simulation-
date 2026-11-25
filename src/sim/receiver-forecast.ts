@@ -133,6 +133,9 @@ function priorBreak(prior: InstalledReceiverRoute): number | null {
   return prior.breakIdx !== undefined ? prior.breakIdx : pathBreak(prior.path, prior.end);
 }
 
+/** Routes timed to a point this far outward of the alignment (yd), mirroring Rules' route timing data (#925). */
+const NO_PLANT_OUTWARD: Record<string, number> = { flat: 6.4, back_flat: 7, swing: 7 };
+
 export function pathBreak(path: readonly PathPoint[], end: RouteEnd): number | null {
   let b: number | null = null;
   const last = end === 'settle' ? path.length - 1 : path.length;
@@ -204,6 +207,49 @@ export class ReceiverForecast {
     if (!c || c.estimate.motion !== 'installed-route') return null;
     this.extend(c, Math.ceil(8 / this.dt)); // far enough to reach any installed break
     return c.breakStep === null ? null : c.estimate.sampledAt + c.breakStep * this.dt;
+  }
+
+  /** QB_V2 (QB lane, 2026-11-24): where the route he expects breaks on the field (its cut or stop point), from the
+   * install (or the answer he expects on an option route). Null for a route without a break. */
+  breakPoint(): Readonly<Vec2> | null {
+    const c = this.build(), path = c?.route?.path ?? this.prior.path;
+    // The flat's timing point (Rules, #925 e95e5dac6: RouteDef.timing, the NFL release spot: flat {d 1.54, l 6.4}, back_flat and swing l 7): where the path is that far outward of
+    // his alignment. Interim mirror of that data until #925 lands and timingPoint(route) is read here instead.
+    const outward = this.prior.routeId ? NO_PLANT_OUTWARD[this.prior.routeId] : undefined;
+    if (outward !== undefined) {
+      const s0 = this.prior.start, side = Math.sign((path[path.length - 1]?.p.y ?? s0.y) - s0.y) || 1;
+      let prev: Vec2 = s0;
+      for (const pt of path) {
+        const a = (prev.y - s0.y) * side, b = (pt.p.y - s0.y) * side;
+        if (b >= outward && b > a) { const f = (outward - a) / (b - a); return { x: prev.x + (pt.p.x - prev.x) * f, y: prev.y + (pt.p.y - prev.y) * f }; }
+        prev = pt.p;
+      }
+    }
+    const idx = path === this.prior.path ? priorBreak(this.prior) : pathBreak(path, c!.route.end);
+    return idx === null || !path[idx] ? null : path[idx].p;
+  }
+
+  /** QB_V2's timing anchor (QB lane, 2026-11-24; Integration's ruling): when his forecast has the receiver's body turn,
+   * the onset of the forecast path's turn off the stem (below), up to his forecast's break and a little past it. breakAt is arrival at the route's nominal cut point,
+   * which a rounded cut reaches 0.45-0.8 s after the body has turned (staged cells: the out and the flat); the stage
+   * operator and Rules' route-chart operator both time the turn. Absolute time, or null (past, none, or not his route). */
+  turnAt(): number | null {
+    const c = this.build();
+    if (!c || c.estimate.motion !== 'installed-route') return null;
+    this.extend(c, Math.ceil(8 / this.dt));
+    // Onset: the first moment the forecast heading (over 0.2 s) leaves the stem's by more than 20 deg, the stem being his
+    // heading where the forecast first moves over 2 yd/s. The forecast's cut is a smooth arc (about 4 yd radius on the
+    // quick out), so a peak-rate rule finds none; its onset sits near the true body's sharpest turn.
+    const k = Math.max(1, Math.round(0.2 / this.dt)), P = c.pts, end = Math.min(P.length - 1 - k, (c.breakStep ?? P.length) + Math.round(0.4 / this.dt));
+    const hd = (a: Vec2, b: Vec2) => Math.atan2(b.y - a.y, b.x - a.x), sp = (a: Vec2, b: Vec2) => Math.hypot(b.x - a.x, b.y - a.y) / (k * this.dt);
+    let stem: number | null = null;
+    for (let i = 0; i <= end; i++) {
+      if (sp(P[i], P[i + k]) < 2) continue;
+      const h = hd(P[i], P[i + k]);
+      if (stem === null) { stem = h; continue; }
+      if (Math.abs(Math.atan2(Math.sin(h - stem), Math.cos(h - stem))) > 20 * Math.PI / 180) return c.estimate.sampledAt + (i + k / 2) * this.dt;
+    }
+    return null;
   }
 
   /** Forecast at absolute time. A held picture ages; it never refreshes itself. */

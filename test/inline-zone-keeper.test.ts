@@ -25,6 +25,9 @@ function fixture(slot: 'Y' | 'C' = 'Y') {
   blocker.body.facing = 0;
   defender.body.pos = { x: 40.5, y: CENTER_Y + .7 };
   defender.body.vel = { x: -.4, y: -.8 };
+  // Face the blocker: the fixture re-engages a defender it has just disengaged, which BLOCK_FRAME allows only from
+  // in front of him and inside his frame. The staged rep is a block on a man facing his blocker.
+  defender.body.facing = Math.atan2(blocker.body.pos.y - defender.body.pos.y, blocker.body.pos.x - defender.body.pos.x);
   sim.offCall.run = RUN_BY_ID.wz_strong;
   const observe = () => { for (let k = 0; k < 24; k++) sim.perception.record(sim.agents); };
   observe();

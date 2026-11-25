@@ -18,7 +18,7 @@ export class StemAcceleration {
   private acceleration = 0;
   get value(): number { return this.acceleration; }
   /** Fold in this tick's sight of him (no change unless it is a newer sample). */
-  observe(cue: Perceived, receiver: PhysicalProfile, now: number): number {
+  observe(cue: Perceived, receiver: Pick<PhysicalProfile, 'vmax' | 'tau' | 'brake'>, now: number): number {
     const stamp = now - (cue.age ?? 0), previous = this.previous;
     if (!previous || stamp > previous.stamp + 1e-9) {
       const dt = previous ? stamp - previous.stamp : 0;
@@ -47,7 +47,7 @@ export class DeepCoverage {
   /** The receiver's upfield acceleration in this defender's picture (the last estimate choose made). */
   get seenAcceleration(): number { return this.stem.value; }
 
-  choose(a: Agent, seen: Pick<Perceived, 'pos' | 'vel'>, cue: Perceived, receiver: PhysicalProfile,
+  choose(a: Agent, seen: Pick<Perceived, 'pos' | 'vel'>, cue: Perceived, receiver: Pick<PhysicalProfile, 'vmax' | 'tau' | 'brake'>,
     cushion: number, original: MoveCommand, now: number,
     model: Parameters<typeof previewFreeMovement>[4]): MoveCommand {
     this.stem.observe(cue, receiver, now);

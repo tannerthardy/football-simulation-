@@ -26,6 +26,30 @@ relevant PRs, not inferred from that dated snapshot. [GAPS](GAPS.md) retains
 the ranked problem list. No remote branch, historical baseline, fixture or
 evidence is removed by this navigation cleanup.
 
+## Active lane branches and open drafts — 2026-11-24
+
+A dated snapshot, like the table above: heads from `git ls-remote --heads
+origin` and the open pull requests on 2026-11-24, with develop at
+`77603a532` (`engine-95`). Fetch before relying on any head. Lanes open
+drafts; Integration marks them ready and merges.
+
+| Lane | Working branch or branches | Open drafts to know |
+| --- | --- | --- |
+| Integration | `claude/laughing-cray-4vqegz` (landing branch, restarted from develop for each landing) | — |
+| QB | `claude/exciting-cori-hc8l4u` `9a8a39020`: patches under `docs/reviews/patches/engine71-footwork/`, the `QB_V2` design note and `src/sim/qbv2/plan.ts` | none; landings go through Integration's branch |
+| Rules + Coaching | `rules/read-plans`, `rules/route-chart`, `rules/route-shape-chart`, `rules/alignment-chart`, `rules/drive-hash`, `rules/seam-landmark`, `rules/route-start`, `rules/broken-tackles`, `rules/coverage-cards`, `rules/presnap-research` | #893 read plans; #876 route timing chart; #879 route shapes; #880 alignment; #881 `DRIVE_HASH`; #886 `SEAM_LANDMARK`; #874 `RELEASE_PACE`; #869 broken tackles and the tackle aim rule; #867 coverage cards; #873 pre-snap research |
+| Coverage | `coverage/C14-squat-v2`, `coverage/C14-squat-flat`, `coverage/C14-squat-pkg` (v2 with Flex's package), `coverage/C14-spot-lean`, `coverage/C14-half-align`, `coverage/C14-lane-leverage`, `coverage/C14-break-commit` (diagnostics), `coverage/C14-squat-sink`, `coverage/C14-cards` | #889 `SPOT_LEAN`; #888 `HALF_ALIGN`; #894 `LANE_LEVERAGE`; #872 the first squat-sink set |
+| Flex | `claude/quirky-franklin-9lbwbp`: patches under `docs/reviews/patches/` and data under `docs/reviews/data/` | none; its patches are carded from the branch |
+| Defense | `defense/trail-leverage`, `defense/block-frame`, `defense/carrier-accel` (diagnostics and taps), `defense/shed-pursue`, `defense/shed-pursue-pkg`, `defense/commit-yield`, `defense/handoff-seed`, `defense/boundary-bend`, `defense/pursuit-operator` | #892 `TRAIL_LEVERAGE`; #868 pursuit diagnosis |
+| Run Game | `run/tackle-repair` `02dd96c32` | none yet; the tackle package is not ready to land |
+| Tools / Physics | `tools/ball-drag`, `tools/open-census`, `tools/dive-stance`, `tools/dir-start`, `tools/yaw-cap` | #884 `BALL_DRAG` on (`engine-96`, ready); #866 open-receiver census, top speed, jitter and facing notes; #871 `DIVE_STANCE`; #850 `DIR_START`; #862 `YAW_CAP` |
+
+Merged in this period and safe to treat as history: `coverage/C14-head-follow`
+(#885), `coverage/C14-flight-break` (#882), `tools/look-side-flip` (#883),
+`tools/develop-red-tests` (#878), `rules/red-tests` (#877). Older open drafts
+not listed here (#807–#864) are parked work; [PARKED.md](PARKED.md) and each
+PR's description say what they wait on.
+
 ## Proposed organization batch — documentation only
 
 - Reconcile AGENTS/CLAUDE/README with the already approved PLAN/GAPS. Keep
