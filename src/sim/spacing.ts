@@ -57,6 +57,14 @@ const bendHolds = new WeakMap<Agent, BendHold>();
 // SPACING_HOLD, headway side: a carrier that is braking for a teammate keeps that limit until the closing line clears him by a body width (enter at the touch
 // distance, exit a body width beyond it), instead of dropping and re-taking it as the line's offset crosses the touch distance tick to tick.
 const limitHolds = new WeakMap<Agent, ReadonlySet<number>>();
+/** HEADWAY_HOLD (experimental, off; HEADWAY_HOLD=1; Defense, 2026-11-25): the headway hold above for every player, not
+ * only the carrier. A closing limit on a teammate entered and left on the same threshold, so a defender converging with
+ * a teammate on the carrier had it taken and dropped tick to tick; its projection kept his request's part across the line
+ * to that teammate, of whichever sign the raw request left, so his heading flipped side across his decision (the panel's
+ * FS on slant_flat 1 after the catch: behaviour -2.7 rad steady, request +2.7 / -2.9 / +2.7 rad, 700-900 deg/s). A
+ * post-decision stage may bound the request; a threshold that switches it needs an exit margin beyond its entry
+ * (CLAUDE.md, commit to a decision). Off, as before. */
+export const HEADWAY_HOLD = process.env.HEADWAY_HOLD === '1';
 /** LINE_STEP (default off): headway against a teammate on an announced step
  * (linemen stepping together on a zone track) is budgeted against where his
  * step takes him over the closing horizon, not his current speed: the inside
@@ -393,7 +401,7 @@ export function spaceTeammates(agents: readonly Agent[], intents: Intent[],
     let vx = ia.vel.x, vy = ia.vel.y;
     const peers:PeerPicture[]=[];
     const limits:ClosingLimit[]=[];
-    const holdLimits=SPACING_HOLD&&a.behavior.kind==='carrier';
+    const holdLimits=SPACING_HOLD&&(a.behavior.kind==='carrier'||HEADWAY_HOLD);
     const heldKeys=holdLimits?limitHolds.get(a):undefined,limitedNow=holdLimits?new Set<number>():undefined;
     const exitMargin=2*a.profile.radius;
     for (let j = 0; j < n; j++) {
