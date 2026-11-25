@@ -40,7 +40,7 @@ export function lastReleaseBelief(sim: PlaySim, a: Agent): ReleaseBelief | undef
 }
 
 /** RUSH_RELEASE (experimental, off; RUSH_RELEASE=1 turns it on; Defense, 2026-11-25): pass protection ends through the
- * two players, not a clock on the true release. engagement.ts dissolved every pass engagement 0.35 s after sim.throwAt
+ * two players, not a clock on the true release. engagement.ts dissolved every pass engagement 0.35 s after the true throw
  * (neither player's decision, and a read of a release neither had seen); every engaged rusher turned at a near-fixed
  * 0.8-0.9 s (0.35 + about 0.5 s to restart), and 96% were still engaged at the release, 7% at the catch (Coverage's
  * rush-turn operator). With it:
@@ -50,8 +50,10 @@ export function lastReleaseBelief(sim: PlaySim, a: Agent): ReleaseBelief | undef
  *   passer with his hands up (a held decision; one who can get there keeps rushing);
  * - the blocker stops working when he believes the release himself or sees his man turned away from the passer (more
  *   than 90 deg, for his reaction time): his own picture of the man he is blocking;
- * - the engagement dissolves when neither is working it. While one still is, the engagement goes on as before (it does
- *   not decide who wins the rep): a blocker who has not seen his man turn keeps blocking him.
+ * - the engagement dissolves when neither is working it and the hands joint carries no load. While one still is, the
+ *   engagement goes on as before (it does not decide who wins the rep): a blocker who has not seen his man turn keeps
+ *   blocking him. A rusher already working off on his belief is not handed to the run rep by the catch;
+ * - believing it thrown, he pursues a carrier he sees, else the flight he has, else turns downfield.
  * Stated choices: LOAD_BEAT 0.35 s (the delivery he expects from a load he sees: the measured median load-to-release
  * here), PULL_MARGIN 0.1 s (enter when he is that much late, back to rushing only when that much early). */
 export const RUSH_RELEASE = process.env.RUSH_RELEASE === '1';
