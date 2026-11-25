@@ -24,9 +24,14 @@ const stackOn = Object.entries(JSON.parse(readFileSync(new URL('../config/refere
 
 type Case = { coverage: string; concept: string; formation: string; seed: number; flip: boolean; staged: StagedThrow };
 const TRAIL: Case[] = [
-  { coverage: 'cover0', concept: 'mesh', formation: 'gun_doubles_11', seed: 1, flip: true, staged: { at: 2.7, slot: 'H', aim: { x: 47.578585789273035, y: 26.13883682831247, z: 1.0752436010533946 }, T: 0.8258310468926056 } },
+  // Re-found 2026-11-25 (Defense, develop 91cbcfa6) by the rule above: with RELEASE_ZONE on (engine-104, #957) the
+  // recorded cover0 doubles scene (s1 flip, throw at 2.7) no longer found its man defender at a catch (NaN); the first
+  // cover0 doubles catch closing at -1 to 0 without the carry is now s3, no flip, the QB's own throw (off -0.61, on -0.39).
+  { coverage: 'cover0', concept: 'mesh', formation: 'gun_doubles_11', seed: 3, flip: false, staged: { at: 1.8, slot: 'Y', aim: { x: 43.888454698596576, y: 27.228424868710455, z: 1.387811169937098 }, T: 0.537721143229763 } },
   { coverage: 'cover0', concept: 'mesh', formation: 'gun_trips_11', seed: 7, flip: false, staged: { at: 1.95, slot: 'H', aim: { x: 43.40361665017577, y: 23.6061803541274, z: 1.6052683997938129 }, T: 0.5688625619101512 } },
-  { coverage: 'cover1', concept: 'mesh', formation: 'gun_doubles_11', seed: 10, flip: false, staged: { at: 1.75, slot: 'Y', aim: { x: 43.93517692229286, y: 29.152697579963142, z: 1.203423769957923 }, T: 0.7516468371986261 } },
+  // Re-found 2026-11-25 likewise: the recorded cover1 doubles scene (s10) no longer found its man defender at a catch
+  // (NaN) with RELEASE_ZONE on; the first cover1 doubles catch closing at -1 to 0 is now s3, no flip (off -0.32, on -0.09).
+  { coverage: 'cover1', concept: 'mesh', formation: 'gun_doubles_11', seed: 3, flip: false, staged: { at: 1.7, slot: 'Y', aim: { x: 43.89818925720772, y: 27.59915188511578, z: 1.3881315201006503 }, T: 0.7009525341048715 } },
   { coverage: 'cover1', concept: 'mesh', formation: 'gun_trips_11', seed: 11, flip: false, staged: { at: 2.55, slot: 'H', aim: { x: 44.66199109746469, y: 27.47384832103233, z: 1.1084586927141817 }, T: 0.7960112743105804 } },
 ];
 const CONTROL: Case = { coverage: 'cover1', concept: 'mesh', formation: 'gun_doubles_11', seed: 2, flip: false, staged: { at: 1.75, slot: 'Y', aim: { x: 44.342182796878774, y: 28.737207826607396, z: 1.053565279262162 }, T: 0.5741794636999107 } };
