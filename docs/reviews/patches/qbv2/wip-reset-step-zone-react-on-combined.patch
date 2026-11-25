@@ -1,0 +1,76 @@
+diff --git a/src/sim/behaviors/qb.ts b/src/sim/behaviors/qb.ts
+index 5f43d19ea..ba43a08a2 100644
+--- a/src/sim/behaviors/qb.ts
++++ b/src/sim/behaviors/qb.ts
+@@ -2263,6 +2263,7 @@ export class QBPass implements Behavior {
+       shouldScramble: () => this.shouldScramble(a, sim, false),
+       scramble: () => this.scramble(a, sim),
+       pocketMove: (read) => this.pocketMove(a, sim, read),
++      stepTo: (r) => { if (FW_HIPS) this.shoulderOn = r; },
+       traceRead: (read, target) => qbRead(sim, a, { read, target, stage: 'qb-cycle' }),
+       traceStage: (cmd) => qbStage(sim, 'qb-cycle', a, { vel: cmd.vel, facing: cmd.facing }),
+     };
+diff --git a/src/sim/qbv2/host.ts b/src/sim/qbv2/host.ts
+index 6ad3fbccd..90cf13db6 100644
+--- a/src/sim/qbv2/host.ts
++++ b/src/sim/qbv2/host.ts
+@@ -63,6 +63,9 @@ export interface PasserView {
+   pocketMove(read: Agent | undefined): MoveCommand;
+   /** His eyes on the receiver he throws to (the play's shared record of where the passer is looking). */
+   setEyes(r: Agent): void;
++  /** The reset step: his feet and hips turn to the new read's receiver as his eyes go (the coached one-hitch reset), his
++   * own footwork; the body turns at its own rate. */
++  stepTo(r: Agent): void;
+   /** Tracing hooks (the harness's qb-trace). */
+   traceRead(read: number, target: string | null): void;
+   traceStage(cmd: MoveCommand): void;
+@@ -128,6 +131,10 @@ export class V2Wiring {
+       this.read = v2.cycle.readIdx;
+       const rd = v2.plan.reads[this.read];
+       v.traceRead(this.read, rd ? (rd.look.kind === 'receiver' ? rd.look.ref : `${rd.look.side ?? 'S'}:${rd.look.role}`) : null);
++      // The reset comes with a hitch: feet and hips with the eyes, not square until the look resolves (Integration's
++      // ruling, 2026-11-25; measured: the body held square 0.5 s, then turned about 85 deg inside the windup).
++      const nr = rd ? (rd.look.kind === 'receiver' ? rd.look.ref : rd.throws[0]?.ref) : null, na = nr ? v2.target(h, nr) : null;
++      if (this.read > 0 && na) v.stepTo(na);
+     }
+     const rd = v2.plan.reads[v2.cycle.readIdx], ref = rd ? (rd.look.kind === 'receiver' ? rd.look.ref : rd.throws[0]?.ref) : null;
+     const readAgent = ref ? v2.target(h, ref) ?? undefined : undefined;
+diff --git a/src/sim/qbv2/judge.ts b/src/sim/qbv2/judge.ts
+index 6394fb9ca..d2c68fa22 100644
+--- a/src/sim/qbv2/judge.ts
++++ b/src/sim/qbv2/judge.ts
+@@ -135,6 +135,16 @@ export const LANE_PICK = 0.3;
+ export const LANE_NEAR = 3;
+ 
+ const hyp = (a: V2, b: V2) => Math.hypot(a.x - b.x, a.y - b.y);
++/** A zone defender's break on the ball (QB lane, 2026-11-25; measured on the staged cells: of 70 drivers 39 never closed on
++ * the point in flight, the rest from a median 0.24 s after the release, lane men 0.49 s): a man settled in his zone (slow in
++ * the passer's picture) breaks a reaction after his cue; one already running at the point is on his way. Smooth in his
++ * seen speed toward the point, no step: the full delay settled, none from REACT_ZONE_RUN yd/s. Chosen from that census. */
++export const REACT_ZONE = 0.2, REACT_ZONE_RUN = 2;
++const zoneReact = (d: SeenDefender, p: V2): number => {
++  const L = hyp(d.pos, p); if (L < 1e-3) return 0;
++  const toward = (d.vel.x * (p.x - d.pos.x) + d.vel.y * (p.y - d.pos.y)) / L;
++  return REACT_ZONE * (1 - Math.min(1, Math.max(0, toward / REACT_ZONE_RUN)));
++};
+ /** How fast an unseen man's velocity typically changes (yd/s^2): not his top acceleration, which assumes he spent the
+  * whole unseen time accelerating at the point (chosen; staged V2: top acceleration made every belief too wide). */
+ export const UNSEEN_DRIFT = 2.5;
+@@ -272,7 +282,7 @@ export function judge(q: ThrowQuestion, defs: SeenDefender[]): Judgment {
+     let best: number | null = null, near: number | null = null;
+     q.path.forEach((p, i) => {
+       if (i === 0 || !origin || hyp(p, origin) < LANE_CLEAR || (q.ballHeightAt(p) ?? Infinity) > d.leap || hyp(d.pos, p) > DRIVE_RANGE) return;
+-      const tPass = q.windup + q.flight * (i / Math.max(n, 1)), tArr = arriveTime(d, p, d.reach, q.windup + (d.facesPasser ? 0 : ARM_LEAD)), m = tPass - tArr;
++      const tPass = q.windup + q.flight * (i / Math.max(n, 1)), tArr = arriveTime(d, p, d.reach, q.windup + (d.facesPasser ? 0 : ARM_LEAD) + zoneReact(d, p)), m = tPass - tArr;
+       if (best === null || m > best) best = m;
+       if (hyp(p, q.catchAt) <= LANE_NEAR && (near === null || m > near)) near = m;
+     });
+@@ -287,7 +297,7 @@ export function judge(q: ThrowQuestion, defs: SeenDefender[]): Judgment {
+   }
+   const driverOf = (d: SeenDefender): RoleJudged | null => {
+     if (hyp(d.pos, q.catchAt) > DRIVE_RANGE) return null;
+-    const start = q.windup + (d.facesPasser ? 0 : ARM_LEAD), tArr = arriveTime(d, q.catchAt, d.reach + PLAY_CLEAR, start);
++    const start = q.windup + (d.facesPasser ? 0 : ARM_LEAD) + zoneReact(d, q.catchAt), tArr = arriveTime(d, q.catchAt, d.reach + PLAY_CLEAR, start);
+     const margin = tBall - tArr, { sigma, pArrive } = arrival(d, recvSig, tArr, margin);
+     return { id: d.id, role: 'driver', margin, sigma, pArrive, pPlay: pArrive * PLAY_BREAKUP, pPick: pArrive * PLAY_BREAKUP * PICK_OF_PLAY * (0.5 + d.ballSkills) };
+   };
