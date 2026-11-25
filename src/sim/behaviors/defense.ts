@@ -96,8 +96,10 @@ const FLAT_SINK_DEPTH = 18;
  * sink is with his own #1, from outside leverage. Off, it took the first receiver in his area climbing over 4 yd/s, which
  * on quick outs is the slot's hitch: the corner sank with the slot 0.7 yd inside him (outside audit §3A) and was 4 yd inside
  * #1 when #1's out broke into the flat he had left; and nothing in the sink read #1's own out-break under him, so he kept
- * sinking with him. On, #1's out-break ends the sink and he drives on it (SQUAT_SIT's read). Taught: sink with #1's
- * vertical until the flat is threatened; the out into the squat corner is the trap. */
+ * sinking with him. On, #1's out-break ends the sink; as the taught standard (patient: outside leverage, eyes through #1
+ * to the passer, break up the short route on the throw) he holds outside leverage at his depth and FLIGHT_BREAK drives
+ * him on the throw. FLAT_SIT_MODE=jump (the trap variant, jumping the break before the throw) played the staged quick
+ * out no better and gave the out-and-up about 0.4 yd more. */
 const FLAT_SINK_ONE = process.env.FLAT_SINK_ONE === '1';
 const SINK_ENTER = 2, SINK_EXIT = 1;
 /** SEEN_EYES (default on; SEEN_EYES=0 restores the QB's internal read target): a zone defender
@@ -2056,17 +2058,22 @@ export class ZoneCoverage implements Behavior {
     }
     if (!v) return null;
     // FLAT_SINK_ONE: #1 breaking out under him (outward over max(1.5, 0.5 x upfield) with his upfield speed falling, under
-    // 3.5 yd/s, or exceeded by the outward: a break, not a fade's outside release) ends the sink: he sits on it and drives,
-    // downhill to #1's depth and outside-in on where he will be 0.5 s on. Kept until #1 turns back up.
+    // 3.5 yd/s, or exceeded by the outward: a break, not a fade's outside release) ends the sink: he holds outside
+    // leverage on #1 at his depth and drives on the throw. Kept until #1 turns back up.
     if (FLAT_SINK_ONE) {
       const outS = Math.sign(v.s.pos.y - sim.ballY) || 1, outV = v.s.vel.y * outS, up = v.s.vel.x * dir, d1 = (v.s.pos.x - sim.los) * dir;
       if (!this.flatSit) this.flatSit = d1 > 1 && d1 < 10 && outV > Math.max(1.5, 0.5 * Math.max(0, up)) && (up < 3.5 || outV > up);
       else if (up > 3 && up > 1.5 * Math.max(0, outV)) this.flatSit = false;
       if (this.flatSit) {
         const q0 = sim.see(a, sim.qb);
-        const to = { x: v.s.pos.x, y: clamp(v.s.pos.y + v.s.vel.y * 0.5 + outS * 0.5, 0.5, FIELD_WIDTH - 0.5) };
+        // The patient standard: he holds his depth with outside leverage on #1 and drives on the throw he sees
+        // (FLIGHT_BREAK). FLAT_SIT_MODE=jump is the trap variant (a later scheme option): downhill to #1's depth on the
+        // break, before the throw.
+        const hold = process.env.FLAT_SIT_MODE !== 'jump';
+        const to = hold ? { x: a.pos.x, y: clamp(v.s.pos.y + outS * 0.5, 0.5, FIELD_WIDTH - 0.5) }
+          : { x: v.s.pos.x, y: clamp(v.s.pos.y + v.s.vel.y * 0.5 + outS * 0.5, 0.5, FIELD_WIDTH - 0.5) };
         return withFacingTechnique(track(a, to, { x: 0, y: v.s.vel.y }, { facing: angleTo(a.pos, q0.pos), speed: 1, gain: 1.8 }),
-          { label: 'flat-sit-drive', key: v.s.vel });
+          { label: hold ? 'flat-sit-hold' : 'flat-sit-drive', key: v.s.vel });
       }
     }
     // The flat threatened in front of him ends the sink: his zone play takes it.
