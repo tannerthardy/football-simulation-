@@ -100,7 +100,7 @@ const FLAT_SINK_DEPTH = 18;
  * to the passer, break up the short route on the throw) he holds outside leverage at his depth and FLIGHT_BREAK drives
  * him on the throw. FLAT_SIT_JUMP (the trap variant, jumping the break before the throw) played the staged quick
  * out no better and gave the out-and-up about 0.4 yd more. */
-const FLAT_SINK_ONE = process.env.FLAT_SINK_ONE === '1';
+const FLAT_SINK_ONE = process.env.FLAT_SINK_ONE !== '0';
 /** FLAT_SIT_JUMP (experimental, off; with FLAT_SINK_ONE): the trap variant of the sit on #1's out, a later scheme option:
  * he jumps the break, downhill to #1's depth and outside-in on where #1 will be 0.5 s on, before the throw. Off, the
  * taught standard: he holds outside leverage at his depth and drives on the throw. */
@@ -199,7 +199,7 @@ export const HANDOFF_FREEZE = process.env.HANDOFF_FREEZE !== '0';
  * LANE_SHADE yd outside the receiver for curl-flat and flat seats and inside him for hooks and the middle, at the old
  * lane depth; off, lerp(QB, receiver, 0.82) put a curl-flat 3 yd inside the receiver he read and 4.5 yd inside his
  * landmark (Flex's width trace, 2026-11-24; NFL curl-flat 11.5 yd from the ball at 3.0 s, ours 8.0-8.6). */
-const LANE_LEVERAGE = process.env.LANE_LEVERAGE === '1';
+const LANE_LEVERAGE = process.env.LANE_LEVERAGE !== '0';
 const LANE_SHADE = 0.8;
 const CARRY_LABEL = /^(open-carry-seam|carry-wall|carry-run-past)$/;
 const eyesHeld = new WeakMap<Agent, Agent>();
