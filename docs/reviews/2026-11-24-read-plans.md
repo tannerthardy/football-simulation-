@@ -173,6 +173,11 @@ out". The corner over #1 is the first check in every coverage:
   that throw; the out not judged open moves his eyes to the apex read. Nothing the apex does, `none` included, throws
   the out.
 - First hitch: the backside #1.
+- **Cover 2 (Integration's ruling, 2026-11-25):** the corner reads `squats` and the plan names #2's hitch. When the
+  hitch is not yet open and the out is, the passer still throws the out, because our Cover 2 corner sits about 4.5 yd
+  off the catch point and never drives on it. The coached rule is his intent; throwing an open out is him using what
+  he sees, and refusing it would ban what works. Neither the plan nor the cycle changes. The corner's drive on the out
+  is Coverage's item; once it exists, the judge prices the out down and the cue's answer binds through his bar.
 - Earlier revision (2026-11-24): the apex as the only key ("the apex (flat) defender: he widens to the out: #1 hitch
   inside him; he sits on the hitch: #2 out", hitch_out's read line; "sinks under the curl ... hit the speed out",
   Gridiron Strategies).
@@ -241,7 +246,7 @@ back; a composed call that releases him gets him (`planFor`).
 **Expected:** the key (index 0) in Cover 1, Cover 2, 2-man, Cover 3 and Cover 4. "tries to expose Cover 2 zone and man
 coverages" (Stanford Daily). The read itself names Cover 3 and Cover 4's flat defender (Win With The Pass).
 
-## Quick-game gaps: hitch-out, seam-slant, double outs, trips outs (2026-11-25)
+## Quick-game gaps: hitch-out, seam-slant, double outs, trips outs (2026-11-25; updated the same day)
 
 Not authored. Integration's rule: an invented read would score as "taught" on the decision scorecard, so its failures
 could not be told from the passer's. Searched on 2026-11-25 (WebSearch, then fetch):
@@ -254,9 +259,29 @@ could not be told from the passer's. Searched on 2026-11-25 (WebSearch, then fet
 | concept | what was found | why it is not authored |
 |---|---|---|
 | hitch-out (#1 hitch, #2 quick out) | Gridiron Strategies treats quick out and hitch as separate pre-snap choices ("If a soft corner to the quick side, go to quick out"); Hank's curl/flat rule is a five-step concept with a 12-yd hook. | no primary source keys this pair |
-| seam-slant (#1 go, #2 slant, #3 hitch) | only the vertical-hitch concept (hitches outside, slot seams), which runs other routes | no source |
-| double outs (#1 out at 10, #2 quick out) | "one of the two quick outs will be open" (Win With The Pass, Trips Double Brown): two quick outs, no key | no key or reaction taught |
+| seam-slant (#1 go, #2 slant, #3 hitch) | the vertical-hitch concept (other routes); an RPO version (X&O Labs, Shackelford: the inside backer, then the strong safety; he pedals, the slant), quoted by the outside reviewer (docs/reviews/2026-11-25-receiver-outside-audit.md §3) | half a read: no answer for a safety who squats or drives; left until the RPO work (Integration) |
+| double outs (#1 out at 10, #2 quick out) | found 2026-11-25: Sposato, 700 Quick Series, "Green 700 Double Outs" (below) | not authored: needs a taught install and a two-receiver alert condition (below) |
 | trips outs (#1 go, #2 out, #3 quick out) | the same Win With The Pass line | no key or reaction taught |
+
+**Double outs, as quoted (recorded, not authored; Integration, 2026-11-25).** Sposato, 700 Quick Series, "Green 700
+Double Outs". Quoted via the user's outside reviewer (docs/reviews/2026-11-25-pursuit-squat-corner-outside-audit.md §3);
+not re-opened by us, because Scribd serves our fetch a script challenge page:
+> "Pre-snap you are reading the alignment and leverage of the defenders over the W and A Backs. If the A Back has a
+> defender on his inside, he is your primary target. If Both defenders are playing outside leverage and tight on the
+> receivers, look backside to the quick Slant route. If both defenders are playing off or inside the W and A Backs you
+> have the choice of throwing to either receiver. If you recognize a blitz, especially backside, look for the quick
+> Slant."
+- **Taught routes (same page):** the outs are speed breaks at 6 yd by the W and A backs; X runs a fade, thrown if the
+  corner leaves him to sit in the flat; the backside Z a three-step slant; an out comes back to the ball at an angle if
+  the corner rolls up. In our numbers: #1 go, #2 and #3 6-yd quick outs, W1 slant.
+- **Ours differs:** `double_outs` runs #1 a 10-yd out, #2 a quick out, #3 a hitch; `trips_outs` (the nearest) runs #1 a
+  go, #2 a 10-yd out, #3 a quick out, with a hitch-go backside. A plan on the taught routes fits neither install.
+- **What authoring it needs** (on the route-vocabulary list, after QB_V2 is carded; Integration):
+  - a taught install, as a composed half (#1 go, #2 and #3 quick outs) with a slant backside;
+  - an alert condition over two receivers: "Both defenders are playing outside leverage and tight" is one pre-snap
+    condition on #2 and #3 together, and `AlertCond` holds one leverage and one cushion clause.
+- **Open:** which inside receiver is the A back (the primary when his defender is inside him). The quote does not say;
+  it is not guessed here.
 
 The outside reviewer's second read (docs/reviews/2026-11-25-qbv2-second-read.md §3) gives reads for all four, from
 tertiary sources. None was re-opened to a primary source here. They are the place to start if a primary source is
