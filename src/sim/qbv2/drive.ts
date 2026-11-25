@@ -30,6 +30,10 @@ export interface V2Host {
   seenHead(d: Agent): number | null;
   pictureAge(d: Agent): number;
   pictureSpread(d: Agent): number;
+  /** Time with no new observation of a defender (0 while watched) and the look's own spread (card spec §1). */
+  unseenFor(d: Agent): number;
+  seenSpread(d: Agent): number;
+  jobWeight(d: Agent): number;
   /** His receiver's predicted position `ahead` s from now (his forecast), and the forecast's break (absolute time). */
   predict(r: Agent, ahead: number): V | null;
   breakAt(r: Agent): number | null;
@@ -262,11 +266,17 @@ export class V2Drive {
       path: [{ x: from.x, y: from.y }, ...path], los: sim.los, catchClean: catchFrom(h.placeSpread?.(Math.hypot(mech.point.x - from.x, mech.point.y - from.y))), res: look ? this.cycle.looks.resolved(look) : 0, receiverSpread: h.pictureSpread(r),
       placeSpread: h.placeSpread?.(Math.hypot(mech.point.x - from.x, mech.point.y - from.y)),
     };
-    const defs: SeenDefender[] = sim.defense.filter((d) => this.seenUp(h, d) && h.pictureAge(d) < 1.5).map((d) => {
+    // Card spec §1 (Integration's ruling, 2026-11-25): nobody is dropped for an old picture. He is priced where he is
+    // believed (the estimate: the sighting dead-reckoned, then his job), and the judge charges unseen time one way.
+    const defs: SeenDefender[] = sim.defense.filter((d) => this.seenUp(h, d)).map((d) => {
       const e = h.estimate(d), b = h.body(d), toQB = Math.atan2(a.pos.y - e.pos.y, a.pos.x - e.pos.x), eyes = h.seenHead(d) ?? e.facing;
       // His eyes on the passer: the head he sees on the man where perception records it, else the body (Coverage's review).
       const faces = Math.abs(Math.atan2(Math.sin(eyes - toQB), Math.cos(eyes - toQB))) < Math.PI / 3;
-      return { id: d.idx, pos: e.pos, vel: e.vel, facing: e.facing, spread: h.pictureSpread(d), age: h.pictureAge(d), facesPasser: faces,
+      // His picture shows the man as he was a sensing delay ago (QBMind's estimate does not project it; QB lane 2026-11-25,
+      // a press corner on the slant believed 1.6 yd behind and at half his speed while watched): carried forward over the
+      // delay at his seen velocity, and the delay counts as time the man may have changed it (the judge's advance).
+      const delay = Math.max(0, h.pictureAge(d) - h.unseenFor(d)), pos = { x: e.pos.x + e.vel.x * delay, y: e.pos.y + e.vel.y * delay };
+      return { id: d.idx, pos, vel: e.vel, facing: e.facing, spread: h.seenSpread(d), age: delay + h.unseenFor(d), job: h.jobWeight(d), spreadDR: h.pictureSpread(d), facesPasser: faces,
         vmax: b.vmax, accel: b.vmax / Math.max(b.tau, 1e-3), reach: b.reach, leap: b.reactReach + 0.5 * (b.maxCatchHeight - b.reactReach), ballSkills: h.ballSkills(d) };
     });
     const j = judge(q, defs);
