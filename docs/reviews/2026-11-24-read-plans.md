@@ -272,7 +272,7 @@ slant_flat 16%, stick 4% of their calls (4,000 draws). `planFor(call)` composes 
 - **The frontside is the authored plan's:** its reads, key rules, frontside hot and alert, unchanged. The call must run
   the routes they use, or it takes no plan.
 - **The backside:** the authored backside when the call's backside is the authored one (then, with the authored back,
-  the authored plan itself). Otherwise one reset on the authored reset's step, as taught, and after it the checkdown.
+  the authored plan itself). Otherwise one reset on the authored reset's step where one is taught for that half, and after it the checkdown.
   Reads are tied to the feet, and a late arrival on a timing route is a throw into a closing window. The second source
   is the outside reviewer's second read, docs/reviews/2026-11-25-qbv2-second-read.md §2; its sources are partly
   tertiary, so each entry below is that table checked against ours.
@@ -282,9 +282,7 @@ slant_flat 16%, stick 4% of their calls (4,000 draws). `planFor(call)` composes 
   | curl-flat | reset: key the flat defender, the curl if he widens, the flat if he sits ("its depth fits a later clock") |
   | hitches, speed out-hitch, slant-hitch, go-hitch, go-hook | reset: #2's settle ("An interior settle (spacing) can be a reset") |
   | slant-flat | the flat only ("The slant window closes with each hitch; late, take the flat or the checkdown") |
-  | double slants, slant-go, slant-stick | none (a late slant invites the undercut) |
-  | an outside quick hitch, a quick out, a stick | none ("the corner plants and drives"; "any hesitation lets the corner undercut it"; "Never come back to it once left") |
-  | fade-flat, a go or seam pair, every other half | none (pre-snap choices; dead after the snap) |
+  | double slants, slant-go, slant-stick, an outside quick hitch, a quick out, a stick, fade-flat, a go or seam pair, every other half | none: no taught reset was found for the half as a backside (the second read found none either, and warns against several), so the play goes to the checkdown |
 
   The W hot is still that half's first quick route (Hewitt's replacement rule): the hot is thrown on the blitz, not
   late.
@@ -303,13 +301,17 @@ Fit with `planFor`, same 4,000 draws (#903 head; the frontside matched on every 
 | fade_flat | 7.0% | 100% | 0% | 75.5% | 5.5% |
 | curl_flat | 83.7% | 100% | 23.4% | 0% | 6.5% |
 
-**Open: three authored resets disagree with the second read.** These are kept because they are the staged plans
-(Integration to decide):
-- quick_outs resets to the backside quick out ("progression continuing on the weak side", Kratzer); the second read
-  says do not reset to a quick out.
-- stick resets to the backside slant then its stick; the second read says a late slant closes and the stick is never
-  come back to.
-- slant_flat resets to the backside slant-flat's full key (Klatt); the second read says late, the flat or the checkdown.
+**Disputed resets, kept (Integration, 2026-11-25).** A reset that a primary source teaches stays; the second read's
+"don't" rows rest on tertiary sources and do not overrule one. A plan lists where his eyes may go; whether the late
+throw is there is the passer's judgment of the corner, not the plan's to forbid. A late out thrown into a driving
+corner is a judgment fault to be seen, not hidden.
+- quick_outs → the backside quick out: "progression continuing on the weak side" (Kratzer). The second read: do not
+  reset to a quick out.
+- stick → the backside slant, then its stick: "If there was any hesitation for the quarterback on the stick side he
+  would shuffle back and work the backside" (Ross, on Leach). The second read: a late slant closes, and the stick is
+  never come back to.
+- slant_flat → the backside slant-flat's key: reset "to the backside's slant-flat" (Klatt). The second read: late, the
+  flat or the checkdown.
 
 ## The schema additions (agreed with the QB lane)
 

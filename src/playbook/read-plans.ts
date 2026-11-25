@@ -512,9 +512,10 @@ const isQuickRoute = (id: string | undefined): boolean => !!id && ['quick', 'fla
  * - reset: a read that still fits the later clock. Curl-flat: key the flat defender, the curl if he widens, the flat if he
  *   sits. An interior settle (the slot's hitch, a hook): "An interior settle (spacing) can be a reset".
  * - flat: slant-flat late is the flat or the checkdown ("The slant window closes with each hitch").
- * - none: an outside quick hitch ("the corner plants and drives"), a quick out ("any hesitation lets the corner undercut
- *   it"), a stick ("Never come back to it once left"), a late slant (double slants, slant-go, slant-stick), fade-flat and
- *   a go or seam pair (pre-snap only), and every other half: the play goes to the checkdown.
+ * - none: every other half (an outside quick hitch, a quick out, a stick, a late slant, fade-flat, a go or seam pair):
+ *   no taught reset was found for it as a backside, so the play goes to the checkdown. (An authored plan's own reset,
+ *   taught by a primary source, is kept even where the second read warns against it: the passer's judgment decides
+ *   whether the late throw is there.)
  * Keyed by the half's routes (the quick hitch counts as the hitch). */
 const BACKSIDE_RESET: Record<string, { reset: PlanRead['look']; throws: ReceiverRef[]; keyRules?: PlanRead['keyRules'] } | { flat: ReceiverRef }> = {
   curl_flat: { reset: { kind: 'key', role: 'flat', side: 'W' }, throws: ['W1', 'W2'],
