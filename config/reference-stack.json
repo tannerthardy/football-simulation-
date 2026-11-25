@@ -309,6 +309,7 @@
     "PULL_PLAN": "off",
     "HONEST_READS": "on",
     "HONEST_FLIGHT": "off",
+    "HANDS_SEEN": "off",
     "HONEST_TACKLE": "on",
     "QB_FEEL": "off",
     "QB_GATHER": "off",
