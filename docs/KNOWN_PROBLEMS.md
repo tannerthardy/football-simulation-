@@ -2802,6 +2802,26 @@ BDB2025 weeks 1–2 with `run_film_reference.py`.
   3.23 yd (`dev-12`), NFL 2.8–3.2.
 - **Cause:** *likely* COV-1 and TKL-3. YAC is measured per catch, so it moves
   with both coverage and tackling.
+- **Flats and outs (2026-11-15, develop fbeeef9b; Rules + Coaching's package split).** The share of throws that gain
+  20+ yd, by the route thrown:
+  - **Sources:**
+    - sim: 16 games, seeds 11 and 23 × 8, the targeted receiver's installed route;
+    - NFL: BDB 2025 weeks 1–6, the targeted receiver's `routeRan`, 20+ yd completions per target.
+  - **Flat (ours: flat + back's flat):**
+    - defaults 15.6% (48 of 308), and 9.1 / 9.4 yd per target;
+    - ROUTE_FINISH 11.6% (31 of 267);
+    - NFL 4.2% (5.3 yd per target).
+  - **Out:**
+    - defaults 19% (10 of 53);
+    - ROUTE_FINISH 5.6% (2 of 36);
+    - NFL 5.0%.
+  - **All targets:** defaults 12.5%, ROUTE_FINISH 10.0%, NFL 9.7%.
+  - **Cause:** ROUTE_FINISH (off) removes the flat or out that runs up the sideline at full speed and is caught in
+    stride: *confirmed* for the outs. With it on, flats are still about three times the NFL's big-play rate.
+  - **Caveats:**
+    - Our route labels are not the NFL's, and the NFL's FLAT includes backs.
+    - Both populations are unpaired games: read the direction, not the size.
+  - **Open:** yards after the catch on flats, and when the flat defender arrives (Coverage; Tools' carrier-bend work).
 
 <a id="cov-3"></a>
 ### COV-3: Coverage rules and calls not yet complete
@@ -3168,6 +3188,33 @@ From the issue register:
   release shape by route first, then re-run the false-trip table
   (`scripts/mechanics/release_falsetrip.py`) before any release-keyed read is
   built.
+- **The go's width (2026-11-15, Rules + Coaching; for Run Game's release path and Coverage's squeeze).**
+  - **Data:** NFL BDB 2025 weeks 1–2, non-PA drop-backs, `routeRan` GO, 6–20 yd from the sideline at the snap
+    (n 1,257). "Outward" is lateral movement toward his sideline from his snap spot.
+  - **By depth (steady, not a release step):** +0.4 at 2 yd, +1.1 at 5, +2.6 at 10, +3.8 at 15, +4.3 at 20.
+    Targeted +4.1 at 10 yd (n 141); not targeted +2.4 (n 1,116).
+  - **By the nearest defender's cushion at the snap:**
+
+    | cushion | n | outward at 10 yd: median (p25 / p75) |
+    |---|---|---|
+    | under 2.5 yd | 479 | +3.3 (+0.7 / +5.8) |
+    | 2.5–5 | 326 | +3.9 (+1.7 / +6.2) |
+    | 5–7 | 152 | +2.8 (+1.3 / +5.2) |
+    | 7–10 | 271 | +1.4 (+0.5 / +2.5) |
+    | 10+ | 29 | +1.1 (+0.2 / +1.9) |
+
+  - **Leverage:** inside +2.0 / +1.9 (press / off); outside +1.8 / +3.0; head-up press +5.0 (the release round
+    him); head-up off +2.5.
+  - **The split, the landmark and the sim:**
+    - Not the split: from 6–9 yd off the sideline +2.2 at 10 yd; from 15–20 yd, +3.0.
+    - Not the coached landmark: Hancock (Gridiron Strategies) has him run "just inside the numbers", and the NFL
+      does not.
+    - Ours (Tools' `sim_route_speed.ts`, four_verts / smash / curl_flat / flood × 24 seeds): lateral at 3.0 s
+      (about 16 yd deep) is 0.8 with no defenders and with Cover 3 (identical), and 4.8 against Cover 1 press.
+  - **Cause:** *likely* the receiver's response to a near off defender (the release round him), and the corner's
+    squeeze to the sideline (Pope, AFCA: DBs are coached to "squeeze" a vertical). With nobody near, the NFL go is
+    nearly straight (+1.1 to +1.4), and ours is +0.7 at 10 yd. It is not the route table: no table change.
+  - **Next:** Run Game (the release path) and Coverage (the squeeze), via Integration.
 
 <a id="ball-1"></a>
 ### BALL-1: Too many interceptions
