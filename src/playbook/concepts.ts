@@ -11,7 +11,7 @@ import { BASE_COMPOSITIONS, compileComposition, MENU_COMPOSITIONS } from './call
  * concepts are built from compositions (src/playbook/calls: a half-field concept per side or one full-field concept,
  * tags and the back's job) instead of the literals below. Each composition compiles to exactly its literal
  * (test/call-compose.test.ts), so on changes nothing yet. The literals stay as the off path. */
-export const CALL_COMPOSE = process.env.CALL_COMPOSE === '1';
+export const CALL_COMPOSE = process.env.CALL_COMPOSE !== '0';
 
 /** Today's concepts as literals: the off path, and the golden reference for CALL_COMPOSE's compositions. */
 export const legacyBaseConcepts = (): PassConcept[] => [

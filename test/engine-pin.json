@@ -477,6 +477,7 @@
   "test/receiver-eligibility-gh.test.ts",
   "test/receiver-flat-release.test.ts",
   "test/receiver-middle-read.test.ts",
+  "test/receiver-seen.test.ts",
   "test/receiving-fumble-credit.test.ts",
   "test/recognition-ball-cues.test.ts",
   "test/recognition.test.ts",
