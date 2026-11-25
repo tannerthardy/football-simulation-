@@ -264,6 +264,7 @@
     "FLIGHT_BREAK": "0",
     "FLIGHT_LEAD": "0",
     "HEAD_FOLLOW": "0",
+    "FLAT_SINK_ONE": "0",
     "HANDS_ON_ARMS": "0",
     "SECURE_SPLIT": "0",
     "SECURE_FACE_GEOM": "0",
