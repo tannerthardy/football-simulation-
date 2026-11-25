@@ -1,0 +1,24 @@
+== ['cover3', 'corner_flat', 'gun_trips_11', 3, True] D1 LB_W 5.2 yd behind out cs 1.1 max 7.3 | beaten without contact | overrun (moving against the carrier at the beat) | blk False | contact None beat 0.9 yac 13.5 | tags []
+    t0.0 b+51 i+62 m- d5.1 c1.1 t0.2 b+78 i+93 m- d5.4 c1.6 t0.4 b+91 i+126 m- d4.6 c2.7 t0.6 b+99 i- m- d3.4 c3.6 t0.8 b+102 i- m- d2.1 c4.4
+== ['cover2', 'drive', 'gun_doubles_11', 3, True] D1 CB_W 4.2 yd ahead in cs 0.3 max 5.3 | beaten without contact | overrun (moving against the carrier at the beat) | blk False | contact None beat 0.9 yac 5.8 | tags []
+    t0.0 b-42 i-44 m-42 d6.4 c0.3 t0.2 b+69 i+75 m+91 d6.2 c1.5 t0.4 b+92 i+113 m+143 d5.3 c2.4 t0.6 b+114 i+172 m- d4.0 c3.4 t0.8 b+134 i- m- d2.6 c4.3
+== ['cover4', 'post_cross', 'gun_trips_11', 2, True] D1 NB 4.4 yd ahead in cs 0.2 max 5.7 | beaten without contact | other / outrun on a fair angle | blk False | contact None beat 1.1 yac 5.5 | tags []
+    t0.0 b+52 i+51 m- d2.0 c0.2 t0.2 b+17 i+49 m- d1.8 c1.3 t0.4 b-4 i+60 m- d2.5 c2.5 t0.6 b-13 i- m- d3.3 c3.6 t0.8 b-5 i- m- d3.0 c4.5 t1.0 b+3 i- m- d3.6 c5.3
+== ['cover1', 'seam_hitch', 'gun_trips_11', 2, True] D1 NB 2.3 yd ahead in cs 0.9 max 6.6 | beaten without contact | flat-footed / late start | blk False | contact None beat 0.8 yac 9.2 | tags []
+    t0.0 b-159 i-125 m- d1.5 c0.9 t0.2 b- i- m- d0.9 c2.1 t0.4 b-33 i- m- d1.8 c2.9 t0.6 b-36 i- m- d2.7 c3.8 t0.8 b-26 i- m- d3.5 c4.7
+== ['cover2man', 'hitch_cross', 'gun_trips_11', 3, True] D1 LB_W 2.6 yd level out cs 1.2 max 7.7 | missed (contact range, then beaten) | reached contact range, then beaten (lunge/miss/broken) | blk False | contact 0.4 beat 0.9 yac 8.6 | tags []
+    t0.0 b-42 i-32 m- d6.7 c1.2 t0.2 b-56 i-55 m-53 d5.6 c1.8 t0.4 b+101 i+141 m- d4.0 c2.9 t0.6 b+116 i- m- d1.6 c3.9 t0.8 b+49 i- m- d1.5 c3.9
+== ['tampa2', 'levels', 'gun_trips_11', 2, True] D1 CB_S 1.5 yd level out cs 5.3 max 6.4 | missed (contact range, then beaten) | reached contact range, then beaten (lunge/miss/broken) | blk False | contact 0.4 beat 3.2 yac -4.7 | tags []
+    t0.0 b-54 i-21 m-13 d7.4 c5.3 t0.2 b-58 i-13 m-9 d7.5 c6.1 t0.4 b-55 i-4 m-1 d7.6 c6.2 t0.6 b-51 i- m- d5.4 c6.4 t0.8 b-31 i- m- d4.7 c5.0 t1.0 b-37 i-5 m- d4.3 c4.2 t1.2 b-20 i- m- d3.2 c3.4 t1.4 b-18 i-16 m- d2.7 c2.6
+== ['cover4', 'pa_post_dig', 'gun_trips_11', 1, False] D1 CB_W 0.9 yd level out cs 3.5 max 4.6 | missed (contact range, then beaten) | engaged by a blocker before the beat | blk True | contact 0 beat 0.2 yac 3.6 | tags []
+    t0.0 b+103 i- m- d1.3 c3.5 t0.2 b- i- m- d0.5 c4.4
+== ['cover2', 'smash', 'gun_doubles_11', 2, True] D1 CB_S 7.1 yd ahead in cs 0.0 max 6.9 | missed (contact range, then beaten) | reached contact range, then beaten (lunge/miss/broken) | blk False | contact 1.4 beat 3.8 yac 1.5 | tags []
+    t0.0 b-55 i-56 m- d1.7 c0.0 t0.2 b-49 i-33 m- d3.0 c1.6 t0.4 b-44 i-16 m- d4.1 c2.5 t0.6 b-41 i-1 m- d5.0 c3.6 t0.8 b-42 i+6 m- d5.8 c4.6 t1.0 b-47 i+10 m- d6.3 c5.4 t1.2 b-53 i+20 m- d6.4 c6.2 t1.4 b-50 i- m- d6.6 c6.7
+== ['cover3', 'hitch_post', 'gun_doubles_11', 1, True] D1 SS 6.5 yd ahead out cs 2.8 max 5.9 | stopped (tackle or held for help) | None | blk False | contact 1.1 beat None yac 4.6 | tags []
+    t0.0 b-27 i-5 m+25 d3.3 c2.8 t0.2 b-33 i-10 m+5 d4.2 c3.7 t0.4 b-34 i-2 m+25 d4.4 c3.7 t0.6 b-44 i+28 m- d3.4 c4.1 t0.8 b-58 i- m- d2.9 c4.9 t1.0 b-56 i- m- d3.3 c5.5
+== ['cover6', 'trips_stick', 'gun_trips_11', 2, False] D1 NB 1.3 yd level in cs 1.3 max 3.0 | stopped (tackle or held for help) | None | blk False | contact 0.1 beat None yac 0.8 | tags []
+    t0.0 b-25 i-15 m+0 d5.5 c1.3
+== ['cover0', 'post_cross', 'gun_trips_11', 2, True] D1 LB_M 4.4 yd behind in cs 1.9 max 3.8 | stopped (tackle or held for help) | None | blk False | contact 0.9 beat None yac 3.7 | tags []
+    t0.0 b+27 i+51 m+83 d3.9 c1.9 t0.2 b+45 i+48 m+83 d4.5 c0.5 t0.4 b-41 i-30 m-1 d4.9 c1.1 t0.6 b-34 i-10 m+6 d4.4 c2.4 t0.8 b-40 i+22 m+36 d3.2 c3.5
+== ['cover6', 'stick', 'gun_trips_11', 3, False] D1 NB 0.7 yd level in cs 0.9 max 3.6 | stopped (tackle or held for help) | None | blk False | contact 0 beat None yac -0.6 | tags []
+    t0.0 b-31 i-21 m-14 d5.4 c0.9

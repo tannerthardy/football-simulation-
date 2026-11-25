@@ -1,0 +1,33 @@
+ev [[1.45, 'carrier_contact', 'Y', 'CB_S'], [1.45, 'tackle_wrap', 'CB_S', 'Y'], [2, 'tackle_wrap', 'CB_W', 'Y'], [2, 'hit', 'CB_W', 'Y'], [2.65, 'tackle_wrap', 'NB', 'Y'], [2.75, 'fall', 'Y', None], [3.1, 'tackle', 'CB_S', 'Y']]
+t0.0 car y49.0 v0.0 | NB 10.0yd ahead/in al+1.8 lat-9.8 sp7.2 None VNone | CB_S 12.9yd ahead/in al+12.6 lat-2.7 sp4.6 None VNone |
+t0.1 car y49.0 v0.8 | NB 9.3yd ahead/in al+1.8 lat-9.1 sp7.3 None VNone | CB_S 12.4yd ahead/in al+12.1 lat-2.5 sp5.1 None VNone |
+t0.2 car y49.0 v1.5 | NB 8.6yd ahead/in al+2.3 lat-8.2 sp7.5 None VNone | CB_S 11.8yd ahead/in al+11.7 lat-1.4 sp5.5 None VNone |
+t0.3 car y49.0 v2.2 | NB 7.8yd ahead/in al+1.6 lat-7.6 sp7.6 on-top point V1.19 | CB_S 11.1yd ahead/in al+10.9 lat-1.9 sp5.9 on-top point V1.19 |
+t0.4 car y48.9 v2.8 | NB 7.0yd ahead/in al+1.4 lat-6.8 sp7.7 on-top point V1.86 | CB_S 10.2yd ahead/in al+10.1 lat-1.6 sp6.2 on-top point V1.86 |
+t0.5 car y48.9 v3.4 | NB 6.2yd ahead/in al+1.1 lat-6.1 sp7.9 on-top point V2.5 | CB_S 9.3yd ahead/in al+9.2 lat-1.3 sp6.5 on-top point V2.5 |
+t0.6 car y48.9 v3.9 | NB 5.3yd level/in al+0.9 lat-5.3 sp8.0 on-top point V3.1 | CB_S 8.3yd ahead/in al+8.2 lat-1.1 sp6.7 on-top point V3.1 |
+t0.7 car y48.9 v4.4 | NB 4.5yd level/in al+0.5 lat-4.5 sp7.7 on-top point V3.64 | CB_S 7.3yd ahead/in al+7.2 lat-1.0 sp6.5 on-top point V3.64 |
+t0.8 car y48.9 v4.6 | NB 3.8yd level/in al+0.2 lat-3.7 sp7.1 on-top point V4.14 | CB_S 6.2yd ahead/in al+6.1 lat-0.9 sp5.9 close gather V4.14 |
+t0.9 car y48.9 v4.7 | NB 3.1yd level/in al-0.4 lat-3.0 sp6.8 on-top point V4.52 | CB_S 5.2yd ahead/in al+5.0 lat-1.2 sp5.2 close gather V4.52 |
+t1.0 car y49.0 v5.0 | NB 2.6yd behind/in al-1.1 lat-2.3 sp6.1 close gather V4.64 | CB_S 4.2yd ahead/in al+3.9 lat-1.6 sp4.5 close gather V4.64 |
+t1.1 car y49.1 v5.0 | NB 2.3yd behind/in al-1.6 lat-1.6 sp6.2 close gather V4.88 | CB_S 3.4yd ahead/in al+2.8 lat-1.9 sp3.8 close gather V4.88 |
+t1.2 car y49.3 v4.9 | NB 2.1yd behind/in al-1.9 lat-0.9 sp6.3 close gather V5.17 | CB_S 2.7yd ahead/in al+1.9 lat-1.9 sp3.2 close gather V5.17 |
+t1.3 car y49.5 v5.3 | NB 2.0yd behind/in al-2.0 lat-0.5 sp6.4 close gather V4.91 | CB_S 2.0yd ahead/in al+1.1 lat-1.7 sp2.7 close gather V4.91 |
+t1.4 car y49.7 v5.6 | NB 2.0yd behind/in al-2.0 lat-0.1 sp6.5 close gather V5.09 | CB_S 1.5yd level/in al+0.5 lat-1.5 sp2.5 close gather V5.09 |
+t1.5 car y49.9 v5.9 | NB 2.1yd behind/in al-2.1 lat+0.3 sp6.6 close gather V5.46 | CB_S 1.2yd level/in al-0.2 lat-1.2 sp2.4 close gather V5.46 |
+t1.6 car y50.0 v5.8 | NB 2.3yd behind/in al-2.3 lat+0.5 sp6.7 close gather V5.79 | CB_S 1.2yd level/in al-0.6 lat-1.0 sp3.2 tackle bond V5.79 aim al+13.4 |
+t1.7 car y50.1 v5.5 | NB 2.5yd behind/out al-2.4 lat+0.8 sp6.7 close gather V5.84 | CB_S 1.2yd level/in al-0.9 lat-0.7 sp4.1 tackle bond V5.84 aim al+12.7 |
+t1.8 car y50.2 v5.0 | NB 2.6yd behind/out al-2.4 lat+1.1 sp6.8 close gather V5.68 | CB_S 1.2yd behind/in al-1.2 lat-0.4 sp5.2 tackle bond V5.68 aim al+12.2 |
+t1.9 car y50.3 v4.7 | NB 2.8yd behind/out al-2.3 lat+1.6 sp6.8 close gather V5.29 | CB_S 1.3yd behind/in al-1.3 lat+0.0 sp5.3 tackle bond V5.29 aim al+10.0 |
+t2.0 car y50.4 v4.5 | NB 2.9yd behind/out al-2.0 lat+2.1 sp6.8 close gather V4.87 | CB_S 1.3yd behind/out al-1.3 lat+0.4 sp5.2 tackle bond V4.87 aim al+6.9 |
+t2.1 car y50.5 v4.5 | NB 2.9yd behind/out al-1.6 lat+2.4 sp6.8 close gather V4.58 | CB_S 1.3yd behind/out al-1.2 lat+0.6 sp4.9 tackle bond V4.58 aim al+4.2 |
+t2.2 car y50.6 v4.5 | NB 2.8yd behind/out al-1.1 lat+2.6 sp6.8 close gather V4.43 | CB_S 1.4yd behind/out al-1.1 lat+0.8 sp4.4 tackle bond V4.43 aim al+3.8 |
+t2.3 car y50.9 v4.8 | NB 2.6yd level/out al+0.0 lat+2.6 sp6.4 close gather V4.53 | CB_S 1.3yd level/out al-0.8 lat+1.0 sp4.1 tackle bond V4.53 aim al+3.0 |
+t2.4 car y51.3 v4.3 | NB 2.3yd level/out al+0.2 lat+2.3 sp6.5 close gather V5.11 | CB_S 1.3yd level/in al-0.9 lat+0.9 sp3.8 tackle bond V5.11 aim al+2.8 |
+t2.5 car y51.5 v3.7 | NB 2.0yd level/out al+0.3 lat+2.0 sp6.4 close gather V4.5 | CB_S 1.2yd level/in al-1.0 lat+0.7 sp3.5 tackle bond V4.5 aim al+2.5 |
+t2.6 car y51.8 v3.1 | NB 1.7yd level/out al+0.5 lat+1.6 sp6.1 close gather V4 | CB_S 1.2yd behind/in al-1.0 lat+0.6 sp3.2 tackle bond V4 aim al+0.5 |
+t2.7 car y52.0 v2.6 | NB 1.4yd level/out al+0.6 lat+1.3 sp5.5 close gather V3.38 | CB_S 1.1yd behind/in al-1.0 lat+0.5 sp2.8 tackle bond V3.38 aim al-0.1 |
+t2.8 car y52.1 v2.2 | NB 1.2yd level/out al+0.6 lat+1.1 sp4.3 tackle bond V2.85 aim al+0.8 | CB_S 1.1yd behind/in al-1.0 lat+0.3 sp2.8 tackle bond V2.85 aim al-0.1 |
+t2.9 car y52.2 v1.6 | NB 1.0yd level/out al+0.7 lat+0.8 sp3.5 tackle bond V2.34 aim al-0.1 | CB_S 1.0yd level/in al-0.9 lat+0.2 sp2.9 tackle bond V2.34 aim al-0.1 |
+t3.0 car y52.3 v1.4 | NB 0.8yd level/out al+0.7 lat+0.5 sp2.9 tackle bond V1.87 aim al-0.0 | CB_S 0.8yd level/in al-0.8 lat+0.2 sp2.9 tackle bond V1.87 aim al-0.0 |
+t3.1 car y52.4 v1.6 | NB 0.7yd level/out al+0.6 lat+0.3 sp2.1 tackle bond V1.38 aim al-0.1 | CB_S 0.7yd level/in al-0.7 lat+0.2 sp2.8 tackle bond V1.38 aim al-0.1 |
