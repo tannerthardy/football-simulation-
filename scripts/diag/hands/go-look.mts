@@ -12,12 +12,16 @@ const { PlaySim } = await import(`${W}/src/sim/playsim.ts`);
 const D: any = await import(`${W}/src/sim/behaviors/defense.ts`);
 const BE: any = await import(`${W}/src/sim/ball-estimate.ts`);
 const N = Number(process.argv[2] ?? 16), AT = Number(process.argv[3] ?? 2.6);
-const tally: Record<string, number> = {};
+// COV: the coverage (cover1 press by default; cover1_off for a double move's sell). ROUTE: X's route (default the go;
+// out_and_up or sluggo, Rules' staged-only double moves).
+const COV = process.env.COV ?? 'cover1', ROUTE = process.env.ROUTE;
+const PASS = (() => { const p: any = { ...PASS_BY_ID.four_verts }; if (ROUTE) { p.strong = { ...p.strong, 1: ROUTE }; p.weak = { ...p.weak, 1: ROUTE }; } return p; })();
+const tally: Record<string, number> = {}; const gaps: number[] = [];
 for (let seed = 1; seed <= N; seed++) {
   const offense = generateTeam(new Rng(51), 'O', 'OFF', { strength: .55 }), defense = generateTeam(new Rng(52), 'D', 'DEF', { strength: .55 });
   const sim: any = new PlaySim({ offense: pickOffense(offense, '11'), defense: pickDefense(defense, 'nickel'),
-    offCall: { formation: FORMATION_BY_ID.gun_doubles_11, flip: false, kind: 'pass', pass: PASS_BY_ID.four_verts, label: 'four_verts' },
-    defCall: { personnel: 'nickel', front: FRONT_BY_ID.over, coverage: COVERAGE_BY_ID.cover1, pressure: null, zoneStyle: 'spot', label: 'c1' },
+    offCall: { formation: FORMATION_BY_ID.gun_doubles_11, flip: false, kind: 'pass', pass: PASS, label: 'four_verts' },
+    defCall: { personnel: 'nickel', front: FRONT_BY_ID.over, coverage: COVERAGE_BY_ID[COV], pressure: null, zoneStyle: 'spot', label: 'c1' },
     los: 40, ballY: 26, firstDownX: 50, seed, stagedThrow: { at: AT, slot: 'X' } } as never);
   const X = sim.slot('X'); let cb: any = null, saw = false, arr: any = null;
   while (sim.phase !== 'dead' && sim.t < 7) {
@@ -30,7 +34,7 @@ for (let seed = 1; seed <= N; seed++) {
       if (!arr || dh < arr.dh) arr = { dh, t: sim.t, gap: Math.hypot(cb.pos.x - X.pos.x, cb.pos.y - X.pos.y) };
     }
   }
-  const look = cb ? D.manLookOf(cb) : undefined;
+  const look = cb ? D.manLookOf(cb) : undefined; if (arr) gaps.push(arr.gap);
   const ev = sim.events.filter((e: any) => ['pbu', 'interception', 'catch', 'incomplete', 'deflection'].includes(e.type)).map((e: any) => `${sim.agents[e.a]?.slot ?? '-'}:${e.type}`);
   const cbPlay = cb && sim.events.some((e: any) => e.a === cb.idx && ['pbu', 'interception', 'deflection'].includes(e.type));
   const caught = sim.events.some((e: any) => e.type === 'catch' && e.a === X.idx);
@@ -39,3 +43,4 @@ for (let seed = 1; seed <= N; seed++) {
   console.log(`s${seed} cb=${cb?.slot} look=${look ? JSON.stringify({ inPhase: look.inPhase, looks: look.looks, behind: +look.behind.toFixed(2) }) : '-'} saw=${saw} gap@arr=${arr ? arr.gap.toFixed(2) : '-'} | ${ev.join(',')}`);
 }
 console.log(JSON.stringify(tally, null, 1));
+console.log('SUMMARY', JSON.stringify({ COV, ROUTE: ROUTE ?? 'go', AT, BALL_EST: process.env.BALL_EST ?? '-', caught: Object.entries(tally).filter(([k]) => k.endsWith('caught')).reduce((s, [, n]) => s + n, 0), cbPlays: Object.entries(tally).filter(([k]) => k.endsWith('CB plays')).reduce((s, [, n]) => s + n, 0), gapMean: +(gaps.reduce((a, b) => a + b, 0) / Math.max(1, gaps.length)).toFixed(2) }));
