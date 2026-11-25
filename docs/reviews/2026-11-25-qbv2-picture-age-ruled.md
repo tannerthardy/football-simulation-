@@ -2,8 +2,8 @@
 
 QB lane. This supersedes `2026-11-25-qbv2-picture-age.md` (the first build) and the attempt-2 WIP.
 
-**Combined patch:** `docs/reviews/patches/qbv2/combined-on-094b46f3a.patch` (sha256 ddbac2692858…, 16 files,
-+262/−46, on develop 094b46f3a). QB_V2 stays off.
+**Combined patch:** `docs/reviews/patches/qbv2/combined-on-094b46f3a.patch` (sha256 40a38d63f3b6…, 17 files,
++264/−46, on develop 094b46f3a; test/engine-pin.json lists the two new test files). QB_V2 stays off.
 
 It carries:
 - the planFor swap;

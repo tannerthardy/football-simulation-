@@ -501,6 +501,26 @@ index 000000000..1ec5b2fa3
 +    expect(t.ratings.ballSkills).toBeGreaterThan(0);
 +  });
 +});
+diff --git a/test/engine-pin.json b/test/engine-pin.json
+index ef4f17750..1c7034c22 100644
+--- a/test/engine-pin.json
++++ b/test/engine-pin.json
+@@ -171,6 +171,7 @@
+   "test/baseline-runner.test.ts",
+   "test/belief-no-calltype.test.ts",
+   "test/believed-body.test.ts",
++  "test/believed-fallback.test.ts",
+   "test/blind-defender.test.ts",
+   "test/blitz-creep.test.ts",
+   "test/blocker-work-picture.test.ts",
+@@ -452,6 +453,7 @@
+   "test/qbv2-cycle.test.ts",
+   "test/qbv2-information.test.ts",
+   "test/qbv2-judge.test.ts",
++  "test/qbv2-picture-age.test.ts",
+   "test/qbv2-presnap.test.ts",
+   "test/qbv2-roles.test.ts",
+   "test/quarter-flat-force-support.test.ts",
 diff --git a/test/information-guard-allowlist.ts b/test/information-guard-allowlist.ts
 index b924321af..f43e08ef9 100644
 --- a/test/information-guard-allowlist.ts
