@@ -1,0 +1,24 @@
+diff --git a/docs/GAPS.md b/docs/GAPS.md
+index 62b08d99e..f5d444121 100644
+--- a/docs/GAPS.md
++++ b/docs/GAPS.md
+@@ -165,6 +165,19 @@ tables.
+   #947's projection stays as an interim caution. The next diagnosis splits the
+   allowance by what his picture shows the man doing. Not now
+   (`docs/reviews/2026-11-25-qbv2-picture-age-ruled.md`).
++- **Open, QB lane (QB_V2, logged with the forecast-shape fix #960, 2026-11-25; not chased now):**
++  - *The slant behind a widening apex may be under-believed.* Slant-flat vs Cover 3, seeds 7, 8 and 30. On the
++    honest forecast, V2 prices the slant at P 0.35 (risk 0.09–0.21) from 0.9 s and throws W2 at 2.3 s. #936's
++    label calls the slant the taught answer. The slants thrown before #960 were thrown on a backward forecast
++    (P 0.92), and 1 of 3 completed, so the true rate is not known. The question for the judge: does it
++    over-price the curl-flat or hook on a slant once the apex widens? Reproducer:
++    `docs/reviews/patches/qbv2/diag/fc-slant-sc.ts`.
++  - *A read that ends with nothing thrown does not reach the checkdown.* Stick vs Cover 2, seed 1. The forecast is
++    right throughout, but after structure-out he never looks back at the back (B: P 0.35, a stale picture). He
++    holds the ball to 6.6 s. Before #960 a one-tick false flip happened to send his eyes there. This is a cycle
++    item. Reproducer: `docs/reviews/patches/qbv2/diag/fc-back-sc.ts`.
++  - Both are in `docs/reviews/2026-11-25-qbv2-forecast-shape.md`; it and the reproducers are on branch
++    `claude/exciting-cori-hc8l4u`.
+ 
+ ### P3. The short passing game
+ 
