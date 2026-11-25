@@ -62,7 +62,10 @@ describe('RUSH_ARM_BALANCE', () => {
     const { PlaySim } = await import('../src/sim/playsim.js');
     const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');
     let found: string | null = null, scenes = 0;
-    search: for (const coverage of ['cover1', 'cover2', 'cover3']) for (let seed = 1; seed <= 8; seed++) for (let roster = 1; roster <= 12; roster++) {
+    // Cover 0 added 2026-11-25 (Coverage, LANE_LEVERAGE and FLAT_SINK_ONE on): the corner flags move the Cover 2 scene this
+    // found first (cover2 roster 1 seed 1, 3.80 s) and the search over the three coverages found none; over these four, one
+    // (cover0 roster 12 seed 7, 4.55 s; with the flags off, two). The rule is unchanged: at least one exists.
+    search: for (const coverage of ['cover1', 'cover2', 'cover3', 'cover0']) for (let seed = 1; seed <= 8; seed++) for (let roster = 1; roster <= 12; roster++) {
       scenes++;
       const sim: any = new PlaySim(nativeTraceSetup({ coverage, concept: 'four_verts', seed, roster, formation: 'gun_doubles_11', flip: false }));
       const dl = new Set(sim.defense.filter((a: any) => /^(DE|DT|NT)/.test(a.slot)).map((a: any) => a.idx));

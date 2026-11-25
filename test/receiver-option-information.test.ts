@@ -18,8 +18,13 @@ function scene(side = 1, keySide = -1) {
   r.body.pos.x = 44; r.body.vel.x = 5;
   for (const d of sim.defense) { d.body.pos = { x: 30, y: 1 }; d.body.vel = { x: 0, y: 0 }; }
   key.body.pos = { x: 46, y: r.pos.y + side * keySide };
+  // UNDERNEATH_MOVE: the key works with him (closing on his line), so working away is the taught answer; a key
+  // sitting in the window leaves him on base (test/underneath-move.test.ts). He has watched it for 0.4 s. A key on the
+  // exit side stays put: it caps the exit whether or not it moves.
+  key.body.vel = { x: 0, y: keySide < 0 ? side * 2 : 0 };
   for (let i = 0; i < 24; i++) sim.perception.record(sim.agents, sim.qb.idx);
-  sim.t = 2;
+  sim.t = 1.6; r.body.pos.x = 41; runner.update(r, sim);
+  r.body.pos.x = 44; sim.t = 2;
   return { sim, r, key, runner };
 }
 
@@ -105,7 +110,7 @@ describe('receiver option reads use acquired leverage', () => {
     const f = scene();
     const prior = installReceiverRoute({ x: 40, y: FIELD_WIDTH / 2 }, 40, 1, ROUTES.stick, 0, f.r.profile, f.r.r('routeRunning'));
     const qb = new ReceiverForecast(f.sim.qb, prior, .05);
-    const key = { id: f.key.player.id, pos: { x: 46, y: FIELD_WIDTH / 2 - 1 }, vel: { x: 0, y: 0 }, age: .2 };
+    const key = { id: f.key.player.id, pos: { x: 46, y: FIELD_WIDTH / 2 - 1 }, vel: { x: 0, y: 2 }, age: .2 };
     qb.acquire({ pos: { x: 43, y: FIELD_WIDTH / 2 }, vel: { x: 5, y: 0 }, facing: 0, sampledAt: 1, acquiredAt: 1.2 });
     qb.readKeys([key]);
     expect(qb.estimate?.routeAnswer).toBe('away');
@@ -125,7 +130,7 @@ describe('receiver option reads use acquired leverage', () => {
     const base = new ReceiverForecast({}, prior, .05), away = new ReceiverForecast({}, prior, .05);
     const picture = { pos: { x: 42.5, y: FIELD_WIDTH / 2 }, vel: { x: 3, y: 0 }, facing: 0, sampledAt: 1, acquiredAt: 1 };
     base.acquire(picture); away.acquire(picture);
-    away.readKeys([{ id: 'inside-key', pos: { x: 46, y: FIELD_WIDTH / 2 - 1 }, vel: { x: 0, y: 0 }, age: .2 }]);
+    away.readKeys([{ id: 'inside-key', pos: { x: 46, y: FIELD_WIDTH / 2 - 1 }, vel: { x: 0, y: 2 }, age: .2 }]);
     expect(away.estimate?.routeAnswer).toBe('away');
     expect(away.predict(1, .15)).toEqual(base.predict(1, .15));
     expect(away.predict(1, 1.8)!.y).toBeGreaterThan(base.predict(1, 1.8)!.y);
@@ -141,7 +146,7 @@ describe('receiver option reads use acquired leverage', () => {
     const base = new ReceiverForecast({}, prior, .05), away = new ReceiverForecast({}, prior, .05);
     const picture = { pos: { x: 42.5, y: FIELD_WIDTH / 2 }, vel: { x: 3, y: 0 }, facing: 0, sampledAt: 1, acquiredAt: 1 };
     base.acquire(picture); away.acquire(picture);
-    away.readKeys([{ id: 'inside-key', pos: { x: 46, y: FIELD_WIDTH / 2 - 1 }, vel: { x: 0, y: 0 }, age: .2 }]);
+    away.readKeys([{ id: 'inside-key', pos: { x: 46, y: FIELD_WIDTH / 2 - 1 }, vel: { x: 0, y: 2 }, age: .2 }]);
     expect(base.estimate?.routeAnswer).toBe('base');
     expect(away.estimate?.routeAnswer).toBe('away');
     expect(base.hasBreak && away.hasBreak).toBe(true);

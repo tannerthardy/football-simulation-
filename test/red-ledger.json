@@ -198,6 +198,13 @@
    "class": "fixture"
   },
   {
+   "file": "test/screen-qb.test.ts",
+   "test": "SCREEN_QB dead quick screen is thrown away on his read when it is dead, and live ones are thrown",
+   "owner": "QB",
+   "flag": "RELEASE_ZONE",
+   "class": "landing #957 (the premise is gone, not the read: its three dead bubbles vs Cover 1 were dead only because the off-RELEASE_ZONE release ran the bubble upfield into the nickel; run as a bubble they are live and thrown, 2 of 3 caught. Truly dead now screens vs Cover 1 press (CB 0.5-1.1 yd at the throw, seeds 2/4/7) are thrown, not thrown away: SCREEN_QB (off) misses a pressed corner, to re-stage before it is promoted)"
+  },
+  {
    "file": "test/throw-sight.test.ts",
    "test": "throw recognition from what the defender sees (INFO-1) reads his receiver's visible look back, not the receiver's private ball tracking",
    "owner": "Defense (throw recognition)",

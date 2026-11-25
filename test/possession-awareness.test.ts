@@ -257,9 +257,16 @@ describe('an acquired trajectory supports anticipation, not certified possession
     f.sim.t = 2.2;
     expect(anticipatedCatcher(f.a, f.sim)?.target).toBe(f.x);
     f.sim.t = 2.3; f.pictures.get(f.x)!.age = .05;
-    expect(anticipatedCatcher(f.a, f.sim)).toBeNull();
-    f.pictures.get(f.x)!.carrying = null;
-    expect(anticipatedCatcher(f.a, f.sim)).toBeNull(); // refuted hypothesis cannot revive with unknown
+    if (process.env.HONEST_FLIGHT !== '0') {
+      // HONEST_FLIGHT: an empty picture taken inside the catch's securing beat (2.25 s, within 0.4 s of the 2.2 s
+      // opportunity) is not evidence against it: a receiver securing the ball is not yet carrying it in any picture. The
+      // hypothesis stands until the flight's own end (2.5 s), before any picture could refute it.
+      expect(anticipatedCatcher(f.a, f.sim)?.target).toBe(f.x);
+    } else {
+      expect(anticipatedCatcher(f.a, f.sim)).toBeNull();
+      f.pictures.get(f.x)!.carrying = null;
+      expect(anticipatedCatcher(f.a, f.sim)).toBeNull(); // refuted hypothesis cannot revive with unknown
+    }
     f.sim.t = 2.55;
     expect(rememberedFlight(f.a, f.sim.t)).toBeNull();
     expect(observedHolder(f.a, f.sim)).toBeNull();
@@ -328,7 +335,12 @@ describe('an acquired trajectory supports anticipation, not certified possession
     // Exact native input from the opposing control. The correction owns the
     // request/response, not this play's yardage or the receiver's earned catch.
     expect(result.events.find(e => e.type === 'catch')?.t).toBe(3.4);
-    expect(result.telemetry!.decisions.some(d => d.a === sim.slot('SS')!.idx && d.t === 3.45 && d.kind === 'flight-continuation')).toBe(true);
+    // HONEST_FLIGHT: his flight continues on his own estimate up to its arrival (3.3-3.4 s) and, through the catch's securing
+    // beat, he works with the receiver it brought the ball to (catch-anticipation, 3.45-3.55 s), the one who caught it at
+    // 3.4 s; then the same rally (+y, 3.6-3.65 s) and possession pursuit (3.7 s). Off: flight continuation at 3.45 s.
+    const honest = process.env.HONEST_FLIGHT !== '0';
+    expect(result.telemetry!.decisions.some(d => d.a === sim.slot('SS')!.idx && d.t === (honest ? 3.4 : 3.45) && d.kind === 'flight-continuation')).toBe(true);
+    if (honest) expect(result.telemetry!.decisions.some(d => d.a === sim.slot('SS')!.idx && d.t === 3.45 && d.kind === 'catch-anticipation')).toBe(true);
     for (const t of [3.65]) {
       const s = trace.steps.find(s => s.stepStart === t)!;
       expect(s.decision!.raw.vel.y * toBall).toBeGreaterThan(0);

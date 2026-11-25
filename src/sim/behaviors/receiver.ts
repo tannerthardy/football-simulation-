@@ -21,7 +21,7 @@ import { CATCH_CHOICE, chooseCatchPoint, type CatchChoice } from '../catch-choic
 import { BALL_EST_RCV as BALL_EST, BALL_EST_GLANCE, SEEN_EMPTY, BALL_EST_DEEP_LOOK, BALL_EST_SERVO, BALL_EST_TRUNK, lookJoints, BALL_EST_MOVING_CHOICE, DEEP_LOOK_DEPTH, DEEP_LOOK_HOLD, LOOK_NECK, neckOf, PRE_LOOK_EARLY, PRE_LOOK_LATE, bodyTurnLead, sideOf } from '../ball-estimate.js';
 
 import { bodyRunTime, firstBreakDepth, getOffDrive, getOffLoss, inGetOff, LINE_START, routeEffort, routePath, steerRoute, type PathPoint, type RouteCursor, type FilletTurn, type FilletPlan, ROUTE_LANDMARK, breaksInside } from '../route-motion.js';
-import { installedRead, readRoute, type RouteChoice, type RouteKeyPicture } from '../route-read.js';
+import { installedRead, keyIsMan, MOVING_HOLD, readRoute, UNDERNEATH_MOVE, type RouteChoice, type RouteKeyPicture } from '../route-read.js';
 import { BREAK_DECL } from '../../playbook/route-breaks.js';
 
 /** A palm contact, not an outcome of a once-per-snap skill contest. The
@@ -370,6 +370,8 @@ export class RouteRunner implements Behavior {
   /** STEM_WORK: his stem's decision (null undecided; 0 straight; otherwise the lateral offset he works to, yd). */
   private stemWork: number | null = null;
   private readonly keyMemory = new Map<string, { at: number; picture: RouteKeyPicture }>();
+  /** UNDERNEATH_MOVE: per key, whether it has been moving with him in his picture and since when. */
+  private readonly keyMoving = new Map<string, { on: boolean; since: number }>();
   private routeEnd: RouteEnd;
   /** Passive diagnostic state; never shared with the quarterback's forecast. */
   routeDecision: { at: number; choice: RouteChoice; pictures: readonly RouteKeyPicture[] } | null = null;
@@ -473,6 +475,13 @@ export class RouteRunner implements Behavior {
   }
 
   update(a: Agent, sim: PlaySim): MoveCommand {
+    // UNDERNEATH_MOVE: from the snap until his read (his release included), he watches whether each key is moving with him,
+    // with enter and exit margins; the read takes 'away' only from a key that has been moving with him for MOVING_HOLD.
+    if (UNDERNEATH_MOVE && !this.converted && installedRead(this.route)?.key === 'underneath') for (const p of this.readKeys(a, sim)) {
+      const passer = sim.see(a, sim.qb).pos;
+      const prev = this.keyMoving.get(p.id), on = keyIsMan(p, a.pos, a.vel, passer, prev?.on ?? false);
+      this.keyMoving.set(p.id, { on, since: on ? (prev?.on ? prev.since : sim.t) : sim.t });
+    }
     const cmd = this.routeCommand(a, sim);
     const out = LINE_START ? this.getOff(a, sim, cmd) : cmd;
     return BALL_EST ? this.preLook(a, sim, out) : out;
@@ -559,8 +568,9 @@ export class RouteRunner implements Behavior {
     if (!this.converted && read && a.pos.x >= sim.los + read.depth) {
       this.converted = true;
       const pictures = routePictures;
+      const movingWith = UNDERNEATH_MOVE ? (k: RouteKeyPicture) => { const m = this.keyMoving.get(k.id); return !!m?.on && sim.t - m.since >= MOVING_HOLD - 1e-9; } : undefined;
       const choice = readRoute(read, { start: this.start, pos: a.pos, los: sim.los,
-        middleY: FIELD_WIDTH / 2, outside: this.outside }, pictures);
+        middleY: FIELD_WIDTH / 2, outside: this.outside, movingWith }, pictures);
       this.routeDecision = { at: sim.t, choice, pictures };
       const answer = read.answers.find(p => p.id === choice.answer);
       if (answer) {
@@ -676,7 +686,7 @@ export class RouteRunner implements Behavior {
       const near = Math.hypot(dx, dy) <= 3;
       if (!near && (dx <= 0 || Math.abs(dy) > dx * 2)) continue;
       this.keyMemory.set(d.player.id, { at: sim.t,
-        picture: { id: d.player.id, pos: { ...p.pos }, vel: { ...p.vel }, age: p.age ?? 0 } });
+        picture: { id: d.player.id, pos: { ...p.pos }, vel: { ...p.vel }, age: p.age ?? 0, ...(UNDERNEATH_MOVE ? { look: p.head ?? p.facing } : {}) } });
     }
     const pictures: RouteKeyPicture[] = [];
     for (const [id, { at, picture }] of this.keyMemory) {
