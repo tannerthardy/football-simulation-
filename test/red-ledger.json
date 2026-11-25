@@ -121,6 +121,13 @@
    "class": "fixture"
   },
   {
+   "file": "test/pursuit-commit.test.ts",
+   "test": "PURSUIT_COMMIT: pursuers commit to their meeting and keep their approach through the catch on: none do, his request turns less, and the bearing to his planned meeting jumps no more often",
+   "owner": "Defense",
+   "flag": "HONEST_FLIGHT",
+   "class": "landing engine-105 (a mix shift in the bound, not a defect in the flag: the commit's cut in the 3-8 yd turn-rate median is about the same with HONEST_FLIGHT on (40.1 -> 33.1 deg/s) and off (32.9 -> 24.3), but the base rises because plays run longer after the catch (slant_flat 1 dead at 4.70 against 4.35 s) and more post-catch pursuit dither falls in the band (FS swinging +-20 deg, LB_W re-aiming); the 0.8 ratio is not loosened. Lasting repair: compare on matched pursuer-ticks, or fix the post-catch dither first; Defense, 2026-11-25)"
+  },
+  {
    "file": "test/qb-seen-out.test.ts",
    "test": "QB_SEEN_OUT off: the man is ready the moment his behaviour changes, though the quarterback has not seen him",
    "owner": "QB",
