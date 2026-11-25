@@ -12,7 +12,7 @@ import { clamp } from '../core/vec.js';
 import { r01, type Player } from '../players/types.js';
 import { alignStyle, decayWorkload, pickDefense, pickOffense, specialist, SUBSTITUTION_COST, type Availability, type Team } from '../league/team.js';
 import { PlaySim, type PlaySetup } from '../sim/playsim.js';
-import { CoverageScouting } from '../sim/qbmind.js';
+import { CoverageScouting, SCOUT_SEEN } from '../sim/qbmind.js';
 import { ScoutingReport } from '../sim/recognition.js';
 import type { Frame, PenaltyCall, PlayResult } from '../sim/types.js';
 import { BoxScore } from './stats.js';
@@ -723,7 +723,11 @@ export class Game {
     for (const a of sim.agents) this.box.line(a.player, a.team === 'O' ? offTeam.abbr : defTeam.abbr).snaps++;
     // Both sides learn from the snap they just saw.
     this.scouting[defSide].observe(sim.snapContext, ranCall.kind === 'pass');
-    if (ranCall.kind === 'pass') this.coverageScouting[offSide].observe(defCall);
+    // SCOUT_SEEN: the offense learns the coverage its passer came to believe, weighted by how settled it was (off: the call).
+    if (ranCall.kind === 'pass') {
+      if (SCOUT_SEEN) this.coverageScouting[offSide].observeSeen(sim.qbMind.belief, sim.qbMind.report.pre);
+      else this.coverageScouting[offSide].observe(defCall);
+    }
 
     const startDown = s.down;
     const startDist = s.distance;

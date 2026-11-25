@@ -15,6 +15,7 @@ type Man = 'elite' | 'typical' | 'poor';
 async function scene(flag: string) {
   vi.resetModules();
   vi.stubEnv('QB_BELIEVED_DEF', flag);
+  vi.stubEnv('QB_SCOUT', '0'); // engine-96 (QB lane): this file holds the old contract (belief = truth pulled toward the typical by a rating); QB_SCOUT replaces it with a per-game scouting report (test/qb-scout.test.ts). Retire with QB_BELIEVED_DEF's old path.
   const { PlaySim } = await import('../src/sim/playsim.js');
   const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');
   const { typicalAt } = await import('../src/sim/believed.js');

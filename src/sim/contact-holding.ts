@@ -494,7 +494,7 @@ const holdLooks = new WeakMap<PlaySim, Map<string, number>>();
 
 /** HOLD_CALL: how far a committed hold goes -- committed only, material
  * (a real path to the ball, restrained against it), or called (material and
- * seen). `effect` is the act's accumulated opposing velocity change (m/s). */
+ * seen). `effect` is the act's accumulated opposing velocity change (yd/s: World impulse, kg·yd/s, over his mass). */
 export function holdStage(sim: PlaySim, start: HoldingIntervalStart, h: HoldStart, report: StepReport, effect: number):
   { stage: 'committed' | 'material' | 'called'; facts: Record<string, number | boolean | string | null> } {
   const v = h.victim, ball = start.carrier;
@@ -516,7 +516,8 @@ export function holdStage(sim: PlaySim, start: HoldingIntervalStart, h: HoldStar
   const material = (poa || next) && toward && notDouble;
   const traffic = sim.agents.filter(a => a !== v && a !== h.actor
     && Math.hypot(a.pos.x - v.pos.x, a.pos.y - v.pos.y) <= HOLD_TRAFFIC_RADIUS).length;
-  const effectYdPerS = effect * 1.0936;
+  // effect is already yd/s (delivered impulse in kg·yd/s over kg); the former × 1.0936 treated it as m/s (+9%).
+  const effectYdPerS = effect;
   const pSeen = officiateChance(effectYdPerS) / (1 + traffic);
   let looks = holdLooks.get(sim);
   if (!looks) { looks = new Map(); holdLooks.set(sim, looks); }
