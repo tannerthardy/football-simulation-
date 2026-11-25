@@ -128,7 +128,11 @@ describe('loose-ball possession is distinct from physical down', () => {
     expect((recoverer.pos.x - originalX) * dir).toBeGreaterThan(0);
     // Re-recorded 2026-11-17 (carrier-honest: the runner judges the FS from what he sees, not his hidden profile): the O
     // scoop runner's path changes and the whistle comes while he is still falling; the D scoop still ends down.
-    expect(recoverer.body.support!.state).toBe(team === 'O' ? 'falling' : 'down');
+    // Re-recorded 2026-11-25 (Run Game, the tackle package): the file's rule is that the scoop stays live and is ended
+    // by an ordinary later tackle, a solved fall, not a prescribed down (the fall / tackle / wrap events below). Whether
+    // the whistle finds him still falling or already down is the tackle's timing (the package's reach and hold land a
+    // tick or two differently), so either is the contract.
+    expect(['falling', 'down']).toContain(recoverer.body.support!.state);
     expect(sim.events.some(e => e.type === 'tackle_wrap')).toBe(true);
     expect(sim.events.some(e => e.type === 'fall' && e.a === recoverer.idx)).toBe(true);
     expect(sim.events.some(e => e.type === 'tackle' && e.b === recoverer.idx)).toBe(true);

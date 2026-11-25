@@ -322,8 +322,11 @@ describe('real World contact → native rule caller', () => {
       capacity: 1000, legs: 0, pull: 1, hold: .9, height: target.profile.heightYd * .65,
       contactAnatomy: { actorPart: 'hand', targetRegion: 'above_waist', gripLocation: 'inside_back_side_collar' } };
     sim.world.joints.push(source); sim.diveAt(target, { x: 1, y: 0 });
-    sim.tick();
-    expect(sim.lastStep!.falls).toContain(target.idx);
+    // DIVE_STANCE (Tools): the dive pushes off over its stance (0.12 s) before the feet go, so the fall comes a few ticks
+    // after the call rather than on the next one; the fall and the rule calls are the same (Run Game, 2026-11-25).
+    let fell = false;
+    for (let k = 0; k < 4 && !fell; k++) { sim.tick(); fell = sim.lastStep!.falls.includes(target.idx); }
+    expect(fell).toBe(true);
     expect(target.body.support!.cause).toBe('dive');
     expect(called(sim, 'horse_collar')).toEqual([]);
   });
@@ -353,6 +356,8 @@ describe('real World contact → native rule caller', () => {
     expect(holder.body.support!.state).toBe('up');
     expect(Math.abs(holder.facing)).toBeGreaterThan(Math.PI / 4);
     advance(Math.PI / 2, true);
+    // DIVE_STANCE: the dive's stance push-off takes a few ticks before he leaves his feet.
+    for (let k = 0; k < 3 && holder.body.support!.state === 'up'; k++) advance(Math.PI / 2, true);
     expect(holder.body.support!.cause).toBe('dive');
     expect(holder.body.support!.state).toBe('falling');
     let legTrap: GraspJoint | undefined;

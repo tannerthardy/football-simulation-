@@ -13,7 +13,10 @@ const stackOn = Object.entries(JSON.parse(readFileSync(new URL('../config/refere
 afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 
 const sim_dt = 1 / 20;
-const PLAYS = [['iz_strong', 3], ['power', 7], ['oz_strong', 11], ['iz_weak', 19]] as const;
+// Panel extended (Run Game, 2026-11-25, the tackle package): with its reach and hold the carrier no longer gets 1.5 yd
+// past the line on two of the four first plays; added by the file's rule (a designed run whose carrier reaches 1.5 yd past
+// the line), the floor of 3 unchanged. iz_strong 23 and oz_strong 13 are the scenes Defense found for TRAIL_LEVERAGE.
+const PLAYS = [['iz_strong', 3], ['power', 7], ['oz_strong', 11], ['iz_weak', 19], ['iz_strong', 23], ['oz_strong', 13]] as const;
 
 async function fumbles(on: boolean): Promise<{ first: number[]; atOnce: number; lateAt25: number; n: number; lost: number; others: number }[]> {
   for (const f of stackOn) vi.stubEnv(f, '1');

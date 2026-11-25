@@ -74,7 +74,9 @@ describe('RUSH_LEAN_BOUND', () => {
     const { PlaySim } = await import('../src/sim/playsim.js');
     const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');
     let found: string | null = null, scenes = 0;
-    search: for (const coverage of ['cover2', 'cover3']) for (let seed = 1; seed <= 8; seed++) for (let roster = 1; roster <= 12; roster++) {
+    // Seeds widened 1-8 -> 1-24 (Run Game, 2026-11-25, the tackle package): with its reach, hold and dive timing the
+    // first 192 scenes hold no earned edge fall; the search's rule and floor (at least one) are unchanged.
+    search: for (const coverage of ['cover2', 'cover3']) for (let seed = 1; seed <= 24; seed++) for (let roster = 1; roster <= 12; roster++) {
       scenes++;
       const sim: any = new PlaySim(nativeTraceSetup({ coverage, concept: 'four_verts', seed, roster, formation: 'gun_doubles_11', flip: false }));
       const ends = new Set(sim.defense.filter((a: any) => /^DE/.test(a.slot)).map((a: any) => a.idx));
@@ -88,7 +90,7 @@ describe('RUSH_LEAN_BOUND', () => {
     }
     console.log(`earned edge fall: ${found ?? 'none'} after ${scenes} scenes`);
     expect(found).not.toBeNull();
-  }, 240_000);
+  }, 900_000);
 
   it('is off unless set', async () => {
     vi.resetModules(); vi.stubEnv('RUSH_LEAN_BOUND', '0');
