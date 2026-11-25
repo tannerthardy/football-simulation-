@@ -315,6 +315,7 @@
     "HONEST_READS": "on",
     "HONEST_FLIGHT": "on",
     "RUSH_RELEASE": "off",
+    "HANDS_SEEN": "off",
     "HONEST_TACKLE": "on",
     "QB_FEEL": "off",
     "QB_GATHER": "off",

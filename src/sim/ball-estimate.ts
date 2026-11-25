@@ -61,6 +61,20 @@ export const BALL_EST_DEEP_LOOK = (BALL_EST_BITS & 16) !== 0;
 /** Bit 32: an offensive player who is not tracking the throw can catch it only on his own sample of this flight (one
  * perception per player), not on catch-readiness's separate facing cone. */
 export const BALL_EST_INCIDENTAL = (BALL_EST_BITS & 32) !== 0;
+/** HANDS_SEEN (experimental, off; HANDS_SEEN=1 turns it on; Defense, 2026-11-25, an information leak found by the QB lane):
+ * a defender plays the ball with his hands (interception, breakup, the hands play at the ball) only on his own sight of it
+ * now: the ball where his head points, within his peripheral cone (45 deg + 24 deg x
+ * vision, the QB lane's PERIPH_ACUITY cone, where motion is still picked up), after his reaction time. Off, catching.ts's
+ * facingBall tested his shoulders against the ball's oncoming line (within about 110 deg) or a 'looking' tag, and a
+ * defender who passed got the full interception and breakup roll at his reach on the true ball (QB lane, develop
+ * 3c11ad4e2: breakups with the head 149-171 deg from the ball and no sighting in his estimate; interceptions with head and
+ * shoulders 90 deg to it). A ball he cannot see can still strike his body or arm (the off-his-body branch). Defense only:
+ * BALL_EST_INCIDENTAL (bit 32) does the same for everyone and also moves receivers' catch readiness and the release and
+ * throw beliefs. Needs BALL_EST's sensing (on in the engine default); with BALL_EST off the old test stands. Not seenReady
+ * (a sample up to 0.5 s old); the shared seesBall (SIGHT_BALL) replaces handsSees when it lands. */
+export const HANDS_SEEN = process.env.HANDS_SEEN === '1';
+/** HANDS_SEEN: his peripheral cone for a ball (half-angle, rad). */
+export const handsCone = (a: Agent): number => (45 + 24 * clamp(a.r('vision'), 0, 1)) * Math.PI / 180;
 /** Bit 64 (design 7, with TRUNK_TWIST): he keeps his estimated ball in view through his trunk before his hips. A look
  * is his eyes and neck first (neckOf), then his shoulders twisted off his hips for what the neck cannot reach (up to
  * TRUNK_RANGE), and only the remainder past both turns his hips, which the facing speed cap prices. What he looks at is
@@ -282,17 +296,32 @@ export class BallEstimates {
     if (ball.kind !== 'air' || ball.securing) return;
     if (ball.flight !== this.flight) { this.flight = ball.flight; this.history.length = 0; }
     this.history.push({ t: sim.t, p: { ...ball.flight.pos } });
+    // HANDS_SEEN: each defender's sight of the ball for a hands play, where his head points (his peripheral cone): since
+    // when it has been in view on this flight (reset when it leaves). Defenders without the estimator have no other sight.
+    if (HANDS_SEEN) {
+      const b = ball.flight.pos;
+      for (const a of sim.agents) {
+        if (a.team === ball.thrower.team || a.isDown(sim.t)) continue;
+        const head = a.head ?? a.body.facing;
+        const inCone = Math.abs(angDiff(Math.atan2(b.y - a.pos.y, b.x - a.pos.x), head)) <= handsCone(a);
+        let h = this.handsSight.get(a);
+        if (!h || h.flight !== this.flight) { h = { flight: this.flight, since: null }; this.handsSight.set(a, h); }
+        h.since = inCone ? (h.since ?? sim.t) : null;
+      }
+    }
     // Bit 32: passive sight. A teammate who is not looking for the ball still sees it when it is in his eyes' range of
     // where his head points (his facing, if nothing has turned it); seeing it catches his attention, as it would.
-    if (BALL_EST_INCIDENTAL) {
+    if (BALL_EST_INCIDENTAL || HANDS_SEEN) {
       const b = ball.flight.pos;
       for (const a of sim.agents) {
         if (a === ball.thrower || a.isDown(sim.t) || !estimatesFor(a)) continue;
+        // HANDS_SEEN alone: the defense's passive sight, in its peripheral cone.
+        if (!BALL_EST_INCIDENTAL && a.team === ball.thrower.team) continue;
         let tr0 = this.tracks.get(a);
         if (tr0 && tr0.flight !== this.flight && tr0.preLookT === undefined) { this.reset(tr0); tr0.flight = this.flight; }
         if (tr0 && sim.t - tr0.attendT <= sim.dt + 1e-9 && tr0.flight === this.flight) continue;
         const head = SHARED_HEAD ? (a.head ?? a.facing) : tr0 && tr0.flight === this.flight ? tr0.head : a.facing;
-        if (Math.abs(angDiff(Math.atan2(b.y - a.pos.y, b.x - a.pos.x), head)) > EYE) continue;
+        if (Math.abs(angDiff(Math.atan2(b.y - a.pos.y, b.x - a.pos.x), head)) > (HANDS_SEEN && !BALL_EST_INCIDENTAL ? handsCone(a) : EYE)) continue;
         if (!tr0) { tr0 = { flight: this.flight, head: a.facing, headT: sim.t, attendT: sim.t, lastSampleT: -Infinity, err: null, samples: [], pseudo: [], fit: null, fitT: -1, path: null, pathT: -1, jumps: 0 }; this.tracks.set(a, tr0); }
         else tr0.attendT = sim.t;
         if (!tr0.deliberate && tr0.passiveAt === undefined) tr0.passiveAt = sim.t;
@@ -477,6 +506,12 @@ export class BallEstimates {
 
   /** Bit 32: has he seen this flight himself recently enough to play it (his newest sample within catch-readiness's
    * age bound), with his hands ready (a ball that caught his eye unlooked-for needs his reaction time first)? */
+  private handsSight = new Map<Agent, { flight: unknown; since: number | null }>();
+  /** HANDS_SEEN: the ball has been in his peripheral cone on this flight for his reaction time. */
+  handsSees(a: Agent, sim: PlaySim): boolean {
+    const h = this.handsSight.get(a);
+    return !!h && h.flight === this.flight && h.since !== null && sim.t - h.since >= a.profile.reactionTime - 1e-9;
+  }
   seenReady(a: Agent, sim: PlaySim): boolean {
     const tr = this.tracks.get(a), s = this.lastSeen(a);
     if (!tr || !s || sim.t - s.t > INCIDENTAL_FLIGHT_MAX_AGE + 1e-9) return false;

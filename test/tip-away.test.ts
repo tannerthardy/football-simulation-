@@ -3,6 +3,7 @@
  * from the catch contests a ball he cannot reach (a breakup), then the
  * tumbling ball passes through his hands 0.3 s later. */
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import { stageSight } from './helpers/hands-sight.js';
 
 afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 
@@ -29,11 +30,13 @@ async function breakupThenTip(flag: string) {
   d.tags.add('looking');
   sim.throwBall(sim.qb, r, { x: 15, y: 0, z: 0 }, { x: 50, y: 26, z: 2 }, 1.5);
   sim.t = 1.5;
+  stageSight(sim, d); // HANDS_SEEN: 'looking' is his sight of the ball
   sim.rng.next = () => 0;
   resolveCatchOpportunities(sim, { x: 49.9, y: 26, z: 2 }, { x: 50.1, y: 26, z: 2 });
   const brokeUp = sim.stats.passDefendedBy === d.player.id && sim.ball.kind === 'air' && sim.ball.deflected;
   // The tumbling ball comes through the same defender's hands a beat later.
   sim.t = 1.8;
+  stageSight(sim, d); // HANDS_SEEN: he watches the tip
   resolveCatchOpportunities(sim, { x: 51.9, y: 26, z: 1.2 }, { x: 52.1, y: 26, z: 1.2 });
   return { brokeUp, intercepted: sim.stats.interceptedBy === d.player.id };
 }
