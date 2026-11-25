@@ -29,10 +29,14 @@ const TRAIL: Case[] = [
   { coverage: 'cover1', concept: 'mesh', formation: 'gun_doubles_11', seed: 10, flip: false, staged: { at: 1.75, slot: 'Y', aim: { x: 43.93517692229286, y: 29.152697579963142, z: 1.203423769957923 }, T: 0.7516468371986261 } },
   { coverage: 'cover1', concept: 'mesh', formation: 'gun_trips_11', seed: 11, flip: false, staged: { at: 2.55, slot: 'H', aim: { x: 44.66199109746469, y: 27.47384832103233, z: 1.1084586927141817 }, T: 0.7960112743105804 } },
 ];
-const CONTROL: Case = { coverage: 'cover1', concept: 'mesh', formation: 'gun_doubles_11', seed: 2, flip: false, staged: { at: 1.75, slot: 'Y', aim: { x: 44.342182796878774, y: 28.737207826607396, z: 1.053565279262162 }, T: 0.5741794636999107 } };
+// Control re-found 2026-11-24 (engine-98, Defense) by the rule above, on the current engine with this file's pins: the
+// recorded control (s2, throw at 1.75) no longer closed (off -1.29, on -1.57: it passed by 0.02 on develop 67f7cec1 and
+// failed by 0.03 with TRAIL_LEVERAGE on). The first cover1 doubles catch that closes at over 0.3 is now s1, no flip,
+// with the QB's own throw (natural 2.60, staged off 2.60 / on 2.47, the same with TRAIL_LEVERAGE on or off).
+const CONTROL: Case = { coverage: 'cover1', concept: 'mesh', formation: 'gun_doubles_11', seed: 1, flip: false, staged: { at: 1.85, slot: 'Y', aim: { x: 43.78501828308758, y: 25.274891633349522, z: 1.114483431235362 }, T: 0.6759220785016771 } };
 
 /** His own man defender's closing speed on the catcher (yd/s), mean over 0.1-0.4 s after the secure event. */
-async function closing(flag: string, c: Case): Promise<number> {
+async function closing(flag: string, c: Case, honest?: string): Promise<number> {
   vi.resetModules();
   for (const k of stackOn) vi.stubEnv(k, '1');
   for (const k of ['QUICK_HITCH', 'VERTS_KEYS', 'CURL_SINK', 'SETTLE_DEPTH', 'CRAFT_HOLD', 'CRAFT_EXIT', 'ROUTE_LANDMARK', 'RELEASE_COMMIT']) vi.stubEnv(k, '0'); // engine-73: scenes recorded before this group of the engine-73 landing; Rules to re-record with it on
@@ -41,6 +45,7 @@ async function closing(flag: string, c: Case): Promise<number> {
   vi.stubEnv('BALL_DRAG', '0'); // engine-96: the staged throws' starts, aims and flight times were recorded on the old ball (k 0.003027); with the measured k (0.0050) the launch is re-derived for the same T and the premise (a man defender trailing at matched speed at the catch) no longer holds on these scenes (carry gain -0.91 against the case's -0.81 bound). Coverage to re-find the cases on the current ball.
   vi.stubEnv('ARM_BREAK', '0'); // engine-76 (this file's scenes, pinned test-only): with one reaction on the arm read (ARM_BREAK 1) the control's staged throw (cover1 doubles s2) is no longer a catch, and the original control space (mesh, cover1 doubles, s1-12, both flips) has two man-trail catches, both closing at about 0, none over 0.3; Defense to re-find the control in a wider space with it on
   vi.stubEnv('CATCH_CARRY', flag);
+  if (honest !== undefined) vi.stubEnv('HONEST_FLIGHT', honest);
   vi.stubEnv('QB_DRIVE', '0'); // engine-83 (QB landing, pinned test-only): the trail-man scenes were found with the old ball speed; a faster natural ball changes who trails at the catch. Defense to re-find with QB_DRIVE on
   const { PlaySim } = await import('../src/sim/playsim.js');
   const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');
@@ -80,7 +85,14 @@ describe('CATCH_CARRY: man trail', () => {
       // with the carry; one who already closes is not slowed. The window is 0.1-0.4 s after the receiver holds the
       // ball, where the carry acts; before it the ball is still being secured (DRIVE_CATCH). engine-47 (CATCH_SPEED,
       // CATCH_CHOICE) lengthened securing, so a window anchored on the secure event measured mostly that phase.
-      if (off <= 0) expect(on).toBeGreaterThan(off + 0.1); else expect(on).toBeGreaterThan(off - 0.3);
+      // HONEST_FLIGHT: his own flight estimate keeps him on the receiver it brought the ball to through the securing beat
+      // (catch-anticipation), with or without the carry, so a trailer is not left mirroring for the carry to rescue: the
+      // carry must not slow him, and without it he closes at least as well as the carry did with HONEST_FLIGHT off
+      // (mesh cover1 doubles s10: off/on -0.84 / -0.87, against -0.99 for the carry with it off).
+      if (process.env.HONEST_FLIGHT === '1' && off <= 0) {
+        expect(on).toBeGreaterThan(off - 0.3);
+        expect(off).toBeGreaterThan(await closing('1', c, '0') - 0.3);
+      } else if (off <= 0) expect(on).toBeGreaterThan(off + 0.1); else expect(on).toBeGreaterThan(off - 0.3);
     }
   });
   it('a man defender who already closes is not slowed', async () => {
