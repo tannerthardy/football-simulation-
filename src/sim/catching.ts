@@ -151,7 +151,11 @@ function facingBall(a: Agent, ballVel: Vec3, sim?: PlaySim): boolean {
   // Not seenReady, even with his estimator: it accepts a sample up to 0.5 s old (INCIDENTAL_FLIGHT_MAX_AGE), so a man who
   // watched the ball leave and turned away still had it at his reach (BALL_EST=2305 lane plays: 11 of 13 with the head
   // 104-177 deg off the ball). Interim: the cone now (handsSees), until the shared seesBall (SIGHT_BALL) lands.
-  if (HANDS_SEEN && BALL_EST && sim?.ballEstimates && a.team === 'D') return sim.ballEstimates.handsSees(a, sim);
+  if (HANDS_SEEN && BALL_EST && sim?.ballEstimates && a.team === 'D') {
+    // seesBall (Flex's SIGHT_BALL patch, the agreed shared definition), wherever the branch carries it; handsSees until then.
+    const be = sim.ballEstimates as unknown as { seesBall?: (x: Agent, s: PlaySim) => boolean };
+    return typeof be.seesBall === 'function' ? be.seesBall(a, sim) : sim.ballEstimates.handsSees(a, sim);
+  }
   if (a.tags.has('looking')) return true;
   const sp = Math.hypot(ballVel.x, ballVel.y) || 1;
   const f = shouldersOf(a.body); // a look over the shoulder is the shoulders turned, not the hips
