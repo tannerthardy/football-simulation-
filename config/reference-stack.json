@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "engine-101",
+  "id": "engine-102",
   "runSet": {
     "commit": "1b5415de99b5b7194eff045f3c37a07a4c54c1a9",
     "seeds": [
@@ -218,6 +218,7 @@
     "FLIGHT_BREAK": "on",
     "FLIGHT_LEAD": "off",
     "HEAD_FOLLOW": "on",
+    "HANDOFF_FREEZE": "on",
     "POCKET_CLIMB": "off",
     "BLOCK_SEEN": "on",
     "FREE_BOUND": "off",
