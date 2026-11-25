@@ -57,6 +57,11 @@ async function run(flag: string, pinBreak = false) {
   vi.resetModules();
   for (const k of stackOn) vi.stubEnv(k, '1');
   vi.stubEnv('PURSUIT_COMMIT', flag);
+  // QB_V2 and QB_QUICK_DRIFT (engine-107, QB lane, pinned test-only): the staged throws fix what is thrown, but the
+  // throw starts from his body, and both flags change the drop on these quick calls (stick and slant-flat run V2's plan
+  // drop, the gun drift). The throws were recorded on the old passer's drop. Owner: Defense; re-record the staged
+  // throws with both on.
+  vi.stubEnv('QB_V2', '0'); vi.stubEnv('QB_QUICK_DRIFT', '0');
   // The off case's premise only (pinBreak): pinned to FLIGHT_BREAK=0 (engine-94, Coverage C14, #882). With the break
   // on no defender asks for a stop on the catch tick (the break and its continuation keep his receiver through it), so
   // the premise tests the retired paths (playObservedFlight's stale catch-point drive and the rally goTo). Owner:

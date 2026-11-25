@@ -43,6 +43,7 @@ import { CF_FLOW } from './counterfactual.js';
 import { connectionGap, contactMotion } from './contact-motion.js';
 import { lineFlow, linePicture, liveGapY } from './live-gaps.js';
 import { calledLaunchX, plannedDropX } from './called-drop.js';
+import { calledDrop } from './qbv2/call.js';
 import { requestToCover } from './motion-plan.js';
 import { lineRead, pullers } from './run-fits.js';
 import { observedHolder } from './possession-read.js';
@@ -257,7 +258,8 @@ function pocketDropDepth(sim: PlaySim, clearance: number): number | null {
   if (!concept || !gun) return null;
   const spot = sim.offAlign.spots[sim.qb.slot as keyof typeof sim.offAlign.spots]?.pos;
   const qbSnap = { x: sim.snapX[sim.qb.idx] ?? sim.qb.pos.x, y: spot?.y ?? sim.ballY };
-  return sim.los - plannedDropX(concept.drop, gun, qbSnap, { x: sim.los, y: sim.ballY }, sim.t) - clearance;
+  // The drop the call runs (calledDrop: V2's plan drop on a call V2 takes), the one his feet take.
+  return sim.los - plannedDropX(calledDrop(concept), gun, qbSnap, { x: sim.los, y: sim.ballY }, sim.t, concept.family === 'screen') - clearance;
 }
 const LINE_ORDER = ['LT', 'LG', 'C', 'RG', 'RT'];
 function pocketLevelDepth(sim: PlaySim, b: Agent): number | null {

@@ -18,6 +18,9 @@ import { FIELD_WIDTH } from '../../core/field.js';
 import { Rng, hashString } from '../../core/rng.js';
 import { clamp, logistic, wrapAngle, type Vec2, type Vec3 } from '../../core/vec.js';
 import { planFor } from '../../playbook/read-plans.js';
+import { QB_V2, QB_V2_STAGED } from '../qbv2/call.js';
+// The calls QB_V2 takes (src/sim/qbv2/call.ts), re-exported for the game log.
+export { qbV2Call } from '../qbv2/call.js';
 import { V2Drive, type V2Host } from '../qbv2/drive.js';
 import { makeHost, V2Wiring, type PasserView } from '../qbv2/host.js';
 import { qbRead, qbStage } from '../qb-trace.js';
@@ -54,17 +57,6 @@ import { DECLARED_BREAK } from '../../playbook/read-compiler/features.js';
  * non-visual term (pocket presence) stands. Teammates are seen as before (`track` returns `see` for them). */
 const TRACK_FEEL = process.env.TRACK_FEEL !== '0' || process.env.PERCEIVE_TRACK === '1';
 const RELEASE_Z = 2.2;
-/** QB_V2 (on since engine-107; QB_V2=0 restores; QB lane, 2026-11-24, docs/reviews/2026-11-24-qb-decision-plan.md): on a concept with an authored
- * read plan for the call (planFor), the read and throw decision is the rebuilt cycle (src/sim/qbv2/):
- * the look, the judgment, the cycle on his feet. The drop, pocket movement and the throw's mechanics are kept. Other
- * concepts run this controller unchanged. */
-const QB_V2 = process.env.QB_V2 !== '0';
-/** QB_V2 runs V2 on the concepts it was staged and calibrated on (the quick game, 2026-11-24); widening it to the other
- * plans is a later change, after they are staged. */
-const QB_V2_STAGED = new Set(['quick_outs', 'slant_flat', 'stick']);
-/** Whether QB_V2 would take this call's read: a staged concept whose read plan fits the call (planFor). A property of the
- * call alone, so a scorecard can label the same calls in an arm with V2 off. */
-export function qbV2Call(call: PassConcept): boolean { return QB_V2_STAGED.has(call.id) && planFor(call) !== null; }
 const CATCH_Z = 1.3;
 
 /** What the no-throw behaviour is told when the throw decision has nothing acceptable this tick (the seam between
@@ -1217,7 +1209,7 @@ export class QBPass implements Behavior {
     const gun = sim.offCall.formation.qb !== 'under'; this.formationGun = gun;
     // GUN_SNAP: his drop starts when the snap is secured in his hands.
     this.snapAt = plannedSnapAt(gun, a.pos, { x: sim.los, y: sim.ballY });
-    this.drop = dropSpec(concept.drop, a.pos.x, sim.los, gun);
+    this.drop = dropSpec(concept.drop, a.pos.x, sim.los, gun, concept.family === 'screen');
     this.dropY = a.pos.y;
     this.clock = 2.5 + 1.0 * a.r('composure') + 0.6 * a.r('pocketPresence') + sim.dice('qb', a).normal(0, 0.25);
     this.armSpeed = qbArmSpeed(a.player.ratings.throwPower);

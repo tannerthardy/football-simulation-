@@ -8,6 +8,10 @@ afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 
 async function run(on: boolean) {
   vi.stubEnv('MUSH_MATCH', on ? '1' : '0');
+  // QB_V2 (engine-107, QB lane, pinned test-only): the scene's ball leaves at 1.9 s on the old passer. V2 throws the flat on
+  // rhythm at 1.35 s, before #3 turns up, so the nickel never comes to leave his trap. The rule is unchanged; the file's
+  // owner to re-find the scene with V2 on (a #3 who turns up before the throw).
+  vi.stubEnv('QB_V2', '0');
   vi.resetModules();
   const { PlaySim } = await import('../src/sim/playsim.js');
   const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');
