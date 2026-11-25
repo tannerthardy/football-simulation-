@@ -51,7 +51,11 @@ describe('FORECAST_BREAK', () => {
     // The hand-written order reads the corner first (S1, S2, W1, B), so the flat comes after the corner's read:
     // 3.3-4.1 s here. Off, it is not "ready" until the order runs out (thrown 4/6 at 4.15 s, else W1).
     let on = 0, off = 0;
-    for (const seed of [1, 2, 3, 4, 5, 6]) {
+    // Seed 3 replaced by 7 (Run Game, 2026-11-25, the tackle package): with the package seed 3 diverges from 0.40 s (a pass
+    // rusher's path; TACKLE_REACH's pursuit contact distance), and the quarterback holds his read past the flat in both
+    // arms (W1 at 4.20 s, FORECAST_BREAK on and off alike): no longer this file's corner-flat scene. Seeds 1-10 otherwise
+    // throw the open flat on and the off arm later, with the package off and on; 7 is the next such seed.
+    for (const seed of [1, 2, 4, 5, 6, 7]) {
       const a = await cornerFlat('1', seed), b = await cornerFlat('0', seed);
       expect(a.flatBreak).toBeLessThan(1.5);
       expect(a.target, `seed ${seed}`).toBe('S2');
