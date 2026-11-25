@@ -258,6 +258,8 @@
     "THROW_BODY": "0",
     "PICTURE_AGE": "0",
     "PERIPH_ACUITY": "0",
+    "QB_V2": "0",
+    "QB_QUICK_DRIFT": "0",
     "CALL_COMPOSE": "0",
     "FLIGHT_BREAK": "0",
     "FLIGHT_LEAD": "0",
