@@ -77,6 +77,17 @@ honestly.
 | shapeCarry off | 160 | 163 | 189 | 4 | 2 |
 | shapeCarry on | 157 | 160 | 191 | 3 | 2 |
 
+Rebased onto engine-104 (develop 399463573, CALL_COMPOSE and RELEASE_ZONE on by default; the patch applies unchanged),
+the same cells:
+
+| Arm | Taught at the cap | Taught at the release | Complete | Stalls | Sacks |
+|---|---|---|---|---|---|
+| shapeCarry off | 160 | 163 | 186 | 3 | 2 |
+| shapeCarry on | 157 | 160 | 188 | 3 | 2 |
+
+The changed plays are the same: sf_c3 seeds 7, 8 and 30; sf_c1 seeds 3 and 25, and 27, 28 and 30 with a changed
+release; st_c2 seed 1.
+
 The changed plays:
 - **sf_c3, seeds 7, 8, 30.** The three slants thrown on backward forecasts (1 of 3 complete) become W2 at 2.3 s
   (W2 is 23 of 24 complete in this cell). On the honest forecast he prices the slant at P 0.35 and risk 0.09–0.21. The
