@@ -20,7 +20,7 @@ import { HANDS_CUE, noteHands } from '../hands-cue.js';
 import { CATCH_CHOICE, chooseCatchPoint, type CatchChoice } from '../catch-choice.js';
 import { BALL_EST_RCV as BALL_EST, BALL_EST_GLANCE, SEEN_EMPTY, BALL_EST_DEEP_LOOK, BALL_EST_SERVO, BALL_EST_TRUNK, lookJoints, BALL_EST_MOVING_CHOICE, DEEP_LOOK_DEPTH, DEEP_LOOK_HOLD, LOOK_NECK, neckOf, PRE_LOOK_EARLY, PRE_LOOK_LATE, bodyTurnLead, sideOf } from '../ball-estimate.js';
 
-import { firstBreakDepth, getOffDrive, getOffLoss, inGetOff, LINE_START, routeEffort, routePath, steerRoute, type PathPoint, type RouteCursor, type FilletTurn, type FilletPlan, ROUTE_LANDMARK, breaksInside } from '../route-motion.js';
+import { bodyRunTime, firstBreakDepth, getOffDrive, getOffLoss, inGetOff, LINE_START, routeEffort, routePath, steerRoute, type PathPoint, type RouteCursor, type FilletTurn, type FilletPlan, ROUTE_LANDMARK, breaksInside } from '../route-motion.js';
 import { installedRead, readRoute, type RouteChoice, type RouteKeyPicture } from '../route-read.js';
 import { BREAK_DECL } from '../../playbook/route-breaks.js';
 
@@ -294,6 +294,16 @@ const PRESS_MIRROR = process.env.PRESS_MIRROR !== '0';
  * gos release outside 84% of the time, 3.5 yd wide by 5 yd; posts, slants and
  * ins release inside (BDB 2025). */
 const PRESS_RELEASE = process.env.PRESS_RELEASE !== '0';
+/** PLAN_BREAK_BODY (on since engine-103; PLAN_BREAK_BODY=0 restores; Rules + Coaching, 2026-11-24): a route's
+ * planned break (`breakTime`, what the quarterback's forecast and throw timing read) is his own body's run to it from the
+ * stance: route-motion's bodyRunTime, the same stepBody and get-off drive that run him.
+ * - Off, it was distance over 85% of an effort-scaled top speed from the snap, plus the get-off's loss. That is 0.7-0.9 s
+ *   early on every short and intermediate route, against the break the same receivers run: slant 0.79 against 1.50,
+ *   quick out 1.19 against 1.80, hitch 1.49 against 2.20, dig 1.82 against 2.70 (a staged probe, 552 rows, the route
+ *   chart's break rule). The run breaks are NFL-like.
+ * - The receiver's own look for the ball (preLook) keeps today's number (`lookBreakTime`), so no receiver behaviour
+ *   changes. */
+const PLAN_BREAK_BODY = process.env.PLAN_BREAK_BODY !== '0';
 /** RELEASE_SEEN (off; RELEASE_SEEN=1 turns it on): a receiver releases around any defender he saw tight over him at
  * the snap (within RELEASE_TIGHT_DEPTH ahead and RELEASE_TIGHT_WIDTH either side, as he saw them), not only the one
  * the defence's call made his press-man corner, an assignment he cannot know. The release side and how cleanly he
@@ -350,7 +360,11 @@ export class RouteRunner implements Behavior {
   /** Released from the backfield (2+ yd behind the line), not the line. */
   private readonly fromBackfield: boolean;
   /** Time at which the route's final break is expected (for QB timing). */
+  /** The planned break (from his route's install): what the quarterback's forecast and timing read. */
   readonly breakTime: number;
+  /** The break time his own look for the ball keys (preLook): today's formula. PLAN_BREAK_BODY changes the plan only,
+   * so the receiver's own behaviour is unchanged; his look keys this. */
+  readonly lookBreakTime: number;
   /** DECLARED_BREAK (read by RELEASE_SIDE and CRAFT_HOLD): the direction his route goes from its declared vertex, until
    * he reaches it (the leg leaving it, unit). Spacing passes a teammate on this side instead of the side the geometry
    * leaves him: a wing's slant goes under the end it lines up behind, as taught, not round his outside. */
@@ -405,9 +419,36 @@ export class RouteRunner implements Behavior {
       if (route.points[i].s !== undefined) breakDist = dist;
     }
     if (breakDist === 0) breakDist = Math.min(dist, 8);
-    this.breakTime = startDelay + 0.25 + breakDist / (0.85 * this.effort * a.profile.vmax)
+    this.lookBreakTime = startDelay + 0.25 + breakDist / (0.85 * this.effort * a.profile.vmax)
       + (LINE_START ? getOffLoss(a.profile, a.r('routeRunning'), this.effort, a.profile.reactionTime, Math.min(breakDist, 8),
         firstBreakDepth(this.start, sim.los, this.path), nearestDefender(a, sim)) : 0);
+    // PLAN_BREAK_BODY: the planned break is his own body's run to it from the stance (bodyRunTime), not an average 85%
+    // of an effort-scaled top speed from the snap.
+    // PLAN_BREAK_BODY: the break is where his path first turns 35 degrees or more (firstBreakDepth's rule), the turn he
+    // runs; a shaped route's speed point is its stem's end, 1.5-2 yd short of the turn. A straight route keeps the old
+    // rule (its last speed point).
+    let legs: Array<{ at: number; s?: number }> = [];
+    if (PLAN_BREAK_BODY) {
+      let at = 0, from = a.pos, dir: Vec2 | null = null, turnAt = -1;
+      const cum: number[] = [];
+      for (let i = 0; i < route.points.length; i++) {
+        const seg = { x: this.path[i].p.x - from.x, y: this.path[i].p.y - from.y }, l = Math.hypot(seg.x, seg.y);
+        at += l; cum.push(at);
+        if (l > 1e-6) {
+          const u = { x: seg.x / l, y: seg.y / l };
+          if (dir && turnAt < 0 && u.x * dir.x + u.y * dir.y < Math.cos(35 * Math.PI / 180)) turnAt = i - 1;
+          dir = u;
+        }
+        from = this.path[i].p;
+      }
+      const end = turnAt >= 0 ? cum[turnAt] : breakDist;
+      for (let i = 0; i < route.points.length && cum[i] <= end + 1e-6; i++) legs.push({ at: cum[i], s: route.points[i].s });
+      if (!legs.length || legs[legs.length - 1].at < end - 1e-6) legs.push({ at: end });
+    }
+    this.breakTime = PLAN_BREAK_BODY
+      ? startDelay + bodyRunTime(a.profile, a.r('routeRunning'), this.effort, a.profile.reactionTime, legs,
+        firstBreakDepth(this.start, sim.los, this.path), nearestDefender(a, sim), LINE_START)
+      : this.lookBreakTime;
   }
 
   private buildPath(start: Vec2, pts: readonly RoutePoint[], extend: boolean): PathPoint[] {
@@ -435,7 +476,7 @@ export class RouteRunner implements Behavior {
     // SEEN_EMPTY: the empty hand ends the look only once he has seen it in his eyes, not through the field-wide
     // picture with his head elsewhere (the arm coming through keeps him looking: the ball is about to leave).
     if (!sim.ballEstimates || sim.ballEstimates.lastSeen(a) || (SEEN_EMPTY ? sim.ballEstimates.sawEmpty(a) : sim.see(a, sim.qb).carrying === false)) return cmd;
-    const pastBreak = sim.t - this.bornAt >= this.breakTime - PRE_LOOK_EARLY + PRE_LOOK_LATE * a.r('routeRunning');
+    const pastBreak = sim.t - this.bornAt >= this.lookBreakTime - PRE_LOOK_EARLY + PRE_LOOK_LATE * a.r('routeRunning');
     if (this.route.family === 'deep') {
       // BREAK_LOOK: a deep route thrown on its break (the corner, the post) also looks out of the break.
       const onBreak = BREAK_LOOK && BREAK_DECL[this.route.id]?.throwFamily === 'onBreak' && pastBreak;
