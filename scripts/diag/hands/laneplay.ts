@@ -23,7 +23,7 @@ for (const [con, cov, form] of cells) for (let seed = 1; seed <= 30; seed++) {
       if (d.pos.x - sim.los < 1) continue; // rushers at the line: their own rule (RUSH_BAT)
       const dd = Math.hypot(bp.x - d.pos.x, bp.y - d.pos.y), m = th.men.get(d.idx);
       if (!m || dd < m.dd) { const toQB = Math.atan2(th.qb.y - d.pos.y, th.qb.x - d.pos.x), f = Math.abs(Math.atan2(Math.sin(d.body.facing - toQB), Math.cos(d.body.facing - toQB))) < Math.PI / 3;
-        th.men.set(d.idx, { dd, z: bp.z, faces: f, reach: d.profile.reach, slot: d.slot, frac: (sim.t - th.t0) / Math.max(0.01, th.arrT - th.t0), since: r2(sim.t - th.t0), rt: r2(d.profile.reactionTime), sees: sim.ballEstimates?.handsSees?.(d, sim) ?? null, headOff: Math.round(Math.abs(Math.atan2(Math.sin((d.head ?? d.body.facing) - Math.atan2(bp.y - d.pos.y, bp.x - d.pos.x)), Math.cos((d.head ?? d.body.facing) - Math.atan2(bp.y - d.pos.y, bp.x - d.pos.x)))) * 57.3), seed }); } } }
+        th.men.set(d.idx, { dd, z: bp.z, faces: f, reach: d.profile.reach, slot: d.slot, frac: (sim.t - th.t0) / Math.max(0.01, th.arrT - th.t0), since: r2(sim.t - th.t0), rt: r2(d.profile.reactionTime), sees: sim.ballEstimates?.handsSees?.(d, sim) ?? null, ready: sim.ballEstimates?.seenReady?.(d, sim) ?? null, headOff: Math.round(Math.abs(Math.atan2(Math.sin((d.head ?? d.body.facing) - Math.atan2(bp.y - d.pos.y, bp.x - d.pos.x)), Math.cos((d.head ?? d.body.facing) - Math.atan2(bp.y - d.pos.y, bp.x - d.pos.x)))) * 57.3), seed }); } } }
     if (sim.t > 5) sim.phase = 'dead'; };
   try { sim.run(); } catch {}
   if (!th) continue;
@@ -37,4 +37,4 @@ console.log('lane contacts (within reach + 0.25, > 3 yd short of the catch):', r
 for (const [k, [n, p, i]] of Object.entries(g).sort()) console.log(' ', k.padEnd(18), 'n', n, 'played', p, `(${(p / n).toFixed(2)})`, 'picked', i);
 const byCell: Record<string, number[]> = {}; for (const r of rows) { (byCell[r.cell] ??= [0, 0]); byCell[r.cell][0]++; byCell[r.cell][1] += r.played ? 1 : 0; }
 console.log('by cell (n, played):', JSON.stringify(byCell));
-if (process.env.LP_ROWS) for (const r of rows) console.log('ROW', r.cell, r.seed, r.slot, 'z', r2(r.z), r.faces ? 'facing' : 'away', 'played', r.played, 'picked', r.picked, 'since', r.since, 'rt', r.rt, 'sees', r.sees, 'headOff', r.headOff);
+if (process.env.LP_ROWS) for (const r of rows) console.log('ROW', r.cell, r.seed, r.slot, 'z', r2(r.z), r.faces ? 'facing' : 'away', 'played', r.played, 'picked', r.picked, 'since', r.since, 'rt', r.rt, 'sees', r.sees, 'ready', r.ready, 'headOff', r.headOff);
