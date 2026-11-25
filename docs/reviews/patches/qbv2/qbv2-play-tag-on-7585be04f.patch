@@ -1,0 +1,48 @@
+diff --git a/src/sim/behaviors/qb.ts b/src/sim/behaviors/qb.ts
+index 81fa7404c..3285b8f2f 100644
+--- a/src/sim/behaviors/qb.ts
++++ b/src/sim/behaviors/qb.ts
+@@ -1630,6 +1630,7 @@ export class QBPass implements Behavior {
+       // as a checkdown only when the call releases him; the authored call returns the authored plan itself.
+       const plan = QB_V2 && QB_V2_STAGED.has(this.concept.id) ? planFor(this.concept) : null;
+       this.v2 = plan ? new V2Drive(plan) : null;
++      if (this.v2) sim.qbV2 = true;
+       if (this.v2) {
+         // His feet run the plan's drop (Rules: stick is one step from the gun though the installed concept's drop says gun3).
+         if (plan!.drop !== this.concept.drop) this.drop = dropSpec(plan!.drop, a.pos.x, sim.los, sim.offCall.formation.qb !== 'under');
+diff --git a/src/sim/playsim.ts b/src/sim/playsim.ts
+index 9436b9e0f..c9c565fc7 100644
+--- a/src/sim/playsim.ts
++++ b/src/sim/playsim.ts
+@@ -328,6 +328,8 @@ export class PlaySim {
+   };
+   /** First opponent body impact or successful tackle grasp; excludes whiffs. */
+   firstContactX: number | null = null;
++  /** QB_V2 took this play's read (the eligibility tag; copied to the result's stats as qbV2). */
++  qbV2 = false;
+   /** QB currently reading this receiver (zone defenders read his eyes). */
+   qbEyes: Agent | null = null;
+   /** When the QB started his throwing motion (−1 before). */
+@@ -2103,7 +2105,7 @@ export class PlaySim {
+       duration: this.t,
+       clockStops,
+       kind: this.isPass ? 'pass' : 'run',
+-      stats: s,
++      stats: this.qbV2 ? { ...s, qbV2: true } : s,
+       events: this.events,
+       frames: this.record ? this.frames : undefined,
+       telemetry: this.trace.data,
+diff --git a/src/sim/types.ts b/src/sim/types.ts
+index af2b2b719..4c2822b20 100644
+--- a/src/sim/types.ts
++++ b/src/sim/types.ts
+@@ -295,6 +295,9 @@ export interface PlayStats {
+   /** Native event ledger; absence retains the historical singular reduction. */
+   fumbles?: Array<{ playerId: string; team: TeamSide; lost: boolean; recoveredBy?: string; t?: number }>;
+   passer?: string;
++  /** QB_V2 ran this play's read (a staged concept whose plan fits the call); absent otherwise. The eligibility tag for
++   * reading a whole-game card on V2's plays. */
++  qbV2?: boolean;
+   target?: string;
+   receiver?: string;
+   rusher?: string;

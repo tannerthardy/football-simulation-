@@ -60,3 +60,41 @@ planFor and CALL_COMPOSE it was 2.6%. The rest stay on the old controller.
   applied. It applies to 7585be04f.
 - **Rows:** computed as in that note: k936 cap and late answers; side from `sideThrown` on plays with corner cushions at
   least 1 yd apart; timing from `relPlan`.
+
+## Cell 2 re-issued after the walled operator's hand check (Integration's ruling, measurement repair)
+
+**The hand check** (`diag/walled-check.ts`, sf_c3 seeds 1–10, by eye on the tracks). The operator picks the right hook
+(LB_M) at the snap, but it tested the wrong thing at the wrong time:
+
+- **What:** the hook's distance to the slant receiver. The taught wall is the hook in the slant's throwing window.
+- **When:** at t_eval, the 0.85 s cap, when the slant hasn't broken and no window exists.
+
+At the cap LB_M is 6.5–8 yd off the slant's throwing line. At the release he sits on it: 0.6–1.7 yd off, 80–90% of the way
+out, on 8 of 10. The two early releases (1.3–1.4 s) are not walled (6.5 yd).
+
+**The repaired check:** a hook within 2 yd of the line from the passer to the slant receiver 0.4 s on, past halfway along
+it, at the release (2.0 s with no throw). The same time serves both labels, since the window doesn't exist at the cap. It
+reads at each controller's own release, because the wall is about the window the throw goes through. It agrees with the
+by-eye check on all 10.
+
+| Cell 2, slant-flat vs Cover 3 | Walled | Taught at the cap | Taught at the release | Cmp |
+|---|---|---|---|---|
+| Old controller | 15 / 30 | 2 | 2 | 18 |
+| V2 | 17 / 30 | 20 | 20 | 28 |
+
+Slant-flat vs Cover 1, the only other cell the check touches, is unchanged in substance: walled 3 / 2; taught old 16, V2 14
+at both labels.
+
+**Decisions row re-issued** (the other cells as above):
+
+| Label | Old | V2 |
+|---|---|---|
+| Cap | 143 | **160** |
+| Release | 129 | **163** |
+
+On the repaired operator the decisions row clears at both labels. Cell 1 is still V2's loss (15 against 29 at the cap),
+pending Coverage's corner fix.
+
+**The eligibility tag:** `qbv2-play-tag-on-7585be04f.patch`. PlaySim's `qbV2` flag is set when V2 takes a play's read
+(the passer writes it, not the stats). The result's `stats.qbV2` is true on those plays and absent otherwise, and absent
+with V2 off. A card splits rows on it.
