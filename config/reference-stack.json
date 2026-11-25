@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "engine-104",
+  "id": "engine-106",
   "runSet": {
     "commit": "1b5415de99b5b7194eff045f3c37a07a4c54c1a9",
     "seeds": [
@@ -166,6 +166,7 @@
     "TRACK_FEEL": "on",
     "FLIGHT_REVISE": "on",
     "SIGHT_BALL": "off",
+    "QB_TRACK_LOOK": "on",
     "SIGHT_CARRIER": "on",
     "SIGHT_COVER": "on",
     "SIGHT_RECOG": "on",
@@ -221,7 +222,10 @@
     "CALL_COMPOSE": "on",
     "FLIGHT_BREAK": "on",
     "FLIGHT_LEAD": "off",
+    "LANE_LEVERAGE": "on",
     "HEAD_FOLLOW": "on",
+    "FLAT_SINK_ONE": "on",
+    "FLAT_SIT_JUMP": "off",
     "HANDOFF_FREEZE": "on",
     "ACQ_SEEN": "off",
     "TRACKED_CATCH": "off",
@@ -315,7 +319,7 @@
     "PULL_CUE": "off",
     "PULL_PLAN": "off",
     "HONEST_READS": "on",
-    "HONEST_FLIGHT": "off",
+    "HONEST_FLIGHT": "on",
     "HONEST_TACKLE": "on",
     "QB_FEEL": "off",
     "QB_GATHER": "off",
@@ -359,6 +363,7 @@
     "SCOUT_SEEN": "on",
     "SCRAMBLE_SEEN": "on",
     "TRACK_SEEN": "on",
+    "UNDERNEATH_MOVE": "on",
     "QB_SEEN_OUT": "on",
     "QB_SEEN_REC": "on",
     "ACC_RADIUS": "off",

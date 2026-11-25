@@ -39,7 +39,7 @@ import { DeepCoverage, StemAcceleration, stemStopped } from '../coverage-leverag
 import { facingTechnique, roundedTurnTime, withFacingTechnique } from '../coverage/orientation.js';
 import { SNAP_REACT } from '../snap-count.js';
 import { ARM_RUN, BALL_EST, BALL_EST_DEF_PICTURE, BALL_EST_FLIGHT_SETTLE, BALL_EST_MAN_LOOK, FLIGHT_REVISE, FLIGHT_SETTLE_SPAN, estimatesFor, lookAnyway, lookJoints, neckOf, PHASE_BEHIND, PHASE_SIDE, phaseJudgeSd } from '../ball-estimate.js';
-import { acquireFlight, anticipatedCatcher, catchOpportunity, flightLanded, hasObservedFlight, observedHolder, QB_RELEASE, qbRunning, qbRunningAtLine, rememberCatchOpportunity, rememberedFlight, unresolvedBallArea } from '../possession-read.js';
+import { acquireFlight, anticipatedCatcher, catchOpportunity, flightLanded, hasObservedFlight, observedHolder, QB_RELEASE, qbRunning, qbRunningAtLine, rememberCatchOpportunity, rememberedFlight, SECURE_BEAT, unresolvedBallArea } from '../possession-read.js';
 import { seenEngaged } from '../seen-contact.js';
 import { BALL_CUE_OWN } from '../release-evidence.js';
 
@@ -92,6 +92,19 @@ export const FLAT_SINK = process.env.FLAT_SINK !== '0';
  * capped (ZoneCoverage.flatCarry); with #1 vertical he sinks with #1 as before. */
 export const FLAT_CARRY = process.env.FLAT_CARRY !== '0';
 const FLAT_SINK_DEPTH = 18;
+/** FLAT_SINK_ONE (experimental, off; Coverage C14 2026-11-25, the quick-game stage: quick outs vs Cover 2): the flat corner's
+ * sink is with his own #1, from outside leverage. Off, it took the first receiver in his area climbing over 4 yd/s, which
+ * on quick outs is the slot's hitch: the corner sank with the slot 0.7 yd inside him (outside audit §3A) and was 4 yd inside
+ * #1 when #1's out broke into the flat he had left; and nothing in the sink read #1's own out-break under him, so he kept
+ * sinking with him. On, #1's out-break ends the sink; as the taught standard (patient: outside leverage, eyes through #1
+ * to the passer, break up the short route on the throw) he holds outside leverage at his depth and FLIGHT_BREAK drives
+ * him on the throw. FLAT_SIT_JUMP (the trap variant, jumping the break before the throw) played the staged quick
+ * out no better and gave the out-and-up about 0.4 yd more. */
+const FLAT_SINK_ONE = process.env.FLAT_SINK_ONE !== '0';
+/** FLAT_SIT_JUMP (experimental, off; with FLAT_SINK_ONE): the trap variant of the sit on #1's out, a later scheme option:
+ * he jumps the break, downhill to #1's depth and outside-in on where #1 will be 0.5 s on, before the throw. Off, the
+ * taught standard: he holds outside leverage at his depth and drives on the throw. */
+const FLAT_SIT_JUMP = process.env.FLAT_SIT_JUMP === '1';
 const SINK_ENTER = 2, SINK_EXIT = 1;
 /** SEEN_EYES (default on; SEEN_EYES=0 restores the QB's internal read target): a zone defender
  * reads the QB's look from what he sees of him, not from the QB's internal
@@ -122,9 +135,9 @@ export const HONEST_READS = process.env.HONEST_READS !== '0';
  * the flight to the catch (catch-carry, flight continuation, ball rally) comes when his own estimate says the ball has
  * arrived or he sees it in the air near him, not on the true end of the air state; a flight he has acquired is his to
  * play until his estimate resolves it. */
-export const HONEST_FLIGHT = process.env.HONEST_FLIGHT === '1';
+export const HONEST_FLIGHT = process.env.HONEST_FLIGHT !== '0';
 /** HONEST_FLIGHT's drive on a catch: from this long before his estimate's arrival to this long after (a catch's securing beat). */
-const DRIVE_LEAD = 0.05, DRIVE_SECURE = 0.4;
+const DRIVE_LEAD = 0.05, DRIVE_SECURE = SECURE_BEAT;
 /** INFO_HONEST (off; INFO_HONEST=63 turns every item on; single items by their
  * bit below, for the per-item read): coverage decisions
  * read the defender's own picture, not true state. Items (coverage audit
@@ -181,6 +194,13 @@ export const ZONE_HOLD_HANDOFF = (ZONE_HOLD_BITS & 64) !== 0;
  * him at his own speed and the arrival asked for a little more than he had, so he never slowed: a hook handed off a seam
  * at 13.6 yd was still requesting +5.7 yd/s downfield at 14.6 yd, 3.2 s. */
 export const HANDOFF_FREEZE = process.env.HANDOFF_FREEZE !== '0';
+/** LANE_LEVERAGE (experimental, off; Coverage C14 2026-11-24, Integration's item 3, the 0.82 lane spot): an underneath
+ * zone defender reading a receiver in his zone (zonePlay's lane) plays under the route with his seat's leverage,
+ * LANE_SHADE yd outside the receiver for curl-flat and flat seats and inside him for hooks and the middle, at the old
+ * lane depth; off, lerp(QB, receiver, 0.82) put a curl-flat 3 yd inside the receiver he read and 4.5 yd inside his
+ * landmark (Flex's width trace, 2026-11-24; NFL curl-flat 11.5 yd from the ball at 3.0 s, ours 8.0-8.6). */
+const LANE_LEVERAGE = process.env.LANE_LEVERAGE !== '0';
+const LANE_SHADE = 0.8;
 const CARRY_LABEL = /^(open-carry-seam|carry-wall|carry-run-past)$/;
 const eyesHeld = new WeakMap<Agent, Agent>();
 const eyesCache = new WeakMap<Agent, { t: number; r: Agent | null }>();
@@ -294,7 +314,11 @@ export function pursueIfLive(sim: PlaySim, a: Agent): MoveCommand | null {
     const drive = catchDrive.get(a) ?? catchOpportunity(a);
     if (drive) {
       const seen = sim.see(a, drive.receiver);
-      const refuted = seen.carrying === false && seen.age !== undefined && sim.t - seen.age > drive.t;
+      // HONEST_FLIGHT: a picture without the ball refutes the catch only once it was taken after the securing beat of
+      // his own estimated arrival (a receiver securing it is not carrying it yet), not any picture after the drive began.
+      const opp = HONEST_FLIGHT ? catchOpportunity(a) : null;
+      const after = HONEST_FLIGHT && opp ? Math.max(drive.t, opp.t + DRIVE_SECURE) : drive.t;
+      const refuted = seen.carrying === false && seen.age !== undefined && sim.t - seen.age > after;
       const on = Math.hypot(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y) <= CATCH_CARRY_RANGE;
       if (!refuted && on) {
         a.tags.add('catch-carry');
@@ -2038,6 +2062,8 @@ export class ZoneCoverage implements Behavior {
   private flatCarrying = false;
   private oneCancelled = false;
 
+  /** FLAT_SINK_ONE: sitting on his #1's out (entered on the break, left when #1 turns back up). */
+  private flatSit = false;
   private flatSink(a: Agent, sim: PlaySim): MoveCommand | null {
     const dir = sim.attackDir(sim.offense[0].team), [ylo, yhi] = this.band, myDepth = (a.pos.x - sim.los) * dir;
     const seen = sim.offense.filter((r) => r !== sim.qb && !isOL(r)).map((r) => ({ r, s: sim.see(a, r) }));
@@ -2048,15 +2074,40 @@ export class ZoneCoverage implements Behavior {
       if (v.s.vel.x * dir < 2 || d >= FLAT_SINK_DEPTH) { this.sinkWith = null; v = null; }
     }
     if (!v) {
-      v = seen.find((x) => inArea(x.s.pos) && x.s.vel.x * dir > 4 && (x.s.pos.x - sim.los) * dir >= myDepth - 1.5 && (x.s.pos.x - sim.los) * dir < FLAT_SINK_DEPTH) ?? null;
+      // FLAT_SINK_ONE: his sink is with his own #1 (the side's #1 by the formation he sees), not whichever receiver climbs
+      // first in his area.
+      const oneSlot = FLAT_SINK_ONE ? sim.offAlign.numbering[`${this.zone === 'flat_w' ? 'W' : 'S'}1` as 'S1' | 'W1'] : undefined;
+      v = seen.find((x) => (!FLAT_SINK_ONE || x.r.slot === oneSlot) && inArea(x.s.pos) && x.s.vel.x * dir > 4
+        && (x.s.pos.x - sim.los) * dir >= myDepth - 1.5 && (x.s.pos.x - sim.los) * dir < FLAT_SINK_DEPTH) ?? null;
       this.sinkWith = v?.r ?? null;
     }
     if (!v) return null;
+    // FLAT_SINK_ONE: #1 breaking out under him (outward over max(1.5, 0.5 x upfield) with his upfield speed falling, under
+    // 3.5 yd/s, or exceeded by the outward: a break, not a fade's outside release) ends the sink: he holds outside
+    // leverage on #1 at his depth and drives on the throw. Kept until #1 turns back up.
+    if (FLAT_SINK_ONE) {
+      const outS = Math.sign(v.s.pos.y - sim.ballY) || 1, outV = v.s.vel.y * outS, up = v.s.vel.x * dir, d1 = (v.s.pos.x - sim.los) * dir;
+      if (!this.flatSit) this.flatSit = d1 > 1 && d1 < 10 && outV > Math.max(1.5, 0.5 * Math.max(0, up)) && (up < 3.5 || outV > up);
+      else if (up > 3 && up > 1.5 * Math.max(0, outV)) this.flatSit = false;
+      if (this.flatSit) {
+        const q0 = sim.see(a, sim.qb);
+        // The patient standard: he holds his depth with outside leverage on #1 and drives on the throw he sees
+        // (FLIGHT_BREAK). FLAT_SIT_JUMP is the trap variant (a later scheme option): downhill to #1's depth on the break,
+        // before the throw.
+        const hold = !FLAT_SIT_JUMP;
+        const to = hold ? { x: a.pos.x, y: clamp(v.s.pos.y + outS * 0.5, 0.5, FIELD_WIDTH - 0.5) }
+          : { x: v.s.pos.x, y: clamp(v.s.pos.y + v.s.vel.y * 0.5 + outS * 0.5, 0.5, FIELD_WIDTH - 0.5) };
+        return withFacingTechnique(track(a, to, { x: 0, y: v.s.vel.y }, { facing: angleTo(a.pos, q0.pos), speed: 1, gain: 1.8 }),
+          { label: hold ? 'flat-sit-hold' : 'flat-sit-drive', key: v.s.vel });
+      }
+    }
     // The flat threatened in front of him ends the sink: his zone play takes it.
     if (seen.some((x) => x.r !== v!.r && inArea(x.s.pos) && (x.s.pos.x - sim.los) * dir <= myDepth - 1 && (x.s.pos.x - sim.los) * dir > -3)) { this.sinkWith = null; return null; }
     const q = sim.see(a, sim.qb), inside = Math.sign(sim.ballY - v.s.pos.y) || 1;
     a.tags.add('flat-sink');
-    return withFacingTechnique(track(a, { x: v.s.pos.x - dir * 1, y: v.s.pos.y + inside * 0.7 }, { x: v.s.vel.x, y: v.s.vel.y }, { facing: angleTo(a.pos, q.pos), speed: 1, gain: 1.8 }), { label: 'flat-sink', key: v.s.vel });
+    // FLAT_SINK_ONE: under him with outside leverage (the corner's taught side), not 0.7 yd inside him.
+    const shade = FLAT_SINK_ONE ? -inside : inside;
+    return withFacingTechnique(track(a, { x: v.s.pos.x - dir * 1, y: v.s.pos.y + shade * 0.7 }, { x: v.s.vel.x, y: v.s.vel.y }, { facing: angleTo(a.pos, q.pos), speed: 1, gain: 1.8 }), { label: 'flat-sink', key: v.s.vel });
   }
 
   /** His zone play with the ball in the QB's hands (no throw seen). */
@@ -2504,6 +2555,13 @@ export class ZoneCoverage implements Behavior {
     }
     const lane = lerp(qbAt, best.pos, 0.82);
     let tgt = { x: Math.min(lane.x, best.pos.x - 0.5), y: lane.y };
+    if (LANE_LEVERAGE) {
+      // LANE_LEVERAGE: under the route with his seat's leverage on the receiver as he sees him (curl-flat and flat seats
+      // outside-in, hooks inside-out), not on the QB-to-receiver line, which runs inside the receiver whenever the QB
+      // is inside him. Depth as before.
+      const outward = Math.sign(best.pos.y - sim.ballY) || 1;
+      tgt = { x: tgt.x, y: best.pos.y + (seatOutsideIn(a) ? outward : -outward) * LANE_SHADE };
+    }
     const off = sub(tgt, lm);
     const l = Math.hypot(off.x, off.y);
     if (l > this.radius) tgt = { x: lm.x + (off.x / l) * this.radius, y: lm.y + (off.y / l) * this.radius };
@@ -3258,8 +3316,25 @@ const lastFlightApproach = new WeakMap<Agent, { cmd: MoveCommand; t: number }>()
 
 function flightApproach(a: Agent, sim: PlaySim, path: PlaySim['ballPath'], acquired = false): MoveCommand | null {
   const spot = catchSpot(a, { t: sim.t, ballPath: path });
-  const window = observedCatchWindow(a, sim, path);
-  if (acquired) rememberCatchOpportunity(a, window);
+  // HONEST_FLIGHT: a man defender plays the catch on his own man (as coached: his man's hands) when his flight estimate
+  // brings the ball within his man's reach; another receiver's opportunity is his only when his man has none (mesh's
+  // crossers: the ball passes the near crosser first, and the first-opportunity read put him on the other man).
+  const own = HONEST_FLIGHT && a.behavior?.kind === 'man' ? (a.behavior as unknown as { target?: Agent }).target ?? null : null;
+  const window = (own ? observedCatchWindow(a, sim, path, own) : null) ?? observedCatchWindow(a, sim, path);
+  // HONEST_FLIGHT: his catch hypothesis persists until a perceived change clears it: a new window replaces it, but an
+  // empty re-read during its securing beat (his own picture of the receiver is still from before the catch) does not.
+  const held = HONEST_FLIGHT ? catchOpportunity(a) : null;
+  // HONEST_FLIGHT: re-read on every tick he reads the flight, not only at its first acquisition (a hypothesis formed on
+  // the picture at acquisition went unrevised for the rest of the flight: mesh, cover1 doubles s10, the other crosser).
+  // The same receiver keeps the arrival he first judged (a re-read finds the first reachable sample still ahead, which
+  // moves with the clock and would stretch the securing beat without end); only a different receiver replaces it.
+  // A different receiver replaces it only when the ball reaches him first (an earlier opportunity), or he is the
+  // defender's own man: past the held arrival his estimate has the ball already in the held receiver's hands, and the
+  // path beyond it (another crosser further along) is no opportunity (mesh vs cover0 doubles s3 on engine-105).
+  const keep = HONEST_FLIGHT && held && (window
+    ? window.receiver === held.receiver || (window.receiver !== own && window.t > held.t)
+    : sim.t <= held.t + DRIVE_SECURE);
+  if ((acquired || HONEST_FLIGHT) && !keep) rememberCatchOpportunity(a, window);
   // Near the ball's path, a defender with ball skills turns his head and finds
   // it (looking over the shoulder doesn't turn the body).
   const nearPath = spot && Math.hypot(spot.p.x - a.pos.x, spot.p.y - a.pos.y) < 5;
@@ -3275,7 +3350,9 @@ function flightApproach(a: Agent, sim: PlaySim, path: PlaySim['ballPath'], acqui
     ? (opportunity && sim.t >= opportunity.t - DRIVE_LEAD && sim.t <= opportunity.t + DRIVE_SECURE ? opportunity.receiver : null)
     : (sim.ball.kind === 'air' && sim.ball.securing ? sim.ball.securing.receiver : null);
   // HONEST_FLIGHT: a receiver he sees without the ball after the arrival is not securing it.
-  const droppedSeen = (R: Agent) => { const q = sim.see(a, R); return !!opportunity && q.carrying === false && q.age !== undefined && sim.t - q.age > opportunity.t; };
+  // Only a picture taken after the securing beat (his estimated arrival + DRIVE_SECURE) can show the receiver without the
+  // ball: during the beat a receiver securing it is not yet carrying it in anyone's picture.
+  const droppedSeen = (R: Agent) => { const q = sim.see(a, R); return !!opportunity && q.carrying === false && q.age !== undefined && sim.t - q.age > opportunity.t + DRIVE_SECURE; };
   if (DRIVE_CATCH && securing && !(HONEST_FLIGHT && droppedSeen(securing))) {
     const R = securing, seen = sim.see(a, R);
     if (Math.hypot(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y) <= 4) {
@@ -3366,12 +3443,15 @@ function flightApproach(a: Agent, sim: PlaySim, path: PlaySim['ballPath'], acqui
 /** First plausible receiver catch from the defender's delayed picture and
  * the visible flight. Does not inspect the intended target or called route.
  * This is a possibility estimate; a receiver can still drop or miss it. */
-function observedCatchWindow(a: Agent, sim: PlaySim, path: PlaySim['ballPath']): { p: Vec2; t: number; receiver: Agent; seen: Perceived } | null {
-  const receivers = sim.offense.filter(r => r !== sim.qb && !['LT', 'LG', 'C', 'RG', 'RT'].includes(r.slot))
-    .map(r => ({ r, seen: sim.see(a, r) }));
+function observedCatchWindow(a: Agent, sim: PlaySim, path: PlaySim['ballPath'], only?: Agent): { p: Vec2; t: number; receiver: Agent; seen: Perceived } | null {
+  const receivers = sim.offense.filter(r => (only ? r === only : r !== sim.qb) && !['LT', 'LG', 'C', 'RG', 'RT'].includes(r.slot))
+    // HONEST_FLIGHT, his own man: the continuous attended read he mirrors him by (sim.track), not a recognition picture.
+    .map(r => ({ r, seen: only ? sim.track(a, r, 1, true) : sim.see(a, r) }));
+  let prevSample: PlaySim['ballPath'][number] | null = null;
   for (const s of path) {
     const remaining = s.t - sim.t;
-    if (remaining < 0 || s.z < 0.25) continue;
+    if (remaining < 0 || s.z < 0.25) { prevSample = remaining < 0 ? s : null; continue; }
+    const before = prevSample; prevSample = s;
     for (const { r, seen } of receivers) {
       if (s.z > r.profile.maxCatchHeight * 0.92) continue;
       const p = { x: s.x, y: s.y };
@@ -3382,13 +3462,28 @@ function observedCatchWindow(a: Agent, sim: PlaySim, path: PlaySim['ballPath']):
       // estimate charges for braking/redirecting. Use the same maximum hand
       // envelope as a tracking catch, without consulting his hidden target,
       // route or eventual possession. He may still miss or drop the pass.
-      const passing = Math.hypot(p.x - seen.pos.x - seen.vel.x * remaining,
-        p.y - seen.pos.y - seen.vel.y * remaining) <= reach;
+      // HONEST_FLIGHT: over the flight segment to this sample, not only at it (the catch's own closest-approach geometry,
+      // physics/catch-opportunity.ts, on his picture of the receiver carried on its velocity): a 0.1 s sample spacing
+      // missed a receiver whose hands meet the ball between samples (mesh, cover1 doubles s10: 1.30-1.46 at the samples,
+      // a catch at the reach between them).
+      const passing = HONEST_FLIGHT && before
+        ? segmentPass(before, s, seen, sim.t) <= reach
+        : Math.hypot(p.x - seen.pos.x - seen.vel.x * remaining, p.y - seen.pos.y - seen.vel.y * remaining) <= reach;
       const tt = timeToReach({ pos: seen.pos, vel: seen.vel, profile: r.profile }, p, reach);
       if (passing || tt <= remaining) return { p, t: s.t, receiver: r, seen };
     }
   }
   return null;
+}
+
+/** HONEST_FLIGHT: the closest the ball comes, between two samples of his flight estimate, to a receiver he sees, carried
+ * on his seen velocity (both linear over the segment). */
+function segmentPass(a0: { t: number; x: number; y: number }, a1: { t: number; x: number; y: number }, seen: Perceived, now: number): number {
+  const dt = a1.t - a0.t;
+  const r0x = a0.x - (seen.pos.x + seen.vel.x * (a0.t - now)), r0y = a0.y - (seen.pos.y + seen.vel.y * (a0.t - now));
+  const dvx = (a1.x - a0.x) - seen.vel.x * dt, dvy = (a1.y - a0.y) - seen.vel.y * dt;
+  const vv = dvx * dvx + dvy * dvy, s = vv > 1e-12 ? clamp(-(r0x * dvx + r0y * dvy) / vv, 0, 1) : 0;
+  return Math.hypot(r0x + dvx * s, r0y + dvy * s);
 }
 
 /** Where the ball comes down to catch height on its current flight. */

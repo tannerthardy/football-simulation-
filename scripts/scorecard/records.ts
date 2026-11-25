@@ -41,6 +41,10 @@ export interface PlayRec {
   /** Unique failed defenders in the initial offensive carry; absent on legacy records. */
   failedTackleOpportunities?: number;
   firstDown: boolean;
+  /** The call is one QB_V2 takes (PlayPlan.qbV2Call), in either arm; absent otherwise. */
+  qbV2Call?: boolean;
+  /** QB_V2 ran this play's read (PlayStats.qbV2); absent otherwise. */
+  qbV2?: boolean;
 }
 
 export interface GameRec {
@@ -279,6 +283,8 @@ export function gameRecord(spec: GameSpec, res: GameResult, ms: number,
       // when official statistical credit uses a corrected copy.
       failedTackleOpportunities: failedTackles?.(p.stats),
       firstDown: !!p.firstDown,
+      ...(p.plan?.qbV2Call ? { qbV2Call: true } : {}),
+      ...(p.stats.qbV2 ? { qbV2: true } : {}),
     });
   }
   rec.gameLayer = gameLayerRecord(res);
