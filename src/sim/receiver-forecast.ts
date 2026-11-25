@@ -1,6 +1,7 @@
 /** QB-local receiver estimate. Installed expectation is not measured progress. */
 import { clamp, type Vec2 } from '../core/vec.js';
 import { BREAK_DECL } from '../playbook/route-breaks.js';
+import { ROUTES } from '../playbook/routes.js';
 import { FIELD_WIDTH } from '../core/field.js';
 import { arriveVelocity, stepBody, type Body, type MoveCommand } from '../physics/kinematics.js';
 import type { PhysicalProfile } from '../players/physical.js';
@@ -133,8 +134,9 @@ function priorBreak(prior: InstalledReceiverRoute): number | null {
   return prior.breakIdx !== undefined ? prior.breakIdx : pathBreak(prior.path, prior.end);
 }
 
-/** Routes timed to a point this far outward of the alignment (yd), mirroring Rules' route timing data (#925). */
-const NO_PLANT_OUTWARD: Record<string, number> = { flat: 6.4, back_flat: 7, swing: 7 };
+/** A route timed to a point outward of the alignment (yd) rather than a cut or stop: Rules' route timing data (#925,
+ * RouteDef.timing: the flat, the back's flat and the swing, the NFL release spot). Undefined for every other route. */
+const timedOutward = (id: string | undefined): number | undefined => (id && ROUTES[id]?.timing ? ROUTES[id].timing!.l : undefined);
 
 export function pathBreak(path: readonly PathPoint[], end: RouteEnd): number | null {
   let b: number | null = null;
@@ -213,9 +215,9 @@ export class ReceiverForecast {
    * install (or the answer he expects on an option route). Null for a route without a break. */
   breakPoint(): Readonly<Vec2> | null {
     const c = this.build(), path = c?.route?.path ?? this.prior.path;
-    // The flat's timing point (Rules, #925 e95e5dac6: RouteDef.timing, the NFL release spot: flat {d 1.54, l 6.4}, back_flat and swing l 7): where the path is that far outward of
-    // his alignment. Interim mirror of that data until #925 lands and timingPoint(route) is read here instead.
-    const outward = this.prior.routeId ? NO_PLANT_OUTWARD[this.prior.routeId] : undefined;
+    // A timed route's point (Rules, #925: RouteDef.timing, the NFL release spot, e.g. the flat {d 1.54, l 6.4}): where the
+    // path is that far outward of his alignment (it replaced the QB lane's interim table).
+    const outward = timedOutward(this.prior.routeId);
     if (outward !== undefined) {
       const s0 = this.prior.start, side = Math.sign((path[path.length - 1]?.p.y ?? s0.y) - s0.y) || 1;
       let prev: Vec2 = s0;
