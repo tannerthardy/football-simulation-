@@ -144,6 +144,7 @@
     "FREE_ARM_FULL": "off",
     "ONE_ARM_SHARE": "off",
     "ONE_ARM_PULL": "off",
+    "REACH_ARRIVAL": "off",
     "HANDS_ON_ARMS": "on",
     "SECURE_SPLIT": "on",
     "SECURE_FACE_GEOM": "on",

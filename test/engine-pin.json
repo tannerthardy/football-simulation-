@@ -458,6 +458,7 @@
   "test/quick-hitch.test.ts",
   "test/race-lean.test.ts",
   "test/rat-coverage.test.ts",
+  "test/reach-arrival.test.ts",
   "test/reach-contact.test.ts",
   "test/reach-time.test.ts",
   "test/read-plan-fit.test.ts",

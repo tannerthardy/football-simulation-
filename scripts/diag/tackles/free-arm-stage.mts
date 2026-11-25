@@ -19,7 +19,7 @@ const { reachTo } = await import(`${W}/src/sim/tackle-reach.ts`);
 const SPEED = Number(process.argv[2] ?? 5), CONTROL = Number(process.argv[3] ?? 0), CASE = process.argv[4] ?? 'run';
 const { PASS_BY_ID } = await import(`${W}/src/playbook/concepts.ts`);
 const r2 = (v: number) => Math.round(v * 100) / 100;
-for (const off of CASE === 'free' ? [0.6, 0.8, 1.0, 1.2] : [0.8, 1.0, 1.2, 1.4]) {
+for (const off of process.env.OFFSETS ? process.env.OFFSETS.split(',').map(Number) : CASE === 'free' ? [0.6, 0.8, 1.0, 1.2] : [0.8, 1.0, 1.2, 1.4]) {
   const sim = new PlaySim({ offense: pickOffense(generateTeam(new Rng(19), 'O', 'O'), '11'),
     defense: pickDefense(generateTeam(new Rng(20), 'D', 'D'), 'base43'),
     offCall: CASE === 'stalk' ? { formation: FORMATION_BY_ID.gun_doubles_11, flip: false, kind: 'pass', pass: PASS_BY_ID.curl_flat, label: 'stage' }
@@ -40,7 +40,7 @@ for (const off of CASE === 'free' ? [0.6, 0.8, 1.0, 1.2] : [0.8, 1.0, 1.2, 1.4])
   if (CASE !== 'free') { const e = sim.engage(b, d, 'run'); e.control = CONTROL; }
   // The carrier's command is fixed: straight past him at SPEED (the World still decides what his body achieves).
   const step = sim.world.step.bind(sim.world);
-  sim.world.step = (intents: any, dt: number) => { intents[c.idx] = { ...intents[c.idx], vel: { ...cmd }, facing: Math.atan2(cmd.y, cmd.x) }; return step(intents, dt); }; sim.ball = { kind: 'held', carrier: c }; sim.handoffAt = 0; if (CASE === 'stalk') { sim.catchAt = 0; sim.throwAt = 0; }
+  sim.world.step = (intents: any, dt: number) => { intents[c.idx] = { ...intents[c.idx], vel: { ...cmd }, facing: Math.atan2(cmd.y, cmd.x) }; if (process.env.SET_DEF) intents[d.idx] = { ...intents[d.idx], vel: { x: 0, y: 0 } }; return step(intents, dt); }; sim.ball = { kind: 'held', carrier: c }; sim.handoffAt = 0; if (CASE === 'stalk') { sim.catchAt = 0; sim.throwAt = 0; }
   for (let i = 0; i < 24; i++) sim.perception.record(sim.agents, c.idx);
   const full = r2(reachTo(d, c, 1));
   const lines: string[] = []; let seen = sim.events.length, minD = 9;

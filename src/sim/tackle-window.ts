@@ -22,6 +22,10 @@ export interface TackleWindow {
    * reaches now rather than after losing his base. Both give the same decision today; if one is refined (e.g.
    * telling a fast late closure from a receding one), split them rather than changing the other. */
   reached: boolean;
+  /** With `lead` > 0 (REACH_ARRIVAL: the hands' travel time): the shot where a reach started now lands (the quality at
+   * now + lead), the best landing of a reach started at a later decision sample, and whether that best landing is
+   * attained before the forecast's last upright sample. Absent with lead 0. */
+  arrival?: { now: number; later: number; reached: boolean };
 }
 
 /** Existing geometric wrap quality: torso contact versus extended fingertips. */
@@ -33,7 +37,7 @@ export function contactQuality(distance: number, body: number, arms: number, ban
  * the caller's responsibility; a one-body preview cannot model those loads.
  */
 export function previewTackleWindow(d: Agent, seen: Perceived,
-  command: Intent | undefined, body: number, arms: number, now: number, band = .25): TackleWindow | null {
+  command: Intent | undefined, body: number, arms: number, now: number, band = .25, lead = 0): TackleWindow | null {
   const s = d.body.support;
   if (!command || command.free || command.dive || command.lunge || d.isDown(now)
     || d.engagement || (s && (s.state !== 'up' || s.foot || s.strike
@@ -42,6 +46,7 @@ export function previewTackleWindow(d: Agent, seen: Perceived,
   let closest = Math.hypot(seen.pos.x - d.pos.x, seen.pos.y - d.pos.y);
   const currentQuality = contactQuality(closest, body, arms, band);
   let closestAt = 0, lastT = 0, best = currentQuality, bestAt = 0;
+  const track: { t: number; x: number; y: number }[] = [{ t: 0, x: d.pos.x, y: d.pos.y }];
   // Six ordinary decision samples preserve the previous 0.3 s lookahead.
   // A useful hip passing between now and the next tick is not a reason to
   // skip this attempt: tackles can only be chosen at the decision samples.
@@ -51,6 +56,7 @@ export function previewTackleWindow(d: Agent, seen: Perceived,
     // decision samples; if there are none, there is no benefit to waiting.
     if (p.support !== 'up') break;
     lastT = p.t;
+    track.push({ t: p.t, x: p.pos.x, y: p.pos.y });
     const distance = Math.hypot(seen.pos.x + seen.vel.x * p.t - p.pos.x,
       seen.pos.y + seen.vel.y * p.t - p.pos.y);
     if (distance < closest) { closest = distance; closestAt = p.t; }
@@ -59,6 +65,21 @@ export function previewTackleWindow(d: Agent, seen: Perceived,
     const quality = contactQuality(distance, body, arms, band);
     if (quality > best + 1e-9) { best = quality; bestAt = p.t; }
   }
-  return { currentQuality, futureQuality: contactQuality(closest, body, arms, band), closest, closestAt,
+  const window: TackleWindow = { currentQuality, futureQuality: contactQuality(closest, body, arms, band), closest, closestAt,
     reached: bestAt < lastT - 1e-9 };
+  if (lead > 0) {
+    // His forecast body between the samples (straight, as the World's step moves him) against the carrier he sees.
+    const qAt = (t: number): number | null => {
+      if (t > lastT + 1e-9) return null;
+      let k = 1; while (k < track.length - 1 && track[k].t < t - 1e-9) k++;
+      const a = track[k - 1], b = track[k] ?? a, u = b.t > a.t ? clamp((t - a.t) / (b.t - a.t), 0, 1) : 0;
+      const x = a.x + (b.x - a.x) * u, y = a.y + (b.y - a.y) * u;
+      return contactQuality(Math.hypot(seen.pos.x + seen.vel.x * t - x, seen.pos.y + seen.vel.y * t - y), body, arms, band);
+    };
+    const nowQ = qAt(lead);
+    let later = -1, laterAt = 0;
+    for (const p of track.slice(1)) { const q = qAt(p.t + lead); if (q === null) break; if (q > later + 1e-9) { later = q; laterAt = p.t + lead; } }
+    if (nowQ !== null) window.arrival = { now: nowQ, later: Math.max(0, later), reached: later >= 0 && laterAt < lastT - 1e-9 };
+  }
+  return window;
 }

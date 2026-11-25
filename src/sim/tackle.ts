@@ -619,11 +619,12 @@ export function tryTackles(sim: PlaySim): void {
         // Forecast the command actually executed, without asking the behavior
         // for another decision or drawing from its pursuit-error stream.
         const observed = windowPicture(sim, d, c);
-        const window = previewTackleWindow(d, observed, sim.intents[d.idx], body, arms, sim.world.time, lockBand(d, c));
+        const window = previewTackleWindow(d, observed, sim.intents[d.idx], body, arms, sim.world.time, lockBand(d, c),
+          REACH_ARRIVAL && REACH_TIME ? REACH_EXTEND : 0);
         if (window) {
           // Compare two estimates from the same observation. Actual reach and
           // the resulting grip still use current physical geometry below.
-          waitForBetter = waitsForBetter(window);
+          waitForBetter = REACH_ARRIVAL && REACH_TIME && window.arrival ? waitsForArrival(sim, d, c, window.arrival) : waitsForBetter(window);
           lastReach = observed.carrying === true && window.closestAt === 0
             && window.closest > arms && window.closest <= range;
           const keepFeet = (waitForBetter && !acquireAtReach) || (needsLastReach && !lastReach);
@@ -723,6 +724,25 @@ const WAIT_REACHED = process.env.WAIT_REACHED !== '0';
  * closing, separating and behind reads for the last reach and the dive use the
  * carrier's seen position and velocity. Reach, grip and contact stay physical. */
 const HONEST_TACKLE = process.env.HONEST_TACKLE !== '0';
+/** REACH_ARRIVAL (experimental, off; REACH_ARRIVAL=1 turns it on, with REACH_TIME; Integration 2026-11-25): the wait
+ * for a better shot judges the shot where the hands land, not where he is now. With REACH_TIME the hands take
+ * REACH_EXTEND to reach full extension, so waiting until the shot is best now means reaching as it passes: of 33 men
+ * inside 1.35 yd of a catcher no one touched (ahead-man.mts with a gate log, 8 games), 9 waited a tick or two ("better
+ * shot coming"), reached at their closest approach, and missed as the gap opened while the hands were out. On, from the
+ * same window preview of his picture (his held command through the movement physics, the carrier he sees dead-reckoned):
+ * the landing of a reach started now (quality at now + REACH_EXTEND) against the best landing of one started at a later
+ * decision sample; he waits only while a later start lands better by the existing margin (0.1) and that landing is
+ * inside the forecast, and once waiting he stops at a 0.05 margin (stated choice: a hysteresis so he does not alternate
+ * between waiting and reaching tick to tick). The reach itself, its forecast (reachMeets) and its judging are unchanged.
+ * Off: the legacy comparison of the shot now against the window's best. */
+export const REACH_ARRIVAL = process.env.REACH_ARRIVAL === '1';
+const arrivalWait = new WeakMap<Agent, { sim: PlaySim; carrier: Agent; waiting: boolean }>();
+function waitsForArrival(sim: PlaySim, d: Agent, c: Agent, a: { now: number; later: number; reached: boolean }): boolean {
+  const st = arrivalWait.get(d), was = !!st && st.sim === sim && st.carrier === c && st.waiting;
+  const waiting = a.reached && a.later > a.now + (was ? 0.05 : 0.1);
+  arrivalWait.set(d, { sim, carrier: c, waiting });
+  return waiting;
+}
 /** Whether the forecast is worth waiting for: a better shot by a margin and, with WAIT_REACHED, one it reaches inside
  * its lookahead. A best point at the horizon's edge is a slow chase still closing (or a runner faster than his seen,
  * stale velocity): the better shot keeps receding, so he takes the reach he has. */
