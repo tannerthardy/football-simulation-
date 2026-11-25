@@ -1,0 +1,58 @@
+diff --git a/src/sim/playsim.ts b/src/sim/playsim.ts
+index 4de17b7b..f5304f8b 100644
+--- a/src/sim/playsim.ts
++++ b/src/sim/playsim.ts
+@@ -1568,7 +1568,7 @@ export class PlaySim {
+           const p=this.see(a,d).pos;
+           for(let k=.5;k<=4.01;k+=.5)m=Math.min(m,Math.hypot(p.x-(a.pos.x+Math.cos(h)*k),p.y-(a.pos.y+Math.sin(h)*k)));
+         }
+-        const sd=.6*(1-a.r('vision')),bin=Math.floor(t/.25),w=t/.25-bin;
++        const sd=Number(process.env.LH_ERR??.6)*(1-a.r('vision')),bin=Math.floor(t/.25),w=t/.25-bin;
+         const hash=(n:number)=>{let x=(Math.imul(a.idx+1,73856093)^Math.imul(n,83492791)^Math.imul(Math.round(h*8)+97,19349663))>>>0;x^=x>>>15;x=Math.imul(x,2246822519)>>>0;x^=x>>>13;return((x&0xffff)+.5)/65536-.5;};
+         return m+sd*2*((1-w)*hash(bin)+w*hash(bin+1));
+       }});
+diff --git a/src/sim/spacing.ts b/src/sim/spacing.ts
+index 6656162e..1681fee5 100644
+--- a/src/sim/spacing.ts
++++ b/src/sim/spacing.ts
+@@ -49,7 +49,7 @@ export function holdBend(hold: BendHold, worst: number, exit: number, passed: bo
+  * more free space ahead in HIS picture where it is better by 0.1 yd; else the smaller bend; else the side away from the teammate he bends around (not the + side by default). */
+ export function pickBendSide(po:number|undefined,no:number|undefined,spacePos:number|null|undefined,spaceNeg:number|null|undefined,peerLeft:boolean):number|undefined{
+   if(po===undefined||no===undefined)return po??no;
+-  if(spacePos!=null&&spaceNeg!=null&&Math.abs(spacePos-spaceNeg)>=.1)return spacePos>spaceNeg?po:no;
++  if(spacePos!=null&&spaceNeg!=null&&Math.abs(spacePos-spaceNeg)>=Number(process.env.LH_SIDE??.1))return spacePos>spaceNeg?po:no;
+   if(Math.abs(po)!==Math.abs(no))return Math.abs(po)<Math.abs(no)?po:no;
+   return peerLeft?no:po;
+ }
+@@ -395,7 +395,7 @@ export function spaceTeammates(agents: readonly Agent[], intents: Intent[],
+     const limits:ClosingLimit[]=[];
+     const holdLimits=SPACING_HOLD&&a.behavior.kind==='carrier';
+     const heldKeys=holdLimits?limitHolds.get(a):undefined,limitedNow=holdLimits?new Set<number>():undefined;
+-    const exitMargin=2*a.profile.radius;
++    const exitMargin=2*a.profile.radius*Number(process.env.LH_MARGIN??1);
+     for (let j = 0; j < n; j++) {
+       if (j === i) continue;
+       const b = agents[j];
+@@ -413,6 +413,7 @@ export function spaceTeammates(agents: readonly Agent[], intents: Intent[],
+       const current=Math.max(0,(a.vel.x-seen.vel.x)*nx+(a.vel.y-seen.vel.y)*ny);
+       const stopping=current*CLOSE_HORIZON+current*current/(2*decel);
+       const held=heldKeys?.has(b.idx)??false;
++      const plainAware=gap>Math.max(AWARE_GAP,stopping);
+       if(gap>Math.max(AWARE_GAP,stopping)+(held?exitMargin:0))continue;
+       // Closing he plans, relative to where the teammate is going now
+       // (LINE_STEP: where the teammate's announced step takes him).
+@@ -424,12 +425,14 @@ export function spaceTeammates(agents: readonly Agent[], intents: Intent[],
+       // narrow, passable crease from becoming a radial repulsion field.
+       const speed2=rx*rx+ry*ry;
+       const closest=speed2>1e-9?Math.max(0,(dx*rx+dy*ry)/speed2):0;
++      const missD=hypot2(dx-rx*closest,dy-ry*closest),plainLane=gap>0&&missD>touch;
+       if(gap>0&&hypot2(dx-rx*closest,dy-ry*closest)>touch+(held?exitMargin:0))continue;
+       // Budget headway plus the distance this body needs to remove relative
+       // speed. Do not assume the blocker, grounded helper or occupied tackler
+       // will take half the correction. The world still limits the braking.
+       const allowed=Math.sqrt((decel*CLOSE_HORIZON)**2+2*decel*Math.max(0,gap))-decel*CLOSE_HORIZON;
+       limits.push({key:b.idx,nx,ny,speed:allowed+goes.x*nx+goes.y*ny});
++      if(held&&(plainAware||plainLane))(globalThis as any).__lh?.(a,b,{gap,allowed,closing,cut:Math.max(0,closing-allowed),plainAware,plainLane,rel:Math.hypot(rx,ry),miss:missD,touch,stopping,exitMargin});
+       if(closing>0)limitedNow?.add(b.idx);
+       if (closing > allowed) {
+         const cut = closing - allowed;
