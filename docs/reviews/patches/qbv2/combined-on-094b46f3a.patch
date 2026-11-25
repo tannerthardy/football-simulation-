@@ -1,0 +1,674 @@
+diff --git a/docs/reviews/2026-11-24-qbv2-landing.md b/docs/reviews/2026-11-24-qbv2-landing.md
+index 414343203..c9854a083 100644
+--- a/docs/reviews/2026-11-24-qbv2-landing.md
++++ b/docs/reviews/2026-11-24-qbv2-landing.md
+@@ -23,8 +23,8 @@ QB lane, 2026-11-24.
+ | 1 | **fixed** | `Cycle.uncommit()`. The wiring calls it when `startIfFinish` returns no command, so he goes back to the read and pressure and the pocket are looked at again. Test: qbv2-cycle "a commit the wiring cannot start fails back". |
+ | 2 | **fixed** | A key read isn't "answered no" until the key has declared a cue. The next step still bounds it (hold rule (b)). |
+ | 3 | **fixed** | The seen-depth gate uses his seen progress along the stem (the projection on start → break), not the radius round the installed break point. A receiver ridden 2 yd wide still reaches the top of his stem. |
+-| 4 | **fixed** | `contact` comes from his own felt contact (heldBy > 0). With nothing clearing he throws it away in the pocket. `hotSide` is the side of his most urgent felt rusher (within 1.5 s), by the alignment's strong side. Test: "with a body on him ... throws it away". |
+-| 5 | **fixed** (with §3 #4) | Escape both ways. He enters past 4.5 yd from the ball's lane and resumes the read inside 3.75 yd (enter and exit margins). Test: "escape is left when he is back inside". |
++| 4 | **fixed for a light hold; corrected 2026-11-25** | `contact` comes from his own felt contact (heldBy > 0), and with nothing clearing he throws it away in the pocket. That holds only while he is lightly held (0 < held < 0.6). At 0.6 or more, `qb.ts` returns `stand()` before the V2 step, the old controller's rule: wrapped up, he cannot start any throw, and a throwaway uses the same windup. Kept as a body limit and stated (`2026-11-25-qbv2-escape-hold.md`). The unit test drives the cycle directly, not through that line. `hotSide` is the side of his most urgent felt rusher (within 1.5 s), by the alignment's strong side. |
++| 5 | **both ways fixed; outside corrected 2026-11-25** (with §3 #4) | Escape both ways. He enters past 4.5 yd from the ball's lane and resumes the read inside 3.75 yd (enter and exit margins). As landed, while outside he never looked at the checkdown, never moved his looks, and threw it away on a felt rush. Fixed in `escape-on-890558713.patch`: eyes across the reads a stride each, the checkdown, away only when imminent or in contact. |
+ | 6 | **fixed / deferred** | The checkdown now respects `fromStep` in the pressure response. **Deferred:** the `handoff` intent (RPO). No staged concept uses it, so it lands when an RPO plan does. |
+ 
+ ### §2 Hidden state
+@@ -32,7 +32,7 @@ QB lane, 2026-11-24.
+ | # | Status | What |
+ |---|---|---|
+ | 1 | **kept, debated** | `isDbSlot(personnel, slot)`, Flex's one DB rule: the visible package's CB/S slots. QBMind now imports the same function. The reviewer would read DBs from alignment and grouping alone. That stays open with Flex; it's one rule now, so it changes in one place. |
+-| 2 | **default-safe** | `bodyOf` / `believe` read the raw profile only with QB_BELIEVED_DEF off. That flag is on by default, so V2 reads the scouting report. |
++| 2 | **corrected 2026-11-25: a prior by design, one fallback leak** | With QB_BELIEVED_DEF on (the default), V2 reads QB_SCOUT's scouting report. It's the roster position's typical body plus film of his true traits, with an error that falls with his snaps on film, drawn once per passer and defender pair. That is a pre-game prior from public roster data and film study, not live truth. **The leak:** with no typical for his position, the report returns the true profile and ratings exactly. Paid by giving every position a typical. Open. |
+ | 3 | **fixed** | The kill throws at his estimate of the receiver. |
+ | 4 | **deferred: old controller's** | `shouldScramble`'s true isDown is the old controller's code, shared by V2's escape branch. Changing it moves flags-off behaviour, so it's a separate item. |
+ | 5 | **default-safe** | `evaluate`'s seen-receiver flag (QB_SEEN_REC) is on by default. |
+@@ -45,7 +45,7 @@ QB lane, 2026-11-24.
+ | # | Status | What |
+ |---|---|---|
+ | 1 | **fixed** | The sit cue (squats / widens) is held. It changes only when the other landmark is nearer him by 0.5 yd. |
+-| 2 | **fixed** | An aged picture never raises the throw. For a man arriving early (margin > 0) age isn't counted in his spread. Test: qbv2-judge "an aged picture of a man arriving early never raises the throw". **Not changed:** the hard −0.3 s edge in the lane test (minor; noted). |
++| 2 | **not fixed; corrected 2026-11-25** | The landed rule left age out of only its own term. QBMind's picture spread still grows with age and fed the same sigma. A man whose picture was 1.5 s old was dropped from the judgment. The lane's near-catch sigma was gated on the mid-flight margin. QBMind's estimate also moves with no new sighting. Card spec §1 is in progress (`2026-11-25-qbv2-picture-age.md`; the attempt-2 WIP is not for landing). |
+ | 3 | **deferred** | No exit margin on the coverer radii, plus the reaction step at a 4 yd cushion. The held coverer (COVER_SWAP) already damps a swap. A smooth reaction blend is a follow-up. |
+ | 4 | **fixed** | See §1 #5. |
+ | 5 | **deferred: Flex (roles.ts)** | The role areas change at the snap. |
+diff --git a/scripts/diag/qbv2/stage.ts b/scripts/diag/qbv2/stage.ts
+index 45398c42b..73a5e76a9 100644
+--- a/scripts/diag/qbv2/stage.ts
++++ b/scripts/diag/qbv2/stage.ts
+@@ -53,7 +53,7 @@ for (let seed = s0; seed <= s1; seed++) {
+         rid: target?.behavior?.route?.id ?? null, plannedBreak: target?.behavior?.breakTime != null ? r2(target.behavior.breakTime) : null, depthAtThrow: target ? r2(target.pos.x - sim.los) : null };
+       const ref = target ? Object.entries(sim.offAlign.numbering).find(([, sl]) => sl === target.slot)?.[0] : null;
+       const v2 = qbb?.v2;
+-      if (v2 && ref) { const j = v2.judgedFor(ref); thrown.belief = j ? { P: r2(j.P), risk: r2(j.risk) } : null; thrown.roles = (v2.lastRoles.get(ref) ?? []).map((x: any) => ({ id: x.id, role: x.role, pA: r2(x.pArrive), pPick: r2(x.pPick), ...atPass(sim, q, intended, sim.agents[x.id]) })); }
++      if (v2 && ref) { const j = v2.judgedFor(ref); thrown.belief = j ? { P: r2(j.P), risk: r2(j.risk) } : null; thrown.roles = (v2.lastRoles.get(ref) ?? []).map((x: any) => ({ id: x.id, role: x.role, pA: r2(x.pArrive), unseen: r2(qbb?.mind?.unseenFor?.(sim.agents[x.id]) ?? sim.qb.behavior?.mind?.unseenFor?.(sim.agents[x.id]) ?? -1), pPick: r2(x.pPick), ...atPass(sim, q, intended, sim.agents[x.id]) })); }
+     }
+     return tb(q, target, v0, intended, arrivalT, ...rest);
+   };
+@@ -110,7 +110,7 @@ for (let seed = s0; seed <= s1; seed++) {
+     ball: thrown?.at ?? null, split: thrown?.split ? { ...thrown.split, reaim: decAim?.x != null && thrown.pt ? r2(Math.hypot(decAim.x - thrown.pt.x, decAim.y - thrown.pt.y)) : null, decToRel: decAim ? r2(thrown.t - decAim.t) : null } : null, dist: thrown?.dist ?? null, qbDepth: thrown?.qbDepth ?? null, qbSpeed: thrown?.qbSpeed ?? null,
+     catchEv: [...new Set(ev.filter((e) => thrown && e.t >= thrown.t && ['catch', 'drop', 'miss', 'pbu', 'deflection', 'interception', 'incomplete', 'secure'].includes(e.type)).map((e) => `${e.type}:${sim.agents[e.a]?.team === sim.qb.team ? 'O' : 'D'}${sim.agents[e.a]?.slot ?? ''}`))],
+     belief: thrown?.belief ?? null, roles: (thrown?.roles ?? []).map((r: any) => ({ ...r, arrived: !!r.arrived || ev.some((e) => ['pbu', 'deflection', 'interception'].includes(e.type) && e.a === r.id), slot: sim.agents[r.id].slot, picked: ev.some((e) => e.type === 'interception' && e.a === r.id), played: ev.some((e) => ['pbu', 'deflection', 'interception'].includes(e.type) && e.a === r.id) })),
+-    intents: qbb?.v2Intents ?? null, trace,
++    intents: qbb?.v2Intents ?? null, stale: qbb?.v2?.cycle?.staleLooks ?? null, trace,
+     // TRACK=1 (Rules' operator check): the targeted receiver's 10 Hz track from the snap, [t, x past the line, y], with
+     // the line and the ball's side (y), to the throw + 1.2 s.
+     ...(process.env.TRACK === '1' && thrown?.idx != null ? { los: r2(sim.los), ballY: r2(sim.ballY), track: (tr[thrown.idx] ?? []).filter((x) => x[0] <= thrown.t + 1.2).map((x) => [r2(x[0]), r2(x[1] - sim.los), r2(x[2])]) } : {}) }));
+diff --git a/src/sim/behaviors/qb.ts b/src/sim/behaviors/qb.ts
+index 07103efef..5f43d19ea 100644
+--- a/src/sim/behaviors/qb.ts
++++ b/src/sim/behaviors/qb.ts
+@@ -17,7 +17,7 @@
+ import { FIELD_WIDTH } from '../../core/field.js';
+ import { Rng, hashString } from '../../core/rng.js';
+ import { clamp, logistic, wrapAngle, type Vec2, type Vec3 } from '../../core/vec.js';
+-import { READ_PLANS, planFits } from '../../playbook/read-plans.js';
++import { planFor } from '../../playbook/read-plans.js';
+ import { V2Drive, type V2Host } from '../qbv2/drive.js';
+ import { makeHost, V2Wiring, type PasserView } from '../qbv2/host.js';
+ import { qbRead, qbStage } from '../qb-trace.js';
+@@ -37,7 +37,7 @@ import { HEAD_RATE as SHARED_HEAD_RATE, turnHead } from '../head.js';
+ import { angleTo, goTo, stand } from './common.js';
+ import { RouteRunner } from './receiver.js';
+ import type { QBMind } from '../qbmind.js';
+-import { believedProfile, typicalAt } from '../believed.js';
++import { believedProfile, typicalOrLeague } from '../believed.js';
+ import type { PhysicalProfile } from '../../players/physical.js';
+ import type { ReplayTelemetryFrame } from '../types.js';
+ import { ReceiverForecast, type InstalledReceiverRoute } from '../receiver-forecast.js';
+@@ -55,7 +55,7 @@ import { DECLARED_BREAK } from '../../playbook/read-compiler/features.js';
+ const TRACK_FEEL = process.env.TRACK_FEEL !== '0' || process.env.PERCEIVE_TRACK === '1';
+ const RELEASE_Z = 2.2;
+ /** QB_V2 (off; QB_V2=1; QB lane, 2026-11-24, docs/reviews/2026-11-24-qb-decision-plan.md): on a concept with an authored
+- * read plan that fits the call (READ_PLANS, planFits), the read and throw decision is the rebuilt cycle (src/sim/qbv2/):
++ * read plan for the call (planFor), the read and throw decision is the rebuilt cycle (src/sim/qbv2/):
+  * the look, the judgment, the cycle on his feet. The drop, pocket movement and the throw's mechanics are kept. Other
+  * concepts run this controller unchanged. */
+ const QB_V2 = process.env.QB_V2 === '1';
+@@ -979,13 +979,12 @@ const QB_HEAD = process.env.QB_HEAD !== '0';
+  * play's dice. */
+ export function scoutReport(a: Agent, d: Agent): { profile: PhysicalProfile; ballSkills: number; manCoverage: number } {
+   const key = `${a.player.id}|${d.player.id}`;
+-  const typ = typicalAt(d.player.position);
++  const typ = typicalOrLeague(d.player.position); // never his own values (second read, 2026-11-25)
+   const k = clamp(SCOUT0 + SCOUT_AWARE * a.r('playRecognition') + SCOUT_EXP * Math.min(1, a.player.experience / 8), 0, 1);
+   const film = new Rng(hashString(key));
+   const err = FILM_ERR * Math.sqrt(FILM_FLOOR * FILM_FLOOR + (1 - FILM_FLOOR * FILM_FLOOR) / (1 + d.player.experience / FILM_YEARS));
+   let out: { profile: PhysicalProfile; ballSkills: number; manCoverage: number };
+-  if (!typ) out = { profile: d.profile, ballSkills: d.r('ballSkills'), manCoverage: d.r('manCoverage') };
+-  else {
++  {
+     const prof: Record<string, unknown> = { ...d.profile };
+     for (const [f, t] of Object.entries(typ.profile)) {
+       const v = (d.profile as unknown as Record<string, unknown>)[f];
+@@ -1627,8 +1626,10 @@ export class QBPass implements Behavior {
+   update(a: Agent, sim: PlaySim): MoveCommand {
+     const t = sim.t;
+     if (this.v2 === undefined && t >= this.snapAt) {
+-      const plan = QB_V2 && QB_V2_STAGED.has(this.concept.id) ? READ_PLANS[this.concept.id] : undefined;
+-      this.v2 = plan && planFits(plan, this.concept) ? new V2Drive(plan) : null;
++      // Rules' planFor (#939): the frontside half's read as authored, the backside from its own half's quick read, the back
++      // as a checkdown only when the call releases him; the authored call returns the authored plan itself.
++      const plan = QB_V2 && QB_V2_STAGED.has(this.concept.id) ? planFor(this.concept) : null;
++      this.v2 = plan ? new V2Drive(plan) : null;
+       if (this.v2) {
+         // His feet run the plan's drop (Rules: stick is one step from the gun though the installed concept's drop says gun3).
+         if (plan!.drop !== this.concept.drop) this.drop = dropSpec(plan!.drop, a.pos.x, sim.los, sim.offCall.formation.qb !== 'under');
+@@ -2237,6 +2238,7 @@ export class QBPass implements Behavior {
+       a, sim, snapAt: this.snapAt, releaseZ: RELEASE_Z,
+       ratings: { playRecognition: a.r('playRecognition'), decisionMaking: a.r('decisionMaking'), composure: a.r('composure'), discipline: a.r('discipline'), experience: a.player.experience, anticipation: a.r('anticipation') },
+       estimate: (d) => this.mind.estimate(d), pictureAge: (d) => this.mind.pictureAge(d), pictureSpread: (d) => this.mind.pictureSpread?.(d) ?? 0.5,
++      unseenFor: (d) => this.mind.unseenFor(d), seenSpread: (d) => this.mind.seenSpread(d), jobWeight: (d) => this.mind.jobWeight(d),
+       seenHead: (d) => sim.see(a, d).head ?? null,
+       forecast: (r) => this.receiverForecasts.get(r),
+       clearHalf: () => this.mind.clearHalf,
+@@ -3290,10 +3292,9 @@ export class QBPass implements Behavior {
+     if (!b && QB_SCOUT) { b = scoutReport(a, d); this.believed.set(d, b); }
+     if (!b) {
+       const k = clamp(SCOUT0 + SCOUT_AWARE * a.r('awareness') + SCOUT_EXP * Math.min(1, a.player.experience / 8), 0, 1);
+-      const typ = typicalAt(d.player.position);
+-      b = typ ? { profile: believedProfile(d.profile, typ.profile, k), ballSkills: typ.ratings.ballSkills + (d.r('ballSkills') - typ.ratings.ballSkills) * k,
+-          manCoverage: typ.ratings.manCoverage + (d.r('manCoverage') - typ.ratings.manCoverage) * k }
+-        : { profile: d.profile, ballSkills: d.r('ballSkills'), manCoverage: d.r('manCoverage') };
++      const typ = typicalOrLeague(d.player.position); // never his own values (second read, 2026-11-25)
++      b = { profile: believedProfile(d.profile, typ.profile, k), ballSkills: typ.ratings.ballSkills + (d.r('ballSkills') - typ.ratings.ballSkills) * k,
++        manCoverage: typ.ratings.manCoverage + (d.r('manCoverage') - typ.ratings.manCoverage) * k };
+       this.believed.set(d, b);
+     }
+     return b;
+diff --git a/src/sim/believed.ts b/src/sim/believed.ts
+index 7439d5195..0d0915b3a 100644
+--- a/src/sim/believed.ts
++++ b/src/sim/believed.ts
+@@ -10,6 +10,7 @@ import { derivePhysical, type PhysicalProfile } from '../players/physical.js';
+ import { r01, RATING_KEYS, type Player, type Position, type RatingKey } from '../players/types.js';
+ 
+ const TEAMS = 12;
++const LEAGUE = '*league*';
+ let cache: Map<Position, { profile: PhysicalProfile; ratings: Record<RatingKey, number> }> | null = null;
+ 
+ function build(): NonNullable<typeof cache> {
+@@ -25,6 +26,8 @@ function build(): NonNullable<typeof cache> {
+     }
+   }
+   const out = new Map<Position, { profile: PhysicalProfile; ratings: Record<RatingKey, number> }>();
++  // The league-typical defensive starter (every position pooled), for a man at a position with no starters in the sample.
++  by.set(LEAGUE as Position, [...by.values()].flat());
+   for (const [position, players] of by) {
+     const sum: Record<string, number> = {}, count: Record<string, number> = {};
+     const ratings = Object.fromEntries(RATING_KEYS.map((k) => [k, 0])) as Record<RatingKey, number>;
+@@ -44,6 +47,14 @@ export function typicalAt(position: Position): { profile: PhysicalProfile; ratin
+   return cache.get(position) ?? null;
+ }
+ 
++/** The typical defensive starter at a position, or, for a position with no starters in the sample, the league-typical
++ * defensive starter: never the man's own values (the outside reviewer's second read, 2026-11-25: the fallback read the
++ * true profile and ratings exactly). */
++export function typicalOrLeague(position: Position): { profile: PhysicalProfile; ratings: Record<RatingKey, number> } {
++  cache ??= build();
++  return cache.get(position) ?? cache.get(LEAGUE as Position)!;
++}
++
+ /** `truth` as believed by someone who knows the man to degree k (0 = only his position, 1 = exactly). */
+ export function believedProfile(truth: PhysicalProfile, typical: PhysicalProfile, k: number): PhysicalProfile {
+   const out: Record<string, unknown> = { ...truth };
+diff --git a/src/sim/qbmind.ts b/src/sim/qbmind.ts
+index 3d88a7241..b92bf0dff 100644
+--- a/src/sim/qbmind.ts
++++ b/src/sim/qbmind.ts
+@@ -223,6 +223,10 @@ type Features = number[];
+ const PRE_SIGMA = [0.3, 0.25, 0.3, 0.13, 0.35, 0.7];
+ const POST_SIG_SIGMA = [0.6, 0.3, 0.18];
+ 
++/** His estimate of an unseen defender (QBMind.estimate): dead reckoning from the sighting up to this horizon (s), and a
++ * blend toward his belief of the man's job (the expected spot) from EST_BLEND_START over EST_BLEND_SPAN (s). */
++export const EST_DR_HORIZON = 0.5, EST_BLEND_START = 0.2, EST_BLEND_SPAN = 1.0;
++
+ export class QBMind {
+   /** Coverage recognition 0–1 (play recognition + experience). */
+   readonly rec: number;
+@@ -586,6 +590,28 @@ export class QBMind {
+     return Math.hypot(m.sigP ?? 0, (m.sigV ?? 0) * age);
+   }
+ 
++  /** QB_V2 (card spec §1, Integration 2026-11-25): how long he has had no new observation of a defender (s): the time
++   * since his last sighting, clear or peripheral, without the sensing delay (a man he watches is 0). 0 with no memory. */
++  unseenFor(d: Agent): number {
++    const m = this.memory.get(d);
++    return m ? Math.max(0, this.sim.t - m.t) : 0;
++  }
++
++  /** QB_V2 (card spec §1, Integration's ruling 2026-11-25): how far his estimate of a defender has moved from the
++   * sighting to his belief of the man's job (the expected spot): the estimate's own blend weight, 0-1. 0 with no memory. */
++  jobWeight(d: Agent): number {
++    const m = this.memory.get(d);
++    return m ? clamp((this.sim.t - m.t - EST_BLEND_START) / EST_BLEND_SPAN, 0, 1) : 0;
++  }
++
++  /** QB_V2: his uncertainty about a defender from the look itself (yd): the look's position error and its velocity error
++   * over the sensing delay only, not grown with unseen time (that is the judge's one-way advance). 0 without the flag. */
++  seenSpread(d: Agent): number {
++    const m = this.memory.get(d);
++    if (!PERIPH_ACUITY || !m) return 0;
++    return Math.hypot(m.sigP ?? 0, (m.sigV ?? 0) * (m.latency ?? 0));
++  }
++
+   /** Age of his picture of a defender: memory age plus its sensing latency.
+    * Zero when he has no memory of him (the estimate is then a fresh look). */
+   pictureAge(d: Agent): number {
+@@ -600,10 +626,10 @@ export class QBMind {
+     if (!m) return sim.see(this.qb, d);
+     const age = sim.t - m.t;
+     if (age < 0.12) return this.recordEstimate(d, { pos: m.pos, vel: m.vel, facing: m.facing }, age);
+-    const k = Math.min(age, 0.5);
++    const k = Math.min(age, EST_DR_HORIZON);
+     const dr = { x: m.pos.x + m.vel.x * k, y: m.pos.y + m.vel.y * k };
+     const exp = this.expectedPos(d);
+-    const w = clamp((age - 0.2) / 1.0, 0, 1);
++    const w = clamp((age - EST_BLEND_START) / EST_BLEND_SPAN, 0, 1);
+     return this.recordEstimate(d, {
+       pos: { x: dr.x + (exp.x - dr.x) * w, y: dr.y + (exp.y - dr.y) * w },
+       vel: { x: m.vel.x * (1 - w), y: m.vel.y * (1 - w) },
+diff --git a/src/sim/qbv2/cycle.ts b/src/sim/qbv2/cycle.ts
+index ae5571d82..8a5924d45 100644
+--- a/src/sim/qbv2/cycle.ts
++++ b/src/sim/qbv2/cycle.ts
+@@ -111,6 +111,8 @@ export class Cycle {
+ 
+   /** The wiring could not start the committed throw (no finish, a dwell gate, no mechanics): back to where he was, so
+    * pressure and the pocket are looked at again (audit §1 #1: the latched intent was replayed until he was sacked). */
++  /** Ticks a stale key held the judgment for a look (the diagnostic count). */
++  staleLooks = 0;
+   uncommit(): void { if (this.state === 'throw') { this.state = this.beforeCommit; this.decision = null; } }
+ 
+   /** One tick. */
+@@ -121,7 +123,7 @@ export class Cycle {
+     // Escape both ways (audit §1 #5): out of the pocket (the host's test carries enter and exit margins) he escapes; back
+     // inside, with the rush not on him, he resumes where he was.
+     if (s.outside && this.state !== 'escape') { this.beforeEscape = this.state; this.state = 'escape'; }
+-    else if (!s.outside && this.state === 'escape' && (this.pressure === 'clean' || this.pressure === 'felt')) this.state = this.beforeEscape === 'drop' ? 'read' : this.beforeEscape;
++    else if (!s.outside && this.state === 'escape' && (this.pressure === 'clean' || this.pressure === 'felt')) { this.state = this.beforeEscape === 'drop' ? 'read' : this.beforeEscape; this.escIdx = -1; }
+     if (this.state === 'drop') {
+       if (s.now < (s.readFrom ?? s.plantAt)) { this.looks.update(null, false, s.now, s.tau); return { kind: 'look', target: null }; }
+       this.state = 'read';
+@@ -143,7 +145,15 @@ export class Cycle {
+     const t = this.target(r);
+     this.looks.update(t, s.inClear(t), s.now, s.tau);
+     const res = this.looks.resolved(t);
+-    if (res >= s.need) {
++    // A stale key is looked at before it is judged (card spec §1, Integration's note: the coached answer to an old
++    // picture is a look at him, not a judgment on the age-shifted number). Stale: a key look he resolved earlier but has
++    // not had in his clear cone for longer than one look of his (tau), by his own eye history (the picture's own age
++    // carries his perception delay, about 0.3 s even while he looks, so it cannot tell a stale look from a fresh one).
++    // While his eyes can still get there this tick is the look; out of reach, he judges on what he has.
++    const since = this.looks.sinceClear(t, s.now);
++    const stale = r.look.kind === 'key' && since !== null && since > s.tau && s.canReach(t);
++    if (stale) this.staleLooks++;
++    if (res >= s.need && !stale) {
+       const j = this.choose(s, r); if (j) return this.commit(s, { kind: 'throw', judged: j });
+       if (r.onCovered === 'kill' && r.throws[0]) return this.commit(s, { kind: 'kill', ref: r.throws[0].ref });
+     }
+@@ -207,9 +217,22 @@ export class Cycle {
+     return { kind: 'move' };
+   }
+ 
+-  /** Out of the pocket (ported by phase): the reads' throws judged as they are; away when the rush is on him. */
++  /** Out of the pocket (the outside reviewer's second read, 2026-11-25: a passer who has left the pocket still has eyes
++   * and a back). His eyes work the reads one at a time, a stride on each, from where he was; the reads' throws as he sees
++   * them, then the checkdown (its step no longer applies: the structure is gone); away only when the rush is about to get
++   * him or is on him (imminent, contact), not when it is merely felt: running is what he is doing about a felt rush. */
++  private escIdx = -1;
++  private escSince = 0;
+   private onEscape(s: CycleSenses): Intent {
+-    for (const r of this.plan.reads) { const j = this.choose(s, r); if (j) return this.commit(s, { kind: 'throw', judged: j }); }
+-    return this.pressure === 'clean' ? { kind: 'escape' } : { kind: 'away' };
++    const reads = this.plan.reads;
++    if (this.escIdx < 0) { this.escIdx = Math.max(0, Math.min(this.readIdx, reads.length - 1)); this.escSince = s.now; }
++    const r = reads[this.escIdx], t = r ? this.target(r) : null;
++    if (t) {
++      this.looks.update(t, s.inClear(t), s.now, s.tau);
++      if (s.now - this.escSince >= s.stride && reads.length > 1) { this.escIdx = (this.escIdx + 1) % reads.length; this.escSince = s.now; }
++    }
++    for (const rd of reads) { const j = this.choose(s, rd); if (j) return this.commit(s, { kind: 'throw', judged: j }); }
++    if (this.plan.checkdown) { const j = s.judge({ ref: this.plan.checkdown.ref, timing: this.plan.checkdown.timing }); if (j && j.P >= s.bar.P && j.risk <= s.bar.risk) return this.commit(s, { kind: 'throw', judged: j }); }
++    return this.pressure === 'imminent' || this.pressure === 'contact' ? { kind: 'away' } : { kind: 'escape' };
+   }
+ }
+diff --git a/src/sim/qbv2/drive.ts b/src/sim/qbv2/drive.ts
+index 10d669c3d..68434f1f2 100644
+--- a/src/sim/qbv2/drive.ts
++++ b/src/sim/qbv2/drive.ts
+@@ -30,6 +30,10 @@ export interface V2Host {
+   seenHead(d: Agent): number | null;
+   pictureAge(d: Agent): number;
+   pictureSpread(d: Agent): number;
++  /** Time with no new observation of a defender (0 while watched) and the look's own spread (card spec §1). */
++  unseenFor(d: Agent): number;
++  seenSpread(d: Agent): number;
++  jobWeight(d: Agent): number;
+   /** His receiver's predicted position `ahead` s from now (his forecast), and the forecast's break (absolute time). */
+   predict(r: Agent, ahead: number): V | null;
+   breakAt(r: Agent): number | null;
+@@ -262,11 +266,17 @@ export class V2Drive {
+       path: [{ x: from.x, y: from.y }, ...path], los: sim.los, catchClean: catchFrom(h.placeSpread?.(Math.hypot(mech.point.x - from.x, mech.point.y - from.y))), res: look ? this.cycle.looks.resolved(look) : 0, receiverSpread: h.pictureSpread(r),
+       placeSpread: h.placeSpread?.(Math.hypot(mech.point.x - from.x, mech.point.y - from.y)),
+     };
+-    const defs: SeenDefender[] = sim.defense.filter((d) => this.seenUp(h, d) && h.pictureAge(d) < 1.5).map((d) => {
++    // Card spec §1 (Integration's ruling, 2026-11-25): nobody is dropped for an old picture. He is priced where he is
++    // believed (the estimate: the sighting dead-reckoned, then his job), and the judge charges unseen time one way.
++    const defs: SeenDefender[] = sim.defense.filter((d) => this.seenUp(h, d)).map((d) => {
+       const e = h.estimate(d), b = h.body(d), toQB = Math.atan2(a.pos.y - e.pos.y, a.pos.x - e.pos.x), eyes = h.seenHead(d) ?? e.facing;
+       // His eyes on the passer: the head he sees on the man where perception records it, else the body (Coverage's review).
+       const faces = Math.abs(Math.atan2(Math.sin(eyes - toQB), Math.cos(eyes - toQB))) < Math.PI / 3;
+-      return { id: d.idx, pos: e.pos, vel: e.vel, facing: e.facing, spread: h.pictureSpread(d), age: h.pictureAge(d), facesPasser: faces,
++      // His picture shows the man as he was a sensing delay ago (QBMind's estimate does not project it; QB lane 2026-11-25,
++      // a press corner on the slant believed 1.6 yd behind and at half his speed while watched): carried forward over the
++      // delay at his seen velocity, and the delay counts as time the man may have changed it (the judge's advance).
++      const delay = Math.max(0, h.pictureAge(d) - h.unseenFor(d)), pos = { x: e.pos.x + e.vel.x * delay, y: e.pos.y + e.vel.y * delay };
++      return { id: d.idx, pos, vel: e.vel, facing: e.facing, spread: h.seenSpread(d), age: delay + h.unseenFor(d), job: h.jobWeight(d), spreadDR: h.pictureSpread(d), facesPasser: faces,
+         vmax: b.vmax, accel: b.vmax / Math.max(b.tau, 1e-3), reach: b.reach, leap: b.reactReach + 0.5 * (b.maxCatchHeight - b.reactReach), ballSkills: h.ballSkills(d) };
+     });
+     const j = judge(q, defs);
+diff --git a/src/sim/qbv2/host.ts b/src/sim/qbv2/host.ts
+index ed3b3fe3e..6ad3fbccd 100644
+--- a/src/sim/qbv2/host.ts
++++ b/src/sim/qbv2/host.ts
+@@ -27,6 +27,11 @@ export interface PasserView {
+   estimate(d: Agent): { pos: Vec2; vel: Vec2; facing: number };
+   pictureAge(d: Agent): number;
+   pictureSpread(d: Agent): number;
++  /** Time with no new observation of him (s; 0 while watched) and the look's own spread (yd), apart from unseen time. */
++  unseenFor(d: Agent): number;
++  seenSpread(d: Agent): number;
++  /** How far his estimate of a defender has moved to his belief of the man's job (0-1; card spec §1). */
++  jobWeight(d: Agent): number;
+   seenHead(d: Agent): number | null;
+   /** His forecast of a receiver (the install he knows, updated from what he sees). */
+   forecast(r: Agent): ReceiverForecast | undefined;
+@@ -84,6 +89,7 @@ export function makeHost(v: PasserView, felt: number, pocket: PocketTest, planDr
+   return {
+     a, sim, releaseZ: v.releaseZ, snapAt: v.snapAt,
+     estimate: (d) => v.estimate(d), seenHead: (d) => v.seenHead(d), pictureAge: (d) => v.pictureAge(d), pictureSpread: (d) => v.pictureSpread(d),
++    unseenFor: (d) => v.unseenFor(d), seenSpread: (d) => v.seenSpread(d), jobWeight: (d) => v.jobWeight(d),
+     predict: (rc, ahead) => v.forecast(rc)?.predict(sim.t, ahead) ?? null,
+     breakAt: (rc) => v.forecast(rc)?.breakAt() ?? null,
+     timingAt: (rc) => { const f = v.forecast(rc); return f ? f.turnAt() ?? f.breakAt() : null; },
+diff --git a/src/sim/qbv2/judge.ts b/src/sim/qbv2/judge.ts
+index 3594b5c65..6394fb9ca 100644
+--- a/src/sim/qbv2/judge.ts
++++ b/src/sim/qbv2/judge.ts
+@@ -21,8 +21,13 @@ export interface SeenDefender {
+   facing: number;
+   /** His picture's spread on this man (yd), from the cones and age. */
+   spread: number;
+-  /** How old his picture of this man is (s): what the man did since is unknown to him, within what a body can do. */
++  /** How long since the moment his picture of this man shows (s): the sensing delay plus the time with no new sighting.
++   * What the man did since is unknown to him. */
+   age?: number;
++  /** How far his belief of this man has moved from the sighting to the man's job (0-1; the estimate's blend weight). */
++  job?: number;
++  /** His dead-reckoned spread on this man (yd): the look's velocity error carried over the unseen time (forecast noise). */
++  spreadDR?: number;
+   /** Whether the passer sees him facing the passer (eyes on him), so he can take the arm cue. */
+   facesPasser: boolean;
+   /** Scouting report: top speed (yd/s), acceleration (yd/s^2), reach (yd) and leap height (yd), ball skills (0-1). */
+@@ -130,18 +135,33 @@ export const LANE_PICK = 0.3;
+ export const LANE_NEAR = 3;
+ 
+ const hyp = (a: V2, b: V2) => Math.hypot(a.x - b.x, a.y - b.y);
+-/** His spread on a man's arrival (s): the picture's own spread, plus what the man may have done since he was last seen
+- * (an aged picture: he can have changed his velocity by up to his acceleration times the age, and that carries to the
+- * point over the time it takes), plus the receiver's spread; over the man's speed. Information-honest: a man last seen
+- * widening 0.6 s ago is a wide belief, not a certain one (staged V2, 2026-11-24, the field nickel). */
+ /** How fast an unseen man's velocity typically changes (yd/s^2): not his top acceleration, which assumes he spent the
+  * whole unseen time accelerating at the point (chosen; staged V2: top acceleration made every belief too wide). */
+ export const UNSEEN_DRIFT = 2.5;
+-function arriveSigma(d: SeenDefender, recvSig: number, horizon: number, margin?: number): number {
+-  // An aged picture widens his belief, but never in the throw's favour (audit §3 #2): for a man the picture has arriving
+-  // early (margin > 0), a wider spread would lower his arrival chance and so raise the throw's, so age is not counted there.
+-  const age = margin !== undefined && margin > 0 ? 0 : d.age ?? 0, unknown = 0.5 * UNSEEN_DRIFT * age * age + UNSEEN_DRIFT * age * Math.max(0, horizon);
+-  return Math.hypot(ARRIVE_SIGMA0, Math.hypot(d.spread + unknown, recvSig) / Math.max(d.vmax, 1e-3));
++/** Picture age (card spec §1, with Integration's ruling 2026-11-25; a caution the passer applies, a stated choice, not
++ * a claim that unseen men close). `d.age` is the time since his last sighting (0 while watched: the sensing delay is the
++ * look's own lag, not unseen time). The man is priced where he is believed (the estimate). The rule: holding that belief
++ * fixed, the throw's estimate never rises with the time since he was seen.
++ * - Glanced away (inside the estimate's dead-reckoning horizon, 0.5 s): the one-way advance, an unseen change of his
++ *   velocity toward the point (UNSEEN_DRIFT) over the unseen time, in seconds of his arrival.
++ * - Past the horizon the belief is his job, not the sighting: the advance holds at its horizon value, and never exceeds
++ *   the straight-line bound (a man cannot have gained more than the unseen time itself). His job belief carries JOB_SPREAD,
++ *   by how far the estimate has moved to it; it is applied one way (it can only raise his arrival chance).
++ * - The look's velocity error dead-reckoned over the unseen time is forecast noise; it widens his belief one way too. */
++export const JOB_SPREAD = 2.0; // yd: a man's position about his believed job; chosen, labelled (QBMind's expected spot has no spread of its own)
++const DR_HORIZON = 0.5; // s: QBMind.estimate's dead-reckoning horizon (EST_DR_HORIZON)
++function arrival(d: SeenDefender, recvSig: number, horizon: number, margin: number): { sigma: number; pArrive: number } {
++  const v = Math.max(d.vmax, 1e-3), u = Math.min(d.age ?? 0, DR_HORIZON);
++  const sigma = Math.hypot(ARRIVE_SIGMA0, Math.hypot(d.spread, recvSig) / v);
++  const advance = Math.min(u, (0.5 * UNSEEN_DRIFT * u * u + UNSEEN_DRIFT * u * Math.max(0, horizon)) / v);
++  let pArrive = phi((margin + advance) / sigma);
++  const job = d.job ?? 0;
++  // The wider spreads of time unseen, each one way (they can only raise his arrival chance): the look's velocity error
++  // dead-reckoned over the unseen time (forecast noise), and his job belief.
++  const z = (sp: number) => phi((margin + advance) / Math.hypot(ARRIVE_SIGMA0, Math.hypot(sp, recvSig) / v));
++  if ((d.spreadDR ?? 0) > d.spread) pArrive = Math.max(pArrive, z(d.spreadDR!));
++  if (job > 0) pArrive = Math.max(pArrive, z(Math.hypot(Math.max(d.spread, d.spreadDR ?? 0), JOB_SPREAD * job)));
++  return { sigma, pArrive };
+ }
+ const phi = (z: number) => 0.5 * (1 + Math.tanh(0.7978845608 * (z + 0.044715 * z * z * z)));
+ 
+@@ -207,7 +227,7 @@ export function judge(q: ThrowQuestion, defs: SeenDefender[]): Judgment {
+   const recvSig = Math.hypot(q.receiverSpread, LOOK_SEP * (1 - q.res), q.placeSpread ?? 0);
+   const cov = findCoverer(q, defs);
+   const add = (d: SeenDefender, role: Role, tArr: number) => {
+-    const margin = tBall - tArr, sigma = arriveSigma(d, recvSig, tArr, margin), pArrive = phi(margin / sigma);
++    const margin = tBall - tArr, { sigma, pArrive } = arrival(d, recvSig, tArr, margin);
+     roles.push({ id: d.id, role, margin, sigma, pArrive, pPlay: pArrive * PLAY_BREAKUP, pPick: pArrive * PLAY_BREAKUP * PICK_OF_PLAY * (0.5 + d.ballSkills) });
+   };
+   if (cov) {
+@@ -256,9 +276,9 @@ export function judge(q: ThrowQuestion, defs: SeenDefender[]): Judgment {
+       if (best === null || m > best) best = m;
+       if (hyp(p, q.catchAt) <= LANE_NEAR && (near === null || m > near)) near = m;
+     });
+-    if (best === null || best <= -0.3) return null;
+-    const sigma = arriveSigma(d, q.placeSpread ?? 0, q.windup + q.flight, best);
+-    return { margin: best, sigma, pArrive: phi(best / sigma), rusher: false, pNear: near === null ? 0 : phi(near / sigma) };
++    if (best === null) return null; // no cut-off on the margin (card spec §1): a late man is a small chance, not none
++    const h = q.windup + q.flight, { sigma, pArrive } = arrival(d, q.placeSpread ?? 0, h, best);
++    return { margin: best, sigma, pArrive, rusher: false, pNear: near === null ? 0 : arrival(d, q.placeSpread ?? 0, h, near).pArrive };
+   };
+   // The coverer can also undercut the route and take the ball on its line, short of the catch point: the higher of the two.
+   if (cov) {
+@@ -268,7 +288,7 @@ export function judge(q: ThrowQuestion, defs: SeenDefender[]): Judgment {
+   const driverOf = (d: SeenDefender): RoleJudged | null => {
+     if (hyp(d.pos, q.catchAt) > DRIVE_RANGE) return null;
+     const start = q.windup + (d.facesPasser ? 0 : ARM_LEAD), tArr = arriveTime(d, q.catchAt, d.reach + PLAY_CLEAR, start);
+-    const margin = tBall - tArr, sigma = arriveSigma(d, recvSig, tArr, margin), pArrive = phi(margin / sigma);
++    const margin = tBall - tArr, { sigma, pArrive } = arrival(d, recvSig, tArr, margin);
+     return { id: d.id, role: 'driver', margin, sigma, pArrive, pPlay: pArrive * PLAY_BREAKUP, pPick: pArrive * PLAY_BREAKUP * PICK_OF_PLAY * (0.5 + d.ballSkills) };
+   };
+   for (const d of defs) {
+diff --git a/src/sim/qbv2/look.ts b/src/sim/qbv2/look.ts
+index 60ce747be..c3bdfdc1c 100644
+--- a/src/sim/qbv2/look.ts
++++ b/src/sim/qbv2/look.ts
+@@ -10,7 +10,7 @@ export type LookTarget = { kind: 'receiver'; ref: string } | { kind: 'key'; role
+ 
+ export const lookKey = (t: LookTarget): string => (t.kind === 'receiver' ? `r:${t.ref}` : `k:${t.role}`);
+ 
+-interface LookRecord { since: number | null; res: number; first: number | null; dueAt: number | null }
++interface LookRecord { since: number | null; res: number; first: number | null; dueAt: number | null; lastClear: number | null }
+ 
+ export class Looks {
+   private recs = new Map<string, LookRecord>();
+@@ -22,10 +22,11 @@ export class Looks {
+     for (const [k, r] of this.recs) if (!target || k !== lookKey(target)) r.since = null;
+     this.current = target;
+     if (!target) return;
+-    const k = lookKey(target), r = this.recs.get(k) ?? { since: null, res: 0, first: null, dueAt: null };
++    const k = lookKey(target), r = this.recs.get(k) ?? { since: null, res: 0, first: null, dueAt: null, lastClear: null };
+     this.recs.set(k, r);
+     if (!inClear) { r.since = null; return; }
+     if (r.since === null) r.since = now;
++    r.lastClear = now;
+     if (r.first === null) r.first = now;
+     r.res = Math.max(r.res, 1 - Math.exp(-(now - r.since) / Math.max(tau, 1e-3)));
+   }
+@@ -33,6 +34,9 @@ export class Looks {
+   /** How resolved his picture of this target is (0 to 1). */
+   resolved(target: LookTarget): number { return this.recs.get(lookKey(target))?.res ?? 0; }
+ 
++  /** How long since this target was last in his clear cone (s); null if never. */
++  sinceClear(target: LookTarget, now: number): number | null { const c = this.recs.get(lookKey(target))?.lastClear; return c == null ? null : now - c; }
++
+   /** Whether the look is resolving now (the target inside his clear cone this tick). */
+   resolving(target: LookTarget): boolean { return this.recs.get(lookKey(target))?.since !== null && this.recs.has(lookKey(target)); }
+ 
+diff --git a/test/believed-fallback.test.ts b/test/believed-fallback.test.ts
+new file mode 100644
+index 000000000..1ec5b2fa3
+--- /dev/null
++++ b/test/believed-fallback.test.ts
+@@ -0,0 +1,14 @@
++// The believed body never falls back to a man's true values (the outside reviewer's second read, 2026-11-25): a position
++// with no defensive starters in the typical sample gets the league-typical defensive starter.
++import { describe, expect, it } from 'vitest';
++import { typicalAt, typicalOrLeague } from '../src/sim/believed.js';
++
++describe('believed body fallback', () => {
++  it('a defensive position keeps its own typical; any other gets the league-typical starter, never null', () => {
++    expect(typicalOrLeague('CB')).toBe(typicalAt('CB'));
++    expect(typicalAt('WR')).toBeNull();
++    const t = typicalOrLeague('WR');
++    expect(t.profile).toBeTruthy();
++    expect(t.ratings.ballSkills).toBeGreaterThan(0);
++  });
++});
+diff --git a/test/information-guard-allowlist.ts b/test/information-guard-allowlist.ts
+index b924321af..f43e08ef9 100644
+--- a/test/information-guard-allowlist.ts
++++ b/test/information-guard-allowlist.ts
+@@ -43,7 +43,7 @@ export const INFORMATION_DEBT: InformationDebt[] = [
+   { file: 'src/sim/behaviors/defense.ts', key: 'capacity.profile.maxCatchHeight', reads: 1, class: 'leak', owner: 'Flex', since: '2026-11-24', why: "another player's true physical capacity in a decision; read it through believed(holder, B) (believed-body note, docs/reviews/2026-11-24-believed-body.md, §8 migration)" },
+   { file: 'src/sim/behaviors/defense.ts', key: 'capacity.profile.reach', reads: 1, class: 'leak', owner: 'Flex', since: '2026-11-24', why: "another player's true physical capacity in a decision; read it through believed(holder, B) (believed-body note, docs/reviews/2026-11-24-believed-body.md, §8 migration)" },
+   { file: 'src/sim/behaviors/qb.ts', key: 'capacity.profile', reads: 1, class: 'known', owner: 'Flex', since: '2026-11-24', why: "a teammate's capacity, known from practice (believed-body decision 1), or the actor's own body under another name" },
+-  { file: 'src/sim/behaviors/qb.ts', key: 'capacity.profile', reads: 11, class: 'leak', owner: 'Flex', since: '2026-11-24', why: "another player's true physical capacity in a decision; read it through believed(holder, B) (believed-body note, docs/reviews/2026-11-24-believed-body.md, §8 migration)" },
++  { file: 'src/sim/behaviors/qb.ts', key: 'capacity.profile', reads: 9, class: 'leak', owner: 'Flex', since: '2026-11-24', why: "another player's true physical capacity in a decision; read it through believed(holder, B) (believed-body note, docs/reviews/2026-11-24-believed-body.md, §8 migration). QB lane 2026-11-25: 11 → 9, the believed-body fallback no longer reads the true profile (typicalOrLeague)" },
+   { file: 'src/sim/behaviors/qb.ts', key: 'capacity.profile.reach', reads: 2, class: 'leak', owner: 'Flex', since: '2026-11-24', why: "another player's true physical capacity in a decision; read it through believed(holder, B) (believed-body note, docs/reviews/2026-11-24-believed-body.md, §8 migration)" },
+   { file: 'src/sim/behaviors/qb.ts', key: 'capacity.profile.tau', reads: 1, class: 'known', owner: 'Flex', since: '2026-11-24', why: "a teammate's capacity, known from practice (believed-body decision 1), or the actor's own body under another name" },
+   { file: 'src/sim/behaviors/qb.ts', key: 'capacity.profile.vmax', reads: 3, class: 'known', owner: 'Flex', since: '2026-11-24', why: "a teammate's capacity, known from practice (believed-body decision 1), or the actor's own body under another name" },
+diff --git a/test/qbv2-cycle.test.ts b/test/qbv2-cycle.test.ts
+index 209c9766e..050c2d3c0 100644
+--- a/test/qbv2-cycle.test.ts
++++ b/test/qbv2-cycle.test.ts
+@@ -28,6 +28,17 @@ describe('QB_V2 cycle (module E) on the stub slant-flat plan', () => {
+     expect(th!.t).toBeGreaterThanOrEqual(1.0 + 0.2 * Math.log(1 / 0.4) - 0.06); // resolved past need 0.6 at tau 0.2
+   });
+ 
++  it('a stale key is looked at before it is judged; out of reach of his eyes, he judges on what he has (card spec §1)', () => {
++    // Resolved by 1.2 s with no cue; his eyes lose the key from 1.3 s; at 1.6 s the throw is there. Stride 2: no step intervenes.
++    const f = (reach: boolean) => (t: number) => t < 1.3 ? senses({ now: t, stride: 2 }) : t < 1.58
++      ? senses({ now: t, stride: 2, inClear: () => false, canReach: () => reach })
++      : senses({ now: t, stride: 2, inClear: () => t >= 1.63, canReach: () => reach }, { S1: 0.8 }, 'widens');
++    const look = run(new Cycle(STUB_SLANT_FLAT), 0, 1.8, f(true)).find((x) => x.i.kind === 'throw');
++    expect(look!.t).toBeGreaterThanOrEqual(1.63); // 1.6 is a look: the key has been out of his cone 0.3 s > tau 0.2
++    const blind = run(new Cycle(STUB_SLANT_FLAT), 0, 1.8, f(false)).find((x) => x.i.kind === 'throw');
++    expect(blind!.t).toBeCloseTo(1.6, 2);
++  });
++
+   it('a look that cannot resolve (outside his cone, head cannot get there) does not hold: the eyes move on the next step', () => {
+     const c = new Cycle(STUB_SLANT_FLAT);
+     const tr = run(c, 0, 1.6, (t) => senses({ now: t, inClear: () => false, canReach: () => false }, {}));
+@@ -89,6 +100,26 @@ describe('QB_V2 cycle: a covered read marked kill', () => {
+     expect(tr[tr.length - 1].i.kind).toBe('away');
+   });
+ 
++  it('out of the pocket his eyes work the reads, a felt rush does not throw it away, and the checkdown is there', () => {
++    const c = new Cycle({ ...STUB_SLANT_FLAT, checkdown: { ref: 'B', fromStep: 1, timing: 'seenOpen' } });
++    run(c, 0, 1.2, (t) => senses({ now: t }, {}));
++    const looks = new Set<string>();
++    let away = false;
++    for (let t = 1.25; t <= 2.5; t += 0.05) {
++      const i = c.tick(senses({ now: t, outside: true, felt: 0.7 }, {}));
++      if (i.kind === 'away') away = true;
++      if (c.looks.current) looks.add(JSON.stringify(c.looks.current));
++    }
++    expect(c.state).toBe('escape');
++    expect(away).toBe(false); // felt only: he keeps running
++    expect(looks.size).toBeGreaterThan(1); // his eyes moved across the reads
++    const i = c.tick(senses({ now: 2.55, outside: true, felt: 0.7 }, { B: 0.8 }));
++    expect(i.kind === 'throw' && i.judged.option.ref).toBe('B'); // the back, from outside the pocket
++    const c2 = new Cycle(STUB_SLANT_FLAT); run(c2, 0, 1.2, (t) => senses({ now: t }, {}));
++    c2.tick(senses({ now: 1.25, outside: true, felt: 0.9 }, {}));
++    expect(c2.tick(senses({ now: 1.3, outside: true, felt: 0.9 }, {})).kind).toBe('away'); // imminent: away
++  });
++
+   it('escape is left when he is back inside the pocket (audit §1 #5)', () => {
+     const c = new Cycle(STUB_SLANT_FLAT);
+     run(c, 0, 1.2, (t) => senses({ now: t }, {}));
+diff --git a/test/qbv2-information.test.ts b/test/qbv2-information.test.ts
+index ffff03b52..8a59f78c0 100644
+--- a/test/qbv2-information.test.ts
++++ b/test/qbv2-information.test.ts
+@@ -13,9 +13,23 @@ const BODY_POS = /(?<![\w.])(?!h\.a\.)(?:r|d|t|s1|rc|cov|target|recv|def)\.pos\b
+ /** Files holding real Agents (the rest are pure over pictures and plans). */
+ const AGENT_FILES = ['host.ts', 'drive.ts', 'roles.ts', 'presnap.ts', 'cycle.ts', 'look.ts', 'plan.ts', 'ratings.ts'];
+ 
+-/** Paid: drive.ts no longer reads a defender's roster position (Flex's isDbSlot, the visible package's slots). */
++/** The defense's identity (the outside reviewer's second read, 2026-11-25): the defense's call, and a defender's slot
++ * label, roster position, true profile or ratings. Who a man is comes from what the passer sees (alignment, grouping,
++ * the scouting report through the view), never from these. Defender-named variables only: his own receivers are looked
++ * up by the play's install (`sim.slot(...)`), and his own ratings are his (`v.ratings`). */
++const DEF_ID = /\bsim\.defCall\b|(?<![\w.])(?:d|m|def|cov|k)\.(?:slot|profile|ratings|player)\b/g;
++/** Delayed truth through `sim.see` (no cone gate): head and pose must come from his cone-updated picture. */
++const SEE = /\.see\(/g;
++
++/** Listed debt: each row a counted read with its reason; a new read fails, a paid row shrinks. */
+ const DEBT: Record<string, { reads: number; why: string }> = {
+   'drive.ts:player.position': { reads: 0, why: 'paid 2026-11-24: isDbSlot on the visible package' },
++  // drive.ts picture(): db = isDbSlot(sim.defCall.personnel, d.slot). Deferred, Flex's rule (second read §1 boundary):
++  // which men are defensive backs is visible (bodies, numbers, the grouping that ran on), but it is read through the
++  // call and the slot label, not through his perception. It moves when perception carries a seen grouping.
++  'drive.ts:defense identity': { reads: 2, why: 'isDbSlot via the call personnel and d.slot: Flex, to perception' },
++  // drive.ts seenUp(): sim.see(...).pose. Deferred to gate 2 (cone-gated head and pose everywhere), Tools' sim.see.
++  'drive.ts:sim.see': { reads: 1, why: 'pose from sim.see, no cone gate: gate 2 (Tools)' },
+ };
+ 
+ describe('QB_V2 information guard', () => {
+@@ -38,6 +52,18 @@ describe('QB_V2 information guard', () => {
+     expect(n).toBeLessThanOrEqual(DEBT['drive.ts:player.position'].reads);
+   });
+ 
++  it("reads no defender's identity (the call, slot label, roster position, profile, ratings) beyond the listed debt", () => {
++    const hits = files.flatMap((f) => (code(f).match(DEF_ID) ?? []).map((m) => `${f}: ${m}`));
++    expect(hits.filter((h) => !h.startsWith('drive.ts:'))).toEqual([]);
++    expect(hits.filter((h) => h.startsWith('drive.ts:')).length).toBeLessThanOrEqual(DEBT['drive.ts:defense identity'].reads);
++  });
++
++  it('takes head and pose through sim.see only where listed (gate 2)', () => {
++    const hits = files.flatMap((f) => (code(f).match(SEE) ?? []).map((m) => `${f}: ${m}`));
++    expect(hits.filter((h) => !h.startsWith('drive.ts:'))).toEqual([]);
++    expect(hits.length).toBeLessThanOrEqual(DEBT['drive.ts:sim.see'].reads);
++  });
++
+   it('covers every module in src/sim/qbv2 (a new file is scanned or listed as pure)', () => {
+     const pure = ['judge.ts'];
+     expect(files.filter((f) => !AGENT_FILES.includes(f) && !pure.includes(f))).toEqual([]);
+diff --git a/test/qbv2-judge.test.ts b/test/qbv2-judge.test.ts
+index 726298fe1..37ff7753d 100644
+--- a/test/qbv2-judge.test.ts
++++ b/test/qbv2-judge.test.ts
+@@ -69,6 +69,13 @@ describe('QB_V2 judgment (module D)', () => {
+     expect(rusher.risk).toBeLessThan(0.03);
+   });
+ 
++  it('picture age acts one way: identical at age 0, the throw never rises with age whatever the margin (card spec §1)', () => {
++    for (const [x, y] of [[11.5, 19.5], [8, 15], [6, 12]]) {
++      const q = { ...stop(), breakIn: null, receiverAt: () => ({ x: 12, y: 20 }) };
++      let prev = judge(q, [def(2, x, y, 0, 0, { age: 0 })]).P;
++      for (const age of [0.2, 0.5, 0.8, 1.2, 2.0]) { const job = Math.min(1, Math.max(0, (age - 0.2) / 1.0)); const P = judge(q, [def(2, x, y, 0, 0, { age, job })]).P; expect(P).toBeLessThanOrEqual(prev + 1e-9); prev = P; }
++    }
++  });
+   it('an aged picture of a man arriving early never raises the throw (audit §3 #2)', () => {
+     const q = { ...stop(), breakIn: null, receiverAt: () => ({ x: 12, y: 20 }) };
+     const fresh = judge(q, [def(2, 11.5, 19.5, 0, 0, { age: 0 })]), old = judge(q, [def(2, 11.5, 19.5, 0, 0, { age: 0.8 })]);
+diff --git a/test/qbv2-picture-age.test.ts b/test/qbv2-picture-age.test.ts
+new file mode 100644
+index 000000000..ba56a4619
+--- /dev/null
++++ b/test/qbv2-picture-age.test.ts
+@@ -0,0 +1,37 @@
++// QB_V2 card spec §1, invariant 2 as restated by Integration (2026-11-25): holding a defender's believed position and
++// motion fixed, a throw's estimate never rises with the time since he was last seen. Driven through the passer's real
++// QBMind on a staged play (its seenSpread, unseenFor and jobWeight as the clock runs on with no observe() call), not
++// constants; the belief (his estimate) is frozen at the start, since its own movement toward the man's job is allowed.
++import { describe, expect, it } from 'vitest';
++import { PlaySim } from '../src/sim/playsim.js';
++import { nativeTraceSetup } from '../scripts/diag/command-trace.js';
++import { judge, type SeenDefender, type ThrowQuestion } from '../src/sim/qbv2/judge.js';
++
++describe('QB_V2 picture age through the real QBMind', () => {
++  it('belief frozen, P on a throw near a defender never rises with the time since he was seen (to 2.5 s)', () => {
++    for (const seed of [1, 2, 3]) {
++      const sim: any = new PlaySim(nativeTraceSetup({ concept: 'stick', coverage: 'cover3', seed, roster: 3, formation: 'gun_trips_11', flip: false }) as any);
++      while (sim.t < 1.0 && sim.phase !== 'dead') sim.tick();
++      const mind = sim.qb.behavior?.mind; expect(mind).toBeTruthy();
++      // The defender his picture puts nearest a point 6 yd upfield of the passer, over the stick.
++      const qb = sim.qb.pos, pt = { x: qb.x + 9, y: qb.y + 3 };
++      const d = [...sim.defense].sort((a: any, b: any) => Math.hypot(mind.estimate(a).pos.x - pt.x, mind.estimate(a).pos.y - pt.y) - Math.hypot(mind.estimate(b).pos.x - pt.x, mind.estimate(b).pos.y - pt.y))[0];
++      const q: ThrowQuestion = { windup: 0.3, flight: 0.5, catchAt: pt, receiverAt: () => pt, breakIn: null, ballHeightAt: () => 2,
++        path: [{ x: qb.x, y: qb.y }, { x: (qb.x + pt.x) / 2, y: (qb.y + pt.y) / 2 }, pt], los: sim.los, catchClean: 0.9, res: 1, receiverSpread: 0.3 };
++      const e = mind.estimate(d); // the belief, frozen
++      const seen = (): SeenDefender => { return { id: d.idx, pos: e.pos, vel: e.vel, facing: e.facing, spread: mind.seenSpread(d), age: mind.unseenFor(d), job: mind.jobWeight(d), spreadDR: mind.pictureSpread(d),
++        facesPasser: true, vmax: 8, accel: 8, reach: 1, leap: 3.2, ballSkills: 0.5 }; };
++      const t0 = sim.t; let prev = judge(q, [seen()]).P;
++      const spread0 = mind.pictureSpread(d), seen0 = mind.seenSpread(d);
++      for (let k = 1; k <= 25; k++) {
++        sim.t = t0 + 0.1 * k; // the clock runs on; observe() is not called: no new sighting
++        const P = judge(q, [seen()]).P;
++        expect(P).toBeLessThanOrEqual(prev + 1e-9);
++        prev = P;
++      }
++      expect(mind.jobWeight(d)).toBeGreaterThan(0.9); // swept well past the horizon, into his job belief
++      expect(mind.seenSpread(d)).toBeCloseTo(seen0, 9); // the look's own spread does not grow with unseen time
++      expect(mind.pictureSpread(d)).toBeGreaterThanOrEqual(spread0); // the old controller's dead-reckoned spread still does
++    }
++  });
++});
