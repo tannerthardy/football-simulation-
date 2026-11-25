@@ -228,6 +228,39 @@ const angleBias = new WeakMap<Agent, number>();
  *
  * INCOMING_RAMP 1.5 yd/s is the stated choice: the same scale the head-on weight uses. */
 export const GATHER_ATTACK = process.env.GATHER_ATTACK === '1';
+/** GATHER_ANGLE (experimental, off; GATHER_ANGLE=1 turns it on; Defense with Run Game's tackle package, 2026-11-25). In
+ * pursuit (chase), coming to balance is a decision on the angle he sees, as taught: break down only on a carrier in
+ * front of him who can go either way, a yard or two before contact; a carrier crossing his face or going away he takes on
+ * an angle and runs through (near hip), keeping the intercept with its lead. The decision is held per pursuer: front
+ * when the carrier he sees is moving at him (within FRONT_IN of the line from the carrier to him) or nearly still (under
+ * FRONT_SLOW yd/s), released to crossing only past FRONT_OUT and above FRONT_MOVE yd/s (enter and exit margins; stated
+ * choices). In front, the gather's braking distance is his own closing speed's, not the carrier's: he cannot brake away a
+ * runner coming at him. Running through keeps its cost: a carrier who cuts makes him miss.
+ * Why (Run Game's uncontacted catches with honest reach, run/tackle-repair 83947a13): on 8 of 13 traced plays the man's
+ * closest approach came inside a full close gather entered at 2.3-3.5 yd and 4.7-7.4 yd/s, aiming at the seen carrier
+ * with no lead while he crossed at 4-7 yd/s, 1.2-2.2 yd past; after a block, the carrier's own incoming speed in the
+ * braking distance put one (205/85) in a full gather from 6.7 yd. Run fits keep the gather as it is (their far request is
+ * a fit, not an intercept). */
+export let GATHER_ANGLE = process.env.GATHER_ANGLE === '1';
+/** GATHER_ANGLE diagnostics: switch the flag for a replayed play only (paired same-state comparisons); never in play. */
+export function setGatherAngle(on: boolean): void { GATHER_ANGLE = on; }
+const FRONT_IN = Math.PI / 4, FRONT_OUT = Math.PI / 3, FRONT_SLOW = 1, FRONT_MOVE = 1.5;
+const frontHeld = new WeakMap<Agent, boolean>();
+let frontForce: boolean | null = null;
+/** GATHER_ANGLE diagnostics (staged cases only; behaviour does not depend on it unless set): force the decision to
+ * front (true: the late gather) or crossing (false: the run-through), to show both sides of the choice on one scene. */
+export function setGatherAngleForce(force: boolean | null): void { frontForce = force; }
+/** GATHER_ANGLE: whether the carrier he sees is in front of him with a two-way go (held with margins). */
+function carrierInFront(a: Agent, seen: { pos: Vec2; vel: Vec2 }): boolean {
+  const dx = a.pos.x - seen.pos.x, dy = a.pos.y - seen.pos.y, sp = Math.hypot(seen.vel.x, seen.vel.y);
+  const off = sp > 1e-6 ? Math.abs(angleDiff(Math.atan2(seen.vel.y, seen.vel.x), Math.atan2(dy, dx))) : 0;
+  if (frontForce !== null) return frontForce;
+  const was = frontHeld.get(a);
+  const front = was === undefined ? (sp < FRONT_SLOW || off < FRONT_IN)
+    : was ? !(sp > FRONT_MOVE && off > FRONT_OUT) : (sp < FRONT_SLOW || off < FRONT_IN);
+  frontHeld.set(a, front);
+  return front;
+}
 const INCOMING_RAMP = 1.5;
 export const PURSUIT_COMMIT = process.env.PURSUIT_COMMIT !== '0';
 const MEET_ENTER = 0.1, MEET_EXIT = 0.15, MEET_MARGIN = 0.3, MEET_NEAR = 0.15;
@@ -317,7 +350,10 @@ function pursuitLeverage(a: Agent, y: number): number {
  * the same braking and achievable arrival request; no new observation,
  * decision, random draw or physical capability is introduced here. */
 export function gatheringApproach(a: Agent, seen: import('../perception.js').Perceived,
-  contact: number, offset: number, upfield = 0): { near: MoveCommand | null; gather: number } {
+  contact: number, offset: number, upfield = 0, angle = false): { near: MoveCommand | null; gather: number } {
+  // GATHER_ANGLE (chase only): a carrier crossing or going away is taken on the angle, not gathered.
+  const front = angle ? carrierInFront(a, seen) : true;
+  if (!front) return { near: null, gather: 0 };
   const dist = Math.hypot(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y);
   const tackle = a.r('tackling');
   let near: MoveCommand | null = null;
@@ -330,7 +366,8 @@ export function gatheringApproach(a: Agent, seen: import('../perception.js').Per
     const capacity=a.body.support?availability(a.body.support,supportParams(a.profile),fatigueFactor(a.body.energy)):1;
     const brake=followAccel(a.body,{x:-ux*1e3,y:-uy*1e3},cutSkill,capacity);
     const decel=Math.max(.1,-brake.x*ux-brake.y*uy);
-    const closing=Math.max(0,(a.vel.x-seen.vel.x)*ux+(a.vel.y-seen.vel.y)*uy);
+    // GATHER_ANGLE: his own closing speed (the braking he can do), not the carrier's speed toward him.
+    const closing=angle?Math.max(0,a.vel.x*ux+a.vel.y*uy):Math.max(0,(a.vel.x-seen.vel.x)*ux+(a.vel.y-seen.vel.y)*uy);
     const through=2.5+2*(1-tackle);
     const stopping=Math.max(0,(closing*closing-through*through)/(2*decel));
     // One arrival budget across incoming and crossing approaches. A small
@@ -406,7 +443,7 @@ export function chase(sim: PlaySim, a: Agent, target: Agent, horizon = 3, opts: 
   // and the gather's arrival stays on top of him (onTopCushion), so it mirrors him.
   const top = opts.onTop ? onTopPoint(sim, a, target, seen, offset) : null;
   const topShift = opts.onTop ? onTopCushion(sim, a, target, seen, dist, contact) : 0;
-  const { near, gather } = gatheringApproach(a, seen, contact, offset, topShift);
+  const { near, gather } = gatheringApproach(a, seen, contact, offset, topShift, GATHER_ANGLE);
   const trace = sim.commandTraceFor?.(a);
   if (gather >= 1 && !sim.bond?.tacklers.includes(a)) {
     const command = ownApproach(near!);
