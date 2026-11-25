@@ -51,6 +51,7 @@ import { DOUBLE_TRACK, ENGAGED_DEFENDER, ENGAGED_TECHNIQUE, REACH_RACE, TRACK_TE
 import { OPEN_HANDS, PUSH_GROWTH, RUSH_HANDS, type HandJoint, type Intent } from '../physics/world.js';
 import { ARM_SPEED } from '../physics/actuation.js';
 import { inHeadCone } from './head.js';
+import { RUSH_RELEASE, releaseBelief } from './release-belief.js';
 import type { Agent, Engagement, RunContactSurface, RushMove } from './agent.js';
 import type { PlaySim } from './playsim.js';
 
@@ -1779,6 +1780,28 @@ const PASS_FEEL = process.env.PASS_FEEL !== '0';
 /** Test hook: a fixed move sequence for a rep (identical across arms). */
 export const rushScripts = new WeakMap<Engagement, RushMove[]>();
 
+/** RUSH_RELEASE: the rusher has stopped working the block: he believes the ball is thrown (his release belief). */
+function rushOff(sim: PlaySim, d: Agent): boolean {
+  return releaseBelief(sim, d).releasedAt !== undefined;
+}
+/** RUSH_RELEASE: the hands joint still carries load (the threshold `handUnloaded` uses); an engagement is never ended while it does. */
+function handsLoaded(e: Engagement): boolean {
+  const h = e.hands;
+  return !!h && !h.off && Math.max(0, h.normalForce ?? 0) >= UNLOADED * pressForce(e.blocker);
+}
+const blockerTurnSeen = new WeakMap<Agent, number>();
+/** RUSH_RELEASE: the blocker has stopped working: he believes the release himself, or his own picture of the man he blocks
+ * has shown him turned away from the passer (more than 90 deg) for his reaction time. */
+function blockerOff(sim: PlaySim, b: Agent, d: Agent): boolean {
+  if (releaseBelief(sim, b).releasedAt !== undefined) return true;
+  const s = sim.see(b, d), qb = sim.see(b, sim.qb).pos;
+  const away = s.facing !== undefined && Math.abs(angleDiff(s.facing, Math.atan2(qb.y - s.pos.y, qb.x - s.pos.x))) > Math.PI / 2;
+  if (!away) { blockerTurnSeen.delete(b); return false; }
+  const since = blockerTurnSeen.get(b) ?? sim.t;
+  blockerTurnSeen.set(b, since);
+  return sim.t - since >= b.profile.reactionTime - 1e-9;
+}
+
 export function updateEngagements(sim: PlaySim, intents: Intent[] = sim.intents): void {
   const t = sim.t;
   for (const e of [...sim.engagements]) {
@@ -1789,12 +1812,14 @@ export function updateEngagements(sim: PlaySim, intents: Intent[] = sim.intents)
       sim.disengage(e);
       continue;
     }
-    if (e.type === 'pass' && sim.throwAt >= 0 && t - sim.throwAt > 0.35) {
+    if (e.type === 'pass' && (RUSH_RELEASE ? rushOff(sim, d) && blockerOff(sim, b, d) && !handsLoaded(e) : sim.throwAt >= 0 && t - sim.throwAt > 0.35)) {
       sim.disengage(e);
       continue;
     }
     // Pass pro converts to run blocking once the QB hands off / scrambles.
-    if (e.type === 'pass' && (!sim.isPass || (sim.carrier !== null && sim.carrier !== sim.qb) || sim.scrambled)) e.type = 'run';
+    // RUSH_RELEASE: a rusher already working off on his release belief is not handed to the run rep by the catch (a switch
+    // on the true carrier); the rep goes on ending through the two players. A run or a scramble still makes it one.
+    if (e.type === 'pass' && (!sim.isPass || (sim.carrier !== null && sim.carrier !== sim.qb && !(RUSH_RELEASE && rushOff(sim, d))) || sim.scrambled)) e.type = 'run';
     // The runner he sees with the ball, not the live holder.
     const held = e.type === 'run' ? observedHolder(d, sim, b) : null;
     if (held) {
@@ -2031,7 +2056,10 @@ function stepPassRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   const toAim = norm(sub(aim, d.pos));
   const rush = cleared ? d.profile.vmax * (0.8 + 0.15 * td.bend) : between === 'stall' ? RUSH_STALL_PACE : between === 'edge' ? d.profile.vmax * (0.6 + 0.25 * td.bend)
     : d.profile.vmax * (power ? 0.55 : 0.8 + 0.15 * td.bend) * (stalled ? 0.6 : 1);
-  intents[d.idx] = {
+  // RUSH_RELEASE: believing the ball thrown he is no longer rushing; his own request (off the block toward the ball, his
+  // body turning to it) stands, his hands working him free at the edge-work effort, not the drive into the man.
+  if (RUSH_RELEASE && rushOff(sim, d)) intents[d.idx] = { ...intents[d.idx], push: 0.5, posture: 0.75, cutSkill: 0.8 + 0.5 * td.bend };
+  else intents[d.idx] = {
     vel: { x: toAim.x * rush, y: toAim.y * rush },
     facing: Math.atan2(qbD.y - d.pos.y, qbD.x - d.pos.x),
     push: cleared ? 0.75 : between === 'stall' ? 0.6 : between === 'edge' ? 0.5 : between === 'power' ? 0.75 + 0.25 * (0.5 * d.r('passRushPower') + 0.5 * clamp((d.profile.massKg - 110) / 40, 0, 1)) : power ? 1 : inMove ? 0.35 : 0.75,
