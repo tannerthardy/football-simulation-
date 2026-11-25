@@ -33,6 +33,7 @@ import { linePicture } from '../live-gaps.js';
 import { RouteObservation } from '../coverage-read.js';
 import { movingCatchApproach } from '../catch-approach.js';
 import { handsWanted } from '../rush-hands.js';
+import { inHeadCone } from '../head.js';
 import { LOAD_BEAT, PULL_MARGIN, RELEASE_BELIEF, RUSH_RELEASE, lastReleaseBelief, releaseBelief } from '../release-belief.js';
 import { withMovementObjective } from '../movement-objective.js';
 import { OPEN_FIELD, playsBall } from '../open-field.js';
@@ -771,11 +772,14 @@ export class PassRusher implements Behavior {
   }
 }
 
+/** RUSH_RELEASE: his held pull-up, and the passer's set as he sees it (seen moving fast since his last set; the set's time). */
+type RushHeld = { pullUp: boolean; fast?: boolean; setAt?: number };
+
 /** RUSH_RELEASE (release-belief.ts): believing the ball thrown, he asks to come off his block toward it (the flight he
  * plays, else downfield the way the passer threw); seeing the passer load, he pulls up facing him with his hands up when
  * he cannot get there before the ball leaves as he judges it (his own picture and his own body), and keeps rushing when
  * he can. Null: the rush as before. Shared by the pass rusher and the blitzer; `held` is his held pull-up. */
-function rushRelease(a: Agent, sim: PlaySim, held: { pullUp: boolean }): MoveCommand | null {
+function rushRelease(a: Agent, sim: PlaySim, held: RushHeld): MoveCommand | null {
   const rb = releaseBelief(sim, a);
   handsWanted.set(a, false);
   if (rb.releasedAt !== undefined) {
@@ -791,9 +795,16 @@ function rushRelease(a: Agent, sim: PlaySim, held: { pullUp: boolean }): MoveCom
     a.tags.add('rush-off');
     return runThrough(a, { x: q.pos.x + dir * 10, y: a.pos.y }, { speed: 0.9 });
   }
-  if (rb.loadingAt === undefined) { held.pullUp = false; return null; }
-  const q = sim.see(a, sim.qb);
-  const left = LOAD_BEAT - (sim.t - rb.loadingAt);
+  // The coached cue, before the load: the passer setting his feet (his seen speed under 1 yd/s after his drop over
+  // 2 yd/s), the passer in his head cone. He expects the ball on rhythm, as though the load began at the set; a hitch
+  // (the passer seen moving again, then set) restarts it; one more beat with no load seen and the expectation has
+  // failed (no throw came): back to the rush.
+  const q = sim.see(a, sim.qb), qs = Math.hypot(q.vel.x, q.vel.y);
+  if (qs > 2) { held.fast = true; held.setAt = undefined; }
+  else if (held.fast && qs < 1 && inHeadCone(a.head ?? a.body.facing, Math.atan2(q.pos.y - a.pos.y, q.pos.x - a.pos.x))) { held.fast = false; held.setAt = sim.t; }
+  const from = rb.loadingAt ?? (held.setAt !== undefined && sim.t - held.setAt <= 2 * LOAD_BEAT ? held.setAt : undefined);
+  if (from === undefined) { held.pullUp = false; return null; }
+  const left = LOAD_BEAT - (sim.t - from);
   const tArr = a.engagement ? Infinity : timeToReach({ pos: a.pos, vel: a.vel, profile: a.profile, speedScale: a.speedScale }, q.pos, a.profile.reach);
   held.pullUp = held.pullUp ? tArr > left - PULL_MARGIN : tArr > left + PULL_MARGIN;
   if (!held.pullUp) return null;

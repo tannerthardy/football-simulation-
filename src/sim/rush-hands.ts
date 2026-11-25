@@ -3,18 +3,19 @@
  * Off, a defender in the bat window rolled pBat (0.04 engaged / 0.12 free, x facing, x recognition) whatever his hands
  * were doing; BAT_HANDS raised every rusher's hands on the windup and batted three times the NFL's rate per crossing.
  *
- * - **Hands up only if he chose it on the load**: his held pull-up (`rushRelease` in behaviors/defense.ts: he saw the
- *   load and judged he cannot get to the passer before the ball leaves). They come down once he believes it thrown.
+ * - **Hands up only if he chose it**: his held pull-up (`rushRelease` in behaviors/defense.ts: on the passer's set he
+ *   sees, or the load, he judged he cannot get to the passer before the ball leaves as he expects it). They come down
+ *   once he believes it thrown.
  * - **Engaged, his hands are on the blocker first**: before they can rise they come back off him, one arm's length at
- *   ARM_SPEED. Hands off the man are hands not driving him: his push in the rep is scaled by (1 - level). That is his
+ *   HAND_TRAVEL. Hands off the man are hands not driving him: his push in the rep is scaled by (1 - level). That is his
  *   own request; the hands joint and its press / liftFelt accounting are the engagement's and are not touched.
  * - **They travel**: from his shoulders (or from the blocker, plus the arm's length back) to his reaction reach (height
- *   x 1.33 + 0.3 x vertical) at ARM_SPEED, up and down; the level (0..1) is the share of that travel made.
+ *    x 1.33 + 0.3 x vertical) at HAND_TRAVEL (Tools, the unloaded hand's speed), up and down; the level (0..1) is the share of that travel made.
  * - **The contact** (catching.ts `defenderPlay`): in the bat window, a ball through his raised hands (within his body
  *   plus a hand, 0.25 yd, of his centre; between his shoulders and the top of his hands) is tipped, once; one below
  *   his shoulders on his body comes off it; over or wide, nothing.
  * Ratings set how early he reads the load (his delay) and his envelope (height, arms, vertical): never the bat. */
-import { ARM_SPEED } from '../physics/actuation.js';
+import { HAND_TRAVEL } from '../physics/actuation.js';
 import type { Agent } from './agent.js';
 import type { Intent } from '../physics/world.js';
 import type { PlaySim } from './playsim.js';
@@ -53,7 +54,7 @@ export function stepRushHands(sim: PlaySim, intents: Intent[]): void {
     if (!want && prev === 0) continue;
     // A raise from rest starts where his hands are: on the man he is engaged with (an arm's length to come back), or free.
     if (prev === 0) offBlocker.set(d, d.engagement ? d.player.measurables.armIn / 36 : 0);
-    const total = (offBlocker.get(d) ?? 0) + lift(d), step = ARM_SPEED * sim.dt / total;
+    const total = (offBlocker.get(d) ?? 0) + lift(d), step = HAND_TRAVEL * sim.dt / total;
     const now = want ? Math.min(1, prev + step) : Math.max(0, prev - step);
     level.set(d, now);
     if (now > 0) d.tags.add('hands-up');
