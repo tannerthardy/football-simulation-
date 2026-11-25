@@ -1,0 +1,530 @@
+diff --git a/scripts/diag/qbv2/coverage-share.ts b/scripts/diag/qbv2/coverage-share.ts
+index 3f921d320..a35bf4bfb 100644
+--- a/scripts/diag/qbv2/coverage-share.ts
++++ b/scripts/diag/qbv2/coverage-share.ts
+@@ -13,6 +13,6 @@ for (let seed = a; seed <= b; seed++) {
+   const rng = new Rng(seed);
+   const home = generateTeam(rng, 'Ironmen', 'IRN', { strength: 0.55 }), away = generateTeam(rng, 'Comets', 'COM', { strength: 0.55 });
+   const g = simulateGame(home, away, { seed });
+-  for (const p of g.log as any[]) if (p.kind === 'pass') { pass++; const call = String(p.call ?? ''); const c = ['quick_outs', 'slant_flat', 'stick', 'Quick Outs', 'Speed Outs', 'Slant-Flat', 'Slant Flat', 'Stick'].find((k) => call.includes(k)) ?? 'other'; byConcept[c] = (byConcept[c] ?? 0) + 1; if (pass <= 3) console.error(call); }
++  for (const p of g.log as any[]) if (p.kind === 'pass') { pass++; const call = String(p.call ?? ''); const c = (call.split(' — ')[1] ?? '?').replace(/ \(.*\)$/, '').trim(); byConcept[c] = (byConcept[c] ?? 0) + 1; if (pass <= 3) console.error(call); }
+ }
+ console.log(JSON.stringify({ games: b - a + 1, passPlays: pass, v2Plays: v2, share: Math.round((v2 / Math.max(pass, 1)) * 1000) / 1000, byConcept }));
+diff --git a/scripts/diag/qbv2/decision-card.ts b/scripts/diag/qbv2/decision-card.ts
+index 1e14b4a58..10285f2c4 100644
+--- a/scripts/diag/qbv2/decision-card.ts
++++ b/scripts/diag/qbv2/decision-card.ts
+@@ -41,7 +41,11 @@ for (let seed = s0; seed <= s1; seed++) {
+   let thrown: any = null, qbb: any = null, lastT = -1; const tr: Record<number, S[]> = {}; const snaps: Record<number, any[]> = {};
+   const tb = sim.throwBall.bind(sim);
+   sim.throwBall = (q: any, target: any, ...rest: any[]) => {
+-    if (q === sim.qb && !thrown) thrown = { t: sim.t, idx: target?.idx ?? null, slot: target?.slot ?? null, rid: target?.behavior?.route?.id ?? null, away: !target };
++    if (q === sim.qb && !thrown) {
++      // The planned break: the installed route's break point (the passer's forecast prior: his install, not the body).
++      const fc = target ? sim.qb.behavior?.receiverForecasts?.get?.(target) : null; let bp: any = null; try { bp = fc?.breakPoint?.() ?? null; } catch { bp = null; }
++      thrown = { t: sim.t, idx: target?.idx ?? null, slot: target?.slot ?? null, rid: target?.behavior?.route?.id ?? null, away: !target, bp: bp ? { x: bp.x, y: bp.y } : null, st: fc?.prior?.start ? { x: fc.prior.start.x, y: fc.prior.start.y } : null };
++    }
+     return tb(q, target, ...rest);
+   };
+   const t0 = sim.tick.bind(sim);
+@@ -89,14 +93,131 @@ for (let seed = s0; seed <= s1; seed++) {
+   // Timing: the thrown route's break against the release.
+   let relBrk: number | null = null;
+   if (thrown?.idx != null) { const P = (tr[thrown.idx] ?? []).filter((s) => s[0] <= thrown.t + 1.2); const b = breakAt(P, /hitch|stick|curl|hook|comeback/.test(String(thrown.rid))); if (b !== null) relBrk = r2(thrown.t - b); }
++  // Timing on the planned break: release minus when the true receiver's progress along start -> planned break point
++  // first reaches it (observer track).
++  let relPlan: number | null = null;
++  if (thrown?.idx != null && thrown.bp && thrown.st) {
++    const ux = thrown.bp.x - thrown.st.x, uy = thrown.bp.y - thrown.st.y, L = Math.hypot(ux, uy);
++    const hit = L > 0.5 ? (tr[thrown.idx] ?? []).find((q) => ((q[1] - thrown.st.x) * ux + (q[2] - thrown.st.y) * uy) / L >= L) : null;
++    if (hit) relPlan = r2(thrown.t - hit[0]);
++    if (process.env.CARD_DEBUG) console.error(JSON.stringify({ rid: thrown.rid, st: thrown.st, bp: thrown.bp, hit, rel: thrown.t, track: (tr[thrown.idx] ?? []).filter((_, i) => i % 3 === 0).map((q) => [r2(q[0]), r2(q[1]), r2(q[2]), r2(Math.hypot(q[3], q[4]))]).slice(0, 9) }));
++  }
+   // Side (quick outs, pick 'cushion'): the corner over #1 with more cushion at the snap; within 1 yd either side is right.
+-  let sideOk: boolean | null = null;
++  let sideOk: boolean | null = null, sideThrown: boolean | null = null, sidePick: boolean | null = null, cushion: number[] | null = null;
+   if (plan?.pick === 'cushion') {
+-    const cush = (side: 'S' | 'W') => { const one = posOf(side + '1', 0.05); if (!one) return null; const ds = sim.defense.map((d: any) => at(d.idx, 0.05)).filter((s: any) => s && Math.abs(s.y - one.y) < 3); return ds.length ? Math.min(...ds.map((s: any) => Math.hypot(s.x - one.x, s.y - one.y))) : null; };
++    // The corner over #1 by #936's definition (widest non-lineman at depth -0.5..12, out >= max(4, #1's out - 3.5)); his
++    // distance from #1 at the snap. (Hand check: the old "nearest within 3 yd lateral" took the DE on a tight split.)
++    const cush = (side: 'S' | 'W') => { const one = posOf(side + '1', 0.05); if (!one) return null; const sg = (sim.offAlign.strongSign >= 0 ? 1 : -1) * (side === 'S' ? 1 : -1), o = (y: number) => (y - sim.ballY) * sg;
++      const c = sim.defense.filter((d: any) => !/^(DE|DT|NT|DL)/.test(String(d.slot))).map((d: any) => at(d.idx, 0.05)).filter((s: any) => s && s.x - sim.los >= -0.5 && s.x - sim.los <= 12 && o(s.y) >= Math.max(4, o(one.y) - 3.5)).sort((a: any, b: any) => o(b.y) - o(a.y))[0];
++      return c ? Math.hypot(c.x - one.x, c.y - one.y) : null; };
+     const cs = cush('S'), cw = cush('W');
++    // Like for like (both controllers): the field side of the throw against the softer corner; V2's pre-snap pick is
++    // reported apart (sidePick). Within 1 yd either side is right; a throwaway or the back scores null.
++    if (cs !== null && cw !== null) { const fieldSide = thrownRef && /^[SW]/.test(thrownRef) ? thrownRef[0] : null; const soft = cs > cw ? 'S' : 'W';
++      sideThrown = fieldSide ? (Math.abs(cs - cw) < 1 || fieldSide === soft) : null; sidePick = qbb?.v2 ? (Math.abs(cs - cw) < 1 || keySide === soft) : null; cushion = [r2(cs), r2(cw)]; }
+     if (cs !== null && cw !== null) sideOk = Math.abs(cs - cw) < 1 ? true : (cs > cw ? keySide === 'S' : keySide === 'W') || (qbb?.v2 == null && thrownRef ? (cs > cw ? thrownRef.startsWith('S') : thrownRef.startsWith('W')) : false);
+   }
++  // ---- #936's operator (docs/reviews/2026-11-24-qbv2-key-classifier.md): keys fixed at the snap, labels over [t0, t_eval].
++  const k936 = classify936(sim, snaps, posOf, keySide, sideSign, thrown?.t ?? null, tr);
++  // Check 1 input: the old classifier's key, his alignment out at the snap (inside 3.5 yd is a linebacker, never the key).
++  const oldKeyOut = keySlot ? (() => { const d = sim.defense.find((x: any) => x.slot === keySlot); const s = d ? at(d.idx, 0.05) : null; return s ? r2((s.y - sim.ballY) * sideSign) : null; })() : null;
++  const ok936 = k936.answer ? (k936.answer.includes(thrownCanon ?? 'AWAY') || (k936.answer.includes('NEXT') && (thrown?.away || !thrownCanon || !thrownCanon.startsWith('S')))) : null;
+   const stall = !sack && (!thrown || thrown.t > 3.0);
+   console.log(JSON.stringify({ concept, coverage, seed, v2: !!qbb?.v2, flip, key: keySlot, cue, taught, thrown: thrownCanon, away: thrown?.away ?? null,
+-    rel: thrown ? r2(thrown.t) : null, relBrk, sideOk, stall, sack, complete: !!sim.stats.completed }));
++    rel: thrown ? r2(thrown.t) : null, relBrk, relPlan, sideOk, stall, sack, complete: !!sim.stats.completed, sideThrown, sidePick, cush: cushion, oldKeyOut, k936, ok936 }));
++}
++
++// #936's operator. depth = yards past the line, out = yards from the ball's lane toward the read side. t_eval = the
++// release clamped to [0.45, 0.85] s. Every threshold is the reviewer's stated choice.
++function classify936(sim: any, snaps: Record<number, any[]>, posOf: (ref: string, t: number) => { x: number; y: number } | null,
++  side: 'S' | 'W', sgn: number, rel: number | null, trk: Record<number, S[]>, late = false): any {
++  // late: the sensitivity pass, labels taken at the release itself (uncapped; 2.0 s when no throw).
++  const tEval = late ? (rel ?? 2.0) : Math.min(0.85, Math.max(0.45, rel ?? 0.85));
++  const at = (idx: number, tt: number) => { const a = snaps[idx] ?? []; return a.reduce((b: any, s: any) => (Math.abs(s.t - tt) < Math.abs(b.t - tt) ? s : b), a[0]); };
++  const dep = (s: { x: number }) => s.x - sim.los, out = (s: { y: number }) => (s.y - sim.ballY) * sgn;
++  const P = (n: number, tt: number) => posOf(side + n, tt);
++  const one = P(1, 0.05), two = P(2, 0.05), three = P(3, 0.05);
++  // Operator note: the defensive line is excluded (hand check: a DE at 0.9 yd depth, out 6.3 qualified as the apex).
++  const D = sim.defense.filter((d: any) => !/^(DE|DT|NT|DL)/.test(String(d.slot))).map((d: any) => ({ d, s0: at(d.idx, 0.05) })).filter((x: any) => x.s0);
++  // Corner: the widest on the read side at depth -0.5..12, out >= max(4, #1's out - 3.5).
++  const cMin = Math.max(4, one ? out(one) - 3.5 : 4);
++  const corner = D.filter(({ s0 }: any) => dep(s0) >= -0.5 && dep(s0) <= 12 && out(s0) >= cMin).sort((a: any, b: any) => out(b.s0) - out(a.s0))[0] ?? null;
++  // Apex: not the corner, depth 0..8.5, out >= 3.5, no more than 3.5 inside #2; the widest such inside the corner.
++  const apex = D.filter(({ d, s0 }: any) => d !== corner?.d && dep(s0) >= 0 && dep(s0) <= 8.5 && out(s0) >= 3.5 && (!two || out(s0) >= out(two) - 3.5) && (!corner || out(s0) < out(corner.s0)))
++    .sort((a: any, b: any) => out(b.s0) - out(a.s0))[0] ?? null;
++  // Hook: depth 2.5..7.5, out -1..3.5 (walled-slant detection only).
++  const hooks = D.filter(({ d, s0 }: any) => d !== apex?.d && d !== corner?.d && dep(s0) >= 2.5 && dep(s0) <= 7.5 && out(s0) >= -1 && out(s0) <= 3.5);
++  // The two front-side routes the key splits: [outer, inner] refs.
++  const pair: [string, string] = concept === 'stick' ? ['3', '2'] : concept === 'slant_flat' ? ['2', '1'] : ['1', '2'];
++  const ref = (n: string) => 'S' + n; // answers in the plan's frame (thrown refs are mirrored to it)
++  // A route's landmark: where its receiver is at his break (the observer's track), else at 1.8 s.
++  const brk = (n: string) => { const slot = sim.offAlign.numbering[side + n]; const a = slot ? sim.offense.find((x: any) => x.slot === slot) : null; const T = a ? trk[a.idx] ?? [] : []; return breakAt(T.filter((q) => q[0] <= 2.6), /hitch|stick|curl|hook|comeback/.test(String(a?.behavior?.route?.id))) ?? 1.8; };
++  const land = (n: string) => P(+n, brk(n));
++  const mid = () => { const a = land(pair[0]), b = land(pair[1]); return a && b ? (out(a) + out(b)) / 2 : null; };
++  function label(k: any, isCorner: boolean): string {
++    if (!k) return 'vacated';
++    const tr = (snaps[k.d.idx] ?? []).filter((s: any) => s.t <= tEval + 1e-6), s0 = k.s0, s1 = at(k.d.idx, tEval);
++    const dOut = out(s1) - out(s0), dDep = dep(s1) - dep(s0);
++    const qb = sim.offense.find((o: any) => o.slot === 'QB');
++    if (dep(s1) <= 0.5 && -dDep >= 1.5 && (!qb || Math.hypot(s1.x - qb.pos.x, s1.y - qb.pos.y) < Math.hypot(s0.x - qb.pos.x, s0.y - qb.pos.y))) return 'blitzing';
++    let run = 0, fastOut = false; for (let i = 1; i < tr.length; i++) { const vo = tr[i].vy * sgn; run = vo >= 2.5 ? run + (tr[i].t - tr[i - 1].t) : 0; if (run >= 0.3 - 1e-6) fastOut = true; }
++    const outer = P(+pair[0], tEval), vOut = s1.vy * sgn;
++    if (dOut >= 2 || fastOut || (outer && out(s1) > out(outer) - 1.5 && out(s1) <= out(outer) && vOut >= 1)) return 'widening';
++    let deepRun = 0, fastDeep = false; for (const s of tr) { deepRun = s.vx >= 3.5 ? deepRun + 0.1 : 0; if (deepRun >= 0.3 - 1e-6) fastDeep = true; }
++    if (dDep >= 3 || fastDeep) return isCorner ? 'bailing' : 'sinking';
++    const m = mid(); if (m === null) return 'sitting mid';
++    if (out(s1) <= m - 0.5) return 'sitting inside';
++    if (out(s1) >= m + 0.5) return isCorner ? (dep(s1) <= 7 && dDep < 2.5 ? 'squatting' : 'sitting outside') : 'sitting outside';
++    return 'sitting mid';
++  }
++  // Man rubric: each route's man, by leverage at t_eval.
++  // The man rubric is "on the break": each route's man is judged at that route's break (observer track), not the 0.85 s
++  // zone cap and not the passer's release, so both controllers are scored against the same label.
++  function manOf(n: string) {
++    const tEval = brk(n);
++    const r35 = P(+n, 0.35), rE = P(+n, tEval); if (!r35 || !rE) return { man: null, state: 'vacated' };
++    const near = D.map((x: any) => ({ ...x, s35: at(x.d.idx, 0.35), sE: at(x.d.idx, tEval) })).filter((x: any) => x.s35 && Math.hypot(x.s35.x - r35.x, x.s35.y - r35.y) <= 3.5)
++      .filter((x: any) => { const dE = Math.hypot(x.sE.x - rE.x, x.sE.y - rE.y); if (dE <= 2.5) return true; const ra = P(+n, tEval - 0.2); if (!ra) return false; const rv = { x: rE.x - ra.x, y: rE.y - ra.y }, dv = { x: x.sE.vx, y: x.sE.vy }; const c = (rv.x * dv.x + rv.y * dv.y) / ((Math.hypot(rv.x, rv.y) * Math.hypot(dv.x, dv.y)) || 1); return c > 0.6 && dE <= 4.5; })
++      .sort((a: any, b: any) => Math.hypot(a.sE.x - rE.x, a.sE.y - rE.y) - Math.hypot(b.sE.x - rE.x, b.sE.y - rE.y));
++    // Operator note (hand check, slant-flat vs cover1): an off linebacker on the TE starts 4-5 yd away, outside the
++    // 3.5 yd window, and the route scored 'vacated'. Fallback: within 6 yd at 0.35 s and moving with him by the break.
++    const far = near.length ? [] : D.map((x: any) => ({ ...x, s35: at(x.d.idx, 0.35), sE: at(x.d.idx, tEval) })).filter((x: any) => x.s35 && Math.hypot(x.s35.x - r35.x, x.s35.y - r35.y) <= 6)
++      .filter((x: any) => { const ra = P(+n, tEval - 0.2); if (!ra) return false; const rv = { x: rE.x - ra.x, y: rE.y - ra.y }, dv = { x: x.sE.vx, y: x.sE.vy }; const c = (rv.x * dv.x + rv.y * dv.y) / ((Math.hypot(rv.x, rv.y) * Math.hypot(dv.x, dv.y)) || 1); return c > 0.6 && Math.hypot(x.sE.x - rE.x, x.sE.y - rE.y) <= 6; })
++      .sort((a: any, b: any) => Math.hypot(a.sE.x - rE.x, a.sE.y - rE.y) - Math.hypot(b.sE.x - rE.x, b.sE.y - rE.y));
++    const m = near[0] ?? far[0]; if (!m) return { man: null, state: 'vacated' };
++    const ra = P(+n, tEval - 0.2)!, ux = rE.x - ra.x, uy = rE.y - ra.y, ul = Math.hypot(ux, uy) || 1;
++    const behind = -((m.sE.x - rE.x) * ux + (m.sE.y - rE.y) * uy) / ul, dist = Math.hypot(m.sE.x - rE.x, m.sE.y - rE.y);
++    const state = behind > 3 ? 'rubbed' : dist >= 5 || behind > 2.2 ? 'open' : dist < 2 ? 'contested' : 'between';
++    return { man: m.d.slot, state, dist: Math.round(dist * 10) / 10, behind: Math.round(behind * 10) / 10 };
++  }
++  const cov = coverage;
++  const man = /cover1|cover2man|cover0/.test(cov);
++  const walled = (() => { const sl = P(1, tEval); if (concept !== 'slant_flat' || !sl) return false; return hooks.some(({ d }: any) => { const s = at(d.idx, tEval); return Math.hypot(s.x - sl.x, s.y - sl.y) < 2.5 && out(s) <= out(sl) + 0.5; }); })();
++  let key: any = null, cue = '', answer: string[] | null = null;
++  const [o, i] = [ref(pair[0]), ref(pair[1])];
++  if (man) {
++    const mo = manOf(pair[0]), mi = manOf(pair[1]); key = { outer: mo, inner: mi };
++    const openSt = (x: any) => x.state === 'open' || x.state === 'rubbed' || x.state === 'vacated';
++    cue = `${mo.state}/${mi.state}`;
++    if (concept === 'quick_outs') answer = openSt(mo) ? [o] : mo.state === 'contested' ? [i, 'NEXT'] : [o, i, 'NEXT'];
++    else { const a: string[] = []; if (openSt(mo)) a.push(o); if (openSt(mi)) a.push(i); answer = a.length ? a : (mo.state === 'contested' && mi.state === 'contested') ? ['NEXT'] : [o, i, 'NEXT']; }
++  } else if (/cover2|tampa2/.test(cov)) {
++    const l = label(corner, true); key = { corner: corner?.d.slot ?? null }; cue = 'corner ' + l;
++    const sq = l === 'squatting' || l === 'sitting outside' || l === 'widening';
++    if (concept === 'quick_outs') answer = sq ? [i, 'NEXT'] : [o];
++    else if (concept === 'slant_flat') answer = sq ? (walled ? ['NEXT'] : [i]) : l === 'bailing' ? [o] : [o, i];
++    else answer = sq ? [i, 'NEXT'] : l === 'bailing' ? [o] : [o, i];
++  } else {
++    const lc = label(corner, true), la = label(apex, false); key = { corner: corner?.d.slot ?? null, apex: apex?.d.slot ?? null }; cue = (concept === 'quick_outs' ? `corner ${lc}, ` : '') + 'apex ' + la;
++    if (concept === 'quick_outs') answer = (lc === 'squatting' || la === 'widening') ? [i, 'NEXT'] : [o];
++    else if (la === 'vacated' || la === 'blitzing' || la === 'sitting mid') answer = [o, i];
++    else if (la === 'widening') answer = walled ? ['NEXT'] : [i];
++    else if (la === 'sitting outside') answer = [i];
++    else answer = [o]; // sits inside or sinks: the outer route (the flat)
++  }
++  const pos = (s: any) => s ? [Math.round(dep(s) * 10) / 10, Math.round(out(s) * 10) / 10] : null;
++  return { tEval: Math.round(tEval * 100) / 100, key, cue, answer, walled,
++    late: late ? undefined : (() => { const L = classify936(sim, snaps, posOf, side, sgn, rel, trk, true); return { cue: L.cue, answer: L.answer, tEval: L.tEval }; })(),
++    keyAt: { corner: corner ? [pos(corner.s0), pos(at(corner.d.idx, tEval))] : null, apex: apex ? [pos(apex.s0), pos(at(apex.d.idx, tEval))] : null },
++    rec: { one: pos(one), two: pos(two), three: pos(three) } };
+ }
+diff --git a/scripts/diag/qbv2/stage.ts b/scripts/diag/qbv2/stage.ts
+index 45398c42b..73a5e76a9 100644
+--- a/scripts/diag/qbv2/stage.ts
++++ b/scripts/diag/qbv2/stage.ts
+@@ -53,7 +53,7 @@ for (let seed = s0; seed <= s1; seed++) {
+         rid: target?.behavior?.route?.id ?? null, plannedBreak: target?.behavior?.breakTime != null ? r2(target.behavior.breakTime) : null, depthAtThrow: target ? r2(target.pos.x - sim.los) : null };
+       const ref = target ? Object.entries(sim.offAlign.numbering).find(([, sl]) => sl === target.slot)?.[0] : null;
+       const v2 = qbb?.v2;
+-      if (v2 && ref) { const j = v2.judgedFor(ref); thrown.belief = j ? { P: r2(j.P), risk: r2(j.risk) } : null; thrown.roles = (v2.lastRoles.get(ref) ?? []).map((x: any) => ({ id: x.id, role: x.role, pA: r2(x.pArrive), pPick: r2(x.pPick), ...atPass(sim, q, intended, sim.agents[x.id]) })); }
++      if (v2 && ref) { const j = v2.judgedFor(ref); thrown.belief = j ? { P: r2(j.P), risk: r2(j.risk) } : null; thrown.roles = (v2.lastRoles.get(ref) ?? []).map((x: any) => ({ id: x.id, role: x.role, pA: r2(x.pArrive), unseen: r2(qbb?.mind?.unseenFor?.(sim.agents[x.id]) ?? sim.qb.behavior?.mind?.unseenFor?.(sim.agents[x.id]) ?? -1), pPick: r2(x.pPick), ...atPass(sim, q, intended, sim.agents[x.id]) })); }
+     }
+     return tb(q, target, v0, intended, arrivalT, ...rest);
+   };
+@@ -110,7 +110,7 @@ for (let seed = s0; seed <= s1; seed++) {
+     ball: thrown?.at ?? null, split: thrown?.split ? { ...thrown.split, reaim: decAim?.x != null && thrown.pt ? r2(Math.hypot(decAim.x - thrown.pt.x, decAim.y - thrown.pt.y)) : null, decToRel: decAim ? r2(thrown.t - decAim.t) : null } : null, dist: thrown?.dist ?? null, qbDepth: thrown?.qbDepth ?? null, qbSpeed: thrown?.qbSpeed ?? null,
+     catchEv: [...new Set(ev.filter((e) => thrown && e.t >= thrown.t && ['catch', 'drop', 'miss', 'pbu', 'deflection', 'interception', 'incomplete', 'secure'].includes(e.type)).map((e) => `${e.type}:${sim.agents[e.a]?.team === sim.qb.team ? 'O' : 'D'}${sim.agents[e.a]?.slot ?? ''}`))],
+     belief: thrown?.belief ?? null, roles: (thrown?.roles ?? []).map((r: any) => ({ ...r, arrived: !!r.arrived || ev.some((e) => ['pbu', 'deflection', 'interception'].includes(e.type) && e.a === r.id), slot: sim.agents[r.id].slot, picked: ev.some((e) => e.type === 'interception' && e.a === r.id), played: ev.some((e) => ['pbu', 'deflection', 'interception'].includes(e.type) && e.a === r.id) })),
+-    intents: qbb?.v2Intents ?? null, trace,
++    intents: qbb?.v2Intents ?? null, stale: qbb?.v2?.cycle?.staleLooks ?? null, trace,
+     // TRACK=1 (Rules' operator check): the targeted receiver's 10 Hz track from the snap, [t, x past the line, y], with
+     // the line and the ball's side (y), to the throw + 1.2 s.
+     ...(process.env.TRACK === '1' && thrown?.idx != null ? { los: r2(sim.los), ballY: r2(sim.ballY), track: (tr[thrown.idx] ?? []).filter((x) => x[0] <= thrown.t + 1.2).map((x) => [r2(x[0]), r2(x[1] - sim.los), r2(x[2])]) } : {}) }));
+diff --git a/src/sim/behaviors/qb.ts b/src/sim/behaviors/qb.ts
+index 07103efef..ba2020111 100644
+--- a/src/sim/behaviors/qb.ts
++++ b/src/sim/behaviors/qb.ts
+@@ -2237,6 +2237,7 @@ export class QBPass implements Behavior {
+       a, sim, snapAt: this.snapAt, releaseZ: RELEASE_Z,
+       ratings: { playRecognition: a.r('playRecognition'), decisionMaking: a.r('decisionMaking'), composure: a.r('composure'), discipline: a.r('discipline'), experience: a.player.experience, anticipation: a.r('anticipation') },
+       estimate: (d) => this.mind.estimate(d), pictureAge: (d) => this.mind.pictureAge(d), pictureSpread: (d) => this.mind.pictureSpread?.(d) ?? 0.5,
++      unseenFor: (d) => this.mind.unseenFor(d), seenSpread: (d) => this.mind.seenSpread(d), lastSeen: (d) => this.mind.lastSeen(d),
+       seenHead: (d) => sim.see(a, d).head ?? null,
+       forecast: (r) => this.receiverForecasts.get(r),
+       clearHalf: () => this.mind.clearHalf,
+diff --git a/src/sim/qbmind.ts b/src/sim/qbmind.ts
+index 3d88a7241..274c6b231 100644
+--- a/src/sim/qbmind.ts
++++ b/src/sim/qbmind.ts
+@@ -586,6 +586,28 @@ export class QBMind {
+     return Math.hypot(m.sigP ?? 0, (m.sigV ?? 0) * age);
+   }
+ 
++  /** QB_V2 (card spec §1, Integration 2026-11-25): how long he has had no new observation of a defender (s): the time
++   * since his last sighting, clear or peripheral, without the sensing delay (a man he watches is 0). 0 with no memory. */
++  unseenFor(d: Agent): number {
++    const m = this.memory.get(d);
++    return m ? Math.max(0, this.sim.t - m.t) : 0;
++  }
++
++  /** QB_V2 (card spec §1): his last sighting of a defender as he took it (no dead reckoning, no drift toward an expected
++   * spot): the picture the judge prices, with unseen time charged one way. With no memory, the estimate's own fallback. */
++  lastSeen(d: Agent): { pos: Vec2; vel: Vec2; facing: number } {
++    const m = this.memory.get(d);
++    return m ? { pos: { ...m.pos }, vel: { ...m.vel }, facing: m.facing } : this.estimate(d);
++  }
++
++  /** QB_V2: his uncertainty about a defender from the look itself (yd): the look's position error and its velocity error
++   * over the sensing delay only, not grown with unseen time (that is the judge's one-way advance). 0 without the flag. */
++  seenSpread(d: Agent): number {
++    const m = this.memory.get(d);
++    if (!PERIPH_ACUITY || !m) return 0;
++    return Math.hypot(m.sigP ?? 0, (m.sigV ?? 0) * (m.latency ?? 0));
++  }
++
+   /** Age of his picture of a defender: memory age plus its sensing latency.
+    * Zero when he has no memory of him (the estimate is then a fresh look). */
+   pictureAge(d: Agent): number {
+diff --git a/src/sim/qbv2/cycle.ts b/src/sim/qbv2/cycle.ts
+index ae5571d82..b2b1ee6d9 100644
+--- a/src/sim/qbv2/cycle.ts
++++ b/src/sim/qbv2/cycle.ts
+@@ -111,6 +111,8 @@ export class Cycle {
+ 
+   /** The wiring could not start the committed throw (no finish, a dwell gate, no mechanics): back to where he was, so
+    * pressure and the pocket are looked at again (audit §1 #1: the latched intent was replayed until he was sacked). */
++  /** Ticks a stale key held the judgment for a look (the diagnostic count). */
++  staleLooks = 0;
+   uncommit(): void { if (this.state === 'throw') { this.state = this.beforeCommit; this.decision = null; } }
+ 
+   /** One tick. */
+@@ -143,7 +145,15 @@ export class Cycle {
+     const t = this.target(r);
+     this.looks.update(t, s.inClear(t), s.now, s.tau);
+     const res = this.looks.resolved(t);
+-    if (res >= s.need) {
++    // A stale key is looked at before it is judged (card spec §1, Integration's note: the coached answer to an old
++    // picture is a look at him, not a judgment on the age-shifted number). Stale: a key look he resolved earlier but has
++    // not had in his clear cone for longer than one look of his (tau), by his own eye history (the picture's own age
++    // carries his perception delay, about 0.3 s even while he looks, so it cannot tell a stale look from a fresh one).
++    // While his eyes can still get there this tick is the look; out of reach, he judges on what he has.
++    const since = this.looks.sinceClear(t, s.now);
++    const stale = r.look.kind === 'key' && since !== null && since > s.tau && s.canReach(t);
++    if (stale) this.staleLooks++;
++    if (res >= s.need && !stale) {
+       const j = this.choose(s, r); if (j) return this.commit(s, { kind: 'throw', judged: j });
+       if (r.onCovered === 'kill' && r.throws[0]) return this.commit(s, { kind: 'kill', ref: r.throws[0].ref });
+     }
+diff --git a/src/sim/qbv2/drive.ts b/src/sim/qbv2/drive.ts
+index 10d669c3d..ab09b6492 100644
+--- a/src/sim/qbv2/drive.ts
++++ b/src/sim/qbv2/drive.ts
+@@ -30,6 +30,10 @@ export interface V2Host {
+   seenHead(d: Agent): number | null;
+   pictureAge(d: Agent): number;
+   pictureSpread(d: Agent): number;
++  /** Time with no new observation of a defender (0 while watched) and the look's own spread (card spec §1). */
++  unseenFor(d: Agent): number;
++  seenSpread(d: Agent): number;
++  lastSeen(d: Agent): { pos: V; vel: V; facing: number };
+   /** His receiver's predicted position `ahead` s from now (his forecast), and the forecast's break (absolute time). */
+   predict(r: Agent, ahead: number): V | null;
+   breakAt(r: Agent): number | null;
+@@ -262,11 +266,13 @@ export class V2Drive {
+       path: [{ x: from.x, y: from.y }, ...path], los: sim.los, catchClean: catchFrom(h.placeSpread?.(Math.hypot(mech.point.x - from.x, mech.point.y - from.y))), res: look ? this.cycle.looks.resolved(look) : 0, receiverSpread: h.pictureSpread(r),
+       placeSpread: h.placeSpread?.(Math.hypot(mech.point.x - from.x, mech.point.y - from.y)),
+     };
+-    const defs: SeenDefender[] = sim.defense.filter((d) => this.seenUp(h, d) && h.pictureAge(d) < 1.5).map((d) => {
+-      const e = h.estimate(d), b = h.body(d), toQB = Math.atan2(a.pos.y - e.pos.y, a.pos.x - e.pos.x), eyes = h.seenHead(d) ?? e.facing;
++    // Card spec §1: nobody is dropped for an old picture (he stays where he is believed); the judge prices the lane and the
++    // driver from whichever of the estimate and the last sighting reaches the point first, and charges unseen time one way.
++    const defs: SeenDefender[] = sim.defense.filter((d) => this.seenUp(h, d)).map((d) => {
++      const e = h.estimate(d), ls = h.lastSeen(d), b = h.body(d), toQB = Math.atan2(a.pos.y - e.pos.y, a.pos.x - e.pos.x), eyes = h.seenHead(d) ?? e.facing;
+       // His eyes on the passer: the head he sees on the man where perception records it, else the body (Coverage's review).
+       const faces = Math.abs(Math.atan2(Math.sin(eyes - toQB), Math.cos(eyes - toQB))) < Math.PI / 3;
+-      return { id: d.idx, pos: e.pos, vel: e.vel, facing: e.facing, spread: h.pictureSpread(d), age: h.pictureAge(d), facesPasser: faces,
++      return { id: d.idx, pos: e.pos, vel: e.vel, facing: e.facing, spread: h.seenSpread(d), age: h.unseenFor(d), seen: { pos: ls.pos, vel: ls.vel }, facesPasser: faces,
+         vmax: b.vmax, accel: b.vmax / Math.max(b.tau, 1e-3), reach: b.reach, leap: b.reactReach + 0.5 * (b.maxCatchHeight - b.reactReach), ballSkills: h.ballSkills(d) };
+     });
+     const j = judge(q, defs);
+diff --git a/src/sim/qbv2/host.ts b/src/sim/qbv2/host.ts
+index ed3b3fe3e..b8658c7dc 100644
+--- a/src/sim/qbv2/host.ts
++++ b/src/sim/qbv2/host.ts
+@@ -27,6 +27,11 @@ export interface PasserView {
+   estimate(d: Agent): { pos: Vec2; vel: Vec2; facing: number };
+   pictureAge(d: Agent): number;
+   pictureSpread(d: Agent): number;
++  /** Time with no new observation of him (s; 0 while watched) and the look's own spread (yd), apart from unseen time. */
++  unseenFor(d: Agent): number;
++  seenSpread(d: Agent): number;
++  /** His last sighting of a defender, as taken (card spec §1). */
++  lastSeen(d: Agent): { pos: Vec2; vel: Vec2; facing: number };
+   seenHead(d: Agent): number | null;
+   /** His forecast of a receiver (the install he knows, updated from what he sees). */
+   forecast(r: Agent): ReceiverForecast | undefined;
+@@ -84,6 +89,7 @@ export function makeHost(v: PasserView, felt: number, pocket: PocketTest, planDr
+   return {
+     a, sim, releaseZ: v.releaseZ, snapAt: v.snapAt,
+     estimate: (d) => v.estimate(d), seenHead: (d) => v.seenHead(d), pictureAge: (d) => v.pictureAge(d), pictureSpread: (d) => v.pictureSpread(d),
++    unseenFor: (d) => v.unseenFor(d), seenSpread: (d) => v.seenSpread(d), lastSeen: (d) => v.lastSeen(d),
+     predict: (rc, ahead) => v.forecast(rc)?.predict(sim.t, ahead) ?? null,
+     breakAt: (rc) => v.forecast(rc)?.breakAt() ?? null,
+     timingAt: (rc) => { const f = v.forecast(rc); return f ? f.turnAt() ?? f.breakAt() : null; },
+diff --git a/src/sim/qbv2/judge.ts b/src/sim/qbv2/judge.ts
+index 3594b5c65..a1e8ec795 100644
+--- a/src/sim/qbv2/judge.ts
++++ b/src/sim/qbv2/judge.ts
+@@ -21,8 +21,11 @@ export interface SeenDefender {
+   facing: number;
+   /** His picture's spread on this man (yd), from the cones and age. */
+   spread: number;
+-  /** How old his picture of this man is (s): what the man did since is unknown to him, within what a body can do. */
++  /** How long he has had no new observation of this man (s; 0 while watched): what the man did since is unknown to him. */
+   age?: number;
++  /** His last sighting of the man as taken (card spec §1). For the lane and the driver, the man is priced from whichever
++   * of the estimate and the sighting reaches the point first: an estimate that drifts away unseen never grants a throw. */
++  seen?: { pos: V2; vel: V2 };
+   /** Whether the passer sees him facing the passer (eyes on him), so he can take the arm cue. */
+   facesPasser: boolean;
+   /** Scouting report: top speed (yd/s), acceleration (yd/s^2), reach (yd) and leap height (yd), ball skills (0-1). */
+@@ -130,18 +133,19 @@ export const LANE_PICK = 0.3;
+ export const LANE_NEAR = 3;
+ 
+ const hyp = (a: V2, b: V2) => Math.hypot(a.x - b.x, a.y - b.y);
+-/** His spread on a man's arrival (s): the picture's own spread, plus what the man may have done since he was last seen
+- * (an aged picture: he can have changed his velocity by up to his acceleration times the age, and that carries to the
+- * point over the time it takes), plus the receiver's spread; over the man's speed. Information-honest: a man last seen
+- * widening 0.6 s ago is a wide belief, not a certain one (staged V2, 2026-11-24, the field nickel). */
+ /** How fast an unseen man's velocity typically changes (yd/s^2): not his top acceleration, which assumes he spent the
+  * whole unseen time accelerating at the point (chosen; staged V2: top acceleration made every belief too wide). */
+ export const UNSEEN_DRIFT = 2.5;
+-function arriveSigma(d: SeenDefender, recvSig: number, horizon: number, margin?: number): number {
+-  // An aged picture widens his belief, but never in the throw's favour (audit §3 #2): for a man the picture has arriving
+-  // early (margin > 0), a wider spread would lower his arrival chance and so raise the throw's, so age is not counted there.
+-  const age = margin !== undefined && margin > 0 ? 0 : d.age ?? 0, unknown = 0.5 * UNSEEN_DRIFT * age * age + UNSEEN_DRIFT * age * Math.max(0, horizon);
+-  return Math.hypot(ARRIVE_SIGMA0, Math.hypot(d.spread + unknown, recvSig) / Math.max(d.vmax, 1e-3));
++/** Picture age (card spec §1, accepted; a caution the passer applies, a stated choice, not a claim that unseen men
++ * close). `d.age` is the time since his last sighting (0 while watched; the sensing delay is not unseen time). The
++ * spread keeps only the look's own noise. Time out of sight acts one way, as the distance an unseen man may have advanced
++ * toward the point (an unseen change of his velocity, UNSEEN_DRIFT), in seconds of his arrival. Identical to the fresh
++ * picture at age 0; his arrival chance never falls with age, whatever the margin. */
++function arrival(d: SeenDefender, recvSig: number, horizon: number, margin: number): { sigma: number; pArrive: number } {
++  const v = Math.max(d.vmax, 1e-3), age = d.age ?? 0;
++  const sigma = Math.hypot(ARRIVE_SIGMA0, Math.hypot(d.spread, recvSig) / v);
++  const advance = (0.5 * UNSEEN_DRIFT * age * age + UNSEEN_DRIFT * age * Math.max(0, horizon)) / v;
++  return { sigma, pArrive: phi((margin + advance) / sigma) };
+ }
+ const phi = (z: number) => 0.5 * (1 + Math.tanh(0.7978845608 * (z + 0.044715 * z * z * z)));
+ 
+@@ -201,13 +205,16 @@ function coverReact(q: ThrowQuestion, d: SeenDefender): number {
+   return ahead < 0 ? REACT_MATCH_FLAT : REACT_WITH_MAN;
+ }
+ 
++/** The pictures a man is priced from: his estimate, and his last sighting when it differs (card spec §1). */
++const pics = (d: SeenDefender): SeenDefender[] => (d.seen ? [d, { ...d, pos: d.seen.pos, vel: d.seen.vel }] : [d]);
++
+ /** Judge one candidate throw on his picture. */
+ export function judge(q: ThrowQuestion, defs: SeenDefender[]): Judgment {
+   const tBall = q.windup + q.flight, roles: RoleJudged[] = [];
+   const recvSig = Math.hypot(q.receiverSpread, LOOK_SEP * (1 - q.res), q.placeSpread ?? 0);
+   const cov = findCoverer(q, defs);
+   const add = (d: SeenDefender, role: Role, tArr: number) => {
+-    const margin = tBall - tArr, sigma = arriveSigma(d, recvSig, tArr, margin), pArrive = phi(margin / sigma);
++    const margin = tBall - tArr, { sigma, pArrive } = arrival(d, recvSig, tArr, margin);
+     roles.push({ id: d.id, role, margin, sigma, pArrive, pPlay: pArrive * PLAY_BREAKUP, pPick: pArrive * PLAY_BREAKUP * PICK_OF_PLAY * (0.5 + d.ballSkills) });
+   };
+   if (cov) {
+@@ -251,14 +258,14 @@ export function judge(q: ThrowQuestion, defs: SeenDefender[]): Judgment {
+     }
+     let best: number | null = null, near: number | null = null;
+     q.path.forEach((p, i) => {
+-      if (i === 0 || !origin || hyp(p, origin) < LANE_CLEAR || (q.ballHeightAt(p) ?? Infinity) > d.leap || hyp(d.pos, p) > DRIVE_RANGE) return;
+-      const tPass = q.windup + q.flight * (i / Math.max(n, 1)), tArr = arriveTime(d, p, d.reach, q.windup + (d.facesPasser ? 0 : ARM_LEAD)), m = tPass - tArr;
++      if (i === 0 || !origin || hyp(p, origin) < LANE_CLEAR || (q.ballHeightAt(p) ?? Infinity) > d.leap || Math.min(...pics(d).map((x) => hyp(x.pos, p))) > DRIVE_RANGE) return;
++      const tPass = q.windup + q.flight * (i / Math.max(n, 1)), tArr = Math.min(...pics(d).map((x) => arriveTime(x, p, d.reach, q.windup + (d.facesPasser ? 0 : ARM_LEAD)))), m = tPass - tArr;
+       if (best === null || m > best) best = m;
+       if (hyp(p, q.catchAt) <= LANE_NEAR && (near === null || m > near)) near = m;
+     });
+-    if (best === null || best <= -0.3) return null;
+-    const sigma = arriveSigma(d, q.placeSpread ?? 0, q.windup + q.flight, best);
+-    return { margin: best, sigma, pArrive: phi(best / sigma), rusher: false, pNear: near === null ? 0 : phi(near / sigma) };
++    if (best === null) return null; // no cut-off on the margin (card spec §1): a late man is a small chance, not none
++    const h = q.windup + q.flight, { sigma, pArrive } = arrival(d, q.placeSpread ?? 0, h, best);
++    return { margin: best, sigma, pArrive, rusher: false, pNear: near === null ? 0 : arrival(d, q.placeSpread ?? 0, h, near).pArrive };
+   };
+   // The coverer can also undercut the route and take the ball on its line, short of the catch point: the higher of the two.
+   if (cov) {
+@@ -266,9 +273,9 @@ export function judge(q: ThrowQuestion, defs: SeenDefender[]): Judgment {
+     if (lc && !lc.rusher && cr && lc.pArrive > cr.pArrive) roles[0] = { ...cr, margin: lc.margin, sigma: lc.sigma, pArrive: lc.pArrive, pPlay: lc.pArrive * PLAY_BREAKUP, pPick: lc.pArrive * PLAY_BREAKUP * PICK_OF_PLAY * (0.5 + cov.ballSkills) };
+   }
+   const driverOf = (d: SeenDefender): RoleJudged | null => {
+-    if (hyp(d.pos, q.catchAt) > DRIVE_RANGE) return null;
+-    const start = q.windup + (d.facesPasser ? 0 : ARM_LEAD), tArr = arriveTime(d, q.catchAt, d.reach + PLAY_CLEAR, start);
+-    const margin = tBall - tArr, sigma = arriveSigma(d, recvSig, tArr, margin), pArrive = phi(margin / sigma);
++    if (Math.min(...pics(d).map((x) => hyp(x.pos, q.catchAt))) > DRIVE_RANGE) return null;
++    const start = q.windup + (d.facesPasser ? 0 : ARM_LEAD), tArr = Math.min(...pics(d).map((x) => arriveTime(x, q.catchAt, d.reach + PLAY_CLEAR, start)));
++    const margin = tBall - tArr, { sigma, pArrive } = arrival(d, recvSig, tArr, margin);
+     return { id: d.id, role: 'driver', margin, sigma, pArrive, pPlay: pArrive * PLAY_BREAKUP, pPick: pArrive * PLAY_BREAKUP * PICK_OF_PLAY * (0.5 + d.ballSkills) };
+   };
+   for (const d of defs) {
+diff --git a/src/sim/qbv2/look.ts b/src/sim/qbv2/look.ts
+index 60ce747be..c3bdfdc1c 100644
+--- a/src/sim/qbv2/look.ts
++++ b/src/sim/qbv2/look.ts
+@@ -10,7 +10,7 @@ export type LookTarget = { kind: 'receiver'; ref: string } | { kind: 'key'; role
+ 
+ export const lookKey = (t: LookTarget): string => (t.kind === 'receiver' ? `r:${t.ref}` : `k:${t.role}`);
+ 
+-interface LookRecord { since: number | null; res: number; first: number | null; dueAt: number | null }
++interface LookRecord { since: number | null; res: number; first: number | null; dueAt: number | null; lastClear: number | null }
+ 
+ export class Looks {
+   private recs = new Map<string, LookRecord>();
+@@ -22,10 +22,11 @@ export class Looks {
+     for (const [k, r] of this.recs) if (!target || k !== lookKey(target)) r.since = null;
+     this.current = target;
+     if (!target) return;
+-    const k = lookKey(target), r = this.recs.get(k) ?? { since: null, res: 0, first: null, dueAt: null };
++    const k = lookKey(target), r = this.recs.get(k) ?? { since: null, res: 0, first: null, dueAt: null, lastClear: null };
+     this.recs.set(k, r);
+     if (!inClear) { r.since = null; return; }
+     if (r.since === null) r.since = now;
++    r.lastClear = now;
+     if (r.first === null) r.first = now;
+     r.res = Math.max(r.res, 1 - Math.exp(-(now - r.since) / Math.max(tau, 1e-3)));
+   }
+@@ -33,6 +34,9 @@ export class Looks {
+   /** How resolved his picture of this target is (0 to 1). */
+   resolved(target: LookTarget): number { return this.recs.get(lookKey(target))?.res ?? 0; }
+ 
++  /** How long since this target was last in his clear cone (s); null if never. */
++  sinceClear(target: LookTarget, now: number): number | null { const c = this.recs.get(lookKey(target))?.lastClear; return c == null ? null : now - c; }
++
+   /** Whether the look is resolving now (the target inside his clear cone this tick). */
+   resolving(target: LookTarget): boolean { return this.recs.get(lookKey(target))?.since !== null && this.recs.has(lookKey(target)); }
+ 
+diff --git a/test/qbv2-cycle.test.ts b/test/qbv2-cycle.test.ts
+index 209c9766e..1d70e0f1c 100644
+--- a/test/qbv2-cycle.test.ts
++++ b/test/qbv2-cycle.test.ts
+@@ -28,6 +28,17 @@ describe('QB_V2 cycle (module E) on the stub slant-flat plan', () => {
+     expect(th!.t).toBeGreaterThanOrEqual(1.0 + 0.2 * Math.log(1 / 0.4) - 0.06); // resolved past need 0.6 at tau 0.2
+   });
+ 
++  it('a stale key is looked at before it is judged; out of reach of his eyes, he judges on what he has (card spec §1)', () => {
++    // Resolved by 1.2 s with no cue; his eyes lose the key from 1.3 s; at 1.6 s the throw is there. Stride 2: no step intervenes.
++    const f = (reach: boolean) => (t: number) => t < 1.3 ? senses({ now: t, stride: 2 }) : t < 1.58
++      ? senses({ now: t, stride: 2, inClear: () => false, canReach: () => reach })
++      : senses({ now: t, stride: 2, inClear: () => t >= 1.63, canReach: () => reach }, { S1: 0.8 }, 'widens');
++    const look = run(new Cycle(STUB_SLANT_FLAT), 0, 1.8, f(true)).find((x) => x.i.kind === 'throw');
++    expect(look!.t).toBeGreaterThanOrEqual(1.63); // 1.6 is a look: the key has been out of his cone 0.3 s > tau 0.2
++    const blind = run(new Cycle(STUB_SLANT_FLAT), 0, 1.8, f(false)).find((x) => x.i.kind === 'throw');
++    expect(blind!.t).toBeCloseTo(1.6, 2);
++  });
++
+   it('a look that cannot resolve (outside his cone, head cannot get there) does not hold: the eyes move on the next step', () => {
+     const c = new Cycle(STUB_SLANT_FLAT);
+     const tr = run(c, 0, 1.6, (t) => senses({ now: t, inClear: () => false, canReach: () => false }, {}));
+diff --git a/test/qbv2-judge.test.ts b/test/qbv2-judge.test.ts
+index 726298fe1..5714ba2d6 100644
+--- a/test/qbv2-judge.test.ts
++++ b/test/qbv2-judge.test.ts
+@@ -69,6 +69,13 @@ describe('QB_V2 judgment (module D)', () => {
+     expect(rusher.risk).toBeLessThan(0.03);
+   });
+ 
++  it('picture age acts one way: identical at age 0, the throw never rises with age whatever the margin (card spec §1)', () => {
++    for (const [x, y] of [[11.5, 19.5], [8, 15], [6, 12]]) {
++      const q = { ...stop(), breakIn: null, receiverAt: () => ({ x: 12, y: 20 }) };
++      let prev = judge(q, [def(2, x, y, 0, 0, { age: 0 })]).P;
++      for (const age of [0.2, 0.5, 0.8, 1.2]) { const P = judge(q, [def(2, x, y, 0, 0, { age })]).P; expect(P).toBeLessThanOrEqual(prev + 1e-9); prev = P; }
++    }
++  });
+   it('an aged picture of a man arriving early never raises the throw (audit §3 #2)', () => {
+     const q = { ...stop(), breakIn: null, receiverAt: () => ({ x: 12, y: 20 }) };
+     const fresh = judge(q, [def(2, 11.5, 19.5, 0, 0, { age: 0 })]), old = judge(q, [def(2, 11.5, 19.5, 0, 0, { age: 0.8 })]);
+diff --git a/test/qbv2-picture-age.test.ts b/test/qbv2-picture-age.test.ts
+new file mode 100644
+index 000000000..addf9f180
+--- /dev/null
++++ b/test/qbv2-picture-age.test.ts
+@@ -0,0 +1,34 @@
++// QB_V2 card spec §1, invariant 2 (QB lane, 2026-11-25): with no new observation of a defender, a throw's estimate never
++// rises. Driven through the passer's real QBMind (estimate, lastSeen, seenSpread, unseenFor on a staged play), not a constant
++// spread: the clock runs on with no observe() call, so nothing new is seen.
++import { describe, expect, it } from 'vitest';
++import { PlaySim } from '../src/sim/playsim.js';
++import { nativeTraceSetup } from '../scripts/diag/command-trace.js';
++import { judge, type SeenDefender, type ThrowQuestion } from '../src/sim/qbv2/judge.js';
++
++describe('QB_V2 picture age through the real QBMind', () => {
++  it('with no new sighting, P on a throw by a covering man never rises as his picture ages', () => {
++    for (const seed of [1, 2, 3]) {
++      const sim: any = new PlaySim(nativeTraceSetup({ concept: 'stick', coverage: 'cover3', seed, roster: 3, formation: 'gun_trips_11', flip: false }) as any);
++      while (sim.t < 1.0 && sim.phase !== 'dead') sim.tick();
++      const mind = sim.qb.behavior?.mind; expect(mind).toBeTruthy();
++      // The defender his picture puts nearest a point 6 yd upfield of the passer, over the stick.
++      const qb = sim.qb.pos, pt = { x: qb.x + 9, y: qb.y + 3 };
++      const d = [...sim.defense].sort((a: any, b: any) => Math.hypot(mind.estimate(a).pos.x - pt.x, mind.estimate(a).pos.y - pt.y) - Math.hypot(mind.estimate(b).pos.x - pt.x, mind.estimate(b).pos.y - pt.y))[0];
++      const q: ThrowQuestion = { windup: 0.3, flight: 0.5, catchAt: pt, receiverAt: () => pt, breakIn: null, ballHeightAt: () => 2,
++        path: [{ x: qb.x, y: qb.y }, { x: (qb.x + pt.x) / 2, y: (qb.y + pt.y) / 2 }, pt], los: sim.los, catchClean: 0.9, res: 1, receiverSpread: 0.3 };
++      const seen = (): SeenDefender => { const e = mind.estimate(d), ls = mind.lastSeen(d); return { id: d.idx, pos: e.pos, vel: e.vel, facing: e.facing, spread: mind.seenSpread(d), age: mind.unseenFor(d), seen: { pos: ls.pos, vel: ls.vel },
++        facesPasser: true, vmax: 8, accel: 8, reach: 1, leap: 3.2, ballSkills: 0.5 }; };
++      const t0 = sim.t; let prev = judge(q, [seen()]).P;
++      const spread0 = mind.pictureSpread(d), seen0 = mind.seenSpread(d);
++      for (let k = 1; k <= 12; k++) {
++        sim.t = t0 + 0.1 * k; // the clock runs on; observe() is not called: no new sighting
++        const P = judge(q, [seen()]).P;
++        expect(P).toBeLessThanOrEqual(prev + 1e-9);
++        prev = P;
++      }
++      expect(mind.seenSpread(d)).toBeCloseTo(seen0, 9); // the look's own spread does not grow with unseen time
++      expect(mind.pictureSpread(d)).toBeGreaterThanOrEqual(spread0); // the old controller's dead-reckoned spread still does
++    }
++  });
++});
