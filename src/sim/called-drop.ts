@@ -16,13 +16,13 @@ const PA_DROP = process.env.PA_DROP !== '0';
 const CONCEPT_DROPS = process.env.CONCEPT_DROPS !== '0';
 const FIVE_GUN = (los: number) => ({ x: los - 8.8, time: 1.8 });
 const FIVE_UNDER = (los: number) => ({ x: los - 8.9, time: 2.0 });
-/** QB_QUICK_DRIFT (QB lane, off; bits: 1 = the drift's shape, 2 = V2 reads from the secure, the set is the throwing step,
+/** QB_QUICK_DRIFT (QB lane; 3 since engine-107, QB_QUICK_DRIFT=0 restores; bits: 1 = the drift's shape, 2 = V2 reads from the secure, the set is the throwing step,
  * read in qb.ts): the gun quick game is a short slow drift, not a two-yard step. Measured, not taught (Rules' qb_plant.py on
  * rules/route-chart d20d02418, 2022 BDB non-PA quick/flat throws released under 2.0 s, gun, n 437): he retreats 1.57 yd
  * (p25-75 1.14-2.03) from his snap depth at a peak of 1.65 yd/s and sets 1.60 s after the snap (1.50-1.70), the set being
  * the throwing step 0.2 s before the release; ours retreated 2.5 yd at 3.15 yd/s. 1.6 yd over 1.1 s from the secure
  * (0.49 s): the measured set less the secure. Under center unchanged. */
-export const QB_QUICK_DRIFT = Number(process.env.QB_QUICK_DRIFT ?? 0) | 0;
+export const QB_QUICK_DRIFT = Number(process.env.QB_QUICK_DRIFT ?? 3) | 0;
 const QUICK_DRIFT_YD = 1.6, QUICK_DRIFT_S = 1.1;
 
 /** Where and when the called drop puts the QB (los-relative x, seconds). */

@@ -54,11 +54,11 @@ import { DECLARED_BREAK } from '../../playbook/read-compiler/features.js';
  * non-visual term (pocket presence) stands. Teammates are seen as before (`track` returns `see` for them). */
 const TRACK_FEEL = process.env.TRACK_FEEL !== '0' || process.env.PERCEIVE_TRACK === '1';
 const RELEASE_Z = 2.2;
-/** QB_V2 (off; QB_V2=1; QB lane, 2026-11-24, docs/reviews/2026-11-24-qb-decision-plan.md): on a concept with an authored
+/** QB_V2 (on since engine-107; QB_V2=0 restores; QB lane, 2026-11-24, docs/reviews/2026-11-24-qb-decision-plan.md): on a concept with an authored
  * read plan for the call (planFor), the read and throw decision is the rebuilt cycle (src/sim/qbv2/):
  * the look, the judgment, the cycle on his feet. The drop, pocket movement and the throw's mechanics are kept. Other
  * concepts run this controller unchanged. */
-const QB_V2 = process.env.QB_V2 === '1';
+const QB_V2 = process.env.QB_V2 !== '0';
 /** QB_V2 runs V2 on the concepts it was staged and calibrated on (the quick game, 2026-11-24); widening it to the other
  * plans is a later change, after they are staged. */
 const QB_V2_STAGED = new Set(['quick_outs', 'slant_flat', 'stick']);
