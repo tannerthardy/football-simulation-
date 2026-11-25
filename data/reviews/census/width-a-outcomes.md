@@ -1,0 +1,9 @@
+cover0: n 74: comp 0.703 | inc 0.095 | PBU 0.189 | INT 0.014
+cover1: n 378: comp 0.683 | inc 0.148 | PBU 0.146 | INT 0.024
+cover2: n 247: comp 0.749 | inc 0.150 | PBU 0.081 | INT 0.020
+cover2man: n 36: comp 0.639 | inc 0.194 | PBU 0.167 | INT 0.000
+cover3: n 670: comp 0.773 | inc 0.131 | PBU 0.085 | INT 0.010
+cover4: n 346: comp 0.746 | inc 0.139 | PBU 0.098 | INT 0.017
+cover6: n 235: comp 0.800 | inc 0.115 | PBU 0.064 | INT 0.021
+tampa2: n 38: comp 0.737 | inc 0.184 | PBU 0.053 | INT 0.026
+ALL: n 2024: comp 0.746 | inc 0.137 | PBU 0.100 | INT 0.017
