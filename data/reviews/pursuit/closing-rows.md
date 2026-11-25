@@ -11,6 +11,15 @@
 | SIM | 4-7 | 345 | 2.1 | 1.0 | 0.00 | 0.17 | 0.12 | 0.17 | 0.55 | nan / 3.6 / 4.6 / 3.1 / 0.8 | 3.6 |
 | SIM | 7-10 | 527 | 1.7 | 0.7 | 0.00 | 0.11 | 0.07 | 0.16 | 0.66 | nan / 3.2 / 4.8 / 3.5 / 0.9 | 4.0 |
 
+Shares among the rows that count as closing (c_def 1.5 yd/s or more), NFL:
+
+| band (yd) | n | contact | with | settle | drive | other |
+|---|---|---|---|---|---|---|
+| 0-2 | 173 | 0.24 | 0.18 | 0.14 | 0.27 | 0.16 |
+| 2-4 | 439 | 0.00 | 0.27 | 0.18 | 0.36 | 0.19 |
+| 4-7 | 930 | 0.00 | 0.24 | 0.12 | 0.39 | 0.24 |
+| 7-10 | 1203 | 0.00 | 0.27 | 0.11 | 0.34 | 0.28 |
+
 ### 15 NFL rows in the 0-2 yd band that count as closing (c_def 1.5 yd/s or more), seeded random draw from 173
 
 | gameId-playId | def | man/zone | route | sep (yd) | defender speed | receiver speed | along his run | across, toward the receiver's line | c_def | rc (gap) | angle v_d to v_r | angle v_d to u | class |

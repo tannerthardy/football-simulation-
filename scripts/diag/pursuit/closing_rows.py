@@ -67,6 +67,12 @@ for lab, (R, _) in data.items():
         cc = lambda c: q([r['cdef'] for r in S if r['cl'] == c], 50)
         P(f'| {lab} | {bn} | {len(S)} | {q([r["cdef"] for r in S], 50):.1f} | {q([r["rc"] for r in S], 50):.1f} | {sh("contact"):.2f} | {sh("with"):.2f} | {sh("settle"):.2f} | {sh("drive"):.2f} | {sh("other"):.2f} | {cc("contact"):.1f} / {cc("with"):.1f} / {cc("settle"):.1f} / {cc("drive"):.1f} / {cc("other"):.1f} | {q([r["rc"] for r in S if r["cl"] == "drive"], 50):.1f} |')
 P('')
+P('Shares among the rows that count as closing (c_def 1.5 yd/s or more), NFL:\n')
+P('| band (yd) | n | contact | with | settle | drive | other |'); P('|---|---|---|---|---|---|---|')
+for lo, hi, bn in BANDS:
+    S = [r for r in data['NFL'][0] if lo <= r['d0'] < hi and r['cdef'] >= 1.5]
+    if S: P(f'| {bn} | {len(S)} | ' + ' | '.join(f'{sum(1 for r in S if r["cl"] == c) / len(S):.2f}' for c in ('contact', 'with', 'settle', 'drive', 'other')) + ' |')
+P('')
 rng = random.Random(SEED)
 for lo, hi, bn in BANDS[:2]:
     S = [r for r in data['NFL'][0] if lo <= r['d0'] < hi and r['cdef'] >= 1.5]
