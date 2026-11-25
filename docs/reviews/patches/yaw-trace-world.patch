@@ -1,0 +1,13 @@
+diff --git a/src/physics/world.ts b/src/physics/world.ts
+index 1ce45455..c6e006a6 100644
+--- a/src/physics/world.ts
++++ b/src/physics/world.ts
+@@ -1874,7 +1874,7 @@ export class World {
+         if (this.yawTrace && jt.kind === 'hands') {
+           const levered = this.handContact === 'patch' || this.gripPatched(jt) || this.handsLevered(jt);
+           const yt = (this.handIntegration === 'centered' ? .5 : 1) * h;
+-          this.yawTrace({ k: 'row', t: this.time, h, owner: (jt.actor ?? jt.a) === bs[r.i] ? bs[r.i].profile.massKg : bs[r.j].profile.massKg, fit: jt.fit, i: r.i, j: r.j, ln: r.ln, normal, lt: r.lt, ni: r.ni ?? 0, ri: r.ri ?? 0, nj: r.nj ?? 0, rj: r.rj ?? 0, levered,
++          this.yawTrace({ k: 'row', t: this.time, h, owner: (jt.actor ?? jt.a) === bs[r.i] ? bs[r.i].profile.massKg : bs[r.j].profile.massKg, own: (jt.actor ?? jt.a) === bs[r.i] ? r.i : r.j, fit: jt.fit, i: r.i, j: r.j, ln: r.ln, normal, lt: r.lt, ni: r.ni ?? 0, ri: r.ri ?? 0, nj: r.nj ?? 0, rj: r.rj ?? 0, levered,
+             dSpinI: levered ? yt * ((r.ni ?? 0) * normal - (r.ri ?? 0) * r.lt) / this.inertia[r.i] / h : 0, dSpinJ: levered ? yt * ((r.nj ?? 0) * normal - (r.rj ?? 0) * r.lt) / this.inertia[r.j] / h : 0 });
+         }
+         if (this.handContact === 'patch' || this.gripPatched(jt) || this.handsLevered(jt)) {
