@@ -353,6 +353,7 @@
     "SCOUT_SEEN": "on",
     "SCRAMBLE_SEEN": "on",
     "TRACK_SEEN": "on",
+    "UNDERNEATH_MOVE": "on",
     "QB_SEEN_OUT": "on",
     "QB_SEEN_REC": "on",
     "ACC_RADIUS": "off",

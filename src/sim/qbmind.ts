@@ -33,7 +33,7 @@
 import { isDbSlot } from './qbv2/roles.js'; // QB_CANON_SEEN: one defensive-back rule with QB_V2 (the visible package's CB / S slots)
 import { angleDiff, clamp, logistic, type Vec2 } from '../core/vec.js';
 import type { ReceiverPicture } from './receiver-forecast.js';
-import type { RouteKeyPicture } from './route-read.js';
+import { UNDERNEATH_MOVE, type RouteKeyPicture } from './route-read.js';
 import { alignDefense, zoneLandmark, type DefenseAlignment } from '../playbook/alignment.js';
 import { PASS_BY_ID, RUN_BY_ID } from '../playbook/concepts.js';
 import { PRESSURE_BY_ID } from '../playbook/defense.js';
@@ -191,6 +191,8 @@ interface Memory {
   pos: Vec2;
   vel: Vec2;
   facing: number;
+  /** UNDERNEATH_MOVE: his seen head (rad), null where not shown. */
+  head?: number | null;
   t: number;
   latency?: number;
   /** PERIPH_ACUITY: the look's position and velocity uncertainty (yd, yd/s), from its eccentricity. */
@@ -519,11 +521,11 @@ export class QBMind {
       // Bodies right around him are felt, not seen; pocket presence handles them.
       if (ang < this.clearHalf * (0.65 + 0.35 * mind.focus) || dist < 3) {
         const e = PERIPH_ACUITY && dist >= 3 ? this.periphSeen(mind, d.player.id, clear, ang, dist) : null;
-        this.memory.set(d, { pos: e ? e.pos : clear.pos, vel: e ? e.vel : clear.vel, facing: clear.facing, t: sim.t, latency: clear.age ?? 0, sigP: e?.sigP, sigV: e?.sigV });
+        this.memory.set(d, { pos: e ? e.pos : clear.pos, vel: e ? e.vel : clear.vel, facing: clear.facing, ...(UNDERNEATH_MOVE ? { head: clear.head ?? null } : {}), t: sim.t, latency: clear.age ?? 0, sigP: e?.sigP, sigV: e?.sigV });
       } else if (ang < this.periphHalf * (0.85 + 0.15 * mind.focus)) {
         const s = sim.see(qb, d, 1.7);
         const e = PERIPH_ACUITY ? this.periphSeen(mind, d.player.id, s, ang, dist) : null;
-        this.memory.set(d, { pos: e ? e.pos : s.pos, vel: e ? e.vel : s.vel, facing: s.facing, t: sim.t - 0.1, latency: s.age ?? 0, sigP: e?.sigP, sigV: e?.sigV });
+        this.memory.set(d, { pos: e ? e.pos : s.pos, vel: e ? e.vel : s.vel, facing: s.facing, ...(UNDERNEATH_MOVE ? { head: s.head ?? null } : {}), t: sim.t - 0.1, latency: s.age ?? 0, sigP: e?.sigP, sigV: e?.sigV });
       }
     }
     // Existing recognition milestones summarize this acquired look and its
@@ -567,7 +569,7 @@ export class QBMind {
     return [...this.memory].map(([d, m]) => {
       const age = Math.max(0, this.sim.t - m.t), dt = Math.min(.5, age);
       return { id: d.player.id, pos: { x: m.pos.x + m.vel.x * dt, y: m.pos.y + m.vel.y * dt },
-        vel: { ...m.vel }, age: age + (m.latency ?? 0) };
+        vel: { ...m.vel }, age: age + (m.latency ?? 0), ...(UNDERNEATH_MOVE ? { look: m.head ?? m.facing } : {}) };
     });
   }
 

@@ -145,6 +145,7 @@
  ],
  "defaults": [
   "test/acc-belief.test.ts",
+    "test/underneath-move.test.ts",
   "test/acc-radius.test.ts",
   "test/acquired-mesh-contradiction.test.ts",
   "test/action-effort.test.ts",
