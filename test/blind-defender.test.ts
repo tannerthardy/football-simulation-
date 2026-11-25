@@ -4,6 +4,7 @@
  * (before, 12% of u broke it up). Blind with the ball through his body: it comes off him, recorded as a
  * deflection off his body, not a PBU or a pass defensed. Facing the ball: he plays it as before. */
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import { stageSight } from './helpers/hands-sight.js';
 
 afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 
@@ -32,6 +33,7 @@ async function scene(dy: number, facing: number) {
     cb.body.pos = { x: 49.4, y: 26 + dy }; cb.body.facing = facing; cb.tags.delete('looking');
     sim.throwBall(sim.qb, r, { x: 15, y: 0, z: 0 }, { x: 61.7, y: 26, z: 1.3 }, 1.0);
     sim.t = 1.0;
+    if (facing === Math.PI) stageSight(sim, cb); // HANDS_SEEN: the facing defender has seen the ball coming
     sim.rng.next = () => u;
     const events: string[] = []; const ev = sim.event.bind(sim);
     (sim as any).event = (type: string, a: any, b: any, note?: string) => { if (a === cb) events.push(type + (note ? `:${note}` : '')); return (ev as any)(type, a, b, note); };

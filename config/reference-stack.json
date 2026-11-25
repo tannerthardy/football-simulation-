@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "engine-106",
+  "id": "engine-107",
   "runSet": {
     "commit": "1b5415de99b5b7194eff045f3c37a07a4c54c1a9",
     "seeds": [
@@ -314,6 +314,8 @@
     "PULL_PLAN": "off",
     "HONEST_READS": "on",
     "HONEST_FLIGHT": "on",
+    "RUSH_RELEASE": "on",
+    "HANDS_SEEN": "on",
     "HONEST_TACKLE": "on",
     "QB_FEEL": "off",
     "QB_GATHER": "off",
@@ -483,6 +485,7 @@
     "ZONE_SCOOP": "on",
     "ZONE_WINGS": "on",
     "PURSUIT_FIELD": "on",
-    "PURSUIT_COMMIT": "on"
+    "PURSUIT_COMMIT": "on",
+    "HAND_TRAVEL": "on"
   }
 }

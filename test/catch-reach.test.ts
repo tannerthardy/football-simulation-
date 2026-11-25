@@ -6,6 +6,7 @@ import { COVERAGE_BY_ID, FRONT_BY_ID } from '../src/playbook/defense.js';
 import { FORMATION_BY_ID } from '../src/playbook/formations.js';
 import { resolveCatchOpportunities } from '../src/sim/catching.js';
 import { PlaySim } from '../src/sim/playsim.js';
+import { stageSight } from './helpers/hands-sight.js';
 // Scenes recorded, and dice forced, on the play's single random stream (see PlaySim.dice).
 PlaySim.recordedSingleStream = true;
 
@@ -21,7 +22,10 @@ function contest(distance: number) {
   d.tags.add('looking');
   sim.throwBall(sim.qb, r, { x: 15, y: 0, z: 0 }, { x: 50, y: 26, z: 2 }, 1.5);
   sim.t = 1.5;
-  sim.rng.next = () => 0; // Exercise the contested-interception branch.
+  stageSight(sim, d); // HANDS_SEEN: 'looking' is his sight of the ball
+  // Exercise the contested-interception branch. Not 0: a forced 0 never leaves Rng.gaussian's `while (u === 0)` (a hang
+  // on any branch that draws a normal; Coverage met it under the estimator); 1e-12 takes the same chance branches.
+  sim.rng.next = () => 1e-12;
   resolveCatchOpportunities(sim, { x: 49.9, y: 26, z: 2 }, { x: 50.1, y: 26, z: 2 });
   return { sim, d };
 }

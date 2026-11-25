@@ -10,6 +10,7 @@ import { FORMATION_BY_ID } from '../src/playbook/formations.js';
 import type { Player } from '../src/players/types.js';
 import { resolveCatchOpportunities, TRACKING_REACH_BONUS } from '../src/sim/catching.js';
 import { PlaySim } from '../src/sim/playsim.js';
+import { stageSight } from './helpers/hands-sight.js';
 // Scenes recorded, and dice forced, on the play's single random stream (see PlaySim.dice).
 PlaySim.recordedSingleStream = true;
 
@@ -36,6 +37,7 @@ function scene(id='G1-P020') {
   sim.ball={kind:'air',flight:{pos:{...f.ball1},vel:{...f.ballVel},drag:0},thrower:sim.qb,
     target:a.team==='O'?a:null,releaseT:f.releaseT,releaseX:40,intended:{...f.ball1},arrivalT:f.t,
     deflected:f.deflected,throwaway:false};sim.t=f.t;
+  stageSight(sim,a); // HANDS_SEEN: a looking defender has his sight of the ball
   const starts=sim.agents.map(other=>({...other.pos}));starts[a.idx]={...f.body0};
   return{sim,a,f,starts,resolve:()=>resolveCatchOpportunities(sim,f.ball0,f.ball1,starts)};
 }

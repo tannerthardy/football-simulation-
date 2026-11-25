@@ -9,6 +9,19 @@ import { baseRadiusAt, supportParams } from './support.js';
 import { integrateYaw } from './yaw-response.js';
 
 export const ARM_SPEED = 3;
+
+/** HAND_TRAVEL (default on; `=0` restores ARM_SPEED, bit for bit): how fast an UNLOADED hand travels: the press and its fit to the man, the hand's offset
+ * on a torso, the re-fit after the hand comes off (src/sim/engagement.ts). The RUSH_HANDS club and counter durations stay on ARM_SPEED: their force is armForce for as long as the hand is on the arm, so a faster hand would shorten the contact and cut the impulse. ARM_SPEED stays the contact solver's
+ * LOADED ceiling (the work an arm can do, `world.ts` `armWorkLimit`, a grasp's pull-in, the hand motor), unsourced: arm power is not touched.
+ *
+ * 5 yd/s is a STATED CHOICE inside the sourced punch bracket, not a sourced raise time. The bracket (docs/reviews/2026-11-25-arm-speed.md): Olympic boxers' hand
+ * velocity 9.14 (SD 2.06) m/s at the punch (Walilko, Viano, Bir 2005, Br J Sports Med 39:710); amateur boxers' lead hook 11.95 +- 1.84 m/s peak fist velocity
+ * (Stanley et al. 2018, Int J Perform Anal Sport 18:835); a karate reverse punch about 8 m/s in under 400 ms (ISBS 2008, a search snippet). A smooth reach's
+ * peak is about 1.9 times its mean, so those peaks are a mean of about 4.5-6 yd/s over the movement. No time or speed for an unloaded overhead raise or a chest reach
+ * with nothing to hit is sourced (Gordon, Ghilardi and Ghez 1994: peak velocity scales with the distance; values not retrieved). The old 3 yd/s was the solver's former
+ * correction ceiling, "unvalidated, not NFL data": 30% of the boxers' mean. */
+const HAND_TRAVEL_SPEED = 5;
+export const HAND_TRAVEL = process.env.HAND_TRAVEL !== '0' ? HAND_TRAVEL_SPEED : ARM_SPEED;
 export const YAW_RESPONSE = .05;
 
 /** Fraction of an impulse that fits a remaining positive work budget.

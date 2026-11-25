@@ -32,7 +32,7 @@ import { executeRunFit, guardStep, lineRead, pullers, type RunFitRead } from '..
 import { linePicture } from '../live-gaps.js';
 import { RouteObservation } from '../coverage-read.js';
 import { movingCatchApproach } from '../catch-approach.js';
-import { RELEASE_BELIEF, lastReleaseBelief, releaseBelief } from '../release-belief.js';
+import { LOAD_BEAT, PULL_MARGIN, RELEASE_BELIEF, RUSH_RELEASE, lastReleaseBelief, releaseBelief } from '../release-belief.js';
 import { withMovementObjective } from '../movement-objective.js';
 import { OPEN_FIELD, playsBall } from '../open-field.js';
 import { DeepCoverage, StemAcceleration, stemStopped } from '../coverage-leverage.js';
@@ -544,8 +544,13 @@ export class PassRusher implements Behavior {
     return cmd;
   }
 
+  /** RUSH_RELEASE: his pull-up (held). */
+  private readonly held = { pullUp: false };
   private decide(a: Agent, sim: PlaySim): MoveCommand {
     if (sim.t < this.getOff) return stand(Math.PI);
+    // RUSH_RELEASE: on the throw he believes, off the rush and to the ball; on the load he sees, the pull-up decision.
+    const pulled = RUSH_RELEASE ? rushRelease(a, sim, this.held) : null;
+    if (pulled) return pulled;
     if (a.engagement) {
       const { blocker } = a.engagement;
       if (['LT', 'LG', 'C', 'RG', 'RT'].includes(blocker.slot)) this.workedLineBlock = true;
@@ -789,9 +794,42 @@ export class PassRusher implements Behavior {
   }
 }
 
+/** RUSH_RELEASE (release-belief.ts): believing the ball thrown, he asks to come off his block toward it (the flight he
+ * plays, else downfield the way the passer threw); seeing the passer load, he pulls up facing him with his hands up when
+ * he cannot get there before the ball leaves as he judges it (his own picture and his own body), and keeps rushing when
+ * he can. Null: the rush as before. Shared by the pass rusher and the blitzer; `held` is his held pull-up. */
+function rushRelease(a: Agent, sim: PlaySim, held: { pullUp: boolean }): MoveCommand | null {
+  const rb = releaseBelief(sim, a);
+  if (rb.releasedAt !== undefined) {
+    // A carrier he sees (the catch made, a run after a pump) is pursued as on any live ball.
+    const live = pursueIfLive(sim, a);
+    if (live) return live;
+    if (playsFlight(a, sim, null)) {
+      const path = acquireFlight(a, sim), spot = catchSpot(a, { t: sim.t, ballPath: path });
+      if (spot) { a.tags.add('rush-off'); return runThrough(a, spot.p, { speed: 0.9 }); }
+    }
+    // No ball in his picture yet: off the rush, turning downfield, where the throw went.
+    const q = sim.see(a, sim.qb), dir = sim.attackDir(sim.offense[0].team);
+    a.tags.add('rush-off');
+    return runThrough(a, { x: q.pos.x + dir * 10, y: a.pos.y }, { speed: 0.9 });
+  }
+  if (rb.loadingAt === undefined) { held.pullUp = false; return null; }
+  const q = sim.see(a, sim.qb);
+  const left = LOAD_BEAT - (sim.t - rb.loadingAt);
+  const tArr = a.engagement ? Infinity : timeToReach({ pos: a.pos, vel: a.vel, profile: a.profile, speedScale: a.speedScale }, q.pos, a.profile.reach);
+  held.pullUp = held.pullUp ? tArr > left - PULL_MARGIN : tArr > left + PULL_MARGIN;
+  if (!held.pullUp) return null;
+  // Hands up into his throwing lane, facing him; engaged, he holds his ground on the blocker.
+  a.tags.add('hands-up');
+  const face = Math.atan2(q.pos.y - a.pos.y, q.pos.x - a.pos.x);
+  return a.engagement ? stand(face) : { ...stand(face), vel: { x: a.vel.x * 0.3, y: a.vel.y * 0.3 } } as MoveCommand;
+}
+
+
 export class Blitzer implements Behavior {
   readonly kind = 'blitz';
   private readonly delay: number;
+  private readonly held = { pullUp: false };
   constructor(
     a: Agent,
     sim: PlaySim,
@@ -805,6 +843,8 @@ export class Blitzer implements Behavior {
 
   update(a: Agent, sim: PlaySim): MoveCommand {
     if (sim.t < this.delay) return stand(Math.PI);
+    const pulled = RUSH_RELEASE ? rushRelease(a, sim, this.held) : null;
+    if (pulled) return pulled;
     if (a.engagement) return stand();
     const live = pursueIfLive(sim, a);
     if (live) return live;

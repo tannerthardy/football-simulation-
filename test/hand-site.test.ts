@@ -34,20 +34,20 @@ describe('HAND_SITE', () => {
     }
   });
 
-  it('abreast: the length bends toward bodies + a forearm, no faster than ARM_SPEED, and straightens back in front', async () => {
+  it('abreast: the length bends toward bodies + a forearm, no faster than HAND_TRAVEL, and straightens back in front', async () => {
     const handSite = await site();
-    const { ARM_SPEED } = await import('../src/physics/actuation.js');
+    const { HAND_TRAVEL } = await import('../src/physics/actuation.js');
     const b = agent({ x: 0, y: 0 }, 0), d = agent({ x: -0.3, y: 1 }, 0); // abreast, a little behind his shoulder (106 deg)
     const j = joint(b, d); const seen: number[] = [];
     for (let k = 0; k < 30; k++) { j.extension = 1.5; j.push = 1000; j.steer = 500; handSite({ dt: 0.05 }, j, b, d); seen.push(j.extension); }
-    expect(1.5 - seen[0]).toBeCloseTo(ARM_SPEED * 0.05, 9);
-    for (let k = 1; k < seen.length; k++) expect(Math.abs(seen[k] - seen[k - 1])).toBeLessThanOrEqual(ARM_SPEED * 0.05 + 1e-12);
+    expect(1.5 - seen[0]).toBeCloseTo(HAND_TRAVEL * 0.05, 9);
+    for (let k = 1; k < seen.length; k++) expect(Math.abs(seen[k] - seen[k - 1])).toBeLessThanOrEqual(HAND_TRAVEL * 0.05 + 1e-12);
     expect(seen.at(-1)).toBeCloseTo(0.6 + 0.1, 9);
     // Back in front: it straightens at arm speed, then leaves the joint as off would.
     d.pos.x = 1; d.pos.y = 0; d.body.facing = Math.PI;
     const back: number[] = [];
     for (let k = 0; k < 30; k++) { j.extension = 1.5; j.push = 1000; j.steer = 500; handSite({ dt: 0.05 }, j, b, d); back.push(j.extension); }
-    expect(back[0] - 0.7).toBeCloseTo(ARM_SPEED * 0.05, 9);
+    expect(back[0] - 0.7).toBeCloseTo(HAND_TRAVEL * 0.05, 9);
     expect(back.at(-1)).toBe(1.5);
   });
 
