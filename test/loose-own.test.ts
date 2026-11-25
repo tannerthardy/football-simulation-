@@ -42,6 +42,11 @@ async function heads(on: boolean): Promise<{ toCaller: number; toFumbler: number
           // the fumbler's 41, and was counted toward the fumbler.
           if (Math.hypot(cp.x - a.pos.x, cp.y - a.pos.y) <= a.profile.radius + c.profile.radius + a.profile.reach) continue;
           const cmd = a.behavior.update(a, sim); const v = cmd?.vel; if (!v || Math.hypot(v.x, v.y) < 0.5) continue;
+          // Not the tick he first sees the ball himself: his update runs his own sighting before it chooses, so a player
+          // unseen before the call can head for the ball he has just seen (Coverage, 2026-11-25, LANE_LEVERAGE on: oz_strong
+          // 11's Mike at 3.25 s was counted toward the fumbler on the tick he sighted the ball). The file's rule is a player
+          // who has not seen it.
+          if (s.seen.has(a.idx)) continue;
           const h = Math.atan2(v.y, v.x);
           if (Math.cos(h - hc) > Math.cos(h - hf)) toCaller++; else toFumbler++;
         }
