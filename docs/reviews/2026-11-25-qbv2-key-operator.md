@@ -1,7 +1,7 @@
 # QB_V2 scorecard: #936's key operator built, hand-checked, and the decision row re-issued (2026-11-25)
 
 QB lane. This builds `docs/reviews/2026-11-24-qbv2-key-classifier.md` (#936) into `scripts/diag/qbv2/decision-card.ts`
-as `classify936`. Patch: `docs/reviews/patches/qbv2/key-operator-936-on-890558713.patch` (sha256 0ce6d17b5c47…;
+as `classify936`. Patch: `docs/reviews/patches/qbv2/key-operator-936-on-890558713.patch` (sha256 3be08aa333fe…;
 applies to develop 890558713). The script reads true tracks to label what the key did. It is an observer, never an
 input to the passer.
 
@@ -67,3 +67,45 @@ the total depends on the label time.
 
 Next: the side metric like for like, then stick's timing on its planned break (card items b and c). Then V2's cue on
 the three losing cells, one at a time.
+
+## (b) Side, like for like
+
+The old controller makes no pre-snap side pick, so both controllers are scored on the field side of the throw against
+the softer corner. V2's pick is reported apart.
+
+**Hand check: the old cushion operator was wrong.** It took the nearest defender within 3 yd laterally of #1. On the
+tight S side (#1 at 8.9 yd out) that was the DE, 3.3 yd away, which is why V2's pick read 13/30 and 8/30. Cushion is
+now the distance from #1 to #936's corner at the snap.
+
+22 of 30 plays a cell have the two corners within 1 yd of each other, so either side counts as right. The table gives
+only the 8 decisive plays a cell:
+
+| Cell | Old: thrown to the soft side | V2: thrown to the soft side | V2's pick |
+|---|---|---|---|
+| Quick outs vs cover3 | 3/5 (3 to the back) | **7/8** | 7/8 |
+| Quick outs vs cover2 | 5/8 | **8/8** | 7/8 |
+| Cover1 and 2-man | press on both sides, all within 1 yd | — | — |
+
+V2 beats the old controller on side, like for like. It's a small sample, 16 decisive plays.
+
+## (c) Stick's timing on its planned break
+
+The planned break is the installed route's break point from the passer's forecast prior: his install, not the true
+body. The table is release minus the moment the true receiver's progress along start → planned break first reaches it.
+
+| Cell | Route | Old: n, p25 / p50 / p75 (s) | V2: n, p25 / p50 / p75 (s) |
+|---|---|---|---|
+| Stick vs cover3 | flat (S3) | 22: −0.30 / −0.10 / +0.10 | 19: −0.25 / −0.20 / −0.15 |
+| | stick (S2) | 2: about 0 | 6: −0.45 / −0.35 / −0.35 |
+| Stick vs cover2 | flat | 7: −0.10 / 0 / +0.20 | 8: −0.25 / −0.25 / −0.20 |
+| | stick | 0 | 19: −0.35 / −0.35 / −0.25 |
+| | the back | 19: +0.9 / +1.3 / +1.35 | 3: +0.6 |
+
+**The old operator's figures were artifacts.** The flat's "+1.05 s" was its velocity-turn detector firing late on the
+flat's rounded path. Its stop detector found the stick on only 3 of 19 stick throws.
+
+**Hand check, stick vs cover2, seeds 1–4.** The stick's planned break is 7.2 yd from his start (about 6 yd past the
+line). The true receiver reaches it at about 2.35 s and does not settle: he is still at 4.6–5 yd/s there, and bending
+inside (y 15.2 → 13.0). V2's release at 2.0 s is anticipation, ahead of a landmark the body runs through.
+
+That the stick runs through its landmark is route execution, not the passer. Noted for Rules and Tools; not chased here.

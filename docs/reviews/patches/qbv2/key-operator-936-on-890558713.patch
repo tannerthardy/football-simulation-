@@ -1,9 +1,48 @@
 diff --git a/scripts/diag/qbv2/decision-card.ts b/scripts/diag/qbv2/decision-card.ts
-index 1e14b4a58..24f05aa6a 100644
+index 1e14b4a58..10285f2c4 100644
 --- a/scripts/diag/qbv2/decision-card.ts
 +++ b/scripts/diag/qbv2/decision-card.ts
-@@ -96,7 +96,107 @@ for (let seed = s0; seed <= s1; seed++) {
+@@ -41,7 +41,11 @@ for (let seed = s0; seed <= s1; seed++) {
+   let thrown: any = null, qbb: any = null, lastT = -1; const tr: Record<number, S[]> = {}; const snaps: Record<number, any[]> = {};
+   const tb = sim.throwBall.bind(sim);
+   sim.throwBall = (q: any, target: any, ...rest: any[]) => {
+-    if (q === sim.qb && !thrown) thrown = { t: sim.t, idx: target?.idx ?? null, slot: target?.slot ?? null, rid: target?.behavior?.route?.id ?? null, away: !target };
++    if (q === sim.qb && !thrown) {
++      // The planned break: the installed route's break point (the passer's forecast prior: his install, not the body).
++      const fc = target ? sim.qb.behavior?.receiverForecasts?.get?.(target) : null; let bp: any = null; try { bp = fc?.breakPoint?.() ?? null; } catch { bp = null; }
++      thrown = { t: sim.t, idx: target?.idx ?? null, slot: target?.slot ?? null, rid: target?.behavior?.route?.id ?? null, away: !target, bp: bp ? { x: bp.x, y: bp.y } : null, st: fc?.prior?.start ? { x: fc.prior.start.x, y: fc.prior.start.y } : null };
++    }
+     return tb(q, target, ...rest);
+   };
+   const t0 = sim.tick.bind(sim);
+@@ -89,14 +93,131 @@ for (let seed = s0; seed <= s1; seed++) {
+   // Timing: the thrown route's break against the release.
+   let relBrk: number | null = null;
+   if (thrown?.idx != null) { const P = (tr[thrown.idx] ?? []).filter((s) => s[0] <= thrown.t + 1.2); const b = breakAt(P, /hitch|stick|curl|hook|comeback/.test(String(thrown.rid))); if (b !== null) relBrk = r2(thrown.t - b); }
++  // Timing on the planned break: release minus when the true receiver's progress along start -> planned break point
++  // first reaches it (observer track).
++  let relPlan: number | null = null;
++  if (thrown?.idx != null && thrown.bp && thrown.st) {
++    const ux = thrown.bp.x - thrown.st.x, uy = thrown.bp.y - thrown.st.y, L = Math.hypot(ux, uy);
++    const hit = L > 0.5 ? (tr[thrown.idx] ?? []).find((q) => ((q[1] - thrown.st.x) * ux + (q[2] - thrown.st.y) * uy) / L >= L) : null;
++    if (hit) relPlan = r2(thrown.t - hit[0]);
++    if (process.env.CARD_DEBUG) console.error(JSON.stringify({ rid: thrown.rid, st: thrown.st, bp: thrown.bp, hit, rel: thrown.t, track: (tr[thrown.idx] ?? []).filter((_, i) => i % 3 === 0).map((q) => [r2(q[0]), r2(q[1]), r2(q[2]), r2(Math.hypot(q[3], q[4]))]).slice(0, 9) }));
++  }
+   // Side (quick outs, pick 'cushion'): the corner over #1 with more cushion at the snap; within 1 yd either side is right.
+-  let sideOk: boolean | null = null;
++  let sideOk: boolean | null = null, sideThrown: boolean | null = null, sidePick: boolean | null = null, cushion: number[] | null = null;
+   if (plan?.pick === 'cushion') {
+-    const cush = (side: 'S' | 'W') => { const one = posOf(side + '1', 0.05); if (!one) return null; const ds = sim.defense.map((d: any) => at(d.idx, 0.05)).filter((s: any) => s && Math.abs(s.y - one.y) < 3); return ds.length ? Math.min(...ds.map((s: any) => Math.hypot(s.x - one.x, s.y - one.y))) : null; };
++    // The corner over #1 by #936's definition (widest non-lineman at depth -0.5..12, out >= max(4, #1's out - 3.5)); his
++    // distance from #1 at the snap. (Hand check: the old "nearest within 3 yd lateral" took the DE on a tight split.)
++    const cush = (side: 'S' | 'W') => { const one = posOf(side + '1', 0.05); if (!one) return null; const sg = (sim.offAlign.strongSign >= 0 ? 1 : -1) * (side === 'S' ? 1 : -1), o = (y: number) => (y - sim.ballY) * sg;
++      const c = sim.defense.filter((d: any) => !/^(DE|DT|NT|DL)/.test(String(d.slot))).map((d: any) => at(d.idx, 0.05)).filter((s: any) => s && s.x - sim.los >= -0.5 && s.x - sim.los <= 12 && o(s.y) >= Math.max(4, o(one.y) - 3.5)).sort((a: any, b: any) => o(b.y) - o(a.y))[0];
++      return c ? Math.hypot(c.x - one.x, c.y - one.y) : null; };
      const cs = cush('S'), cw = cush('W');
++    // Like for like (both controllers): the field side of the throw against the softer corner; V2's pre-snap pick is
++    // reported apart (sidePick). Within 1 yd either side is right; a throwaway or the back scores null.
++    if (cs !== null && cw !== null) { const fieldSide = thrownRef && /^[SW]/.test(thrownRef) ? thrownRef[0] : null; const soft = cs > cw ? 'S' : 'W';
++      sideThrown = fieldSide ? (Math.abs(cs - cw) < 1 || fieldSide === soft) : null; sidePick = qbb?.v2 ? (Math.abs(cs - cw) < 1 || keySide === soft) : null; cushion = [r2(cs), r2(cw)]; }
      if (cs !== null && cw !== null) sideOk = Math.abs(cs - cw) < 1 ? true : (cs > cw ? keySide === 'S' : keySide === 'W') || (qbb?.v2 == null && thrownRef ? (cs > cw ? thrownRef.startsWith('S') : thrownRef.startsWith('W')) : false);
    }
 +  // ---- #936's operator (docs/reviews/2026-11-24-qbv2-key-classifier.md): keys fixed at the snap, labels over [t0, t_eval].
@@ -14,7 +53,7 @@ index 1e14b4a58..24f05aa6a 100644
    const stall = !sack && (!thrown || thrown.t > 3.0);
    console.log(JSON.stringify({ concept, coverage, seed, v2: !!qbb?.v2, flip, key: keySlot, cue, taught, thrown: thrownCanon, away: thrown?.away ?? null,
 -    rel: thrown ? r2(thrown.t) : null, relBrk, sideOk, stall, sack, complete: !!sim.stats.completed }));
-+    rel: thrown ? r2(thrown.t) : null, relBrk, sideOk, stall, sack, complete: !!sim.stats.completed, oldKeyOut, k936, ok936 }));
++    rel: thrown ? r2(thrown.t) : null, relBrk, relPlan, sideOk, stall, sack, complete: !!sim.stats.completed, sideThrown, sidePick, cush: cushion, oldKeyOut, k936, ok936 }));
 +}
 +
 +// #936's operator. depth = yards past the line, out = yards from the ball's lane toward the read side. t_eval = the
