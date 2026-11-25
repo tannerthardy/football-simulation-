@@ -3356,14 +3356,18 @@ function observedCatchWindow(a: Agent, sim: PlaySim, path: PlaySim['ballPath'], 
     .map(r => ({ r, seen: only ? sim.track(a, r, 1, true) : sim.see(a, r) }));
   let prevSample: PlaySim['ballPath'][number] | null = null;
   for (const s of path) {
-    const remaining = s.t - sim.t;
-    if (remaining < 0 || s.z < 0.25) { prevSample = remaining < 0 ? s : null; continue; }
+    // HONEST_FLIGHT: a sample he sees reaching a receiver within the securing beat behind now is a catch being made now:
+    // his picture of the ball lags it, so a flight first seen as it arrives (a trailer with his back to the throw: mesh,
+    // cover1 doubles s1, seen 0.2 s after the catch) had every sample behind the clock and named no receiver; he ran to
+    // where his estimate landed the ball, past his own man, until a picture showed that man carrying it.
+    const remaining = s.t - sim.t, behind = HONEST_FLIGHT ? -DRIVE_SECURE : 0;
+    if (remaining < behind || s.z < 0.25) { prevSample = remaining < behind ? s : null; continue; }
     const before = prevSample; prevSample = s;
     for (const { r, seen } of receivers) {
       if (s.z > r.profile.maxCatchHeight * 0.92) continue;
       const p = { x: s.x, y: s.y };
       const reach = r.profile.reach + TRACKING_REACH_BONUS;
-      if (Math.hypot(p.x - seen.pos.x, p.y - seen.pos.y) > believedCaps(sim, a, r).vmax * remaining + reach) continue;
+      if (Math.hypot(p.x - seen.pos.x, p.y - seen.pos.y) > believedCaps(sim, a, r).vmax * Math.max(0, remaining) + reach) continue;
       // Catching does not require stopping at the ball point. A receiver's
       // observed path can carry his hands through it even when a point-arrival
       // estimate charges for braking/redirecting. Use the same maximum hand
