@@ -132,6 +132,7 @@
     "STEM_WORK": "on",
     "ROUTE_FILLET": "on",
     "SPACING_HOLD": "on",
+    "HEADWAY_HOLD": "off",
     "BREAK_LOOK": "on",
     "SEEN_EMPTY": "on",
     "DIR_CAP": "on",

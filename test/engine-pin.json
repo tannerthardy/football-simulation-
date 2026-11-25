@@ -316,6 +316,7 @@
   "test/hang-airborne.test.ts",
   "test/head-follow.test.ts",
   "test/head.test.ts",
+  "test/headway-hold.test.ts",
   "test/hold-facing.test.ts",
   "test/hold-finish.test.ts",
   "test/honest-flight.test.ts",
