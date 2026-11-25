@@ -12,8 +12,11 @@ afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 
 async function rows(flag: string) {
   vi.resetModules();
-  const flags: Record<string, string> = JSON.parse(readFileSync(new URL('../config/reference-stack.json', import.meta.url), 'utf8')).flags;
+  const stack = JSON.parse(readFileSync(new URL('../config/reference-stack.json', import.meta.url), 'utf8'));
+  const flags: Record<string, string> = stack.flags;
   for (const [k, v] of Object.entries(flags)) if (v === 'on') vi.stubEnv(k, '1');
+  // The reference stack's numeric settings too (the suite pins them to their legacy values).
+  for (const [k, v] of Object.entries(stack.numeric ?? {}) as [string, { default: number }][]) vi.stubEnv(k, String(v.default));
   vi.stubEnv('QB_CALL_ROUTES', flag);
   const { panelRows } = await import('../scripts/diag/eyes/call-routes-panel.js');
   return panelRows();

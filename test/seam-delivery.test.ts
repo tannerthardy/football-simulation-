@@ -1,4 +1,7 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi, afterAll } from 'vitest';
+// engine-80 (pinned test-only, Rules + Coaching's coverage landing): the seam delivery and zone-off contracts are the pre-engine-79 rules (MATCH_DECLARE delivers by its own re-read; C2_APEX hands off on a seen cap). The file's owner to re-record with the rule on.
+vi.hoisted(() => { process.env.MATCH_DECLARE = '0'; process.env.C2_APEX = '0'; });
+afterAll(() => { delete process.env.MATCH_DECLARE; delete process.env.C2_APEX; });
 import { Rng } from '../src/core/rng.js';
 import { generateTeam, pickDefense, pickOffense } from '../src/league/team.js';
 import { PASS_BY_ID } from '../src/playbook/concepts.js';
@@ -10,6 +13,7 @@ import { catchSpot } from '../src/sim/behaviors/receiver.js';
 import { CoverageDefender } from '../src/sim/coverage/defender.js';
 import type { Perceived } from '../src/sim/perception.js';
 import { PlaySim } from '../src/sim/playsim.js';
+import { releaseBelief } from '../src/sim/release-belief.js';
 
 const offense = generateTeam(new Rng(501), 'Delivery offense', 'SDO', { strength: .6 });
 const defense = generateTeam(new Rng(502), 'Delivery defense', 'SDD', { strength: .6 });
@@ -166,12 +170,15 @@ describe('an installed seam delivery needs a sustainable acquired roof', () => {
       f.sim.ball = { kind: 'air', flight: { pos: { x: f.a.pos.x, y: f.a.pos.y, z: 2 },
         vel: { x: 12, y: 0, z: -1 }, drag: 0 }, thrower: f.sim.qb, target: f.r,
         releaseT: .1, releaseX: 35, intended: { x: f.a.pos.x + .2, y: f.a.pos.y, z: 1.2 },
-        arrivalT: 1.5, deflected: false, throwaway: false }; f.sim.throwSight.stageRelease(f.sim, f.sim.throwAt);
-      f.sim.ballPath = [{ t: 1.5, x: f.a.pos.x + .2, y: f.a.pos.y, z: 1.2 }];
+        arrivalT: 2, deflected: false, throwaway: false }; f.sim.throwSight.stageRelease(f.sim, f.sim.throwAt);
+      // RELEASE_BELIEF (re-recorded 2026-11-18): he earns the throw as in play, from his own record of the ball a
+      // perception delay old, not on the tick it is staged.
+      for (let k = 0; k < 10; k++) { f.sim.t = +(1.4 + k * f.sim.dt).toFixed(2); f.sim.recordPerception(); releaseBelief(f.sim, f.a); }
+      f.sim.ballPath = [{ t: f.sim.t + .1, x: f.a.pos.x + .2, y: f.a.pos.y, z: 1.2 }];
     }
     expect(sawThrow(actual.a, actual.sim, actual.r)).toBe(true);
     expect(catchSpot(actual.a, actual.sim)?.p).toEqual({ x: actual.a.pos.x + .2, y: actual.a.pos.y });
-    expect(actual.update(1.4)).toEqual(playBall(expected.a, expected.sim, expected.r));
+    expect(actual.update(actual.sim.t)).toEqual(playBall(expected.a, expected.sim, expected.r));
     expect(actual.a.tags.has('onBall')).toBe(true);
     expect(actual.behavior.job).toBe(`man:${actual.r.slot}`);
     expect(actual.behavior.recordedRule(1.4).mode).toBeNull();

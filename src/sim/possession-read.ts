@@ -12,6 +12,11 @@ type FlightSample = PlaySim['ballPath'][number];
 const flights = new WeakMap<Agent, { acquiredAt: number; path: FlightSample[];
   opportunity?: { receiver: Agent; t: number }; resolved?: boolean }>();
 
+/** HONEST_FLIGHT (defense.ts): a catch's securing beat after the arrival he estimated. During it no picture of the
+ * receiver shows the ball yet (a receiver securing it is not carrying it), so only a picture taken after it refutes
+ * the catch. */
+const HONEST_FLIGHT_READ = process.env.HONEST_FLIGHT !== '0';
+export const SECURE_BEAT = 0.4;
 /** Called only after the existing throw-recognition gate. Copy the acquired
  * trajectory, never an intended receiver or a private catch result. */
 export function acquireFlight(a: Agent, sim: PlaySim): FlightSample[] {
@@ -19,7 +24,10 @@ export function acquireFlight(a: Agent, sim: PlaySim): FlightSample[] {
   const own = estimatesFor(a) && !!sim.ballEstimates;
   const path = own ? sim.ballEstimates.estimate(a, sim).map(p => ({ ...p })) : sim.ballPath.map(p => ({ ...p }));
   if (own && !path.length) return path;
-  flights.set(a, { acquiredAt: sim.t, path });
+  // HONEST_FLIGHT: a re-estimate of the flight he is already playing keeps the catch hypothesis he formed on it (his
+  // own judgment, refuted or replaced only by what he perceives); off, each acquisition starts without one.
+  const prev = HONEST_FLIGHT_READ ? flights.get(a) : undefined;
+  flights.set(a, prev && !prev.resolved && prev.opportunity ? { acquiredAt: sim.t, path, opportunity: prev.opportunity } : { acquiredAt: sim.t, path });
   return path;
 }
 
@@ -70,7 +78,7 @@ export function anticipatedCatcher(a: Agent, sim: PlaySim): PossessionRead | nul
   const cue = sim.see(a, opportunity.receiver);
   // An empty image from before the opportunity says nothing about its result.
   // Newer empty evidence refutes this hypothesis; unknown stays unknown.
-  if (cue.carrying === false && cue.age !== undefined && sim.t - cue.age > opportunity.t) {
+  if (cue.carrying === false && cue.age !== undefined && sim.t - cue.age > opportunity.t + (HONEST_FLIGHT_READ ? SECURE_BEAT : 0)) {
     flights.get(a)!.opportunity = undefined;
     return null;
   }

@@ -32,7 +32,6 @@ and proposed mechanisms are identified separately.
 | [Offensive skill and playcalling](offensive-skill-and-playcalling.md) | QB, RB, FB, WR and TE reads; releases, option coordination, motion, screens and situation. |
 | [Receiver route reads](receiver-route-reads.md) | Bounded acquired-leverage options, independent QB expectations, seam-read install, sideline continuation and remaining release/catching limits. |
 | [Screens](screens.md) | Slip/slow, TE, bubble, now, tunnel and bunch screens: release counts, out/up/in blocking, defensive answers, NFL screen numbers and what to test. |
-| [QB drops and pocket movement](qb-drops-and-pocket.md) | Under-center and gun drops by timing class, footwork step by step, rhythm (reads tied to the plant and hitches), pocket movement (edge high climb, interior push slide, reset), what goes wrong, measured numbers and proposed engine tests. |
 | [Defense and perception](defense-and-perception.md) | Position-specific keys, coverage distribution, fits, vertical protection, motion, pursuit and legal contact. |
 | [Data and measurement](data-and-measurement.md) | What existing NFL data can test, useful public additions, matching definitions and realistic roster variation. |
 | [Orientation pilot](orientation-pilot.md) | A reproducible first use of previously unused tracking orientation fields, with explicit selection and semantic limitations. |

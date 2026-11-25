@@ -2,6 +2,7 @@
  * blocker along the man's own path of travel (hips past hips), not across the
  * line to the QB; past but within reach, the rep goes on as a ride. */
 import { afterEach, describe, expect, it, vi } from 'vitest';
+vi.hoisted(() => { process.env.PA_HINGE = '0'; }); // engine-73: fixture recorded before PA_HINGE; Flex to re-record with it on
 
 afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 

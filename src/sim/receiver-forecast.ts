@@ -1,12 +1,13 @@
 /** QB-local receiver estimate. Installed expectation is not measured progress. */
 import { clamp, type Vec2 } from '../core/vec.js';
 import { BREAK_DECL } from '../playbook/route-breaks.js';
+import { ROUTES } from '../playbook/routes.js';
 import { FIELD_WIDTH } from '../core/field.js';
 import { arriveVelocity, stepBody, type Body, type MoveCommand } from '../physics/kinematics.js';
 import type { PhysicalProfile } from '../players/physical.js';
 import type { RouteDef, RouteEnd, RouteRead } from '../playbook/types.js';
-import { firstBreakDepth, getOffDrive, inGetOff, LINE_START, routeEffort, routePath, steerRoute, type PathPoint, type RouteCursor } from './route-motion.js';
-import { installedRead, readRoute, type RouteChoice, type RouteKeyPicture } from './route-read.js';
+import { breaksInside, firstBreakDepth, getOffDrive, inGetOff, LINE_START, ROUTE_LANDMARK, routeEffort, routePath, steerRoute, type PathPoint, type RouteCursor } from './route-motion.js';
+import { installedRead, keyIsMan, MOVING_HOLD, readRoute, UNDERNEATH_MOVE, type RouteChoice, type RouteKeyPicture } from './route-read.js';
 
 interface InstalledAnswer { readonly id: RouteChoice['answer']; readonly path: readonly PathPoint[]; readonly end: RouteEnd }
 
@@ -31,6 +32,8 @@ export interface InstalledReceiverRoute {
   readonly read?: RouteRead;
   readonly readContext?: { readonly los: number; readonly outside: number };
   readonly answers?: readonly InstalledAnswer[];
+  /** ROUTE_LANDMARK: the route breaks inside at its declared vertex, so he runs it from where he is. */
+  readonly breaksIn?: boolean;
 }
 
 /** Called at installation from the call and snap alignment, never RouteRunner. */
@@ -46,6 +49,7 @@ export function installReceiverRoute(start: Vec2, los: number, outside: number, 
     end: route.end, startDelay, routeId: route.id, profile: Object.freeze({ ...profile }), routeRunning,
     effort: routeEffort(route.family, routeRunning),
     ...(DECLARED_BREAK && typeof BREAK_DECL[route.id]?.at === 'number' ? { breakIdx: BREAK_DECL[route.id].at as number } : {}),
+    ...(ROUTE_LANDMARK && typeof BREAK_DECL[route.id]?.at === 'number' && breaksInside(path, BREAK_DECL[route.id].at as number, outside) ? { breaksIn: true } : {}),
     ...(DECLARED_BREAK && BREAK_DECL[route.id] && typeof BREAK_DECL[route.id].at !== 'number'
       ? { declRule: BREAK_DECL[route.id].at as 'moved' | 'vertical' | 'now', declLos: los } : {}),
     ...(copiedRead ? { read: copiedRead, readContext: Object.freeze({ los, outside }),
@@ -60,6 +64,9 @@ export interface ReceiverPicture {
   readonly facing: number;
   readonly sampledAt: number;
   readonly acquiredAt: number;
+  /** PERIPH_ACUITY: the look's position and velocity uncertainty (yd, yd/s) from its eccentricity. */
+  readonly sigP?: number;
+  readonly sigV?: number;
 }
 
 export interface ReceiverEstimate {
@@ -88,6 +95,15 @@ const FORECAST_BREAK = process.env.FORECAST_BREAK !== '0';
  * route while moving along it (about the 90th percentile of observed drift); moving against it, or farther off, is
  * still a contradiction and falls back to his observed motion. */
 const FORECAST_HOLD = process.env.FORECAST_HOLD !== '0';
+/** FORECAST_FINISH (default since engine-88, provisional; FORECAST_FINISH=0 turns it off; QB lane, 2026-11-18): the
+ * forecast honours the route's finish (ROUTE_FINISH: an outward route that runs out of field stops at its margin, in
+ * bounds). Past the last point of a 'continue' route the forecast kept his velocity, so an out finishing 5 yd from the
+ * sideline was forecast running on past it and out of bounds (quick_outs, cover3, trips, seed 2, flipped, ROUTE_SHAPE: the
+ * ball aimed 2.2 yd from the sideline while he stopped at 5): the speed out was led to the boundary instead of the
+ * numbers. On, a route whose last point is its finish ends there, as the receiver does. A flat on its extension is not
+ * held: under ROUTE_END he runs on up the sideline, and the forecast follows him (the late cross-field flat is a decision,
+ * READ_WINDOW's; docs/reviews/2026-11-18-late-cross.md). */
+const FORECAST_FINISH = process.env.FORECAST_FINISH !== '0';
 /** FORECAST_HOLD: how far off its drawn line a run route still reads as that route, by route phase: the 90th
  * percentile of receivers' drift while moving along the route (engine-42 forced-concept panel,
  * scripts/diag/read-plan/forecast-drift.ts): on the stem 1.19 yd, after the break 1.63 (the cut is rounded), on a
@@ -95,6 +111,9 @@ const FORECAST_HOLD = process.env.FORECAST_HOLD !== '0';
  * hold it tighter later. */
 export interface HoldTolerance { stem: number; afterBreak: number; noBreak: number }
 export const HOLD_TOL: Readonly<HoldTolerance> = Object.freeze({ stem: 1.2, afterBreak: 1.6, noBreak: 1.5 });
+/** ROUTE_LANDMARK: how far off a leg a receiver running along it still reads as on his route (yd; a choice, a bend round a
+ * man: the hitch_post post was 2.5 yd off his stem). */
+const LANDMARK_TOL = 3;
 
 /** Where the receiver cuts on an installed path: the waypoint the route slows
  * him most for (first on ties), not counting a final settle spot. Null for a
@@ -115,8 +134,9 @@ function priorBreak(prior: InstalledReceiverRoute): number | null {
   return prior.breakIdx !== undefined ? prior.breakIdx : pathBreak(prior.path, prior.end);
 }
 
-/** Routes timed to a point this far outward of the alignment (yd), mirroring Rules' route timing data (#925). */
-const NO_PLANT_OUTWARD: Record<string, number> = { flat: 6.4, back_flat: 7, swing: 7 };
+/** A route timed to a point outward of the alignment (yd) rather than a cut or stop: Rules' route timing data (#925,
+ * RouteDef.timing: the flat, the back's flat and the swing, the NFL release spot). Undefined for every other route. */
+const timedOutward = (id: string | undefined): number | undefined => (id && ROUTES[id]?.timing ? ROUTES[id].timing!.l : undefined);
 
 export function pathBreak(path: readonly PathPoint[], end: RouteEnd): number | null {
   let b: number | null = null;
@@ -134,15 +154,25 @@ export class ReceiverForecast {
   private choice: RouteChoice | null = null;
   private inferredCommitment = false;
   private cache: { observer: object; picture: ReceiverPicture | null; pts: Vec2[]; estimate: ReceiverEstimate;
-    route: InstalledAnswer; breakStep: number | null } | null = null;
+    route: InstalledAnswer; breakStep: number | null; from?: Vec2 } | null = null;
+  /** QB_V2 (QB lane, 2026-11-25; set by the passer only while V2 runs the play): a picture off the installed path, the man
+   * running along it (heading within about 53 deg of the nearest leg), is forecast on the installed shape carried through
+   * the picture rather than a straight line at the picture's velocity. A man heading off his route keeps the line. */
+  shapeCarry = false;
+  /** With shapeCarry: the last forecast built on his route, and when his pictures first put him off it. One contradicting
+   * look (a peripheral sighting's velocity error, measured 1.2 yd/s on sf_c3 seed 4 against a stated 0.45) is not yet a
+   * change: off-route pictures must span OFF_CONFIRM before the forecast leaves his route for the line he is seen on. */
+  private onRoute: NonNullable<ReceiverForecast['cache']> | null = null;
+  private offSince: number | null = null;
 
   /** FORECAST_HOLD: his belief of how far off its line this receiver's route still reads as that route. */
   holdTol: Readonly<HoldTolerance> = HOLD_TOL;
   constructor(readonly observer: object, readonly prior: InstalledReceiverRoute, private readonly dt: number) {}
 
   /** The last acquired picture of the receiver (sample time and speed), or null if never seen. */
-  lastPicture(): { sampledAt: number; speed: number } | null {
-    return this.picture ? { sampledAt: this.picture.sampledAt, speed: Math.hypot(this.picture.vel.x, this.picture.vel.y) } : null;
+  lastPicture(): { sampledAt: number; speed: number; sigP: number; sigV: number } | null {
+    return this.picture ? { sampledAt: this.picture.sampledAt, speed: Math.hypot(this.picture.vel.x, this.picture.vel.y),
+      sigP: this.picture.sigP ?? 0, sigV: this.picture.sigV ?? 0 } : null;
   }
 
   acquire(p: ReceiverPicture): void {
@@ -153,17 +183,32 @@ export class ReceiverForecast {
   /** Reuse the quarterback's already acquired defensive memory. Never ask a
    * receiver for his chosen answer. A rotation can fool these two observers
    * differently, and observed receiver motion can later correct this prior. */
+  /** UNDERNEATH_MOVE: a different answer seen on consecutive reads, not yet taken. */
+  private pending: { answer: RouteChoice['answer']; n: number } | null = null;
   readKeys(pictures: readonly RouteKeyPicture[]): void {
     const prior = this.prior;
     if (!prior.read || !prior.readContext || this.inferredCommitment) return;
+    // UNDERNEATH_MOVE: the same rule on the quarterback's own picture of the receiver and the key; it holds 'away' by the exit
+    // margin once he expects it.
+    const rp = this.picture, held = this.choice?.answer === 'away';
+    const passer = (this.observer as { pos?: Vec2 }).pos ?? null;
+    const movingWith = UNDERNEATH_MOVE && rp ? (k: RouteKeyPicture) => keyIsMan(k, rp.pos, rp.vel, passer, held) : undefined;
     const choice = readRoute(prior.read, { ...prior.readContext, start: prior.start,
-      pos: this.picture?.pos ?? prior.start, middleY: FIELD_WIDTH / 2 }, pictures);
+      pos: this.picture?.pos ?? prior.start, middleY: FIELD_WIDTH / 2, movingWith }, pictures);
     // Losing a look does not mean the receiver changed his route. Keep the
     // installed expectation; only a new relevant key can revise it before the
     // read, and only observed route motion can correct it after commitment.
     if (choice.reason !== 'no-fresh-key' || !this.choice) {
-      if (choice.answer !== this.choice?.answer) this.cache = null;
-      this.choice = choice;
+      // UNDERNEATH_MOVE: a changed answer is a new decision only once his picture has shown it for MOVING_HOLD; one read at an
+      // edge does not clear his expected path.
+      const settled = !UNDERNEATH_MOVE || !this.choice || choice.answer === this.choice.answer
+        || (this.pending = this.pending?.answer === choice.answer ? { answer: choice.answer, n: this.pending.n + 1 } : { answer: choice.answer, n: 1 }).n
+          >= Math.ceil(MOVING_HOLD / this.dt - 1e-9);
+      if (choice.answer === this.choice?.answer) this.pending = null;
+      if (settled) {
+        if (choice.answer !== this.choice?.answer) this.cache = null;
+        this.choice = choice; this.pending = null;
+      }
     }
     this.inferredCommitment = !!this.picture && this.picture.pos.x >= prior.readContext.los + prior.read.depth;
   }
@@ -194,9 +239,9 @@ export class ReceiverForecast {
    * install (or the answer he expects on an option route). Null for a route without a break. */
   breakPoint(): Readonly<Vec2> | null {
     const c = this.build(), path = c?.route?.path ?? this.prior.path;
-    // The flat's timing point (Rules, #925 e95e5dac6: RouteDef.timing, the NFL release spot: flat {d 1.54, l 6.4}, back_flat and swing l 7): where the path is that far outward of
-    // his alignment. Interim mirror of that data until #925 lands and timingPoint(route) is read here instead.
-    const outward = this.prior.routeId ? NO_PLANT_OUTWARD[this.prior.routeId] : undefined;
+    // A timed route's point (Rules, #925: RouteDef.timing, the NFL release spot, e.g. the flat {d 1.54, l 6.4}): where the
+    // path is that far outward of his alignment (it replaced the QB lane's interim table).
+    const outward = timedOutward(this.prior.routeId);
     if (outward !== undefined) {
       const s0 = this.prior.start, side = Math.sign((path[path.length - 1]?.p.y ?? s0.y) - s0.y) || 1;
       let prev: Vec2 = s0;
@@ -257,13 +302,28 @@ export class ReceiverForecast {
     const observed = prior.read && matches.length === 1 && matches[0].progress! > 0 ? matches[0] : null;
     const route = observed?.route ?? routes.find(r => r.id === this.choice?.answer) ?? routes[0];
     const beforeRead = prior.read && prior.readContext && p && p.pos.x < prior.readContext.los + prior.read.depth;
-    const progress = p ? inferProgress(p, beforeRead ? prior : { ...prior, ...route }, this.holdTol) : null;
+    let progress = p ? inferProgress(p, beforeRead ? prior : { ...prior, ...route }, this.holdTol) : null;
+    let routeUsed = route, from: Vec2 | undefined;
+    if (this.shapeCarry && p && progress === null && !beforeRead) {
+      const carried = carryShape(p, { ...prior, ...route }, this.holdTol);
+      if (carried) { routeUsed = { ...route, path: carried.path }; from = carried.from; progress = carried.progress; }
+    }
+    if (this.shapeCarry && p) {
+      if (progress === null) {
+        // His picture's position is reliable and its velocity is not: a picture that places him off every leg is believed
+        // at once; one that has him on his line but moving against it needs OFF_CONFIRM of such pictures.
+        if (!onSomeLeg(p, { ...prior, ...route }, this.holdTol)) this.offSince = -Infinity;
+        this.offSince ??= p.sampledAt;
+        if (this.onRoute && p.sampledAt - this.offSince < OFF_CONFIRM) return this.onRoute;
+      } else this.offSince = null;
+    }
     const estimate: ReceiverEstimate = Object.freeze({ source: p ? 'acquired' : 'installed',
       sampledAt: p?.sampledAt ?? 0, acquiredAt: p?.acquiredAt ?? null, progress,
       motion: !p || progress !== null ? 'installed-route' : 'observed-motion',
       ...(prior.read ? { routeAnswer: route.id, answerSource: observed ? 'receiver-motion' as const
         : this.choice ? 'own-key-picture' as const : 'installed-default' as const } : {}) });
-    this.cache = { observer: this.observer, picture: p, pts: [], estimate, route, breakStep: null };
+    this.cache = { observer: this.observer, picture: p, pts: [], estimate, route: routeUsed, breakStep: null, from };
+    if (this.shapeCarry && estimate.motion === 'installed-route' && p) this.onRoute = this.cache;
     return this.cache;
   }
 
@@ -273,7 +333,7 @@ export class ReceiverForecast {
     // Nominal fresh capacity is a model prior, not unseen current fatigue/support.
     const body: Body = { pos: { ...(p?.pos ?? prior.start) }, vel: { ...(p?.vel ?? { x: 0, y: 0 }) },
       facing: p?.facing ?? 0, energy: 1, sprintLoad: 0, profile: prior.profile };
-    const st: RouteCursor = { idx: c.estimate.progress ?? 0, from: prior.start };
+    const st: RouteCursor = { idx: c.estimate.progress ?? 0, from: c.from ?? prior.start };
     const cutSkill = 0.8 + 0.4 * prior.routeRunning;
     const pts: Vec2[] = [{ ...body.pos }];
     let done = false;
@@ -298,10 +358,11 @@ export class ReceiverForecast {
       if (c.estimate.motion === 'observed-motion') cmd = { vel: { ...p!.vel }, cutSkill };
       else if (c.estimate.sampledAt + i * this.dt < (prior.startDelay ?? 0)
         && (!p || (Math.hypot(p.vel.x, p.vel.y) < 1e-6 && st.idx === 0))) cmd = { vel: { x: 0, y: 0 } };
-      else if (done) cmd = active.end === 'continue' ? { vel: body.vel }
+      else if (done) cmd = active.end === 'continue' && !(FORECAST_FINISH && active.path[active.path.length - 1]?.finish) ? { vel: body.vel }
         : { vel: arriveVelocity(body, active.path[active.path.length - 1]?.p ?? body.pos, body.profile.vmax * 0.6, 0) };
       else {
-        cmd = steerRoute(body, st, active.path, active.end, prior.effort, prior.routeRunning, cutSkill);
+        // ROUTE_LANDMARK: he runs the rest of a route with a declared vertex from where he is seen, as the receiver does.
+        cmd = steerRoute(body, st, active.path, active.end, prior.effort, prior.routeRunning, cutSkill, ROUTE_LANDMARK && !!prior.breaksIn);
         if (!cmd) { done = true; cmd = { vel: active.end === 'continue' ? body.vel : { x: 0, y: 0 } }; }
         // LINE_START: the same get-off the receiver runs, read time from his profile (his mind is not visible).
         else if (LINE_START && inGetOff(Math.hypot(body.pos.x - prior.start.x, body.pos.y - prior.start.y),
@@ -325,6 +386,52 @@ export class ReceiverForecast {
 /** Geometric inference from the sampled picture; never the runner's private idx.
  * Ambiguous/contradicted progress falls back to the measured motion. The body
  * radius supplies a route-centre tolerance, not a collision-clearance promise. */
+/** The installed path carried through his picture (shapeCarry): the nearest leg he is running parallel to (heading within
+ * about 25 deg, CARRY_COS, at 1 yd/s or more), the path and its start shifted by his offset from that leg, at most
+ * CARRY_MULT times that leg's hold tolerance (stem, after the break, or a route with no break); then his progress on it.
+ * Null when no leg agrees with his heading (he has left the route: a release to block, a re-route) or the offset is
+ * larger. Tighter than the hold's own heading test (about 53 deg) because it moves the whole remaining shape: a man
+ * running 45 deg off a flat is not on a displaced flat. */
+const CARRY_COS = 0.9, CARRY_MULT = 2;
+/** How long his pictures must have a man on his line but moving against it before the forecast follows the line he is
+ * seen on (s). A picture that places him off every leg is believed at once: position is the reliable part of a picture
+ * (about 0.25 yd in the clear cone, 0.8 peripheral, against 1.5 yd/s of velocity error). */
+const OFF_CONFIRM = 0.3;
+function carryShape(p: ReceiverPicture, prior: InstalledReceiverRoute, hold: Readonly<HoldTolerance>): { path: PathPoint[]; from: Vec2; progress: number } | null {
+  const speed = Math.hypot(p.vel.x, p.vel.y); if (speed < 1) return null;
+  const brk = FORECAST_HOLD ? priorBreak(prior) : null;
+  let prev = prior.start, best: { err: number; off: Vec2 } | null = null;
+  for (let idx = 0; idx < prior.path.length; idx++) {
+    const next = prior.path[idx].p, dx = next.x - prev.x, dy = next.y - prev.y, len2 = dx * dx + dy * dy, len = Math.sqrt(len2);
+    if (len > 1e-6 && (p.vel.x * dx + p.vel.y * dy) / (speed * len) >= CARRY_COS) {
+      const u = clamp(((p.pos.x - prev.x) * dx + (p.pos.y - prev.y) * dy) / len2, 0, 1), ox = p.pos.x - prev.x - u * dx, oy = p.pos.y - prev.y - u * dy, err = Math.hypot(ox, oy);
+      const tol = CARRY_MULT * (brk === null ? hold.noBreak : idx <= brk ? hold.stem : hold.afterBreak);
+      if (err <= tol && (!best || err < best.err)) best = { err, off: { x: ox, y: oy } };
+    }
+    prev = next;
+  }
+  if (!best) return null;
+  const path = prior.path.map((q) => ({ ...q, p: { x: q.p.x + best!.off.x, y: q.p.y + best!.off.y } }));
+  const from = { x: prior.start.x + best.off.x, y: prior.start.y + best.off.y };
+  const progress = inferProgress(p, { ...prior, start: from, path }, hold);
+  return progress === null ? null : { path, from, progress };
+}
+
+/** Whether his picture's position lies within a leg's hold tolerance (stem, after the break, or no break), whatever his
+ * heading. */
+function onSomeLeg(p: ReceiverPicture, prior: InstalledReceiverRoute, hold: Readonly<HoldTolerance>): boolean {
+  const brk = FORECAST_HOLD ? priorBreak(prior) : null;
+  let prev = prior.start;
+  for (let idx = 0; idx < prior.path.length; idx++) {
+    const next = prior.path[idx].p, dx = next.x - prev.x, dy = next.y - prev.y, len2 = dx * dx + dy * dy;
+    const u = len2 ? clamp(((p.pos.x - prev.x) * dx + (p.pos.y - prev.y) * dy) / len2, 0, 1) : 0;
+    const tol = Math.max(prior.profile.radius, brk === null ? hold.noBreak : idx <= brk ? hold.stem : hold.afterBreak);
+    if (Math.hypot(p.pos.x - prev.x - u * dx, p.pos.y - prev.y - u * dy) <= tol) return true;
+    prev = next;
+  }
+  return false;
+}
+
 function inferProgress(p: ReceiverPicture, prior: InstalledReceiverRoute, hold: Readonly<HoldTolerance> = HOLD_TOL): number | null {
   const brk = FORECAST_HOLD ? priorBreak(prior) : null;
   // Seeing a back at his installed starting spot does not reveal a private
@@ -342,7 +449,10 @@ function inferProgress(p: ReceiverPicture, prior: InstalledReceiverRoute, hold: 
     // of the segment); stopped (fallen, jammed) or cutting across it, only the body radius places him.
     const speed = Math.hypot(p.vel.x, p.vel.y), len = Math.sqrt(len2);
     const runningAlong = speed >= 1 && len > 1e-6 && (p.vel.x * dx + p.vel.y * dy) / (speed * len) >= 0.6;
-    const tol = FORECAST_HOLD && runningAlong ? Math.max(prior.profile.radius, brk === null ? hold.noBreak : idx <= brk ? hold.stem : hold.afterBreak) : prior.profile.radius;
+    // ROUTE_LANDMARK: a receiver running along a leg of a route with a declared vertex is on it as far off as a bend takes
+    // him (LANDMARK_TOL): he runs the rest of it from where he is.
+    const tol = FORECAST_HOLD && runningAlong ? Math.max(prior.profile.radius, ROUTE_LANDMARK && prior.breaksIn ? LANDMARK_TOL
+      : brk === null ? hold.noBreak : idx <= brk ? hold.stem : hold.afterBreak) : prior.profile.radius;
     if (error <= tol && (speed < 1e-6 || p.vel.x * dx + p.vel.y * dy > 0)) {
       candidates.push({ idx, error });
     }

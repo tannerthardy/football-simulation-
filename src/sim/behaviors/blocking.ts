@@ -23,7 +23,7 @@ import type { RunConcept } from '../../playbook/types.js';
 import type { Agent, Behavior, Engagement, RunContactSurface } from '../agent.js';
 import type { PlaySim } from '../playsim.js';
 import { chooseRunBlockFit, observedBlockLeverage, secondLevelBlockApproach } from '../run-block-fit.js';
-import { paRunLook } from '../pa-look.js';
+import { paFakeSide, paHingeSpot, PA_HINGE, paRunLook } from '../pa-look.js';
 import { DOUBLE_OVERTAKE, axisOf, contactControl, helperSupport, passSetDepth, promoteContact, protectPoint, PUNCH, SET_SPOT, SET_SPOT_TACKLE, setSpotTarget, TACKLE_SET, tackleFloor, tackleSetLine, traits } from '../engagement.js';
 import { readZoneReach, type ZoneReachRead } from '../zone-reach.js';
 import { interceptPoint, timeToReach } from '../../physics/reach.js';
@@ -343,9 +343,33 @@ export class PassProtector implements Behavior {
       a.behavior = this.releaseTo();
       return a.behavior.update(a, sim);
     }
+    // PA_HINGE: on a zone fake the line shows the zone with its steps, then converts to its protection (pa-look.ts). A man
+    // who meets his rusher on the way engages as in any set.
+    if (PA_HINGE && (isOL(a) || !!sim.offAlign.spots[a.slot]?.inline)) {
+      const side = paFakeSide.get(sim) ?? 0;
+      const line = this.coord.protectors.filter((p) => isOL(p) || !!sim.offAlign.spots[p.slot]?.inline);
+      const endMan = !!side && line.length > 0 && line.reduce((m, p) => ((this.coord.homeY.get(p) ?? sim.see(a, p).pos.y) - sim.ballY) * -side
+        > ((this.coord.homeY.get(m) ?? sim.see(a, m).pos.y) - sim.ballY) * -side ? p : m) === a;
+      const spot = paHingeSpot(sim, home, sim.snapX[a.idx] ?? a.pos.x, endMan, a.idx, a.pos);
+      if (spot) {
+        if (rA) {
+          const contactPA = a.profile.radius + rA.profile.radius + 0.1 + a.player.measurables.armIn / 36 * 0.55;
+          const sr = sim.see(a, rA).pos;
+          if (Math.hypot(sr.x - a.pos.x, sr.y - a.pos.y) < contactPA + 0.15 && sim.engage(a, rA, 'pass')) return stand();
+        }
+        a.tags.add(endMan ? 'pa-hinge' : 'pa-reach');
+        return goTo(a, spot, { speed: 0.8, facing: spot.facing });
+      }
+    }
     // SET_SPOT: the QB he protects is the launch point he knows from the call, not the live QB behind him.
     const tackleSlot = a.slot === 'LT' || a.slot === 'RT';
-    const qb = SET_SPOT && (!tackleSlot || SET_SPOT_TACKLE) ? { ...sim.qb, pos: protectPoint(sim) } as typeof sim.qb : sim.qb;
+    // SET_SPOT's information rule is a lineman's: the QB is behind him, unseen, so his reference is the call's launch point.
+    // A back in protection sees the QB (beside him after the mesh, in front of him on a set): his reference is the QB as he
+    // sees him. With the launch point, a back released from a play-action fake under center set beside the final launch
+    // point (8.1 yd) while the QB was still dropping to it, and the QB stopped behind him (5.65 yd at 2.0 s against 7.0 off;
+    // pa-drop.test.ts, ace_11 pa_post_dig roster 1 seed 1).
+    const qb = SET_SPOT && isOL(a) && (!tackleSlot || SET_SPOT_TACKLE) ? { ...sim.qb, pos: protectPoint(sim) } as typeof sim.qb
+      : SET_SPOT && !isOL(a) ? { ...sim.qb, pos: sim.see(a, sim.qb).pos } as typeof sim.qb : sim.qb;
     if (!rA) {
       // Set: tackles kick, interior sets short; backs hold near the QB.
       const isT = a.slot === 'LT' || a.slot === 'RT';
@@ -398,6 +422,7 @@ export class PassProtector implements Behavior {
     // shoulder — and let the hands decide the rep.
     let ride = false;
     let cuttingOff = false;
+    let kickPace = 0;
     if (edgeRusher && isOL(a) && !this.calledRelease) {
       const meet = PASS_KICK ? null : cutOffPoint(a, r, qb.pos, contact);
       if (meet) {
@@ -422,7 +447,14 @@ export class PassProtector implements Behavior {
       // rusher, retreating out of punching range all the way to the launch
       // point (the old start law hid this by making the tackle lag his spot).
       const floor = TACKLE_SET ? tackleFloor(sim) : null;
-      const x = Math.max(qb.pos.x + 0.5, floor ?? -Infinity, Math.min(a.pos.x, r.pos.x - KICK_LEAD, sim.los - lineDepth(0.6, stanceDepth(sim, a)) - setDepth));
+      // SET_SPOT_TACKLE: setDepth already counts from his snap spot (the three-step set).
+      const ownSet = SET_SPOT_TACKLE ? sim.los - setDepth : sim.los - lineDepth(0.6, stanceDepth(sim, a)) - setDepth;
+      // SET_SPOT_TACKLE: beat him to the spot. The spot is the pocket's front, the tackle's clearance in front of the
+      // launch point he knows from the call (passSetDepth's 2.8 yd), not the floor. At the rusher's upfield speed the
+      // rusher reaches that depth in T; the tackle kicks at the pace that covers his own way there in that time.
+      const lowX = Math.max(qb.pos.x + 0.5, floor ?? -Infinity);
+      kickPace = SET_SPOT_TACKLE ? racePace(a.pos.x, r.pos.x, -r.vel.x, Math.max(lowX, qb.pos.x + TACKLE_CLEARANCE)) : 0;
+      const x = Math.max(lowX, Math.min(a.pos.x, r.pos.x - KICK_LEAD, ownSet, a.pos.x - kickPace * KICK_LOOK));
       set = { x, y: ahead.y - out * contact * 0.6 + out * overset };
       // TACKLE_SET: the inside half of the rusher, but never outside his set line.
       if (TACKLE_SET || VERTICAL_SET) { const line = tackleSetLine(sim, a, r); set.y = line.y - line.out * Math.max(0, (line.y - set.y) * line.out); }
@@ -452,7 +484,8 @@ export class PassProtector implements Behavior {
       // VERTICAL_SET: lead only the rusher's inward motion; his outward run is not chased.
       // VERTICAL_SET: the rusher's inward motion as he sees it (his picture, delayed), whatever PASS_SET_SEEN says.
       const leadY = VERTICAL_SET ? out * Math.min(0, sim.see(a, rA).vel.y * out) : wide ? 0 : r.vel.y;
-      return track(a, set, { x: anchored || a.pos.x < r.pos.x - KICK_LEAD ? 0 : Math.min(0, r.vel.x), y: leadY }, { facing, cutSkill: quick, gain: 2.5 });
+      const followX = anchored || a.pos.x < r.pos.x - KICK_LEAD ? 0 : Math.min(0, r.vel.x);
+      return track(a, set, { x: anchored ? 0 : Math.min(followX, -kickPace), y: leadY }, { facing, cutSkill: quick, gain: 2.5 });
     }
     // The cutoff is an interception, not a point on which to match the
     // rusher's present velocity. Approach through it at the kick-slide speed
@@ -542,6 +575,15 @@ export function boxThreats(sim: PlaySim): Agent[] {
 }
 /** How far deeper than an upfield edge rusher's present depth the kick keeps the tackle (yd). */
 const KICK_LEAD = 0.8;
+/** SET_SPOT_TACKLE: the pocket's front in front of the launch point for a tackle (passSetDepth's tackle clearance). */
+const TACKLE_CLEARANCE = 2.8;
+/** SET_SPOT_TACKLE: the kick's pace to beat the rusher to the launch depth (yd/s, retreat +): the tackle's way to the
+ * floor over the rusher's time there at his upfield speed. Zero when he is already at the floor. */
+function racePace(tx: number, rx: number, rUp: number, floorX: number): number {
+  const way = tx - floorX; if (way <= 0) return 0;
+  const T = Math.max(0.2, (rx - floorX) / Math.max(0.5, rUp));
+  return way / T;
+}
 /** How far ahead on his present velocity the kick reads the rusher's width (s). */
 const KICK_LOOK = 0.4;
 
@@ -875,6 +917,14 @@ export const WING_WORK = process.env.WING_WORK !== '0';
  * the play-side backer goes unblocked 25% (ours 54%); the wing and the end
  * take him 37% (ours 21%). */
 export const LEVEL2_TIME = process.env.LEVEL2_TIME !== '0';
+/** LEVEL2_TRACK (off; LEVEL2_TRACK=1 turns it on; Run Game, docs/reviews/2026-11-16-level2-track.md): with
+ * LEVEL2_TIME, a worker's run to a backer is measured from his track (his y plus the play-side lead: 1.5 yd for a
+ * double's climber, 1 yd for a lone climber or a wing), the same point the distance cost measures from; start times
+ * and wings unchanged. Off, the time cost measured from his body and dropped the play-side lead, so with two backers
+ * about equally far a play-side double climbed to the backside backer and left the play-side one free (receiver-run
+ * eligibility G1-P018, outside zone vs zero_6: LB_M at 5.05 yd and LB_W at 5.06 from the centre; the C+RG double on
+ * DT_S took LB_W, LB_M unblocked). */
+export const LEVEL2_TRACK = process.env.LEVEL2_TRACK !== '0';
 function snapHash(...parts: (string | number)[]): number {
   let h = 2166136261;
   for (const c of parts.join('|')) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); }
@@ -1046,7 +1096,8 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
     const cost = (w: (typeof workers)[number], l: Agent) => {
       const track = w.b.pos.y + ps * w.lead;
       if (LEVEL2_TIME) {
-        const start = w.double ? .9 : .3, run = Math.hypot(l.pos.x - w.b.pos.x, l.pos.y - w.b.pos.y) / (.75 * w.b.profile.vmax);
+        // LEVEL2_TRACK: the run is from his track (his play-side aim), as the distance cost measures it, not his body.
+        const start = w.double ? .9 : .3, run = Math.hypot(l.pos.x - w.b.pos.x, l.pos.y - (LEVEL2_TRACK ? track : w.b.pos.y)) / (.75 * w.b.profile.vmax);
         return start + run + (w.inside && (l.pos.y - track) * ps > 0 ? .3 : 0);
       }
       return Math.abs(l.pos.y - track) + (w.inside && (l.pos.y - track) * ps > 0 ? 1.5 : 0);

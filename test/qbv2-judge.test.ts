@@ -68,4 +68,18 @@ describe('QB_V2 judgment (module D)', () => {
     expect(rusher.roles[0].role).toBe('lane');
     expect(rusher.risk).toBeLessThan(0.03);
   });
+
+  it('picture age acts one way: identical at age 0, the throw never rises with age whatever the margin (card spec §1)', () => {
+    for (const [x, y] of [[11.5, 19.5], [8, 15], [6, 12]]) {
+      const q = { ...stop(), breakIn: null, receiverAt: () => ({ x: 12, y: 20 }) };
+      let prev = judge(q, [def(2, x, y, 0, 0, { age: 0 })]).P;
+      for (const age of [0.2, 0.5, 0.8, 1.2, 2.0]) { const job = Math.min(1, Math.max(0, (age - 0.2) / 1.0)); const P = judge(q, [def(2, x, y, 0, 0, { age, job })]).P; expect(P).toBeLessThanOrEqual(prev + 1e-9); prev = P; }
+    }
+  });
+  it('an aged picture of a man arriving early never raises the throw (audit §3 #2)', () => {
+    const q = { ...stop(), breakIn: null, receiverAt: () => ({ x: 12, y: 20 }) };
+    const fresh = judge(q, [def(2, 11.5, 19.5, 0, 0, { age: 0 })]), old = judge(q, [def(2, 11.5, 19.5, 0, 0, { age: 0.8 })]);
+    expect(fresh.roles[0].margin).toBeGreaterThan(0);
+    expect(old.P).toBeLessThanOrEqual(fresh.P + 1e-9);
+  });
 });

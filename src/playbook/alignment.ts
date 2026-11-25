@@ -75,6 +75,19 @@ const TE_LINE_DEPTH = 0.83;
  * n 1,224 pressed), tight ends 1.09 vs 0.83 (+0.26, n 1,469); the
  * pressed-weighted mean is 0.23. */
 export const PRESS_BACKOFF = 0.23;
+/** MIRROR_SCATTER (off; MIRROR_SCATTER=1 turns it on; Run Game, docs/reviews/2026-11-16-mirror-scatter.md): a defender's
+ * lateral placement error (his alignment error, PlaySim) and his ALIGN_HABIT lateral scatter are a cheat wide or tight
+ * of his landmark, on his own side: the draw is multiplied by his side's sign (his spot's side of the ball, or the
+ * offence's strong sign for a man aligned on the ball). Magnitudes and draws are unchanged; only the direction is now
+ * relative to his side. Off, both were added in absolute field y from the same seed whichever way the formation set, so
+ * a mirrored formation met an unmirrored defence (the read compiler's offence-only sample: DE_S 6.08 vs 6.41 yd from the
+ * ball, LB_M 2.36 vs 2.90, FS +0.40 vs -0.40; RECEIVER_DEPTH then backed the Y off 0.23 yd on one side only and LINE_START
+ * carried it into his readiness, tipping pa_flood and trips_sail between plans). */
+export const MIRROR_SCATTER = process.env.MIRROR_SCATTER !== '0';
+/** MIRROR_SCATTER: +1 if a defender at `y` widens toward +y (his own side of the ball), -1 toward -y. */
+export function scatterSide(off: Pick<OffenseAlignment, 'ballY' | 'strongSign'>, y: number): number {
+  return Math.abs(y - off.ballY) > 0.05 ? Math.sign(y - off.ballY) : off.strongSign;
+}
 /** Default on (DEF_ALIGN=0 turns it off): the secondary aligns by its job, as on
  * film (2022 tracking at the snap by PFF coverage assignment,
  * scripts/diag/align/nfl_scheme.py). A corner's depth and shade come from his
@@ -228,6 +241,10 @@ export interface OffSpot {
   backfield: boolean;
   /** Attached tight end. */
   inline: boolean;
+  /** On the line of scrimmage at the snap (the legal-position fact Rule 5 / 7 read: the five linemen, an attached end, a
+   * receiver set on the ball); everyone else, the quarterback included, is a back. A motion man is always off the line
+   * (canMotion), so motion never changes it. Absent on a spot built elsewhere: see playbook/eligibility.ts. */
+  onLine?: boolean;
 }
 
 export interface OffenseAlignment {
@@ -357,7 +374,7 @@ function spotHash(...parts: (string | number)[]): number {
  * reduced, with others wide (crack and stalk angles). */
 const ROUTE_ROOM: Record<string, [number, number]> = {
   go: [10.9, 10], fade: [10.9, 10], comeback: [10.9, 10], slant: [10.2, 9.9],
-  hitch: [14, 10.6], curl: [14, 10.6], stick: [14, 10.6], hook: [14, 10.6],
+  hitch: [14, 10.6], quick_hitch: [14, 10.6], curl: [14, 10.6], stick: [14, 10.6], hook: [14, 10.6],
   short_in: [14.6, 10.4], dig: [14.6, 10.4], post: [14.6, 11.2], seam: [14.6, 11.2],
   quick_out: [14.7, 15.8], out: [14.7, 15.8], deep_out: [14.7, 15.8], corner: [15.4, 15.3],
   shallow: [15.8, 16.8], shallow_high: [15.8, 16.8], mesh_under: [15.8, 16.8], cross: [15.8, 16.8], flat: [15.1, 17.6], arrow: [15.1, 17.6],
@@ -388,11 +405,11 @@ export function alignOffense(formation: Formation, flip: boolean, los: number, b
     ? { LT: T, LG: line.cg, C: 0, RG: -line.cg, RT: -T } : { LT: 2.6, LG: 1.3, C: 0, RG: -1.3, RT: -2.6 };
   const depthOf = olDepth(ctx);
   for (const [slot, off] of Object.entries(olOff)) {
-    spots[slot] = { slot: slot as OffSlot, pos: { x: los - depthOf[slot as LineSlot], y: ballY + off }, side: off > 0 ? 'L' : off < 0 ? 'R' : 'C', backfield: false, inline: false };
+    spots[slot] = { slot: slot as OffSlot, pos: { x: los - depthOf[slot as LineSlot], y: ballY + off }, side: off > 0 ? 'L' : off < 0 ? 'R' : 'C', backfield: false, inline: false, onLine: true };
   }
   // Under center the QB's body is ~1.7 yd behind the line (NFL tracking at the snap): the center is in between.
   const qbDepth = formation.qb === 'under' ? 1.6 : formation.qb === 'pistol' ? PISTOL_QB_DEPTH : GUN_QB_DEPTH;
-  spots.QB = { slot: 'QB', pos: { x: los - qbDepth, y: ballY }, side: 'C', backfield: true, inline: false };
+  spots.QB = { slot: 'QB', pos: { x: los - qbDepth, y: ballY }, side: 'C', backfield: true, inline: false, onLine: false };
 
   // First pass: wide/inline/wing/fixed; second pass: slots (need #1 position).
   const entries = Object.entries(formation.slots) as Array<[SkillSlot, NonNullable<Formation['slots'][SkillSlot]>]>;
@@ -469,6 +486,8 @@ export function alignOffense(formation: Formation, flip: boolean, los: number, b
       side,
       backfield,
       inline: a.split === 'inline' && !offEnd.has(slot),
+      // TE_OFF: an end set off the ball is a back; the wide receiver brought up outside him is on the line.
+      onLine: onLine && !offEnd.has(slot),
     };
   }
 
@@ -1441,7 +1460,7 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
   if (style.scatter) for (const slot of present) {
     const sp = spots[slot], j = style.scatter[slot];
     if (!sp || !j || sp.press || sp.role.kind === 'blitz' || sp.pos.x - los <= 2) continue;
-    sp.pos = { x: los + Math.max(2.2, sp.pos.x - los + j.x), y: clamp(sp.pos.y + j.y, 1, FIELD_WIDTH - 1) };
+    sp.pos = { x: los + Math.max(2.2, sp.pos.x - los + j.x), y: clamp(sp.pos.y + j.y * (MIRROR_SCATTER ? scatterSide(off, sp.pos.y) : 1), 1, FIELD_WIDTH - 1) };
   }
   return { spots, rushers, coverage: cov, boxCount: box };
 }

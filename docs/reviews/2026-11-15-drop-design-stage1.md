@@ -699,30 +699,3 @@ cost.
 
 Corner grass reads: readable is the release won only (`declRule` not vertical); the deep half defender over a corner
 is the window's timing question. Mesh unchanged (20 corners at 2.42 s, 9.4 yd); smash as off (its corner is keyed).
-
-### Bit 16's pair: the PA read on the plant (2026-11-16, state)
-
-Built under bit 16 (FW_PA_READ): read 1 of an unkeyed play-action concept is decided on the plant out of the fake (thrown
-if ready and priced, else read 2 at once; no dwell, no look-off). Staged, 576 PA plays, CONCEPT_DROPS=1: sacks bit 1
-14.8%, bits 1+2 with the fake 27.1%, bits 1+2 without it 20.0%, bits 1+2+16 24.1%; completions 259 / 230 / 245 / 264,
-yd 7.12 / 6.08 / 7.32 / 7.46; median throw 3.05 / 3.30 / 3.10 / 3.40 s (NFL gun PA 2.3). Read 1 left on the plant on
-0 of 424 throws. Why: pa_post_dig and pa_shot are keyed (the key read's cue, not the plant, decides them), and pa_flood's
-read 1 (the deep out) is not ready at the 2.5 s plant (9.2 yd, before its break; priced 0.67 against his 0.52 bar):
-the plan's PA rhythm and the routes are timed for the old 0.7 s fake. The pair needs the plan compiled on the honest
-fake (Rules: read 1 the window the fake makes, on the plant step) and the key cued on the plant; not carded until then.
-
-Correction (Rules, same day; Bleacher Report, "Football 101: the art of the play action": after the fake he should
-"pull the ball out from the ball-carrier and snap his head around to identify his first read"; with it not there he
-"operates as if it is a passing play"). The plant is when read 1 is *decided* (on a keyed concept, the deep man's
-read), not when it must be *thrown*: the post or dig is ready on the hitch after (pa_post_dig 2.8-2.95 s, pa_shot
-2.7-2.8, pa_flood 2.8-3.0, against a plant at 1.7 / 2.1 s). The first build's "not ready at the plant, on to read 2"
-is wrong and is to be replaced: decide on the plant (the key cued on the plant), throw read 1 on its ready, else the
-order as compiled. Plan data proposed to Rules: `decided: 'plant'` on read 1 of the PA concepts, the key's cueBy at the
-plant (plannedFakeEnd plus the drop). Waiting for Integration's go.
-
-**The pair, rebuilt and gated** (on Rules' rules/pa-plant 70b35e11 with the engine-72 stack, staged, 576 PA plays,
-CONCEPT_DROPS=1): a keyed play action's key is read at `plan.plantAt`; read 1 is thrown on its own ready; no look-off
-before it. Bits 1+2 against 1+2+16: sacks 9.4 -> 13.0%, completions 265 -> 308, yd 7.68 -> 8.99, read 1 thrown 103 ->
-223 (completed 56 -> 147), median throw 3.05 -> 3.20 s, set 1.64 -> 2.32 s. pa_flood yd 7.98 -> 10.69, pa_post_dig 7.26
--> 8.37, pa_shot 7.80 -> 7.92. The sack cost is the honest fake's (the backside end on play action is with Flex and
-Rules). Test: test/qb-pa-plant.test.ts. Patch 11, on rules/pa-plant after the engine-72 stack patch.

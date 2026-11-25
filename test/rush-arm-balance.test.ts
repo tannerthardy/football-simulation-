@@ -57,11 +57,15 @@ describe('RUSH_ARM_BALANCE', () => {
     vi.resetModules();
     for (const [k, v] of Object.entries(stack)) if (v === 'on') vi.stubEnv(k, '1');
     for (const k of ['RUSH_HANDS', 'PUNCH_STRIKE', 'ANCHOR_BASE', 'RUSH_ARM_BALANCE']) vi.stubEnv(k, '1');
+    vi.stubEnv('QB_ROLE_PATH', '0'); // engine-88 (QB landing, pinned test-only): the searched bull fall was found with the old deep price; the throw's timing moves with it. Flex to re-search with it on
     vi.stubEnv('RUSH_LEAN_BOUND', '0');
     const { PlaySim } = await import('../src/sim/playsim.js');
     const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');
     let found: string | null = null, scenes = 0;
-    search: for (const coverage of ['cover1', 'cover2', 'cover3']) for (let seed = 1; seed <= 8; seed++) for (let roster = 1; roster <= 12; roster++) {
+    // Cover 0 added 2026-11-25 (Coverage, LANE_LEVERAGE and FLAT_SINK_ONE on): the corner flags move the Cover 2 scene this
+    // found first (cover2 roster 1 seed 1, 3.80 s) and the search over the three coverages found none; over these four, one
+    // (cover0 roster 12 seed 7, 4.55 s; with the flags off, two). The rule is unchanged: at least one exists.
+    search: for (const coverage of ['cover1', 'cover2', 'cover3', 'cover0']) for (let seed = 1; seed <= 8; seed++) for (let roster = 1; roster <= 12; roster++) {
       scenes++;
       const sim: any = new PlaySim(nativeTraceSetup({ coverage, concept: 'four_verts', seed, roster, formation: 'gun_doubles_11', flip: false }));
       const dl = new Set(sim.defense.filter((a: any) => /^(DE|DT|NT)/.test(a.slot)).map((a: any) => a.idx));

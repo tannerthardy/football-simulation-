@@ -25,8 +25,8 @@ const ROUTE_FILLET = process.env.ROUTE_FILLET !== '0';
  * zone as against man (Throw Deep: the same coaching points; one coordinator's "do not run past the center" against
  * zone is not adopted without a second source). */
 const CROSS_OVER = process.env.CROSS_OVER === '1';
-/** ROUTE_SHAPE (experimental, off): the in and out breaks as rolls, as taught (see SHAPES below). */
-const ROUTE_SHAPE = process.env.ROUTE_SHAPE === '1';
+/** ROUTE_SHAPE (default on, engine-82; ROUTE_SHAPE=0 turns it off): the in and out breaks as rolls, as taught (see SHAPES below). */
+const ROUTE_SHAPE = process.env.ROUTE_SHAPE !== '0';
 /** CROSS_FLAT (experimental, off): the shallow crossers reach their depth in the first leg and run flat across, as
  * taught ("run under the linebackers, flat across"; docs/reviews/2026-11-14-crosser-depth.md). Off, the shallow
  * climbs on a diagonal from a 2.5 yd stem to 5 yd across 22 yd: still rising at 3.0 s (4.7 yd median against zone, ball
@@ -54,7 +54,30 @@ const ROUTE_TABLE: Record<string, RouteDef> = {
       { id: 'under', end: 'continue', points: [{ d: 10, l: -.4, s: .4 }, { d: 10.5, l: -16 }] },
     ] } },
   // Quick game
+  // Double moves (Rules + Coaching, 2026-11-25; Defense's and Coverage's staged question, the man defender's look for the
+  // ball). Routes only: no concept, call or plan runs them. "Double moves normally work better vs man coverage"; sell "at
+  // least three steps. This is enough to get the cover man to trigger and bite on the initial route" (FirstDown PlayBook,
+  // receiver double moves).
+  // Out-and-up: "the receiver run a 5-yard out, but when they take 3 steps to the outside, they will convert it to a go
+  // route ... speed players must sell out before transitioning to the go route" (Viqtory). "When the defense is jumping
+  // outs ... Good against: Flat defenders, squat corners" (cfbtrack). The shaped quick out's first move (rounded at 4 yd,
+  // as ours runs it), three steps out to 5.5 yd and 2.5 yd outward, a plant there (the second move) and up the sideline,
+  // room kept to the boundary. Against press his release carries him wide first, as it does the quick out's.
+  out_and_up: { id: 'out_and_up', family: 'deep', depth: 25, end: 'continue',
+    points: [{ d: 4, l: 0, s: 0.9 }, { d: 5.5, l: 2.5, s: 0.45, cut: true }, { d: 20, l: 3.5 }, { d: 50, l: 4 }] },
+  // Sluggo (slant-and-go): "When he gets about halfway through what would be a typical Slant route, the receiver will break
+  // it off ... he'll need to plant his inside foot ... take a straight-line sprint straight downfield" (FootballAdvantage).
+  // The sell: "As he makes his first break, he will turn his head to help sell the first-move. On the 3rd step out of his
+  // 1st break, he will use a 2nd bam step to get out of the break" (Kolste, "3x3 Bam"). "The cornerback begins to come down
+  // hill to cover the slant stem" (Inside the Pylon). The slant's stem and break, halfway down its leg, a plant, then
+  // straight up. Variant not authored: cutting toward the back pylon against a closed middle (Inside the Pylon).
+  sluggo: { id: 'sluggo', family: 'deep', depth: 25, end: 'continue',
+    points: [{ d: 2, l: 0, s: 0.75 }, { d: 4.25, l: -2.25, s: 0.4, cut: true }, { d: 50, l: -2.75 }] },
   hitch: { id: 'hitch', family: 'quick', depth: 5, end: 'settle', points: [{ d: 6, l: 0, s: 0.2 }, { d: 5, l: 0.3, s: 0 }] },
+  // QUICK_HITCH (concepts.ts): the quick game's hitch, planted at 5 yd ("every receiver is running a 5-yard hitch", the
+  // quick game off a three-step, one step from the gun for "any route that breaks at 5 yards or under", Viqtory Sports);
+  // the five-step hitch above stays at 6 (Throw Deep, Smash: "settle hitch route at 6 yards"). Same shape, a yard shallower.
+  quick_hitch: { id: 'quick_hitch', family: 'quick', depth: 4, end: 'settle', points: [{ d: 5, l: 0, s: 0.2 }, { d: 4.5, l: 0.3, s: 0 }] },
   // Three-step slant: break at 45°, then flatten across the field if not thrown.
   slant: { id: 'slant', family: 'quick', depth: 6, end: 'continue', points: [{ d: 2, l: 0, s: 0.75 }, { d: 6.5, l: -4.5 }, { d: 8.5, l: -12 }] },
   quick_out: { id: 'quick_out', family: 'quick', depth: 5, end: 'continue', points: [{ d: 5, l: 0, s: 0.4 }, { d: 5, l: 9, s: 0.9 }] },
@@ -63,7 +86,11 @@ const ROUTE_TABLE: Record<string, RouteDef> = {
     points: [{ d: 6, l: 0, s: 0.25 }, { d: 5.5, l: -0.6, s: 0 }],
     vsMan: [{ d: 6, l: 0, s: 0.4 }, { d: 6, l: 9, s: 0.9 }],
   },
-  flat: { id: 'flat', family: 'flat', depth: 3, end: 'continue', points: [{ d: 0, l: 2, s: 0.9 }, { d: 3.5, l: 12 }] },
+  // The flat's timing point (`timing`): where an on-time flat is thrown. NFL flats thrown to WR/TE (non-PA, n 281) are
+  // released at a median 2.1 s, 6.4 yd outward and 0.6 yd past the line; on our leg that is 1.54 yd deep (ours reaches it
+  // at about 2.2 s; flat_pace.py on #876). It is data, not a vertex: an added vertex changes the path built for the trips
+  // flat (stick, flood: up to 0.45 yd).
+  flat: { id: 'flat', family: 'flat', depth: 3, end: 'continue', timing: { d: 1.54, l: 6.4 }, points: [{ d: 0, l: 2, s: 0.9 }, { d: 3.5, l: 12 }] },
   arrow: { id: 'arrow', family: 'flat', depth: 4, end: 'continue', points: [{ d: 4, l: 5, s: 0.9 }, { d: 6, l: 14 }] },
   // Intermediate
   out: { id: 'out', family: 'intermediate', depth: 10, end: 'continue', points: [{ d: 10, l: 0, s: 0.4 }, { d: 9.5, l: 12, s: 0.9 }] },
@@ -92,7 +119,9 @@ const ROUTE_TABLE: Record<string, RouteDef> = {
     ? { id: 'cross', family: 'cross', depth: 14, end: 'continue', points: [{ d: 4, l: -3, s: 0.9 }, { d: 11, l: -10 }, { d: 17, l: -20 }, { d: 21, l: -34 }] }
     : { id: 'cross', family: 'cross', depth: 14, end: 'continue', points: [{ d: 6, l: -1, s: 0.9 }, { d: 14, l: -16, s: 0.85 }, { d: 18, l: -34 }] },
   // Backs
-  swing: { id: 'swing', family: 'back', depth: 0, end: 'continue', points: [{ d: -1.5, l: 4, s: 0.9 }, { d: -0.5, l: 9, s: 0.9 }, { d: 3, l: 13 }] },
+  // Backs' timing points: NFL flats thrown to backs (n 559) go at a median 2.3 s, 6.9 yd outward (on the leg at 7). BDB
+  // labels no swing; the swing takes the back's flat width (an inference). Unset, both would time to 13 yd wide.
+  swing: { id: 'swing', family: 'back', depth: 0, end: 'continue', timing: { d: -0.9, l: 7 }, points: [{ d: -1.5, l: 4, s: 0.9 }, { d: -0.5, l: 9, s: 0.9 }, { d: 3, l: 13 }] },
   checkdown: { id: 'checkdown', family: 'back', depth: 4, end: 'settle', points: [{ d: 0.5, l: 1, s: 0.8 }, { d: 4.5, l: -1, s: 0 }] },
   // BACK_PATHS: NFL backs' ANGLE (n 429) is still 3.6 yd behind the line at 1.5 s and at it by 2.5 s, 2.4-3.0 yd wide,
   // caught at a median +3 yd; off, the break is 1.5 yd past the line and the catch +4.4.
@@ -103,8 +132,8 @@ const ROUTE_TABLE: Record<string, RouteDef> = {
   // non-PA drop-backs, BDB 2025 weeks 1-3, n 968: depth -4.6 / -4.6 / -4.4 / -3.7 yd at 1.0 / 1.5 / 2.0 / 2.5 s, width
   // from the ball 3.6 / 5.4 / 7.7 / 10.3 yd; caught at a median -1.0 yd, 56% behind the line). Off: to the line at once.
   back_flat: BACK_PATHS
-    ? { id: 'back_flat', family: 'back', depth: -2, end: 'continue', pace: 0.55, points: [{ d: -4.5, l: 3, s: 0.9 }, { d: -4.2, l: 7, s: 0.9 }, { d: -3.5, l: 10 }, { d: -1.5, l: 13 }] }
-    : { id: 'back_flat', family: 'back', depth: 1, end: 'continue', points: [{ d: 0, l: 4, s: 0.9 }, { d: 2, l: 12 }] },
+    ? { id: 'back_flat', family: 'back', depth: -2, end: 'continue', pace: 0.55, timing: { d: -4.2, l: 7 }, points: [{ d: -4.5, l: 3, s: 0.9 }, { d: -4.2, l: 7, s: 0.9 }, { d: -3.5, l: 10 }, { d: -1.5, l: 13 }] }
+    : { id: 'back_flat', family: 'back', depth: 1, end: 'continue', timing: { d: 0.725, l: 6.9 }, points: [{ d: 0, l: 4, s: 0.9 }, { d: 2, l: 12 }] },
   // Screens (docs/football-handbook/screens.md). Caught behind the line.
   // Slip: after selling his block the back drifts wide behind the traffic and
   // settles outside the screen-side tackle, ~3.5 yd behind the line. NFL slip
@@ -198,7 +227,7 @@ const SHAPED: Record<string, RouteDef> = ROUTE_SHAPE
 const BREAKS: Record<string, ReadonlyArray<{ cut?: boolean; s?: number } | null>> = {
   slant: [{ cut: true, s: 0.35 }],
   out: [{ cut: true, s: 0.4 }], deep_out: [{ cut: true, s: 0.4 }], dig: [{ cut: true, s: 0.4 }], short_in: [{ cut: true, s: 0.4 }],
-  hitch: [{ cut: true }], curl: [{ cut: true }], comeback: [{ cut: true }], stick: [{ cut: true }], hook: [{ cut: true }],
+  hitch: [{ cut: true }], quick_hitch: [{ cut: true }], curl: [{ cut: true }], comeback: [{ cut: true }], stick: [{ cut: true }], hook: [{ cut: true }],
   corner: [{ s: 1 }, { s: 1 }], post: [{ s: 1 }],
   shallow: [{ s: 1 }], shallow_high: [{ s: 1 }], cross: [{ s: 1 }, { s: 1 }],
 };
@@ -215,6 +244,16 @@ export const ROUTES: Record<string, RouteDef> = BREAK_CUTS
     }) }
     : r]))
   : SHAPED;
+
+/** The point a throw timed on the route (`onBreak`) is due at, for a route without a planted break, in route
+ * coordinates (d past the line, l outward from his alignment): its declared `timing` point, else the first of its points at
+ * or past its declared depth, else its last point. The QB lane's forecast reads it for the seen-depth gate (in place of a
+ * set of route ids). */
+export function timingPoint(route: RouteDef): { d: number; l: number } {
+  if (route.timing) return route.timing;
+  const p = route.points.find((q) => q.d >= route.depth - 0.25) ?? route.points[route.points.length - 1];
+  return { d: p.d, l: p.l };
+}
 
 export function getRoute(id: string): RouteDef {
   const r = ROUTES[id];

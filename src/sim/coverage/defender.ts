@@ -11,8 +11,8 @@ import type { Agent, Behavior } from '../agent.js';
 import { believesRun, ManCoverage, OPEN_CARRY, pursueIfLive, runFit, sawThrow, playsThrow, ZoneCoverage } from '../behaviors/defense.js';
 import type { PlaySim } from '../playsim.js';
 import { ReleaseReader } from './reads.js';
-import { CUT_ENTER, CUT_EXIT, CUT_WALL, runRule, zoneSide, type Directive, type RuleState } from './rules.js';
-import { CrossWall, ReadRelease, Rob, Trap, Wall } from './techniques.js';
+import { BOX_IN, CUT_ENTER, CUT_EXIT, CUT_WALL, Q_APEX, runRule, zoneSide, type Directive, type RuleState } from './rules.js';
+import { CrossWall, ReadRelease, Rob, Trap, Wall, QuarterShort } from './techniques.js';
 import { isDeepZone, zoneLandmark } from '../../playbook/alignment.js';
 import { CoverageJudgment } from './judgment.js';
 
@@ -147,6 +147,13 @@ export class CoverageDefender implements Behavior {
    */
   private passUnder(sim: PlaySim, d: Directive): Directive {
     if (sim.defCall.coverage.man || this.rule === 'q_corner_meg' || this.rule === 'mush' || this.rule === 'rat') return d;
+    // MATCH_DECLARE: the seam/curl-flat player taking #2 back across (#3 away) has no one to pass him to.
+    if (this.state.mode === 'across') return d;
+    // Q_APEX: the quarters apex carrying #2 back across with #3 away ("two") has no one to pass him to.
+    if (Q_APEX && this.rule === 'q_apex' && this.state.mode === 'two') return d;
+    // BOX_IN: in Box (quarters vs bunch, HNFL-053) the low inside defender's job is the first in-breaker from the bunch;
+    // the pickup is the exchange, so there is no one to pass him to.
+    if (BOX_IN && this.rule === 'box_in_low') return d;
     if (d.t === 'crossWall') return d;
     const area = zoneLandmark(this.zone, sim.offAlign);
     const target = d.t === 'man' || d.t === 'wall' ? d.r : null;
@@ -173,6 +180,7 @@ export class CoverageDefender implements Behavior {
           { ...d.opts, protectDepth: isDeepZone(this.zone) });
       case 'read': return new ReadRelease(a, this.sim, d.r, this.reader, this.gap, this.gapSign, d.initialPosition);
       case 'trap': return new Trap(d.r, this.reader, this.gap, this.gapSign);
+      case 'qshort': return new QuarterShort(d.r, this.reader, this.gap, this.gapSign);
       case 'wall': return new Wall(d.r, this.reader, this.gap, this.gapSign, d.inside, d.flat);
       case 'rob': return new Rob(d.r, this.reader, this.gap, this.gapSign);
       case 'crossWall': return new CrossWall(d.r, this.reader, this.gap, this.gapSign, d.area, d.half);

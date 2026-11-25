@@ -1,5 +1,5 @@
 /** CHEST_SHOULDERS: a torso's chest segment lies across his shoulders (hips plus the TRUNK_TWIST trunk), so a twisted body's
- * segment rotates by the twist and an untwisted body's is unchanged to the digit; off, it lies across the hips. */
+ * segment rotates by the twist and an untwisted body's is unchanged to the digit; off (`CHEST_SHOULDERS=0`: the flag has been on by default since engine-68, so the off arms set it explicitly), it lies across the hips. */
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
@@ -22,12 +22,12 @@ describe('CHEST_SHOULDERS: the chest segment across the shoulders', () => {
   it('leaves an untwisted body unchanged to the digit', async () => {
     for (const trunk of [undefined, 0]) {
       const on = await half({ TRUNK_TWIST: '1', CHEST_SHOULDERS: '1' }, 1.1, trunk);
-      const off = await half({ TRUNK_TWIST: '1' }, 1.1, trunk);
+      const off = await half({ TRUNK_TWIST: '1', CHEST_SHOULDERS: '0' }, 1.1, trunk);
       expect(on.x).toBe(off.x); expect(on.y).toBe(off.y);
     }
   });
   it('off, lies across the hips whatever the trunk', async () => {
-    const twisted = await half({ TRUNK_TWIST: '1' }, 0.3, 0.5), straight = await half({ TRUNK_TWIST: '1' }, 0.3, 0);
+    const twisted = await half({ TRUNK_TWIST: '1', CHEST_SHOULDERS: '0' }, 0.3, 0.5), straight = await half({ TRUNK_TWIST: '1', CHEST_SHOULDERS: '0' }, 0.3, 0);
     expect(twisted.x).toBe(straight.x); expect(twisted.y).toBe(straight.y);
   });
   it('requires TRUNK_TWIST', async () => {

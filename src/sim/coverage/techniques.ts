@@ -13,9 +13,16 @@ import type { Vec2 } from '../../core/vec.js';
 import type { Agent, Behavior } from '../agent.js';
 import type { PlaySim } from '../playsim.js';
 import { angleTo, track } from '../behaviors/common.js';
-import { believesRun, infoHonest, ManCoverage, OPEN_CARRY, openCarryFacing, playBall, pursueIfLive, runFit, sawThrow, playsThrow, unsureFactor } from '../behaviors/defense.js';
+import { believesRun, continueFlightBreak, infoHonest, ManCoverage, OPEN_CARRY, openCarryFacing, playBall, pursueIfLive, runFit, sawThrow, playsThrow, unsureFactor } from '../behaviors/defense.js';
 import type { ReleaseReader } from './reads.js';
 import { withFacingTechnique } from './orientation.js';
+import { RELEASE_BELIEF } from '../release-belief.js';
+
+/** TECH_CONT (on since engine-75, 2026-11-17; `=0` restores the coast): a zone technique (Trap, Wall, Rob, CrossWall) that reads the throw on the arm alone keeps its own
+ * technique as the continuation of the throw read, as a zone dropper does: he plants on the load and breaks on the
+ * passer's shoulders at the delivery, instead of coasting on his current velocity until he has seen the ball's flight
+ * (the missing continuation: about 0.4 s still moving away from the catch point). */
+const TECH_CONT = process.env.TECH_CONT !== '0';
 
 const APEX_CUSHION = 9;
 
@@ -33,7 +40,10 @@ abstract class Technique implements Behavior {
   update(a: Agent, sim: PlaySim): MoveCommand {
     const live = pursueIfLive(sim, a);
     if (live) return live;
-    if (playsThrow(a, sim, null)) return playBall(a, sim, null);
+    if (playsThrow(a, sim, null)) return playBall(a, sim, null, TECH_CONT && RELEASE_BELIEF ? () => this.move(a, sim) : undefined);
+    // FLIGHT_BREAK: his flight has landed by his own estimate and the possession read has not yet seen a carrier: the
+    // break keeps its receiver instead of the technique (wall, read, trap) resuming (Defense's overrun class).
+    if (process.env.FLIGHT_BREAK !== '0') { const cont = continueFlightBreak(a, sim); if (cont) return cont; }
     if (believesRun(sim, a)) return runFit(a, sim, this.gap, this.gapSign);
     return this.move(a, sim);
   }
@@ -181,5 +191,29 @@ export class CrossWall extends Technique {
     const speed = (0.8 + 0.15 * a.r('zoneCoverage')) * unsureFactor(a);
     return withFacingTechnique(track(a, aim, { x: 0, y: 0 }, { facing: angleTo(a.pos, qb), speed, gain: 2 }),
       { label: contact ? 'cross-wall-collide' : 'cross-wall', key: rd.vel });
+  }
+}
+
+/** QCORNER bit 4 (experimental, off; QCORNER=4): the quarters MOD corner who has zoned off a short #1 (`zoneOffOne`)
+ * plays #1's path as taught, from his own picture of #1 (`reader.read`), instead of the deep quarter's drop to its
+ * landmark (which kept him bailing: 1.9 yd of sink from 1.0 to 2.0 s against the NFL's 0.4 when #1 stays on his side
+ * and 1.3 when #1 crosses, quarters_cb.py). #1 stays on his side (a hitch, stop or out): he settles at the depth he has
+ * over #1's window, outside-in, eyes on the QB, and breaks on the throw he sees (the base: playsThrow -> playBall).
+ * #1 crosses (2 yd or more inside of his alignment in the corner's picture; final once declared, as the zone-off is):
+ * he sinks and works inside to the window behind the crosser, 5 yd over him (the curl-to-post window; a stated choice). */
+export class QuarterShort extends Technique {
+  private crossed = false;
+  protected move(a: Agent, sim: PlaySim): MoveCommand {
+    const rd = this.reader.read(sim, this.target);
+    if (!rd) return { vel: { x: 0, y: 0 } };
+    if (!this.crossed && rd.outward <= -2) this.crossed = true;
+    const qb = sim.see(a, sim.qb).pos;
+    const facing = angleTo(a.pos, qb);
+    if (!this.crossed) {
+      const aim = { x: a.pos.x, y: clamp(rd.pos.y + rd.outSign * 1.0, 0.5, FIELD_WIDTH - 0.5) };
+      return withFacingTechnique(track(a, aim, { x: 0, y: rd.vel.y * 0.5 }, { facing, speed: 0.8, gain: 1.6 }), { label: 'q-short-settle', key: rd.vel });
+    }
+    const aim = { x: Math.max(a.pos.x, rd.pos.x + 5), y: clamp(rd.pos.y, 0.5, FIELD_WIDTH - 0.5) };
+    return withFacingTechnique(track(a, aim, { x: 0, y: rd.vel.y * 0.6 }, { facing, speed: 0.85, gain: 1.6 }), { label: 'q-short-sink', key: rd.vel });
   }
 }

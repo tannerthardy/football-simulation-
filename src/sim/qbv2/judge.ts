@@ -21,8 +21,13 @@ export interface SeenDefender {
   facing: number;
   /** His picture's spread on this man (yd), from the cones and age. */
   spread: number;
-  /** How old his picture of this man is (s): what the man did since is unknown to him, within what a body can do. */
+  /** How long since the moment his picture of this man shows (s): the sensing delay plus the time with no new sighting.
+   * What the man did since is unknown to him. */
   age?: number;
+  /** How far his belief of this man has moved from the sighting to the man's job (0-1; the estimate's blend weight). */
+  job?: number;
+  /** His dead-reckoned spread on this man (yd): the look's velocity error carried over the unseen time (forecast noise). */
+  spreadDR?: number;
   /** Whether the passer sees him facing the passer (eyes on him), so he can take the arm cue. */
   facesPasser: boolean;
   /** Scouting report: top speed (yd/s), acceleration (yd/s^2), reach (yd) and leap height (yd), ball skills (0-1). */
@@ -130,16 +135,33 @@ export const LANE_PICK = 0.3;
 export const LANE_NEAR = 3;
 
 const hyp = (a: V2, b: V2) => Math.hypot(a.x - b.x, a.y - b.y);
-/** His spread on a man's arrival (s): the picture's own spread, plus what the man may have done since he was last seen
- * (an aged picture: he can have changed his velocity by up to his acceleration times the age, and that carries to the
- * point over the time it takes), plus the receiver's spread; over the man's speed. Information-honest: a man last seen
- * widening 0.6 s ago is a wide belief, not a certain one (staged V2, 2026-11-24, the field nickel). */
 /** How fast an unseen man's velocity typically changes (yd/s^2): not his top acceleration, which assumes he spent the
  * whole unseen time accelerating at the point (chosen; staged V2: top acceleration made every belief too wide). */
 export const UNSEEN_DRIFT = 2.5;
-function arriveSigma(d: SeenDefender, recvSig: number, horizon: number): number {
-  const age = d.age ?? 0, unknown = 0.5 * UNSEEN_DRIFT * age * age + UNSEEN_DRIFT * age * Math.max(0, horizon);
-  return Math.hypot(ARRIVE_SIGMA0, Math.hypot(d.spread + unknown, recvSig) / Math.max(d.vmax, 1e-3));
+/** Picture age (card spec §1, with Integration's ruling 2026-11-25; a caution the passer applies, a stated choice, not
+ * a claim that unseen men close). `d.age` is the time since his last sighting (0 while watched: the sensing delay is the
+ * look's own lag, not unseen time). The man is priced where he is believed (the estimate). The rule: holding that belief
+ * fixed, the throw's estimate never rises with the time since he was seen.
+ * - Glanced away (inside the estimate's dead-reckoning horizon, 0.5 s): the one-way advance, an unseen change of his
+ *   velocity toward the point (UNSEEN_DRIFT) over the unseen time, in seconds of his arrival.
+ * - Past the horizon the belief is his job, not the sighting: the advance holds at its horizon value, and never exceeds
+ *   the straight-line bound (a man cannot have gained more than the unseen time itself). His job belief carries JOB_SPREAD,
+ *   by how far the estimate has moved to it; it is applied one way (it can only raise his arrival chance).
+ * - The look's velocity error dead-reckoned over the unseen time is forecast noise; it widens his belief one way too. */
+export const JOB_SPREAD = 2.0; // yd: a man's position about his believed job; chosen, labelled (QBMind's expected spot has no spread of its own)
+const DR_HORIZON = 0.5; // s: QBMind.estimate's dead-reckoning horizon (EST_DR_HORIZON)
+function arrival(d: SeenDefender, recvSig: number, horizon: number, margin: number): { sigma: number; pArrive: number } {
+  const v = Math.max(d.vmax, 1e-3), u = Math.min(d.age ?? 0, DR_HORIZON);
+  const sigma = Math.hypot(ARRIVE_SIGMA0, Math.hypot(d.spread, recvSig) / v);
+  const advance = Math.min(u, (0.5 * UNSEEN_DRIFT * u * u + UNSEEN_DRIFT * u * Math.max(0, horizon)) / v);
+  let pArrive = phi((margin + advance) / sigma);
+  const job = d.job ?? 0;
+  // The wider spreads of time unseen, each one way (they can only raise his arrival chance): the look's velocity error
+  // dead-reckoned over the unseen time (forecast noise), and his job belief.
+  const z = (sp: number) => phi((margin + advance) / Math.hypot(ARRIVE_SIGMA0, Math.hypot(sp, recvSig) / v));
+  if ((d.spreadDR ?? 0) > d.spread) pArrive = Math.max(pArrive, z(d.spreadDR!));
+  if (job > 0) pArrive = Math.max(pArrive, z(Math.hypot(Math.max(d.spread, d.spreadDR ?? 0), JOB_SPREAD * job)));
+  return { sigma, pArrive };
 }
 const phi = (z: number) => 0.5 * (1 + Math.tanh(0.7978845608 * (z + 0.044715 * z * z * z)));
 
@@ -205,8 +227,7 @@ export function judge(q: ThrowQuestion, defs: SeenDefender[]): Judgment {
   const recvSig = Math.hypot(q.receiverSpread, LOOK_SEP * (1 - q.res), q.placeSpread ?? 0);
   const cov = findCoverer(q, defs);
   const add = (d: SeenDefender, role: Role, tArr: number) => {
-    const sigma = arriveSigma(d, recvSig, tArr);
-    const margin = tBall - tArr, pArrive = phi(margin / sigma);
+    const margin = tBall - tArr, { sigma, pArrive } = arrival(d, recvSig, tArr, margin);
     roles.push({ id: d.id, role, margin, sigma, pArrive, pPlay: pArrive * PLAY_BREAKUP, pPick: pArrive * PLAY_BREAKUP * PICK_OF_PLAY * (0.5 + d.ballSkills) });
   };
   if (cov) {
@@ -255,9 +276,9 @@ export function judge(q: ThrowQuestion, defs: SeenDefender[]): Judgment {
       if (best === null || m > best) best = m;
       if (hyp(p, q.catchAt) <= LANE_NEAR && (near === null || m > near)) near = m;
     });
-    if (best === null || best <= -0.3) return null;
-    const sigma = arriveSigma(d, q.placeSpread ?? 0, q.windup + q.flight);
-    return { margin: best, sigma, pArrive: phi(best / sigma), rusher: false, pNear: near === null ? 0 : phi(near / sigma) };
+    if (best === null) return null; // no cut-off on the margin (card spec §1): a late man is a small chance, not none
+    const h = q.windup + q.flight, { sigma, pArrive } = arrival(d, q.placeSpread ?? 0, h, best);
+    return { margin: best, sigma, pArrive, rusher: false, pNear: near === null ? 0 : arrival(d, q.placeSpread ?? 0, h, near).pArrive };
   };
   // The coverer can also undercut the route and take the ball on its line, short of the catch point: the higher of the two.
   if (cov) {
@@ -267,7 +288,7 @@ export function judge(q: ThrowQuestion, defs: SeenDefender[]): Judgment {
   const driverOf = (d: SeenDefender): RoleJudged | null => {
     if (hyp(d.pos, q.catchAt) > DRIVE_RANGE) return null;
     const start = q.windup + (d.facesPasser ? 0 : ARM_LEAD), tArr = arriveTime(d, q.catchAt, d.reach + PLAY_CLEAR, start);
-    const sigma = arriveSigma(d, recvSig, tArr), margin = tBall - tArr, pArrive = phi(margin / sigma);
+    const margin = tBall - tArr, { sigma, pArrive } = arrival(d, recvSig, tArr, margin);
     return { id: d.id, role: 'driver', margin, sigma, pArrive, pPlay: pArrive * PLAY_BREAKUP, pPick: pArrive * PLAY_BREAKUP * PICK_OF_PLAY * (0.5 + d.ballSkills) };
   };
   for (const d of defs) {

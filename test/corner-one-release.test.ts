@@ -6,7 +6,8 @@
  * first five yards). A short stop zones him off only until #1 turns upfield.
  * Film: node --import tsx scripts/corner-one-film.ts > out/corner-one-film.json
  */
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
+vi.hoisted(() => { process.env.SET_SPOT = '0'; }); // engine-72: fixture recorded on the old pass set; the lane that owns it re-records with SET_SPOT on (docs/reviews/2026-11-16-pin-delta-engine72.md). engine-83's QB flags no longer pinned (Coverage, 2026-11-18): the QB holds the ball (below), so his throw timing cannot bring the arm through on a rep that asks about the route
 import { CENTER_Y } from '../src/core/field.js';
 // Registers the lab routes for #1 (lab_curl7, lab_stop_go, lab_out_up4).
 import '../src/lab/coverage-scene.js';
@@ -39,6 +40,9 @@ function run(coverage: string, route: string, side: 'S' | 'W', until = 3.8) {
     los: 40, ballY: CENTER_Y, firstDownX: 50, seed: 5,
   });
   sim.throwBall = () => undefined;
+  // The QB holds the ball: with engine-83's throw timing a stubbed throwBall still brings the arm through (a pump the
+  // corner sees and plays); this rep asks about the route, so the QB stands with it.
+  sim.qb.behavior = { kind: 'qb-hold', update: () => stand() } as never;
   // The out-and-up and stop-and-go turn upfield at 2.6-3.1 s; a four-man
   // rush can end the rep first, so the question is never asked. The
   // rushers hold their ground; `held` still asserts the ball was in the

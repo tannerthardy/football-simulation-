@@ -73,7 +73,7 @@ export type BallState =
       deflected: boolean;
       throwaway: boolean;
       /** CATCH_SECURE: in a receiver's hands but not yet a catch (securing window). */
-      securing?: { receiver: Agent; start: number; until: number; tried: Set<Agent> };
+      securing?: { receiver: Agent; start: number; until: number; tried: Set<Agent>; triedBody?: Set<Agent> };
     }
   | { kind: 'loose'; flight: BallFlight; since: number; lastTeam: TeamSide; fumbledBy: Agent;
       /** Actual release spot and act; a missed backward pitch is not a fumble for advancement restrictions. */
@@ -295,6 +295,9 @@ export interface PlayStats {
   /** Native event ledger; absence retains the historical singular reduction. */
   fumbles?: Array<{ playerId: string; team: TeamSide; lost: boolean; recoveredBy?: string; t?: number }>;
   passer?: string;
+  /** QB_V2 ran this play's read (a staged concept whose plan fits the call); absent otherwise. The eligibility tag for
+   * reading a whole-game card on V2's plays. */
+  qbV2?: boolean;
   target?: string;
   receiver?: string;
   rusher?: string;

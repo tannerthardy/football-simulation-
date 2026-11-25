@@ -6,12 +6,15 @@
  * reads the play, he executes his pre-snap job; play action can fool him into
  * believing run for longer.
  */
+import { believedCaps, lookAt } from '../believed-body.js';
 import { HANDS_CUE, handsUpAt } from '../hands-cue.js';
 import { isOL } from './blocking.js';
 import { KEY_REACT, KEY_STEP_SEEN, STEP_SEEN, keyScale } from '../key-read.js';
 import { END_LINE_X, FIELD_WIDTH, OPP_GOAL_X } from '../../core/field.js';
 import { angleDiff, clamp, lerp, norm, sub, type Vec2 } from '../../core/vec.js';
-import { DIR_CAP, directionalSpeedFactor, TRUNK_PRICE, TRUNK_RANGE, TRUNK_TWIST, type MoveCommand } from '../../physics/kinematics.js';
+import { DIR_CAP, directionalSpeedFactor, fatigueFactor, movingArrivalVelocity, TRUNK_PRICE, TRUNK_RANGE, TRUNK_TWIST, type MoveCommand } from '../../physics/kinematics.js';
+import { availability, supportParams } from '../../physics/support.js';
+import { postCatchLead } from '../post-catch.js';
 import { timeToReach } from '../../physics/reach.js';
 import { coverageDepth, gapY, isDeepZone, zoneLandmark } from '../../playbook/alignment.js';
 import type { DefSlot, Gap, ZoneId, ZoneStyle } from '../../playbook/types.js';
@@ -29,14 +32,14 @@ import { executeRunFit, guardStep, lineRead, pullers, type RunFitRead } from '..
 import { linePicture } from '../live-gaps.js';
 import { RouteObservation } from '../coverage-read.js';
 import { movingCatchApproach } from '../catch-approach.js';
-import { RELEASE_BELIEF, releaseBelief } from '../release-belief.js';
+import { LOAD_BEAT, PULL_MARGIN, RELEASE_BELIEF, RUSH_RELEASE, lastReleaseBelief, releaseBelief } from '../release-belief.js';
 import { withMovementObjective } from '../movement-objective.js';
 import { OPEN_FIELD, playsBall } from '../open-field.js';
-import { DeepCoverage } from '../coverage-leverage.js';
-import { roundedTurnTime, withFacingTechnique } from '../coverage/orientation.js';
+import { DeepCoverage, StemAcceleration, stemStopped } from '../coverage-leverage.js';
+import { facingTechnique, roundedTurnTime, withFacingTechnique } from '../coverage/orientation.js';
 import { SNAP_REACT } from '../snap-count.js';
 import { BALL_EST, BALL_EST_MAN_LOOK, estimatesFor, lookAnyway, lookJoints, neckOf, PHASE_BEHIND, PHASE_SIDE, phaseJudgeSd } from '../ball-estimate.js';
-import { acquireFlight, anticipatedCatcher, catchOpportunity, flightLanded, hasObservedFlight, observedHolder, QB_RELEASE, qbRunning, qbRunningAtLine, rememberCatchOpportunity, rememberedFlight, unresolvedBallArea } from '../possession-read.js';
+import { acquireFlight, anticipatedCatcher, catchOpportunity, flightLanded, hasObservedFlight, observedHolder, QB_RELEASE, qbRunning, qbRunningAtLine, rememberCatchOpportunity, rememberedFlight, SECURE_BEAT, unresolvedBallArea } from '../possession-read.js';
 import { seenEngaged } from '../seen-contact.js';
 import { BALL_CUE_OWN } from '../release-evidence.js';
 
@@ -67,6 +70,42 @@ export function believesRun(_sim: PlaySim, a: Agent): boolean {
  * foot hits, then plant"), as tracked underneath defenders do (BDB 2025: hook
  * 4.4 -> 6.6 yd by 2.5 s on dropbacks; docs/reviews/2026-11-09-coverage-spacing.md). */
 const ZONE_SETTLE = process.env.ZONE_SETTLE !== '0';
+/** SETTLE_DEPTH (experimental, off; SETTLE_DEPTH=1 turns it on; docs/reviews/2026-11-15-underneath-handoff-design.md,
+ * part ii): ZONE_SETTLE plants an underneath dropper at the depth he has when he sees the QB set, which is right for a
+ * man who reached his drop and wrong for one a route pulled down (a hook who walled or carried the shallow settled at
+ * 5-6 yd against a 10 yd landmark, under the dig). Under the flag, a dropper who is short of his landmark's depth by
+ * more than SINK_ENTER keeps gaining depth toward it while he reads the QB, until he is within SINK_EXIT; one at depth
+ * settles as before. His own position against his landmark is his to know. Margins: stated choices, enter and exit on
+ * opposite sides. */
+export const SETTLE_DEPTH = process.env.SETTLE_DEPTH !== '0';
+/** FLAT_SINK (on since engine-85; FLAT_SINK=0 restores; Rules + Coaching's rule, HNFL-099/-334, Coverage built): the
+ * flat (squat / cloud) corner sinks with #1's vertical until the flat is threatened in front of him ("sink with #1 until
+ * the ball brings you down; top-down the flat"). While a receiver in his area runs vertically over him (seen downfield
+ * over 4 yd/s, at or past his depth less 1.5 yd; held while over 2 yd/s and short of FLAT_SINK_DEPTH) and no other
+ * receiver in his area is a yard or more shallower than him, he carries under #1 with his eyes on the QB and does not
+ * plant on the QB's set; a receiver into the flat in front of him ends it and his zone play takes the flat. Measured
+ * first (Rules, hole-shot, Cover 2 throws to #1 at 15+ air yards): NFL corner downfield 3.6 yd/s at the throw, ours
+ * 0.5 (planted on the set); corner to #1 at arrival 6.4 vs 11.8 yd. */
+export const FLAT_SINK = process.env.FLAT_SINK !== '0';
+/** FLAT_CARRY (on since engine-89; FLAT_CARRY=0 restores; Coverage, Rules + Coaching's rule HNFL-099/-334): with #1 cancelled
+ * (not vertical, his own read with a margin) the Cover 2 flat corner carries the #2 flat that turns up until it is
+ * capped (ZoneCoverage.flatCarry); with #1 vertical he sinks with #1 as before. */
+export const FLAT_CARRY = process.env.FLAT_CARRY !== '0';
+const FLAT_SINK_DEPTH = 18;
+/** FLAT_SINK_ONE (experimental, off; Coverage C14 2026-11-25, the quick-game stage: quick outs vs Cover 2): the flat corner's
+ * sink is with his own #1, from outside leverage. Off, it took the first receiver in his area climbing over 4 yd/s, which
+ * on quick outs is the slot's hitch: the corner sank with the slot 0.7 yd inside him (outside audit §3A) and was 4 yd inside
+ * #1 when #1's out broke into the flat he had left; and nothing in the sink read #1's own out-break under him, so he kept
+ * sinking with him. On, #1's out-break ends the sink; as the taught standard (patient: outside leverage, eyes through #1
+ * to the passer, break up the short route on the throw) he holds outside leverage at his depth and FLIGHT_BREAK drives
+ * him on the throw. FLAT_SIT_JUMP (the trap variant, jumping the break before the throw) played the staged quick
+ * out no better and gave the out-and-up about 0.4 yd more. */
+const FLAT_SINK_ONE = process.env.FLAT_SINK_ONE !== '0';
+/** FLAT_SIT_JUMP (experimental, off; with FLAT_SINK_ONE): the trap variant of the sit on #1's out, a later scheme option:
+ * he jumps the break, downhill to #1's depth and outside-in on where #1 will be 0.5 s on, before the throw. Off, the
+ * taught standard: he holds outside leverage at his depth and drives on the throw. */
+const FLAT_SIT_JUMP = process.env.FLAT_SIT_JUMP === '1';
+const SINK_ENTER = 2, SINK_EXIT = 1;
 /** SEEN_EYES (default on; SEEN_EYES=0 restores the QB's internal read target): a zone defender
  * reads the QB's look from what he sees of him, not from the QB's internal
  * read target (sim.qbEyes, the exact receiver, instantly, for every defender
@@ -75,6 +114,10 @@ const ZONE_SETTLE = process.env.ZONE_SETTLE !== '0';
  * is the one, in his own delayed picture, nearest the QB's perceived facing,
  * within 20 deg (12 deg when he is 20+ yd from the QB). Otherwise no read. */
 const SEEN_EYES = process.env.SEEN_EYES !== '0';
+/** QB_STANCE (behaviors/qb.ts; read here too): with the passer in his throwing stance his chest is open to his
+ * throwing-arm side of the man he is on until the throw rotates him, so a reader of where he is looking or aiming takes
+ * his head (the gaze he shows), not his chest: SEEN_EYES's look and the arm read's pick. */
+const QB_STANCE_SEEN = process.env.QB_STANCE === '1';
 /** HONEST_READS (experimental, off; HONEST_READS=1 turns it on): removes
  * true-state reads found by the 2026-11-13 defense audit. A blitzer peels to
  * the ball only once he has seen the throw, on his acquired flight; the ball
@@ -92,9 +135,9 @@ export const HONEST_READS = process.env.HONEST_READS !== '0';
  * the flight to the catch (catch-carry, flight continuation, ball rally) comes when his own estimate says the ball has
  * arrived or he sees it in the air near him, not on the true end of the air state; a flight he has acquired is his to
  * play until his estimate resolves it. */
-export const HONEST_FLIGHT = process.env.HONEST_FLIGHT === '1';
+export const HONEST_FLIGHT = process.env.HONEST_FLIGHT !== '0';
 /** HONEST_FLIGHT's drive on a catch: from this long before his estimate's arrival to this long after (a catch's securing beat). */
-const DRIVE_LEAD = 0.05, DRIVE_SECURE = 0.4;
+const DRIVE_LEAD = 0.05, DRIVE_SECURE = SECURE_BEAT;
 /** INFO_HONEST (off; INFO_HONEST=63 turns every item on; single items by their
  * bit below, for the per-item read): coverage decisions
  * read the defender's own picture, not true state. Items (coverage audit
@@ -112,6 +155,54 @@ const INFO_BITS: Record<string, number> = { 3: 1, 6: 2, 7: 4, 8: 8, 9: 16, H: 32
 export function infoHonest(item: number | string): boolean {
   return (INFO_HONEST & INFO_BITS[String(item)]) !== 0;
 }
+/** ZONE_HOLD (experimental, numeric bitmask, 0 off; docs/reviews/2026-11-16-zone-hold.md): two commit-rule holds on
+ * a zone defender's choices, each its own bit so each reads alone. Bit 1 (band): a receiver joins his threat set when
+ * his pictured future is inside the zone's lateral band by ZONE_HOLD_IN and leaves only when it is outside the band by
+ * ZONE_HOLD_OUT; the deep zones' vertical test has the same pair (enter past 7.5 yd or climbing over 1.5 yd/s, exit
+ * inside 6.5 yd and under 0.5 yd/s). Bit 2 (eyes): whom he reads the QB looking at is kept until another receiver's
+ * bearing beats it by ZONE_HOLD_EYES_BEAT or the QB's pictured head has turned clear of the current cone by
+ * ZONE_HOLD_EYES_OUT. Bit 16 (pick): the underneath lane pick (receiver nearest his landmark, eyes-weighted) keeps the
+ * receiver he is playing until another's score beats it by ZONE_HOLD_PICK_BEAT (1.5 yd). Without them both were re-picked every tick on a knife edge (exact pictures: the eyes' target
+ * changing 1.6-2.0 times a second, a tenth reversing inside 0.3 s; the flat defender reversing 27% of his target
+ * changes). Margins: band in 0.5 / out 1.5 yd, vertical in 7.5 yd or 1.5 yd/s / out 6.5 yd and 0.5 yd/s, eyes beat 4 deg /
+ * out 6 deg beyond the cone; stated choices. */
+const ZONE_HOLD_BITS = Number(process.env.ZONE_HOLD ?? 114);
+export const ZONE_HOLD_BAND = (ZONE_HOLD_BITS & 1) !== 0;
+export const ZONE_HOLD_EYES = (ZONE_HOLD_BITS & 2) !== 0;
+export const ZONE_HOLD_PICK = (ZONE_HOLD_BITS & 16) !== 0;
+/** Margin level, read at three levels: bit 4 halves the margins, bit 8 doubles them (stated choices, not fitted). */
+const ZONE_HOLD_SCALE = (ZONE_HOLD_BITS & 4) !== 0 ? 0.5 : (ZONE_HOLD_BITS & 8) !== 0 ? 2 : 1;
+const ZONE_HOLD_IN = 0.5 * ZONE_HOLD_SCALE, ZONE_HOLD_OUT = 1.5 * ZONE_HOLD_SCALE;
+const ZONE_HOLD_EYES_BEAT = (4 * ZONE_HOLD_SCALE * Math.PI) / 180;
+const ZONE_HOLD_EYES_OUT = (6 * ZONE_HOLD_SCALE * Math.PI) / 180;
+const ZONE_HOLD_PICK_BEAT = 1.5 * ZONE_HOLD_SCALE;
+/** ZONE_HOLD bit 32 (lean): the settled underneath defender's lean with the QB's eyes slides along the QB's seen head
+ * line (the point on it at his landmark's distance from the QB), not toward whichever receiver the eyes are on; his held
+ * lean point follows it on a ZONE_HOLD_LEAN_ROPE leash (moves only once the line has moved past it, then continuously),
+ * and keeps its last place while the QB's head is out of his view. Taught: slide with the quarterback's eyes. */
+export const ZONE_HOLD_LEAN = (ZONE_HOLD_BITS & 32) !== 0;
+const ZONE_HOLD_LEAN_ROPE = 1.0 * ZONE_HOLD_SCALE;
+/** ZONE_HOLD bit 64 (hand-off from motion): when his technique hands off on a perceived change (a seam carry ends: the
+ * route breaks down or reaches the hand-off depth; a lane read gives way to the settle), the new technique's target may
+ * move anywhere across his motion but not back against it short of his own stopping point (pos + v^2/(2 brake) along
+ * the direction he was moving); the limit shrinks with his speed and is gone when he has stopped along it. Taught:
+ * when the seam clears, settle and find the next threat; don't sprint back to a spot. */
+export const ZONE_HOLD_HANDOFF = (ZONE_HOLD_BITS & 64) !== 0;
+/** HANDOFF_FREEZE (on since engine-102; HANDOFF_FREEZE=0 restores; Coverage C14 2026-11-24, found on the Cover 2 four-verts rally stage): ZONE_HOLD bit
+ * 64's hand-off from motion fixes his stopping point at the hand-off (where he was, his speed then, at 0.8 of his
+ * braking) instead of re-placing it a stopping distance ahead of him every tick. Re-placed, the target stayed ahead of
+ * him at his own speed and the arrival asked for a little more than he had, so he never slowed: a hook handed off a seam
+ * at 13.6 yd was still requesting +5.7 yd/s downfield at 14.6 yd, 3.2 s. */
+export const HANDOFF_FREEZE = process.env.HANDOFF_FREEZE !== '0';
+/** LANE_LEVERAGE (experimental, off; Coverage C14 2026-11-24, Integration's item 3, the 0.82 lane spot): an underneath
+ * zone defender reading a receiver in his zone (zonePlay's lane) plays under the route with his seat's leverage,
+ * LANE_SHADE yd outside the receiver for curl-flat and flat seats and inside him for hooks and the middle, at the old
+ * lane depth; off, lerp(QB, receiver, 0.82) put a curl-flat 3 yd inside the receiver he read and 4.5 yd inside his
+ * landmark (Flex's width trace, 2026-11-24; NFL curl-flat 11.5 yd from the ball at 3.0 s, ours 8.0-8.6). */
+const LANE_LEVERAGE = process.env.LANE_LEVERAGE !== '0';
+const LANE_SHADE = 0.8;
+const CARRY_LABEL = /^(open-carry-seam|carry-wall|carry-run-past)$/;
+const eyesHeld = new WeakMap<Agent, Agent>();
 const eyesCache = new WeakMap<Agent, { t: number; r: Agent | null }>();
 /** SEEN_EYES: the receiver this defender sees the QB looking at, or null. */
 export function seenQbEyes(a: Agent, sim: PlaySim): Agent | null {
@@ -122,15 +213,26 @@ export function seenQbEyes(a: Agent, sim: PlaySim): Agent | null {
   const q = sim.see(a, sim.qb);
   const toQB = Math.atan2(q.pos.y - a.pos.y, q.pos.x - a.pos.x), dist = Math.hypot(q.pos.x - a.pos.x, q.pos.y - a.pos.y);
   if (Math.cos(a.body.facing - toQB) > Math.cos(100 * Math.PI / 180)) {
-    const tol = Math.cos((dist > 20 ? 12 : 20) * Math.PI / 180);
+    const cone = (dist > 20 ? 12 : 20) * Math.PI / 180, tol = Math.cos(cone);
     let best = tol;
+    const look = QB_BODY_SEEN || QB_STANCE_SEEN ? q.head ?? q.facing : q.facing;
+    const off = new Map<Agent, number>();
     for (const o of sim.offense) {
       if (o === sim.qb || ['LT', 'LG', 'C', 'RG', 'RT'].includes(o.slot)) continue;
       const p = sim.see(a, o).pos;
-      const cos = Math.cos((QB_BODY_SEEN ? q.head ?? q.facing : q.facing) - Math.atan2(p.y - q.pos.y, p.x - q.pos.x));
+      const cos = Math.cos(look - Math.atan2(p.y - q.pos.y, p.x - q.pos.x));
+      if (ZONE_HOLD_EYES) off.set(o, Math.acos(Math.max(-1, Math.min(1, cos))));
       if (cos > best) { best = cos; r = o; }
     }
+    if (ZONE_HOLD_EYES) {
+      const held = eyesHeld.get(a), ho = held ? off.get(held) : undefined;
+      // Keep the held receiver while the head stays inside his cone widened by the exit margin and no other receiver
+      // sits closer to the head's line by the beat margin.
+      if (held && ho !== undefined && ho < cone + ZONE_HOLD_EYES_OUT
+        && ![...off.entries()].some(([o, v]) => o !== held && v < cone && v < ho - ZONE_HOLD_EYES_BEAT)) r = held;
+    }
   }
+  if (ZONE_HOLD_EYES) { if (r) eyesHeld.set(a, r); else eyesHeld.delete(a); }
   eyesCache.set(a, { t: sim.t, r });
   return r;
 }
@@ -212,7 +314,11 @@ export function pursueIfLive(sim: PlaySim, a: Agent): MoveCommand | null {
     const drive = catchDrive.get(a) ?? catchOpportunity(a);
     if (drive) {
       const seen = sim.see(a, drive.receiver);
-      const refuted = seen.carrying === false && seen.age !== undefined && sim.t - seen.age > drive.t;
+      // HONEST_FLIGHT: a picture without the ball refutes the catch only once it was taken after the securing beat of
+      // his own estimated arrival (a receiver securing it is not carrying it yet), not any picture after the drive began.
+      const opp = HONEST_FLIGHT ? catchOpportunity(a) : null;
+      const after = HONEST_FLIGHT && opp ? Math.max(drive.t, opp.t + DRIVE_SECURE) : drive.t;
+      const refuted = seen.carrying === false && seen.age !== undefined && sim.t - seen.age > after;
       const on = Math.hypot(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y) <= CATCH_CARRY_RANGE;
       if (!refuted && on) {
         a.tags.add('catch-carry');
@@ -242,6 +348,12 @@ export function pursueIfLive(sim: PlaySim, a: Agent): MoveCommand | null {
   // ball does meanwhile (a catch before his estimate's arrival is not yet in his picture).
   if ((HONEST_FLIGHT || landed) && path) return playObservedFlight(a, sim, path);
   const area = landed ? unresolvedBallArea(a) : null;
+  // FLIGHT_BREAK: the area he would rally to is where his own flight estimate brought the ball to a receiver he was
+  // breaking on (a break within 1 s): the break goes on, on that receiver as he now sees him, rather than a goTo to a
+  // catch spot the receiver has already left (Defense's overrun class: 32 of 38 unlabelled ticks after the catch were
+  // this rally, -5.1 yd/s along the carrier's line). His picture only; the possession read above takes over once the
+  // carrier is in it.
+  if (area && FLIGHT_BREAK_ON()) { const cont = continueFlightBreak(a, sim); if (cont) return cont; }
   if (area) {
     if (sim.trace.data) sim.trace.decide({ t: sim.t, a: a.idx, kind: 'ball-rally',
       chose: 'locate ball at acquired landing area', cue: 'recognized pass; flight ended without acquired possession',
@@ -288,6 +400,23 @@ const SET_DEPTH = 0.4;
  * nearest one laterally, read as his key. An interior man keys the blocker
  * within a yard and a half; an edge keys the end of the line inside him,
  * however wide he aligns (a wide 9 still reads his tackle). */
+const OL_SLOTS_SET = new Set(['LT', 'LG', 'C', 'RG', 'RT']);
+/** END_KEY (experimental, numeric bitmask, default 0; docs/reviews/2026-11-16-end-key.md). Bit 2 (key through the
+ * triangle): an edge rusher whose keyed surface man releases (no blocking stance in his picture) keys on through to the
+ * tackle inside, and the existing key reads play that man's step (a hinge or zone step away: squeeze / END_CHASE with
+ * the boot check; a pass set: the rush). Sourced (Gridiron Strategies, "Defensive End Reads in a Forty Front"): "once
+ * you read release, look for the next part of triangle"; the release itself is not a pass read. Bit 1 (the key's
+ * stance as a run/pass cue) was tried and removed: on play action it made the fake-side end fit inside harder. */
+const END_KEY_THROUGH = (Number(process.env.END_KEY ?? 2) & 2) !== 0;
+/** EDGE_SET (experimental, off; docs/reviews/2026-11-16-edge-set.md): an edge answering a reach sets the edge as taught
+ * (hands on the reach blocker's outside half, square, widen with him and no faster, squeeze the lane he is trying to
+ * open): his lateral target is the blocker's outside shoulder in his picture one beat ahead, fed forward at the
+ * blocker's lateral speed with no lead of his own; wider than that, he works back to the shoulder, and caught inside it he
+ * keeps fighting to it. The target is one continuous function of the blocker in his picture on either side of the
+ * shoulder: there is no side switch to hold, so no margin is needed (commit rule). Before it, KEY_PACE's answer (the blocker's speed plus a lead, from his own spot)
+ * kept him ahead of the blocker and gaining: 2.7 / 3.4 / 4.6 yd wide at 1.0 / 1.5 / 2.0 s against the NFL play-side
+ * end's 0.4-0.6 / 1.3-1.6 / 2.3-2.8 on real outside zone (nfl_pa_backside.py NFL_POP=oz). */
+export const EDGE_SET = process.env.EDGE_SET !== '0';
 function manInFront(sim: PlaySim, a: Agent, reach = 1.5, held: Agent | null = null): (Perceived & { home: Vec2; agent: Agent }) | null {
   let best: Agent | null = held, bd = Infinity;
   if (!best) for (const b of linePicture(sim, a).surface) {
@@ -319,7 +448,27 @@ function twistRole(a: Agent, sim: PlaySim): { role: 'crash' | 'loop'; y: number 
   return { role: a === c ? 'crash' : 'loop', y: gapY(sim.offAlign, target.gap, target.gapSign) };
 }
 
+/** POWER_AIM (experimental, off; POWER_AIM=1; #35 item 2b): a power rush aims down the middle of the blocker setting to
+ * him, not at the quarterback. "Straight down the middle of the tackle", the outside foot in the ground, under his pads
+ * (viqtorysports, pass rush moves); the end keys the tackle's pass set and rushes with the QB on his inside shoulder
+ * (gridironstrategies, defensive end reads in a forty front). Off, from the snap the power plan ran straight at its
+ * pursuit point on the QB, so a strong-side end aligned outside an attached end ran his line through that end's release:
+ * staged double_outs, all 96 hits on an attached end were DE_S on the power plan (96 of 96 power reps, 0 of 96 speed;
+ * scripts/diag/pass-operators/attached-rusher-plan.mts). On his own picture: before any lineman has shown him a set he
+ * takes his lane's first step (the finesse plan's lane point); the man he aims at is the nearest offensive lineman he
+ * sees in front of him on his way to the QB, inside 4 yd and within a body of his line to the QB, who is setting (seen
+ * moving back off the line) or already within 1.5 yd. He keeps that man until he has beaten him (he is level with him on
+ * the way to the QB) or loses him from his way; a beaten or never-declared rush (past the line, nobody setting to him)
+ * goes at the QB as before. A man who is not a lineman (a releasing end, a back) is never his mark: if one crosses his
+ * line, the contact is the world's. */
+const POWER_AIM = process.env.POWER_AIM !== '0';
+/** POWER_AIM: how far ahead of a set lineman's seen position he aims (s of the man's seen motion), and the windows. */
+const POWER_LEAD = 0.3, POWER_REACH = 4, POWER_NEAR = 1.5, POWER_SET = 0.3;
+
 export class PassRusher implements Behavior {
+  /** POWER_AIM: the lineman he is rushing down the middle of, and whether he has beaten his man (then the QB). */
+  private powerMan: Agent | null = null;
+  private powerFree = false;
   readonly kind = 'rush';
   private readonly getOff: number;
   /** STANCE_TELL: he picked up his key's pre-snap lean (his recognition). */
@@ -330,7 +479,7 @@ export class PassRusher implements Behavior {
   /** The end of the line an edge keyed: he keeps reading that man. A down
    * block steps away from him, and that step is the cue, not a reason to
    * lose his key. */
-  private keyed: Agent | null = null;
+  keyed: Agent | null = null;
   /** Pre-snap rush plan from his tools. */
   readonly plan: 'power' | 'finesse' | 'speed';
   /** DL_GAMES: a called angle/slant/pinch moved his gap; until this clock he
@@ -395,8 +544,13 @@ export class PassRusher implements Behavior {
     return cmd;
   }
 
+  /** RUSH_RELEASE: his pull-up (held). */
+  private readonly held = { pullUp: false };
   private decide(a: Agent, sim: PlaySim): MoveCommand {
     if (sim.t < this.getOff) return stand(Math.PI);
+    // RUSH_RELEASE: on the throw he believes, off the rush and to the ball; on the load he sees, the pull-up decision.
+    const pulled = RUSH_RELEASE ? rushRelease(a, sim, this.held) : null;
+    if (pulled) return pulled;
     if (a.engagement) {
       const { blocker } = a.engagement;
       if (['LT', 'LG', 'C', 'RG', 'RT'].includes(blocker.slot)) this.workedLineBlock = true;
@@ -441,6 +595,18 @@ export class PassRusher implements Behavior {
     // set stands up and gives ground and leaves the rush as it is. His own picture of the blocker; what
     // the blocker means to do is not his to know, so a play-action line fools him.
     const onEdge = this.gap === 'C' || this.gap === 'D';
+    // END_KEY bit 2: the surface man he keyed released (no blocking stance in his picture): his eyes go on through the
+    // triangle to the next part of it, the tackle inside (Gridiron Strategies: "once you read release, look for the next
+    // part of triangle"; the release itself is not a pass read).
+    if (END_KEY_THROUGH && onEdge && this.keyed && !OL_SLOTS_SET.has(this.keyed.slot) && sim.see(a, this.keyed).stance == null) {
+      let best: Agent | null = null, bd = Infinity;
+      for (const o of sim.offense) {
+        if (!OL_SLOTS_SET.has(o.slot)) continue;
+        const dy = Math.abs(sim.see(a, o).pos.y - a.pos.y);
+        if (dy < bd) { bd = dy; best = o; }
+      }
+      if (best) { this.keyed = best; a.tags.add('key-through'); }
+    }
     const man = a.pos.x > sim.los - 0.5 ? manInFront(sim, a, onEdge ? Infinity : 1.5, onEdge ? this.keyed : null) : null;
     if (onEdge && man) this.keyed = man.agent;
     watch(sim, a, man?.agent);
@@ -530,10 +696,20 @@ export class PassRusher implements Behavior {
       // An edge lines up outside his key: he steps from where he stands, never
       // onto the key's spot (that is inside him).
       const fromY = reachOut ? (side * (a.pos.y - man!.pos.y) > 0 ? a.pos.y : man!.pos.y) : man!.pos.y;
-      const at = KEY_DEPTH ? { x: a.pos.x + up * h, y: fromY + side * step * h } : { x: man!.pos.x + man!.vel.x * h, y: fromY + side * step * h };
+      let at = KEY_DEPTH ? { x: a.pos.x + up * h, y: fromY + side * step * h } : { x: man!.pos.x + man!.vel.x * h, y: fromY + side * step * h };
+      let latVel = side * step;
+      // EDGE_SET: set the edge on the blocker's outside shoulder, widening with him and no faster.
+      if (EDGE_SET && reachOut) {
+        const shoulder = man!.pos.y + side * man!.agent.profile.radius + man!.vel.y * h;
+        // Outside the shoulder he works back to it at the blocker's speed; caught inside (the reach has gained the
+        // edge) he keeps fighting to the same shoulder rather than giving up the outside.
+        at = { x: at.x, y: shoulder };
+        latVel = man!.vel.y;
+        a.tags.add(side * (a.pos.y - shoulder) < 0 ? 'edge-set-in' : 'edge-set');
+      }
       a.tags.add('key-step');
       if (KEY_REACT) a.keyStep = { from: man!.agent, side };
-      return track(a, at, { x: KEY_DEPTH ? up : 0, y: side * step }, { speed: 1, gain: 3, facing: Math.PI });
+      return track(a, at, { x: KEY_DEPTH ? up : 0, y: latVel }, { speed: 1, gain: 3, facing: Math.PI });
     }
     // Rush lane by plan: power rushers go through the blocker's chest at the
     // QB; finesse rushers attack a shoulder through their gap; speed rushers
@@ -544,6 +720,17 @@ export class PassRusher implements Behavior {
     const edge = this.laneGap === 'C' || this.laneGap === 'D';
     const bend = 0.8 + 0.45 * traits(a).bend;
     if (this.plan === 'power') {
+      if (POWER_AIM && !this.powerFree) {
+        const mark = this.powerMark(a, sim, qbSeen);
+        if (mark) { a.tags.add('power-aim'); return runThrough(a, mark, { speed: 1 }); }
+        // Nobody has shown him a set yet: his lane's first step, as a finesse rush takes it.
+        if (a.pos.x > sim.los - 0.5) {
+          const lane = edge ? { x: sim.los - 1.6, y: gy + this.gapSign * 1.0 } : { x: sim.los - 0.6, y: gy };
+          a.tags.add('power-lane');
+          return runThrough(a, lane, { speed: 1, cutSkill: bend });
+        }
+        this.powerFree = true;
+      }
       const p = pursuitPoint(sim, a, qb, 1.5);
       return runThrough(a, p, { speed: 1 });
     }
@@ -572,11 +759,77 @@ export class PassRusher implements Behavior {
     const p = pursuitPoint(sim, a, qb, 1.5);
     return runThrough(a, p, { speed: 1, cutSkill: bend });
   }
+
+  /** POWER_AIM: the middle of the lineman setting to him, as he sees him (null: nobody, or he has beaten him). */
+  private powerMark(a: Agent, sim: PlaySim, qbSeen: Vec2): Vec2 | null {
+    const tq = { x: qbSeen.x - a.pos.x, y: qbSeen.y - a.pos.y }, lq = Math.hypot(tq.x, tq.y);
+    if (lq < 0.5) return null;
+    const u = { x: tq.x / lq, y: tq.y / lq }, back = -sim.attackDir(sim.offense[0].team);
+    const inWay = (o: Agent) => {
+      const s = sim.see(a, o), rx = s.pos.x - a.pos.x, ry = s.pos.y - a.pos.y;
+      const along = rx * u.x + ry * u.y, off = Math.abs(rx * u.y - ry * u.x);
+      return { s, along, off, dist: Math.hypot(rx, ry), body: a.profile.radius + o.profile.radius + 0.3 };
+    };
+    if (this.powerMan) {
+      const w = inWay(this.powerMan);
+      // Level with him on the way to the QB (beaten), or he has left the way: the rush goes on at the QB.
+      if (w.along <= 0.2) { this.powerMan = null; this.powerFree = true; return null; }
+      if (w.off > w.body + 0.5 || w.dist > POWER_REACH + 1) this.powerMan = null;
+      else return { x: w.s.pos.x + w.s.vel.x * POWER_LEAD, y: w.s.pos.y + w.s.vel.y * POWER_LEAD };
+    }
+    let best: { o: Agent; d: number } | null = null;
+    for (const o of sim.offense) {
+      if (!isOL(o)) continue;
+      const w = inWay(o);
+      if (w.s.pose === 'down' || w.s.pose === 'rising') continue;
+      if (w.along <= 0.2 || w.dist > POWER_REACH || w.off > w.body) continue;
+      const setting = w.s.vel.x * back > POWER_SET;
+      if (!setting && w.dist > POWER_NEAR) continue;
+      if (!best || w.dist < best.d) best = { o, d: w.dist };
+    }
+    if (!best) return null;
+    this.powerMan = best.o;
+    const s = sim.see(a, best.o).pos, v = sim.see(a, best.o).vel;
+    return { x: s.x + v.x * POWER_LEAD, y: s.y + v.y * POWER_LEAD };
+  }
 }
+
+/** RUSH_RELEASE (release-belief.ts): believing the ball thrown, he asks to come off his block toward it (the flight he
+ * plays, else downfield the way the passer threw); seeing the passer load, he pulls up facing him with his hands up when
+ * he cannot get there before the ball leaves as he judges it (his own picture and his own body), and keeps rushing when
+ * he can. Null: the rush as before. Shared by the pass rusher and the blitzer; `held` is his held pull-up. */
+function rushRelease(a: Agent, sim: PlaySim, held: { pullUp: boolean }): MoveCommand | null {
+  const rb = releaseBelief(sim, a);
+  if (rb.releasedAt !== undefined) {
+    // A carrier he sees (the catch made, a run after a pump) is pursued as on any live ball.
+    const live = pursueIfLive(sim, a);
+    if (live) return live;
+    if (playsFlight(a, sim, null)) {
+      const path = acquireFlight(a, sim), spot = catchSpot(a, { t: sim.t, ballPath: path });
+      if (spot) { a.tags.add('rush-off'); return runThrough(a, spot.p, { speed: 0.9 }); }
+    }
+    // No ball in his picture yet: off the rush, turning downfield, where the throw went.
+    const q = sim.see(a, sim.qb), dir = sim.attackDir(sim.offense[0].team);
+    a.tags.add('rush-off');
+    return runThrough(a, { x: q.pos.x + dir * 10, y: a.pos.y }, { speed: 0.9 });
+  }
+  if (rb.loadingAt === undefined) { held.pullUp = false; return null; }
+  const q = sim.see(a, sim.qb);
+  const left = LOAD_BEAT - (sim.t - rb.loadingAt);
+  const tArr = a.engagement ? Infinity : timeToReach({ pos: a.pos, vel: a.vel, profile: a.profile, speedScale: a.speedScale }, q.pos, a.profile.reach);
+  held.pullUp = held.pullUp ? tArr > left - PULL_MARGIN : tArr > left + PULL_MARGIN;
+  if (!held.pullUp) return null;
+  // Hands up into his throwing lane, facing him; engaged, he holds his ground on the blocker.
+  a.tags.add('hands-up');
+  const face = Math.atan2(q.pos.y - a.pos.y, q.pos.x - a.pos.x);
+  return a.engagement ? stand(face) : { ...stand(face), vel: { x: a.vel.x * 0.3, y: a.vel.y * 0.3 } } as MoveCommand;
+}
+
 
 export class Blitzer implements Behavior {
   readonly kind = 'blitz';
   private readonly delay: number;
+  private readonly held = { pullUp: false };
   constructor(
     a: Agent,
     sim: PlaySim,
@@ -590,6 +843,8 @@ export class Blitzer implements Behavior {
 
   update(a: Agent, sim: PlaySim): MoveCommand {
     if (sim.t < this.delay) return stand(Math.PI);
+    const pulled = RUSH_RELEASE ? rushRelease(a, sim, this.held) : null;
+    if (pulled) return pulled;
     if (a.engagement) return stand();
     const live = pursueIfLive(sim, a);
     if (live) return live;
@@ -812,7 +1067,27 @@ function openTo(a: Agent, qb: Vec2, receiver: Vec2, heading: number, need: numbe
  * climber with no help (BDB 2025 weeks 1-2, nflcarry.py) spend the cushion 5.1 -> 1.6 yd from 1.5 to 3.0 s running
  * 3.3 -> 4.7 yd/s under a 6.0-6.5 yd/s climber, torso 33 -> 62 deg off the QB, turned at most 11%. Under HEAD the head
  * and its cone follow the look; without HEAD the trunk carries it. */
-export const CARRY_POSTURE = process.env.CARRY_POSTURE === '1';
+export const CARRY_POSTURE = process.env.CARRY_POSTURE !== '0';
+/** CARRY_TURN (experimental, off; CARRY_TURN=1 turns it on; needs CARRY_POSTURE; docs/reviews/2026-11-16-carry-posture-3c.md):
+ * CUSHION_BREAK's turn opens him; it does not turn him. With the cushion broken he runs with the climber hips on his
+ * line of travel and his look back on the QB within his head's reach (neck plus trunk), the posture DIR_CAP and the
+ * trunk price charge for. He turns fully (look off the QB, to his receiver and the ball) on a seen event: the receiver
+ * even with or past him in his own picture (signed cushion at or under 0; back above +0.5 yd to undo), or his seen
+ * throw toward his receiver (playsThrow, the cue interface). The full turn holds until both have cleared. */
+export const CARRY_TURN = process.env.CARRY_TURN !== '0';
+const CARRY_TURN_EXIT = 0.5;
+/** CARRY_TURN: the open-and-run posture on the turned command, or null when a seen event has turned him fully. */
+function carryOpenRun(a: Agent, sim: PlaySim, cmd: MoveCommand, R: Agent, seenRec: Vec2, state: { full: Agent | null }): MoveCommand | null {
+  const cushion = a.pos.x - seenRec.x, thrown = playsThrow(a, sim, R);
+  if (state.full === R ? !(cushion > CARRY_TURN_EXIT && !thrown) : cushion <= 0 || thrown) { state.full = R; return null; }
+  state.full = null;
+  if (Math.hypot(cmd.vel.x, cmd.vel.y) < 1) return null;
+  const heading = Math.atan2(cmd.vel.y, cmd.vel.x), qbSeen = sim.see(a, sim.qb).pos;
+  const d = angleDiff(heading, Math.atan2(qbSeen.y - a.pos.y, qbSeen.x - a.pos.x));
+  const reach = Math.max(0, carryReach(a) - 1e-3);
+  a.tags.add('open-run');
+  return lookJoints(a, { ...cmd, facing: heading }, heading, Math.sign(d) * Math.min(Math.abs(d), reach), true);
+}
 /** CARRY_POSTURE: how far off the QB his hips may face with his look still on the QB (rad). */
 function carryReach(a: Agent): number {
   return neckOf(a) + (TRUNK_TWIST ? TRUNK_RANGE : 0);
@@ -862,7 +1137,29 @@ function carryFacing(a: Agent, r: Agent, qb: Vec2, receiver: Vec2, heading: numb
  * half turn to the outside (CARRY_POSTURE's 45 deg) with his head on the QB, until he sees the release; then the match
  * carry takes over as before. The quick game's flat-footed read is the existing release belief and ball cue, not a
  * timer. Quarters corners (taught differently: off #1, eyes inside, in a pedal) and man calls are out of scope. */
-export const CORNER_DROP = process.env.CORNER_DROP === '1';
+export const CORNER_DROP = process.env.CORNER_DROP !== '0';
+
+/** OFF_PEDAL (experimental, numeric bitmask, default 0; docs/reviews/2026-11-16-off-pedal.md): a repair of the
+ * existing off-man pedal (ManCoverage; off-man corners in man calls, the quarters MOD corner, match carriers in zone
+ * calls). Traced (pedal-trace.mts, engine-71): the corner's sight of #1's stem lags the true stem by his perception
+ * delay (~0.3 s), honestly; but his request ran 0.32 yd/s below the seen stem and forward before it (the `a.pos.x - 0.2`
+ * floor pulled him upfield), and on his release read CUSHION_NEED's close became a forward lunge at a climbing receiver
+ * (off-man request -3.9 yd/s at 0.9 s, stem seen at 1.7 upfield). Bit 1: the pre-release floor is his own spot (he
+ * holds; his pedal matches the seen stem), and until the shared stem-stop read says his stem has stopped (coverage-
+ * leverage `stemStopped`: CARRY_READ's projection 0.5 s ahead from his own delayed samples, stop below 1, out above 3)
+ * the target is no nearer the line than he is: excess cushion is spent by pedalling slower than the stem, not
+ * by coming forward. When the stem stops he spends it as before (the break on the hitch). Press and the Cover-3 corner
+ * under CORNER_DROP are unchanged. No pace of his own: the read-step question (moving before the stem reaches his
+ * picture) is left open. */
+const OFF_PEDAL_BITS = Number(process.env.OFF_PEDAL ?? 3);
+export const OFF_PEDAL = (OFF_PEDAL_BITS & 1) !== 0;
+/** OFF_PEDAL bit 2 (settle on the stop): when the stem-stop read says his receiver has stopped, the off-man corner stops
+ * gaining depth gradually, never coming forward before he has seen the throw: his target stays no nearer the line than
+ * he is, so he decelerates out of his pedal on his own body's braking; his drive comes on the ball (playBall on his own
+ * recognition of the throw). Taught: settle on the stop, eyes to the quarterback, drive on the ball; it is what protects
+ * him from the double move. NFL (quarters_cb.py "#1 stops", stops before pass_forward): the corner gains +0.5 yd in the
+ * 0.5 s after #1 stops (+0.9 inside 5 yd); ours drove -0.6. */
+export const OFF_PEDAL_SETTLE = (OFF_PEDAL_BITS & 2) !== 0;
 function cornerDropSeat(a: Agent, zone: string | undefined): boolean {
   return !!zone && a.slot.startsWith('CB') && zone.startsWith('deep_third_');
 }
@@ -1101,7 +1398,12 @@ export class ManCoverage implements Behavior {
   private readonly press: boolean;
   private readonly initialCushion: number;
   private hipsOpen = false;
+  /** CARRY_TURN: the receiver he has turned fully on (a seen event), kept until both cues clear. */
+  private carryTurn: { full: Agent | null } = { full: null };
   private releaseObserved = false;
+  /** OFF_PEDAL: the stem-stop read (coverage-leverage `stemStopped`) on his own delayed sight of the stem. */
+  private readonly stemAccel = new StemAcceleration();
+  private stemStop = false;
   private routeRead = false;
   private stemHeading: number | null = null;
   private stableSince = 0;
@@ -1220,7 +1522,7 @@ export class ManCoverage implements Behavior {
     // Wide receivers only: a man on a slot is an inside run supporter, who triggers.
     const spot = sim.offAlign.spots[R.slot]?.pos;
     if (!spot || Math.abs(spot.y - sim.ballY) < SLOW_WIDTH) return null;
-    if (speed > SLOW_SPRINT * R.profile.vmax) return null;
+    if (speed > SLOW_SPRINT * believedCaps(sim, a, R).vmax) return null;
     if (a.pos.x - cue.pos.x <= SLOW_MIN) return null;
     const inside = Math.sign(sim.ballY - cue.pos.y) || 1, o = this.opts;
     const lev = (o.trail ? 0.9 : 0.7) * (o.lev === 'outside' ? -inside : o.lev === 'head' ? 0 : inside);
@@ -1241,6 +1543,7 @@ export class ManCoverage implements Behavior {
 
   /** Release movement only; provisional zone readers retain their own
    * support and recognized-flight priorities before using this technique. */
+
   trackReceiver(a: Agent, sim: PlaySim): MoveCommand {
     const R = this.target;
 
@@ -1255,9 +1558,14 @@ export class ManCoverage implements Behavior {
     } else if (sim.t - this.stableSince > 0.35 + 0.35 * (1 - a.r('playRecognition') * a.mind.focus)) this.routeRead = true;
     const delayScale = this.routeRead ? 0.65 : 1;
     const acquired = sim.see(a, R, delayScale);
-    const seen = this.observation.read(acquired, sim.t, R.profile, a.profile.reactionTime,
+    // BELIEVED_BODY: his own look at his man feeds what he believes of him; every read of the man's capacities below is
+    // that belief (off: the man's own, as before).
+    lookAt(sim, a, R, acquired);
+    const RB = believedCaps(sim, a, R);
+    const seen = this.observation.read(acquired, sim.t, RB, a.profile.reactionTime,
       a.r('anticipation') * a.r('manCoverage') * a.mind.focus);
     if (Math.hypot(seen.vel.x, seen.vel.y) > 1.5) this.releaseObserved = true;
+    if (OFF_PEDAL) this.stemAccel.observe(acquired, RB, sim.t);
     const inside = Math.sign(sim.ballY - seen.pos.y) || 1;
     const o = this.opts;
     // PRESS_MIRROR: in press, while the receiver is still releasing at the
@@ -1295,7 +1603,7 @@ export class ManCoverage implements Behavior {
     // step downhill and turn twice while the receiver accelerated past him.
     const closing = Math.max(0, vx - Math.max(0, a.vel.x));
     const flipTime = Math.PI / a.profile.turnRate + 0.15 * (1 - a.r('anticipation') * a.mind.focus);
-    const releaseBurst = Math.max(0, (R.profile.vmax - Math.hypot(seen.vel.x, seen.vel.y)) / R.profile.tau);
+    const releaseBurst = Math.max(0, (RB.vmax - Math.hypot(seen.vel.x, seen.vel.y)) / RB.tau);
     // CUSHION_BREAK applies inside zone calls (match carries and deep zones);
     // pure man keeps its trigger. Help: a carry with no installed deep
     // responsibility has a deep player behind it.
@@ -1328,12 +1636,20 @@ export class ManCoverage implements Behavior {
       // CUSHION_NEED: once released, keep only the cushion his threat needs.
       // What he could gain upfield during the flip: his upfield speed now
       // plus the acceleration he has left toward his top speed (1/2 a t^2).
-      const upBurst = Math.max(0, (R.profile.vmax - Math.max(0, vx)) / R.profile.tau);
+      const upBurst = Math.max(0, (RB.vmax - Math.max(0, vx)) / RB.tau);
       const need = 1.8 + closing * flipTime + 0.5 * upBurst * flipTime * flipTime;
       const held = CUSHION_NEED && this.releaseObserved ? Math.min(cushion, need) : cushion;
       if (held < cushion) a.tags.add('cushion-need');
       tx = this.releaseObserved
-        ? seen.pos.x + held : Math.max(seen.pos.x + cushion, a.pos.x - 0.2);
+        ? seen.pos.x + held : Math.max(seen.pos.x + cushion, OFF_PEDAL && !this.press ? a.pos.x : a.pos.x - 0.2);
+      // OFF_PEDAL: while the stem has not stopped in his picture (the shared stem-stop read) he spends
+      // excess cushion by pedalling slower than the stem, never by coming forward at a climbing receiver: the target
+      // is no nearer the line than he is. Before, CUSHION_NEED's close turned into a forward lunge on his release read
+      // (off-man request -3.9 yd/s at 0.9 s with the stem seen at 1.7 upfield; pedal-trace.mts).
+      if (OFF_PEDAL && !this.press && this.releaseObserved) {
+        this.stemStop = stemStopped(vx, this.stemAccel.value, this.stemStop);
+        if (!this.stemStop || OFF_PEDAL_SETTLE) tx = Math.max(tx, a.pos.x);
+      }
     }
     // Over the top: a deep carrier keeps a cushion on the vertical; trail: a
     // low-hip under defender sits behind his hip with help over the top.
@@ -1388,7 +1704,7 @@ export class ManCoverage implements Behavior {
     // CUSHION_BREAK: square in his pedal until the cushion is broken; when the
     // pedal cannot keep it but it is not broken, he carries side-on (QB still
     // in view) at the speed the depth check asks for.
-    const selected = this.depth.choose(a, seen, acquired, R.profile, base, command, sim.t, sim.world.handContact);
+    const selected = this.depth.choose(a, seen, acquired, RB, base, command, sim.t, sim.world.handContact);
     if (breakOn && CARRY_POSTURE) {
       // CARRY_POSTURE 3b: short of CUSHION_BREAK's turn (hipsOpen, his seen cushion and closing), one half-open posture
       // within his head's reach of the QB, look on the QB, at a pace bounded by what that posture gives.
@@ -1416,6 +1732,11 @@ export class ManCoverage implements Behavior {
       return withFacingTechnique({ ...req, facing }, { label: 'man-open-carry', key: seen.vel });
     }
     if (selected.facing === undefined && vx > 1.5) this.hipsOpen = true;
+    if (CARRY_TURN && CARRY_POSTURE && breakOn && this.hipsOpen) {
+      const run = selected.facing === undefined ? selected : command;
+      const open = carryOpenRun(a, sim, run, R, seen.pos, this.carryTurn);
+      if (open) return withFacingTechnique(open, { label: 'man-open-run', key: seen.vel });
+    }
     return selected.facing === undefined && command.facing !== undefined
       ? withFacingTechnique(selected, { label: 'man-depth-run', key: seen.vel }) : selected;
   }
@@ -1445,6 +1766,12 @@ export class ManCoverage implements Behavior {
  * catcher (RB wide nobody-in-front 50% vs NFL 12%: outside_wide.py,
  * wide-owner.ts). */
 const CURL_FLAT_BACK = process.env.CURL_FLAT_BACK !== '0';
+/** CURL_SINK (experimental, off; CURL_SINK=1 turns it on; docs/reviews/2026-11-15-curl-sink.md): CURL_FLAT_BACK's
+ * stated design, sink to the curl window while widening toward the back. Its target depth was the shallower of the
+ * window and where he stood, so a back who showed to the flat before the curl-flat defender had dropped held him at his
+ * alignment depth (4.4 yd against an 8.5 yd window on staged flood) for the rest of the play. On, he drops to the
+ * window's depth while he widens, eyes on the QB, and breaks on the throw: high to low. */
+export const CURL_SINK = process.env.CURL_SINK !== '0';
 /** SAFETY_DEPTH (experimental, off; SAFETY_DEPTH=1 turns it on): a deep or
  * quarter-field zone defender's landmark is never shallower than his
  * alignment. Without it a quarter of our safeties (quarters inside safeties at
@@ -1456,6 +1783,25 @@ const CURL_FLAT_BACK = process.env.CURL_FLAT_BACK !== '0';
  * A call that sends a safety down gives him an underneath zone and is
  * unchanged. */
 const SAFETY_DEPTH = process.env.SAFETY_DEPTH !== '0';
+/** HALF_OWN (default on, engine-80; HALF_OWN=0 turns it off): a half-field or middle-third safety (an unruled `deep_half_*`
+ * or `deep_mid` zone) owns his area as taught (coverage-position spec gap 3; HNFL-334/-097, Bowen: "split & squeeze",
+ * midpoint, deeper than the deepest). Which receivers are vertical in his half or third comes from his own picture with
+ * held membership (in and out of his area, and vertical or not, with ZONE_HOLD's band margins), not re-picked each tick.
+ * Two verticals there: he holds their midpoint, with no lean to the QB's look, and does not drive down on either before
+ * the throw. One vertical, or none, is unchanged (the pre-throw drive on a single stopped route is gap 2). */
+const HALF_OWN = process.env.HALF_OWN !== '0';
+/** HALF_KEY (default on, engine-87; HALF_KEY=0 turns it off): the Cover 2 half safety keys #1 to #2 on his side, as taught (HNFL-334 SAFETY, HNFL-097
+ * STRONG SAFETY: "Drop to deep-half landmark while seeing the release of #1. If #1 is vertical, widen and see #2. If both
+ * vertical, vision & squeeze. If either cancels, cap the remaining vertical threat"; "If #1 cancels, tighten to deflate #2
+ * top-down"). His #1 and #2 are the alignment's numbering on his side (seen before the snap). He aims laterally at the
+ * point from which he can still get on top of both, from his own delayed picture: each weighted by how much of a deep
+ * threat he still is (his projected spot 0.7 s ahead as a share of the safety's own depth, times his upfield speed as a
+ * share of the top he has shown), #2 with a floor of 0.15, any other vertical in his half by its depth alone; so he widens with #1's release as it climbs and comes back
+ * to #2 as it slows. A cancel is committed only once it has held for his confirm time, 0.12 x (1.6 - 0.6 focus) s, with
+ * margins (stopped under 1.2 yd/s, flatter than 1.3 : 1, under 55% of his top speed past 3 yd, or a stem under 4.4 yd/s
+ * after 1 s), and removes that receiver; both removed, he plays as before. Depth stays over the deeper weighted one.
+ * Unruled `deep_half_*` only. */
+const HALF_KEY = process.env.HALF_KEY !== '0';
 /** SAFETY_DEPTH: a deep safety's depth over the deepest route in his zone, as he sees it, with that route `r` yd past
  * the line: NFL deep safeties' median depth over it is 13.0 / 11.7 / 8.5 yd with the route at 1.2 / 3.7 / 9.7 yd
  * (BDB 2025, safety_cushion.py), i.e. 13.4 - 0.5 r. A slower safety keeps more and a better reader less (scale
@@ -1470,6 +1816,8 @@ function safetyOver(a: Agent, r: number): number {
   const scale = clamp(9.6 / a.profile.vmax, 0.85, 1.25) * (1.1 - 0.2 * a.r('playRecognition'));
   return Math.max(2, (13.4 - 0.5 * Math.max(0, r)) * scale);
 }
+type ZoneThreat = { r: Agent; pos: Vec2; vel: Vec2; fut: Vec2; cue: Perceived };
+
 export class ZoneCoverage implements Behavior {
   readonly kind = 'zone';
   private readonly landmark: Vec2;
@@ -1487,11 +1835,76 @@ export class ZoneCoverage implements Behavior {
   private patternHesitationUntil = -1;
   private readonly initialDepth: number;
   private turnedWith: Agent | null = null;
+  /** CARRY_TURN: the receiver he has turned fully on (a seen event), kept until both cues clear. */
+  private carryTurn: { full: Agent | null } = { full: null };
   private readonly observations = new Map<Agent, RouteObservation>();
   private readonly depthReads = new Map<Agent, DeepCoverage>();
   private flatExpansionRecorded = false;
   /** ZONE_SETTLE: when this underneath dropper saw the QB set (-1 not yet). */
   private settledAt = -1;
+  /** SETTLE_DEPTH: short of his landmark's depth past the enter margin, still sinking (exit inside SINK_EXIT). */
+  private sinkingToDepth = false;
+  /** ZONE_HOLD bit 1: receivers held in his threat set, and those held as verticals (deep zones). */
+  private bandHeld = new Set<Agent>();
+  private vertHeld = new Set<Agent>();
+  /** HALF_KEY: his read of #1 and #2 ('?' unread, 'V' vertical, 'C' cancelled) and since when each candidate has held. */
+  private halfKey = { c: ['?', '?'] as Array<'?' | 'V' | 'C'>, cand: ['?', '?'] as Array<'?' | 'V' | 'C'>, since: [-1, -1], peak: [0, 0] };
+  /** HALF_KEY: this tick's lateral aim from his weighted #1 / #2 (null: not keyed). */
+  private keyAim: number | null = null;
+  /** ZONE_HOLD bit 32: his held lean point on the QB's seen head line (null until he has seen the head). */
+  private leanAt: Vec2 | null = null;
+  /** ZONE_HOLD bit 64: the direction he was moving at the hand-off (null when none is binding), and last tick's technique. */
+  private handoffDir: Vec2 | null = null;
+  /** HANDOFF_FREEZE: the stopping point fixed at the hand-off. */
+  private handoffStop: Vec2 | null = null;
+  private lastLabel = '';
+  private fromMotion(a: Agent, t: Vec2, settleSite = false): Vec2 {
+    if (!ZONE_HOLD_HANDOFF) return t;
+    if (!this.handoffDir && (CARRY_LABEL.test(this.lastLabel) || (settleSite && this.lastLabel.startsWith('lane')))) {
+      const s = Math.hypot(a.vel.x, a.vel.y);
+      if (s > 0.3) {
+        this.handoffDir = { x: a.vel.x / s, y: a.vel.y / s };
+        // HANDOFF_FREEZE: the point he can stop at, fixed at the hand-off (his speed then, his braking).
+        const d = (s * s) / (2 * a.profile.brake * 0.8);
+        this.handoffStop = { x: a.pos.x + this.handoffDir.x * d, y: a.pos.y + this.handoffDir.y * d };
+      }
+    }
+    const u = this.handoffDir;
+    if (!u) return t;
+    const along = a.vel.x * u.x + a.vel.y * u.y;
+    if (along <= 0) { this.handoffDir = null; this.handoffStop = null; return t; }
+    if (HANDOFF_FREEZE && this.handoffStop) {
+      // The target may lie anywhere across his motion, but not back against it short of the stopping point fixed at the
+      // hand-off: re-placing the point a stopping distance ahead of him every tick kept it ahead of him at his own speed.
+      const P = this.handoffStop, ta = (t.x - P.x) * u.x + (t.y - P.y) * u.y;
+      return ta >= 0 ? t : { x: t.x - u.x * ta, y: t.y - u.y * ta };
+    }
+    const stop = (along * along) / (2 * a.profile.brake * 0.8);
+    const ta = (t.x - a.pos.x) * u.x + (t.y - a.pos.y) * u.y;
+    return ta >= stop ? t : { x: t.x + u.x * (stop - ta), y: t.y + u.y * (stop - ta) };
+  }
+  /** ZONE_HOLD bit 32: the point on the QB's seen head line at his landmark's distance from the QB, held on a leash. */
+  private headLean(a: Agent, sim: PlaySim, lm: Vec2): Vec2 | null {
+    const q = sim.see(a, sim.qb);
+    const toQB = Math.atan2(q.pos.y - a.pos.y, q.pos.x - a.pos.x);
+    const look = q.head ?? q.facing;
+    if (look !== undefined && look !== null && Math.cos(a.body.facing - toQB) > Math.cos(100 * Math.PI / 180)) {
+      const r = Math.hypot(lm.x - q.pos.x, lm.y - q.pos.y);
+      const p = { x: q.pos.x + r * Math.cos(look), y: clamp(q.pos.y + r * Math.sin(look), 0.5, FIELD_WIDTH - 0.5) };
+      if (!this.leanAt) this.leanAt = p;
+      else {
+        const dx = p.x - this.leanAt.x, dy = p.y - this.leanAt.y, d = Math.hypot(dx, dy);
+        if (d > ZONE_HOLD_LEAN_ROPE) this.leanAt = { x: p.x - (dx / d) * ZONE_HOLD_LEAN_ROPE, y: p.y - (dy / d) * ZONE_HOLD_LEAN_ROPE };
+      }
+    }
+    return this.leanAt;
+  }
+  private shortOfDepth(a: Agent): boolean {
+    if (!SETTLE_DEPTH) return false;
+    const short = this.landmark.x - a.pos.x;
+    if (this.sinkingToDepth ? short < SINK_EXIT : short > SINK_ENTER) this.sinkingToDepth = !this.sinkingToDepth;
+    return this.sinkingToDepth;
+  }
   /** ZONE_SETTLE: the deepest the QB has been in this defender's picture. */
   private qbDeepest = Infinity;
   /** A box backer has left his read step for his drop. */
@@ -1529,6 +1942,55 @@ export class ZoneCoverage implements Behavior {
     this.style = style;
   }
 
+  /** HALF_KEY: the verticals his #1-to-#2 key gives him, or null to play as before (see HALF_KEY). */
+  private halfKeyVert(a: Agent, sim: PlaySim, seen: Map<Agent, ZoneThreat>, vert: ZoneThreat[]): ZoneThreat[] | null {
+    if (!HALF_KEY || (this.zone !== 'deep_half_s' && this.zone !== 'deep_half_w')) return null;
+    const side = this.zone === 'deep_half_s' ? 'S' : 'W';
+    const slots = [sim.offAlign.numbering[`${side}1` as 'S1'], sim.offAlign.numbering[`${side}2` as 'S2']];
+    const rs = slots.map((sl) => sim.offense.find((r) => r.slot === sl) ?? null);
+    if (!rs[0] || !rs[1]) return null;
+    const confirm = 0.12 * (1.6 - 0.6 * a.mind.focus);
+    const k = this.halfKey;
+    for (let i = 0; i < 2; i++) {
+      const th = seen.get(rs[i]!);
+      if (!th) continue;
+      const depth = th.pos.x - sim.los, up = th.vel.x, across = Math.abs(th.vel.y);
+      k.peak[i] = Math.max(k.peak[i], up);
+      // Breaking down: under 55% of the top upfield speed he has shown (a hitch's chop, a curl's sink) once past 3 yd.
+      const brake = depth >= 3 && k.peak[i] >= 3 && up < 0.55 * k.peak[i];
+      // The release: a vertical release is run at speed, a stem to a break is not (NFL #1s at 1.5 s, BDB 2025 Cover 2:
+      // 5.4 yd/s for those that go vertical, 3.7 for those that break or sit; scripts/diag/coverage/half_key.py).
+      const fastStem = depth >= 3 && up >= 5.2, slowStem = sim.t >= 1.0 && depth >= 1.5 && depth < 7 && up < 4.4;
+      const cand = (depth >= 7 && up >= 3) || fastStem ? 'V'
+        : (depth >= 2.5 && (up < 1.2 || across > 1.3 * up)) || brake || slowStem || (depth < 1 && sim.t > 1.2) ? 'C' : k.c[i];
+      if (cand !== k.cand[i]) { k.cand[i] = cand; k.since[i] = sim.t; }
+      if (cand !== k.c[i] && cand !== '?' && sim.t - k.since[i] >= confirm) k.c[i] = cand;
+    }
+    // His aim is continuous: the point from which he can still get on top of both, each receiver weighted by how much of
+    // a deep threat he still is from what he sees: how far his projected spot (0.7 s ahead) has come toward the safety's
+    // own depth, times how much of the top upfield speed he has shown he is still running (a stem that slows, sits or
+    // flattens decays). A confirmed cancel removes him; #2 keeps a floor (his first deep threat inside) until he cancels.
+    const t1 = seen.get(rs[0]), t2 = seen.get(rs[1]);
+    if (!t1 || !t2) return null;
+    const mine = Math.max(1, a.pos.x - sim.los);
+    const threat = (th: ZoneThreat, i: number) => k.c[i] === 'C' ? 0
+      : clamp((th.fut.x - sim.los) / mine, 0, 1) * clamp(th.vel.x / Math.max(k.peak[i], 3), 0, 1);
+    const w1 = threat(t1, 0), w2 = k.c[1] === 'C' ? 0 : Math.max(threat(t2, 1), 0.15);
+    // Any other vertical in his half (trips #3's seam, a back's wheel) is a deep threat too: "cap the remaining vertical
+    // threat". Weighted by its depth toward his own, like his numbers.
+    const others = vert.filter((th) => th.r !== rs[0] && th.r !== rs[1]).map((th) => ({ th, w: clamp((th.fut.x - sim.los) / mine, 0, 1) }));
+    const W = w1 + w2 + others.reduce((t, o) => t + o.w, 0);
+    this.keyAim = null;
+    if (W < 0.05) return null;
+    this.keyAim = (w1 * t1.fut.y + w2 * t2.fut.y + others.reduce((t, o) => t + o.w * o.th.fut.y, 0)) / W;
+    return [...(w1 >= 0.05 ? [t1] : []), ...(w2 >= 0.05 ? [t2] : []), ...others.filter((o) => o.w >= 0.05).map((o) => o.th)];
+  }
+
+  /** HALF_OWN: an unruled half-field or middle-third safety. */
+  private ownsArea(): boolean {
+    return HALF_OWN && (this.zone === 'deep_half_s' || this.zone === 'deep_half_w' || this.zone === 'deep_mid');
+  }
+
   /** SAFETY_DEPTH: the depth he held over a route when he first saw it stop climbing (cleared if it climbs again). */
   private readonly heldOver = new Map<Agent, number>();
   private holdOver(r: Agent, x: number): number {
@@ -1545,14 +2007,137 @@ export class ZoneCoverage implements Behavior {
   }
 
   update(a: Agent, sim: PlaySim): MoveCommand {
+    const cmd = this.updateCore(a, sim);
+    if (ZONE_HOLD_HANDOFF) {
+      this.lastLabel = facingTechnique(cmd)?.label ?? '';
+      if (CARRY_LABEL.test(this.lastLabel)) { this.handoffDir = null; this.handoffStop = null; }
+    }
+    return cmd;
+  }
+
+  private updateCore(a: Agent, sim: PlaySim): MoveCommand {
     const live = pursueIfLive(sim, a);
     if (live) return live;
     // Until he sees the throw, a zone defender keeps playing his zone.
+    // FLIGHT_BREAK: his flight has landed by his own estimate (playsThrow is over) and pursuit's possession read above has
+    // not yet seen a carrier: the break keeps its receiver (continueFlightBreak: only within 1 s of a break he made on a
+    // throw he believed) instead of his zone drop resuming. His own picture only.
+    if (FLIGHT_BREAK_ON() && !playsThrow(a, sim, null)) {
+      const cont = continueFlightBreak(a, sim);
+      if (cont) return cont;
+    }
     if (playsThrow(a, sim, null)) return playBall(a, sim, null, RELEASE_BELIEF ? () => this.zonePlay(a, sim) : undefined);
+    if (FLAT_CARRY && !this.deep && (this.zone === 'flat_s' || this.zone === 'flat_w') && knowsPass(sim, a) && !believesRun(sim, a)) {
+      const carry = this.flatCarry(a, sim); if (carry) return carry;
+    }
+    if (FLAT_SINK && !this.deep && (this.zone === 'flat_s' || this.zone === 'flat_w') && knowsPass(sim, a) && !believesRun(sim, a)) {
+      const sink = this.flatSink(a, sim);
+      if (sink) return sink;
+    }
     // SHOULDER_READ: an underneath defender reading the QB stops his drop on
     // the throwing motion he has seen; the rest of his zone play goes on.
     if (SHOULDER_READ && !this.deep && underneathPlant(a, sim)) return stopDrop(sim, this.zonePlay(a, sim));
     return this.zonePlay(a, sim);
+  }
+
+  /** FLAT_SINK: the vertical over him he is sinking with, if any. */
+  private sinkWith: Agent | null = null;
+  /**
+   * FLAT_CARRY: the Cover 2 flat corner carries a #2 flat that turns up when #1 is not vertical (Rules + Coaching,
+   * HNFL-099/-334: with #1 vertical he sinks with #1 and the half takes what is left; with #1 cancelled, a slant, hitch
+   * or in, the flat that turns up is his). Both reads are his own picture:
+   * - #1 cancelled: seen 3+ yd deep moving more across than up (a slant, an in), or slowed under 1 yd/s. Held until #1
+   *   is seen climbing again (over 3.5 yd/s and more up than across: the double move), which returns him to the sink.
+   * - The flat route: a receiver in his area, 5 yd deep or less, moving across toward the sideline (over 2 yd/s).
+   * - Once #1 has cancelled, the flat route is his: he squeezes it from on top (half a yard deeper) and outside, which
+   *   carries it if it turns up, until another defender he sees is over it (0.4-6 yd deeper, within 2.3 yd laterally:
+   *   the cap), it leaves his area, or it is 20 yd deep.
+   */
+  private flatCarry(a: Agent, sim: PlaySim): MoveCommand | null {
+    const dir = sim.attackDir(sim.offense[0].team), [ylo, yhi] = this.band, myDepth = (a.pos.x - sim.los) * dir;
+    const inArea = (p: Vec2) => p.y >= ylo && p.y <= yhi;
+    const side = this.zone === 'flat_s' ? 'S' : 'W';
+    const oneSlot = sim.offAlign.numbering[`${side}1` as 'S1' | 'W1'];
+    const one = oneSlot ? sim.offense.find((r) => r.slot === oneSlot) : undefined;
+    if (!one) return null;
+    const o = sim.see(a, one), oDepth = (o.pos.x - sim.los) * dir, oUp = o.vel.x * dir, oAcross = Math.abs(o.vel.y);
+    if (!this.oneCancelled) this.oneCancelled = oDepth >= 3 && (oAcross > Math.max(oUp, 0) || Math.hypot(o.vel.x, o.vel.y) < 1);
+    else if (oUp > 3.5 && oUp > oAcross) { this.oneCancelled = false; this.flatCarrying = false; }
+    if (!this.oneCancelled) return null;
+    if (!this.flatRoute) {
+      this.flatRoute = sim.offense.find((r) => {
+        if (r === sim.qb || r === one || isOL(r)) return false;
+        const c = sim.see(a, r), d = (c.pos.x - sim.los) * dir, out = Math.sign(c.pos.y - sim.ballY) || 1;
+        return inArea(c.pos) && d <= 5 && d > -3 && Math.abs(c.vel.y) > Math.abs(c.vel.x) && c.vel.y * out > 2;
+      }) ?? null;
+      return null;
+    }
+    const s = sim.see(a, this.flatRoute);
+    const depth = (s.pos.x - sim.los) * dir;
+    // With #1 cancelled, #2 in the flat is his: he squeezes it from on top and outside, which carries it if it turns up.
+    if (depth > 20 || !inArea(s.pos)) { this.flatRoute = null; return null; }
+    this.flatCarrying = true;
+    const capped = sim.defense.some((d) => {
+      if (d === a) return false;
+      const c = sim.see(a, d), over = (c.pos.x - s.pos.x) * dir;
+      return over > 0.4 && over < 6 && Math.abs(c.pos.y - s.pos.y) < 2.3 && c.vel.x * dir > -1;
+    });
+    if (capped) { this.flatCarrying = false; this.flatRoute = null; return null; }
+    const outside = Math.sign(s.pos.y - sim.ballY) || 1;
+    a.tags.add('flat-carry');
+    return withFacingTechnique(track(a, { x: s.pos.x + dir * 0.5, y: s.pos.y + outside * 0.7 }, { x: s.vel.x, y: s.vel.y }, { speed: 1, gain: 1.8 }),
+      { label: 'flat-carry', key: s.vel });
+  }
+  private flatRoute: Agent | null = null;
+  private flatCarrying = false;
+  private oneCancelled = false;
+
+  /** FLAT_SINK_ONE: sitting on his #1's out (entered on the break, left when #1 turns back up). */
+  private flatSit = false;
+  private flatSink(a: Agent, sim: PlaySim): MoveCommand | null {
+    const dir = sim.attackDir(sim.offense[0].team), [ylo, yhi] = this.band, myDepth = (a.pos.x - sim.los) * dir;
+    const seen = sim.offense.filter((r) => r !== sim.qb && !isOL(r)).map((r) => ({ r, s: sim.see(a, r) }));
+    const inArea = (p: Vec2) => p.y >= ylo && p.y <= yhi;
+    let v = this.sinkWith ? seen.find((x) => x.r === this.sinkWith) ?? null : null;
+    if (v) {
+      const d = (v.s.pos.x - sim.los) * dir;
+      if (v.s.vel.x * dir < 2 || d >= FLAT_SINK_DEPTH) { this.sinkWith = null; v = null; }
+    }
+    if (!v) {
+      // FLAT_SINK_ONE: his sink is with his own #1 (the side's #1 by the formation he sees), not whichever receiver climbs
+      // first in his area.
+      const oneSlot = FLAT_SINK_ONE ? sim.offAlign.numbering[`${this.zone === 'flat_w' ? 'W' : 'S'}1` as 'S1' | 'W1'] : undefined;
+      v = seen.find((x) => (!FLAT_SINK_ONE || x.r.slot === oneSlot) && inArea(x.s.pos) && x.s.vel.x * dir > 4
+        && (x.s.pos.x - sim.los) * dir >= myDepth - 1.5 && (x.s.pos.x - sim.los) * dir < FLAT_SINK_DEPTH) ?? null;
+      this.sinkWith = v?.r ?? null;
+    }
+    if (!v) return null;
+    // FLAT_SINK_ONE: #1 breaking out under him (outward over max(1.5, 0.5 x upfield) with his upfield speed falling, under
+    // 3.5 yd/s, or exceeded by the outward: a break, not a fade's outside release) ends the sink: he holds outside
+    // leverage on #1 at his depth and drives on the throw. Kept until #1 turns back up.
+    if (FLAT_SINK_ONE) {
+      const outS = Math.sign(v.s.pos.y - sim.ballY) || 1, outV = v.s.vel.y * outS, up = v.s.vel.x * dir, d1 = (v.s.pos.x - sim.los) * dir;
+      if (!this.flatSit) this.flatSit = d1 > 1 && d1 < 10 && outV > Math.max(1.5, 0.5 * Math.max(0, up)) && (up < 3.5 || outV > up);
+      else if (up > 3 && up > 1.5 * Math.max(0, outV)) this.flatSit = false;
+      if (this.flatSit) {
+        const q0 = sim.see(a, sim.qb);
+        // The patient standard: he holds his depth with outside leverage on #1 and drives on the throw he sees
+        // (FLIGHT_BREAK). FLAT_SIT_JUMP is the trap variant (a later scheme option): downhill to #1's depth on the break,
+        // before the throw.
+        const hold = !FLAT_SIT_JUMP;
+        const to = hold ? { x: a.pos.x, y: clamp(v.s.pos.y + outS * 0.5, 0.5, FIELD_WIDTH - 0.5) }
+          : { x: v.s.pos.x, y: clamp(v.s.pos.y + v.s.vel.y * 0.5 + outS * 0.5, 0.5, FIELD_WIDTH - 0.5) };
+        return withFacingTechnique(track(a, to, { x: 0, y: v.s.vel.y }, { facing: angleTo(a.pos, q0.pos), speed: 1, gain: 1.8 }),
+          { label: hold ? 'flat-sit-hold' : 'flat-sit-drive', key: v.s.vel });
+      }
+    }
+    // The flat threatened in front of him ends the sink: his zone play takes it.
+    if (seen.some((x) => x.r !== v!.r && inArea(x.s.pos) && (x.s.pos.x - sim.los) * dir <= myDepth - 1 && (x.s.pos.x - sim.los) * dir > -3)) { this.sinkWith = null; return null; }
+    const q = sim.see(a, sim.qb), inside = Math.sign(sim.ballY - v.s.pos.y) || 1;
+    a.tags.add('flat-sink');
+    // FLAT_SINK_ONE: under him with outside leverage (the corner's taught side), not 0.7 yd inside him.
+    const shade = FLAT_SINK_ONE ? -inside : inside;
+    return withFacingTechnique(track(a, { x: v.s.pos.x - dir * 1, y: v.s.pos.y + shade * 0.7 }, { x: v.s.vel.x, y: v.s.vel.y }, { facing: angleTo(a.pos, q.pos), speed: 1, gain: 1.8 }), { label: 'flat-sink', key: v.s.vel });
   }
 
   /** His zone play with the ball in the QB's hands (no throw seen). */
@@ -1646,16 +2231,25 @@ export class ZoneCoverage implements Behavior {
     const inside = (y: number) => Math.sign(sim.ballY - y) || 1;
 
     // Perceived routes in (or about to enter) this zone's lateral band.
-    const threats: Array<{ r: Agent; pos: Vec2; vel: Vec2; fut: Vec2; cue: Perceived }> = [];
+    const threats: ZoneThreat[] = [];
+    const seenAll = new Map<Agent, ZoneThreat>();
     for (const r of sim.offense) {
       if (r === sim.qb || ['LT', 'LG', 'C', 'RG', 'RT'].includes(r.slot)) continue;
       let observation = this.observations.get(r);
       if (!observation) { observation = new RouteObservation(); this.observations.set(r, observation); }
       const cue = sim.see(a, r);
-      const seen = observation.read(cue, sim.t, r.profile, a.profile.reactionTime,
+      lookAt(sim, a, r, cue);
+      const seen = observation.read(cue, sim.t, believedCaps(sim, a, r), a.profile.reactionTime,
         a.r('anticipation') * a.r('zoneCoverage') * a.mind.focus);
       const fut = { x: seen.pos.x + seen.vel.x * 0.7, y: seen.pos.y + seen.vel.y * 0.7 };
-      if (fut.y < ylo || fut.y > yhi) continue;
+      if (HALF_KEY) seenAll.set(r, { r, pos: seen.pos, vel: seen.vel, fut, cue });
+      if (ZONE_HOLD_BAND || this.ownsArea()) {
+        // Held membership: in by ZONE_HOLD_IN inside the band, out only by ZONE_HOLD_OUT outside it.
+        const held = this.bandHeld.has(r);
+        const inBand = held ? fut.y >= ylo - ZONE_HOLD_OUT && fut.y <= yhi + ZONE_HOLD_OUT : fut.y >= ylo + ZONE_HOLD_IN && fut.y <= yhi - ZONE_HOLD_IN;
+        if (inBand) this.bandHeld.add(r); else this.bandHeld.delete(r);
+        if (!inBand) continue;
+      } else if (fut.y < ylo || fut.y > yhi) continue;
       threats.push({ r, pos: seen.pos, vel: seen.vel, fut, cue });
     }
 
@@ -1671,12 +2265,21 @@ export class ZoneCoverage implements Behavior {
       const dropped = (sim.offAlign.spots.QB?.pos.x ?? q.pos.x) - this.qbDeepest >= 1;
       if (dropped && knowsPass(sim, a) && Math.hypot(q.vel.x, q.vel.y) < 1.2) this.settledAt = sim.t;
     }
-    const settled = (t: Vec2): Vec2 => this.settledAt >= 0 ? { x: Math.min(t.x, Math.max(a.pos.x, sim.los + 3)), y: t.y } : t;
+    const sinking = this.settledAt >= 0 && this.shortOfDepth(a);
+    const settled = (t: Vec2): Vec2 => this.settledAt >= 0 && !sinking ? { x: Math.min(t.x, Math.max(a.pos.x, sim.los + 3)), y: t.y } : t;
     const settle = (t: Vec2): Vec2 => settled(t);
 
     if (this.deep) {
       // Deep zones: never let a vertical get on top. Split two verticals.
-      let vert = threats.filter((th) => th.fut.x - sim.los > 7 || (th.vel.x > 1 && th.pos.x > sim.los));
+      let vert = ZONE_HOLD_BAND || this.ownsArea()
+        ? threats.filter((th) => {
+          const held = this.vertHeld.has(th.r);
+          const v = held ? th.fut.x - sim.los > 6.5 || (th.vel.x > 0.5 && th.pos.x > sim.los)
+            : th.fut.x - sim.los > 7.5 || (th.vel.x > 1.5 && th.pos.x > sim.los);
+          if (v) this.vertHeld.add(th.r); else this.vertHeld.delete(th.r);
+          return v;
+        })
+        : threats.filter((th) => th.fut.x - sim.los > 7 || (th.vel.x > 1 && th.pos.x > sim.los));
       // A deep-third corner stays over verticals in the outside third; a seam
       // on the hash is the middle safety's. He only takes #2 if #2 works out to him.
       if (this.zone === 'deep_third_s' || this.zone === 'deep_third_w') {
@@ -1684,6 +2287,8 @@ export class ZoneCoverage implements Behavior {
         const outer = vert.filter((th) => Math.min(th.fut.y, FIELD_WIDTH - th.fut.y) < third + 2);
         if (outer.length) vert = outer;
       }
+      // OWNED_FIX: the verticals in his area before the ownership filter (the deep-drive guard reads these).
+      const inArea = vert;
       // Quarters is a route distribution: the corner carries #1, the safety
       // keys #2. Splitting both verticals here duplicated the corner's help
       // and left the slot free. Deep-third corners likewise own the outside
@@ -1695,8 +2300,14 @@ export class ZoneCoverage implements Behavior {
         const number = this.zone.endsWith('_in') ? '2' : '1';
         const slot = sim.offAlign.numbering[`${side}${number}` as 'S1' | 'S2' | 'W1' | 'W2'];
         const owned = vert.find(th => th.r.slot === slot);
-        if (owned) vert = [owned];
+        // OWNED_FIX: the Sky (deep-third) corner owns #1 and #2 deep (HNFL-027/292 Clue 1/3; Bowen): #2 working into his
+        // outside third stays in his picture with #1, so the split and the squeeze run.
+        const two = OWNED_FIX && thirdCorner ? vert.find(th => th !== owned && th.r.slot === sim.offAlign.numbering[`${side}2` as 'S2' | 'W2']) : undefined;
+        if (owned) vert = two ? [owned, two] : [owned];
       }
+      this.keyAim = null;
+      const keyed = this.halfKeyVert(a, sim, seenAll, vert);
+      if (keyed) vert = keyed;
       if (vert.length === 0) {
         a.mind.setAimTarget('zone-drive', null);
         let tgt = lm;
@@ -1718,7 +2329,10 @@ export class ZoneCoverage implements Behavior {
       // under the deep defender, he drives downhill on it.
       // Never while another receiver is climbing into the zone behind it.
       // (Only verticals near him; a seam on the far hash belongs to the middle safety.)
-      const climbing = vert.some((th) => th !== deepest && th.vel.x > 3.5 && th.pos.x - sim.los > 2 && Math.abs(th.pos.y - a.pos.y) < 8);
+      const climbing = (OWNED_FIX ? inArea : vert).some((th) => th !== deepest && th.vel.x > 3.5 && th.pos.x - sim.los > 2 && Math.abs(th.pos.y - a.pos.y) < 8)
+        // HALF_OWN: with two verticals in his area he holds their midpoint until the throw.
+        || (this.ownsArea() && vert.length >= 2);
+      if (this.ownsArea() && vert.length >= 2) a.tags.add('half-own');
       // (Pattern reads are match technique; a spot dropper waits for the QB's arm.)
       if ((!spot || OPP_GOAL_X - sim.los <= 10) && !climbing && deepest.vel.x < 3.0 && deepest.pos.x < lm.x + 1
         && deepest.pos.x - sim.los > Math.min(6, Math.max(1, (OPP_GOAL_X - sim.los) * 0.5))) {
@@ -1736,11 +2350,13 @@ export class ZoneCoverage implements Behavior {
       let ty: number;
       if (vert.length >= 2) {
         // Split them, leaning toward where the QB is looking.
-        const w = qbEyes === vert[1].r ? 0.65 : qbEyes === vert[0].r ? 0.35 : 0.5;
+        // HALF_OWN: the taught midpoint (split & squeeze), no lean to the QB's look.
+        const w = this.ownsArea() ? 0.5 : qbEyes === vert[1].r ? 0.65 : qbEyes === vert[0].r ? 0.35 : 0.5;
         ty = vert[0].fut.y * (1 - w) + vert[1].fut.y * w;
       } else ty = deepest.fut.y + inside(deepest.fut.y) * (CUSHION_BREAK
         // CUSHION_BREAK: a deep-zone carry plays a shoulder off the receiver's line (bodies plus a reach).
         ? a.profile.radius + deepest.r.profile.radius + a.player.measurables.armIn / 36 * 0.7 : 0.8);
+      if (this.keyAim !== null) ty = this.keyAim;
       // A landmark describes responsibility, not a minimum depth to sprint
       // to regardless of the release. Let the initial cushion compress as
       // the stem climbs; otherwise a corner retreats from a hitch into grass.
@@ -1777,7 +2393,7 @@ export class ZoneCoverage implements Behavior {
       if (!depth) { depth = new DeepCoverage(); this.depthReads.set(deepest.r, depth); }
       // CUSHION_BREAK: square in his pedal until the cushion is broken; side-on
       // when the pedal cannot keep it.
-      const selected = depth.choose(a, deepest, deepest.cue, deepest.r.profile, cushion, command, sim.t, sim.world.handContact);
+      const selected = depth.choose(a, deepest, deepest.cue, believedCaps(sim, a, deepest.r), cushion, command, sim.t, sim.world.handContact);
       if (CUSHION_BREAK && CARRY_POSTURE) {
         // CARRY_POSTURE 3b: short of CUSHION_BREAK's turn (turnedWith: his seen cushion broken), one half-open posture
         // within his head's reach of the QB, look on the QB, at a pace bounded by what that posture gives.
@@ -1804,6 +2420,11 @@ export class ZoneCoverage implements Behavior {
         return withFacingTechnique({ ...req, facing }, { label: 'deep-open-carry', key: deepest.vel });
       }
       if (selected.facing === undefined && deepest.vel.x > 1.5) this.turnedWith = deepest.r;
+      if (CARRY_TURN && CARRY_POSTURE && this.turnedWith === deepest.r) {
+        const run = selected.facing === undefined ? selected : command;
+        const open = carryOpenRun(a, sim, run, deepest.r, deepest.pos, this.carryTurn);
+        if (open) return withFacingTechnique(open, { label: 'deep-open-run', key: deepest.vel });
+      }
       return selected.facing === undefined && command.facing !== undefined
         ? withFacingTechnique(selected, { label: 'deep-depth-run', key: deepest.vel }) : selected;
     }
@@ -1895,8 +2516,10 @@ export class ZoneCoverage implements Behavior {
         const crossed = sign * (flat.pos.y - a.pos.y) > 0;
         const base = eyes === flat.r ? 0.55 + 0.3 * rec : inCurl ? 0.1 : crossed ? 0.35 + 0.2 * rec : 0.15;
         const cheat = clamp(base + 0.15 * clamp((a.profile.vmax - 8) / 2, 0, 1), 0, 0.9);
-        const tgt = { x: Math.max(sim.los + 2, Math.min(lm.x, a.pos.x)), y: clamp(lm.y + (flat.fut.y - lm.y) * cheat, 0.5, FIELD_WIDTH - 0.5) };
-        return withFacingTechnique(goTo(a, settle(tgt), { facing: facingQB, speed: zs }), { label: 'curl-flat-widen', key: flat.vel });
+        // CURL_SINK: he sinks to his curl window (its landmark depth) as he widens; off, the shallower of the window and
+        // where he stands, which held a curl-flat defender at his alignment depth when the back showed before he dropped.
+        const tgt = { x: CURL_SINK ? lm.x : Math.max(sim.los + 2, Math.min(lm.x, a.pos.x)), y: clamp(lm.y + (flat.fut.y - lm.y) * cheat, 0.5, FIELD_WIDTH - 0.5) };
+        return withFacingTechnique(goTo(a, this.fromMotion(a, settle(tgt)), { facing: facingQB, speed: zs }), { label: 'curl-flat-widen', key: flat.vel });
       }
     }
     let best: (typeof threats)[number] | null = null;
@@ -1906,6 +2529,9 @@ export class ZoneCoverage implements Behavior {
       if (depth > 16) continue;
       let dd = Math.hypot(th.fut.x - lm.x, th.fut.y - lm.y);
       if (qbEyes === th.r) dd -= 3 * a.r('anticipation');
+      // ZONE_HOLD bit 16 (pick): the receiver he is already playing keeps him until another's lane score beats his by
+      // ZONE_HOLD_PICK_BEAT, and stays eligible that far past the radius; re-scoring the same picture is not a new read.
+      if (ZONE_HOLD_PICK && th.r === this.target) dd -= ZONE_HOLD_PICK_BEAT;
       if (dd < bd && dd < this.radius + 2) {
         bd = dd;
         best = th;
@@ -1951,11 +2577,21 @@ export class ZoneCoverage implements Behavior {
     this.selectTarget(a, best?.r ?? null);
     if (!best) {
       let tgt = lm;
-      if (qbEyes) tgt = lerp(lm, infoHonest(8) ? sim.see(a, qbEyes).pos : qbEyes.pos, 0.25 * a.r('anticipation'));
-      return withFacingTechnique(goTo(a, settle(tgt), { facing: facingQB, speed: zs }), { label: this.settledAt >= 0 ? 'zone-settle' : 'zone-landmark' });
+      if (ZONE_HOLD_LEAN) {
+        const lean = this.headLean(a, sim, lm);
+        if (lean) tgt = lerp(lm, lean, 0.25 * a.r('anticipation'));
+      } else if (qbEyes) tgt = lerp(lm, infoHonest(8) ? sim.see(a, qbEyes).pos : qbEyes.pos, 0.25 * a.r('anticipation'));
+      return withFacingTechnique(goTo(a, this.fromMotion(a, settle(tgt), true), { facing: facingQB, speed: zs }), { label: this.settledAt >= 0 ? 'zone-settle' : 'zone-landmark' });
     }
     const lane = lerp(qbAt, best.pos, 0.82);
     let tgt = { x: Math.min(lane.x, best.pos.x - 0.5), y: lane.y };
+    if (LANE_LEVERAGE) {
+      // LANE_LEVERAGE: under the route with his seat's leverage on the receiver as he sees him (curl-flat and flat seats
+      // outside-in, hooks inside-out), not on the QB-to-receiver line, which runs inside the receiver whenever the QB
+      // is inside him. Depth as before.
+      const outward = Math.sign(best.pos.y - sim.ballY) || 1;
+      tgt = { x: tgt.x, y: best.pos.y + (seatOutsideIn(a) ? outward : -outward) * LANE_SHADE };
+    }
     const off = sub(tgt, lm);
     const l = Math.hypot(off.x, off.y);
     if (l > this.radius) tgt = { x: lm.x + (off.x / l) * this.radius, y: lm.y + (off.y / l) * this.radius };
@@ -1981,6 +2617,7 @@ export class ZoneCoverage implements Behavior {
     if (holdFlat) tgt = { ...tgt, x: Math.max(tgt.x, Math.min(a.pos.x, lm.x)) };
     const settledLane = this.settledAt >= 0 && !carryingAcross;
     if (settledLane) tgt = settle(tgt);
+    tgt = this.fromMotion(a, tgt);
     const laneReq = track(a, { x: tgt.x, y: clamp(tgt.y, 0.5, FIELD_WIDTH - 0.5) }, { x: stemRead || holdFlat ? 0 : settledLane ? Math.min(0, best.vel.x * 0.5) : best.vel.x * 0.5, y: best.vel.y * 0.8 }, {
       facing: carryingAcross ? Math.atan2(best.vel.y, best.vel.x) : facingQB, speed: carryingAcross ? 1 : zs * 1.05, gain: 1.6 });
     // OPEN_CARRY: carry the crosser as square to the QB as the run allows.
@@ -2039,7 +2676,7 @@ export class ZoneCoverage implements Behavior {
     // Hold the spot's depth until the ball is thrown; stay within the zone.
     // Planted short of the spot on the QB's set, he holds where he planted.
     tgt = { x: Math.max(tgt.x, lm.x - 2), y: tgt.y };
-    if (this.settledAt >= 0) tgt = { x: Math.min(tgt.x, Math.max(a.pos.x, sim.los + 3)), y: tgt.y };
+    if (this.settledAt >= 0 && !this.shortOfDepth(a)) tgt = { x: Math.min(tgt.x, Math.max(a.pos.x, sim.los + 3)), y: tgt.y };
     const off = sub(tgt, lm);
     const l = Math.hypot(off.x, off.y);
     if (l > this.radius) tgt = { x: lm.x + (off.x / l) * this.radius, y: lm.y + (off.y / l) * this.radius };
@@ -2147,6 +2784,26 @@ function zoneBand(zone: ZoneId, sim: PlaySim): [number, number] {
  * planted defender gives up depth to a route behind him. Replaces the earlier
  * eyes-directed lean (as often wrong as right on catches 0-10 yd). */
 const SHOULDER_READ = process.env.SHOULDER_READ !== '0';
+/** DEEP_GATE (on since engine-78, 2026-11-18; `=0` restores; Rules' coverage-position table gap 1): Cover 3 and Cover 2
+ * deep players (deep thirds, the deep middle, deep halves, Tampa's middle) hold until they see the ball out: an arm-only
+ * belief (the load, a delivery, a pump) keeps his coverage running, with no plant and no shoulder break. Quarter seats
+ * (quarters, palms, Cover 6's quarter side) keep their route triggers. Taught: the deep third and half read the QB and
+ * break on the ball, not the arm (HNFL-027/292; Bowen; docs/reviews/2026-11-17-coverage-position-table.md). Off,
+ * playBelievedBall had no deep check: those seats planted on the load and broke on the shoulders on 59-88% of staged
+ * plays, pumps included (release-belief.ts: a pump counts as a delivery). */
+const DEEP_GATE = process.env.DEEP_GATE !== '0';
+/** OWNED_FIX (on since engine-81, 2026-11-18, `=0` restores; Rules' table gap 2/7): the deep ownership filter (quarter seats keep their numbered man,
+ * deep-third corners #1) cut the deep player's picture to one receiver. With it the deep-third corner keeps #2
+ * with #1 when #2 works into his outside third (he owns both deep: the split and the squeeze run), and the deep-drive
+ * guard (another receiver climbing behind a stopped route) reads the verticals in his area before the ownership filter,
+ * so a climbing #2 stops a quarter or third player driving down on a stopped #1. */
+const OWNED_FIX = process.env.OWNED_FIX !== '0';
+const HELD_DEEP = new Set(['deep_third_s', 'deep_third_w', 'deep_mid', 'deep_half_s', 'deep_half_w', 'tampa_mid']);
+function heldDeepSeat(a: Agent): boolean {
+  const b = a.behavior as { zone?: string; recordedZone?: () => string | undefined } | undefined;
+  const z = b instanceof ZoneCoverage ? b.zone : b?.recordedZone?.();
+  return !!z && HELD_DEEP.has(z);
+}
 /** QB_BODY_SEEN (experimental, off; QB_BODY_SEEN=1): the passer's throwing motion and head are read from what a
  * defender sees of his body (`Agent.arm`, `Agent.head`, recorded with every perception sample), with that defender's
  * own delay and view, instead of from the published `sim.windupAt` / `sim.windupEndAt` (the time the motion started,
@@ -2363,6 +3020,107 @@ function manLook(a: Agent, sim: PlaySim, cmd: MoveCommand): MoveCommand {
   return lookJoints(a, cmd, heading, angleDiff(heading, Math.atan2(qb.y - a.pos.y, qb.x - a.pos.x)), true);
 }
 
+/** FLIGHT_BREAK (default on since engine-94; FLIGHT_BREAK=0 restores the replaced paths; Coverage C14 with Defense, 2026-11-23): one break on the throw for
+ * every defender, during the flight (Defense owns pursuit from the catch on). Taught: plant and drive on the throw to
+ * where the receiver will be, come to balance, with the leverage his seat plays (corner and flat players outside-in,
+ * hooks and the middle inside-out); Rules' hard-corner card row 5, the off-man and zone break rows. Measured before:
+ * - on the big flat plays against the sinking corner (c6-flat.mts) he was 3-6 yd from the receiver at the release and did
+ *   not close through the flight: one aimed about 5 yd off the catch, one held about 0.5 s;
+ * - Defense: first defenders beaten after the catch were 6.0 yd away and 4.3 yd ahead of the catcher at the catch, coming
+ *   downhill at -2.9 yd/s along his line (those who stop him are 2.9 yd away moving +2.5 with him); the shoulder break
+ *   ran through a projected spot at 0.9 speed and the flight drive went full speed to a fixed catch point, braking by
+ *   distance only.
+ * With the flag, both the arm-read break (shoulder pick, before he has the ball's flight) and the flight drive when he
+ * cannot beat the ball to its path aim at a point moving with the receiver's seen velocity that crosses his catch window
+ * at the time he estimates (the shoulder read's lead, or his own flight estimate), shaded by his seat's leverage (0.8 yd,
+ * fading inside 6 yd of contact; from over the top the goal is on the receiver's upfield side), and close only as fast as he can brake from to his tackling-scaled through speed
+ * (movingArrivalVelocity, as Defense's BREAK_BALANCE). The goal is kept per defender (flightBreakOf) so pursuit starts
+ * from it at the catch with no re-aim. Read per call (a replay can switch it for one play).
+ * Paths it replaces, kept only behind FLIGHT_BREAK=0 (retire them when the flag expires): playBelievedBall's shoulder-break
+ * runThrough (0.9 speed through the projected spot) and the man carrier's carry of his own receiver on the arm read;
+ * flightApproach's DRIVE_CATCH runThrough (full speed through the hands), its nearby-receiver carry (track), its
+ * can't-beat-the-ball drive to a fixed catch point and, once the window has passed, the stale-spot drive; the zone
+ * drop or match technique resuming after the flight lands before the possession read (ZoneCoverage.updateCore,
+ * Technique.update), and pursuit's rally to the landing area (pursueIfLive). */
+export const FLIGHT_BREAK = process.env.FLIGHT_BREAK !== '0';
+const FLIGHT_BREAK_ON = () => process.env.FLIGHT_BREAK !== '0';
+const FLIGHT_SHADE = 0.8;
+export interface FlightBreak { receiver: Agent; goal: Vec2; goalVel: Vec2; side: -1 | 1; catchSpot: Vec2; catchT: number; t: number;
+  /** Diagnostic: the call site that made this break ('continue' keeps the original's), and when this break began. */
+  via: string; since: number }
+const flightBreaks = new WeakMap<Agent, FlightBreak>();
+/** FLIGHT_BREAK: the break this defender is making (or last made this play) on a throw: the moving goal and its velocity,
+ * his leverage side (+1 the receiver's sideline side, -1 the ball side), the catch spot and time he assumed. Read-only,
+ * for pursuit's first tick after the catch (Defense). */
+export function flightBreakOf(a: Agent): FlightBreak | null { return flightBreaks.get(a) ?? null; }
+/** Outside-in for corners and flat / curl-flat / deep outside seats, inside-out for hooks, the middle and robbers. */
+function seatOutsideIn(a: Agent): boolean {
+  const b = a.behavior as { zone?: string; kind?: string } | undefined;
+  const z = b?.zone ?? '';
+  if (z) return /^(flat_|curl_flat_|deep_third_|deep_half_|quarter_._out)/.test(z);
+  return a.slot.startsWith('CB');
+}
+/** FLIGHT_BREAK: after his estimated catch time, until the possession read hands him to pursuit: the same break on the
+ * same receiver, his window now (the receiver's seen spot), for up to FLIGHT_HOLD s after his last break request. */
+const FLIGHT_HOLD = 1.0;
+export function continueFlightBreak(a: Agent, sim: PlaySim): MoveCommand | null {
+  const fb = flightBreaks.get(a);
+  if (!fb || sim.t - fb.t > FLIGHT_HOLD) return null;
+  // Only while the throw he broke on is still a throw in his picture: a pump he has seen pulled down (the release belief
+  // undone) ends the break, and his coverage resumes (acc-radius cover6 s8: the Mike kept driving on a pump's receiver
+  // for 1 s after the pull-down and the middle opened for a 34 yd scramble).
+  if (RELEASE_BELIEF && releaseBelief(sim, a).releasedAt === undefined) return null;
+  const seen = sim.see(a, fb.receiver);
+  return flightBreakMove(a, sim, fb.receiver, seen, sim.t, seen.pos, fb.via);
+}
+/** FLIGHT_LEAD (off, parked 2026-11-23: it lost to the break alone, overruns 19 -> 34 and goals about 5 yd off where the
+ * carrier went; FLIGHT_LEAD=1 turns it on, with FLIGHT_BREAK; Coverage with Defense, 2026-11-23): a defender who will
+ * arrive after the catch by dt breaks on where he expects the receiver dt after it (Defense's post-catch.ts forecast:
+ * route momentum through the catch, upfield, away from him), not on the catch spot the carrier will have left. One with
+ * the ball or before it, or who can still reach the hands within the securing beat (OPEN_FIELD's playsBall test, as
+ * taught), keeps the catch spot. Entered at dt > 0.15 s and beyond the beat, left inside half of it (Commit to a decision). Defense's
+ * overrun class: 5.4 yd away at the catch, a 38 deg turn and >= 0.87 s to redirect, beaten at +0.9 s; stoppers 2.6 yd and
+ * 12 deg. Read per call. */
+const flightLeadOn = () => process.env.FLIGHT_LEAD === '1';
+const leading = new WeakMap<Agent, boolean>();
+function flightBreakMove(a: Agent, sim: PlaySim, R: Agent, seen: Perceived, catchT: number, catchSpot: Vec2, via = '?'): MoveCommand {
+  const left = Math.max(0, catchT - sim.t);
+  let goal = { x: catchSpot.x - seen.vel.x * left, y: clamp(catchSpot.y - seen.vel.y * left, 0.3, FIELD_WIDTH - 0.3) };
+  let goalVel: Vec2 = seen.vel;
+  if (flightLeadOn()) {
+    const tArr = timeToReach({ pos: a.pos, vel: a.vel, profile: a.profile, speedScale: a.speedScale }, catchSpot, a.profile.reach);
+    const late = sim.t + tArr - catchT;
+    // Entered 0.15 s late, left at half of it. As taught (OPEN_FIELD's playsBall test): one who can still reach the hands
+    // within the securing beat plays the ball and the hit at the catch spot; only one who cannot is a pursuer and leads.
+    // Its own margins (0.1 s either way).
+    const enter = 0.15, beat = catchT + DRIVE_SECURE - sim.t, was = leading.get(a) ?? false;
+    const on = was ? late > enter / 2 && tArr > beat - 0.1 : late > enter && tArr > beat + 0.1;
+    leading.set(a, on);
+    if (on) {
+      const lead = postCatchLead(seen.vel, catchSpot, a.pos, sim.attackDir(R.team), late);
+      // His goal is the forecast spot itself (a point he expects the receiver to reach), held still.
+      goal = { x: catchSpot.x + lead.x, y: clamp(catchSpot.y + lead.y, 0.3, FIELD_WIDTH - 0.3) };
+      goalVel = { x: 0, y: 0 };
+      a.tags.add('flight-lead');
+    }
+  }
+  const outward = Math.sign(seen.pos.y - sim.ballY) || 1, side: -1 | 1 = seatOutsideIn(a) ? 1 : -1;
+  const contact = a.profile.radius + R.profile.radius + a.profile.reach * 0.65;
+  const dg = Math.hypot(goal.x - a.pos.x, goal.y - a.pos.y);
+  goal.y = clamp(goal.y + side * outward * FLIGHT_SHADE * clamp((dg - contact) / 6, 0, 1), 0.3, FIELD_WIDTH - 0.3);
+  // From over the top (he is downfield of the receiver), the drive is to the receiver's upfield shoulder: a goal on top
+  // of him, so he arrives on the receiver rather than through him toward the line (the comeback overrun).
+  const dir = sim.attackDir(R.team);
+  if ((a.pos.x - seen.pos.x) * dir > contact) goal.x += dir * contact;
+  const support = a.body.support;
+  const capacity = support ? availability(support, supportParams(a.profile), fatigueFactor(a.body.energy)) : 1;
+  const vel = movingArrivalVelocity(a.body, goal, goalVel, a.profile.vmax * a.speedScale, contact, 2.5 + 2 * (1 - a.r('tackling')), 1, capacity);
+  const prev = flightBreaks.get(a), since = prev && prev.receiver === R && sim.t - prev.t <= 0.06 ? prev.since : sim.t;
+  flightBreaks.set(a, { receiver: R, goal: { ...goal }, goalVel: { ...goalVel }, side, catchSpot: { ...catchSpot }, catchT, t: sim.t, via, since });
+  a.tags.add('flight-break');
+  return withMovementObjective({ vel }, { kind: 'moving', point: goal, velocity: goalVel });
+}
+
 /** RELEASE_BELIEF's playBall: with the ball seen, the flight he acquired; on a belief from the arm alone (the motion
  * tells him when, not where) he bites: a zone defender plants (stops his drop, the rest of his zone play goes on), a
  * man defender stays on his man, until he sees the ball or the pull-down. */
@@ -2385,21 +3143,52 @@ function playBelievedBall(a: Agent, sim: PlaySim, man: Agent | null, continueCov
     // Bit 256: a man defender who has not found the ball judges his phase and, in phase (or undisciplined), looks.
     if (man && BALL_EST_MAN_LOOK && estimatesFor(a) && !hasObservedFlight(a) && manLooks(a, sim, man, rb.releasedAt)) return manLook(a, sim, fallback());
     a.tags.add('arm-bite');
+    // FLIGHT_BREAK: a man or match carrier whose read of the passer's shoulders puts the ball on his own receiver breaks
+    // on that receiver's catch window (the shared break) instead of carrying him: a carry runs with a receiver coming
+    // back toward the passer, downhill through the catch (Defense's stage table: -5 yd/s along the carrier's line).
+    if (!continueCoverage && man && FLIGHT_BREAK_ON() && rb.releasedAt !== undefined) {
+      const pick = shoulderTarget(a, sim, rb.releasedAt);
+      const react = a.profile.reactionTime * (1 - 0.4 * a.r('anticipation'));
+      if (pick.R === man && sim.t - rb.releasedAt >= react - 1e-9) {
+        const r = sim.see(a, man), left = Math.max(0, Math.min(SHOULDER_FLIGHT_MAX,
+          Math.hypot(r.pos.x - pick.from.x, r.pos.y - pick.from.y) / SHOULDER_BALL_SPEED - (sim.t - rb.releasedAt)));
+        return flightBreakMove(a, sim, man, r, sim.t + left, { x: r.pos.x + r.vel.x * left, y: r.pos.y + r.vel.y * left }, 'man-arm');
+      }
+    }
     if (!continueCoverage) return fallback();
+    // DEEP_GATE: a deep-third, deep-middle, deep-half or Tampa-middle player holds his coverage on the arm alone (a pump
+    // moves him nothing); he breaks once he has seen the ball out. Quarter seats keep their route triggers.
+    if (DEEP_GATE && !man && heldDeepSeat(a)) { a.tags.add('deep-hold'); return continueCoverage(); }
     // A zone defender breaks on the passer's shoulders at the delivery (the arm coming through; on the load alone he
     // plants): toward the receiver they point at, read through the tracking channel of the passer he is watching,
     // chosen once for this belief, with his reaction time after the choice. With none lined up, he plants (stops his
     // drop) until he sees the ball or the pull-down.
-    if (rb.releasedAt === undefined) return stopDrop(sim, continueCoverage());
+    if (rb.releasedAt === undefined) {
+      // ARM_BREAK bit 2: the load is a plant from which he loads his hips toward where the passer's shoulders point
+      // (a gentle step and his facing toward that receiver's spot), not a bare stop; the drop is still braked.
+      if (ARM_BREAK & 2 && rb.loadingAt !== undefined) {
+        const lp = shoulderTarget(a, sim, -1 - rb.loadingAt);
+        if (lp.R) {
+          const r = sim.see(a, lp.R);
+          a.tags.add('arm-load');
+          return stopDrop(sim, goTo(a, r.pos, { speed: ARM_LOAD_PACE, facing: angleTo(a.pos, r.pos) }));
+        }
+      }
+      return stopDrop(sim, continueCoverage());
+    }
     const pick = shoulderTarget(a, sim, rb.releasedAt);
     const react = a.profile.reactionTime * (1 - 0.4 * a.r('anticipation'));
-    if (pick.R && sim.t - pick.at >= react - 1e-9) {
+    // ARM_BREAK bit 1: the arm cue reached him through his sighting of the passer, already his perception delay late;
+    // his reaction runs from what the sample shows (the delivery's sample time), not again from when he picked.
+    const since = ARM_BREAK & 1 ? sim.t - rb.releasedAt : sim.t - pick.at;
+    if (pick.R && since >= react - 1e-9) {
       a.tags.add('shoulder-break');
       // He breaks to where that receiver will be when the ball gets there: the receiver as he now sees him, carried
       // along his seen velocity for the rest of the throw's flight, judged from the passer's distance (a coached
       // rule-of-thumb ball speed). One receiver per belief; his projected spot updates as his picture does.
       const r = sim.see(a, pick.R), left = !SHOULDER_LEAD ? 0 : Math.max(0, Math.min(SHOULDER_FLIGHT_MAX,
         Math.hypot(r.pos.x - pick.from.x, r.pos.y - pick.from.y) / SHOULDER_BALL_SPEED - (sim.t - rb.releasedAt)));
+      if (FLIGHT_BREAK_ON()) return flightBreakMove(a, sim, pick.R, r, sim.t + left, { x: r.pos.x + r.vel.x * left, y: r.pos.y + r.vel.y * left }, 'shoulder');
       return runThrough(a, { x: r.pos.x + r.vel.x * left, y: r.pos.y + r.vel.y * left }, { speed: 0.9 });
     }
     return stopDrop(sim, continueCoverage());
@@ -2418,6 +3207,14 @@ const SHOULDER_CONE = 25 * Math.PI / 180;
 const SHOULDER_BALL_SPEED = 17, SHOULDER_FLIGHT_MAX = 1.5;
 /** SHOULDER_LEAD (on; `=0` restores the break to the receiver's seen spot): the shoulder break leads the receiver (#758). */
 const SHOULDER_LEAD = process.env.SHOULDER_LEAD !== '0';
+/** ARM_BREAK (numeric bits; 1 since engine-76, 2026-11-17, `=0` restores; bit 2 stays off; A2): the zone defender's arm read. Bit 1: the shoulder break's reaction
+ * runs from the delivery's sample time (the cue already came through his perception delay), not a second full reaction
+ * after the pick. Bit 2: on the load he plants and loads toward where the passer's shoulders point (step at
+ * ARM_LOAD_PACE of his top speed, facing that receiver), the drop still braked. Measured first (a2-chain): load seen
+ * +0.35 s after the windup starts, the break +0.25 s after the release, the flight seen +0.35 s; toward the catch point
+ * -0.2 / 0.0 / +0.2 / +1.1 yd/s at -0.3 / 0 / +0.2 / +0.4 s against the NFL's +0.5 / +1.2 / +1.9 / +2.4. */
+const ARM_BREAK = Number(process.env.ARM_BREAK ?? 1) | 0;
+const ARM_LOAD_PACE = 0.3;
 /** His read of the passer's shoulders: a bearing error drawn once per belief, its spread by anticipation (deg). The
  * rating acts on the read, not on the break's result; a misread sends him to the wrong man, which the passer's eyes and
  * shoulders can exploit. */
@@ -2431,7 +3228,8 @@ function shoulderTarget(a: Agent, sim: PlaySim, key: number): { R: Agent | null;
   // The passer he is watching, through the tracking channel (his gaze is on him: the arm key requires it).
   const q = sim.track(a, sim.qb, 1, true);
   const err = sim.dice('shoulder', a).normal(0, (SHOULDER_READ_SD_MIN + SHOULDER_READ_SD_SPAN * (1 - a.r('anticipation'))) * Math.PI / 180);
-  const read = q.facing === undefined ? null : q.facing + err;
+  const aim = QB_STANCE_SEEN ? q.head ?? q.facing : q.facing;
+  const read = aim === undefined || aim === null ? null : aim + err;
   let best: Agent | null = null, bestOff = SHOULDER_CONE, seenBearing: number | null = null;
   if (read !== null) for (const r of sim.offense) {
     if (r === sim.qb || isOL(r)) continue;
@@ -2448,6 +3246,7 @@ function shoulderTarget(a: Agent, sim: PlaySim, key: number): { R: Agent | null;
  * A newer body-possession picture takes priority in pursueIfLive. */
 function playObservedFlight(a: Agent, sim: PlaySim, path: PlaySim['ballPath'], acquired = false): MoveCommand {
   const c = flightApproach(a, sim, path, acquired);
+  if (!c && FLIGHT_BREAK_ON()) { const cont = continueFlightBreak(a, sim); if (cont) return cont; }
   if (!PURSUIT_COMMIT) return c ?? stand();
   // PURSUIT_COMMIT: on the flight's last tick no sample of it is left ahead of
   // him; that is not a reason to stop. Hold the approach he last chose.
@@ -2464,8 +3263,25 @@ const lastFlightApproach = new WeakMap<Agent, { cmd: MoveCommand; t: number }>()
 
 function flightApproach(a: Agent, sim: PlaySim, path: PlaySim['ballPath'], acquired = false): MoveCommand | null {
   const spot = catchSpot(a, { t: sim.t, ballPath: path });
-  const window = observedCatchWindow(a, sim, path);
-  if (acquired) rememberCatchOpportunity(a, window);
+  // HONEST_FLIGHT: a man defender plays the catch on his own man (as coached: his man's hands) when his flight estimate
+  // brings the ball within his man's reach; another receiver's opportunity is his only when his man has none (mesh's
+  // crossers: the ball passes the near crosser first, and the first-opportunity read put him on the other man).
+  const own = HONEST_FLIGHT && a.behavior?.kind === 'man' ? (a.behavior as unknown as { target?: Agent }).target ?? null : null;
+  const window = (own ? observedCatchWindow(a, sim, path, own) : null) ?? observedCatchWindow(a, sim, path);
+  // HONEST_FLIGHT: his catch hypothesis persists until a perceived change clears it: a new window replaces it, but an
+  // empty re-read during its securing beat (his own picture of the receiver is still from before the catch) does not.
+  const held = HONEST_FLIGHT ? catchOpportunity(a) : null;
+  // HONEST_FLIGHT: re-read on every tick he reads the flight, not only at its first acquisition (a hypothesis formed on
+  // the picture at acquisition went unrevised for the rest of the flight: mesh, cover1 doubles s10, the other crosser).
+  // The same receiver keeps the arrival he first judged (a re-read finds the first reachable sample still ahead, which
+  // moves with the clock and would stretch the securing beat without end); only a different receiver replaces it.
+  // A different receiver replaces it only when the ball reaches him first (an earlier opportunity), or he is the
+  // defender's own man: past the held arrival his estimate has the ball already in the held receiver's hands, and the
+  // path beyond it (another crosser further along) is no opportunity (mesh vs cover0 doubles s3 on engine-105).
+  const keep = HONEST_FLIGHT && held && (window
+    ? window.receiver === held.receiver || (window.receiver !== own && window.t > held.t)
+    : sim.t <= held.t + DRIVE_SECURE);
+  if ((acquired || HONEST_FLIGHT) && !keep) rememberCatchOpportunity(a, window);
   // Near the ball's path, a defender with ball skills turns his head and finds
   // it (looking over the shoulder doesn't turn the body).
   const nearPath = spot && Math.hypot(spot.p.x - a.pos.x, spot.p.y - a.pos.y) < 5;
@@ -2481,7 +3297,9 @@ function flightApproach(a: Agent, sim: PlaySim, path: PlaySim['ballPath'], acqui
     ? (opportunity && sim.t >= opportunity.t - DRIVE_LEAD && sim.t <= opportunity.t + DRIVE_SECURE ? opportunity.receiver : null)
     : (sim.ball.kind === 'air' && sim.ball.securing ? sim.ball.securing.receiver : null);
   // HONEST_FLIGHT: a receiver he sees without the ball after the arrival is not securing it.
-  const droppedSeen = (R: Agent) => { const q = sim.see(a, R); return !!opportunity && q.carrying === false && q.age !== undefined && sim.t - q.age > opportunity.t; };
+  // Only a picture taken after the securing beat (his estimated arrival + DRIVE_SECURE) can show the receiver without the
+  // ball: during the beat a receiver securing it is not yet carrying it in anyone's picture.
+  const droppedSeen = (R: Agent) => { const q = sim.see(a, R); return !!opportunity && q.carrying === false && q.age !== undefined && sim.t - q.age > opportunity.t + DRIVE_SECURE; };
   if (DRIVE_CATCH && securing && !(HONEST_FLIGHT && droppedSeen(securing))) {
     const R = securing, seen = sim.see(a, R);
     if (Math.hypot(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y) <= 4) {
@@ -2496,6 +3314,9 @@ function flightApproach(a: Agent, sim: PlaySim, path: PlaySim['ballPath'], acqui
         const tt = timeToReach({ pos: a.pos, vel: a.vel, profile: a.profile, speedScale: a.speedScale }, hands, a.profile.reach);
         if (!playsBall(a, R, tt, remaining)) { a.tags.add('open-field'); return chase(sim, a, R, 3, { onTop: true }); }
       }
+      // FLIGHT_BREAK: through the hands by the same break (arrival he can brake from, his seat's side), not a full-effort
+      // run through a receiver who is moving upfield through the catch (Defense's overrun class).
+      if (FLIGHT_BREAK_ON()) return flightBreakMove(a, sim, R, seen, sim.t, hands, 'drive-catch');
       return runThrough(a, hands, { speed: 1 });
     }
   }
@@ -2511,6 +3332,8 @@ function flightApproach(a: Agent, sim: PlaySim, path: PlaySim['ballPath'], acqui
     if (sim.trace.data) sim.trace.decide({ t: sim.t, a: a.idx, kind: 'catch-approach',
       chose: 'carry observed receiver', cue: 'nearby running catcher and visible ball window',
       detail: `${window.receiver.slot} at ${window.t.toFixed(2)} s; no earlier reachable ball opportunity.` });
+    // FLIGHT_BREAK: the same break, not a carry that runs with a receiver coming back toward the passer.
+    if (FLIGHT_BREAK_ON()) return flightBreakMove(a, sim, window.receiver, window.seen, window.t, window.p, 'nearby');
     return track(a, window.seen.pos, window.seen.vel);
   }
   if (spot) {
@@ -2526,6 +3349,11 @@ function flightApproach(a: Agent, sim: PlaySim, path: PlaySim['ballPath'], acqui
   // Can't beat the ball to its path: drive on the catch point to arrive with
   // the ball — on the receiver's near side, ready to play through the hands
   // or make the tackle the moment it's caught.
+  // FLIGHT_BREAK: he cannot beat the ball to its path: the shared break on the receiver's moving catch window.
+  if (FLIGHT_BREAK_ON() && window) return flightBreakMove(a, sim, window.receiver, window.seen, window.t, window.p, 'window');
+  // FLIGHT_BREAK: the window has passed in his picture (the ball has arrived by his estimate) but he has not yet seen the
+  // catch: the break keeps its receiver until the possession read hands him to pursuit, rather than a stale spot.
+  if (FLIGHT_BREAK_ON()) { const cont = continueFlightBreak(a, sim); if (cont) return cont; }
   const land = window?.p ?? arrivalPoint(sim, path);
   if (land) {
     // Close to the catch itself. A fixed yard of standoff plus inside shade
@@ -2562,29 +3390,51 @@ function flightApproach(a: Agent, sim: PlaySim, path: PlaySim['ballPath'], acqui
 /** First plausible receiver catch from the defender's delayed picture and
  * the visible flight. Does not inspect the intended target or called route.
  * This is a possibility estimate; a receiver can still drop or miss it. */
-function observedCatchWindow(a: Agent, sim: PlaySim, path: PlaySim['ballPath']): { p: Vec2; t: number; receiver: Agent; seen: Perceived } | null {
-  const receivers = sim.offense.filter(r => r !== sim.qb && !['LT', 'LG', 'C', 'RG', 'RT'].includes(r.slot))
-    .map(r => ({ r, seen: sim.see(a, r) }));
+function observedCatchWindow(a: Agent, sim: PlaySim, path: PlaySim['ballPath'], only?: Agent): { p: Vec2; t: number; receiver: Agent; seen: Perceived } | null {
+  const receivers = sim.offense.filter(r => (only ? r === only : r !== sim.qb) && !['LT', 'LG', 'C', 'RG', 'RT'].includes(r.slot))
+    // HONEST_FLIGHT, his own man: the continuous attended read he mirrors him by (sim.track), not a recognition picture.
+    .map(r => ({ r, seen: only ? sim.track(a, r, 1, true) : sim.see(a, r) }));
+  let prevSample: PlaySim['ballPath'][number] | null = null;
   for (const s of path) {
-    const remaining = s.t - sim.t;
-    if (remaining < 0 || s.z < 0.25) continue;
+    // HONEST_FLIGHT: a sample he sees reaching a receiver within the securing beat behind now is a catch being made now:
+    // his picture of the ball lags it, so a flight first seen as it arrives (a trailer with his back to the throw: mesh,
+    // cover1 doubles s1, seen 0.2 s after the catch) had every sample behind the clock and named no receiver; he ran to
+    // where his estimate landed the ball, past his own man, until a picture showed that man carrying it.
+    const remaining = s.t - sim.t, behind = HONEST_FLIGHT ? -DRIVE_SECURE : 0;
+    if (remaining < behind || s.z < 0.25) { prevSample = remaining < behind ? s : null; continue; }
+    const before = prevSample; prevSample = s;
     for (const { r, seen } of receivers) {
       if (s.z > r.profile.maxCatchHeight * 0.92) continue;
       const p = { x: s.x, y: s.y };
       const reach = r.profile.reach + TRACKING_REACH_BONUS;
-      if (Math.hypot(p.x - seen.pos.x, p.y - seen.pos.y) > r.profile.vmax * remaining + reach) continue;
+      if (Math.hypot(p.x - seen.pos.x, p.y - seen.pos.y) > believedCaps(sim, a, r).vmax * Math.max(0, remaining) + reach) continue;
       // Catching does not require stopping at the ball point. A receiver's
       // observed path can carry his hands through it even when a point-arrival
       // estimate charges for braking/redirecting. Use the same maximum hand
       // envelope as a tracking catch, without consulting his hidden target,
       // route or eventual possession. He may still miss or drop the pass.
-      const passing = Math.hypot(p.x - seen.pos.x - seen.vel.x * remaining,
-        p.y - seen.pos.y - seen.vel.y * remaining) <= reach;
+      // HONEST_FLIGHT: over the flight segment to this sample, not only at it (the catch's own closest-approach geometry,
+      // physics/catch-opportunity.ts, on his picture of the receiver carried on its velocity): a 0.1 s sample spacing
+      // missed a receiver whose hands meet the ball between samples (mesh, cover1 doubles s10: 1.30-1.46 at the samples,
+      // a catch at the reach between them).
+      const passing = HONEST_FLIGHT && before
+        ? segmentPass(before, s, seen, sim.t) <= reach
+        : Math.hypot(p.x - seen.pos.x - seen.vel.x * remaining, p.y - seen.pos.y - seen.vel.y * remaining) <= reach;
       const tt = timeToReach({ pos: seen.pos, vel: seen.vel, profile: r.profile }, p, reach);
       if (passing || tt <= remaining) return { p, t: s.t, receiver: r, seen };
     }
   }
   return null;
+}
+
+/** HONEST_FLIGHT: the closest the ball comes, between two samples of his flight estimate, to a receiver he sees, carried
+ * on his seen velocity (both linear over the segment). */
+function segmentPass(a0: { t: number; x: number; y: number }, a1: { t: number; x: number; y: number }, seen: Perceived, now: number): number {
+  const dt = a1.t - a0.t;
+  const r0x = a0.x - (seen.pos.x + seen.vel.x * (a0.t - now)), r0y = a0.y - (seen.pos.y + seen.vel.y * (a0.t - now));
+  const dvx = (a1.x - a0.x) - seen.vel.x * dt, dvy = (a1.y - a0.y) - seen.vel.y * dt;
+  const vv = dvx * dvx + dvy * dvy, s = vv > 1e-12 ? clamp(-(r0x * dvx + r0y * dvy) / vv, 0, 1) : 0;
+  return Math.hypot(r0x + dvx * s, r0y + dvy * s);
 }
 
 /** Where the ball comes down to catch height on its current flight. */

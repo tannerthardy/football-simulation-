@@ -26,6 +26,8 @@ export interface CycleSenses {
   felt: number;
   /** Whether his own position has him outside the pocket (with its margins, as THROWAWAY_FELT keeps them). */
   outside: boolean;
+  /** He feels a body on him (his own contact: a hand or a hit), the contact pressure state (audit §1 #4). */
+  contact?: boolean;
   /** Whether this look target is inside his clear cone now, and whether his head can still get it there (the turn). */
   inClear(t: LookTarget): boolean;
   canReach(t: LookTarget): boolean;
@@ -69,6 +71,8 @@ export class Cycle {
   outPass = 0;
   pressure: PressureState = 'clean';
   decision: { intent: Intent; at: number } | null = null;
+  private beforeEscape: CycleState = 'read';
+  private beforeCommit: CycleState = 'read';
   readonly looks = new Looks();
 
   constructor(readonly plan: QbReadPlan, startRead = 0) { this.readIdx = startRead; }
@@ -77,10 +81,13 @@ export class Cycle {
   stepAt(s: CycleSenses, n: number): number { return s.plantAt + n * s.stride; }
 
   /** His pressure state from his felt rush, with entry and exit margins (each rung is kept until its exit). */
-  private updatePressure(felt: number): void {
+  private updatePressure(felt: number, contact = false): void {
+    // A body on him is contact whatever the rush reads (audit §1 #4: the state was never entered, so no in-pocket throwaway).
+    if (contact) { this.pressure = 'contact'; return; }
     let st: PressureState = 'clean';
     for (const p of PRESSURE) {
-      const holding = this.pressure === p.s || (this.pressure === 'imminent' && p.s === 'felt');
+      const was = this.pressure === 'contact' ? 'imminent' : this.pressure; // off contact he holds imminent to its exit
+      const holding = was === p.s || (was === 'imminent' && p.s === 'felt');
       if (holding ? felt > p.exit : felt >= p.enter) st = p.s;
     }
     this.pressure = st;
@@ -102,12 +109,21 @@ export class Cycle {
     return (sticks.length ? sticks : clear).sort((a, b) => b.P - a.P)[0] ?? first;
   }
 
+  /** The wiring could not start the committed throw (no finish, a dwell gate, no mechanics): back to where he was, so
+   * pressure and the pocket are looked at again (audit §1 #1: the latched intent was replayed until he was sacked). */
+  /** Ticks a stale key held the judgment for a look (the diagnostic count). */
+  staleLooks = 0;
+  uncommit(): void { if (this.state === 'throw') { this.state = this.beforeCommit; this.decision = null; } }
+
   /** One tick. */
   tick(s: CycleSenses): Intent {
-    this.updatePressure(s.felt);
+    this.updatePressure(s.felt, s.contact);
     if (this.state === 'presnap') this.state = 'drop';
     if (this.state === 'throw' && this.decision) return this.decision.intent;
-    if (s.outside && this.state !== 'escape') this.state = 'escape';
+    // Escape both ways (audit §1 #5): out of the pocket (the host's test carries enter and exit margins) he escapes; back
+    // inside, with the rush not on him, he resumes where he was.
+    if (s.outside && this.state !== 'escape') { this.beforeEscape = this.state; this.state = 'escape'; }
+    else if (!s.outside && this.state === 'escape' && (this.pressure === 'clean' || this.pressure === 'felt')) { this.state = this.beforeEscape === 'drop' ? 'read' : this.beforeEscape; this.escIdx = -1; }
     if (this.state === 'drop') {
       if (s.now < (s.readFrom ?? s.plantAt)) { this.looks.update(null, false, s.now, s.tau); return { kind: 'look', target: null }; }
       this.state = 'read';
@@ -118,7 +134,7 @@ export class Cycle {
   }
 
   private commit(s: CycleSenses, intent: Intent): Intent {
-    if (intent.kind === 'throw' || intent.kind === 'kill') this.state = 'throw';
+    if (intent.kind === 'throw' || intent.kind === 'kill') { this.beforeCommit = this.state; this.state = 'throw'; }
     this.decision = { intent, at: s.now };
     return intent;
   }
@@ -129,7 +145,15 @@ export class Cycle {
     const t = this.target(r);
     this.looks.update(t, s.inClear(t), s.now, s.tau);
     const res = this.looks.resolved(t);
-    if (res >= s.need) {
+    // A stale key is looked at before it is judged (card spec §1, Integration's note: the coached answer to an old
+    // picture is a look at him, not a judgment on the age-shifted number). Stale: a key look he resolved earlier but has
+    // not had in his clear cone for longer than one look of his (tau), by his own eye history (the picture's own age
+    // carries his perception delay, about 0.3 s even while he looks, so it cannot tell a stale look from a fresh one).
+    // While his eyes can still get there this tick is the look; out of reach, he judges on what he has.
+    const since = this.looks.sinceClear(t, s.now);
+    const stale = r.look.kind === 'key' && since !== null && since > s.tau && s.canReach(t);
+    if (stale) this.staleLooks++;
+    if (res >= s.need && !stale) {
       const j = this.choose(s, r); if (j) return this.commit(s, { kind: 'throw', judged: j });
       if (r.onCovered === 'kill' && r.throws[0]) return this.commit(s, { kind: 'kill', ref: r.throws[0].ref });
     }
@@ -152,7 +176,8 @@ export class Cycle {
     // (c) and a timed throw is refused only once its window has been seen (at or after his break, a windup on).
     //     On a key read only: the key named the throw he is timing (on a receiver read the eyes stay free to move on once
     //     he has answered no; holding them there made the quick out's hitch late, 2.05 -> 2.45 s, staged control).
-    const answeredNo = s.readFrom !== undefined && res >= s.need && !notDue && (r.look.kind !== 'key' || timed.every((o) => s.judge(o)?.seenBreak !== false));
+    // A key read is not answered before the key has declared (audit §1 #2): no cue yet, no answer; the next step bounds it.
+    const answeredNo = s.readFrom !== undefined && res >= s.need && !notDue && (r.look.kind !== 'key' || (cue !== null && timed.every((o) => s.judge(o)?.seenBreak !== false)));
     if (s.now >= next || answeredNo) {
       this.looks.markDue(t, s.now);
       // Resolved and answered no: the eyes move. Unresolved: hold while the look is resolving (the stare-down), bounded
@@ -172,7 +197,9 @@ export class Cycle {
       if (h.side !== 'either' && h.side !== s.hotSide) continue;
       const j = s.judge(h.answer); if (j && j.P >= s.bar.P && j.risk <= s.bar.risk) return this.commit(s, { kind: 'throw', judged: j });
     }
-    if (this.plan.checkdown) { const j = s.judge({ ref: this.plan.checkdown.ref, timing: this.plan.checkdown.timing }); if (j && j.P >= s.bar.P && j.risk <= s.bar.risk) return this.commit(s, { kind: 'throw', judged: j }); }
+    // The checkdown only from its step (audit §1 #6).
+    const step = this.plan.reads[this.readIdx]?.step ?? Infinity;
+    if (this.plan.checkdown && step >= this.plan.checkdown.fromStep) { const j = s.judge({ ref: this.plan.checkdown.ref, timing: this.plan.checkdown.timing }); if (j && j.P >= s.bar.P && j.risk <= s.bar.risk) return this.commit(s, { kind: 'throw', judged: j }); }
     if (this.pressure === 'imminent') return { kind: 'move' };
     return { kind: 'away' };
   }
@@ -190,9 +217,22 @@ export class Cycle {
     return { kind: 'move' };
   }
 
-  /** Out of the pocket (ported by phase): the reads' throws judged as they are; away when the rush is on him. */
+  /** Out of the pocket (the outside reviewer's second read, 2026-11-25: a passer who has left the pocket still has eyes
+   * and a back). His eyes work the reads one at a time, a stride on each, from where he was; the reads' throws as he sees
+   * them, then the checkdown (its step no longer applies: the structure is gone); away only when the rush is about to get
+   * him or is on him (imminent, contact), not when it is merely felt: running is what he is doing about a felt rush. */
+  private escIdx = -1;
+  private escSince = 0;
   private onEscape(s: CycleSenses): Intent {
-    for (const r of this.plan.reads) { const j = this.choose(s, r); if (j) return this.commit(s, { kind: 'throw', judged: j }); }
-    return this.pressure === 'clean' ? { kind: 'escape' } : { kind: 'away' };
+    const reads = this.plan.reads;
+    if (this.escIdx < 0) { this.escIdx = Math.max(0, Math.min(this.readIdx, reads.length - 1)); this.escSince = s.now; }
+    const r = reads[this.escIdx], t = r ? this.target(r) : null;
+    if (t) {
+      this.looks.update(t, s.inClear(t), s.now, s.tau);
+      if (s.now - this.escSince >= s.stride && reads.length > 1) { this.escIdx = (this.escIdx + 1) % reads.length; this.escSince = s.now; }
+    }
+    for (const rd of reads) { const j = this.choose(s, rd); if (j) return this.commit(s, { kind: 'throw', judged: j }); }
+    if (this.plan.checkdown) { const j = s.judge({ ref: this.plan.checkdown.ref, timing: this.plan.checkdown.timing }); if (j && j.P >= s.bar.P && j.risk <= s.bar.risk) return this.commit(s, { kind: 'throw', judged: j }); }
+    return this.pressure === 'imminent' || this.pressure === 'contact' ? { kind: 'away' } : { kind: 'escape' };
   }
 }

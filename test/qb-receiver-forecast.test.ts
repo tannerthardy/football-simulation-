@@ -60,7 +60,9 @@ describe('QB receiver acquired picture and immutable installation', () => {
     f.r.body.pos = { x: 48, y: 6 };
     expect(f.sim.qbMind.receiverLook(f.r, { x: 60, y: 6 })).toBeNull();
     const p = f.sim.qbMind.receiverLook(f.r, { x: 48, y: 45 })!;
-    expect(p.pos).toEqual({ x: 48, y: 45 });
+    // The delayed position (PERIPH_ACUITY: within his stated error for the look's small eccentricity), not the hidden one.
+    expect(Math.hypot(p.pos.x - 48, p.pos.y - 45)).toBeLessThan(4 * Math.hypot(p.sigP ?? 0, p.sigV ?? 0) + 1e-9);
+    expect(Math.hypot(p.pos.x - 48, p.pos.y - 45)).toBeLessThan(0.2);
     expect(p.acquiredAt).toBe(.4); expect(p.sampledAt).toBeLessThan(.35);
     expect(see).not.toHaveBeenCalled(); expect({ ...f.sim.rng }).toEqual(rng);
   });
@@ -77,6 +79,36 @@ describe('QB receiver acquired picture and immutable installation', () => {
     a.acquire({ pos: { x: 44, y: 21 }, vel: { x: 0, y: 4 }, facing: Math.PI / 2, sampledAt: .7, acquiredAt: .8 });
     expect(a.predict(.8, .5)).not.toEqual(first);
     expect(a.estimate).toMatchObject({ progress: null, motion: 'observed-motion', sampledAt: .7 });
+  });
+
+  it('with shapeCarry (QB_V2): a look with him on his line but moving across it does not leave the route; 0.3 s of them does; a look placing him off every leg does at once; parallel to his line, the shape is carried', () => {
+    const f = fixture(), start = { x: 40, y: 18 };
+    const prior = installReceiverRoute(start, 40, 1, getRoute('go'), 0, f.r.profile, f.r.r('routeRunning'));
+    const mk = () => { const fc = new ReceiverForecast({}, prior, .05); fc.shapeCarry = true;
+      fc.acquire({ pos: { x: 44, y: 18 }, vel: { x: 5, y: 0 }, facing: 0, sampledAt: .6, acquiredAt: .8 }); return fc; };
+    const fc = mk();
+    expect(fc.estimate?.motion).toBe('installed-route');
+    // On his line, velocity across it (the unreliable part of a peripheral picture): still on his route.
+    fc.acquire({ pos: { x: 44.5, y: 19.1 }, vel: { x: 0, y: 4 }, facing: Math.PI / 2, sampledAt: .7, acquiredAt: .8 });
+    expect(fc.estimate?.motion).toBe('installed-route');
+    expect(fc.predict(.8, .5)!.x).toBeGreaterThan(45); // still forecast upfield
+    // Such pictures across 0.35 s: he has left it, and the forecast follows the line he is seen on.
+    fc.acquire({ pos: { x: 44.6, y: 19.3 }, vel: { x: 0, y: 4 }, facing: Math.PI / 2, sampledAt: 1.05, acquiredAt: 1.1 });
+    expect(fc.estimate?.motion).toBe('observed-motion');
+    // One picture placing him 3 yd off the line, crossing: believed at once.
+    const g = mk();
+    g.acquire({ pos: { x: 44, y: 21 }, vel: { x: 0, y: 4 }, facing: Math.PI / 2, sampledAt: .7, acquiredAt: .8 });
+    expect(g.estimate?.motion).toBe('observed-motion');
+    // 2.5 yd off his line but running parallel to it: the installed shape carried through the picture, not pulled back.
+    const h = mk();
+    h.acquire({ pos: { x: 46, y: 20.5 }, vel: { x: 6, y: 0 }, facing: 0, sampledAt: .8, acquiredAt: .9 });
+    expect(h.estimate?.motion).toBe('installed-route');
+    const ahead = h.predict(.9, .5)!;
+    expect(ahead.x).toBeGreaterThan(48); expect(Math.abs(ahead.y - 20.5)).toBeLessThan(0.8);
+    // 45 deg off his line (a release to block, a re-route): not carried.
+    const k = mk();
+    k.acquire({ pos: { x: 46, y: 20.5 }, vel: { x: 4, y: 4 }, facing: Math.PI / 4, sampledAt: .8, acquiredAt: .9 });
+    expect(k.estimate?.motion).toBe('observed-motion');
   });
 
   it('keeps geometrically ambiguous progress unknown rather than guessing a private waypoint', () => {
@@ -150,10 +182,15 @@ describe('QB receiver acquired picture and immutable installation', () => {
     const r = sim.agents[qb.recordedState().read!], rr = r.behavior as RouteRunner;
     sim.t = rr.breakTime - .15 * sim.qb.r('anticipation');
     sim.qb.body.pos = { x: sim.los - 7.3, y: sim.ballY };
-    r.body.pos = { x: sim.los + 8, y: r.pos.y }; r.body.vel = { x: 6, y: 0 };
-    for (const d of sim.defense) { d.body.pos = { x: 15, y: 26 }; d.body.vel = { x: 0, y: 0 }; }
-    for (let i = 0; i < 24; i++) sim.perception.record(sim.agents);
-    sim.qbMind.observe({ x: 15, y: 26 }); // Acquire the deliberately empty window honestly.
+    r.body.pos = { x: sim.los + 9, y: r.pos.y }; r.body.vel = { x: 6, y: 0 }; // a yard short of the out's 10 yd break (QB_TRACK_LOOK: at 8 the fixture passed only on the passer's 0.25 s old picture)
+    // In his view and off the throw's path (SIGHT_PURE holds a man he never sees at his alignment; parked 25 yd behind
+    // him, out of view, they read as still in the window: Tools/Physics, 2026-11-23).
+    for (const d of sim.defense) { d.body.pos = { x: sim.los + 25, y: 50 }; d.body.vel = { x: 0, y: 0 }; }
+    // recordPerception, not the bare record: the sight history comes with it (QB_TRACK_LOOK's tracked look reads it). The
+    // receiver's recorded history is his run at 6 yd/s up to where he is (a body standing still with a velocity, frozen for
+    // 24 frames, is pictured ahead of himself by whatever delay reads it).
+    for (let i = 0; i < 24; i++) { r.body.pos = { x: sim.los + 9 - 6 * sim.dt * (23 - i), y: r.pos.y }; sim.recordPerception(); }
+    sim.qbMind.observe({ x: sim.los + 25, y: 50 }); // Acquire the deliberately empty window honestly.
     const ownState = qb as unknown as { phase: string; setAt: number; readStart: number; lookOffChecked: boolean };
     ownState.phase = 'set'; ownState.setAt = sim.t; ownState.readStart = sim.t; ownState.lookOffChecked = true;
     qb.update(sim.qb, sim);

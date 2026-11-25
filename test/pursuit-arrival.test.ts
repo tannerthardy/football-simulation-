@@ -1,4 +1,5 @@
-import { beforeAll, describe, expect, it } from 'vitest';
+import { beforeAll, describe, expect, it, vi } from 'vitest';
+vi.hoisted(() => { process.env.BALL_EST = '0'; }); // engine-72: the native pursuit case is found on the direct ball read; the delayed ball estimate (default 6145) leaves no such case in the first six completions; Defense re-finds it with BALL_EST on (docs/reviews/2026-11-16-pin-delta-engine72.md)
 import { createHash } from 'node:crypto';
 import { arrivalJson, captureNativePursuit, compareBundle, forecast, freezeNative, frozenControls, necessaryBound, objectives,
   parseArrivalJson, response, restoreBody, type ArrivalCase } from '../scripts/diag/pursuit-arrival.js';
@@ -29,7 +30,12 @@ beforeAll(() => {
   // squeeze read (#365) with and without it.
   // Seed 1 with situational safety/corner depth (SITU_DEPTH): seed 6's first 6 completions no longer hold a
   // native pursuit case; seed 1 passes all 6 contracts.
-  chosen = captureNativePursuit(1);
+  // Seed 4 with the carrier judging defenders from what he sees (2026-11-17 carrier-honest): seed 1 still holds a
+  // case (CB_S on RB) but its search now takes past the hook's minute; seed 4 (CB_S on H) is found in about 18 s.
+  // Seed 6 (Defense, 2026-11-25, develop 91cbcfa6): seed 4's search (DT_S on X) now takes past the hook's minute (81.8 s
+  // under load; the file had been red since before 67f7cec1); seeds 1-9 all still hold a case, seed 6 (DE_W on Z) is
+  // found in about 18 s.
+  chosen = captureNativePursuit(6);
 }, 60_000);
 beforeAll(() => {
   // These clocks nominate pursuit decisions, not an expected football ending.

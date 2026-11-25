@@ -15,7 +15,7 @@ PlaySim.prototype.run = function (this: PlaySim) {
   let setT = null as number | null, setDepth = null as number | null, rel: any = null, arrive = null as number | null;
   const tb = sim.throwBall.bind(sim);
   sim.throwBall = (p: any, target: any, v0: any, intended: any, arrivalT: number, away = false, ...rest: any[]) => {
-    if (p === sim.qb && !rel && !away && intended) rel = { rhythm: ((p.behavior as any)?.rhythmThrows ?? 0) > 0, planT: arrivalT - sim.t, natT: (p.behavior as any)?.naturalFlight?.(Math.hypot(intended.x - p.pos.x, intended.y - p.pos.y)) ?? null, t: sim.t, from: { x: p.pos.x, y: p.pos.y }, to: { x: intended.x, y: intended.y }, air: (intended.x - sim.los) * dir };
+    if (p === sim.qb && !rel && !away && intended) rel = { dec: (() => { const r = (p.behavior as any)?.throwRec; return r ? { P: +r.P.toFixed(3), iR: +r.intRisk.toFixed(3), u: r.u === null ? null : +(+r.u).toFixed(2), normal: r.clearsNormal, hot: !!r.hot, slot: r.slot, decT: +r.t.toFixed(2) } : null; })(), rhythm: ((p.behavior as any)?.rhythmThrows ?? 0) > 0, planT: arrivalT - sim.t, natT: (p.behavior as any)?.naturalFlight?.(Math.hypot(intended.x - p.pos.x, intended.y - p.pos.y)) ?? null, t: sim.t, from: { x: p.pos.x, y: p.pos.y }, to: { x: intended.x, y: intended.y }, air: (intended.x - sim.los) * dir };
     return tb(p, target, v0, intended, arrivalT, away, ...rest);
   };
   const tick = sim.tick.bind(sim);
@@ -28,8 +28,8 @@ PlaySim.prototype.run = function (this: PlaySim) {
   const res: any = orig.apply(this);
   if (rel) {
     const call = sim.offCall, flight = arrive !== null ? arrive - rel.t : null, dist = Math.hypot(rel.to.x - rel.from.x, rel.to.y - rel.from.y);
-    console.log(JSON.stringify({ drop: call.pass?.drop ?? null, family: call.pass?.family ?? null, gun: call.formation.qb !== 'under', setT, setDepth: setDepth === null ? null : +setDepth.toFixed(2),
-      rel: +rel.t.toFixed(2), rhythm: rel.rhythm, planT: +rel.planT.toFixed(2), natT: rel.natT === null ? null : +rel.natT.toFixed(2), flight: flight === null ? null : +flight.toFixed(2), air: +rel.air.toFixed(1), dist: +dist.toFixed(1), speed: flight ? +(dist / flight).toFixed(1) : null, cmp: !!res.stats?.completed,
+    console.log(JSON.stringify({ cov: sim.defCall?.coverage?.id ?? null, shell: sim.defCall?.coverage?.shell ?? null, drop: call.pass?.drop ?? null, family: call.pass?.family ?? null, gun: call.formation.qb !== 'under', setT, setDepth: setDepth === null ? null : +setDepth.toFixed(2),
+      rel: +rel.t.toFixed(2), rhythm: rel.rhythm, planT: +rel.planT.toFixed(2), natT: rel.natT === null ? null : +rel.natT.toFixed(2), flight: flight === null ? null : +flight.toFixed(2), air: +rel.air.toFixed(1), dist: +dist.toFixed(1), speed: flight ? +(dist / flight).toFixed(1) : null, cmp: !!res.stats?.completed, dec: rel.dec,
       fate: (() => { const ev = sim.events.map((e: any) => e.type); return ev.includes('interception') ? 'int' : res.stats?.completed ? 'catch' : ev.includes('pbu') || ev.includes('deflection') ? 'pbu' : ev.includes('drop') ? 'drop' : 'miss'; })() }));
   }
   return res;

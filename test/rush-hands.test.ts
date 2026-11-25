@@ -1,7 +1,7 @@
 /** RUSH_HANDS stage 1 (physics/world.ts handForce / handHold / stepHands; engagement.ts refit; experimental, off):
  * the blocker's hand as a one-degree-of-freedom body on the hands joint. Fixtures (Integration, 2026-11-13): the same
  * force on an extended arm takes the hand off, on a bent, pressed one it does not; a grip resists more than open
- * hands; the result does not depend on the substep count; re-fit takes reaction + the hand's travel at arm speed;
+ * hands; the result does not depend on the substep count; re-fit takes reaction + the hand's travel at hand-travel speed;
  * with no force on the hand every joint force is today's; momentum is conserved (the ground is the only external). */
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import type { Vec2 } from '../src/core/vec.js';
@@ -84,12 +84,12 @@ describe('RUSH_HANDS stage 1', () => {
     expect(on.offset).toBe(0);
   });
 
-  it('re-fit takes his reaction plus the hand\'s travel from his chest at arm speed', async () => {
+  it('re-fit takes his reaction plus the hand\'s travel from his chest at hand-travel speed', async () => {
     vi.resetModules(); vi.stubEnv('RUSH_HANDS', '1');
     const { refitTime } = await import('../src/sim/engagement.js');
-    const { ARM_SPEED } = await import('../src/physics/actuation.js');
+    const { HAND_TRAVEL } = await import('../src/physics/actuation.js');
     const b: any = { pos: { x: 0, y: 0 }, profile: { radius: 0.3, reactionTime: 0.25 } }, d: any = { pos: { x: 1.2, y: 0 }, profile: { radius: 0.3 } };
-    expect(refitTime(b, d)).toBeCloseTo(0.25 + 0.6 / ARM_SPEED, 9);
+    expect(refitTime(b, d)).toBeCloseTo(0.25 + 0.6 / HAND_TRAVEL, 9);
     d.pos = { x: 0.6, y: 0 };
     expect(refitTime(b, d)).toBeCloseTo(0.25, 9);
   });

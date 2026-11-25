@@ -2,7 +2,9 @@
 
 One combination of experimental flags that Run Game, Defense, Flex and Coverage all measure against. Before this, each agent tested on its own mix (the FLAT_PRESS / ZONE_RUN back-and-forth on 2026-11-09 came from two different flag sets), and no list of anyone's stack existed in the repository.
 
-- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-71`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
+- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-91`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
+
+- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-88`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
 - **The code:** `run/G3-oz-backfield` a749beb7 + `defense/G2-stance-tell` a0cb0789 (#411) + `defense/G2-lb-start` (#416, with #409) + `claude/quirky-franklin-9lbwbp` (#417, with #415) + develop 6676dfc2.
 - **Since 2026-11-09 the stack is the engine's default.** The flags listed `on` are read as on unless set to `0`; a bare command in a clean shell and `npm run ref -- <command>` run the same engine. `npm run ref -- --off -- <command>` runs the legacy engine (every listed flag off). `test/reference-stack.test.ts` fails if the file and the code defaults ever disagree. See "Promotion" below.
 
@@ -27,6 +29,7 @@ The stack was published on 2026-11-09 as a reference only, because the first com
 What was done:
 - The 90 `on` flags are read as `!== '0'` in `src` (95 sites). No other code changed. Checked on the 1,321-run set: the stack arm, the legacy arm (`--off`) and a bare run with an empty environment give the same per-play results as before the change, the bare run now matching the stack.
 - **The test suites still run on the legacy engine.** `vitest.config.ts` pins every promoted flag to `0` for all four tiers, so no recorded case moved and nothing was re-recorded. `TEST_ENGINE_DEFAULTS=1 npm test` runs them on the real defaults: 173 core tests in 61 files then fail because they pin legacy behaviour (most in `responsibility-ledger` 16, `combo-transfer` 15, `support-work-off` 9, `support-escape-objective` 9, `man-run-continuity` 8, `runner-side-recovery` 7, `combo-attention` 7). Each lane re-records its files and removes flags from the pin as it goes; a new test should be written for the real defaults (stub the pin off for the flags it needs).
+- **Since 2026-11-14 most of the core suite runs on the real engine.** `test/engine-pin.json` splits the core files: `defaults` run with no flag pinned, `pinned` still run with every promoted flag at `0`. The pinned list may only shrink (`test/engine-pin-manifest.test.ts`): a file leaves it when it passes on the defaults, and a new test file is a defaults file. `node --import tsx scripts/diag/pin-bisect.ts` names, per pinned file, the flags it needs pinned, so a lane can see what blocks deleting a flag and its legacy path; `TEST_PIN_FLAGS=A,B` pins only those flags. The `core` project pins every numeric flag to its legacy value even with `TEST_PIN_FLAGS` empty, so an "unpinned" run there is a mixed engine; judge a pinned file's re-record on `core-defaults` (move it in the manifest).
 - `config/baseline.json` is unchanged: it remains the historical profile, with these flags at `0`.
 
 What the promotion does not fix, in order of size at the game level:
@@ -606,6 +609,889 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 | Fixed 1,321 runs on run-ref-15, paired yards a run | | `FIT_TE_GAP` +0.05 ± 0.05; `FIT_BLITZ_SLIDE` +0.01 ± 0.04 |
 
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
+
+
+## engine-101: a blocker gets back on a released defender only from his frame (2026-11-24)
+
+On: `BLOCK_FRAME` (Defense; `=0` restores). Legality is the frame: a defender already released from a block this play
+is blocked again only from inside his frame (the blocker within 90 deg of his body facing: chest and shoulders, not his
+back; a labeled choice). From anywhere else a hand on him is a grab, not a block: the blocker may choose it by the same
+discipline-and-situation chance a beaten blocker grabs with (holdChance, as tryHold), decided once per pair per play,
+and the engagement forms with the hold on; otherwise he does not re-block that man. A hold persists while his hands
+stay on and the defender is within block reach. The persistent hold is the officiating half of the Phase 2 grip
+(Tools' push-contest and blocking-physics plan): it decides what is legal and what is called, not who wins the rep;
+contact-holding judges the restraint the grab achieves. Initial fits are unchanged.
+Why (post-shed-joint-tap.mts, develop 7689bc4e, 4 games): 6% of run DL releases had hands back on them within 0.5 s,
+36 of 37 by a new blocker and 31 of 37 from beside or behind; createEngagement clamped phi to +-0.95, so a blocker
+from behind got the block of one at the hip, never a hold and never a call. Two first-attempt geometry flaws were
+fixed before the card (phi on the run drive axis; a travel-based path that refused legal blocks on square defenders).
+Also fixed on the way: contact-holding's effect is already yd/s (the unit fix), and a hold lasting one tick.
+Card e138 (5 seeds x 32 games, frame arm against the reference): completion -2.6 to +2.2, yards per attempt -0.34 to
++0.20, rush yards per carry -0.21 to +0.03, run stuffs -3.3 to +1.2; no row moves the same way across seeds.
+Tests: inline-zone-keeper's fixture faces the defender to his blocker; responsibility-ledger M10-P081's stratum reads
+`U` with the flag on. Off hash = develop.
+
+## engine-100: the offense scouts the coverage from what its passer saw (2026-11-24)
+
+`SCOUT_SEEN` on (Flex; `=0` restores). The offense's in-game coverage scouting was fed the defense's true call after
+every pass play, with whether it was disguised (an outside review's finding, confirmed by Integration). It now learns
+from its passer's belief at the end of the play, each coverage by its share, weighted by how settled that belief was;
+a disguise counts when the shell he read before the snap differs from the one he believed after. Coaches upstairs
+naming the coverage between plays is a real second channel, left for the information-flow work.
+
+What it changes, measured in advance (Flex, 8 team-games): the offense's learned coverage mix against the defense's
+true mix, as total-variation distance, is 0.45 / 0.33 / 0.22 / 0.17 after 5 / 10 / 20 / 40 pass plays, against
+0.36 / 0.22 / 0.11 / 0.07 from the true call; it holds a disguise rate of 0.11-0.15 against a true 0.23-0.27.
+
+Card e138 (5 seeds x 32 games, on against off): completion -2.6 to +1.4, yards per attempt -0.31 to +0.10, sack rate
+-0.4 to +0.9, INT rate -0.3 to +0.3; no row moves the same way across seeds.
+
+## engine-99: what he believes of a defender is a scouting report (2026-11-24)
+
+Card e138 (5 seeds x 32 games, QB_SCOUT on against off): completion -1.7 to +3.2, yards per attempt -0.38 to +0.62, sack rate -0.4 to +1.1, INT rate -0.2 to +0.6; no row moves the same way across seeds. QB_SCREEN_SEEN was on in every arm of that card, so it is not isolated by it.
+
+On: `QB_SCOUT` and `QB_SCREEN_SEEN` (QB lane, plan of record §1.6: true-state reads in the passer's decision).
+
+- `QB_SCOUT`: what he believes of a defender's body and ball skills is a scouting report, fixed before the game per
+  passer and defender. It is the position's typical plus his share (playRecognition, experience) of a film reading. Film
+  errs: 6% of typical on each trait at no snaps on film, falling with the defender's experience to a floor of a third
+  of that (chosen). Off, the belief was the man's truth pulled toward the typical by a rating. The felt rush, the stick
+  checks, pocket movement and the screen check read rushers' and defenders' true profile and fatigue outright; on,
+  they all read the report, with no fatigue (he cannot see it). True fatigue reads in qb.ts fall 10 → 3
+  (decision-information scan).
+- `QB_SCREEN_SEEN`: the screen check's "blocked" is whether he sees one of his men on the defender, not the true
+  engagement.
+
+Same 16 games (seeds 11-18, 19-26), `scripts/diag/eyes/dropback-outcome.ts`:
+
+| | both off | QB_SCOUT only | both on |
+|---|---|---|---|
+| dropbacks | 1417 | 1444 | 1444 |
+| completion | 68.0% | 69.2% | 69.2% |
+| sacks | 96 (6.77%) | 94 (6.51%) | 94 (6.51%) |
+| INT | 18 | 19 | 19 |
+| thrown away | 19 | 17 | 17 |
+| time to throw p50 | 2.31 s | 2.31 s | 2.31 s |
+
+QB_SCREEN_SEEN changes no play on these seeds (the screen check's engaged case is rare); it removes the read.
+
+## engine-97: the passer's pre-snap picture is his own scan (2026-11-24)
+
+On: `QB_SCAN` and `QB_CANON_SEEN` (Flex; leak removals, QB decision plan §1.6; `=0` restores each). His pre-snap picture is one
+full scan, every defender off by his own error drawn once per play (0.3 + 1.0 x (1 - recognition) yd deep, 0.7 of that across),
+and the coverage features, the box count, the screen look and the quick check all read that one picture (off: exact positions
+in memory and four reads with fresh noise each). The canonical looks are built from the personnel and the front's visible
+alignment, not the call object, and the corners are found where he sees them: per side the widest defensive back of the visible
+personnel group within 12 yd of the line and 4+ yd off the ball (off: the CB_S / CB_W labels). Staged corner probe
+(`scripts/diag/eyes/corner-find.mts`, 17 looks incl. press, bunch, condensed, a nub end and rolled safeties): right man 98-100%,
+no side missed; the first rule (9 yd deep, 8+ yd off) missed 40-50% of condensed and heavy sides and fell to quickCheck's default.
+Tests: the box-count check adapted; screen-install's press kill re-recorded as an honest near-margin misread (an off corner at
+5.2 yd seen inside the 5 yd cloud edge; off coverage keeps the screen 26/30 seeds on, 28/30 off; press killed 30/30 either way).
+Red-diff on engine-95: 0 new, 0 fixed. Off hash = develop. Card: Integration's (both on vs both off).
+
+## engine-95: the ball goes away on what he perceives (2026-11-24)
+
+On: `THROWAWAY_FELT` (QB lane with Integration). Off, a fixed per-passer timer from the set (2.5 + 1.0 composure + 0.6
+pocketPresence + N(0, 0.25) s) threw the ball away once it ran out (over 0.8 s by a per-tick chance, or 2.2 s), without
+asking whether anyone was open or whether he felt pressure: an invented timer, not football.
+
+Taught: a passer throws it away because the rush is on him and nobody is there, or he is out of the pocket with nobody;
+with a clean pocket he keeps working, checks down or moves. On:
+
+- The timer no longer throws the ball away. It stays as his sense of time: it raises his urgency (his bar drops toward
+  the checkdown), calls the scramble drill, and his break or scramble.
+- He throws it away with the rush on him (felt pressure from the rush: enter 0.6, exit 0.4; chosen) or outside the
+  pocket by his own position (4.5 yd from the ball's line sideways, exit 3.5 yd; chosen), when no option clears his bar.
+  Under imminent pressure the existing no-throw path still answers first.
+- READ_WINDOW's quick game out of reads in a clean pocket keeps working (the best live option at the lowered bar, his
+  break or scramble); its dead-read rule is unchanged.
+
+Same 16 games (seeds 11-18, 19-26), engine-94 without the clock, off / on (`scripts/diag/eyes/dropback-outcome.ts`):
+
+| | off | on |
+|---|---|---|
+| completion (throwaways as attempts) | 65.8% | 68.0% |
+| thrown away | 34 (timer 24, pressure 10) | 19 (pressure) |
+| INT | 1.38% | 1.40% |
+| sacks | 92 (6.39%) | 96 (6.77%) |
+| scrambles | 39 | 28 |
+| time to throw p50 | 2.36 s | 2.31 s |
+| clean-pocket holds (timer out, felt < 0.4, in the pocket) | 23: 19 thrown away | 29: 10 complete, 5 sacked (p50 6.31 s, 2.15 s after the timer) |
+
+## engine-94: one break on the throw (2026-11-24)
+
+On: `FLIGHT_BREAK` (Coverage C14 with Defense; Integration's paired card). `FLIGHT_LEAD` is present but off and
+parked: it lost to the break alone (overruns 19 -> 34; its goals missed where the carrier went by about 5 yd).
+
+Taught: plant and drive on the throw to where the receiver will be, come to balance, with the leverage the seat
+plays. Off, each path had its own rule:
+- playBelievedBall's shoulder break ran through a projected spot at 0.9 speed;
+- a man carrier kept carrying his receiver on the arm read;
+- DRIVE_CATCH ran through the hands at full speed;
+- flightApproach's nearby carry tracked the receiver;
+- the drive went to a fixed catch point, and after the window to a stale one.
+Defense measured the first defenders beaten after the catch as 6.0 yd away and 4.3 yd ahead of the catcher at the
+catch, coming downhill at -2.9 yd/s along his line.
+
+On, all of them go through one break (`flightBreakMove`):
+- the goal moves with the receiver's seen velocity and crosses his catch window at the time the defender estimates;
+- it is shaded 0.8 yd by the seat's leverage (outside-in for corners and flat / curl-flat / deep outside seats,
+  inside-out otherwise), fading inside 6 yd of contact;
+- from over the top, the goal is the receiver's upfield shoulder;
+- he closes only as fast as he can brake from, to a through speed of 2.5 + 2 x (1 - tackling) yd/s.
+Once the flight lands by his estimate, he keeps the same receiver for up to 1 s, until pursuit's possession read takes
+him. His picture only. The replaced paths stay behind `FLIGHT_BREAK=0`.
+
+Defense's first-defender table (two seeds, CATCH_STRIDE on):
+
+| | first defender stops him | YAC |
+|---|---|---|
+| off | 62.3% | 8.46 |
+| on | 67.7% | 6.50 |
+
+Integration's paired card (seeds 23 / 37 / 11 / 5, deltas against engine-92 (before HEAD_FOLLOW)):
+
+| | per seed | mean |
+|---|---|---|
+| YAC | -1.07*, -1.35*, -0.98*, -0.31 | -0.93 |
+| yards per attempt | -0.94*, -0.78*, -0.69, -0.25 | -0.67 |
+| completion, pts | -0.9, -0.8, -2.0, +0.5 | -0.8 |
+| INT | +0.5, +0.8*, +0.3, +0.1 | +0.4 |
+| 20+ yard plays | -3.7*, -1.6*, -1.3, -0.6 | -1.8 |
+| sacks | | about +0.1 |
+
+Interceptions (`scripts/diag/coverage/int-census.mts`; 11 seeds x 2 games per arm, both arms with HEAD_FOLLOW):
+
+| | throws | INT | per throw |
+|---|---|---|---|
+| off | 1,957 | 31 | 1.6% |
+| on | 1,891 | 33 | 1.7% |
+
+Of the 33 with the break on, 22 were by a defender breaking on that throw (19 on the targeted receiver): defenders
+arriving at the catch point with the ball. Before HEAD_FOLLOW the same census read 26 -> 44; most of that rise was
+defenders seeing the arm or the ball through a frozen head (engine-93).
+
+Information audit (`scripts/diag/coverage/break-perception.mts`): every break had a cue inside his recorded head's cone
+at the cue's sample time (arm p50 0 deg off the head, ball p50 4 deg); nothing in FLIGHT_BREAK reads the true ball. The
+hold after the flight lands requires his release belief to stand, so a pump he has seen pulled down ends it.
+
+Tools' census (24 games, both arms with HEAD_FOLLOW), wide-open share at 10-15 yd, fixed times: Cover 6 .206 -> .225,
+Cover 2 .465 -> .427 (NFL .096 / .177), at the release Cover 6 .163 -> .121, Cover 2 .364 -> .330. Paired staged plays
+(`prerelease-diverge.mts`): the break moves no defender before the release on 189 of 192 Cover 6/8 plays.
+
+scripts/diag/coverage/int-census.mts (here); the staged and traced evidence is on coverage/C14-cards
+(docs/reviews/2026-11-23-coverage-cards-engine.md, scripts/diag/coverage/flat-staged.mts).
+## engine-93: a head nobody turns follows the body (2026-11-24)
+
+On: `HEAD_FOLLOW` (Coverage C14; found auditing FLIGHT_BREAK at Integration's and the QB lane's request). An information
+leak under the user's standing rule.
+
+With HEAD off (the stack), `stepHeads` turned only zone-eyed defenders' heads and skipped the passer. A head nobody
+drove kept its last direction while the body turned under it. Perception reads the recorded head (release-evidence's
+`sawAt`, the ball estimator's samples), so such a player saw the passer or the ball through a head up to 180 deg off his
+body. The neck allows 90 deg standing and 45 at a sprint, plus up to 55 deg of trunk twist for zone eyes.
+
+Who has a head, and what drives it (HEAD off):
+
+| player | head | engine-92 | engine-93 |
+|---|---|---|---|
+| zone-eyed defender | stepHeads (his key, then the passer) | driven | unchanged |
+| defender who left zone eyes (man conversion, pursuit, return, run fit) | none | frozen | relaxes to the body |
+| passer, controller running (qb-pass, handoff, mesh, PA fake) | qb.ts (QB_HEAD) | driven | held within the neck plus trunk twist |
+| passer after the throw (blocks, pursues, carries) | none | frozen | relaxes to the body |
+| receivers, linemen, rushers, other offense | never set (body cone) | unchanged | unchanged |
+
+Head offset off the body (`scripts/diag/coverage/head-audit.mts`, one game, seed 23; sampled at the end of the tick):
+
+| cell | engine-92 p95 / max, ticks over 145 deg | engine-93 |
+|---|---|---|
+| man defender, not driven | 146 / 180, 815 of 15,451 | 19 / 103, 0 |
+| zone eyes | 74 / 176, 6 | 75 / 141, 0 |
+| downfield block / carrier (returns) | 158-162 / 178, 41 | 10-28 / 74, 0 |
+| passer after the throw | 52-69 / 180, 60 | 10-87 / 158, 17 |
+
+At the perception record itself every head is within the neck plus trunk twist by construction
+(`test/head-follow.test.ts`). The passer's few end-of-tick excesses are his body turning after the record.
+
+A man defender's head now simply follows his body. Where he should look (his man's hip, then back for the ball) is a
+later technique item, not built here.
+
+## engine-92: what the passer sees off his gaze is less exact (2026-11-23)
+
+On: `PERIPH_ACUITY` (QB lane; Integration's paired card). An information leak under the user's standing rule:
+- Off, every receiver or defender inside his peripheral cone (45–69°) was seen exactly, apart from 1.7× the delay.
+- At decisions with the target 30–60° off his head, the receiver picture was 0.13 yd off.
+- On 62–72% of decisions made 15° or more off, the target had never been near his gaze.
+- Throws decided off-gaze completed better than throws he looked at.
+
+On, each look is offset by his stable misjudgment of that player:
+- position error 0.06 × range × eccentricity (Levi, Klein & Aitsebaomo 1985);
+- velocity error 0.14 × speed × eccentricity (McKee & Nakayama 1984);
+- both scaled by 1.3 − 0.6 × vision.
+
+The clear cone for reading separation is 10–15° (Ball et al. 1988), and the periphery's edge is unchanged. There is no
+must-look rule. The window prices each picture's spread, with its growth over the picture's age, in quadrature:
+- in the contest and undercut margins;
+- in the catch-point spread;
+- in the accuracy σ.
+
+PICTURE_AGE's age spreads come on with it.
+
+The decision's picture, by head angle (receiver error p50, off → on):
+
+| head angle | receiver error, yd |
+|---|---|
+| 0–15° | 0.04 → 0.07 |
+| 15–30° | 0.05 → 0.32 |
+| 30–60° | 0.13 → 0.56 |
+| over 60° | 0.32 → 0.50 |
+
+Completion by head angle at the decision (off → on):
+
+| head angle | completion |
+|---|---|
+| 0–15° | 67% → 69% |
+| 15–30° | 72% → 66% |
+| 30–60° | 74% → 64% |
+| over 60° | 72% → 75% |
+
+Over 60° is selection, not a leak: those targets were seen come open, and within each separation band they complete no
+better than looked-at throws.
+
+Paired six-seed card (seeds 23/37/11/5/61/88, deltas against engine-91):
+
+| | mean delta |
+|---|---|
+| completion | −1.2 pts |
+| yards per attempt | −0.17 |
+| sacks | +0.1 |
+| INT | +0.1 |
+| 20+ yard plays | −0.9 |
+| YAC | +0.2 |
+| time to throw | flat |
+
+The dither budget's carrier row is re-recorded (pooled [0.3897, 785, 306], was [0.2963, 854, 253]). The QB's re-priced
+options move his head; defenders reading his eyes break on other lines; the run after the catch meets them elsewhere.
+No stage flips, and carrier / spacing stays inside its own budget.
+
+docs/reviews/2026-11-23-turned-down-open.md; test/periph-acuity.test.ts.
+
+## engine-91: the stem worked to the defender's leverage (2026-11-18)
+
+On: `STEM_WORK` (Rules + Coaching; Integration, from Coverage's flow table). Taught: attack the defender's leverage,
+stemming at his leverage shoulder to make him open, then break; on a vertical, get on top of him (stack him). Off, stems
+were straight lines. On the stem (his route's first leg past 1.5 yd; a vertical's to 12 yd; stems of 5 yd or more,
+since a slant or quick out is won at the release and the break), decided once from his own picture: the nearest
+defender in front within 10 yd deep and 4 yd across, leverage 0.75 yd or more off his line -> he works toward that
+shoulder, by up to 1.5 yd and a fifth of the stem's length; head-up or no one over him -> straight. The bend is gone
+1 yd before the break (2 yd on a leaning break: post, corner), returned gently, at unchanged speed, so a bent stem costs
+the time its extra length costs. An in-breaking route (dig, post) then runs its break from where his stem put him, as
+ROUTE_LANDMARK already does and as taught: its break moves with the stem (median lateral at the break depth: dig 0.82
+-> 1.06 yd, post 0.21 -> 0.81); out-breakers keep their drawn spot (out 0.66 -> 0.66).
+
+Same operator on NFL and sim (scripts/diag/routes/flow_mix.py; BDB 2025 vs sim export, 8 games), stem lateral speed
+0.5 s before the release, by route class: sitting 0.26 -> 0.77 yd/s (NFL 1.30), vertical 0.40 -> 0.60 (1.05), other
+0.78 -> 0.98 (1.37). The route-shape share of the lateral-flow gap to the NFL: -0.47 -> -0.28 yd/s in an underneath
+man's band, -0.57 -> -0.36 one band outside (about 40% closed; the other half of the gap is concept mix, OFF_VARIETY).
+
+Break timing (route_timing.py; off -> on): post 2.45 s / 9.5 yd -> 2.58 / 9.0 (the operator had read part of the bent
+stem as the break; the post reaches every depth at the same time either way), dig 2.70 / 9.7 -> 2.70 / 9.7, out
+2.65 / 9.0 -> 2.60 / 8.8, corner 2.90 / 12.1 -> 2.92 / 12.0, hitch 2.35 / 5.6 -> 2.30 / 5.9. Staged outcomes
+(route-outcome.mts, Cover 1/2/3/4, about 850 attempts): completion .711 -> .720-.736, yards per attempt 8.18 ->
+8.56-8.77 over three runs; the slant's separation 3.27 -> 2.92 yd comes from the other receivers' stems, not its own
+(it runs straight); interceptions on hitches and slants lean up within run spread. Controls (stem-press.mts): press man
+unchanged (the press release runs the stem), off zone straight. Dither budget passes with it on.
+## engine-90: release reads from what the reader sees: vertical past the line, a back's flat release out of the box (2026-11-18)
+
+On: `READ_VERTICAL_LOS` and `BACK_CLEAR` (Coverage; `src/sim/coverage/reads.ts`, the ReleaseReader every coverage rule
+reads releases from).
+
+- **READ_VERTICAL_LOS:** a release is vertical only past the line of scrimmage in his picture. A back stepping up in his
+  protection set behind the line no longer latches `vertical`.
+- **BACK_CLEAR:** a back still 1.5+ yd behind the line, inside his rush-side tackle's seen width plus 0.5 yd, moving out
+  toward a rusher he could block (seen within 3 yd, on or behind the line, within 45 degrees of his path) is not a flat
+  release. Before it, his slide to an edge rusher read as a fast flat release: Push fired with the back in protection,
+  pre-empted Smash, and the Cover 2 squat corner left #1 for him.
+- **Controls** (`test/back-clear.test.ts`): a clean swing, a fast back to the flat and a check-release are read at the
+  same tick; a blocking back never reads flat. The one later read: a swing back the end comes straight at behind the
+  line (seed 1, he stalls to 0.9 yd/s) is read once clear.
+- **Tests:** 80 coverage files, 19 failures in 8 files off, 16 in 7 on, the difference only the three cases.
+  Re-records on the real engine (engine-pin `defaults`): coverage-rules, cover3-cover2-rules, quarters-trips-rules,
+  db-slots, projected-cap, coverage-judgment; each change is a staging or a promoted rule, stated in its file.
+- **Recorded, not landed:** KNOWN_PROBLEMS COV-13 (man defenders in traffic; `MAN_TRAFFIC` parked off).
+
+## engine-89: the Cover 2 flat corner takes the #2 flat when #1 cancels (2026-11-18)
+
+On: `FLAT_CARRY` (Rules + Coaching's rule HNFL-099/-334; Coverage built). The flat corner reads #1 himself:
+
+- **#1 cancels:** seen 3+ yd deep moving more across than up (a slant or an in), or slowed under 1 yd/s. Held until
+  #1 climbs again (a double move).
+  - The #2 flat in his area is then his. He squeezes it from on top and outside, which carries it if it turns up.
+  - He keeps it until another defender he sees caps it, it leaves his area, or it reaches 20 yd.
+- **#1 goes vertical:** he sinks with #1 (FLAT_SINK, engine-85) and the half safety takes what's left.
+
+Three ungated attempts took him off a vertical #1: 20+ completions rose 67 -> 86 (COV-12 in KNOWN_PROBLEMS).
+
+Cover 2, Cover 2 match and Tampa 2 staged dropbacks, every concept, 3 seeds, develop 6c7d09b1:
+
+| | off | on |
+|---|---|---|
+| never-touched 20+ completions (`scripts/diag/coverage/flat-carry.mts`) | 26 | 22 |
+| 20+ completions | 82 | 77 |
+| Cover 2 YAC | 6.32 | 5.55 |
+
+- **Throws to #1** (`corner-sink.mts`): unchanged, 6 at 50%, 6.5 yd/att; corner to #1 at arrival 4.7 -> 4.5 yd.
+- **Other rows:** the corner's downfield speed and depth under #1 are unchanged within 0.1. Cover 1, 3 and 4 YAC are
+  identical.
+
+**Open:** on the traced slant_flat from trips his read of #1's slant lands at about 2.8 s (a slant at 45 degrees shows
+"more across than up" late), so that rep is still late. An earlier read of #1's inside release is the next lever.
+
+## engine-88: deep men priced through their role; the forecast stops an out at its finish (2026-11-18)
+
+On: `QB_ROLE_PATH` (third form, 3b) and `FORECAST_FINISH`. Registered off: `READ_WINDOW` (not yet a finished repair,
+below) and `QB_CLOSE_BELIEF` (held).
+QB lane; records docs/reviews/2026-11-18-late-cross.md, 2026-11-18-forecast-finish.md and 2026-11-18-defender-path.md on
+claude/exciting-cori-hc8l4u. On develop cebd890b (engine-87).
+
+### READ_WINDOW (off): a quick read his eyes have moved off is dead for the play; not yet a repair
+
+**What it is for.** engine-83's never-touched long runs (Defense, via Integration): slant_flat from trips threw H's flat
+at 3.1 s or later, led 8-10 yd up the sideline, caught 12-16 yd deep with the nearest defender 4-7 yd away. Taught
+slant-flat throws the flat on the plant to its landmark, or not at all.
+
+**What it does, on.** On a quick concept (`concept.family === 'quick'`):
+- A read his eyes have moved off is dead; neither QB_RELOOK, a reset nor a key reorder reopens it. Kept on the read he
+  ends each tick on, so a move a key reorder undoes within the tick still counts.
+- Out of live reads: the plan's checkdown once, then the best live option, else the ball comes out now (the pocket
+  break, a scramble, or thrown away). Without this he stood in the pocket after his reads ran out at about 2.8 s.
+- A read thrown on a footwork step is not passed on the 0.35 s dwell before that step has let him throw it (bounded by
+  one stride). Without this an open read (X's slant at P 0.82, cover2 roster 7 seed 1) went by unthrown while his
+  hitch step (0.75 s stride) was still in the air: the read clock outran the feet. This is older than READ_WINDOW;
+  READ_WINDOW turned it into lost plays.
+
+**Why it is off** (`scripts/diag/eyes/snap-fate.ts`, staged and paired: slant_flat x doubles / trips x 7 zone shells x 3
+rosters x 3 seeds x flip, 252 snaps, measured on 097e3b13 with this patch; four_verts and comebacks are identical, not quick concepts):
+
+| arm | throwaways | sacks | completions | 20+ yd plays | ints | throw time p50 / p90 | late (3.1 s+) flats, led 10+ yd | yards a play |
+|---|---|---|---|---|---|---|---|---|
+| off | 7 | 1 | 186 | 46 | 2 | 3.10 / 3.75 s | 56, 37 | 14.1 |
+| on, dead reads + ball out | 96 | 0 | 120 | 11 | 4 | 2.50 / 3.15 s | 6, 5 | 6.9 |
+| on, + the step gate (this patch) | 51 | 0 | 156 | 37 | 6 | 3.05 / 3.20 s | 30, 18 | 11.1 |
+
+- Without the step gate the late flat is gone, but by throwing away 38% of the snaps.
+- With it, half the late led flats come back. 21 of the 30 late flats are read 0 at 3.1 s: the key's read (QB_KEY_PLANT's
+  re-read, after his hitch) puts the flat, never looked at, first after 2 s, and the step gate holds him on it to its
+  step. Not the late rekey (gating it changed nothing).
+- The off arm's late completions (61 of 89 on the snaps the first on arm threw away, 18.7 yd a catch) are the balls
+  the defenders do not break on (Defense's half), so the off arm is not a target either.
+- What is left is the quick concept's clock: when a quick read is live (its window from the plan's break and the drop),
+  so that the key's answer, a late key read and a held step all end with it. Next QB item; not tuned here.
+
+**Defense's count** (fe150600 + the first READ_WINDOW, zone 10+ air-yard completions): never-touched 20+ YAC catches 24
+(7.0%) -> 13 (4.2%), YAC mean 7.82 -> 6.00; all of the change on slant_flat. That arm had no ball-out step, so it held
+the snaps that became sacks.
+
+### FORECAST_FINISH: an out that finishes is forecast to stop at its finish
+
+- Under ROUTE_FINISH an outward route that runs out of field stops at its margin, in bounds. The forecast kept his
+  velocity past it, so the speed out was led 2-3 yd from the sideline instead of to the numbers.
+- On, a route whose last point is its finish ends there in the forecast, as the receiver does. Rules' out-trace with
+  ROUTE_SHAPE: quick-out completions 42 -> 44 of 56, miss on completions 0.91 -> 0.78 yd.
+- Not in it: the flat's extension hold proposed in the late-cross record. Under ROUTE_END a flat past his declared
+  points runs on up the sideline, so holding him at his landmark would be a false belief that steers the aim; the
+  defenders' ball estimate shares the forecast, and the hold moved three other lanes' fixtures. The late flat is a
+  decision, READ_WINDOW's.
+
+### QB_ROLE_PATH (3b): the window prices a deep defender through his role's real path
+
+Our deep men see the ball 0.25-0.30 s after the release, like the NFL's, but the eyes-on ones are match carriers keeping
+a roof over a receiver, and the window priced every counted man as a ball-chaser from rest after a standing reaction.
+- A carrier (deep 8+ yd, deeper than a receiver by half a yard, within 7 yd, moving with him, not closing on him faster
+  than 1.5 yd/s): over the target he contests only a ball thrown at or beyond him, else plays it from behind (only the
+  securing dislodge); over another receiver he is priced from where that route takes him.
+- A deep man (10+ yd) bailing away keeps going through the catch window.
+- Any other deep zone man (10+ yd), for a ball thrown at or beyond him (within 2 yd short of his depth, chosen), runs
+  the engine's body from his seen velocity and facing, held until his belief of the ball.
+
+**Integration's six-seed card** (fe150600, off vs on; seeds 23, 37, 11, 5, 61, 88): completion -0.7 / -1.9 / +0.1 / -0.3 /
++0.3 / -1.3 (mean -0.6 pt); Y/A mean +0.34; INT mean +0.15 pt (within noise); YAC +0.03; sacks +0.25 pt; 20+ plays +0.7 pt;
+aDOT 5.04 -> 5.66 (seed 23). Yards come through depth of target, not after the catch.
+
+**The deep share, by shell** (8 games, seeds 11 and 31, engine-83 with QB_ROLE_PATH off vs on; 15+ air yards, share of
+throws):
+
+| shell | off | on | NFL |
+|---|---|---|---|
+| one-high | 2.1% | 7.9% | |
+| two-high | 2.6% | 4.9% | |
+| zero | 0% | 13% (n 30) | |
+| all | 2.2% | **7.0%** | **13.4%** |
+
+It is 7% against the NFL's 13.4%: half the gap is closed. The remaining over-pricing, named:
+- the eyes-on deep man on a held ball: believed 0.36 against 0.17 real (0.59 before);
+- the staged deep seam: his believed pick risk 0.19 against 0.03 real, and his believed completion 0.19 against 0.31
+  real. He still prices the deep ball too dangerous and too hard;
+- the not-facing deep man is now right (0.36 / 0.36).
+
+**Fixtures.** `test/read-window.test.ts` is new (listed in `test/engine-pin.json`); it sets its flags itself:
+- READ_WINDOW on slant_flat: off, 21 of 32 throws go to a read he had moved off; on, none. (Late flats: 10 off, 4 on;
+  not asserted.)
+- FORECAST_FINISH on quick_outs: off, 152 of 208 of the QB's 4 s forecasts put the out more than 3 yd past its finish;
+  on, none.
+
+Full `npm test` (core and core-defaults) on 097e3b13 with this patch against clean 097e3b13: five tests newly fail, four of
+them moved by QB_ROLE_PATH alone (each passes with it off), and rush-lean-bound passes on rerun (a search under load).
+Pinned test-only, with owner notes:
+- `acc-radius` (QB lane): the panel waited for the deep man's price to settle, and QB_ROLE_PATH settles it. With it on,
+  ACC_RADIUS off already throws the vertical on 7 of 10 (median 2.3 s; 2 check-downs), and on throws it on 10 of 10
+  (all by 3.2 s), so the off arm's check-down premise is gone. Pinned off to keep ACC_RADIUS's own contrast.
+- `corner-one-release` (Coverage): #1's go is now thrown and the corner plays the ball (rob:X, not man:X) at the sample.
+- `screw` (Coverage / Rules): the pa_shot is thrown earlier; the safety plays the ball, a behavior with no recordedRule.
+- `rush-arm-balance` (Flex): the searched bull fall moves with the throw's timing.
+Rebased onto cebd890b (engine-87, HALF_KEY): the pinned and new tests, guard, scan, provenance, reference-stack,
+engine-pin, dither-budget, read-plan and half-key pass.
+
+## engine-87: the Cover 2 half safety keys #1 to #2 (2026-11-18)
+
+On: `HALF_KEY` (Rules + Coaching; Integration, after QB's peek-clock probe found our Cover 2 / Match / Tampa half
+widening the same whatever #1 and #2 did). The unruled half safety keys #1 to #2 on his side as taught (HNFL-334 SAFETY,
+HNFL-097: "drop to the deep-half landmark while seeing the release of #1; if #1 is vertical, widen and see #2; if both
+vertical, vision & squeeze; if either cancels, cap the remaining vertical threat"). He aims laterally, continuously, at
+the point from which he can still get on top of both, from his own delayed picture: each receiver weighted by how much
+of a deep threat he still is (his projected depth as a share of the safety's own, times his upfield speed as a share
+of the top he has shown), #2 with a floor, any other vertical in his half by depth; a cancel committed after his
+confirm time with margins removes that receiver. HALF_OWN's midpoint is the both-vertical case.
+
+His place between #2 (0) and #1 (1), same operator on NFL tracking (scripts/diag/coverage/half_key.py; BDB 2025 weeks
+1-3, PFF Cover-2, the 2L / 2R halves, 586 rows) and staged Cover 2:
+
+| #1 / #2 at the time | NFL 2.5 s / 2.9 s | off 2.5 s | on 2.5 s / 2.9 s |
+|---|---|---|---|
+| both vertical | .39 / .46 | .44 | .27 / .44 |
+| #1 cancels, #2 vertical | .07 / .15 | .43 | .05 / .19 |
+| #1 vertical, #2 cancels | .40 / .50 | .53 | .50 / .63 |
+| both cancel | .30 / .40 | .49 | .36 / .36 |
+
+His speed budget matches the NFL half's (both-vertical plays: 4.0-4.7 yd/s total, 1.0-1.7 lateral). The over-early split
+it replaces (HALF_OWN's midpoint of two climbing stems from about 1.2 s) protected #1's hole shot; with the Cover 2
+corner sinking (FLAT_SINK, engine-85) the key does not reopen it: staged Cover 2 / Match / Tampa (all concepts, 2 seeds,
+both formations, flip, 726 attempts), with FLAT_SINK: yd/att 8.14 -> 8.71, of which two distinct plays carry the rise
+(the half's missed dive and stop, since repaired by DOWN_RISE_PLANT, engine-84; a loose ball after a wrap); without them
+8.17 -> 8.23, 40+ yd 15 -> 15, completion flat; throws to #1 12.9 -> 8.8 yd/att. Hole shots against the NFL (78 Cover 2
+throws to #1 beyond 15 air yards, scripts/diag/coverage/hole_shot.py): the half's distance at arrival 6.9 vs 6.7 yd.
+
+## engine-86: the Book / Stubbie nickel matches #2's flat (2026-11-18)
+
+On: `MUSH_MATCH` (Rules + Coaching; a repair of the `mush` seat rule against its own source). The Book / Stubbie nickel
+("Soft Squat / MUSH") is taught "#3 up/in: match #2; #2 fast flat: match it; #3 out/flat: trap it" (HNFL-050,
+image-checked; Ross; SAB-TD). Off, a #2 released to the flat sent him to zone the curl-flat, which related him to #3's
+hook beside the read-hook Mike walling #3: two on #3, none on the flat, and #2 turned up the sideline untouched. And a #3
+who drifted outside at the line before turning into his hook was trapped and held. On: with #2 read flat or out and #3
+up or in, man on #2 from outside leverage, carried if he turns up; a trapped #3 who turns up hands on and the nickel
+takes #2; #3 out or flat is trapped and #2 in or under zoned as before.
+
+Defense's never-touched 20+ yd YAC count (zone-yac2.mts, defense/zone-yac-tools a38b130b: slant_flat, four_verts,
+comebacks vs Cover 2/3/4/6, doubles and trips, seeds 1-6 x flip, completions of 10+ air yards): 15 -> 10 of 62, YAC
+per catch 17.27 -> 13.79. All five Cover 6 slant_flat runs gone; the rest are Cover 2 slant_flat (the flat corner,
+FLAT_SINK) and the deep men's pursuit (Defense).
+
+Measured on develop fe150600 (engine-83, before FLAT_SINK; the Cover 2 corner is not in these calls). Staged, trips vs
+Cover 6 / Cover 6 Book / Stubbie / Book Read (they play identically against trips), all concepts,
+3 seeds x flip, 715 attempts per arm:
+
+| | off | on |
+|---|---|---|
+| completion | .713 | .697 |
+| yards per attempt | 9.76 | 7.83 |
+| 20+ / 40+ yd plays | 63 / 26 | 35 / 13 |
+| interceptions | 11 | 11 |
+| slant_flat yd/att | 50.6 | 27.2 |
+| fade_flat yd/att | 19.9 | 1.8 |
+| corner_flat yd/att | 18.9 | 7.3 |
+
+The fall in yards per attempt against trips is large because the hole was large: the flat in Book was simply
+uncovered, and slant_flat's flat went for 60 yd a throw. Controls: the slant behind the nickel. slant_flat's front-side
+slant is not thrown in either arm; the QB moves to the backside slant (10 throws at 15 yd/att, from none), the
+concept's conflict going the other way. Book's taught weakness, #2 from outside leverage with no help, still wins
+(sail_corner's #2 15 -> 16 yd/att, 23 throws). Open: about three distinct plays still go 70 because the nickel falls
+turning out of his open-carry posture at 2.5 s and stays down until the catch (handed to Tools/Physics).
+## engine-85: the Cover 2 corner sinks with #1 until the flat is threatened (2026-11-18)
+
+On: `FLAT_SINK` (Rules + Coaching's rule, HNFL-099/-334; Coverage built). The flat seat (squat / cloud corner) carries
+under #1's vertical with his eyes on the QB and does not plant on the QB's set, until a receiver in his area is a yard
+or more shallower than him (the flat threatened in front of him). Rules' hole-shot measure (NFL Cover 2 throws to #1 at
+15+ air yards): NFL corner downfield 3.6 yd/s at the throw, ours 0.5 (planted on the set).
+
+Corner on every Cover 2 / Cover 2 match / Tampa 2 dropback with #1 12+ yd past the line at the release (staged,
+scripts/diag/coverage/corner-sink.mts, 2 seeds, 498 / 495 sides):
+
+| throw | arm | n | corner downfield at release p50 (>= 2 yd/s) | corner to #1 at arrival | comp | yd/att |
+|---|---|---|---|---|---|---|
+| all | off | 498 | 2.1 (50%) | 17.4 | 60% | 7.9 |
+| all | on | 495 | 3.3 (69%) | 15.8 | 59% | 7.5 |
+| to #1 | off | 15 | 1.3 (33%) | 3.7 | 15/15 | 17.1 |
+| to #1 | on | 12 | 2.5 (58%) | 5.5 | 8/12 | 12.9 |
+| short, flat side | off | 190 | 0.6 (41%) | | 55% | 5.9 |
+| short, flat side | on | 182 | 2.6 (58%) | | 55% | 6.3 |
+
+On engine-84 (after QB_DRIVE's flight and the rest of engine-83, and DOWN_RISE_PLANT), same script: all 479 / 481 sides,
+corner downfield at the release p50 1.9 -> 3.3 yd/s (>= 2 yd/s 49 -> 70%), corner to #1 at arrival 16.3 -> 15.1, comp 61 -> 61%,
+yd/att 9.0 -> 8.5; throws to #1 8 at 100% / 15.7 -> 6 at 50% / 6.2 (small n); short flat side 51% / 6.2 -> 53% / 6.3.
+The rows below were measured on engine-82.
+
+Staged pass set (490 throws): completion 70.6 -> 71.2%, PBU plays 64 -> 62, INT 11 -> 11; dig window (10-16 yd air
+into the hook/curl, Defense's control) 62.6% / 9.55 -> 61.0% / 9.38 yd/att; crossers 82.3 -> 81.3%, YAC p50 5.1 -> 6.1.
+YAC by coverage (zma): Cover 2 5.65 -> 6.49 at catch depth 8.3 -> 7.4; Cover 1/3/4/6 unchanged. Explained: with the
+corner carrying #1, the Cover 2 catches move shorter and underneath, where a corner coming down from depth arrives late
+for the tackle. Logged as the gap it exposes (the sinking corner's break down on the flat throw), not a reason to hold.
+
+Not landed: `SETTLE_DEPTH` retired to off was measured with it and stays on. Off, the dig window went 62.6% / 9.55 ->
+65.2% / 10.94 yd/att (FLAT_SINK alone 61.0% / 9.38); the men who settled in front of a sitting receiver lost their depth
+over him (p50 1.8 -> 0.2 yd), though the post-set sink came nearer the NFL's (0.5-1.0 s after the set 0.90 -> 1.17 yd/s
+deeper at the release; NFL 1.3-1.4). The conflict with "stop when the QB sets" stays open for the zone-relation work.
+
+## engine-83: the quarterback's ball, window, key and committed throw (2026-11-18)
+
+On: `QB_DRIVE`, `QB_RHYTHM_THROW`, `QB_WINDOW_ARRIVE`, `QB_KEY_PLANT`, `QB_STICK` (QB lane; records
+docs/reviews/2026-11-17-qb-drive.md, 2026-11-18-window-key-stick.md, 2026-11-18-fv-smash-tampa-mike.md on
+claude/exciting-cori-hc8l4u). The number is provisional: Integration renumbers it if 81 and 82 land first.
+
+**QB_DRIVE: his natural ball at NFL speed for its distance.**
+- The flight is fitted to NFL flights by distance: routeFlight(d) = 0.0731 + 0.03945 d + 0.00022 d^2 s (BDB 2025).
+- Before it, his flights ran about 15% long against the NFL's (to the planned arrival).
+
+**QB_RHYTHM_THROW: on a rhythm concept the last drop step is not braked.**
+- Rhythm concepts: quick game, or read 1 on time at the set.
+- RHYTHM_PLANT is 0.4 of top speed, chosen.
+- At the plant he throws read 1 on anticipation if it is ready and clears his bar, carrying the drop's velocity into
+  the plant. Otherwise he sets and hitches.
+
+**QB_WINDOW_ARRIVE: a defender's course toward the catch point counts through his reaction.**
+- He pays only the share of his reaction his seen course does not already serve, carrying that share of his velocity.
+- A man seen tied in a block is priced as before.
+- Four attempts, each narrowing the cause:
+  - the course credit gave rushers in the lane;
+  - a man standing in the window was charged no reaction;
+  - a carry-away tripled game picks.
+- Staged calibration (480 plays):
+  - defended-ball error 0.1395 → 0.115;
+  - the trailing man within 3 yd: predicted / real 0.19 / 0.37 → 0.30 / 0.29;
+  - pick error 0.010 → 0.011.
+- Games (2 seeds × 4): completion 0.710 → 0.725, ints 5/672 → 7/632, 20+ yd throws 21 → 11 (completing 0.33 → 0.55).
+
+**QB_KEY_PLANT: on a keyed quick concept the key is read on the plant, from his picture of the key man then.**
+- An undeclared key gets no sitter default. He throws its first lean (trusted at 0.25–0.75 of the commit margin by
+  awareness and experience), or takes one re-read hitch (0.35 s) and goes with the lean then.
+- Staged quick concepts (192): key read median +0.25 → −0.05 s against the plant; rhythm throws 11 → 29; completions
+  133 → 135; ints 4 → 2.
+- The re-read branch has not fired in play: no key holds still at a gun plant.
+
+**QB_STICK: a started throw is pulled down only on a perceived change since the decision**, with a wider exit before
+the same man is thrown again (margins chosen). The changes:
+- a defender newly within 1.5 yd of the catch point (from beyond 2.5);
+- a defender newly in the lane;
+- the receiver down, or 2+ yd off where he expected him.
+
+Results:
+- Games: pumps per dropback 0.071 → 0.018. The 24 throws the old recheck would have pulled were caught 16, with 1 int.
+- DEEP_GATE's effect on the throw is nil with it on or off (360 staged Cover 2/3 plays).
+
+**Card on 5b49bb93, three seeds (23 / 37 / 11), against the reference:**
+
+| arm | Y/A | YAC per reception |
+|---|---|---|
+| drive | +0.07 / +0.41 / +0.57 | +0.06 / +0.12 / +0.96 |
+| stick | +0.17 / +0.34 / +0.07 | +0.13 / +0.69 / +0.27 |
+| read (window + key + rhythm) | +0.09 / −0.35 / +0.28 | +0.23 / +0.16 / +0.46 |
+| all (with QB_ALIGN, which is not in this step) | +0.74 / +0.01 / +0.51 | +0.79 / +0.58 / +1.19 |
+
+- Completion is flat everywhere. Ints, all: −0.2 / +0.7 / +0.9.
+- Nearly all of the Y/A is after the catch: the defenders' closing showing through a better-timed ball (Coverage's
+  in-flight closing table: our defenders close slower than the NFL's underneath and deep).
+- Integration's ruling: land on realism and absence of defects, not on the score.
+
+Off in this step: QB_ALIGN (held for the base item), QB_BODY_FOLLOW, QB_PEEK_CLOCK, QB_MOF_READ, QB_DEEP_WAIT, QB_STANCE.
+
+**Tests.** On 021a42a7 with the landing, seven core files fail that pass on develop. The other 29 core files that
+fail here fail on clean develop in this container too: memory, and baseline-runner's Node pin. The seven, each pinned
+to the flags that move it, found one flag at a time:
+- **engine-pin manifest:** qb-key-plant, qb-stick and qb-peek-clock join the defaults list.
+- **acc-radius:** QB_DRIVE, QB_STICK, QB_WINDOW_ARRIVE (each alone). QB to re-record.
+- **qb-grass-read:** QB_WINDOW_ARRIVE. QB to re-record.
+- **qb-gather-throw:** QB_RHYTHM_THROW. The rhythm drop's last step is not braked by design. QB to re-record on a
+  non-rhythm concept.
+- **corner-one-release:** the five (Coverage to re-record).
+- **man-trail-carry:** QB_DRIVE (Defense to re-find).
+- **rush-lean-bound:** QB_WINDOW_ARRIVE (Flex to re-search).
+
+Checks: typecheck, reference-stack, engine-pin manifest, provenance, guard, scan and dither pass, plus the QB tests
+(qb-stick, qb-key-plant, qb-peek-clock, qb-key-read, read-plan).
+
+## engine-82: the in and out breaks rolled, as taught (2026-11-18)
+
+On: `ROUTE_SHAPE` (Rules + Coaching; routes, 2026-11-14). The dig, out and speed out break as rolls, not square plants,
+as taught past about 8 yd and on the speed out (USA Football, Coaching the Wide Receiver: Square Break, Speed Drop,
+Speed Cut; Viqtory Sports' dig); the short in stays square. Same operator on NFL tracking (BDB 2025 week 1, traditional
+dropbacks, no play action) and staged sim routes, NFL banded at the sim's break depth
+(scripts/diag/routes/route_timing.py):
+
+| route | arm | break t | break d | v into | v out |
+|---|---|---|---|---|---|
+| dig | NFL @9.7 yd | 2.50 | 9.8 | 5.8 | 5.9 |
+| dig | on | 2.70 | 9.7 | 5.1 | 5.1 |
+| dig | off | 3.08 | 12.2 | 4.5 | 4.7 |
+| out | NFL @8.9 yd | 2.40 | 9.0 | 6.2 | 6.1 |
+| out | on | 2.60 | 8.9 | 4.7 | 4.8 |
+| out | off | 3.20 | 10.4 | 2.8 | 3.9 |
+
+Staged outcomes (scripts/diag/routes/route-outcome.mts, 4 coverages x 2 formations x 2 seeds x flip, about 860
+attempts per arm, develop 021a42a7 with RCV_KNOWS): completion .705 -> .683, yards per attempt 8.01 -> 8.00; out
+36/42 at 12.6 -> 33/42 at 13.3, quick_out 84/94 at 6.5 -> 78/96 at 8.3, dig 28/44 at 10.6 -> 30/49 at 8.3. Before
+RCV_KNOWS the flag cost 0.76 yd/att (the out 7.7 yd/att): the receiver's glimpse defect, repaired in engine-79.
+
+Open, not the route: of the 11 paired out / quick_out plays caught off and missed on (scripts/diag/routes/out-miss.mts),
+7 are the QB's lead, 2-3 yd from the sideline on the shaped last leg, the receiver braking for the boundary 0.5-1.7 yd
+short of it (handed to the QB lane: the speed out is thrown to the numbers); 2 a defender at the catch; 2 the receiver
+off the ball's line at arrival.
+
+## engine-81: the deep player's picture keeps the receivers in his area; the safety's help on #1 waits for #1 and commits (2026-11-18)
+
+On: `OWNED_FIX` and `ROB_COMMIT=7` (two flags, one engine step). Measured on develop 021a42a7 (engine-80, Rules' coverage rules on, including HALF_OWN) with each flag switched off in turn from the candidate.
+
+`OWNED_FIX` (Defense, B4/B5 gap 2 of Rules' coverage-position table; a coached-rule repair). The deep ownership filter cut a deep player's picture to his numbered man (quarter seats their #, the deep-third corner #1). Two repairs:
+- The deep-third (Sky) corner keeps #2 together with #1 when #2 works into his outside third: he owns both deep (the split and the squeeze run).
+- The deep-drive guard (another receiver climbing behind a stopped route stops him driving down on it) reads every vertical in his area before the ownership filter. The filter had emptied the guard's own input: after it, the only vertical left was the one he was driving on. HALF_OWN's midpoint hold (two verticals in a halves or middle player's area) is unchanged and still reads the filtered list. Nothing in quarters exercised the guard on these sets (Cover 4 and Cover 6 identical below), so "no change in quarters" means the case did not occur, not that the repair does nothing.
+
+| set, `OWNED_FIX` off -> on | yards an attempt | 15+ air yd comp | 10-20 yd YAC | short YAC | look-off yards |
+|---|---|---|---|---|---|
+| 10 vertical-heavy concepts, 8 seeds | 8.72 -> 8.64 | 85.4 -> 81.3% (n 48) | 5.82 -> 5.66 | 4.69 -> 4.58 | 7.15 -> 7.20 |
+| all concepts, 3 seeds | 8.96 -> 8.83 | 69.0 -> 66.7% (n 29/27) | 4.86 -> 4.42 | 4.99 -> 4.92 | 8.66 -> 8.37 |
+
+By coverage (zone-man-after, 3 seeds): only Cover 3 moves, YAC 5.10 -> 4.62 (n 283/278); Cover 1, 2, 4 and 6 identical. Run set 3.85 yards a carry unchanged.
+
+`ROB_COMMIT=7` (Defense, B4/B5 gap 5 of Rules' table; a coached-rule repair; bits 1+2+4). A safety helping #1 (the quarters safety once #2 goes out or under, the palms safety on #2 under, the 3x1 weak safety) re-scored his help every tick: over the top while #1 read vertical or had ever climbed past 7 yd, else rob. He flipped rob / top / rob as an under or a dig crossed 7 yd, robbed a #1 who had not declared, and drove down from 14-15 yd toward a 5 yd window on a short #1. Now: bit 1, an undeclared #1 leaves him in his quarter; bit 2, help changes only on a new declaration by #1 believed after his last change (vertical -> over the top, in-breaker -> rob; a past climb alone does not move him); bit 4, a short #1 (inside 7 yd) is not his to rob, he plays his quarter.
+
+Quarters safeties, Cover 4 and Cover 6, 2 seeds (qrob.mts, about 484 safety-plays), off -> on: rob taken before the throw 94 -> 69; on a short #1 (under/stop at about 5 yd) 68 -> 16; on an undeclared #1 4 -> 0; under -> over-the-top flips 64% -> 50% of 33 -> 2; 3+ job changes before the throw 37 -> 17 (those left are new declarations by #1, such as vertical -> in -> vertical on a double move, or a change of receiver).
+
+Staged set, all concepts, 3 seeds, off -> on: yards an attempt 8.84 -> 8.83, 10-20 yd YAC 4.45 -> 4.42, short YAC 4.98 -> 4.92. By coverage: Cover 4 YAC 5.29 -> 5.17, Cover 6 4.23 -> 4.19, the rest identical. Run set unchanged. (On engine-78, 6 seeds: 8.79 -> 8.81, Cover 4 YAC 4.99 -> 4.75.)
+
+Both flags: `dither-budget`, `decision-information-scan` and `decision-information-guard` passed on engine-78 with each on.
+
+## engine-80: coverage rules by position, as taught (2026-11-18)
+
+On: ten coverage rules from Rules + Coaching's coverage-position spec (docs/reviews/2026-11-17-coverage-position-spec.md,
+its table, and docs/reviews/2026-11-18-quarters-tree.md), each closing a hole found in staged play against the rule the
+sources teach. Before -> after are the staged tables in each flag's FLAGS row (the other rules of the stack on in both
+arms where they were measured stacked).
+
+| flag | the hole | before -> after (staged) | source |
+|---|---|---|---|
+| `HALF_OWN` | halves and the middle re-picked their verticals each tick and leaned the two-vertical split to the QB's look | midpoint miss at the throw 1.13 -> 1.00 yd; outcomes flat (yd/att 6.85 -> 6.83); lateral reversals 0.308 -> 0.292 | HNFL-334/-097 split & squeeze; Bowen |
+| `MATCH_DECLARE` | the Rip/Liz seam/flat man zoned off on any out: #2's flat caught 32/32 at ~12 yd/att | curl_flat's flat 12/24 at 4.7; Cover 3 match family yd/att 7.65 -> 6.93 | Saban Rip/Liz; USA Football 7272; HNFL-056/-292 |
+| `C2_APEX` | the Cover 2 apex went to the hook on #2's flat, leaving the curl | curl_flat's curl 24/26 at 13.1 -> 12/15 at 10.1; Cover 2 family 9.48 -> 8.31 | HNFL-334/-097/-015 |
+| `SQUAT_TOPDOWN` | the squat corner locked the flat under a sail or corner (a 70-yd sideline run) | flood's #2 out 16.1 -> 8.2 yd/att; the flat it now leaves 10.2 -> 14.3 (taught trade) | HNFL-099/-097/-334 |
+| `Q_APEX` | CUT_WALL's pass-off overrode the quarters apex's "take #2 across" with #3 away | mesh's #2 shallow 10.0 -> 6.2 yd/att; quarters set 7.91 -> 7.72 | HNFL-200/-365/-078/-198/-051 |
+| `TAMPA_PIPE` | the Tampa Mike rode smash's corner stem to 16 yd | he holds the pipe (y 22-24 while the stem crosses 19); 6.31 -> 6.46 (smash corner and seams not thrown in either arm) | HNFL-028/-241 |
+| `MUSH_TRAP` | the Book nickel zoned #3's flat where the sheet traps it | stick's #3 flat 18/18 at 17.5 -> 14/18 at 7.4; Book/Stubbie set 10.72 -> 9.34 | HNFL-050 (image), Ross |
+| `QUARTERS_CHECK` | Cover 6 vs 8 and Palms were random draws | the half to the boundary, Palms vs two detached #2s, MOD vs an attached #2; 8.42 -> 8.23 | HNFL-085/-229/-260, -051/-195 |
+| `SCREW` | the quarters safety eased into his alley on any run read, play action included | play action 6.68 -> 6.24 yd/att; runs unchanged (iz 3.21 -> 3.31, oz 4.38 -> 4.28) | HNFL-114 (image); USA Football 7422 |
+| `BOX_IN` | CUT_WALL's pass-off overrode Box's first in from the bunch | mesh's #2 from bunch 13.8 -> 5.1 yd/att; Box 6.98 -> 6.25 | HNFL-053 |
+
+Card (Integration, six seeds, whole games, the first eight together against the reference): yards per attempt
+-0.21 / -0.24 / +0.15 / -0.49 / +0.40 / -0.27 (mean -0.11); YAC per reception -0.58 / -0.44 / +0.42 / -0.59 / +0.56 /
+-0.61 (mean -0.21); 20+ yd completions -0.7 / -1.2 / -0.1 / -1.3 / +1.2 / -1.3 (mean -0.6): four of six favorable,
+nothing adverse elsewhere. By layer (four seeds): the two Cover 3 rules about flat, the two Cover 2 rules carry most of
+it. All ten (with SCREW and BOX_IN), seeds 61 / 88: yards per attempt +0.08 / -0.54, YAC +0.14 / -0.65.
+
+Held, with why:
+- `C3_HOOK` (the Cover 3 hook on #3's over, and #3 to the flat under a vertical #2): written, not landed; no installed
+  concept presents the shape.
+- `PALMS_FIX` (the Palms trap on #2's out inside 5 yd, the wheel before the throw): written, not landed; it changed no
+  staged play (no installed #2 out at 6-7.5 yd, no pre-throw wheel).
+- `ZONE_IT` (quarters vs a receiver stack checks to Box): needs a stack formation; built with the offense-variety
+  formations (rules/off-variety, OFF_VARIETY), not in this step.
+- CUT_WALL's other taught exemptions (Cover 6 Area hook, banjo inside, mike3, the Cover 2 apex's in, the Cover 3
+  hook's Push): measured, none moves a staged row; our offense rarely runs a shallow under them.
+
+## engine-79: a receiver leaves his route only once he knows the ball (2026-11-18)
+
+On: `RCV_KNOWS` (Coverage; a repair of the default receiver's ball tracking, found by the QB lane's route-shape trace,
+docs/reviews/2026-11-18-route-shape-forecast.md on claude/exciting-cori-hc8l4u). Under the glance rule (BALL_EST 2048)
+he knows the flight once he has held it for his dwell (0.10 s x (1.5 - skill) for the target). TrackBall left the
+route on his first sample instead, steering to a fit of a sample or two on his route prior. Trace (double_outs, Cover 2,
+doubles, seed 1, ROUTE_SHAPE): two one-tick glimpses at 0.25 and 0.35 s; the estimate 5 yd short; he braked 5.1 to 2.1
+yd/s and turned his body until the ball was behind his shoulders (135 to -160 deg), beyond neck and trunk; not sampled
+again for 1.2 s; incomplete. On: he runs his route at 5-6 yd/s, keeps looking (lookFor's trunk and hips), finds it
+again at 1.05 s, knows it at 1.25 s, catches it.
+
+Receiver estimate's error at the arrival, staged set (scripts/diag/receiver/rx-staged.mts; 589 throws), by time
+since his first sight, p50: 4.4 yd in the first 0.05 s, 1.7 at 0.05-0.15 s, 0.5 at 0.15-0.25, 0.3-0.4 to 0.6 s. The
+estimator is good once he has held the ball; the defect was acting on the glimpse. (Defenders' late estimates, 0.4-0.5 yd
+in the last 0.3 s, come from long held looks.) Not a frozen estimate: no new samples arrived while the ball was behind him.
+
+Staged set, off -> on: complete 405 -> 411 of 589 (68.8 -> 69.8%), drops 39 -> 34, misses 28 -> 22, incomplete 25 -> 30,
+PBU 92 -> 94, INT 10 -> 11; YAC p50 2.82 -> 2.48 (p75 5.43 -> 5.66). Paired by play: 59 outcomes change. 5 are plays
+where he had the ball in view more than 0.1 s before knowing it (0 -> 3 complete); the other 54 change through the
+normal dwell (every target spends about 0.1 s seen-not-known; he now runs his route through it): 14 -> 17 complete, both
+directions (flats 65 -> 74%, outs 62 -> 77%, hitches 83 -> 78%, hooks 60 -> 52%; small groups). Open item, on record: the step touches nearly every throw's first tenth of a second, moves outcomes both ways (flats and outs up, hitches and hooks down), and the YAC p50 dip is unexplained; for hitches and hooks (a settled receiver who should already be looking), whether running the route through that tenth drifts him off his spot is the first look after the merge. Guard, scan, dither,
+reference-stack and provenance pass. `test/stalk-close.test.ts` re-recorded (the legacy stalk engages on one more now
+screen, 5 -> 6 of 12, with the catch a tick or two later; STALK_CLOSE's own 9 of 12 unchanged; margin 0.3 -> 0.25).
+Not in this step: the ball crossing behind his back still turns his head to the wrong side (the ball-behind head item).
+Tried and dropped: pursuing the samples' bearing instead of their positions before he knows (no staged change).
+
+## engine-78: deep thirds and halves wait for the ball (2026-11-18)
+
+On: `DEEP_GATE` (Defense, B4/B5 gap 1 of Rules' coverage-position table; a coached-rule repair). Deep-third, deep-middle, deep-half and Tampa-middle players hold their coverage on an arm-only belief (the load, a delivery, a pump): no plant, no shoulder break. They break on the ball they have seen. Quarter seats (quarters, palms, Cover 6's quarter side) keep their route triggers. DEEP_BREAK stays a separate flag, off.
+
+Deep seats acting on the passer's shoulders before seeing the ball (deep-bite.mts, 1,024 staged plays, 66 with a pump; off -> on):
+
+| seat | off | on |
+|---|---|---|
+| Cover 2 deep half | 81% | 0 |
+| Cover 6 deep half | 88% | 0 |
+| Cover 3 deep middle | 74% | 0 |
+| Cover 3 deep third | 59% | 0 |
+| quarter seats (Cover 4, Cover 6) | 32-36% | unchanged |
+
+The deep man at the catch (deep-flight, Cover 2 / Cover 3): depth 9.7 / 9.8 -> 10.3 / 10.4 yd (NFL Cover 2 10.7); closing in flight 2.5 / 2.6 -> 2.1 / 2.2 yd/s (he waits for the ball).
+
+Staged set (engine-76 base): zone YAC 5.27 -> 5.24, 20+ 4.7 -> 4.9%; man YAC 3.17 -> 3.07; throws of 10-20 air yards 67.0 -> 67.3% complete, YAC 7.1 -> 7.0; short completion 75.6 -> 75.8%; yards per attempt 8.87 -> 8.88; run set 3.87 yards per carry unchanged; head-on control 2.5 -> 2.8%. Throws of 15+ air yards: 21 in the staged set, no signal.
+
+Dither: measured on the engine-76 base, the carrier spacing row moved to its budget line on the suite's panel. Attributed (dither-panel and carrier-dither, off -> on): carrier spacing reversals 44 -> 43, moving 288 -> 287 s, run plays identical; the gate reorders which pass plays carry a reversal (curl_flat 1 and 3: 2 -> 0; rb_slip_screen 9: 1 -> 3; wide_now_screen 9: 0 -> 1). On engine-77 (develop 69277a00, the carrier spacing row recorded at 0.1230 with ZONE_EYES) `dither-budget` passes with the gate on, so the row is not re-recorded.
+
+## engine-77: zone defenders see through one head that follows the taught eye sequence (2026-11-17)
+
+On: `ZONE_EYES` (Coverage, an information repair; C14 zone coached rules item 13). Off, with GAZE and HEAD off,
+SIGHT_COVER gave zone defenders occlusion-only sight with no view bound: facing the passer, a zone defender had every
+receiver at once and a bailing corner the whole field behind him. On, his head (head.ts's turn rate and neck range, on
+his shoulders) follows the sequence coaches teach, and he sees through its cone (about 90° a side, SIGHT_COVER's head
+view and release-evidence's head cone); what is outside it he does not see, and his picture of it ages.
+
+| seat | key in the declare phase | then |
+|---|---|---|
+| flat, curl-flat | his side's #2 | the passer |
+| hook, middle hook, hole, robber, curl | #3, else #2 | the passer |
+| deep third, deep half, quarter outside | #1 | the passer |
+| quarter inside, deep middle, Tampa middle | #2 | the passer |
+
+The declare phase is `ZONE_EYES_KEY` = 9 (tenths: 0.9 s) after the snap, a stated choice (the 3-step / 5-yd declare most sources
+give). On a believed throw his eyes go to the receiver his shoulder read picked ("eyes from the elbow to the receiver,
+not the ball"); the carrier he chases takes the head first. Sources: docs/reviews/2026-11-17-zone-coached-rules.md.
+Under BALL_EST with defenders estimating (not the default) the ball estimate keeps its own head: sharing one head with
+the sequence raised staged zone YAC on that arm without an explanation, so unifying the heads is an open item.
+
+Staged zone/man set (`zone-man-after.mts`, 2 seeds, gun doubles and trips, every non-screen concept; engine-76 →
+engine-77), YAC per catch: cover 1 (man) 3.14 → 3.13; cover 2 7.14 → 7.24; cover 3 5.26 → 4.69; cover 4 4.83 → 4.56;
+cover 6 3.96 → 3.83. Dither passes; the carrier / spacing row is re-recorded at 0.1230 (the same with ZONE_EYES=0 on this
+head). Information scan and guard, sight-cover, head and `test/zone-eyes.test.ts` (heads on the key at 0.6 s, on the
+passer by 1.25 s) pass. Man defenders keep SIGHT_COVER's occlusion-only sight; the same repair for them is next.
+
+## engine-76: one reaction on the arm read (2026-11-17)
+
+Numeric default: `ARM_BREAK` 1 (Defense, A2, a repair). A zone defender's arm cue reaches him through his sighting of the passer, already his perception delay late (`observationDelay(reactionTime)`); `playBelievedBall` then picked the shoulder target and waited a second full reaction from the pick before breaking. Bit 1 runs that reaction from the delivery's sample time: one delay, not two. Bit 2 (a hip load toward the shoulders on the load) stays off: it raised short completions (75.5 -> 77.5%) and cut breakups (97 -> 90), biting on looks that are not the throw.
+
+Chain (`a2-chain.mts`, nearest underneath man on short staged zone completions, n ~540; times from the release):
+
+| | engine-75 | bit 1 | NFL |
+|---|---|---|---|
+| QB windup starts | -0.40 s | -0.40 s | |
+| first arm-only action (plant) | -0.05 s | -0.05 s | |
+| shoulder break | +0.25 s | +0.10 s | |
+| plays the seen flight | +0.35 s | +0.35 s | |
+| toward the catch point at -0.3 / 0 / +0.2 / +0.4 / +0.6 s | -0.2 / 0.0 / +0.2 / +1.1 / +2.1 | -0.2 / 0.0 / +0.6 / +1.4 / +2.2 | +0.5 / +1.2 / +1.9 / +2.4 / +3.0 |
+
+Staged set (engine-75 -> bit 1): zone YAC 5.68 -> 5.27, p50 2.8 -> 2.7, 20+ 5.3 -> 4.7%; man YAC 3.06 -> 3.17; short throws (seeds 1-3): completion 75.5 -> 75.6%, PBU 97 -> 100, YAC 5.11 -> 4.70, yards per attempt 9.16 -> 8.87; run set 3.87 yards per carry unchanged; head-on two-way-go control, carrier gains 5+, 4.5 -> 2.5%. Short-throw interceptions 18 -> 13 on seeds 1-3 and 7 -> 10 on seeds 4-6 (pooled 25 -> 23): the changed outcomes are the same plays moving between interception, breakup and catch (the contest at the catch point), not a different ball-play branch. Dither passes.
+
+What is left: the pre-release gap. At the release the NFL underneath man is already moving +1.2 yd/s toward the catch point and ours 0.0; that is the pre-throw drift (the QB_INTENT lean, and the drop still running when the ball comes out), not the arm read.
+
+## engine-75: zone techniques keep playing on the arm read (2026-11-17)
+
+On: `TECH_CONT` (Defense, a repair). A zone match technique (Trap, Wall, Rob, CrossWall; `src/sim/coverage/techniques.ts`) that read the throw on the passer's arm alone called `playBall` with no continuation, so until he had seen the ball's flight he coasted on his current velocity. Now his own technique is the throw read's continuation, as for a zone dropper: he plants on the load and breaks on the passer's shoulders at the delivery. Landed without a card: a missing continuation is a bug, the zone droppers in the same window are the control, and it touches only the techniques.
+
+Probe (`tech-coast.mts`): the nearest underneath man at the release on short staged Cover 4/6 completions, in a technique job on 76 of 221 (Cover 4) and 55-58 of 212 (Cover 6); window from his first arm-only read to the flight seen, p50 0.40 s:
+
+| | Cover 4 technique | Cover 6 technique | zone droppers (control) |
+|---|---|---|---|
+| toward the catch point at the end of the window | −0.4 → +0.5 yd/s | −0.7 → +0.3 | +0.4 to +1.0 |
+| speed at the end of the window | 2.6 → 1.7 | 2.6 → 1.6 | 2.2-2.3 |
+| closing at the catch | 2.6 → 3.4 | 2.1 → 3.0 | 3.6-3.8 |
+
+Staged set (develop 2f5315d9 → on): zone YAC 5.82 → 5.68, p50 3.2 → 2.8, 20+ 5.4 → 5.3%; man YAC 3.06 unchanged (man coverage does not use the techniques); short throws: completion 75.5% both, PBU 96 → 97, YAC 5.33 → 5.11, yards per attempt 9.33 → 9.16; run set 3.87 yards per carry unchanged. Head-on two-way-go control: the carrier gains 5+ in the next second in 3.9% of approaches on develop and 4.5% with it on (330-362 episodes; missed tackles 0.0 → 0.3%), a small rise of the same size as engine-74's. Dither passes.
+
+What is left (A2): the break is aimed but slow. He plants (speed 1.7) and breaks only after his perception of the load, then a second reaction wait after the shoulder pick; and the load only plants him, with no hip load toward the throw.
+
+## engine-74: the hanging tackler's weight and the pursuer's forecast of the carrier (2026-11-17)
+
+On: `HANG_LOAD` (Tools: the share of a holder's weight the hold carries comes off his own turf friction and goes onto the carrier's legs and lift, upper-body holds included; a holder falling while tied to a runner no longer has his friction cancelled by the free-body tip drive; legs carrying the hang have less drive, brake, cut and recovery step). Numeric default: `BEND_FORECAST` 1 (Defense: the pursuer forecasts a carrier in space as bending upfield at 19 deg/s, the carriers' measured median, a stated choice; held until his seen velocity moves 20 degrees). Bit 2 of `BEND_FORECAST` (the body-facing cue) stays off. Also in develop since engine-73, not flagged: the carrier reads other players through his own picture and judges a pursuer's speed from his size and the speed he has seen (#822).
+
+Why these two, after a day of misses on zone YAC (lay-out, held pursuit spot, two open-field approaches, turn split, ellipse saturation, carrier recognition, get-heavy: all off on their lane branches, written up): an oracle ladder sized perfect pursuit angles at 5.99 → 4.26 staged zone YAC and a perfect hold at 4.81, and no single honest mechanism moved it alone. These are the two pieces that are more correct on their own terms and held up in every combination.
+
+Staged set (Defense, 1,230-completion design, develop d7d6e3a9 → both): zone YAC 6.16 → 5.81, zone 20+ 5.7 → 5.3%, man YAC 3.02 → 2.97; carrier down within 1 s of a contact at speed, behind centre / hip / reach, 51/48/50 → 56/55/56 (NFL 76/69/66); run set 3.88 → 3.87 yards per carry, missed and broken per carry unchanged; head-on two-way-go control 2.8% both; dither passes.
+
+Card (16 games, 2 leagues, both together against develop; `out/e106-card-*.md`), YAC per reception by seed 23 / 37 / 11 / 5 / 61 / 88: −0.13 / −0.34 / +0.47 / −0.87 / −0.81 / −0.08 (mean −0.29); yards per attempt −0.22 / +0.06 / +0.48 / −0.47 / −0.42 / −0.34; rush yards per carry −0.43 / +0.08 / −0.34 / −0.01 / −0.06 / −0.21. Each flag alone read +0.3 to +1.6 YAC on seeds 23 / 37 / 11 while the pair read about zero on the same seeds: the row's seed noise is as large as the effect, which is why the pair was run on six.
+
+Information repair at the landing: `BEND_FORECAST` chose its carrier from the true holder and the play's catch time; it now applies to a man the pursuer sees carrying after a flight he himself observed (staged zone YAC 5.82 against 5.81 with the true read; contact cells 54/51/53; head-on control 3.9% against develop's 2.8%, about four episodes in 360). Test-only: `qb-rhythm` gets a 120 s limit (96 plays take 55-65 s on the real engine); `film-pairs` selects plays 5, 6 and 9 of its game, since plays 7 and 8 stopped being scrimmage snaps with #822. Suite on the candidate: the 27 real-engine files owed to their lanes and the known research failure, nothing else.
+
+Known and not repaired: a full-weight hang never takes a running carrier off his feet (the tip moment is about his base radius, ~0.17 yd, and his recovery step answers it); `FALL_FRICTION`, `DOWN_FRICTION`, `FALL_TIP` and the base radius have no source. `HOLD_HEAVY` (the holder drops his weight) stays off: with the hang conserved it still gives up the upright finish and is torn off more often.
+
+## engine-73: the QB's key read and drop, route rules, play-action hinge, edge set and zone holds (2026-11-16)
+
+On: `QB_KEY_READ`, `CONCEPT_FIT`, `BACK_AS_THREE`, `PA_TABLES`, `CONCEPT_DROPS`, `QB_EDGE_THREAT`, `QB_HEAD`, `QB_CALL_ROUTES` (QB and Rules: the key man is the real flat player in his picture of the shell; a call fits the formation; drops come from the concept; his head turns at a rate; he reads forecasts of the called routes), `QUICK_HITCH`, `VERTS_KEYS`, `CURL_SINK`, `SETTLE_DEPTH`, `CRAFT_HOLD`, `CRAFT_EXIT`, `ROUTE_LANDMARK`, `RELEASE_COMMIT` (Rules: route rules as taught), `PA_HINGE` (attempt 2), `EDGE_SET`, `POCKET_DROP`, `POWER_AIM` (Flex and Defense: the play-side tackle hinges on the fake; the end sets the edge at a depth; the blocker gives ground in the pocket; the power rush aims through the man setting to him), `LOOSE_OWN` (Defense). Numeric defaults: `QB_FOOTWORK` 3 (the realistic drop), `ZONE_HOLD` 114, `END_KEY` 2, `OFF_PEDAL` 3. Not flagged: a back in protection references the quarterback as he sees him, not the line's set spot (Flex; the engine-72 `pa-drop` failure was this bug, not a fixture move).
+
+Held off: `QB_FOOTWORK` bits 8 (grass read) and 16 (long play-action fake and plant read: sacks +2.5 points on all three seeds, and with the hinge the away-side end beats the hinging tackle), `GRASS_READ`, `HAND_MOMENT`, `QB_LOOKOFF_RHYTHM`, `QCORNER`, `FOUR_VERTS_SEAMS`, `DECL_CLASS`, the honest-defender flags on Coverage's branch.
+
+Card (16 games, 2 leagues, seeds 23 / 37 / 11, against engine-72; `out/e101-card-*.md`), the landing set as one arm:
+
+| | seed 23 | seed 37 | seed 11 |
+|---|---|---|---|
+| Completion % (ref → arm) | 68.7 → 69.8 | 69.0 → 69.2 | 65.0 → 69.6 |
+| Sack rate | 4.3 → 6.7 | 4.2 → 5.0 | 4.3 → 4.9 |
+| Yards per attempt | 8.35 → 8.10 | 8.83 → 8.50 | 7.93 → 8.09 |
+
+Interceptions flat. By arm: the corner's pedal raises completions (+4.4 / +1.1 / +2.8) with yards per attempt down, the corner conceding the short throw as the NFL corner does (6.87 yd off at the throw). The realistic drop adds 0.10 to 0.12 s to the time to throw, which is the sack rise; it is the drop as taught and the rise is explained by it. The other arms show no consistent signal on a whole-game card and land on their staged evidence.
+
+Run set (`npm run ref:report -- --skip-operators --set fresh`): all runs capped mean 3.71, stuffs 13.4% (engine-72: 3.50, 15.4%); outside zone 3.34 (2.72), inside zone 3.79, gap 3.75, duo 4.38. The outside-zone move is `EDGE_SET`: the end no longer over-widens.
+
+Information repairs made at the landing (the type-aware scan, `test/decision-information-scan.test.ts`, found seven new true-state reads in the merged lane work): `POWER_AIM` and the quarterback's room-ahead check skip a man on the ground from the pose seen, not his true state; the key read, the head-turn target, the hinge's end-man fallback and its contact check read positions through `sim.see`. These went in after the card; the mechanisms' own tests pass with them.
+
+Commit-rule repair, not flagged: `containCoverage` (`src/sim/coverage-space.ts`) returned a zero request whenever the defender's own stopping distance reached his room to the boundary and the stopping-speed cap once he had slowed, a step on his own velocity. `RELEASE_COMMIT` sends screen corners at the sideline and exposed it (coverage / containment reversed re-aims 23 → 76 events over three panel draws; Tools). The step is removed and the cap alone bounds the request; the row returns inside budget. The dither record's pooled rows are re-recorded on the real engine-72 defaults (they had been recorded with `BALL_EST` and `SIGHT_STALE` at 0): pursuit 0.4025 → 0.5950, an honest high row.
+
+Test-only: twenty fixtures recorded before this landing are pinned in-file to the group that moved them, each with its owner (`acc-radius`, `pa-plant`, `hot-look`, `read-plan`, `qb-gather-throw`, `qb-rhythm`: QB; `forecast-break`, `hold-facing`, `release-commit`, `rush-lean-bound`, `punch-strike`, `past-along-path`: Flex; `loose-own`, `loose-seen`, `curl-flat-back`, `cushion-need`, `edge-reach`: Defense; `man-trail-carry`, `release-through`, `route-end`: Rules). `release-commit`, `loose-own` and `loose-seen` are the promoted mechanisms' own scenes: they pass with the line group (`PA_HINGE`, `EDGE_SET`, `POCKET_DROP`, `POWER_AIM`, `END_KEY`) off, so the scenes moved, not the mechanisms. `test/engine-pin.json` lists eighteen new files as defaults files. `visible-help` fails on the real engine at engine-72 as well and joins the files owed to their lanes.
+
+## engine-72: protection set, blitz reads, carry technique, receiver glance and four information repairs (2026-11-16)
+
+On: `SET_SPOT`, `SET_SPOT_TACKLE`, `POCKET_LEVEL` (Flex: the pass set's reference is the call's spot, not the live quarterback), `BLITZ_READ`, `BLITZ_DEPTH`, `BLITZ_SKILL`, `BLITZ_SECOND`, `QB_EVADE_UP` (QB), `CARRY_POSTURE`, `CORNER_DROP`, `CARRY_TURN` (Defense), `MIRROR_SCATTER`, `LEVEL2_TRACK` (Run Game), `SIGHT_PURE` (Tools), `PASS_OFF` with the honest hand-over (Flex), `QB_FACE_SEEN` (QB: his body faced the receiver's true position), `BREAK_LOOK`, `SEEN_EMPTY` (Coverage). Numeric defaults: `SIGHT_STALE` 7 (no picture of a man never sighted) and `BALL_EST` 6145 (receivers play the ball from their own looks, not the true flight). Defenders still read the true flight; the honest defender is on the Coverage branch.
+
+Test config: the legacy pin now sets every numeric flag in the stack to its legacy value (`config/legacy-env.ts`, Tools). Tools ran the 547 core files one by one with the pin and both new numeric defaults: the same single environment failure as without them.
+
+Card (16 games, 2 leagues, seeds 23 / 37 / 11, against engine-71; `out/e98-card-*.md`), the landing set with both numeric defaults:
+
+| | seed 23 | seed 37 | seed 11 |
+|---|---|---|---|
+| Completion % (ref → arm) | 68.4 → 68.4 | 70.4 → 67.9 | 67.7 → 66.1 |
+| Sack rate | 5.8 → 5.5 | 5.5 → 4.9 | 5.3 → 4.6 |
+| INT rate | 1.3 → 1.0 | 1.1 → 0.9 | 1.2 → 1.3 |
+| YAC / reception | 7.64 → 7.30 | 6.87 → 6.98 | 8.43 → 6.78 |
+
+Without the glance the set reads completion +2.4 / -1.0 / -0.4 and sacks -0.5 / -1.9 / -0.8; the glance's completion cost (about -1.5 to -3 pts across the cards it was read on) is the receiver steering to a ball he has seen late (a 90 degree redirect at 5 yd/s takes 0.7 s, in ours and in the NFL: `docs/reviews/2026-11-16-redirect-law.md`) and the catch model, not the estimator.
+
+Reads by set on the 18-arm card (`out/e97-card-*.md`): protection trio sacks -0.9 / -2.0 / -1.9 pts; blitz stack time to throw -0.08 / -0.05 / -0.10 s and sacks -0.9 / -1.3 / -0.9. Yards after catch moved with opposite signs across seeds on several arms and is not read from one card.
+
+Listed, not vetoes: sack rate on the set reaches 3.5 to 4.6% on some seeds, at or under the low end of the NFL band, because the pocket now holds against a rush whose push contest and play-action reads are still short (Flex, Defense in progress). `PASS_OFF`'s effect in games is small.
+
+Suite on the landing head: 4,622 passed; ten fixtures moved and one timed out under load (film-pack-determinism, passes alone), beside the two long-standing research failures. Test-only changes, each attributed by turning the group off in the stack file:
+
+- `SET_SPOT` pinned off in `punch-strike`, `rush-lean-bound`, `pa-drop` (recorded on the old pass set; Flex and QB to re-record).
+- `MIRROR_SCATTER` pinned off in `man-trail-carry`, `craft-exit`, `hold-facing` (recorded on the old alignment scatter).
+- `BLITZ_READ` pinned off in `qb-footwork-drop` (the gun play-action fake timing; QB lane re-records with its footwork re-cut).
+- `SIGHT_PURE` pinned off in `qb-tick-picture`: that test demonstrates the order-dependence `SIGHT_PURE` removes, so with it on its off arm has nothing to show; to be restated.
+- `acc-radius` pins the whole engine-72 boolean set: its counts of 4 to 6 plays move with each group; QB lane re-records when `ACC_RADIUS` is carded.
+- `dither-budget`: the pursuit row re-recorded 0.411 → 0.622 (84 events in 135 s). Turning off the protection trio, the carry set or `MIRROR_SCATTER` alone each brings it to 0.52 to 0.56; `MIRROR_SCATTER` only changes alignment scatter, so the row is moving with which plays the panel produces, not with a new re-aim source. Defense ran the row on panel seeds 1 and 100 (same head): seed 100 reads 0.571 with everything on, under the old 0.579 budget; turning the protection trio or `MIRROR_SCATTER` off raises the rate on both seeds, and the carry set off is identical on seed 100 (71 events, 124 s). No group is a source; the rise on seed 1 is that panel's draw.
+
+Run set (`npm run ref:report`, 1,295 plays): capped mean 3.50, stuffs 15.4% (engine-70: 3.49, 14.4%).
+
+Held from this card: the zone set (waits for `ZONE_HOLD` 114), `CRAFT_HOLD` + `CRAFT_EXIT` + `RELEASE_COMMIT` (newer heads), `HAND_MOMENT` (no consistent effect, capacity unsourced), `QB_LOOKOFF_RHYTHM` (timing depends on `QB_HEAD`), `CONCEPT_DROPS` + `QB_FOOTWORK` (re-cut with the play-action fake split out).
 
 ## engine-71: `CRAFT_HOLD` and `PASS_OFF` back off (2026-11-16)
 
@@ -1826,3 +2712,163 @@ Limits of this pass:
 - The matched set is captured at code defaults, so the play-calling flags (`RUN_FORM_PAIR`, `MUG_CALLS`, `NICKEL_FRONTS`, `SHORT_BASE`) change nothing in it. They were exercised only in the test suite run. Capture under `npm run ref --` to measure them.
 - Group and single-flag removals were run on the draft stack (`LB_RUN_THROUGH` and `EDGE_WIDTH` still on); the Results table is the final stack.
 - No scorecard or full-season run was made.
+
+## engine-84: a free downed body rises on the speed he would stand at (2026-11-18)
+
+On: `DOWN_RISE_PLANT` (Tools lane; docs/reviews/2026-11-18-down-slide.md). A body repair from the model's own constants; nothing tuned.
+
+**The law.** In `world.ts` `passive()`, `down` goes to `rising` when he has been down 0.3 s and either his speed is under 0.3 yd/s (as before) or, for a free body, the speed he would stand at is one he can plant at: `v - DOWN_FRICTION x g x getUp <= PLANT_SPEED` (0.75 g = 8.05 yd/s², `getUp` 0.9 s default, PLANT_SPEED 2.5 yd/s from kinematics.ts: "below it he has planted and can square to a new heading"). A rising body is still sliding under the same friction, so he is up at `v - 8.05 x 0.9`: a diver at 8 yd/s was waiting 0.96 s to start a rise whose own friction stops him in 0.9 s. Free means: not the ball carrier (`World.ballCarrier`, named by PlaySim), not held (`heldBodies`, `feetLock`, `HANG_LOAD` weight on him), his spin settled (footprint edge speed under 0.3 yd/s). Friction, the 0.3 s minimum in `down` and the get-up time are unchanged, so the slide distance is unchanged.
+
+**Lone body** (`scripts/diag/body/down-rise-bench.mts`, 12 safety bodies, medians; `test/down-rise-plant.test.ts`):
+
+| going down at (yd/s) | slide off -> on | off his feet off -> on | distance (yd) | speed when up |
+|---|---|---|---|---|
+| 3.8 | 0.50 -> 0.30 s | 1.85 -> 1.65 s | 2.75 | 0.0 |
+| 4.8 | 0.65 -> 0.30 | 1.95 -> 1.65 | 3.66 | 0.0 |
+| 6.6 | 0.85 -> 0.30 | 2.20 -> 1.65 | 5.79 | 0.0 |
+| 8.4 | 1.10 -> 0.30 | 2.45 -> 1.65 | 8.37 | 0.0 |
+| 9.4 | 1.20 -> 0.30 | 2.50 -> 1.65 | 9.90 | 0.0 |
+
+As the ball carrier the numbers equal the flag off at every speed.
+
+**What it moves.** Ordinary games, 16 per arm (seeds 7-22; arms diverge after the first changed play): defender dives 789 / 802; dives still down at the whistle with the play live when he would have been up 120 / 134. Staged and paired (720 zone plays, 12 concepts x 5 coverages x 2 formations x 3 rosters x 2 seeds, identical until a defender dives): 239 plays have a defender dive in either arm and 3 differ (2 worse for the offense, 1 better); completions 422 / 422, zone YAC mean 7.22 / 7.22, 10+ yd YAC 61 / 61, missed-tackle then touchdown 1 / 1, touchdowns 23 / 24, yards per play 7.85 / 7.84. The repair is the diver's own time on the ground and almost never reaches the play.
+
+**Fixtures.** None moved. `npm test` (core and core-defaults, Node 22.22.0) on this tree and on clean develop fe150600 fails the same 29 files with the same failure counts (the Node-version and numeric ones already red on develop); the 6-test `down-rise-plant.test.ts` is new, listed in `test/engine-pin.json` defaults, and sets the flag explicitly for both arms. `dither-budget` passes with the flag on by default.
+
+## engine-96: the spiral's drag is the NFL ball's measured deceleration (2026-11-24)
+
+On: `BALL_DRAG` (Tools/Physics; `=0` restores the old constant). `DRAG_SPIRAL` 0.003027 /yd (C_d 0.099, a recalled value) becomes 0.0050 /yd
+(interval 0.0045-0.0057, C_d about 0.16 on the rulebook ball): the horizontal deceleration of BDB 2025 weeks 1-9 passes, release frames and the
+last 0.6 s excluded (`docs/reviews/2026-11-24-ball-drag-reconciliation.md`; build, bench and cards `2026-11-24-ball-drag-build.md`). A measured
+physical quantity of the ball, not fitted to an outcome; no attitude law. `solveLaunch` re-derives the release for the QB's flight time, so hang
+time and apex by distance do not move; the release is faster and the arrival slower (lone ball +0.3 to +1.2 and -0.3 to -0.8 yd/s).
+
+Card (Tools, 48 games a side, seeds 301-348, paired seeds; Integration's 6-seed card: completion about -0.8, designed runs not reproduced):
+completion .677 -> .682, uncontested drop .052 -> .058, breakup .097 -> .094, interception .012 -> .014; designed runs 3.79 -> 3.74 yd/carry (SE 0.27),
+run share .310 -> .310. Catch roll, actual run (8 games a side): ball speed p50 22.5 -> 21.9 yd/s, share over 24 yd/s 28.9% -> 23.7%.
+Not modelled: the NFL ball's decay roughly doubles 0.3-0.6 s before arrival (tracker smoothing near the catch, or the ball's nose-over at the end
+of the arc); the catch roll's 24 yd/s step is not what the NFL ball avoids on short throws (a catch-rebuild question, not drag).
+
+## engine-98: three catching defects (Tools, 2026-11-24)
+
+On: `HANDS_ON_ARMS`, `SECURE_SPLIT`, `SECURE_FACE_GEOM` (`=0` restores each). Plain defect fixes in `src/sim/catching.ts`, reported by the user and verified by Integration on develop 3003358b.
+
+- **HANDS_ON_ARMS (A).** `contestHands` returned `add`, declared `let add = 0` in the first CATCH_HANDS commit (f26fc0611) and never written, so `diffHands` was 0 under default-on CATCH_HANDS and the difficulty term in `receiverContest` was dead: a defender who reached the receiver's arms and lost his rake roll added nothing to the catch (the legacy path at least applied `pCatch *= 0.82 + 0.18 contestedCatch`). The history gives no formula (the docstring says "the difficulty his hands on the receiver's arms add to the catch (0 when nobody reaches them)"), so the restored term uses only quantities the rake roll already uses: `add += depth x technique`, depth = how far into his arm reach the arms are, technique = his arm technique (0.45 + 0.35 manCoverage + 0.2 strength); `diffHands` is then scaled where it is applied by the receiver's hands and contested-catch skill. No new constant.
+- **SECURE_SPLIT (B).** `secureStep` marked a defender `tried` when `toBall <= handReach` OR `toBody <= bodyTouch`; the hand condition is met a tick or two before the body arrives (hit = 0), and `S.tried.has(D)` then skipped the body's dislodge. Now the hand play and the body arrival are separate events, each tried once.
+- **SECURE_FACE_GEOM (C).** `facingBall` in the securing window dotted the defender's shoulders with the ball's velocity, which `pinToHands` sets to the receiver's; a trailing defender running with him and looking at the ball scored c = -1 and took the 0.6 penalty on his hand play. During securing "facing the ball" is now geometric: his shoulders toward the ball's position (same -0.35 threshold).
+
+Same-seed numbers, 8 games per arm (seeds 101-108; arms diverge after the first changed play; `scripts/diag/catch/catch_fixes_card.mts`), base | A | B | C | all three: attempts 673 | 673 | 690 | 673 | 690; completion .750 | .750 | .746 | .750 | .746; drops 28 | 28 | 32 | 28 | 32 (contested 5 | 5 | 7 | 5 | 7, uncontested 23 | 23 | 25 | 23 | 25); breakups 47 | 47 | 48 | 47 | 48; interceptions 11 | 11 | 12 | 11 | 12; securing dislodges by hand 4 | 4 | 3 | 4 | 3, by the hit 0 | 0 | 1 | 0 | 1. A and C changed nothing in 8 games: the events are rare. Counted over 16 games with all three on (a tap on the same code): A fires 26 times (1.6 per game), lowering the catch chance by 0.079 on average (from a mean .861: about 2.1 expected completions in 16 games); B gives 19 body arrivals after a hand play (of 118 first attempts); C changes the facing test on 51 of 118 hand attempts (geometric sees, velocity did not) and 2 the other way, restoring the full hand factor for a trailing defender who is looking at the ball. Expect contested completions to fall slightly (A), more dislodges on the body's arrival (B), and more hand dislodges against a trailing defender (C); none is distinguishable from noise at this sample, and none is offset. The QB's believed drop rate (DROP_BELIEF 0.165 - 0.13 hands) was fitted with these defects in; flagged for the QB lane's calibration contract, not refitted.
+
+
+## engine-102: a zone defender handed off from motion can stop (2026-11-25)
+
+On: `HANDOFF_FREEZE` (Coverage; `=0` restores). A bug fix in the hand-off from motion (ZONE_HOLD bit 64): the point he
+can stop at is fixed at the hand-off (where he was, his speed then, 0.8 of his braking). It was re-placed a stopping
+distance ahead of him every tick, so it ran ahead at his own speed and he never slowed (a Cover 2 hook handed off a
+seam at 13.6 yd was still asking for +5.7 yd/s downfield at 14.6 yd, 3.2 s).
+Staged (`scripts/diag/coverage/handoff-stage.mts`, 437 plays): underneath depth at the throw p50 -0.0 to -0.2 yd,
+p75 -0.2 to -0.5; Cover 2 four verts, hooks 12.5 / 16.1 / 17.1 -> 11.8 / 15.7 / 16.7 yd.
+Card e139 (5 seeds x 32 games, against engine-101), by seed: completion -2.4, -3.3, -1.2, -0.2, +2.2 points; yards an
+attempt -0.54, -0.10, +0.02, +0.08, -0.11; YAC -0.28, +0.21, -0.10, +0.10, -0.56. Nothing else moves on more than one
+seed. Landed as a bug fix with a small effect in the direction of the mechanism (shallower hooks under the throw).
+
+
+## engine-103: a route's planned break is his own body's run to it (2026-11-25)
+
+On: `PLAN_BREAK_BODY` (Rules; `=0` restores). The planned break time a passer's forecast reads is the receiver's own
+body run to the break from his stance (the same step and get-off that run him), not distance over 85% of top speed.
+The old number was 0.7-0.9 s early on short and intermediate routes (slant 0.79 against 1.50 s run, quick out 1.19
+against 1.80, hitch 1.49 against 2.20, dig 1.82 against 2.70; a staged probe, 552 rows). The receiver's own look for
+the ball keeps the old number, so no receiver behaviour changes.
+Card e140 (2 seeds x 32 games, against engine-102): every row unchanged, exactly, and a game digest is identical with
+it on: the default passer's throws do not turn on this number. It is on for the rebuilt passer (`QB_V2`, off), whose
+forecast does.
+
+
+## engine-104: composed calls, the release ends at the stem, two receiver leaks removed (2026-11-25)
+
+On: `CALL_COMPOSE`, `RELEASE_ZONE` (Rules), `SCRAMBLE_SEEN`, `TRACK_SEEN` (Flex); each `=0` restores. Each was its own
+arm on card e140 (4 seeds x 32 games, against engine-102; the fifth seed was not run); they were not carded together.
+
+- `CALL_COMPOSE`: a pass call is composed as a coordinator builds it (a frontside concept, a backside half, the back's
+  job, by formation) instead of drawn from whole-field plays. By seed: completion +3.0, +2.0, +1.2, +0.9 points; yards
+  an attempt +0.46, +0.11, +0.42, +0.11; YAC +0.28, +0.16, +0.93, +0.64. A consistent, modest rise: the composed
+  backside halves give the passer a second quick answer. It is landed for the football (calls as they are built), not
+  for the number; completion was already at the top of the NFL band.
+- `RELEASE_ZONE`: a receiver's release around a man tight over him ends when he reaches his route's first point,
+  instead of holding while that man stays ahead of him (mesh's high crosser climbed to 6.3 yd against a 4.5-5 yd
+  route). By seed: completion +2.0, +1.7, -1.7, -0.1; nothing consistent.
+- `SCRAMBLE_SEEN`, `TRACK_SEEN`: the scramble drill steers on the receiver's own picture of defenders and the passer,
+  and the ball tracker follows the flight he has seen, in place of true positions and true air state. By seed:
+  completion +2.4, +0.8, -0.4, -0.2; nothing consistent. Leak removals.
+
+Not landed from the same card: `TRAIL_LEVERAGE` (Defense, #892): completion +3.7, +0.1, -1.7, +0.7, nothing
+consistent, and no gain on the staged cases it was built for; it stays on its branch. `QB_SCREEN_SEEN=0` moved no row
+by any amount, so that leak removal (on since engine-99) costs nothing.
+
+
+## engine-105: the route read by what the key does, the tracked look, honest flight (2026-11-25)
+
+On: `UNDERNEATH_MOVE`, `QB_TRACK_LOOK` (Flex), `HONEST_FLIGHT` (Defense); each `=0` restores. Card e141: 4 seeds x 32
+games against engine-104, each its own arm.
+
+- `UNDERNEATH_MOVE`: a receiver's sit-or-work-away read (stick, hook) turns on what the key does in his own picture
+  (eyes on him, or moving with him, for 0.3 s), not where a defender stands; the exit cap looks 0.4 s ahead; the answer
+  is held; the passer's forecast of the route reads the same rule. Staged, stick: runs to the flat against Cover 2 and
+  Cover 3 12 of 12 -> 0; against Cover 1 he still works away. By seed: completion +2.0, -1.5, +2.8, +0.5.
+- `QB_TRACK_LOOK`: the passer's clear-cone picture of a defender, and of a receiver he is watching, reads through the
+  tracking channel (a 0.12 s correcting loop, no acceleration term; the model pursuit already uses) instead of the
+  choice-reaction picture. Staged: velocity lag on a man accelerating at 5 yd/s^2 1.25 -> 0.50 yd/s; peripheral
+  unchanged. By seed: completion -1.9, +1.4, +1.4, 0.0.
+- `HONEST_FLIGHT`: a defender playing the flight uses his own window and his own picture of the receiver, not the
+  catcher's private securing state or true facing. It is not yet honest about the ball's path (defenders still copy
+  the true flight until the estimator stack lands). By seed: completion -2.0, +0.3, +2.9, -0.7.
+
+No arm moves any row consistently across the four seeds; each is landed on its staged mechanism.
+
+Held from the same card: `LANE_LEVERAGE` and `FLAT_SINK_ONE` (Coverage, the Cover 2 corner on #1). The card shows
+nothing adverse, but a full red-diff of the landing tree with them on turned four recorded-scene tests red
+(curl-flat-back and stalk-close: scenes moved, diagnosed by Coverage; loose-own and rush-arm-balance: not yet
+diagnosed). They land when those are explained. The full red-diff of that tree (a superset of this landing) showed
+no other new red; with both corner flags off the two undiagnosed tests pass.
+
+
+## engine-106: the Cover 2 corner plays #1 (2026-11-25)
+
+On: `LANE_LEVERAGE`, `FLAT_SINK_ONE` (Coverage); each `=0` restores. `FLAT_SIT_JUMP` (the trap variant: jumping #1's
+break before the throw) is registered off. The Cover 2 corner keys the side's #1 from outside leverage; #1's
+out-break under him ends his sink, he holds his leverage at #1's depth and breaks on the throw he sees (the patient
+standard). Before: on the strong side he keyed the first climber in his area (the slot's hitch) and ended 4 yd
+inside #1; on the weak side the lane spot pulled him inside and nothing in the sink read #1's out.
+Staged, quick outs against Cover 2 (30 seeds), throws to #1: 24 caught for 223 yd -> 3 for 25, the passer going to the
+slot hitches (17 caught, about 100 yd), which is what Cover 2 concedes; neither flag alone repairs both sides. The
+fade guard holds (0 sits on #1 in 60 four-verts sides); against a staged out-and-up the sit costs about 1 yd.
+Card e141 (4 seeds x 32 games against engine-104), together, by seed: completion -1.8, +1.8, +2.6, +0.3; yards an
+attempt -0.52, -0.37, +0.05, +0.14; nothing consistent. Landed on the staged repair. Not carded on top of
+engine-105's three flags.
+Open: the corner does not sink under a corner route by #2 (smash) in either arm; that is the half safety's ball today.
+
+
+## engine-107: the rusher's own release, hands plays on a seen ball, hand travel (2026-11-25)
+
+On: `RUSH_RELEASE`, `HANDS_SEEN` (Defense), `HAND_TRAVEL` (Tools); each `=0` restores. Card e142: 4 seeds x 32 games
+against engine-106, each its own arm.
+
+- `RUSH_RELEASE`: replaces a timer that dissolved every pass-protection engagement 0.35 s after the true release. On
+  the passer's load as he sees it, a rusher judges from his own picture whether he can get there before the ball
+  leaves: if so he keeps rushing; if not he pulls up, and comes off the block to run to the ball once he believes it
+  thrown. The engagement ends when the rusher believes the ball thrown, the blocker's pass set has ended on his own
+  picture, and the hands joint carries no load. Staged: a rusher 3 yd away standing pulls up (before: he hit the
+  passer 0.3-0.5 s after the release); one 1.5 yd away at 5 yd/s is unchanged, sack included. Engaged rushers turn
+  toward the catch at a median 0.60 s after the release (0.85). By seed: completion +2.1, +0.9, +1.0, -0.3; YAC
+  -0.43, -0.07, -1.02, -0.59; sack rate -0.1, -0.4, -0.6, 0.0. Batted balls stay on the existing roll (PARKED).
+- `HANDS_SEEN`: a defender's hands play on a ball in flight needs the ball in his own head cone for his reaction
+  time; otherwise the ball can only strike his body. Before, his shoulders alone decided it and he played the true
+  ball: on 6 games about half the defense's plays on the ball were by men not looking at it (breakups 55 -> 29,
+  interceptions 9 -> 4). By seed: completion +2.3, +2.8, +3.5, -1.3; interception rate +0.3, -0.9, -1.3, -0.2. A leak
+  removal; completion rises until the estimator stack and the man look are in.
+- `HAND_TRAVEL`: unloaded hand travel (press fit, hand offset, re-fit after a shed) at 5 yd/s, a stated choice inside
+  measured punch speeds, separate from `ARM_SPEED`, which stays the contact solver's loaded ceiling (unsourced; GAPS).
+  Re-fit over a 0.6 yd gap 0.2 -> 0.12 s. By seed: completion -1.3, +0.9, -0.6, -1.8; nothing consistent.
+
+The three were not carded together.

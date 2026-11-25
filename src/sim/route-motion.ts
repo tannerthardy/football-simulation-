@@ -26,6 +26,41 @@ export interface PathPoint { readonly p: Readonly<Vec2>; readonly s: number; rea
  * down). Crossers, ins and the flat family keep their extensions (their finish is a separate item, and ROUTE_END's flat
  * rule covers the flat family); what any route does when the quarterback breaks the pocket is the scramble rule's. */
 export const ROUTE_FINISH = process.env.ROUTE_FINISH !== '0';
+/** ROUTE_LANDMARK (experimental, off): a receiver off the drawn line runs the rest of a breaking route from where he is.
+ * On a route with a declared vertex (a cut or a break; not a vertical), the landmark is the break's depth: knocked or bent
+ * off his stem, he runs on parallel to it and breaks at the vertex's depth from where he is, the legs after it parallel
+ * to the drawn ones, instead of steering back across to the drawn line ("get back vertical into your route and run it
+ * correctly at the right depth", a receiver-lecture outline, unverified; "win back the route space", USA Football,
+ * checked). A vertical's landmark is lateral (its hash or numbers: "outside receivers working to their hash landmark",
+ * USA Football, checked), so a go, seam or fade is unchanged. The quarterback's forecast steers the same rule from his
+ * own picture (receiver-forecast.ts). Witness: concept-menu's hitch_post #2 post, bent 2.5 yd inside his stem by
+ * CRAFT_HOLD round the safety, steered back out across to the drawn line from 2.55 s. */
+export const ROUTE_LANDMARK = process.env.ROUTE_LANDMARK !== '0';
+
+/** ROUTE_LANDMARK (attempt 2): whether a route is run from where he is: only a route whose leg leaving its declared vertex
+ * breaks inside (toward the ball, by more than a yard). A route breaking toward the sideline keeps its lateral landmark,
+ * the break spot toward the numbers. Attempt 1 shifted every route with a declared vertex, the quick out's out-leg among
+ * them: on read-plan's press-man quick outs #1, climbing out of his cut more than 1.6 yd off the drawn leg, became
+ * 'on his route' to the forecast and was thrown 0.25-0.35 s early, running to the boundary (2 of 6 caught). A settle
+ * (hitch, stick) and a vertical keep their spots. */
+export function breaksInside(path: readonly PathPoint[], at: number | undefined, outside: number): boolean {
+  if (typeof at !== 'number') return false;
+  const v = path[at]?.p, w = path[at + 1]?.p;
+  return !!v && !!w && (w.y - v.y) * outside < -1;
+}
+
+/** ROUTE_LANDMARK: the path as he runs the rest of it from where he is: every point moved by his offset across the leg he
+ * is on (the drawn leg into his next point). */
+export function landmarkView(path: readonly PathPoint[], idx: number, from: Vec2 | undefined, pos: Vec2): readonly PathPoint[] {
+  const tgt = path[idx], prev = idx > 0 ? path[idx - 1].p : from;
+  if (!tgt || !prev) return path;
+  const lx = tgt.p.x - prev.x, ly = tgt.p.y - prev.y, l2 = lx * lx + ly * ly;
+  if (l2 < 1e-9) return path;
+  const rx = pos.x - prev.x, ry = pos.y - prev.y, along = (rx * lx + ry * ly) / l2;
+  const ox = rx - along * lx, oy = ry - along * ly;
+  if (Math.hypot(ox, oy) < 0.05) return path;
+  return path.map((q) => ({ ...q, p: { x: q.p.x + ox, y: q.p.y + oy } }));
+}
 
 export function routePath(start: Vec2, los: number, outside: number, pts: readonly RoutePoint[],
   extend: boolean, family: RouteDef['family']): PathPoint[] {
@@ -93,7 +128,7 @@ export const ROUTE_FILLET = process.env.ROUTE_FILLET !== '0';
 /** PLANT_REACH (experimental, off): a planted break is reached before the route follower moves past it (see `steerRoute`). */
 const PLANT_REACH = process.env.PLANT_REACH !== '0';
 /** CRAFT_HOLD (off; see behaviors/receiver.ts): rejoining the route ahead after a bend round a man. */
-const CRAFT_HOLD = process.env.CRAFT_HOLD === '1';
+const CRAFT_HOLD = process.env.CRAFT_HOLD !== '0';
 /** The share of the shorter adjacent leg a corner may use to lead its turn (two neighbouring corners then never overlap). */
 const FILLET_LEAD = 0.6;
 /** A turn this small is followed straight; there is nothing to lead. */
@@ -103,12 +138,14 @@ export interface FilletTurn { readonly idx: number; readonly exit: Readonly<Vec2
 export interface FilletPlan { readonly idx: number; readonly lead: number; readonly speed: number }
 export interface RouteCursor { idx: number; from?: Vec2; turn?: FilletTurn | null; plan?: FilletPlan | null }
 
-export function steerRoute(body: Body, st: RouteCursor, path: readonly PathPoint[], end: RouteEnd,
-  effort: number, rr: number, cutSkill: number): MoveCommand | null {
+export function steerRoute(body: Body, st: RouteCursor, installed: readonly PathPoint[], end: RouteEnd,
+  effort: number, rr: number, cutSkill: number, landmark = false): MoveCommand | null {
   if (ROUTE_FILLET && st.idx === 0 && !st.from) st.from = { x: body.pos.x, y: body.pos.y };
   if (st.turn && st.turn.idx !== st.idx) st.turn = null; // something else moved his place on the route: that turn is over
   if (st.plan && st.plan.idx !== st.idx) st.plan = null;
   for (let guard = 0; guard < 6; guard++) {
+    // ROUTE_LANDMARK: the rest of a breaking route from where he is.
+    const path = ROUTE_LANDMARK && landmark ? landmarkView(installed, st.idx, st.from, body.pos) : installed;
     const tgt = path[st.idx], next = path[st.idx + 1];
     if (!tgt) return null;
     const vtop = body.profile.vmax * effort;
@@ -256,6 +293,31 @@ export function firstBreakDepth(start: Vec2, los: number, path: readonly PathPoi
 export function inGetOff(fromStart: number, sinceStart: number, readTime: number): boolean {
   return fromStart < GETOFF_STEP || sinceStart < readTime;
 }
+/** PLAN_BREAK_BODY: the time his own body takes to run his route to its break from a standstill: the same stepBody,
+ * get-off drive and arrive profile the run uses. It steps along the route's path by distance (`legs`: each point's
+ * distance along the path from his start and its through-speed fraction `s`, to the break point), approaching each
+ * speed-controlled point with the steering's arriveVelocity. The path's bends are counted by their length, not stepped
+ * as turns. */
+export function bodyRunTime(profile: Readonly<PhysicalProfile>, routeRunning: number, effort: number, readTime: number,
+  legs: ReadonlyArray<{ at: number; s?: number }>, breakDepth: number, defenderAhead: number, getoff: boolean): number {
+  const dt = 0.02, top = profile.vmax * effort;
+  const end = legs.length ? legs[legs.length - 1].at : 0;
+  const body: Body = { pos: { x: 0, y: 0 }, vel: { x: 0, y: 0 }, facing: 0, energy: 1, sprintLoad: 0, profile: profile as PhysicalProfile };
+  let i = 0;
+  for (let t = 0; t < 6; t += dt) {
+    while (i < legs.length - 1 && body.pos.x >= legs[i].at - 1e-6) i++;
+    const leg = legs[i];
+    const through = leg.s !== undefined ? leg.s * top : top;
+    const v = arriveVelocity(body, { x: leg.at, y: 0 }, top, through);
+    const cmd: MoveCommand = { vel: { x: Math.max(v.x, through * 0.999), y: 0 } };
+    if (getoff && inGetOff(body.pos.x, t, readTime)) cmd.drive = getOffDrive(routeRunning, breakDepth, defenderAhead);
+    stepBody(body, cmd, dt);
+    // At the break point: within the arrive profile's 0.15 yd stop, or settled into a point that ends at rest.
+    if (body.pos.x >= end - 0.15 || (i === legs.length - 1 && through < 0.3 && body.pos.x >= end - 0.5 && Math.abs(body.vel.x) < 0.5)) return t + dt;
+  }
+  return 6;
+}
+
 /** LINE_START: the time the get-off costs him to reach `depth` yd from a standstill, against a full start, from the
  * same body law (a straight run at route effort). Used for his expected break time. */
 export function getOffLoss(profile: Readonly<PhysicalProfile>, routeRunning: number, effort: number, readTime: number,

@@ -3,6 +3,7 @@
  * across his release side are behind the release. Off, a pressed outside go
  * was steered back inside across the corner and stalled at 6-8 yd. */
 import { afterEach, describe, expect, it, vi } from 'vitest';
+vi.hoisted(() => { process.env.CRAFT_HOLD = '0'; }); // engine-73: fixture recorded before CRAFT_HOLD; Rules to re-record with it on
 
 afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 

@@ -41,9 +41,10 @@ export function environment(ambient, overrides = []) {
 
 export function checkFlags(names) {
   const declared = Object.keys(profile.flags);
+  // The profile is historical (docs/BASELINE.md): a flag deleted from the engine may stay listed, so only a flag the
+  // profile lacks is an error.
   const missing = names.filter(name => !declared.includes(name));
-  const stale = declared.filter(name => !names.includes(name));
-  if (missing.length || stale.length) throw new Error(`Baseline flag inventory differs: missing [${missing}], stale [${stale}]`);
+  if (missing.length) throw new Error(`Baseline flag inventory differs: missing [${missing}]`);
 }
 
 /** Default preserves all checks; opt-in early exit retains skipped evidence. */

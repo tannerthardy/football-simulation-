@@ -28,6 +28,17 @@ describe('QB_V2 cycle (module E) on the stub slant-flat plan', () => {
     expect(th!.t).toBeGreaterThanOrEqual(1.0 + 0.2 * Math.log(1 / 0.4) - 0.06); // resolved past need 0.6 at tau 0.2
   });
 
+  it('a stale key is looked at before it is judged; out of reach of his eyes, he judges on what he has (card spec §1)', () => {
+    // Resolved by 1.2 s with no cue; his eyes lose the key from 1.3 s; at 1.6 s the throw is there. Stride 2: no step intervenes.
+    const f = (reach: boolean) => (t: number) => t < 1.3 ? senses({ now: t, stride: 2 }) : t < 1.58
+      ? senses({ now: t, stride: 2, inClear: () => false, canReach: () => reach })
+      : senses({ now: t, stride: 2, inClear: () => t >= 1.63, canReach: () => reach }, { S1: 0.8 }, 'widens');
+    const look = run(new Cycle(STUB_SLANT_FLAT), 0, 1.8, f(true)).find((x) => x.i.kind === 'throw');
+    expect(look!.t).toBeGreaterThanOrEqual(1.63); // 1.6 is a look: the key has been out of his cone 0.3 s > tau 0.2
+    const blind = run(new Cycle(STUB_SLANT_FLAT), 0, 1.8, f(false)).find((x) => x.i.kind === 'throw');
+    expect(blind!.t).toBeCloseTo(1.6, 2);
+  });
+
   it('a look that cannot resolve (outside his cone, head cannot get there) does not hold: the eyes move on the next step', () => {
     const c = new Cycle(STUB_SLANT_FLAT);
     const tr = run(c, 0, 1.6, (t) => senses({ now: t, inClear: () => false, canReach: () => false }, {}));
@@ -70,5 +81,51 @@ describe('QB_V2 cycle: a covered read marked kill', () => {
     let i: ReturnType<Cycle['tick']> = { kind: 'look', target: null };
     for (let t = 0; t <= 1.6 && i.kind !== 'kill'; t += 0.05) i = c.tick(senses({ now: t }, { S1: 0.2, S2: 0.3 }));
     expect(i).toEqual({ kind: 'kill', ref: 'S1' });
+  });
+
+  // The outside audit's rows (2026-11-24), each as its staged rule.
+  it('a commit the wiring cannot start fails back to the read (audit §1 #1)', () => {
+    const c = new Cycle(STUB_SLANT_FLAT);
+    const tr = run(c, 0, 1.6, (t) => senses({ now: t }, { S1: 0.8 }, 'widens'));
+    expect(tr.some((x) => x.i.kind === 'throw')).toBe(true);
+    c.uncommit();
+    expect(c.state).toBe('read');
+    expect(c.decision).toBeNull();
+  });
+
+  it('with a body on him and nothing clearing, he throws it away in the pocket (audit §1 #4)', () => {
+    const c = new Cycle(STUB_SLANT_FLAT);
+    const tr = run(c, 0, 1.3, (t) => senses({ now: t, contact: t > 1.1 }, {}));
+    expect(c.pressure).toBe('contact');
+    expect(tr[tr.length - 1].i.kind).toBe('away');
+  });
+
+  it('out of the pocket his eyes work the reads, a felt rush does not throw it away, and the checkdown is there', () => {
+    const c = new Cycle({ ...STUB_SLANT_FLAT, checkdown: { ref: 'B', fromStep: 1, timing: 'seenOpen' } });
+    run(c, 0, 1.2, (t) => senses({ now: t }, {}));
+    const looks = new Set<string>();
+    let away = false;
+    for (let t = 1.25; t <= 2.5; t += 0.05) {
+      const i = c.tick(senses({ now: t, outside: true, felt: 0.7 }, {}));
+      if (i.kind === 'away') away = true;
+      if (c.looks.current) looks.add(JSON.stringify(c.looks.current));
+    }
+    expect(c.state).toBe('escape');
+    expect(away).toBe(false); // felt only: he keeps running
+    expect(looks.size).toBeGreaterThan(1); // his eyes moved across the reads
+    const i = c.tick(senses({ now: 2.55, outside: true, felt: 0.7 }, { B: 0.8 }));
+    expect(i.kind === 'throw' && i.judged.option.ref).toBe('B'); // the back, from outside the pocket
+    const c2 = new Cycle(STUB_SLANT_FLAT); run(c2, 0, 1.2, (t) => senses({ now: t }, {}));
+    c2.tick(senses({ now: 1.25, outside: true, felt: 0.9 }, {}));
+    expect(c2.tick(senses({ now: 1.3, outside: true, felt: 0.9 }, {})).kind).toBe('away'); // imminent: away
+  });
+
+  it('escape is left when he is back inside the pocket (audit §1 #5)', () => {
+    const c = new Cycle(STUB_SLANT_FLAT);
+    run(c, 0, 1.2, (t) => senses({ now: t }, {}));
+    c.tick(senses({ now: 1.25, outside: true }, {}));
+    expect(c.state).toBe('escape');
+    c.tick(senses({ now: 1.3, outside: false }, {}));
+    expect(c.state).not.toBe('escape');
   });
 });

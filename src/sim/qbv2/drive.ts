@@ -30,6 +30,10 @@ export interface V2Host {
   seenHead(d: Agent): number | null;
   pictureAge(d: Agent): number;
   pictureSpread(d: Agent): number;
+  /** Time with no new observation of a defender (0 while watched) and the look's own spread (card spec §1). */
+  unseenFor(d: Agent): number;
+  seenSpread(d: Agent): number;
+  jobWeight(d: Agent): number;
   /** His receiver's predicted position `ahead` s from now (his forecast), and the forecast's break (absolute time). */
   predict(r: Agent, ahead: number): V | null;
   breakAt(r: Agent): number | null;
@@ -37,6 +41,12 @@ export interface V2Host {
   timingAt?(r: Agent): number | null;
   /** The route's break point as installed (field position), for the seen-depth timing rule. */
   breakPoint?(r: Agent): V | null;
+  /** Where his route starts (his alignment, as installed), for his progress along the stem. */
+  routeStart?(r: Agent): V | null;
+  /** He feels a body on him (his own contact). */
+  contact?: boolean;
+  /** The side his most urgent felt rusher comes from (S / W of the ball, the alignment's strong side), or null. */
+  hotSide?: 'S' | 'W' | null;
   /** Whether his clear cone holds this point now (his head's direction and his focus). */
   inClear(p: V): boolean;
   /** The throw's mechanics to this receiver now (catch point, flight), or null when it cannot be thrown. */
@@ -86,6 +96,8 @@ export function catchFrom(spread: number | undefined): number {
 }
 /** A key's cue from his picture of the man's velocity (yd/s) relative to the read's side: enter and exit (chosen). */
 const CUE_ENTER = 1.5, CUE_EXIT = 0.8;
+/** A sitting key's read changes only when the other landmark is nearer him by this much (yd; chosen). */
+const SIT_SWITCH = 0.5;
 
 export class V2Drive {
   cycle: Cycle;
@@ -128,8 +140,15 @@ export class V2Drive {
   private notAtBreak(h: V2Host, r: Agent, ref: string, lead: number): boolean {
     if (this.reachedBreak.has(ref)) return false;
     const bp = h.breakPoint?.(r); if (!bp) return false;
-    const e = h.estimate(r), sp = Math.hypot(e.vel.x, e.vel.y);
-    if (Math.hypot(e.pos.x - bp.x, e.pos.y - bp.y) <= lead * Math.max(sp, 1) + 0.5) { this.reachedBreak.set(ref, h.sim.t); return false; }
+    const e = h.estimate(r), sp = Math.hypot(e.vel.x, e.vel.y), st = h.routeStart?.(r), allow = lead * Math.max(sp, 1) + 0.5;
+    // His progress along the stem as he sees it, not the distance to a fixed point (audit §1 #3: a receiver ridden 2 yd
+    // wide of his stem never enters a radius round the installed break, so the throw could never clear).
+    let left: number;
+    if (st) {
+      const ux = bp.x - st.x, uy = bp.y - st.y, L = Math.hypot(ux, uy) || 1;
+      left = L - ((e.pos.x - st.x) * ux + (e.pos.y - st.y) * uy) / L;
+    } else left = Math.hypot(e.pos.x - bp.x, e.pos.y - bp.y);
+    if (left <= allow) { this.reachedBreak.set(ref, h.sim.t); return false; }
     return true;
   }
 
@@ -171,7 +190,9 @@ export class V2Drive {
   /** The key's cue: what the man in that role is doing in his picture, kept until another clears its entry. */
   private keyCue(h: V2Host, role: string, side: 'S' | 'W'): string | null {
     const pic = this.picture(h), m = this.roles.resolve(pic, role, side);
-    if (!m) return null;
+    // `none` (Rules' definition, read-plans §conventions): he has looked at that key's area (his look there has resolved to
+    // his need) and no defender fills the role in his picture. An area he has not resolved yet is not read: no cue.
+    if (!m) return this.cycle.looks.resolved({ kind: 'key', role: `${side}:${role}` }) >= h.need ? 'none' : null;
     const out = m.vy * pic.strong * (side === 'S' ? 1 : -1), deep = m.vx * pic.dir;
     const key = `${side}:${role}`, held = this.cue.get(key) ?? null;
     const score: Record<string, number> = { widens: out, sinks: deep, jumps: -deep };
@@ -180,7 +201,7 @@ export class V2Drive {
     for (const [c, v] of Object.entries(score)) if (v >= bv) { best = c; bv = v; }
     // No movement cue clears its entry: he is read by where he is, whatever his speed (Rules, 2026-11-24: the cue is the
     // route he takes; a speed gate left a corner drifting at 1-1.5 yd/s over the flat with no cue at all).
-    if (!best && pic.t > 0.6) best = this.sitsWhere(h, role, side, m);
+    if (!best && pic.t > 0.6) best = this.sitsWhere(h, role, side, m, held);
     if (best) this.cue.set(key, best);
     return best;
   }
@@ -191,14 +212,19 @@ export class V2Drive {
    * the one a widen sends him to, each where his forecast puts it half a second on: sitting nearer the squat answer's
    * landmark laterally means he sits over that route, so he has taken it, and reads as `widens`; otherwise he walls the
    * other route: `squats`. Only his seen position and the passer's own forecasts. Without both rules, a sit is `squats`. */
-  private sitsWhere(h: V2Host, role: string, side: 'S' | 'W', m: { x: number; y: number }): string {
+  private sitsWhere(h: V2Host, role: string, side: 'S' | 'W', m: { x: number; y: number }, held: string | null = null): string {
     const r = this.cycle.plan.reads.find((x) => x.look.kind === 'key' && x.look.role === role && (x.look.side ?? 'S') === side);
     const sq = r?.keyRules?.find((k) => k.cue === 'squats')?.throwTo, wd = r?.keyRules?.find((k) => k.cue === 'widens')?.throwTo;
     if (!sq || !wd || sq === wd) return 'squats';
     const a = this.receiver(h, sq), b = this.receiver(h, wd);
     const pa = a ? this.seenAt(h, a, 0.5) : null, pb = b ? this.seenAt(h, b, 0.5) : null;
     if (!pa || !pb) return 'squats';
-    return Math.abs(m.y - pa.y) < Math.abs(m.y - pb.y) ? 'widens' : 'squats';
+    // Held with a margin (audit §3 #1): a sitting man keeps the read he gave until the other landmark is nearer him by
+    // SIT_SWITCH, so moving forecasts do not flip a still defender between squats and widens.
+    const da = Math.abs(m.y - pa.y), db = Math.abs(m.y - pb.y);
+    if (held === 'widens') return db < da - SIT_SWITCH ? 'squats' : 'widens';
+    if (held === 'squats') return da < db - SIT_SWITCH ? 'widens' : 'squats';
+    return da < db ? 'widens' : 'squats';
   }
 
   /** Keep his picture's history (one sample a tick, the last 0.5 s). */
@@ -223,9 +249,10 @@ export class V2Drive {
 
   /** D on one candidate throw, on his picture. */
   private judgeOption(h: V2Host, o: ThrowOption): Judged | null {
+    const a = h.a; // the passer himself (his own body)
     const r = this.receiver(h, o.ref); if (!r) return null;
     const mech = h.mechanics(r, h.felt); if (!mech) return null;
-    const sim = h.sim, from = { x: h.a.pos.x, y: h.a.pos.y, z: h.releaseZ }, v0 = dragFreeLaunch(from, mech.point, mech.T);
+    const sim = h.sim, from = { x: a.pos.x, y: a.pos.y, z: h.releaseZ }, v0 = dragFreeLaunch(from, mech.point, mech.T);
     const path: V[] = [], heights: number[] = [];
     for (let f = 0.1; f <= 1.0001; f += 0.1) { const b = arcPoint(from, v0, mech.T * f); path.push({ x: b.x, y: b.y }); heights.push(b.z); }
     const bk = h.breakAt(r);
@@ -239,11 +266,17 @@ export class V2Drive {
       path: [{ x: from.x, y: from.y }, ...path], los: sim.los, catchClean: catchFrom(h.placeSpread?.(Math.hypot(mech.point.x - from.x, mech.point.y - from.y))), res: look ? this.cycle.looks.resolved(look) : 0, receiverSpread: h.pictureSpread(r),
       placeSpread: h.placeSpread?.(Math.hypot(mech.point.x - from.x, mech.point.y - from.y)),
     };
-    const defs: SeenDefender[] = sim.defense.filter((d) => this.seenUp(h, d) && h.pictureAge(d) < 1.5).map((d) => {
-      const e = h.estimate(d), b = h.body(d), toQB = Math.atan2(h.a.pos.y - e.pos.y, h.a.pos.x - e.pos.x), eyes = h.seenHead(d) ?? e.facing;
+    // Card spec §1 (Integration's ruling, 2026-11-25): nobody is dropped for an old picture. He is priced where he is
+    // believed (the estimate: the sighting dead-reckoned, then his job), and the judge charges unseen time one way.
+    const defs: SeenDefender[] = sim.defense.filter((d) => this.seenUp(h, d)).map((d) => {
+      const e = h.estimate(d), b = h.body(d), toQB = Math.atan2(a.pos.y - e.pos.y, a.pos.x - e.pos.x), eyes = h.seenHead(d) ?? e.facing;
       // His eyes on the passer: the head he sees on the man where perception records it, else the body (Coverage's review).
       const faces = Math.abs(Math.atan2(Math.sin(eyes - toQB), Math.cos(eyes - toQB))) < Math.PI / 3;
-      return { id: d.idx, pos: e.pos, vel: e.vel, facing: e.facing, spread: h.pictureSpread(d), age: h.pictureAge(d), facesPasser: faces,
+      // His picture shows the man as he was a sensing delay ago (QBMind's estimate does not project it; QB lane 2026-11-25,
+      // a press corner on the slant believed 1.6 yd behind and at half his speed while watched): carried forward over the
+      // delay at his seen velocity, and the delay counts as time the man may have changed it (the judge's advance).
+      const delay = Math.max(0, h.pictureAge(d) - h.unseenFor(d)), pos = { x: e.pos.x + e.vel.x * delay, y: e.pos.y + e.vel.y * delay };
+      return { id: d.idx, pos, vel: e.vel, facing: e.facing, spread: h.seenSpread(d), age: delay + h.unseenFor(d), job: h.jobWeight(d), spreadDR: h.pictureSpread(d), facesPasser: faces,
         vmax: b.vmax, accel: b.vmax / Math.max(b.tau, 1e-3), reach: b.reach, leap: b.reactReach + 0.5 * (b.maxCatchHeight - b.reactReach), ballSkills: h.ballSkills(d) };
     });
     const j = judge(q, defs);
@@ -262,15 +295,16 @@ export class V2Drive {
 
   /** One tick: the cycle on his senses now. */
   tick(h: V2Host): Intent {
+    const a = h.a; // the passer himself (his own body)
     this.remember(h);
     const senses: CycleSenses = {
       now: h.sim.t, plantAt: h.plantAt, stride: h.stride, readFrom: h.readFrom, felt: h.felt, outside: h.outside,
       inClear: (t) => { const p = this.where(h, t); return !!p && h.inClear(p); },
-      canReach: (t) => { const p = this.where(h, t); if (!p) return false; const ang = Math.atan2(p.y - h.a.pos.y, p.x - h.a.pos.x); return Math.abs(Math.atan2(Math.sin(ang - h.a.body.facing), Math.cos(ang - h.a.body.facing))) < 150 * Math.PI / 180; },
+      canReach: (t) => { const p = this.where(h, t); if (!p) return false; const ang = Math.atan2(p.y - a.pos.y, p.x - a.pos.x); return Math.abs(Math.atan2(Math.sin(ang - a.body.facing), Math.cos(ang - a.body.facing))) < 150 * Math.PI / 180; },
       tau: h.tau, need: h.need, bar: h.bar,
       judge: (o) => this.judgeOption(h, o),
       keyCue: (role, side) => this.keyCue(h, role, side),
-      hotSide: null,
+      hotSide: h.hotSide ?? null, contact: h.contact,
     };
     return this.cycle.tick(senses);
   }

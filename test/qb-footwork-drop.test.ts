@@ -2,8 +2,8 @@
  * 1. The crossover: by the middle of his drop his chest is open off downfield (bit 2 off: square to it).
  * 2. Shoulders on a step: in the pocket the facing he requests does not turn on a look alone; it turns at the plant, on a
  *    landed step, or for the throw (bit 2 off: it turns whenever his eyes or read move).
- * 3. Bit 16 (split from bit 2): the play-action fake is held to the measured mesh: from the gun he is still on the fake
- *    past 1.4 s (off, and with bit 2 alone: 0.7 s).
+ * 3. Bit 16 (split from bit 2): the play-action fake is planned to the measured mesh: from the gun past 1.4 s (off, and
+ *    with bit 2 alone: 0.7 s); with the blitz stack he cuts it short only when he believes a free rusher (BLITZ_SKILL).
  * docs/reviews/2026-11-15-drop-design-stage1.md. */
 import { readFileSync } from 'node:fs';
 import { afterEach, describe, expect, it, vi } from 'vitest';
@@ -15,8 +15,11 @@ for (const concept of ['smash', 'dagger', 'stick', 'four_verts']) for (const cov
 
 async function load(fw: string) {
   vi.resetModules();
-  const flags: Record<string, string> = JSON.parse(readFileSync(new URL('../config/reference-stack.json', import.meta.url), 'utf8')).flags;
+  const stack = JSON.parse(readFileSync(new URL('../config/reference-stack.json', import.meta.url), 'utf8'));
+  const flags: Record<string, string> = stack.flags;
   for (const [k, v] of Object.entries(flags)) if (v === 'on') vi.stubEnv(k, '1');
+  // The reference stack's numeric settings too (the suite pins them to their legacy values).
+  for (const [k, v] of Object.entries(stack.numeric ?? {}) as [string, { default: number }][]) vi.stubEnv(k, String(v.default));
   vi.stubEnv('CONCEPT_DROPS', '1'); vi.stubEnv('QB_FOOTWORK', fw);
   const { PlaySim } = await import('../src/sim/playsim.js');
   const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');
@@ -55,12 +58,12 @@ async function drops(fw: string) {
 
 async function fakeEnd(fw: string) {
   const { PlaySim, nativeTraceSetup } = await load(fw);
-  const ends: number[] = [];
+  const ends: { end: number; planned: number; freeU: number }[] = [];
   for (const [concept, coverage] of [['pa_shot', 'cover3'], ['pa_post_dig', 'cover1'], ['pa_flood', 'cover3']] as const) {
     let sim: any; try { sim = new PlaySim(nativeTraceSetup({ coverage, concept, seed: 1, roster: 7, formation: 'gun_doubles_11', flip: false })); } catch { continue; }
     const qb: any = sim.qb.behavior;
     for (let i = 0; i < 400 && sim.phase === 'live' && qb.fakeEndAt === null && sim.qb.behavior === qb; i++) sim.tick();
-    if (qb.fakeEndAt !== null) ends.push(qb.fakeEndAt);
+    if (qb.fakeEndAt !== null) ends.push({ end: qb.fakeEndAt, planned: qb.fakeUntil, freeU: qb.freeU ?? 0 });
   }
   return ends;
 }
@@ -80,10 +83,11 @@ describe('QB_FOOTWORK bit 2: the drop body', () => {
     expect(sum(off, 'lookTurns')).toBeGreaterThan(0);
     expect(sum(on, 'lookTurns')).toBe(0);
   }, 600_000);
-  it('bit 16: the play-action fake is held to the measured mesh (gun: past 1.4 s; bits 1+2 alone: 0.7 s)', async () => {
+  it('bit 16: the play-action fake is planned to the measured mesh (gun past 1.4 s; bits 1+2 alone 0.7 s), cut short only by a believed free rusher', async () => {
     const off = await fakeEnd('3'), on = await fakeEnd('19');
     expect(off.length).toBeGreaterThanOrEqual(2); expect(on.length).toBeGreaterThanOrEqual(2);
-    for (const t of off) expect(t).toBeLessThan(0.8);
-    for (const t of on) expect(t).toBeGreaterThan(1.4);
+    for (const r of off) { expect(r.planned).toBeLessThan(0.8); expect(r.end).toBeLessThan(0.8); }
+    // With the blitz stack (engine-72), BLITZ_SKILL cuts the fake short in proportion to his believed free threat.
+    for (const r of on) { expect(r.planned).toBeGreaterThan(1.4); expect(r.end >= 1.4 || r.freeU > 0).toBe(true); }
   }, 600_000);
 });

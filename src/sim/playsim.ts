@@ -1,3 +1,4 @@
+import { BELIEVED_BODY, BeliefStore } from './believed-body.js';
 import { shouldersOf } from '../physics/kinematics.js';
 /**
  * The play simulator: 22 agents on a continuous field, ticked at 20 Hz.
@@ -8,8 +9,9 @@ import { shouldersOf } from '../physics/kinematics.js';
  */
 import { RELEASE_BELIEF, releaseBelief } from './release-belief.js';
 import { recordContact } from './seen-contact.js';
-import { lineOfSight } from './sight.js';
-import { HEAD, inHeadCone, neckRange, stepHeads } from './head.js';
+import { lineOfSight, SIGHT_PURE, SightFrame, STALE_ALIGN, STALE_HOLD, STALE_MARK, STALE_SPREAD } from './sight.js';
+import { HEAD, inHeadCone, neckRange, stepHeads, want } from './head.js';
+import { zoneEyesFor } from './zone-eyes.js';
 import { FIELD_WIDTH, OPP_GOAL_X, OWN_GOAL_X } from '../core/field.js';
 import { Rng } from '../core/rng.js';
 import { DT } from '../core/units.js';
@@ -36,7 +38,7 @@ import { containCoverage } from './coverage-space.js';
 import { openToBall } from './open-to-ball.js';
 import { derivePhysical } from '../players/physical.js';
 import type { Player } from '../players/types.js';
-import { alignDefense, alignOffense, fitPressStances, formationKey, gapY, PRESS_BACKOFF, RECEIVER_DEPTH, type AlignStyle, type DefenseAlignment, type ManPreference, type OffenseAlignment } from '../playbook/alignment.js';
+import { alignDefense, alignOffense, fitPressStances, formationKey, gapY, MIRROR_SCATTER, PRESS_BACKOFF, RECEIVER_DEPTH, scatterSide, type AlignStyle, type DefenseAlignment, type ManPreference, type OffenseAlignment } from '../playbook/alignment.js';
 import { installCoverage } from '../playbook/coverages.js';
 import type { DefSlot, DefensivePlayCall, OffensivePlayCall, OffSlot } from '../playbook/types.js';
 import { Agent, type Behavior, type Engagement, type RunContactSurface, type TeamSide } from './agent.js';
@@ -45,7 +47,7 @@ import { Recognition, leaguePassLogOdds, type ScoutingReport, type SnapContext }
 import { assignBehaviors, onBallCaught, onHandoff, onInterception, onLooseBall, onRecovery, onThrow } from './assign.js';
 import { resolveCatchOpportunities, secureStep } from './catching.js';
 import { createEngagement, releaseJoints, updateEngagements } from './engagement.js';
-import { PerceptionBuffer, type Perceived } from './perception.js';
+import { HISTORY as PERCEPTION_HISTORY, PerceptionBuffer, type Perceived } from './perception.js';
 import { ANTICIPATION_PRIOR } from './anticipation-prior.js';
 import { IncidentalCatchReadiness } from './catch-readiness.js';
 import { spaceTeammates } from './spacing.js';
@@ -63,7 +65,7 @@ import { ResponsibilityLedger } from './responsibility-ledger.js';
 import { afterStep, releaseBond, tryTackles, updateBond, type TackleBond } from './tackle.js';
 import type { BallState, CarrierSegment, Frame, PenaltyCall, FoulEvidence, FoulRecord, PlayEvent, PlayEventType, PlayOutcome, PlayResult, PlayStats, ReplayLevel } from './types.js';
 
-/** ALIGN_HABIT (experimental, off): see alignDefense. */
+/** ALIGN_HABIT (on by default; ALIGN_HABIT=0 turns it off): see alignDefense. */
 const ALIGN_HABIT = process.env.ALIGN_HABIT !== '0';
 /** EXPORT_SHOULDERS (diagnostic, off; EXPORT_SHOULDERS=1): replay frames record where each man's chest points
  * (shouldersOf: hips plus the TRUNK_TWIST trunk) instead of his hips, so a facing export compares the same body part as
@@ -100,6 +102,8 @@ export interface PlaySetup {
   recordLevel?: ReplayLevel;
   /** Energy at the snap by player id (0–1). */
   energy?: Map<string, number>;
+  /** BELIEVED_BODY: the game's beliefs about opponents' capacities (one store per game; absent, the play makes its own). */
+  beliefs?: BeliefStore;
   manPrefs?: ManPreference;
   /** Ball carriers try to get out of bounds (2-minute drill). */
   hurry?: boolean;
@@ -146,18 +150,18 @@ const BALL_LENGTH = 0.31;
  * (docs/reviews/field-of-view-proposal.md). Model assumptions: head turn rate,
  * neck range and cone half-angle below. */
 const GAZE = process.env.GAZE === '1';
-/** SIGHT_CARRIER (experimental, off; SIGHT_CARRIER=1; SEE_SIGHT step 1, docs/reviews/2026-11-13-perception-proposal.md
+/** SIGHT_CARRIER (on by default; SIGHT_CARRIER=0 turns it off; SEE_SIGHT step 1, docs/reviews/2026-11-13-perception-proposal.md
  * section 12): the ball carrier's picture of an opponent he cannot see (behind his shoulders, or behind a body by
  * `lineOfSight`'s heights) is the last one he had, ageing (`sighted`), not a fresh delayed picture through his back.
  * Before it, half his traffic reads were of men behind him (scripts/diag/eyes/see-sight.ts). */
 const SIGHT_CARRIER = process.env.SIGHT_CARRIER !== '0';
-/** SIGHT_COVER (experimental, off; SIGHT_COVER=1; SEE_SIGHT step 3): a man or zone defender's picture of an opponent
+/** SIGHT_COVER (on by default; SIGHT_COVER=0 turns it off; SEE_SIGHT step 3): a man or zone defender's picture of an opponent
  * behind a body (`lineOfSight`'s heights) is the newest moment he had him in sight, as SIGHT_CARRIER's. Occlusion only:
  * a man defender's head is on his man and a zone defender's on the QB by coaching, so with GAZE off no facing bound
  * applies; when GAZE lands for coverage, its head (shared with BALL_EST's ball head, Coverage 2026-11-14) gives the view
  * half. Before it, coverMan read 22% of its pictures through a body, coverage/reads 15%, trackReceiver 10%. */
 const SIGHT_COVER = process.env.SIGHT_COVER !== '0';
-/** SIGHT_RECOG (experimental, off; SIGHT_RECOG=1; SEE_SIGHT step 4): a defender's run / pass recognition reads its keys
+/** SIGHT_RECOG (on by default; SIGHT_RECOG=0 turns it off; SEE_SIGHT step 4): a defender's run / pass recognition reads its keys
  * (the five linemen, the QB's depth and the back at the mesh, the receiver he keys) by SIGHT_CARRIER's rule, occlusion
  * only: he faces the offense while he reads, and a back or QB behind the line is seen over it or through a gap by
  * `lineOfSight`'s heights, or not at all. Before it, recognition's `cues` read 11.5% of its pictures through a body and
@@ -199,6 +203,8 @@ const outOfField = (p: { x: number; y: number }): boolean => p.x <= 0 || p.x >= 
 export class PlaySim {
   readonly dt = DT;
   readonly rng: Rng;
+  /** BELIEVED_BODY: what each player believes of the opponents' capacities (null with the flag off). */
+  readonly beliefs: BeliefStore | null;
   private readonly streams = new Map<string, Rng>();
   t = 0;
   readonly agents: Agent[] = [];
@@ -322,6 +328,8 @@ export class PlaySim {
   };
   /** First opponent body impact or successful tackle grasp; excludes whiffs. */
   firstContactX: number | null = null;
+  /** QB_V2 took this play's read (the eligibility tag; copied to the result's stats as qbV2). */
+  qbV2 = false;
   /** QB currently reading this receiver (zone defenders read his eyes). */
   qbEyes: Agent | null = null;
   /** When the QB started his throwing motion (−1 before). */
@@ -357,6 +365,7 @@ export class PlaySim {
     // Normalize once before alignment, actor indices and any ordered consumer.
     const offense = orderedOffense(setup.offense), defense = orderedDefense(setup.defense);
     this.rng = typeof setup.seed === 'number' ? new Rng(setup.seed) : setup.seed;
+    this.beliefs = BELIEVED_BODY ? setup.beliefs ?? new BeliefStore(typeof setup.seed === 'number' ? setup.seed : 'play') : null;
     this.stagedThrow = setup.stagedThrow ?? null;
     this.coverageScouting = setup.coverageScouting;
     this.los = setup.los;
@@ -380,7 +389,7 @@ export class PlaySim {
     const defSlots = defense.map(([slot]) => slot);
     // The front's end men align by build (FRONT_ALIGN); the installed spots ignore it.
     const mass = Object.fromEntries(defense.map(([slot, player]) => [slot, derivePhysical(player).massKg]));
-    // ALIGN_HABIT (experimental, off): each off-ball defender's personal depth
+    // ALIGN_HABIT (on by default; ALIGN_HABIT=0 turns it off): each off-ball defender's personal depth
     // habit (his own seed) and this snap's placement scatter (the play's).
     const scatter = ALIGN_HABIT ? Object.fromEntries(defense.map(([slot, player]) => {
       const snap = this.rng.fork(`align-scatter:${slot}`);
@@ -396,7 +405,7 @@ export class PlaySim {
       const body: Body = { pos: { ...pos }, vel: { x: 0, y: 0 }, facing, energy: setup.energy?.get(player.id) ?? 1, profile };
       const mind = new SnapMind(player, this.rng.fork(`mind:${team}:${slot}`), body.energy);
       // Small legal defensive alignment scatter; offensive formation stays legal.
-      if (team === 'D') body.pos.y = clamp(body.pos.y + mind.alignmentError, 0.5, FIELD_WIDTH - 0.5);
+      if (team === 'D') body.pos.y = clamp(body.pos.y + mind.alignmentError * (MIRROR_SCATTER ? scatterSide(this.offAlign, body.pos.y) : 1), 0.5, FIELD_WIDTH - 0.5);
       const a = new Agent(this.agents.length, team, slot, player, profile, body, idle, mind);
       this.agents.push(a);
       (team === 'O' ? this.offense : this.defense).push(a);
@@ -429,6 +438,7 @@ export class PlaySim {
     this.snapX = this.agents.map((a) => a.pos.x);
     this.world = new World(this.agents.map((a) => a.body), { substeps: setup.substeps, supportModel: setup.supportModel, constraintWork: setup.constraintWork, impactTiming: setup.impactTiming, supportIntegration: setup.supportIntegration, handContact: setup.handContact ?? undefined });
     // TORSO_CAPSULE (World): the carrier's torso contact with a defender uses the capsule; every other pair keeps the disc.
+    this.world.ballCarrier = () => this.carrier?.body ?? null;
     this.world.capsulePair = (a, b) => { const c = this.carrier?.body; if (!c) return false; const o = a === c ? b : b === c ? a : null;
       return !!o && this.defense.some((d) => d.body === o); };
     // Linemen and backs start in their stances; skill players upright.
@@ -514,7 +524,7 @@ export class PlaySim {
       (a) => this.defAlign.spots[a.slot as DefSlot]?.role.kind === 'blitz', this.rng.fork('backer-creep')) : new Map<Agent, CreepPlan>();
     // Having timed the count to creep, he is moving at the snap: his start is the snap.
     for (const a of creeps.keys()) a.snapReadyAt = 0;
-    if (!stem && !creep && !this.motion && !early && !creeps.size) { this.perception.record(this.agents, this.carrier?.idx ?? null); return; }
+    if (!stem && !creep && !this.motion && !early && !creeps.size) { this.recordPerception(); return; }
     for (const seconds of [stem?.secondsBeforeSnap,creep?.secondsBeforeSnap]) {
       if (seconds !== undefined && (!Number.isFinite(seconds) || seconds<=0 || seconds>3)) throw new Error('Pre-snap movement must start within 0–3 seconds of snap');
     }
@@ -525,7 +535,7 @@ export class PlaySim {
       for (const d of this.defense) {
         targets.set(d,{...d.pos});
         d.body.pos = {...shown.spots[d.slot as DefSlot]!.pos};
-        d.body.pos.y = clamp(d.pos.y+d.mind.alignmentError,.5,FIELD_WIDTH-.5);
+        d.body.pos.y = clamp(d.pos.y+d.mind.alignmentError*(MIRROR_SCATTER?scatterSide(this.offAlign,d.pos.y):1),.5,FIELD_WIDTH-.5);
       }
     }
     const mug = creep ? this.slot(creep.slot) : undefined;
@@ -547,7 +557,7 @@ export class PlaySim {
       Math.ceil(early/this.dt - 1e-9));
     // Prime with the presentation that was actually shown, never the called
     // destination. Observers with longer latency retain the old front.
-    this.perception.record(this.agents, this.carrier?.idx ?? null);
+    this.recordPerception();
     for (let i=ticks;i>0;i--) {
       this.t = -i*this.dt;
       const intents: Intent[] = this.agents.map((a) => ({ vel: { x: 0, y: 0 }, facing: a.facing }));
@@ -564,12 +574,12 @@ export class PlaySim {
       this.world.time = this.t;
       this.world.step(intents, this.dt);
       for (const d of this.defense) if (!moving?.has(d)) d.body.pos.x=Math.max(this.los+d.profile.radius+.05,d.pos.x);
-      this.perception.record(this.agents, this.carrier?.idx ?? null);
+      this.recordPerception();
       if (this.record && i%this.recordEvery===0) this.recordFrame(intents);
       if (early && this.snapCountActs(this.t + this.dt)) break;
     }
     this.t=0;
-    this.perception.record(this.agents, this.carrier?.idx ?? null);
+    this.recordPerception();
     if (this.record) this.recordFrame();
   }
 
@@ -708,6 +718,9 @@ export class PlaySim {
 
   /** GAZE: `a` is watching `target` this tick (stage 1: a chaser watches his man). */
   lookAt(a: Agent, target: Agent): void {
+    // ZONE_EYES: what his controller watches other than the passer (the carrier he chases) is a want on his head; the
+    // passer is the sequence's own job (zone controllers watch him every tick, which would override the key phase).
+    if (zoneEyesFor(a) && target !== this.qb) want(this, a, target, 'carrier');
     if (!GAZE) return;
     const g = this.gaze.get(a);
     // A lapsed watch starts over: head from body facing, no memories from before.
@@ -881,7 +894,9 @@ export class PlaySim {
     else if ((SIGHT_COVER && observer.team === 'D' && (observer.behavior?.kind === 'man' || observer.behavior?.kind === 'zone'))
       // SIGHT_RECOG: his run / pass read's keys (the line, the QB, the back, the receiver he keys), occlusion only.
       || (SIGHT_RECOG && sight === 'recog'))
-      seen = this.sighted(observer, target, seen, true, HEAD && observer.behavior?.kind !== undefined && (observer.behavior.kind === 'man' || observer.behavior.kind === 'zone'));
+      seen = this.sighted(observer, target, seen, true, (HEAD && observer.behavior?.kind !== undefined && (observer.behavior.kind === 'man' || observer.behavior.kind === 'zone'))
+        // ZONE_EYES: a zone defender sees through his head's cone (the taught sequence turns it), not every receiver at once.
+        || zoneEyesFor(observer));
     this.trace.observe(observer, target, seen, this.t);
     this.commandTrace?.observe(observer, target, seen, this.t);
     return seen;
@@ -894,6 +909,7 @@ export class PlaySim {
    * see now ages from when he last saw him and is picked up one delay after he is back in sight. Visibility at a past
    * tick never changes, so it is kept per tick. Beyond the record (about 1.2 s): the last picture he had, ageing. */
   private sighted(observer: Agent, target: Agent, seen: Perceived, gazeView: boolean, headView = false): Perceived {
+    if (SIGHT_PURE) return this.sightedPure(observer, target, seen, gazeView, headView);
     const key = `${observer.idx}>${target.idx}`, now = Math.round(this.t / this.dt);
     const memo = (this.sightAt ??= new Map<string, boolean>()), kept = (this.sightKept ??= new Map());
     const visibleAt = (back: number): boolean | null => {
@@ -906,7 +922,7 @@ export class PlaySim {
       const rh = headView ? this.perception.perceive(observer.idx, back * this.dt).head : null;
       const brg = Math.atan2(rt.y - ro.pos.y, rt.x - ro.pos.x);
       const inView = rh !== null && rh !== undefined ? inHeadCone(rh, brg) : gazeView || Math.abs(angDiff(brg, ro.facing)) <= 1.8;
-      const v = inView && lineOfSight(this.agents, observer, target, undefined, rec);
+      const v = inView && lineOfSight(this.agents, observer, target, undefined, rec, SIGHT_PURE ? (b: Agent) => this.perception.recorded(b.idx, back * this.dt)?.pose ?? null : undefined);
       memo.set(k, v);
       return v;
     };
@@ -924,6 +940,78 @@ export class PlaySim {
     const dt = this.t - m.at;
     return { ...m.pic, pos: { x: m.pic.pos.x + m.pic.vel.x * dt, y: m.pic.pos.y + m.pic.vel.y * dt }, age: (m.pic.age ?? 0) + dt };
   }
+  /** SIGHT_PURE: the sight history, kept every tick for every pair and view (not when someone asks), so what a player saw at a past tick and what he last saw
+   * are functions of the record and his own delay, not of who asked first. Per pair and view: the record ticks (stamps) at which he had the man in sight, newest
+   * last, for the ticks the perception record still holds; and the picture at the newest sighting that left the record (the one he falls back on, ageing). */
+  recordPerception(carrierIdx: number | null = this.carrier?.idx ?? null): void {
+    this.perception.record(this.agents, carrierIdx);
+    if (SIGHT_PURE) this.recordSightHistory();
+  }
+  private sightHist = new Map<number, { target: number; ticks: number[]; older?: { pic: Perceived; stamp: number } }>();
+  private sightFrame?: SightFrame;
+  private recordSightHistory(): void {
+    const stamp = this.perception.stamp - 1, dt = this.dt, agents = this.agents, n = agents.length;
+    const frame = (this.sightFrame ??= new SightFrame(n));
+    if (STALE_ALIGN && !this.alignPics) this.alignPics = { stamp, pics: agents.map((a) => this.perception.perceive(a.idx, 0)) };
+    const recs = agents.map((a) => this.perception.recorded(a.idx, 0));
+    const heads = HEAD ? agents.map((a) => this.perception.perceive(a.idx, 0).head) : null;
+    for (let i = 0; i < n; i++) { const r = recs[i]; if (r) frame.set(i, agents[i]!, r.pos.x, r.pos.y, r.pose); }
+    for (let io = 0; io < n; io++) {
+      const o = agents[io]!, ro = recs[io];
+      if (!ro) continue;
+      const rh = heads ? heads[io] : null;
+      for (let it = 0; it < n; it++) {
+        const rt = recs[it];
+        if (io === it || !rt || !frame.clear(io, it)) continue;
+        const brg = Math.atan2(rt.pos.y - ro.pos.y, rt.pos.x - ro.pos.x);
+        const o1 = true, v1 = Math.abs(angDiff(brg, ro.facing)) <= 1.8, h1 = rh !== null && rh !== undefined ? inHeadCone(rh, brg) : true;
+        for (let f = 0; f < 3; f++) {
+          if (!(f === 0 ? o1 : f === 1 ? v1 : h1)) continue;
+          const k = (o.idx * n + agents[it]!.idx) * 3 + f;
+          let h = this.sightHist.get(k);
+          if (!h) this.sightHist.set(k, h = { target: agents[it]!.idx, ticks: [] });
+          h.ticks.push(stamp);
+        }
+      }
+    }
+    // The newest sighting that has reached the oldest tick the record holds is the picture he falls back on once it leaves (aged from there);
+    // sightings older than the record are dropped.
+    const edge = stamp - (PERCEPTION_HISTORY - 1), edgePic = new Map<number, Perceived>();
+    for (const h of this.sightHist.values()) {
+      if (h.ticks[0] === edge) {
+        let pic = edgePic.get(h.target);
+        if (!pic) edgePic.set(h.target, pic = this.perception.perceive(h.target, (PERCEPTION_HISTORY - 1) * dt));
+        h.older = { pic, stamp };
+      }
+      while (h.ticks.length && h.ticks[0]! < edge) h.ticks.shift();
+    }
+  }
+  private sightedPure(observer: Agent, target: Agent, seen: Perceived, gazeView: boolean, headView: boolean): Perceived {
+    const stamp = this.perception.stamp - 1, back0 = Math.round((seen.age ?? 0) / this.dt), own = back0 * this.dt;
+    const h = this.sightHist.get((observer.idx * this.agents.length + target.idx) * 3 + (headView ? 2 : gazeView ? 0 : 1));
+    if (h) for (let i = h.ticks.length - 1; i >= 0; i--) {
+      const back = stamp - h.ticks[i]!;
+      if (back < back0) continue;
+      if (back === back0) return seen;
+      const pic = this.perception.perceive(target.idx, back * this.dt);
+      return STALE_MARK ? { ...pic, stale: true, spread: STALE_SPREAD * (back * this.dt - own) } : pic;
+    }
+    const m = h?.older;
+    // SIGHT_STALE bit 4: a man not seen since the snap is believed where he lined up (the first record), on the velocity he had then.
+    if (!m) return STALE_ALIGN && this.alignPics ? this.staleOf(this.alignPics.pics[target.idx]!, (stamp - this.alignPics.stamp) * this.dt, own, true) : this.perception.perceive(target.idx, 1.2);
+    return this.staleOf(m.pic, (stamp - m.stamp) * this.dt, own);
+  }
+  /** A picture carried `extra` seconds past the moment it describes. Legacy: on its velocity without bound. SIGHT_STALE bit 1: for the record's
+   * length (the longest a sighting is carried before it is lost) and then held. Bit 2: marked stale with a spread. */
+  private staleOf(pic: Perceived, extra: number, own: number, hold = STALE_HOLD): Perceived {
+    const age = (pic.age ?? 0) + extra, a0 = pic.age ?? 0;
+    // The record's length (the oldest tick it holds), not a fitted horizon: the picture was already extrapolated a0 when it was taken.
+    const carry = hold ? Math.max(0, Math.min(extra, (PERCEPTION_HISTORY - 1) * this.dt - a0)) : extra;
+    const out: Perceived = { ...pic, pos: { x: pic.pos.x + pic.vel.x * carry, y: pic.pos.y + pic.vel.y * carry }, age };
+    if (STALE_MARK) { out.stale = true; out.spread = STALE_SPREAD * Math.max(0, age - own); }
+    return out;
+  }
+  private alignPics?: { stamp: number; pics: Perceived[] };
   private sightAt?: Map<string, boolean>;
   private sightKept?: Map<string, { pic: Perceived; at: number }>;
 
@@ -931,6 +1019,10 @@ export class PlaySim {
    * he pursues, the rusher he sets on or feels). PERCEIVE_TRACK off: exactly `see(observer, target, delayScale)`. On: a
    * short correcting loop at TRACK_LATENCY, with no focus, stress or attention terms stacked on it (those belong to
    * recognition) and no acceleration term; teammates as in `see()`. */
+  /** QB_TRACK_LOOK: a teammate he is watching (the passer's receiver in his clear cone), through the tracking channel's
+   * latency. Same-team pictures carry no sight-line test here, as in his choice-reaction look at them. */
+  trackedPicture(target: Agent): Perceived { return this.perception.perceive(target.idx, TRACK_LATENCY); }
+
   track(observer: Agent, target: Agent, delayScale = 1, group = false): Perceived {
     // `group`: the consumer group's own flag (each step is measured alone); PERCEIVE_TRACK turns on every group.
     if (!(PERCEIVE_TRACK || group) || observer.team === target.team) return this.see(observer, target, delayScale);
@@ -1480,7 +1572,7 @@ export class PlaySim {
     if (this.qb) this.qb.arm = this.windupAt < 0 ? 'set' : this.deliveryAt >= 0 && t >= this.deliveryAt ? 'deliver' : 'load';
     recordContact(this);
     stepHeads(this);
-    this.perception.record(this.agents, this.carrier?.idx ?? null);
+    this.recordPerception();
     for (const a of this.agents) {
       let nearby = 0;
       for (const other of this.opponents(a)) {
@@ -2017,7 +2109,7 @@ export class PlaySim {
       duration: this.t,
       clockStops,
       kind: this.isPass ? 'pass' : 'run',
-      stats: s,
+      stats: this.qbV2 ? { ...s, qbV2: true } : s,
       events: this.events,
       frames: this.record ? this.frames : undefined,
       telemetry: this.trace.data,

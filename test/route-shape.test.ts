@@ -1,4 +1,4 @@
-/** ROUTE_SHAPE (src/playbook/routes.ts; experimental, off): the in and out breaks rolled as taught; the short in stays square. */
+/** ROUTE_SHAPE (src/playbook/routes.ts; default on, engine-82): the in and out breaks rolled as taught; the short in stays square. */
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });

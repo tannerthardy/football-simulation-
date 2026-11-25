@@ -17,15 +17,15 @@ const body = (y: number, vy: number) => ({ profile: { radius: 0.35, brake: 6, la
 const toward = { vel: { x: 3, y: -6 } };
 
 describe('PURSUIT_FIELD: a seen-carrier pursuit is not contained as coverage', () => {
-  it('off: the pursuit toward the sideline 5 yd away loses its lateral request, and is not marked', async () => {
+  it('off: the pursuit toward the sideline 5 yd away has its lateral request bounded to the stopping-speed cap, and is not marked', async () => {
     const { containCoverage, asCarrierPursuit, isCarrierPursuit } = await load('0');
     expect(isCarrierPursuit(asCarrierPursuit(toward))).toBe(false);
-    expect(containCoverage(body(5, -5), asCarrierPursuit(toward)).vel.y).toBe(0);
+    expect(containCoverage(body(5, -5), asCarrierPursuit(toward)).vel.y).toBeCloseTo(-Math.sqrt(2 * 2 * 4.15), 6); // the stopping-speed cap for his room (a continuous bound, engine-73), below the -6 asked
   });
   it('on: the marked pursuit keeps its request; an unmarked (coverage) request is still contained', async () => {
     const { containCoverage, asCarrierPursuit } = await load('1');
     expect(containCoverage(body(5, -5), asCarrierPursuit(toward)).vel).toEqual(toward.vel);
-    expect(containCoverage(body(5, -5), toward).vel.y).toBe(0);
+    expect(containCoverage(body(5, -5), toward).vel.y).toBeCloseTo(-Math.sqrt(2 * 2 * 4.15), 6);
   });
 
   it('natural plays: on, pursueIfLive marks its seen-carrier pursuits and containment leaves them alone; unmarked, containment would have changed some', async () => {
@@ -43,7 +43,9 @@ describe('PURSUIT_FIELD: a seen-carrier pursuit is not contained as coverage', (
     const defense = generateTeam(new Rng(102), 'Field D', 'FLD', { strength: .55 });
     let pursuits = 0, kept = 0, unmarkedChanged = 0;
     const moved = (a: { x: number; y: number }, b: { x: number; y: number }) => Math.hypot(a.x - b.x, a.y - b.y) > 1e-9;
-    for (const concept of ['curl_flat', 'stick'] as const) for (let seed = 1; seed <= 12; seed++) {
+    // engine-76: seeds 1-24 (were 1-12); with one reaction on the arm read (ARM_BREAK 1) seeds 1-12 no longer produce a
+    // seen-carrier pursuit that containment would have changed unmarked, the premise of the last expectation.
+    for (const concept of ['curl_flat', 'stick'] as const) for (let seed = 1; seed <= 24; seed++) {
       const sim = new PlaySim({ offense: pickOffense(offense, '11'), defense: pickDefense(defense, 'nickel'),
         offCall: { formation: FORMATION_BY_ID.gun_doubles_11, flip: false, kind: 'pass', pass: PASS_BY_ID[concept], label: 'pf' },
         defCall: { personnel: 'nickel', front: FRONT_BY_ID.over, coverage: COVERAGE_BY_ID.cover3, pressure: null, zoneStyle: 'spot', label: 'pf' },

@@ -1,0 +1,30 @@
+{
+ "test/compile-picture.test.ts": {
+  "pinned": [
+   "LINE_START"
+  ],
+  "status": "ok",
+  "probes": 15
+ },
+ "test/pursuit-field.test.ts": {
+  "pinned": [
+   "LINE_START"
+  ],
+  "status": "ok",
+  "probes": 15
+ },
+ "test/qb-receiver-forecast.test.ts": {
+  "pinned": [
+   "ROUTE_FILLET"
+  ],
+  "status": "ok",
+  "probes": 31
+ },
+ "test/qb-seen-out.test.ts": {
+  "pinned": [
+   "QB_TICK_PICTURE"
+  ],
+  "status": "ok",
+  "probes": 37
+ }
+}

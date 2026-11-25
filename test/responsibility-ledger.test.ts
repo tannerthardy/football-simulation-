@@ -10,6 +10,7 @@ import { createHash } from 'node:crypto';
 import { describe, expect, it, vi } from 'vitest';
 import { Rng } from '../src/core/rng.js';
 import { RunBlocker, type Combination } from '../src/sim/behaviors/blocking.js';
+import { BLOCK_FRAME } from '../src/sim/engagement.js';
 import { PlaySim } from '../src/sim/playsim.js';
 import { dutyTimeline, initialJobCensus } from '../src/sim/responsibility-views.js';
 import { LOAD_PRESENT } from '../src/sim/responsibility-ledger.js';
@@ -197,7 +198,9 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     // Graded against the initial job there is no member load; the ledger also says why. With run-read
     // attention (a defender who has read run sees a blocker in front of him and in range on the ordinary
     // delay), DT_S tackles at 3.1 and LB_W never contacts the carrier, so the job is '?' rather than 'U'.
-    expect(job.stratum).toBe('?');
+    // BLOCK_FRAME (a released defender re-blocked only from in front of his path, inside his frame): LB_W is not
+    // re-blocked from outside his frame and reaches the carrier, so the job is 'U' (no member load, a carrier contact).
+    expect(job.stratum).toBe(BLOCK_FRAME ? 'U' : '?');
     expect(job.responsibility).toMatchObject({ threatRereadAfterRelease: true });
     expect(job.responsibility.otherClimbTargets.map(p.slot)).toEqual(['LB_M']);
   });
@@ -288,10 +291,12 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     // back 2.3 yd weak), he arrives 0.6-0.8 yd further downhill at 1.6-1.8 s, where DT_S has driven C a yard into the
     // backfield: DT_S alone at 1.9 (a body collision after his missed tackle at 1.75), where on develop he missed at 1.9.
     // Merged with develop's wing at its tracked width (#395), DT_S alone at 1.85. With #406 (a box backer drops only
-    // when sure enough of pass; underneath zone holds over a back behind the line), DE_S alone at 2.55.
+    // when sure enough of pass; underneath zone holds over a back behind the line), DE_S alone at 2.55. With the carrier
+    // judging defenders from what he sees of them (2026-11-17 carrier-honest: size-judged speed and recovery, no hidden
+    // profile), DT_S alone at 1.85.
     const p = play('M7-P051'), first = p.census[0].firstCarrierContact!;
-    expect(first.t).toBe(2.55);
-    expect(first.defenders.map(p.slot)).toEqual(['DE_S']);
+    expect(first.t).toBe(1.85);
+    expect(first.defenders.map(p.slot)).toEqual(['DT_S']);
   });
 
   it('first carrier contact: every defender at the earliest timestamp, and only those', () => {

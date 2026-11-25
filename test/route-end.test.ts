@@ -2,6 +2,7 @@
  * picture instead of standing, with his goal placed from his settle point (so he arrives and sits); a flat past its points
  * runs on turned to the QB. Staged hitches vs Cover 3 and Cover 1, QB held. */
 import { afterEach, describe, expect, it, vi } from 'vitest';
+vi.hoisted(() => { process.env.QUICK_HITCH = '0'; }); // engine-73: fixture recorded before QUICK_HITCH; Rules to re-record with it on
 import { nativeTraceSetup } from '../scripts/diag/command-trace.js';
 
 afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });

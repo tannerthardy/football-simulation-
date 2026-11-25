@@ -2,12 +2,13 @@
  * the back he sees showing to the flat on his side; with no back there, nothing changes; a vertical No. 2 is still
  * walled and carried first. Receivers are scripted; the QB holds the ball. */
 import { afterEach, describe, expect, it, vi } from 'vitest';
+vi.hoisted(() => { process.env.CURL_SINK = '0'; process.env.ZONE_HOLD = '0'; }); // engine-73: fixture recorded before CURL_SINK, ZONE_HOLD; Defense to re-record with it on
 
 afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 
 type Script = 'curl' | 'vertical';
 type Back = boolean | 'settled';
-async function play(flag: string, two: Script, back: Back, until = 2.6, look?: 'curl' | 'flat') {
+async function play(flag: string, two: Script, back: Back, until = 2.6, look?: 'curl' | 'flat', clear = false) {
   vi.resetModules();
   vi.stubEnv('CURL_FLAT_BACK', flag);
   vi.stubEnv('SEEN_EYES', '1'); // the QB's look as the defender sees it (promoted; the suite runs pre-promotion)
@@ -31,6 +32,10 @@ async function play(flag: string, two: Script, back: Back, until = 2.6, look?: '
   n2.behavior = { kind: 'route', update: (o: { pos: { x: number } }) => (two === 'vertical' || o.pos.x - sim.los < 9 ? { vel: { x: 7, y: 0 } } : { vel: { x: -0.5, y: 0 } }) } as never;
   // The back: out to the flat (still running), or already settled there from the start (7 yd outside the ball, a yard
   // behind the line, standing: never "showing", only there).
+  // clear: the back starts on the curl-flat side, 3 yd outside the ball and 4.5 behind the line, so his release to the
+  // flat is not run into the passer standing in front of him (from the backfield spot he was held behind the line,
+  // still 7.7 yd from the ball at 3.2 s, and never reached the flat the eyes test is about).
+  if (back === true && clear) rb.body.pos = { x: sim.los - 4.5 * sim.attackDir(sim.offense[0].team), y: sim.ballY + sign * 3 };
   if (back === 'settled') rb.body.pos = { x: sim.los - sim.attackDir(sim.offense[0].team), y: sim.ballY + sign * 7 };
   rb.behavior = { kind: 'route', update: () => (back === true ? { vel: { x: 0.8, y: sign * 7.5 } } : { vel: { x: 0, y: 0 } }) } as never;
   if (look) {
@@ -61,7 +66,10 @@ describe('CURL_FLAT_BACK: the curl-flat defender breaks on a back to his flat', 
     for (let i = 0; i < off.path.length; i++) expect(on.path[i].y).toBeCloseTo(off.path[i].y, 6);
   });
   it('the QB eyes decide how far he cheats: on the curl he hangs in the window, on the flat he widens', async () => {
-    const curl = await play('1', 'curl', true, 3.2, 'curl'), flat = await play('1', 'curl', true, 3.2, 'flat');
+    // Re-found 2026-11-25 (Coverage C14, the LANE_LEVERAGE landing): from the backfield spot the back's release ran into
+    // the passer and stalled inside the curl-flat's landmark, so "on the flat he widens" had no flat to widen to; the
+    // old pass came from the curl-look defender falling (tag 'fell') short of his target. The back now releases clear.
+    const curl = await play('1', 'curl', true, 3.2, 'curl', true), flat = await play('1', 'curl', true, 3.2, 'flat', true);
     expect(flat.out).toBeGreaterThan(curl.out + 1);
     expect(flat.toRb).toBeLessThan(curl.toRb);
   });

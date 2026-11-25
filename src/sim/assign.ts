@@ -3,7 +3,9 @@ import { plannedFakeEnd } from './called-drop.js';
  * Assignment of behaviors at the snap, and behavior transitions on play
  * events (handoff, throw, catch, interception, fumble, recovery).
  */
+import { setEyeZone } from './zone-eyes.js';
 import { ownRoutes } from './ball-estimate.js';
+import { paFakeSide } from './pa-look.js';
 import { arriveVelocity, gaitLag } from '../physics/kinematics.js';
 import { previewFreeMovement } from '../physics/movement-preview.js';
 import { READ_SCHEMES, RUN_READ, runRead } from './run-read.js';
@@ -36,7 +38,7 @@ import { screenSpot } from './screen-spot.js';
 
 const READ_BASE: Record<string, number> = { DE: 0.12, DT: 0.12, NT: 0.12, LB: 0.25, CB: 0.5, NB: 0.4, DB: 0.45, FS: 0.45, SS: 0.38 };
 
-/** STANCE_TELL (experimental, off): an offensive lineman can tip his first
+/** STANCE_TELL (on by default; STANCE_TELL=0 turns it off): an offensive lineman can tip his first
  * step pre-snap through his stance (weight on the play-side hand or foot, a
  * cheated stagger). Disciplined linemen hide it more often. A habit lean, a
  * lean that has nothing to do with the play, shows on any snap, pass or run,
@@ -66,7 +68,7 @@ function stanceLeak(a: Agent): number {
  * The get-off cost and the vision cost are assumptions, not fitted values. */
 const DEF_STANCE = process.env.DEF_STANCE === '1';
 
-/** BACK_RELEASE (experimental, off): the back's route on a dropback is part
+/** BACK_RELEASE (on by default; BACK_RELEASE=0 turns it off): the back's route on a dropback is part
  * of the concept and the protection count, not a fixed check-release over
  * the middle.
  *  - The count is what the offense sees before the snap: defenders in the
@@ -135,12 +137,14 @@ export function assignBehaviors(sim: PlaySim): void {
           ? new ManCoverage(d, sim, tgt, !!spot.press, spot.gap, spot.gapSign,
             { lev: role.lev, trail: role.trail, overTop: role.overTop, protectDepth: role.protectDepth })
           : new ZoneCoverage(d, sim, 'robber', spot.gap, spot.gapSign);
+        if (!tgt) setEyeZone(d, 'robber');
         break;
       }
       case 'zone': {
         // A rule-driven (pattern-match) seat runs its rule; spot drops and
         // plain zones keep the landmark technique.
         const style = role.style ?? (role.zone === 'robber' || role.zone === 'hole' ? 'match' : sim.defCall.zoneStyle ?? 'match');
+        setEyeZone(d, role.zone);
         d.behavior = role.rule && style === 'match'
           ? new CoverageDefender(d, sim, role.rule, role.zone, style, spot.gap, spot.gapSign)
           : new ZoneCoverage(d, sim, role.zone, spot.gap, spot.gapSign, role.style);
@@ -190,7 +194,8 @@ export function assignBehaviors(sim: PlaySim): void {
       if (a === qb || isOL(a)) continue;
       const ref = off.refOf[a.slot as keyof typeof off.refOf];
       const spot = off.spots[a.slot];
-      const outside = Math.sign(a.pos.y - sim.ballY) || off.strongSign;
+      // BACK_AS_THREE: the back who is #3 runs #3's flat, on the strong side.
+      const outside = ref === 'B' && concept.backIsThree ? off.strongSign : Math.sign(a.pos.y - sim.ballY) || off.strongSign;
       const blockLook = call.receiverBlockLook?.[a.slot as SkillSlot];
       const mkRoute = (id: string, delay = 0, conditional = false) => {
         const route = getRoute(id);
@@ -205,6 +210,11 @@ export function assignBehaviors(sim: PlaySim): void {
         return () => installBlockLook(a, sim, () => new RouteRunner(a, sim, route, outside,
           blockLook ? sim.t + delay : delay), true);
       };
+      // BACK_AS_THREE: the back is #3 in the route: on the snap to the flat on the strong side, out of the protection.
+      if (ref === 'B' && concept.backIsThree) {
+        a.behavior = mkRoute(concept.back, 0.1)();
+        continue;
+      }
       if (ref === 'B' || ref === 'B2' || !ref) {
         const assign = ref === 'B' ? concept.back : 'check';
         if (BACK_RELEASE && (assign === 'check' || (CONCEPT_MENU && BACK_ROUTES.has(assign)))) {
@@ -268,6 +278,8 @@ export function assignBehaviors(sim: PlaySim): void {
       const fakeY = PA_DROP_FAKE && behind ? qb.pos.y + off.strongSign * 1.5 : (qb.pos.y + back.pos.y) / 2 + side * 0.4;
       // The fake ends when the call says (called-drop.ts plannedFakeEnd: the back, the QB and the line share it).
       back.behavior = new PlayActionFake(back.behavior, { x: sim.los - 4.0, y: fakeY }, plannedFakeEnd(sim.offCall.formation.qb !== 'under'));
+      // PA_HINGE: the line knows the fake's side from the call.
+      paFakeSide.set(sim, Math.sign(fakeY - sim.ballY) || off.strongSign);
     }
     const qbb = new QBPass(qb, sim, concept, receiverPriors);
     qb.behavior = qbb;
@@ -343,7 +355,7 @@ export const IZ_GUN_A = process.env.IZ_GUN_A !== '0';
  * and 2.0 downhill, and kept drifting play side after the handoff. The mesh
  * point stays at the two bodies' clearance in front of the QB. */
 export const MESH_GUN_SIDE = process.env.MESH_GUN_SIDE !== '0';
-/** GUN_MESH (experimental, off): a gun back aligned away from the play crosses
+/** GUN_MESH (on by default; GUN_MESH=0 turns it off): a gun back aligned away from the play crosses
  * in front of the QB and takes the ball there, on his own track: the exchange
  * point is half a yard in front of the QB (toward the line) and just short of
  * his face (tracked 2022 gun handoffs, back relative to the QB: stretch -0.16
@@ -352,7 +364,7 @@ export const MESH_GUN_SIDE = process.env.MESH_GUN_SIDE !== '0';
  * within reach (ours took it a yard short of the QB's face, level with him, at
  * full reach, braking: IZ 2.2 yd/s at the exchange vs NFL 3.8). */
 export const GUN_MESH = process.env.GUN_MESH !== '0';
-/** GUN_MESH_GO (experimental, off; with GUN_MESH): the gun back leaves on the
+/** GUN_MESH_GO (on by default; with GUN_MESH): the gun back leaves on the
  * snap and builds speed to the exchange (slow to fast) rather than standing
  * until a full-speed run would just make it. Tracked 2022 gun backs are moving
  * 1.8 yd/s laterally at 0.5 s and 3.5-4.7 at the handoff; ours stood, then ran
@@ -368,7 +380,7 @@ export const GUN_MESH_GO = process.env.GUN_MESH_GO !== '0';
  * +0.2 yd (tracked +1.25). */
 export const DRAW_NFL = process.env.DRAW_NFL !== '0';
 
-/** COUNTER_C (off): counter's mesh aim is the C gap (the play-side tackle's
+/** COUNTER_C (on by default; COUNTER_C=0 turns it off): counter's mesh aim is the C gap (the play-side tackle's
  * outside hip) instead of B. */
 export const COUNTER_C = process.env.COUNTER_C !== '0';
 function meshFor(sim: PlaySim, concept: RunConcept): Mesh {
