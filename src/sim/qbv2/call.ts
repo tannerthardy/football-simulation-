@@ -2,7 +2,7 @@
 import { planFor } from '../../playbook/read-plans.js';
 import type { DropType, PassConcept } from '../../playbook/types.js';
 
-/** QB_V2 (on since engine-107; QB_V2=0 restores; QB lane, 2026-11-24, docs/reviews/2026-11-24-qb-decision-plan.md): on a
+/** QB_V2 (on since engine-108; QB_V2=0 restores; QB lane, 2026-11-24, docs/reviews/2026-11-24-qb-decision-plan.md): on a
  * concept with an authored read plan for the call (planFor), the read and throw decision is the rebuilt cycle
  * (src/sim/qbv2/): the look, the judgment, the cycle on his feet. The drop, pocket movement and the throw's mechanics are
  * kept. Other concepts run the old controller unchanged. */

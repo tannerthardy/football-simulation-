@@ -16,7 +16,7 @@ async function panel(rw: string, ff: string) {
   for (const [k, v] of Object.entries(stack.flags as Record<string, string>)) if (v === 'on') vi.stubEnv(k, '1');
   for (const [k, v] of Object.entries(stack.numeric ?? {}) as [string, { default: number }][]) vi.stubEnv(k, String(v.default));
   vi.stubEnv('READ_WINDOW', rw); vi.stubEnv('FORECAST_FINISH', ff);
-  // QB_V2 (engine-107, QB lane, pinned test-only): READ_WINDOW is the old controller's rule. With V2 on, slant-flat runs
+  // QB_V2 (engine-108, QB lane, pinned test-only): READ_WINDOW is the old controller's rule. With V2 on, slant-flat runs
   // V2's cycle, which has no READ_WINDOW, so this panel pins the old passer it tests.
   vi.stubEnv('QB_V2', '0');
   const { PlaySim } = await import('../src/sim/playsim.js');

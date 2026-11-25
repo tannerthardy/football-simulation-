@@ -21,7 +21,7 @@ async function load(fw: string) {
   // The reference stack's numeric settings too (the suite pins them to their legacy values).
   for (const [k, v] of Object.entries(stack.numeric ?? {}) as [string, { default: number }][]) vi.stubEnv(k, String(v.default));
   vi.stubEnv('CONCEPT_DROPS', '1'); vi.stubEnv('QB_FOOTWORK', fw);
-  // QB_V2 (engine-107, QB lane, pinned test-only): this panel's stick rows are the gun3 drop's crossover. With V2, stick
+  // QB_V2 (engine-108, QB lane, pinned test-only): this panel's stick rows are the gun3 drop's crossover. With V2, stick
   // from the gun runs its read plan's quick drop, the 1.6 yd drift with no crossover, so the panel keeps the old passer's
   // drop. The drop body itself is unchanged.
   vi.stubEnv('QB_V2', '0');

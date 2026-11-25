@@ -2872,3 +2872,14 @@ against engine-106, each its own arm.
   Re-fit over a 0.6 yd gap 0.2 -> 0.12 s. By seed: completion -1.3, +0.9, -0.6, -1.8; nothing consistent.
 
 The three were not carded together.
+
+## engine-108: the rebuilt passer on the quick game (2026-11-25)
+
+`QB_V2` on and `QB_QUICK_DRIFT` at 3 (QB lane; `QB_V2=0 QB_QUICK_DRIFT=0` restores engine-107). On quick outs,
+slant-flat and stick, where the call has an authored read plan, the read and throw decision is the rebuilt cycle
+(`src/sim/qbv2/`); every other call runs the old controller. The line's pocket depth and launch point read the drop the
+call runs (`calledDrop`), and screens keep the two-yard quick step.
+
+Card e142 (4 seeds x 32 games, on its calls, 608 dropbacks, 11.0% of dropbacks): completion 72.9 -> 73.3%, yards per
+attempt 7.18 -> 7.39, sacks 5.5 -> 3.5%, interceptions 2.1 -> 1.0%, scrambles 2.7 -> 0%, time to throw 2.60 -> 2.16 s.
+The card predates the line-depth and screen repairs. Open: he never scrambles on his calls; the GAPS quick-game items.
