@@ -7,7 +7,8 @@ import { shouldersOf } from '../physics/kinematics.js';
  *   (feet, contacts, joints, support) → down by contact → ball → tackle
  *   attempts → whistle → record
  */
-import { RELEASE_BELIEF, releaseBelief } from './release-belief.js';
+import { RELEASE_BELIEF, releaseBelief, RUSH_RELEASE } from './release-belief.js';
+import { stepRushHands } from './rush-hands.js';
 import { recordContact } from './seen-contact.js';
 import { lineOfSight, SIGHT_PURE, SightFrame, STALE_ALIGN, STALE_HOLD, STALE_MARK, STALE_SPREAD } from './sight.js';
 import { HEAD, inHeadCone, neckRange, stepHeads, want } from './head.js';
@@ -1628,6 +1629,8 @@ export class PlaySim {
     if (this.bond) updateBond(this, this.bond, this.intents);
     commandTrace?.stage('tackle-bond', this.intents);
     ledger?.stageAll('tackle-bond', this.intents);
+    // RUSH_RELEASE: the rushers' hands toward where their load decision and their blockers let them be.
+    if (RUSH_RELEASE) stepRushHands(this, this.intents);
     // Constraint ownership and last-step touch are felt by the actor. Free
     // movement forecasts must not pretend these loads or joints are absent.
     const constrained=new Set(this.world.joints.filter(j=>j.kind!=='grasp'||!j.broken)

@@ -32,6 +32,7 @@ import { executeRunFit, guardStep, lineRead, pullers, type RunFitRead } from '..
 import { linePicture } from '../live-gaps.js';
 import { RouteObservation } from '../coverage-read.js';
 import { movingCatchApproach } from '../catch-approach.js';
+import { handsWanted } from '../rush-hands.js';
 import { LOAD_BEAT, PULL_MARGIN, RELEASE_BELIEF, RUSH_RELEASE, lastReleaseBelief, releaseBelief } from '../release-belief.js';
 import { withMovementObjective } from '../movement-objective.js';
 import { OPEN_FIELD, playsBall } from '../open-field.js';
@@ -776,6 +777,7 @@ export class PassRusher implements Behavior {
  * he can. Null: the rush as before. Shared by the pass rusher and the blitzer; `held` is his held pull-up. */
 function rushRelease(a: Agent, sim: PlaySim, held: { pullUp: boolean }): MoveCommand | null {
   const rb = releaseBelief(sim, a);
+  handsWanted.set(a, false);
   if (rb.releasedAt !== undefined) {
     // A carrier he sees (the catch made, a run after a pump) is pursued as on any live ball.
     const live = pursueIfLive(sim, a);
@@ -795,6 +797,7 @@ function rushRelease(a: Agent, sim: PlaySim, held: { pullUp: boolean }): MoveCom
   const tArr = a.engagement ? Infinity : timeToReach({ pos: a.pos, vel: a.vel, profile: a.profile, speedScale: a.speedScale }, q.pos, a.profile.reach);
   held.pullUp = held.pullUp ? tArr > left - PULL_MARGIN : tArr > left + PULL_MARGIN;
   if (!held.pullUp) return null;
+  handsWanted.set(a, true);
   // Hands up into his throwing lane, facing him; engaged, he holds his ground on the blocker.
   a.tags.add('hands-up');
   const face = Math.atan2(q.pos.y - a.pos.y, q.pos.x - a.pos.x);

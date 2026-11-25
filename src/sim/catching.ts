@@ -8,6 +8,9 @@
 import { FIELD_WIDTH } from '../core/field.js';
 import { clamp, type Vec2, type Vec3 } from '../core/vec.js';
 import { DRAG_TUMBLE } from '../physics/ball.js';
+import { RUSH_RELEASE } from './release-belief.js';
+import { handsLevel, handsRaised, handsTop } from './rush-hands.js';
+import { bodyHeight, SHOULDER } from './sight.js';
 import { closestCatchOpportunity } from '../physics/catch-opportunity.js';
 import type { Agent } from './agent.js';
 import type { PlaySim } from './playsim.js';
@@ -185,7 +188,7 @@ export function resolveCatchOpportunities(sim: PlaySim, prev: Vec3, cur: Vec3,
     // Receivers tracking the ball time a full leap; defenders playing it get a
     // partial leap; everyone else only gets hands up.
     const p = a.profile;
-    const top = a.team === 'O' && tracking ? p.maxCatchHeight : tracking ? p.reactReach + 0.5 * (p.maxCatchHeight - p.reactReach) : batWindow ? p.reactReach * 0.95 : p.reactReach;
+    const top = a.team === 'O' && tracking ? p.maxCatchHeight : tracking ? p.reactReach + 0.5 * (p.maxCatchHeight - p.reactReach) : batWindow && !RUSH_RELEASE ? p.reactReach * 0.95 : p.reactReach;
     const body0 = bodyStarts ? bodyStarts[a.idx] : a.pos;
     if (!body0) continue; // An incomplete supplied interval cannot grant reach.
     const opportunity = closestCatchOpportunity(body0, a.pos, prev, cur, { reach, low: .1, top });
@@ -522,6 +525,25 @@ function defenderPlay(sim: PlaySim, o: Opp, tAir: number): boolean {
     D.noCatchUntil = sim.t + 1;
     return false;
   }
+  if (isBat && RUSH_RELEASE) {
+    // RUSH_RELEASE (rush-hands.ts): his hands, where they are. A ball through his raised hands is tipped; one below his
+    // shoulders on his body comes off it; over or wide of them, nothing. No roll.
+    const lvl = handsLevel(D);
+    if (handsRaised(D) && o.dh <= D.profile.radius + 0.25 && o.z <= handsTop(D) && o.z >= bodyHeight(D, SHOULDER) - 0.1) {
+      sim.event('deflection', D, null, 'batted at the line');
+      sim.stats.passDefendedBy = D.player.id;
+      D.noCatchUntil = touchedUntil(sim, 0.3);
+      tipOffHands(sim, D, o, lvl);
+      return true;
+    }
+    if (o.z <= bodyHeight(D, SHOULDER) && o.dh <= D.profile.radius + BALL_HALF_WIDTH) {
+      sim.event('deflection', D, ball.target, 'off his body');
+      D.noCatchUntil = touchedUntil(sim, 0.25);
+      deflect(sim, 0.3, 'tip', D);
+      return true;
+    }
+    return false;
+  }
   if (isBat) {
     // BAT_ONCE: one try per defender per pass. The ball stays in his window for several ticks; a roll each tick made his
     // chance per pass depend on the tick length (free defenders batted 29% of their chances against an 18% ceiling).
@@ -582,6 +604,27 @@ function defenderPlay(sim: PlaySim, o: Opp, tAir: number): boolean {
     return true;
   }
   return false;
+}
+
+/** RUSH_RELEASE (Flex's BAT_HANDS contact): a ball tipped off raised hands goes where the contact sends it: its speed cut
+ * to a quarter, the part of its horizontal motion into his hands (toward his centre) reversed at a third, popping up by
+ * how high his hands reached it (the hands meet it from below). Live, as any tipped ball. */
+function tipOffHands(sim: PlaySim, D: Agent, o: Opp, lvl: number): void {
+  if (!sim.touchPass(D)) return;
+  const ball = sim.ball;
+  if (ball.kind !== 'air') return;
+  const f = ball.flight, keep = 0.25;
+  const nx = o.b.x - D.pos.x, ny = o.b.y - D.pos.y, nl = Math.hypot(nx, ny);
+  let vx = f.vel.x, vy = f.vel.y;
+  if (nl > 1e-6) {
+    const ux = nx / nl, uy = ny / nl, into = vx * ux + vy * uy;
+    if (into < 0) { vx -= (1 + 0.3) * into * ux; vy -= (1 + 0.3) * into * uy; }
+  }
+  f.vel = { x: vx * keep, y: vy * keep, z: 0.5 + 1.5 * lvl };
+  f.drag = DRAG_TUMBLE;
+  ball.deflected = true;
+  ball.target = null;
+  sim.computeBallPath();
 }
 
 function deflect(sim: PlaySim, keep: number, kind: 'drop' | 'tip' = 'tip', toucher?: Agent, solid?: number): void {
