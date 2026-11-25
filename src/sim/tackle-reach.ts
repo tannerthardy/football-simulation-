@@ -1,0 +1,49 @@
+/** TACKLE_REACH (experimental, off; TACKLE_REACH=1 turns it on): one geometric definition of a tackler's reach.
+ *
+ * `profile.reach` is defined in src/players/physical.ts as the horizontal reach *from the body centre* (0.25 yd of
+ * shoulder offset plus 0.85 of the arm). The tackle code built its ranges as `c.radius + d.radius + d.reach`, counting
+ * the tackler's own body radius (0.24-0.42 yd) a second time: a 200 lb DB started a standing attempt at about 1.55 yd
+ * centre to centre, and a lunge at 2.0.
+ *
+ * Evidence (docs/reviews/2026-11-23-pursuit-build-addendum.md; Rules, BDB 2024 PFF labels joined to BDB 2025 tracking,
+ * 16,234 attempts):
+ *  - NFL attempts, made and missed, happen at a centre distance of p50 0.88 yd (p90 1.06); 87% of misses come within
+ *    1.0 yd.
+ *  - Ours: wraps at p50 1.38 yd, misses at p50 1.95.
+ *
+ * With the flag, every tackle-reach distance is measured from the tackler's centre to the carrier's surface:
+ * `c.radius + d.reach × share`. That covers:
+ *  - the tackle range and its contact quality;
+ *  - the hold's joint;
+ *  - the hold quality laws in the bond;
+ *  - the pursuit planners that place the tackle window (pursuitPoint's reach, chase/run-fit contact, catch approach).
+ * Torsos touching stays `c.radius + d.radius`. Not a fitted number: the body is counted once. */
+import type { Agent } from './agent.js';
+
+export const TACKLE_REACH = process.env.TACKLE_REACH === '1';
+
+/** Centre-to-centre distance at which tackler `d` reaches carrier `c` with `share` of his reach. Under TACKLE_REACH the
+ * share scales only what the arms add beyond his own body (`armSpan`): his torso is there whatever share of the arm he
+ * can use (share 1: c.radius + d.reach, his full reach to the carrier's surface). A first build scaled his whole reach
+ * from the centre, body included, so a blocked defender's 0.4 share of a 310 lb DT reached 0.686 yd against torsos
+ * touching at 0.63, and planners' 0.65 and 0.75 contact windows were trimmed the same way (review, 2026-11-24). */
+export function reachTo(d: Agent, c: Agent, share = 1): number {
+  return TACKLE_REACH ? c.profile.radius + d.profile.radius + armSpan(d) * share
+    : c.profile.radius + d.profile.radius + d.profile.reach * share;
+}
+
+/** The part of his reach beyond his own torso (what the arms add past the body): the span the hold quality laws scale
+ * over. */
+export function armSpan(d: Agent): number {
+  return TACKLE_REACH ? d.profile.reach - d.profile.radius : d.profile.reach;
+}
+
+/** The gap between the bodies (beyond torsos touching) within which his arms still close around the carrier and the
+ * hands lock behind him: the wrap's full-quality band. Under TACKLE_REACH it is geometry, per pair: each arm wraps a
+ * quarter of the carrier's girth, so the hands meet while the gap is at most his arm's length (the profile's 0.85 of
+ * the arm, `d.reach - 0.25`) less pi/2 of the carrier's radius; at most his arm span (Integration approved, 2026-11-24:
+ * about 0.36 yd for a 33-inch arm on a 0.27 yd back). Off, the legacy 0.25 yd. */
+export function lockBand(d: Agent, c: Agent): number {
+  if (!TACKLE_REACH) return 0.25;
+  return Math.max(0, Math.min(armSpan(d), d.profile.reach - 0.25 - Math.PI / 2 * c.profile.radius));
+}

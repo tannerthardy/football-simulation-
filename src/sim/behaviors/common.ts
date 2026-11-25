@@ -9,6 +9,7 @@ import type { Agent } from '../agent.js';
 import { chooseApproach } from '../approach-control.js';
 import { onTopCushion, onTopPoint } from '../open-field.js';
 import { withMovementObjective } from '../movement-objective.js';
+import { reachTo } from '../tackle-reach.js';
 import type { PlaySim } from '../playsim.js';
 
 export const STAND: MoveCommand = { vel: { x: 0, y: 0 } };
@@ -167,7 +168,7 @@ export function pursuitPoint(sim: PlaySim, a: Agent, target: Agent, horizon = 3,
   const curve = bend ? bentPath(seen.pos, Math.atan2(seen.vel.y, seen.vel.x), bend.heading, bend.rate, (t) => V * t - (V - sp) * tau * (1 - Math.exp(-t / tau)), horizon) : null;
   if (curve) curveOf.set(a, curve); else curveOf.delete(a);
   const path = curve ? (t: number): Vec2 => curve[Math.min(curve.length - 1, Math.max(0, Math.round(t / BEND_STEP)))] : straight;
-  const reach = a.profile.radius + target.profile.radius + a.profile.reach * 0.75;
+  const reach = reachTo(a, target, 0.75);
   const trace = sim.commandTraceFor?.(a);
   const mover = { pos: a.pos, vel: a.vel, profile: a.profile, speedScale: a.speedScale };
   const ip = interceptPoint(mover, path, { horizon, step: 0.1, radius: reach, request, recordSamples: !!trace });
@@ -214,6 +215,20 @@ const angleBias = new WeakMap<Agent, number>();
  *  - it is under MEET_NEAR s away, past his horizon, or the target changed.
  * The exit is on the far side of the entry. Also: a defender playing the
  * ball holds his last approach on the flight's final tick (defense.ts). */
+/** GATHER_ATTACK (experimental, off; GATHER_ATTACK=1 turns it on): in the close gather a tackler in front attacks
+ * through the near hip instead of matching the runner's speed toward him. Taught: mirror at distance, then come to
+ * balance and strike, step through the hip; a tackler who keeps backing up is run through.
+ *
+ * Why (Run Game, run/tackle-repair 6450932d, designed runs, the tackle package on):
+ *  - tacklers ahead of the carrier at closest approach move with him (+0.20 of his speed along the run);
+ *  - 8% bring more than half his momentum against him;
+ *  - NFL (Rules): a tackler with more than 1.25x the carrier's momentum stops him in 0.4 yd, one under 0.8x gives 1.9 yd.
+ * The gather's moving arrival (movingArrivalVelocity) adds the carrier's full velocity to the closing speed, so a tackler
+ * in front gives ground at the runner's pace.
+ *
+ * INCOMING_RAMP 1.5 yd/s is the stated choice: the same scale the head-on weight uses. */
+export const GATHER_ATTACK = process.env.GATHER_ATTACK === '1';
+const INCOMING_RAMP = 1.5;
 export const PURSUIT_COMMIT = process.env.PURSUIT_COMMIT !== '0';
 const MEET_ENTER = 0.1, MEET_EXIT = 0.15, MEET_MARGIN = 0.3, MEET_NEAR = 0.15;
 const heldMeeting = new WeakMap<Agent, { target: Agent; at: number; ok: boolean }>();
@@ -333,7 +348,12 @@ export function gatheringApproach(a: Agent, seen: import('../perception.js').Per
     if (gather > 0) {
       // OPEN_FIELD: `upfield` (yd along x) keeps the arrival on top of the runner, shrinking to nothing at contact.
       const goal = { x: seen.pos.x + upfield, y: clamp(seen.pos.y + offset, .3, FIELD_WIDTH - .3) };
-      const vel=movingArrivalVelocity(a.body,goal,seen.vel,a.profile.vmax*a.speedScale,
+      // GATHER_ATTACK: a tackler the carrier is running at does not give ground at the carrier's pace. The arrival matches
+      // the carrier's motion across the line between them, not his motion toward the tackler, so he steps into the near
+      // hip instead of backing up with the runner (weight rising with that incoming speed over INCOMING_RAMP yd/s).
+      const wIn = GATHER_ATTACK ? clamp(incoming / INCOMING_RAMP, 0, 1) : 0;
+      const goalVel = wIn > 0 ? { x: seen.vel.x + wIn * Math.max(0, incoming) * ux, y: seen.vel.y + wIn * Math.max(0, incoming) * uy } : seen.vel;
+      const vel=movingArrivalVelocity(a.body,goal,goalVel,a.profile.vmax*a.speedScale,
         contact,through,cutSkill,capacity);
       // A front tackler keeps driving through the near hip, rather than
       // retreating forever to match an incoming runner's sprint. This is a
@@ -373,7 +393,7 @@ export function chase(sim: PlaySim, a: Agent, target: Agent, horizon = 3, opts: 
   const seen = TRACK_TACKLE ? sim.track(a, target, 1, true) : sim.see(a, target, look);
   const dist = Math.hypot(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y);
   const tackle = a.r('tackling');
-  const contact = a.profile.radius + target.profile.radius + a.profile.reach * .65;
+  const contact = reachTo(a, target, .65);
   const offset = pursuitLeverage(a, seen.pos.y)
     * clamp((dist - contact) / 6, 0, 1);
   // Teammate navigation needs the responsibility this request serves. This

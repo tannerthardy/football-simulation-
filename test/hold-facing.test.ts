@@ -65,11 +65,26 @@ async function turn(flag: string, openHands = '0', seed = 1957, slot = 'DT_S') {
 
 describe('HOLD_FACING', () => {
   it('off: the side holder spins with the runner; on: he keeps his facing', async () => {
-    const off = await turn('0'), on = await turn('1');
-    expect(off.held && off.side).toBe(true); expect(on.held && on.side).toBe(true);
-    expect(off.turnDeg).toBeGreaterThan(120);
-    expect(on.turnDeg).toBeLessThan(60);
-  });
+    // The pinned play (seed 1957, DT_S) was recorded on the legacy tackle. With the tackle package (TACKLE_REACH /
+    // REACH_TIME) the play changes before the hold, so the same bounds are a search over the pinned scan's range.
+    const pkg = process.env.TACKLE_REACH === '1' || process.env.REACH_TIME === '1';
+    if (!pkg) {
+      const off = await turn('0'), on = await turn('1');
+      expect(off.held && off.side).toBe(true); expect(on.held && on.side).toBe(true);
+      expect(off.turnDeg).toBeGreaterThan(120);
+      expect(on.turnDeg).toBeLessThan(60);
+      return;
+    }
+    let found: string | null = null;
+    search: for (let seed = 1900; seed < 1990; seed++) for (const slot of ['DT_S', 'DT_W']) {
+      const off = await turn('0', '0', seed, slot);
+      if (!(off.held && off.side) || off.turnDeg <= 120) continue;
+      const on = await turn('1', '0', seed, slot);
+      if (on.held && on.side && on.turnDeg < 60) { found = `seed ${seed} ${slot}: off ${off.turnDeg.toFixed(0)} deg, on ${on.turnDeg.toFixed(0)} deg`; break search; }
+    }
+    console.log(`side holder (tackle package): ${found ?? 'none'}`);
+    expect(found).not.toBeNull();
+  }, 480_000);
   it('OPEN_HANDS (the DT free of his blocker when he grabs): HOLD_FACING still keeps him from spinning with the runner (search with a floor)', async () => {
     // A search, not a pinned seed (moved on engine-61): seeds from 1900 in order until a DT, free of his blocker, makes a
     // side hold that spins him at least 100 deg off and HOLD_FACING cuts that by at least 30 deg. Requirement: one exists.

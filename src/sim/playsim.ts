@@ -62,7 +62,7 @@ import { SNAP_REACT, VISIBLE, planSnap, snapResponse, type SnapCount } from './s
 import { ReplayTrace } from './telemetry.js';
 import { CommandTrace, type BlockingSink, type CommandTraceSelection } from './command-trace.js';
 import { ResponsibilityLedger } from './responsibility-ledger.js';
-import { afterStep, releaseBond, tryTackles, updateBond, type TackleBond } from './tackle.js';
+import { afterStep, reachIntents, releaseBond, tryTackles, updateBond, type TackleBond } from './tackle.js';
 import type { BallState, CarrierSegment, Frame, PenaltyCall, FoulEvidence, FoulRecord, PlayEvent, PlayEventType, PlayOutcome, PlayResult, PlayStats, ReplayLevel } from './types.js';
 
 /** ALIGN_HABIT (on by default; ALIGN_HABIT=0 turns it off): see alignDefense. */
@@ -1624,6 +1624,7 @@ export class PlaySim {
     ledger?.stageAll('engagement', this.intents);
     commandTrace?.at('tackle-bond');
     if (this.bond) updateBond(this, this.bond, this.intents);
+    reachIntents(this, this.intents);
     commandTrace?.stage('tackle-bond', this.intents);
     ledger?.stageAll('tackle-bond', this.intents);
     // Constraint ownership and last-step touch are felt by the actor. Free

@@ -1,4 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import { tackleNow } from './helpers/tackle-now.js';
 
 afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 
@@ -14,7 +15,7 @@ async function stage(flag: '0' | '1', carrying: boolean | undefined) {
   const { COVERAGE_BY_ID, FRONT_BY_ID } = await import('../src/playbook/defense.js');
   const { FORMATION_BY_ID } = await import('../src/playbook/formations.js');
   const { PlaySim } = await import('../src/sim/playsim.js');
-  const { tryTackles } = await import('../src/sim/tackle.js');
+  const T = await import('../src/sim/tackle.js'); const { tryTackles } = T;
   const sim = new PlaySim({ offense: pickOffense(generateTeam(new Rng(19), 'O', 'OFF'), '11'),
     defense: pickDefense(generateTeam(new Rng(20), 'D', 'DEF'), 'nickel'),
     offCall: { formation: FORMATION_BY_ID.gun_doubles_11, flip: false, kind: 'pass', pass: PASS_BY_ID.four_verts, label: 'lab' },
@@ -31,7 +32,7 @@ async function stage(flag: '0' | '1', carrying: boolean | undefined) {
   for (let k = 0; k < 24; k++) sim.perception.record(sim.agents.map(a => ({ pos: { ...a.pos }, vel: a.vel,
     facing: a.facing, pose: a.pose })), carrying === true ? c.idx : carrying === false ? null : undefined);
   const attempts = vi.spyOn(sim.rng, 'chance');
-  tryTackles(sim);
+  tackleNow(sim, T);
   return { attempted: !!sim.bond || attempts.mock.calls.length > 0 || sim.outcome !== null, seen: sim.see(d, c).carrying };
 }
 

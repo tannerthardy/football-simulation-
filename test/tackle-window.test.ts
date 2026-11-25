@@ -12,7 +12,8 @@ import { World, type GraspJoint, type Intent } from '../src/physics/world.js';
 import type { Engagement } from '../src/sim/agent.js';
 import type { Perceived } from '../src/sim/perception.js';
 import { PlaySim } from '../src/sim/playsim.js';
-import { tryTackles, waitsForBetter } from '../src/sim/tackle.js';
+import { LUNGE_FLIGHT, tryTackles, waitsForBetter } from '../src/sim/tackle.js';
+import { reachTo } from '../src/sim/tackle-reach.js';
 import { previewTackleWindow } from '../src/sim/tackle-window.js';
 
 function stage(side = 1, record = false) {
@@ -89,6 +90,9 @@ describe('attainable tackle opportunity', () => {
     const rolls = vi.spyOn(sim.rng, 'chance').mockReturnValue(false);
     try {
       tryTackles(sim);
+      expect(sim.trace.data!.decisions.find(row => row.a === d.idx)?.chose).toBe('take last reach');
+      // LUNGE_FLIGHT: the lunge is a launch, taken only if it reaches (covered below); no hold is made at a distance.
+      if (LUNGE_FLIGHT) { expect(sim.bond).toBeNull(); return; }
       expect(dive).toHaveBeenCalledOnce();
       expect(sim.bond?.tacklers).toContain(d);
       const hold = sim.bond!.holds!.get(d)!;
@@ -100,6 +104,59 @@ describe('attainable tackle opportunity', () => {
       expect(sim.outcome).toBeNull();
       expect(sim.trace.data!.decisions.find(row => row.a === d.idx)?.chose).toBe('take last reach');
     } finally { dive.mockRestore(); rolls.mockRestore(); }
+  });
+
+  it.runIf(LUNGE_FLIGHT).each([-1, 1])('LUNGE_FLIGHT: no launch at a runner pulling away faster than a dive can reach, side %s', side => {
+    const { sim, c, d } = passingStage(side, true, true);
+    // Pulling straight away at 4 yd/s relative: even laid out, a flight's hands never get to him.
+    const ux = c.pos.x - d.pos.x, uy = c.pos.y - d.pos.y, ul = Math.hypot(ux, uy);
+    c.body.vel = { x: d.vel.x + ux / ul * 4, y: d.vel.y + uy / ul * 4 };
+    for (let k = 0; k < 24; k++) {
+      const lag = (23 - k) * sim.dt;
+      sim.perception.record(sim.agents.map(a => ({ pos: { x: a.pos.x - a.vel.x * lag, y: a.pos.y - a.vel.y * lag },
+        vel: a.vel, facing: a.facing, pose: a.pose })), c.idx);
+    }
+    const dive = vi.spyOn(sim, 'diveAt');
+    try {
+      tryTackles(sim);
+      // His legs keep him in the chase: no launch, no hold, no charted miss.
+      expect(dive).not.toHaveBeenCalled();
+      expect(sim.bond).toBeNull();
+      expect(sim.events.some(e => e.type === 'missed_tackle')).toBe(false);
+      expect(d.body.support?.state).toBe('up');
+      expect(Math.hypot(c.pos.x - d.pos.x, c.pos.y - d.pos.y)).toBeGreaterThan(reachTo(d, c, 1));
+    } finally { dive.mockRestore(); }
+  });
+
+  it.runIf(LUNGE_FLIGHT).each([-1, 1])('LUNGE_FLIGHT: a lunge that reaches launches, and holds only from standing reach, side %s', side => {
+    const { sim, c, d } = passingStage(side, true, true);
+    // Level with him and just beyond reach: his held command keeps the gap, a launch closes it.
+    c.body.vel = { ...d.vel };
+    const ux = (c.pos.x - d.pos.x), uy = (c.pos.y - d.pos.y), ul = Math.hypot(ux, uy);
+    const gap = reachTo(d, c, 1) + 0.08;
+    c.body.pos = { x: d.pos.x + ux / ul * gap, y: d.pos.y + uy / ul * gap };
+    for (let k = 0; k < 24; k++) {
+      const lag = (23 - k) * sim.dt;
+      sim.perception.record(sim.agents.map(a => ({ pos: { x: a.pos.x - a.vel.x * lag, y: a.pos.y - a.vel.y * lag },
+        vel: a.vel, facing: a.facing, pose: a.pose })), c.idx);
+    }
+    const dive = vi.spyOn(sim, 'diveAt');
+    tryTackles(sim);
+    expect(dive).toHaveBeenCalledOnce();
+    dive.mockRestore();
+    expect(sim.bond).toBeNull();
+    let grabbedAt: number | null = null;
+    for (let k = 0; k < 30 && sim.phase === 'live' && grabbedAt === null; k++) {
+      const before = Math.hypot(c.pos.x - d.pos.x, c.pos.y - d.pos.y);
+      sim.tick();
+      const bond = (sim as { bond: PlaySim['bond'] }).bond;
+      if (bond?.tacklers.includes(d)) grabbedAt = bond.holds!.get(d)!.hold ?? before;
+    }
+    const short = sim.events.some(e => e.type === 'missed_tackle' && e.a !== undefined && sim.agents[e.a] === d);
+    expect(grabbedAt !== null || short).toBe(true);
+    if (grabbedAt !== null) expect(grabbedAt).toBeLessThanOrEqual(reachTo(d, c, 1) + 0.15);
+    // He left his feet: the cost of the reach is his base.
+    expect(d.body.support?.state).not.toBe('up');
   });
 
   it.each([false, undefined])('does not upgrade a last reach before acquiring possession: %s', carrying => {
