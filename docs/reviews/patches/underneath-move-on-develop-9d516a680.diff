@@ -1,0 +1,409 @@
+diff --git a/config/baseline.json b/config/baseline.json
+index 3df3bb810..17d468cf6 100644
+--- a/config/baseline.json
++++ b/config/baseline.json
+@@ -386,6 +386,7 @@
+     "QB_CANON_SEEN": "0",
+     "BELIEVED_BODY": "0",
+     "SCOUT_SEEN": "0",
++    "UNDERNEATH_MOVE": "0",
+     "QB_SEEN_OUT": "0",
+     "QB_SEEN_REC": "0",
+     "ACC_RADIUS": "0",
+diff --git a/config/reference-stack.json b/config/reference-stack.json
+index f9275b3ed..246805cd7 100644
+--- a/config/reference-stack.json
++++ b/config/reference-stack.json
+@@ -349,6 +349,7 @@
+     "QB_CANON_SEEN": "on",
+     "BELIEVED_BODY": "off",
+     "SCOUT_SEEN": "on",
++    "UNDERNEATH_MOVE": "on",
+     "QB_SEEN_OUT": "on",
+     "QB_SEEN_REC": "on",
+     "ACC_RADIUS": "off",
+diff --git a/docs/FLAGS.md b/docs/FLAGS.md
+index 4f393d9d3..a4b757d23 100644
+--- a/docs/FLAGS.md
++++ b/docs/FLAGS.md
+@@ -2,7 +2,7 @@
+ 
+ Every engine switch read from the environment, recounted from `src` at `57f50fc3` on 2026-10-22. This includes #210's promotion and #205's two additional default-on switches. Flags that are not on develop (parked, removed from a PR, or only on a side branch) are kept in [PARKED.md](PARKED.md) so the ideas are not lost. Registration rules are in [PLAN.md](PLAN.md): at most 10 experimental flags, and each expires two reviews after it lands.
+ 
+-There are 518 flags read from the environment in `src` (2026-11-25, engine-102: engine-101 plus HANDOFF_FREEZE (on, a bug fix; Coverage); 2026-11-24, the QB quick-game landing: plus QB_V2 (off) and QB_QUICK_DRIFT (a mode, 0); 2026-11-24, engine-101: engine-100 plus BLOCK_FRAME (on; Defense); engine-100: engine-99 plus SCOUT_SEEN (on, leak removal; Flex); engine-99: engine-98 plus QB_SCOUT and QB_SCREEN_SEEN (on, leak removals; QB lane); engine-98: engine-97 plus HANDS_ON_ARMS, SECURE_SPLIT and SECURE_FACE_GEOM (on); recounted 2026-11-24, with CALL_COMPOSE (off, rules/call-compose) counted: BELIEVED_BODY (off, experimental; Flex) on top of engine-97; engine-97: engine-96 plus QB_SCAN and QB_CANON_SEEN (on, leak removals; Flex; recounted from `src`, the on count also takes in engine-96's BALL_DRAG); engine-96: engine-95 plus BALL_DRAG (on); engine-95: engine-94 plus THROWAWAY_FELT (on); engine-94: engine-93 plus FLIGHT_BREAK (on) and FLIGHT_LEAD (off, parked); engine-93: engine-92 plus HEAD_FOLLOW (on); engine-92: engine-91 plus PERIPH_ACUITY (on); engine-91: engine-90 plus STEM_WORK (on); engine-90: engine-89 plus READ_VERTICAL_LOS and BACK_CLEAR (on); engine-89: engine-88 plus FLAT_CARRY (on); engine-88: engine-87 plus FORECAST_FINISH and QB_ROLE_PATH (on), READ_WINDOW and QB_CLOSE_BELIEF (off); engine-87: engine-86 plus HALF_KEY (on); engine-86 was engine-85 plus MUSH_MATCH (on); engine-85 was engine-84 plus FLAT_SINK (on); engine-84 was engine-83 plus DOWN_RISE_PLANT (on); engine-83 was engine-82 plus QB_DRIVE, QB_RHYTHM_THROW, QB_ALIGN, QB_BODY_FOLLOW, QB_WINDOW_ARRIVE, QB_KEY_PLANT, QB_STICK, QB_PEEK_CLOCK, QB_MOF_READ, QB_DEEP_WAIT and QB_STANCE; QB_DRIVE, QB_RHYTHM_THROW, QB_WINDOW_ARRIVE, QB_KEY_PLANT and QB_STICK on): 388 are on unless set to `0`, 93 are off unless set to `1`, and 29 are numeric scales or modes (identity value unless listed in the stack's numeric section). The rows below carry each flag's history.
++There are 519 flags read from the environment in `src` (2026-11-25: plus UNDERNEATH_MOVE (on; Flex), recounted from `src`: 395 on unless set to `0`, 95 off unless set to `1`, 29 numeric or modes; 2026-11-25, engine-102: engine-101 plus HANDOFF_FREEZE (on, a bug fix; Coverage); 2026-11-24, the QB quick-game landing: plus QB_V2 (off) and QB_QUICK_DRIFT (a mode, 0); 2026-11-24, engine-101: engine-100 plus BLOCK_FRAME (on; Defense); engine-100: engine-99 plus SCOUT_SEEN (on, leak removal; Flex); engine-99: engine-98 plus QB_SCOUT and QB_SCREEN_SEEN (on, leak removals; QB lane); engine-98: engine-97 plus HANDS_ON_ARMS, SECURE_SPLIT and SECURE_FACE_GEOM (on); recounted 2026-11-24, with CALL_COMPOSE (off, rules/call-compose) counted: BELIEVED_BODY (off, experimental; Flex) on top of engine-97; engine-97: engine-96 plus QB_SCAN and QB_CANON_SEEN (on, leak removals; Flex; recounted from `src`, the on count also takes in engine-96's BALL_DRAG); engine-96: engine-95 plus BALL_DRAG (on); engine-95: engine-94 plus THROWAWAY_FELT (on); engine-94: engine-93 plus FLIGHT_BREAK (on) and FLIGHT_LEAD (off, parked); engine-93: engine-92 plus HEAD_FOLLOW (on); engine-92: engine-91 plus PERIPH_ACUITY (on); engine-91: engine-90 plus STEM_WORK (on); engine-90: engine-89 plus READ_VERTICAL_LOS and BACK_CLEAR (on); engine-89: engine-88 plus FLAT_CARRY (on); engine-88: engine-87 plus FORECAST_FINISH and QB_ROLE_PATH (on), READ_WINDOW and QB_CLOSE_BELIEF (off); engine-87: engine-86 plus HALF_KEY (on); engine-86 was engine-85 plus MUSH_MATCH (on); engine-85 was engine-84 plus FLAT_SINK (on); engine-84 was engine-83 plus DOWN_RISE_PLANT (on); engine-83 was engine-82 plus QB_DRIVE, QB_RHYTHM_THROW, QB_ALIGN, QB_BODY_FOLLOW, QB_WINDOW_ARRIVE, QB_KEY_PLANT, QB_STICK, QB_PEEK_CLOCK, QB_MOF_READ, QB_DEEP_WAIT and QB_STANCE; QB_DRIVE, QB_RHYTHM_THROW, QB_WINDOW_ARRIVE, QB_KEY_PLANT and QB_STICK on): 388 are on unless set to `0`, 93 are off unless set to `1`, and 29 are numeric scales or modes (identity value unless listed in the stack's numeric section). The rows below carry each flag's history.
+ 
+ **Promotion (2026-11-09):** the reference stack `run-ref-4` is now the engine's default. The 90 flags it lists `on` are read as on unless set to `0` (rows marked "promoted" below); the rest are unchanged. Decisions and evidence for each flag are in [REFERENCE_STACK.md](REFERENCE_STACK.md); `npm run ref -- --list` is the current inventory, and `npm run ref -- --off -- <command>` runs the engine as it was before. The test suites still run on the pre-promotion engine (pinned in `vitest.config.ts`) until their recorded cases are re-recorded. The counts in the paragraph above predate all of this.
+ 
+@@ -237,6 +237,7 @@ There are 518 flags read from the environment in `src` (2026-11-25, engine-102:
+ | `QB_CANON_SEEN` | on | leak removal, on at landing (`=0` restores; Flex, 2026-11-24; QB decision plan §1.6) | quarterback | `src/sim/qbmind.ts` (canonical looks, `cornersSeen`) | the canonical looks use the defense's personnel slots and the front's visible alignment (front, edge, strength, mug, Sam on) only; corners are found where he sees them (on each side the widest defensive back of the visible personnel group within 12 yd of the line and 4+ yd off the ball; attempt 1's 8 yd floor and 9 yd depth cut missed 40-50% of corners on condensed trips and heavy 13 and fell to quickCheck's default; staged probe `scripts/diag/eyes/corner-find.mts`: 98-100% right in 17 looks incl. press, bunch, condensed, nub and rolled safeties, residual misses scan-only at rec <= 0.5). Off: the call object and the CB_S / CB_W labels. |
+ | `BELIEVED_BODY` | off (`=1` turns it on) | experimental (Flex, 2026-11-24; believed-body note, docs/reviews/2026-11-24-believed-body.md, step 2) | coverage (first consumers) | `src/sim/believed-body.ts` (`BeliefStore`, `believedCaps`, `lookAt`); `src/sim/behaviors/defense.ts`, `src/sim/coverage/reads.ts`; `src/game/game.ts` (one store per game, the huddle) | two reviews after it lands. A defender's read of a receiver's top speed, burst, braking and cutting is what he believes, not the man's true profile: his build seen (the engine's own build-capacity fit, `scripts/diag/belief/body-prior-fit.mts`, with one weight error per holder and man), the staff's film (truth plus one error per game, tighter with the man's snaps; none for a rookie) and his own clear looks (a plateau of seen speed held 0.6 s: a floor always, a measurement on a vertical stem; a rise from rest: his burst). Between plays the huddle passes each player's two biggest steps to his unit on the field (stated choices: 2 items, lost 0.15 - 0.13 x awareness). Consumers: man coverage (slow-play sprint test, route observation, stem acceleration, release and upfield burst, the deep cushion), zone route observation and the deep cushion, coverage/reads, the ball-reach check. Off: the man's own capacities, bit-identical. |
+ | `SCOUT_SEEN` | on | leak removal, on at landing (`=0` restores; Flex, 2026-11-24; an outside review's leak, confirmed by Integration) | QB (the offense's in-game scouting) | `src/sim/qbmind.ts` (`CoverageScouting.observeSeen`), `src/game/game.ts` | On a pass play the offense's coverage scouting learns what its passer came to believe, not the defense's call: his belief at the end of the play, each coverage by its share, weighted by how settled it was (his top coverage's share), and a disguise when the shell he read before the snap is not the shell he believed after it. Off: the defense's true call and whether it was disguised were counted, even on a play where he was sacked at 1.8 s. The booth (coaches upstairs naming the coverage between plays) is a real second channel, left for the information-flow work. The defense's run/pass scouting (`ScoutingReport.observe`) counts whether a pass happened, which the defense sees on every play: not a leak. Test `test/scout-seen.test.ts`. |
++| `UNDERNEATH_MOVE` | on | on at landing (`=0` restores; Flex, 2026-11-25; Rules' staged stick, Integration's ruling) | receivers (option routes' underneath read: stick, hook) | `src/sim/route-read.ts` (`keyMovesWithHim`), `src/sim/behaviors/receiver.ts` (`RouteRunner`), `src/sim/receiver-forecast.ts` | As taught: sit against zone, work away from a man. The underneath read takes 'away' only when his own picture of the key shows it moving with him over the last 0.3 s: trailing (no more than 1.0 yd past him, exit 1.5, at least half his upfield speed) or closing on his line (at least 1.5 yd/s toward him, exit 1.0). A key standing or sinking in the window leaves him on base (`key-sitting`); an exit cap is still checked first. No new information: the key's position and velocity are the RouteKeyPicture he already has; the passer's forecast uses his own picture the same way. Staged (gun_trips_11, 12 seeds, `scripts/diag/routes/underneath-read-stage.mts`): stick S2 away vs Cover 2 12 -> 4, Cover 4 12 -> 0, Cover 1 11 -> 11. Known limits: an off-man key with cushion (S3 vs Cover 1, 3.2 yd deep) reads as zone, needs facing; a Cover 2 key widening into his line counts as closing (4 of 12). Data: docs/reviews/data/2026-11-25-underneath-move-stage.md. Tests `test/underneath-move.test.ts`. |
+ | `QB_SEEN_OUT` | on | promoted 2026-11-14 (engine-63; `=0` restores); was experimental (QB lane, information rule, 2026-11-13; staged test `test/qb-seen-out.test.ts`; game rows near flat) | quarterback | `src/sim/behaviors/qb.ts` (`seenOut`, `checkRelease`, `breakClock`, `ready`) | Whether a check-release man is out on his route comes from the quarterback's own picture placing him on his installed release route (then he stays out), not from the man's behaviour object; gates the rhythm outlet, his readiness and his place in the hot order. A slow screen's settle is read from where the quarterback has the receiver. |
+ | `QB_SEEN_REC` | on | promoted 2026-11-14 (engine-63; `=0` restores); was experimental (QB lane, information rule, 2026-11-14; first build) | quarterback | `src/sim/behaviors/qb.ts` (`has`, `evaluate`, `orderReads`) | The remaining reads of his own receivers' true state use where he has them (his forecast, else his delayed picture): a receiver's side for the look-off and the hot side, the verticals' stems for the peek, the clear-look test, the fallback target point, and the man-coverage reorder (with his picture of the defender). A receiver is down when his delayed picture shows him off his feet; a block is the call or an unseen check-release man, not the engagement record. With `QB_BELIEVED_DEF` the reorder also uses the defender's believed speed and man coverage. |
+ | `ACC_RADIUS` | off | experimental (deep-window belief, 2026-11-13) | QB | `src/sim/behaviors/qb.ts` (`window`, pAcc) | set at first review. His accuracy belief's catchable radius grows with the flight and the receiver's ball skills (1.6 + 0.9 T yd) instead of a fixed 1.35: our own catches by aim miss keep about 0.6-0.9 of an on-target ball's completion at a 2 yd miss and 0.2-0.55 at 3 yd (short to long flights), where the fixed radius priced 0.33 and 0.08. To be carded beside Coverage's medium-flight ball defending (our defenders 4.5 yd from the ball at 1.2-1.8 s against the NFL's 2.8). docs/reviews/2026-11-13-qb-gather.md |
+diff --git a/docs/reviews/data/2026-11-25-underneath-move-stage.md b/docs/reviews/data/2026-11-25-underneath-move-stage.md
+new file mode 100644
+index 000000000..50238d1a1
+--- /dev/null
++++ b/docs/reviews/data/2026-11-25-underneath-move-stage.md
+@@ -0,0 +1,49 @@
++# UNDERNEATH_MOVE staged read (Flex, 2026-11-25)
++
++The option routes' underneath read (stick, hook) against a key standing in the window, before and after: away answers
++of 12 seeds, gun_trips_11, each receiver of the trips side as the runner, against each coverage. Run with
++`node --import tsx scripts/diag/routes/underneath-read-stage.mts` (`UNDERNEATH_MOVE=0` for off), develop 9fd977772.
++Key columns are means at his read, from his own picture (yd, yd/s).
++
++| route | runner | coverage | away off -> on | on: reasons | key speed | key depth past him | key closing laterally |
++|---|---|---|---|---|---|---|---|
++| stick | S1 | cover2 | 8 -> 0 | key-sitting 8, no-fresh-key 4 | 3.07 | -1.89 | -1.74 |
++| stick | S1 | cover4 | 8 -> 0 | key-sitting 8, no-fresh-key 3, escape-capped 1 | 3.31 | 4.92 | -0.15 |
++| stick | S1 | cover3 | 6 -> 0 | key-sitting 6, no-fresh-key 6 | 3.77 | 5.35 | -3.41 |
++| stick | S1 | cover1 | 11 -> 11 | escape-open 11, escape-capped 1 | 3.92 | 0.31 | 0.25 |
++| stick | S1 | cover0 | 11 -> 11 | escape-open 11, escape-capped 1 | 3.92 | 0.31 | 0.25 |
++| stick | S2 | cover2 | 12 -> 4 | key-sitting 8, escape-open 4 | 2.75 | 2.03 | -1.84 |
++| stick | S2 | cover4 | 12 -> 0 | key-sitting 12 | 3.14 | 3.39 | 0.63 |
++| stick | S2 | cover3 | 12 -> 0 | key-sitting 12 | 2.53 | 2.17 | 0.56 |
++| stick | S2 | cover1 | 11 -> 11 | escape-open 11, escape-capped 1 | 4.07 | 0.34 | 0.34 |
++| stick | S2 | cover0 | 11 -> 11 | escape-open 11, escape-capped 1 | 4.07 | 0.34 | 0.34 |
++| stick | S3 | cover2 | 11 -> 4 | key-sitting 7, escape-open 4, escape-capped 1 | 2.23 | 2.13 | -1.56 |
++| stick | S3 | cover4 | 0 -> 0 | escape-capped 12 | 3.38 | 3.77 | 0.76 |
++| stick | S3 | cover3 | 0 -> 0 | escape-capped 12 | 1.21 | 3.19 | 0.15 |
++| stick | S3 | cover1 | 11 -> 0 | key-sitting 11, escape-capped 1 | 3.67 | 3.17 | -0.06 |
++| stick | S3 | cover0 | 11 -> 0 | key-sitting 11, escape-capped 1 | 3.67 | 3.17 | -0.06 |
++| hook | S1 | cover2 | 0 -> 0 | no-fresh-key 12 | - | - | - |
++| hook | S1 | cover4 | 10 -> 0 | key-sitting 10, escape-capped 1, no-fresh-key 1 | 3.64 | 4.69 | -0.70 |
++| hook | S1 | cover3 | 9 -> 0 | key-sitting 9, no-fresh-key 2, escape-capped 1 | 4.05 | 4.90 | -3.21 |
++| hook | S1 | cover1 | 0 -> 0 | escape-capped 12 | 5.16 | 0.03 | 3.06 |
++| hook | S1 | cover0 | 0 -> 0 | escape-capped 12 | 5.16 | 0.03 | 3.06 |
++| hook | S2 | cover2 | 0 -> 0 | escape-capped 9, no-fresh-key 3 | 3.10 | 1.83 | -1.97 |
++| hook | S2 | cover4 | 0 -> 0 | escape-capped 12 | 3.38 | 2.85 | 0.40 |
++| hook | S2 | cover3 | 0 -> 0 | escape-capped 12 | 2.73 | 1.49 | -0.16 |
++| hook | S2 | cover1 | 0 -> 0 | escape-capped 12 | 4.89 | -0.08 | 3.32 |
++| hook | S2 | cover0 | 0 -> 0 | escape-capped 12 | 4.89 | -0.08 | 3.32 |
++| hook | S3 | cover2 | 0 -> 0 | escape-capped 12 | 3.25 | 1.66 | -2.50 |
++| hook | S3 | cover4 | 2 -> 0 | escape-capped 10, key-sitting 2 | 3.66 | 3.19 | 1.00 |
++| hook | S3 | cover3 | 0 -> 0 | escape-capped 12 | 2.08 | 2.65 | -0.12 |
++| hook | S3 | cover1 | 0 -> 0 | escape-capped 12 | 3.31 | 2.36 | -0.42 |
++| hook | S3 | cover0 | 0 -> 0 | escape-capped 12 | 3.31 | 2.36 | -0.42 |
++
++Reading:
++- Stick vs Cover 4 now sits 12 of 12 on every runner, and S1 and S3 sit 12 of 12 vs Cover 2. S2 and S3 vs Cover 2 still
++  work away 4 of 12: the curl-flat defender widens into the runner's line at about 2 yd/s, which the rule counts as
++  closing. Reported as is, not tuned.
++- Stick vs Cover 1 and Cover 0 still works away 11 of 12 on S1 and S2 (a trailing man on his hip).
++- S3 vs Cover 1 and Cover 0 now sits (was 11 away): his man plays off with 3.2 yd of cushion, sinking at the
++  receiver's pace, which looks like zone by position and velocity. Telling them apart needs the key's facing or
++  shuffle, new information, so it is a known limit.
++- The hook was already escape-capped against man as before; against zone it sits.
+diff --git a/scripts/diag/routes/underneath-read-stage.mts b/scripts/diag/routes/underneath-read-stage.mts
+new file mode 100644
+index 000000000..dfca7fd18
+--- /dev/null
++++ b/scripts/diag/routes/underneath-read-stage.mts
+@@ -0,0 +1,31 @@
++/** The 'underneath' route read (stick, hook; Flex, 2026-11-24, Integration via Rules' staging): staged in gun_trips_11, the read
++ * route on each strong receiver in turn, 12 seeds per coverage. Per cell: how often he takes 'away' and the key's seen speed and
++ * its velocity relative to his own at the read (medians), and the reason. Taught: sit against zone, work away from a man.
++ * usage: [UNDERNEATH_MOVE=1] node --import tsx scripts/diag/routes/underneath-read-stage.mts */
++import { sceneSim } from '../../../src/lab/coverage-scene.js';
++import { RouteRunner } from '../../../src/sim/behaviors/receiver.js';
++type Dec = { choice: { answer: string; reason: string; keys: readonly string[] }; pictures: readonly { id: string; pos: { x: number; y: number }; vel: { x: number; y: number } }[] };
++const med = (a: number[]) => { const b = a.filter(Number.isFinite).sort((p, q) => p - q); return b.length ? b[Math.floor(b.length / 2)].toFixed(2) : '-'; };
++console.log('| route | runner | coverage | away | sit (base) | reasons | key speed | key vs him (yd/s) | key depth past him | key outside him | key vx | key closing laterally |');
++console.log('|---|---|---|---|---|---|---|---|---|---|---|---|');
++for (const route of ['stick', 'hook']) for (const n of [1, 2, 3] as const) for (const coverage of ['cover2', 'cover4', 'cover3', 'cover1', 'cover0']) {
++  let away = 0, base = 0; const reasons = new Map<string, number>(); const ks: number[] = [], rel: number[] = [], kdx: number[] = [], kdy: number[] = [], kvx: number[] = [], kvy: number[] = [];
++  for (let seed = 1; seed <= 12; seed++) {
++    const sim = sceneSim({ formation: 'gun_trips_11', coverage, strong: { [n]: route }, seed, until: 3 });
++    const step = sim as unknown as { tick(): void };
++    const R = sim.offense.find((o) => (sim.offAlign.refOf as Record<string, string | undefined>)[o.slot] === `S${n}`);
++    if (!R) continue;
++    let dec: Dec | null = null, vAt = { x: 0, y: 0 }, pAt = { x: 0, y: 0 };
++    while (sim.phase === 'live' && sim.t < 3 && !dec) {
++      step.tick();
++      const b = R.behavior as unknown as { routeDecision?: Dec | null };
++      if (b instanceof RouteRunner && b.routeDecision) { dec = b.routeDecision; vAt = { ...R.vel }; pAt = { ...R.pos }; }
++    }
++    if (!dec) continue;
++    if (dec.choice.answer === 'away') away++; else base++;
++    reasons.set(dec.choice.reason, (reasons.get(dec.choice.reason) ?? 0) + 1);
++    const key = dec.pictures.find((p) => p.id === dec!.choice.keys[0]);
++    if (key) { ks.push(Math.hypot(key.vel.x, key.vel.y)); rel.push(Math.hypot(key.vel.x - vAt.x, key.vel.y - vAt.y)); const side = Math.sign(pAt.y - sim.ballY) || 1; kdx.push(key.pos.x - pAt.x); kdy.push((key.pos.y - pAt.y) * side); kvx.push(key.vel.x); kvy.push(-Math.sign(key.pos.y - pAt.y) * key.vel.y); }
++  }
++  if (away + base) console.log(`| ${route} | S${n} | ${coverage} | ${away} | ${base} | ${[...reasons].map(([k, v]) => `${k} ${v}`).join(', ')} | ${med(ks)} | ${med(rel)} | ${med(kdx)} | ${med(kdy)} | ${med(kvx)} | ${med(kvy)} |`);
++}
+diff --git a/src/sim/behaviors/receiver.ts b/src/sim/behaviors/receiver.ts
+index 634b876c3..aed2999b2 100644
+--- a/src/sim/behaviors/receiver.ts
++++ b/src/sim/behaviors/receiver.ts
+@@ -21,7 +21,7 @@ import { CATCH_CHOICE, chooseCatchPoint, type CatchChoice } from '../catch-choic
+ import { BALL_EST_RCV as BALL_EST, BALL_EST_GLANCE, SEEN_EMPTY, BALL_EST_DEEP_LOOK, BALL_EST_SERVO, BALL_EST_TRUNK, lookJoints, BALL_EST_MOVING_CHOICE, DEEP_LOOK_DEPTH, DEEP_LOOK_HOLD, LOOK_NECK, neckOf, PRE_LOOK_EARLY, PRE_LOOK_LATE, bodyTurnLead, sideOf } from '../ball-estimate.js';
+ 
+ import { firstBreakDepth, getOffDrive, getOffLoss, inGetOff, LINE_START, routeEffort, routePath, steerRoute, type PathPoint, type RouteCursor, type FilletTurn, type FilletPlan, ROUTE_LANDMARK, breaksInside } from '../route-motion.js';
+-import { installedRead, readRoute, type RouteChoice, type RouteKeyPicture } from '../route-read.js';
++import { installedRead, keyMovesWithHim, MOVING_HOLD, readRoute, UNDERNEATH_MOVE, type RouteChoice, type RouteKeyPicture } from '../route-read.js';
+ import { BREAK_DECL } from '../../playbook/route-breaks.js';
+ 
+ /** A palm contact, not an outcome of a once-per-snap skill contest. The
+@@ -343,6 +343,8 @@ export class RouteRunner implements Behavior {
+   /** STEM_WORK: his stem's decision (null undecided; 0 straight; otherwise the lateral offset he works to, yd). */
+   private stemWork: number | null = null;
+   private readonly keyMemory = new Map<string, { at: number; picture: RouteKeyPicture }>();
++  /** UNDERNEATH_MOVE: per key, whether it has been moving with him in his picture and since when. */
++  private readonly keyMoving = new Map<string, { on: boolean; since: number }>();
+   private routeEnd: RouteEnd;
+   /** Passive diagnostic state; never shared with the quarterback's forecast. */
+   routeDecision: { at: number; choice: RouteChoice; pictures: readonly RouteKeyPicture[] } | null = null;
+@@ -415,6 +417,12 @@ export class RouteRunner implements Behavior {
+   }
+ 
+   update(a: Agent, sim: PlaySim): MoveCommand {
++    // UNDERNEATH_MOVE: from the snap until his read (his release included), he watches whether each key is moving with him,
++    // with enter and exit margins; the read takes 'away' only from a key that has been moving with him for MOVING_HOLD.
++    if (UNDERNEATH_MOVE && !this.converted && installedRead(this.route)?.key === 'underneath') for (const p of this.readKeys(a, sim)) {
++      const prev = this.keyMoving.get(p.id), on = keyMovesWithHim(p, a.pos, a.vel, prev?.on ?? false);
++      this.keyMoving.set(p.id, { on, since: on ? (prev?.on ? prev.since : sim.t) : sim.t });
++    }
+     const cmd = this.routeCommand(a, sim);
+     const out = LINE_START ? this.getOff(a, sim, cmd) : cmd;
+     return BALL_EST ? this.preLook(a, sim, out) : out;
+@@ -501,8 +509,9 @@ export class RouteRunner implements Behavior {
+     if (!this.converted && read && a.pos.x >= sim.los + read.depth) {
+       this.converted = true;
+       const pictures = routePictures;
++      const movingWith = UNDERNEATH_MOVE ? (k: RouteKeyPicture) => { const m = this.keyMoving.get(k.id); return !!m?.on && sim.t - m.since >= MOVING_HOLD - 1e-9; } : undefined;
+       const choice = readRoute(read, { start: this.start, pos: a.pos, los: sim.los,
+-        middleY: FIELD_WIDTH / 2, outside: this.outside }, pictures);
++        middleY: FIELD_WIDTH / 2, outside: this.outside, movingWith }, pictures);
+       this.routeDecision = { at: sim.t, choice, pictures };
+       const answer = read.answers.find(p => p.id === choice.answer);
+       if (answer) {
+diff --git a/src/sim/receiver-forecast.ts b/src/sim/receiver-forecast.ts
+index 12d6f55aa..e18967279 100644
+--- a/src/sim/receiver-forecast.ts
++++ b/src/sim/receiver-forecast.ts
+@@ -6,7 +6,7 @@ import { arriveVelocity, stepBody, type Body, type MoveCommand } from '../physic
+ import type { PhysicalProfile } from '../players/physical.js';
+ import type { RouteDef, RouteEnd, RouteRead } from '../playbook/types.js';
+ import { breaksInside, firstBreakDepth, getOffDrive, inGetOff, LINE_START, ROUTE_LANDMARK, routeEffort, routePath, steerRoute, type PathPoint, type RouteCursor } from './route-motion.js';
+-import { installedRead, readRoute, type RouteChoice, type RouteKeyPicture } from './route-read.js';
++import { installedRead, keyMovesWithHim, readRoute, UNDERNEATH_MOVE, type RouteChoice, type RouteKeyPicture } from './route-read.js';
+ 
+ interface InstalledAnswer { readonly id: RouteChoice['answer']; readonly path: readonly PathPoint[]; readonly end: RouteEnd }
+ 
+@@ -175,8 +175,12 @@ export class ReceiverForecast {
+   readKeys(pictures: readonly RouteKeyPicture[]): void {
+     const prior = this.prior;
+     if (!prior.read || !prior.readContext || this.inferredCommitment) return;
++    // UNDERNEATH_MOVE: the same rule on the quarterback's own picture of the receiver and the key; it holds 'away' by the exit
++    // margin once he expects it.
++    const rp = this.picture, held = this.choice?.answer === 'away';
++    const movingWith = UNDERNEATH_MOVE && rp ? (k: RouteKeyPicture) => keyMovesWithHim(k, rp.pos, rp.vel, held) : undefined;
+     const choice = readRoute(prior.read, { ...prior.readContext, start: prior.start,
+-      pos: this.picture?.pos ?? prior.start, middleY: FIELD_WIDTH / 2 }, pictures);
++      pos: this.picture?.pos ?? prior.start, middleY: FIELD_WIDTH / 2, movingWith }, pictures);
+     // Losing a look does not mean the receiver changed his route. Keep the
+     // installed expectation; only a new relevant key can revise it before the
+     // read, and only observed route motion can correct it after commitment.
+diff --git a/src/sim/route-read.ts b/src/sim/route-read.ts
+index 3629b6e1a..769174144 100644
+--- a/src/sim/route-read.ts
++++ b/src/sim/route-read.ts
+@@ -14,16 +14,36 @@ export interface RouteKeyPicture {
+ export interface RouteReadContext {
+   readonly start: Readonly<Vec2>;
+   readonly pos: Readonly<Vec2>;
++  /** UNDERNEATH_MOVE: whether a key has been moving with him (trailing or closing on his line) in this observer's picture;
++   * absent, the old position-only read. */
++  readonly movingWith?: (key: RouteKeyPicture) => boolean;
+   readonly los: number;
+   readonly middleY: number;
+   readonly outside: number;
+ }
+ export interface RouteChoice {
+   readonly answer: 'base' | 'away' | 'post' | 'under';
+-  readonly reason: 'no-fresh-key' | 'escape-open' | 'escape-capped' | 'split-roof' | 'seam-capped' | 'seam-open';
++  readonly reason: 'no-fresh-key' | 'escape-open' | 'escape-capped' | 'split-roof' | 'seam-capped' | 'seam-open' | 'key-sitting';
+   readonly keys: readonly string[];
+ }
+ 
++/** UNDERNEATH_MOVE (on; `=0` restores; Flex, 2026-11-25, from Rules' staging via Integration): the 'underneath' read (stick, hook:
++ * the installed vsMan alternative) works away only from a key that is moving with him in his own picture, not from any defender
++ * standing within 4 yd of the break. Before, a zone defender merely in the window sent the stick to the flat at full speed (12 of
++ * 12 in Cover 2 and Cover 4). */
++export const UNDERNEATH_MOVE = process.env.UNDERNEATH_MOVE !== '0';
++/** A key is moving with him when he trails on his hip (no deeper than TRAIL_DEPTH past him and coming upfield at least half his
++ * own upfield speed) or closes on his line (lateral speed toward him). Enter and exit thresholds on opposite sides (stated
++ * choices): a key once moving with him keeps it until he is 1.5 yd past him or closing under 1.0 yd/s. */
++const TRAIL_DEPTH = 1.0, TRAIL_DEPTH_EXIT = 1.5, CLOSE_SPEED = 1.5, CLOSE_SPEED_EXIT = 1.0;
++export function keyMovesWithHim(key: RouteKeyPicture, pos: Readonly<Vec2>, vel: Readonly<Vec2>, held: boolean): boolean {
++  const past = key.pos.x - pos.x, toward = -Math.sign(key.pos.y - pos.y) * key.vel.y;
++  const trailing = past <= (held ? TRAIL_DEPTH_EXIT : TRAIL_DEPTH) && key.vel.x >= 0.5 * Math.max(vel.x, 1);
++  return trailing || toward >= (held ? CLOSE_SPEED_EXIT : CLOSE_SPEED);
++}
++/** How long a key must have been moving with him before the read takes it as a man (s; Integration: about 0.3 s). */
++export const MOVING_HOLD = 0.3;
++
+ /** Old saved constructors retain their installed vsMan alternative. */
+ export function installedRead(route: RouteDef): RouteRead | null {
+   return route.read ?? (route.vsMan ? { key: 'underneath',
+@@ -54,6 +74,9 @@ export function readRoute(read: RouteRead, c: RouteReadContext, pictures: readon
+       && (p.pos.y - c.start.y) * direction <= exitWidth + 1
+       && Math.abs(p.pos.x - breakX) < 3 && p.pos.x >= c.pos.x - 1);
+     if (cap) return base('escape-capped', [key.id, ...(cap === key ? [] : [cap.id])]);
++    // UNDERNEATH_MOVE: a key merely standing or sinking in the window is zone: he sits on base. He works away only from a key
++    // moving with him (trailing on his hip or closing on his line), as taught: sit against zone, work away from a man.
++    if (UNDERNEATH_MOVE && c.movingWith && !c.movingWith(key)) return base('key-sitting', [key.id]);
+     return { answer: 'away', reason: 'escape-open', keys: [key.id] };
+   }
+ 
+diff --git a/test/arrival-lead.test.ts b/test/arrival-lead.test.ts
+index e6fbd8ef5..552858150 100644
+--- a/test/arrival-lead.test.ts
++++ b/test/arrival-lead.test.ts
+@@ -57,6 +57,7 @@ async function plays(flag: string) {
+   // the lead's own effect is not reached (on and off medians are identical, 2.34 yd). Owner: Coverage. Remove this test with
+   // ARRIVE_LEAD when FLIGHT_BREAK=0's paths (flightApproach's fixed catch-point drive) are retired.
+   vi.stubEnv('FLIGHT_BREAK', '0');
++  vi.stubEnv('UNDERNEATH_MOVE', '0'); // Flex 2026-11-25: the stick receivers against spot Cover 3 now sit on base (the key stands in the window); the staged scene and its throws are the old run to the flat. Owner: the test's owner, re-stage with the flag on.
+   vi.stubEnv('QB_SCOUT', '0'); // engine-96 (QB lane to re-record): the scene's throws were recorded with the passer's belief of rushers' and defenders' true bodies; QB_SCOUT moves which short throws he makes (median lead 5 against 5 on this panel)
+   const { Rng } = await import('../src/core/rng.js');
+   const { generateTeam, pickDefense, pickOffense } = await import('../src/league/team.js');
+diff --git a/test/catch-carry.test.ts b/test/catch-carry.test.ts
+index d73829946..8eca487c7 100644
+--- a/test/catch-carry.test.ts
++++ b/test/catch-carry.test.ts
+@@ -19,6 +19,7 @@ async function plays(flag: string, opts: { dropPicture?: boolean; airProbe?: boo
+   // (off 4.03, on 3.98) and the comparison no longer isolates the carry. The retired path is pursueIfLive's rally goTo
+   // after the flight lands. Owner: Defense (CATCH_CARRY); re-find the carry's own case with the break on, or retire
+   // CATCH_CARRY with that path when FLIGHT_BREAK=0's paths are removed.
++  vi.stubEnv('UNDERNEATH_MOVE', '0'); // Flex 2026-11-25: the stick receivers against spot Cover 3 now sit on base (the key stands in the window); the staged scene and its throws are the old run to the flat. Owner: the test's owner, re-stage with the flag on.
+   vi.stubEnv('FLIGHT_BREAK', '0');
+   const { Rng } = await import('../src/core/rng.js');
+   const { generateTeam, pickDefense, pickOffense } = await import('../src/league/team.js');
+diff --git a/test/engine-pin.json b/test/engine-pin.json
+index ef4f17750..97266aabd 100644
+--- a/test/engine-pin.json
++++ b/test/engine-pin.json
+@@ -145,6 +145,7 @@
+  ],
+  "defaults": [
+   "test/acc-belief.test.ts",
++    "test/underneath-move.test.ts",
+   "test/acc-radius.test.ts",
+   "test/acquired-mesh-contradiction.test.ts",
+   "test/action-effort.test.ts",
+diff --git a/test/receiver-option-information.test.ts b/test/receiver-option-information.test.ts
+index 0e96016f4..49d67fb97 100644
+--- a/test/receiver-option-information.test.ts
++++ b/test/receiver-option-information.test.ts
+@@ -18,8 +18,13 @@ function scene(side = 1, keySide = -1) {
+   r.body.pos.x = 44; r.body.vel.x = 5;
+   for (const d of sim.defense) { d.body.pos = { x: 30, y: 1 }; d.body.vel = { x: 0, y: 0 }; }
+   key.body.pos = { x: 46, y: r.pos.y + side * keySide };
++  // UNDERNEATH_MOVE: the key works with him (closing on his line), so working away is the taught answer; a key
++  // sitting in the window leaves him on base (test/underneath-move.test.ts). He has watched it for 0.4 s. A key on the
++  // exit side stays put: it caps the exit whether or not it moves.
++  key.body.vel = { x: 0, y: keySide < 0 ? side * 2 : 0 };
+   for (let i = 0; i < 24; i++) sim.perception.record(sim.agents, sim.qb.idx);
+-  sim.t = 2;
++  sim.t = 1.6; r.body.pos.x = 41; runner.update(r, sim);
++  r.body.pos.x = 44; sim.t = 2;
+   return { sim, r, key, runner };
+ }
+ 
+@@ -105,7 +110,7 @@ describe('receiver option reads use acquired leverage', () => {
+     const f = scene();
+     const prior = installReceiverRoute({ x: 40, y: FIELD_WIDTH / 2 }, 40, 1, ROUTES.stick, 0, f.r.profile, f.r.r('routeRunning'));
+     const qb = new ReceiverForecast(f.sim.qb, prior, .05);
+-    const key = { id: f.key.player.id, pos: { x: 46, y: FIELD_WIDTH / 2 - 1 }, vel: { x: 0, y: 0 }, age: .2 };
++    const key = { id: f.key.player.id, pos: { x: 46, y: FIELD_WIDTH / 2 - 1 }, vel: { x: 0, y: 2 }, age: .2 };
+     qb.acquire({ pos: { x: 43, y: FIELD_WIDTH / 2 }, vel: { x: 5, y: 0 }, facing: 0, sampledAt: 1, acquiredAt: 1.2 });
+     qb.readKeys([key]);
+     expect(qb.estimate?.routeAnswer).toBe('away');
+@@ -125,7 +130,7 @@ describe('receiver option reads use acquired leverage', () => {
+     const base = new ReceiverForecast({}, prior, .05), away = new ReceiverForecast({}, prior, .05);
+     const picture = { pos: { x: 42.5, y: FIELD_WIDTH / 2 }, vel: { x: 3, y: 0 }, facing: 0, sampledAt: 1, acquiredAt: 1 };
+     base.acquire(picture); away.acquire(picture);
+-    away.readKeys([{ id: 'inside-key', pos: { x: 46, y: FIELD_WIDTH / 2 - 1 }, vel: { x: 0, y: 0 }, age: .2 }]);
++    away.readKeys([{ id: 'inside-key', pos: { x: 46, y: FIELD_WIDTH / 2 - 1 }, vel: { x: 0, y: 2 }, age: .2 }]);
+     expect(away.estimate?.routeAnswer).toBe('away');
+     expect(away.predict(1, .15)).toEqual(base.predict(1, .15));
+     expect(away.predict(1, 1.8)!.y).toBeGreaterThan(base.predict(1, 1.8)!.y);
+@@ -141,7 +146,7 @@ describe('receiver option reads use acquired leverage', () => {
+     const base = new ReceiverForecast({}, prior, .05), away = new ReceiverForecast({}, prior, .05);
+     const picture = { pos: { x: 42.5, y: FIELD_WIDTH / 2 }, vel: { x: 3, y: 0 }, facing: 0, sampledAt: 1, acquiredAt: 1 };
+     base.acquire(picture); away.acquire(picture);
+-    away.readKeys([{ id: 'inside-key', pos: { x: 46, y: FIELD_WIDTH / 2 - 1 }, vel: { x: 0, y: 0 }, age: .2 }]);
++    away.readKeys([{ id: 'inside-key', pos: { x: 46, y: FIELD_WIDTH / 2 - 1 }, vel: { x: 0, y: 2 }, age: .2 }]);
+     expect(base.estimate?.routeAnswer).toBe('base');
+     expect(away.estimate?.routeAnswer).toBe('away');
+     expect(base.hasBreak && away.hasBreak).toBe(true);
+diff --git a/test/underneath-move.test.ts b/test/underneath-move.test.ts
+new file mode 100644
+index 000000000..eb6ab1f6d
+--- /dev/null
++++ b/test/underneath-move.test.ts
+@@ -0,0 +1,59 @@
++// UNDERNEATH_MOVE (Flex, 2026-11-25; Rules' staged stick, Integration's ruling): the underneath read of an option route
++// (stick, hook) works away only from a key he sees moving with him over the last 0.3 s; a key standing or sinking in the
++// window is zone, and he sits on base. As taught: sit against zone, work away from a man.
++import { afterEach, describe, expect, it, vi } from 'vitest';
++import { keyMovesWithHim } from '../src/sim/route-read.js';
++
++afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
++const me = { x: 44, y: 26 }, run = { x: 5, y: 0 };
++const key = (x: number, y: number, vx: number, vy: number) => ({ id: 'k', pos: { x, y }, vel: { x: vx, y: vy }, age: 0.1 });
++
++describe('UNDERNEATH_MOVE: which key moves with him', () => {
++  it('a key standing or sinking in the window does not', () => {
++    expect(keyMovesWithHim(key(46, 25, 0, 0), me, run, false)).toBe(false);
++    expect(keyMovesWithHim(key(46, 25, 3, 0), me, run, false)).toBe(false); // sinking ahead of him
++  });
++  it('a key on his hip running with him does; closing on his line does', () => {
++    expect(keyMovesWithHim(key(44.5, 25, 4.5, 0), me, run, false)).toBe(true);
++    expect(keyMovesWithHim(key(46, 24, 0, 2), me, run, false)).toBe(true);
++    expect(keyMovesWithHim(key(46, 28, 0, -2), me, run, false)).toBe(true);
++    expect(keyMovesWithHim(key(46, 24, 0, -2), me, run, false)).toBe(false); // widening away from him
++  });
++  it('enter and exit margins: once moving he holds it through a little slack', () => {
++    const trail = key(45.2, 25, 4.5, 0), close = key(46, 24, 0, 1.2);
++    expect(keyMovesWithHim(trail, me, run, false)).toBe(false);
++    expect(keyMovesWithHim(trail, me, run, true)).toBe(true);
++    expect(keyMovesWithHim(close, me, run, false)).toBe(false);
++    expect(keyMovesWithHim(close, me, run, true)).toBe(true);
++  });
++});
++
++describe('UNDERNEATH_MOVE: the stick read', () => {
++  const answer = async (flag: string, keyVel: { x: number; y: number }) => {
++    vi.stubEnv('UNDERNEATH_MOVE', flag); vi.resetModules();
++    const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');
++    const { FIELD_WIDTH } = await import('../src/core/field.js');
++    const { ROUTES } = await import('../src/playbook/routes.js');
++    const { RouteRunner } = await import('../src/sim/behaviors/receiver.js');
++    const { PlaySim } = await import('../src/sim/playsim.js');
++    const sim = new PlaySim({ ...nativeTraceSetup({ coverage: 'cover3', concept: 'stick', seed: 7, roster: 7,
++      formation: 'gun_doubles_11', flip: false }), audibles: false });
++    const r = sim.slot(sim.offAlign.numbering.S2!)!, k = sim.slot('LB_M')!;
++    r.body.pos = { x: 40, y: FIELD_WIDTH / 2 }; r.body.vel = { x: 0, y: 0 };
++    const runner = new RouteRunner(r, sim, ROUTES.stick, 1);
++    r.behavior = runner; r.body.vel.x = 5;
++    for (const d of sim.defense) { d.body.pos = { x: 30, y: 1 }; d.body.vel = { x: 0, y: 0 }; }
++    k.body.pos = { x: 46, y: r.pos.y - 1 }; k.body.vel = keyVel;
++    for (let i = 0; i < 24; i++) sim.perception.record(sim.agents, sim.qb.idx);
++    sim.t = 1.6; r.body.pos.x = 41; runner.update(r, sim);
++    sim.t = 2; r.body.pos.x = 44; runner.update(r, sim);
++    return runner.routeDecision?.choice;
++  };
++  it('a key standing in the window: he sits on base (off: he worked away)', async () => {
++    expect(await answer('1', { x: 0, y: 0 })).toMatchObject({ answer: 'base', reason: 'key-sitting' });
++    expect(await answer('0', { x: 0, y: 0 })).toMatchObject({ answer: 'away', reason: 'escape-open' });
++  });
++  it('a key closing on his line: he still works away', async () => {
++    expect(await answer('1', { x: 0, y: 2 })).toMatchObject({ answer: 'away', reason: 'escape-open' });
++  });
++});
