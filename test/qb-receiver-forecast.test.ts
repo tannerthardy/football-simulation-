@@ -182,11 +182,14 @@ describe('QB receiver acquired picture and immutable installation', () => {
     const r = sim.agents[qb.recordedState().read!], rr = r.behavior as RouteRunner;
     sim.t = rr.breakTime - .15 * sim.qb.r('anticipation');
     sim.qb.body.pos = { x: sim.los - 7.3, y: sim.ballY };
-    r.body.pos = { x: sim.los + 8, y: r.pos.y }; r.body.vel = { x: 6, y: 0 };
+    r.body.pos = { x: sim.los + 9, y: r.pos.y }; r.body.vel = { x: 6, y: 0 }; // a yard short of the out's 10 yd break (QB_TRACK_LOOK: at 8 the fixture passed only on the passer's 0.25 s old picture)
     // In his view and off the throw's path (SIGHT_PURE holds a man he never sees at his alignment; parked 25 yd behind
     // him, out of view, they read as still in the window: Tools/Physics, 2026-11-23).
     for (const d of sim.defense) { d.body.pos = { x: sim.los + 25, y: 50 }; d.body.vel = { x: 0, y: 0 }; }
-    for (let i = 0; i < 24; i++) sim.perception.record(sim.agents);
+    // recordPerception, not the bare record: the sight history comes with it (QB_TRACK_LOOK's tracked look reads it). The
+    // receiver's recorded history is his run at 6 yd/s up to where he is (a body standing still with a velocity, frozen for
+    // 24 frames, is pictured ahead of himself by whatever delay reads it).
+    for (let i = 0; i < 24; i++) { r.body.pos = { x: sim.los + 9 - 6 * sim.dt * (23 - i), y: r.pos.y }; sim.recordPerception(); }
     sim.qbMind.observe({ x: sim.los + 25, y: 50 }); // Acquire the deliberately empty window honestly.
     const ownState = qb as unknown as { phase: string; setAt: number; readStart: number; lookOffChecked: boolean };
     ownState.phase = 'set'; ownState.setAt = sim.t; ownState.readStart = sim.t; ownState.lookOffChecked = true;

@@ -7,7 +7,7 @@ import { arriveVelocity, stepBody, type Body, type MoveCommand } from '../physic
 import type { PhysicalProfile } from '../players/physical.js';
 import type { RouteDef, RouteEnd, RouteRead } from '../playbook/types.js';
 import { breaksInside, firstBreakDepth, getOffDrive, inGetOff, LINE_START, ROUTE_LANDMARK, routeEffort, routePath, steerRoute, type PathPoint, type RouteCursor } from './route-motion.js';
-import { installedRead, readRoute, type RouteChoice, type RouteKeyPicture } from './route-read.js';
+import { installedRead, keyIsMan, MOVING_HOLD, readRoute, UNDERNEATH_MOVE, type RouteChoice, type RouteKeyPicture } from './route-read.js';
 
 interface InstalledAnswer { readonly id: RouteChoice['answer']; readonly path: readonly PathPoint[]; readonly end: RouteEnd }
 
@@ -183,17 +183,32 @@ export class ReceiverForecast {
   /** Reuse the quarterback's already acquired defensive memory. Never ask a
    * receiver for his chosen answer. A rotation can fool these two observers
    * differently, and observed receiver motion can later correct this prior. */
+  /** UNDERNEATH_MOVE: a different answer seen on consecutive reads, not yet taken. */
+  private pending: { answer: RouteChoice['answer']; n: number } | null = null;
   readKeys(pictures: readonly RouteKeyPicture[]): void {
     const prior = this.prior;
     if (!prior.read || !prior.readContext || this.inferredCommitment) return;
+    // UNDERNEATH_MOVE: the same rule on the quarterback's own picture of the receiver and the key; it holds 'away' by the exit
+    // margin once he expects it.
+    const rp = this.picture, held = this.choice?.answer === 'away';
+    const passer = (this.observer as { pos?: Vec2 }).pos ?? null;
+    const movingWith = UNDERNEATH_MOVE && rp ? (k: RouteKeyPicture) => keyIsMan(k, rp.pos, rp.vel, passer, held) : undefined;
     const choice = readRoute(prior.read, { ...prior.readContext, start: prior.start,
-      pos: this.picture?.pos ?? prior.start, middleY: FIELD_WIDTH / 2 }, pictures);
+      pos: this.picture?.pos ?? prior.start, middleY: FIELD_WIDTH / 2, movingWith }, pictures);
     // Losing a look does not mean the receiver changed his route. Keep the
     // installed expectation; only a new relevant key can revise it before the
     // read, and only observed route motion can correct it after commitment.
     if (choice.reason !== 'no-fresh-key' || !this.choice) {
-      if (choice.answer !== this.choice?.answer) this.cache = null;
-      this.choice = choice;
+      // UNDERNEATH_MOVE: a changed answer is a new decision only once his picture has shown it for MOVING_HOLD; one read at an
+      // edge does not clear his expected path.
+      const settled = !UNDERNEATH_MOVE || !this.choice || choice.answer === this.choice.answer
+        || (this.pending = this.pending?.answer === choice.answer ? { answer: choice.answer, n: this.pending.n + 1 } : { answer: choice.answer, n: 1 }).n
+          >= Math.ceil(MOVING_HOLD / this.dt - 1e-9);
+      if (choice.answer === this.choice?.answer) this.pending = null;
+      if (settled) {
+        if (choice.answer !== this.choice?.answer) this.cache = null;
+        this.choice = choice; this.pending = null;
+      }
     }
     this.inferredCommitment = !!this.picture && this.picture.pos.x >= prior.readContext.los + prior.read.depth;
   }
