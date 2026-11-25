@@ -9,11 +9,6 @@ afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 async function stalks(flag: string) {
   vi.resetModules();
   vi.stubEnv('STALK_CLOSE', flag); vi.stubEnv('SCREEN_QB', '1');
-  // LANE_LEVERAGE (pinned test-only, Coverage C14, 2026-11-25): with the curl-flat seat on outside leverage the nickel
-  // starts 0.8 yd outside the slot instead of 3 yd inside him, and his break to the screen runs through the slot's stalk:
-  // the legacy stalk (waiting at his alignment) then meets him on 11 of 12 plays (4 of 12 before), so the file's scene (a
-  // stalk closing a cushion on a man not coming to him) is gone. The file's owner to re-find it with LANE_LEVERAGE on.
-  vi.stubEnv('LANE_LEVERAGE', '0');
   vi.stubEnv('MATCH_DECLARE', '0'); // engine-80 (pinned test-only, Rules + Coaching's coverage landing): the now screen's stalk scenes were recorded against the latched seam/flat man; the file's owner to re-record with MATCH_DECLARE on
   const { CENTER_Y } = await import('../src/core/field.js');
   const { Rng } = await import('../src/core/rng.js');
@@ -24,7 +19,13 @@ async function stalks(flag: string) {
   const { PlaySim } = await import('../src/sim/playsim.js');
   const offense = generateTeam(new Rng(41), 'O', 'O', { strength: .55 }), defense = generateTeam(new Rng(42), 'D', 'D', { strength: .55 });
   let plays = 0, engaged = 0, behind = 0;
-  for (const cov of ['cover3', 'cover3_cloud', 'cover4']) for (let seed = 1; seed <= 4; seed++) {
+  // Re-found 2026-11-25 (Run Game) with LANE_LEVERAGE on, by the file's rule (the now screen against an off-coverage call,
+  // a stalk closing a cushion on a man not coming to him): with the curl-flat seat on outside leverage the nickel's break
+  // runs through the slot's stalk in Cover 3 and Cover 4 (the legacy stalk, waiting at his alignment, meets him on 7-8 of
+  // 8 plays in cover3, cover3_cloud, cover3_match, cover3_seam, cover4, cover4_meg), so those calls no longer stage the
+  // closing; Cover 6 kills the now screen (CLOUD_KILL). Cover 9 keeps the scene: seeds 1-12, legacy 8 of 12, closing 12
+  // of 12, none from behind (scripts/diag/screens/stalk-scan.mts).
+  for (const cov of ['cover9']) for (let seed = 1; seed <= 12; seed++) {
     const formation = FORMATION_BY_ID.gun_doubles_11;
     const sim: any = new PlaySim({ offense: pickOffense(offense, formation.personnel), defense: pickDefense(defense, 'nickel'),
       offCall: { formation, flip: false, kind: 'pass', pass: SCREEN_BY_ID.wide_now_screen, label: 'now' },
