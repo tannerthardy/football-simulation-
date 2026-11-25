@@ -328,6 +328,8 @@ export class PlaySim {
   };
   /** First opponent body impact or successful tackle grasp; excludes whiffs. */
   firstContactX: number | null = null;
+  /** QB_V2 took this play's read (the eligibility tag; copied to the result's stats as qbV2). */
+  qbV2 = false;
   /** QB currently reading this receiver (zone defenders read his eyes). */
   qbEyes: Agent | null = null;
   /** When the QB started his throwing motion (−1 before). */
@@ -2103,7 +2105,7 @@ export class PlaySim {
       duration: this.t,
       clockStops,
       kind: this.isPass ? 'pass' : 'run',
-      stats: s,
+      stats: this.qbV2 ? { ...s, qbV2: true } : s,
       events: this.events,
       frames: this.record ? this.frames : undefined,
       telemetry: this.trace.data,

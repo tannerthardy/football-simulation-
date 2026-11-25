@@ -1630,6 +1630,7 @@ export class QBPass implements Behavior {
       // as a checkdown only when the call releases him; the authored call returns the authored plan itself.
       const plan = QB_V2 && QB_V2_STAGED.has(this.concept.id) ? planFor(this.concept) : null;
       this.v2 = plan ? new V2Drive(plan) : null;
+      if (this.v2) sim.qbV2 = true;
       if (this.v2) {
         // His feet run the plan's drop (Rules: stick is one step from the gun though the installed concept's drop says gun3).
         if (plan!.drop !== this.concept.drop) this.drop = dropSpec(plan!.drop, a.pos.x, sim.los, sim.offCall.formation.qb !== 'under');
