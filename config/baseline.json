@@ -272,6 +272,7 @@
     "TRACKED_CATCH": "0",
     "TRACKED_CATCH_SPAN": "30",
     "ARM_LOOK": "0",
+    "ARM_RUN": "0",
     "ARM_LOOK_SPEED": "17",
     "FLIGHT_SETTLE_SPAN": "15",
     "HANDS_ON_ARMS": "0",

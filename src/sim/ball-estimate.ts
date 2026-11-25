@@ -316,6 +316,13 @@ export const ARM_LOOK = process.env.ARM_LOOK === '1';
 /** ARM_LOOK's sweep along the shoulder line (yd/s): the coached rule-of-thumb ball speed of the shoulder break
  * (defense.ts SHOULDER_BALL_SPEED), out to ARM_LOOK_REACH yd. Stated choices; read at 12 and 22 yd/s. */
 const ARM_LOOK_SPEED = Number(process.env.ARM_LOOK_SPEED ?? 17), ARM_LOOK_REACH = 45;
+/** ARM_RUN (experimental, off; ARM_RUN=1; with ARM_LOOK; Coverage C14, 2026-11-25): a pass rusher's feet follow the same
+ * read. A rusher whose release belief came from the arm and who has no sample of the ball turns and runs to the ball's
+ * side along the shoulder line he read (ARM_LOOK's line and its error), until his own samples give a flight; then the
+ * flight play (and FLIGHT_SETTLE) takes over. The taught rush pursuit: on the release, turn and run to the ball. Off, his
+ * feet kept rushing the passer until he had sampled the ball: under the honest arm 44% of rushers never turned toward
+ * the catch on completions (oracle 18%, NFL 32%; rush-turn.mts, seed 11, 8 games). */
+export const ARM_RUN = process.env.ARM_RUN === '1';
 const ARM_READ_SD_MIN = 5, ARM_READ_SD_SPAN = 15;
 
 export class BallEstimates {
@@ -570,6 +577,13 @@ export class BallEstimates {
   }
 
   /** Read-only: his newest sample of this flight, `{ t, pos }` (t the ball's time, the position as he saw it), or null. */
+  /** ARM_RUN (read-only): his arm read of this flight (the passer where he saw him, the shoulder bearing he read) while he
+   * has no sample of the ball; null otherwise. */
+  armLine(a: Agent): { from: { x: number; y: number }; dir: number; at: number } | null {
+    const tr = this.tracks.get(a);
+    return tr && tr.flight === this.flight && tr.armLook && !tr.samples.length ? tr.armLook : null;
+  }
+
   lastSeen(a: Agent): { t: number; pos: Vec3 } | null {
     const tr = this.tracks.get(a), s = tr && tr.flight === this.flight ? tr.samples.at(-1) : undefined;
     return s ? { t: s.t, pos: { ...s.p } } : null;

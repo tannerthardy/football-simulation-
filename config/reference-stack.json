@@ -226,6 +226,7 @@
     "ACQ_SEEN": "off",
     "TRACKED_CATCH": "off",
     "ARM_LOOK": "off",
+    "ARM_RUN": "off",
     "POCKET_CLIMB": "off",
     "BLOCK_SEEN": "on",
     "FREE_BOUND": "off",

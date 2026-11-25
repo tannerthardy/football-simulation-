@@ -1,4 +1,4 @@
-/** The honest defender (BALL_EST 26657 with ACQ_SEEN, TRACKED_CATCH and ARM_LOOK; Coverage C14): no defender's decision
+/** The honest defender (BALL_EST 26657 with ACQ_SEEN, TRACKED_CATCH, ARM_LOOK and ARM_RUN; Coverage C14): no defender's decision
  * reads the true flight. On real plays, every read of `sim.ballPath` (the true path, acquireFlight's oracle copy) made
  * inside a defender's decision while the ball is in the air is counted; the honest arm makes none. The default
  * (receivers-only estimator, 6145) is the control: the same trap catches its defenders reading the true path. A
@@ -42,7 +42,7 @@ async function trap(env: Record<string, string>) {
 
 describe('the honest defender: no decision reads the true flight', () => {
   it('honest arm: zero true-path reads in defenders\' decisions in flight', async () => {
-    const r = await trap({ BALL_EST: '26657', ACQ_SEEN: '1', TRACKED_CATCH: '1', ARM_LOOK: '1' });
+    const r = await trap({ BALL_EST: '26657', ACQ_SEEN: '1', TRACKED_CATCH: '1', ARM_LOOK: '1', ARM_RUN: '1' });
     expect(r.airTicks).toBeGreaterThan(0);
     expect(r.defReads).toBe(0);
   }, 180_000);

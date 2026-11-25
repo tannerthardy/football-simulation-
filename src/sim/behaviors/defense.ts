@@ -38,7 +38,7 @@ import { OPEN_FIELD, playsBall } from '../open-field.js';
 import { DeepCoverage, StemAcceleration, stemStopped } from '../coverage-leverage.js';
 import { facingTechnique, roundedTurnTime, withFacingTechnique } from '../coverage/orientation.js';
 import { SNAP_REACT } from '../snap-count.js';
-import { BALL_EST, BALL_EST_DEF_PICTURE, BALL_EST_FLIGHT_SETTLE, BALL_EST_MAN_LOOK, FLIGHT_REVISE, FLIGHT_SETTLE_SPAN, estimatesFor, lookAnyway, lookJoints, neckOf, PHASE_BEHIND, PHASE_SIDE, phaseJudgeSd } from '../ball-estimate.js';
+import { ARM_RUN, BALL_EST, BALL_EST_DEF_PICTURE, BALL_EST_FLIGHT_SETTLE, BALL_EST_MAN_LOOK, FLIGHT_REVISE, FLIGHT_SETTLE_SPAN, estimatesFor, lookAnyway, lookJoints, neckOf, PHASE_BEHIND, PHASE_SIDE, phaseJudgeSd } from '../ball-estimate.js';
 import { acquireFlight, anticipatedCatcher, catchOpportunity, flightLanded, hasObservedFlight, observedHolder, QB_RELEASE, qbRunning, qbRunningAtLine, rememberCatchOpportunity, rememberedFlight, unresolvedBallArea } from '../possession-read.js';
 import { seenEngaged } from '../seen-contact.js';
 import { BALL_CUE_OWN } from '../release-evidence.js';
@@ -540,6 +540,8 @@ export class PassRusher implements Behavior {
       }
       if (spot) return runThrough(a, spot.p, { speed: 0.9 });
     }
+    const armRun = armRunMove(a, sim);
+    if (armRun) return armRun;
     // A called movement goes on the snap: across the blocker's face into his
     // new gap at the line, whatever the man in front of him does.
     if (this.twist && !believesRun(sim, a)) {
@@ -807,6 +809,8 @@ export class Blitzer implements Behavior {
       const spot = HONEST_READS ? catchSpot(a, { t: sim.t, ballPath: acquireFlight(a, sim) }) : catchSpot(a, sim);
       if (spot) return runThrough(a, spot.p, { speed: 0.9 });
     }
+    const armRun = armRunMove(a, sim);
+    if (armRun) return armRun;
     const gy = gapY(sim.offAlign, this.gap, this.gapSign);
     if (a.pos.x > sim.los + 0.3) return runThrough(a, { x: sim.los - 0.8, y: gy }, { speed: 1 });
     const p = pursuitPoint(sim, a, sim.qb, 1.5);
@@ -3136,6 +3140,21 @@ function playBelievedBall(a: Agent, sim: PlaySim, man: Agent | null, continueCov
   return playObservedFlight(a, sim, flight, !path);
 }
 
+/** ARM_RUN: how far down the throw line, past where he meets it, he aims (yd; a stated choice). */
+const ARM_RUN_LEAD = 5;
+/** ARM_RUN (ball-estimate.ts): a rusher on the arm alone (no sample of the ball yet) turns and runs to the ball's side
+ * along the shoulder line he read, to the point ARM_RUN_LEAD yd down that line past where he meets it (continuous in his
+ * own position, so no re-aim). Null when he has no arm read or has a sample (his flight takes over). */
+export function armRunMove(a: Agent, sim: PlaySim): MoveCommand | null {
+  // On his own picture only: his arm read and his samples, never the ball's true state (a pump he bought runs too).
+  if (!ARM_RUN || !estimatesFor(a) || !sim.ballEstimates) return null;
+  const L = sim.ballEstimates.armLine(a);
+  if (!L || releaseBelief(sim, a).source !== 'arm') return null;
+  const ux = Math.cos(L.dir), uy = Math.sin(L.dir);
+  const along = Math.max(0, (a.pos.x - L.from.x) * ux + (a.pos.y - L.from.y) * uy) + ARM_RUN_LEAD;
+  a.tags.add('arm-run');
+  return runThrough(a, { x: L.from.x + ux * along, y: L.from.y + uy * along }, { speed: 0.9 });
+}
 /** Bit 8192: the man whose hands he is playing (enter within PLAY_HANDS_IN yd of him as he sees him, exit past
  * PLAY_HANDS_OUT). */
 const playingHands = new WeakMap<Agent, Agent>();

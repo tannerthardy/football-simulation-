@@ -25,10 +25,10 @@ describe('ball-estimate.ts is a perception producer', () => {
     // Reviewed 2026-11-25 (Flex, SIGHT_BALL): SIGHT_BALL is a flag constant; glimpsesBall and seesBallAt are the one sight test
     // (view cone or eye range, plus the sight line, at a recorded moment) on a ball position the caller passes. Producers only:
     // the estimator's own sampler and release-evidence's recorded ball. Decision code reads BallEstimates.glimpses / seesBall.
-    // Reviewed 2026-11-25 (Coverage, the honest defender): ARM_LOOK, BALL_EST_DEF_PICTURE, BALL_EST_FLIGHT_SETTLE and
+    // Reviewed 2026-11-25 (Coverage, the honest defender): ARM_LOOK, ARM_RUN, BALL_EST_DEF_PICTURE, BALL_EST_FLIGHT_SETTLE and
     // FLIGHT_SETTLE_SPAN are flag constants; they take and return no ball.
     expect(names).toEqual([
-      'ARM_LOOK', 'BALL_EST', 'BALL_EST_DEEP_LOOK', 'BALL_EST_DEF_ONLY', 'BALL_EST_DEF_PICTURE', 'BALL_EST_FLIGHT_SETTLE', 'BALL_EST_GLANCE', 'BALL_EST_INCIDENTAL', 'BALL_EST_LOOMING',
+      'ARM_LOOK', 'ARM_RUN', 'BALL_EST', 'BALL_EST_DEEP_LOOK', 'BALL_EST_DEF_ONLY', 'BALL_EST_DEF_PICTURE', 'BALL_EST_FLIGHT_SETTLE', 'BALL_EST_GLANCE', 'BALL_EST_INCIDENTAL', 'BALL_EST_LOOMING',
       'BALL_EST_MAN_LOOK', 'BALL_EST_MOVING_CHOICE', 'BALL_EST_NO_TRACKPEN', 'BALL_EST_RCV', 'BALL_EST_RCV_ONLY', 'BALL_EST_SERVO',
       'BALL_EST_TRUNK', 'BallEstimates', 'DEEP_LOOK_DEPTH', 'DEEP_LOOK_HOLD', 'FLIGHT_REVISE', 'FLIGHT_SETTLE_SPAN', 'GAZE_SEARCH', 'GLANCE_DEPTH',
       'GLANCE_DWELL_TARGET', 'GLANCE_HOLD_REF', 'LOOK_NECK', 'PHASE_BEHIND', 'PRE_LOOK_EARLY', 'PRE_LOOK_LATE',

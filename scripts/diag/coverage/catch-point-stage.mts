@@ -22,6 +22,7 @@ if (process.argv[2] === '--report') {
       console.log(` ${fam} (n ${V.length}): separation ${q(V.map((r) => r.sep))} yd, closing on the target at the arrival ${q(V.map((r) => r.closing))} yd/s, caught ${V.filter((r) => r.caught).length}`);
       for (const k of ['-0.5', '-0.3', '-0.1', '0']) {
         const at = V.map((r) => r.at[k]).filter(Boolean);
+        console.log(`          cap at the asked heading ${q(at.map((a: any) => a.cap))}  effort ${q(at.map((a: any) => a.effort), 2)}  hips off the asked heading ${q(at.map((a: any) => a.hipOff), 0)} deg  asked facing off it ${q(at.map((a: any) => a.reqFacing), 0)} deg`);
         console.log(`   ${k.padStart(4)} s  asked: toCatch ${q(at.map((a: any) => a.req.toCatch)).padEnd(15)} alongRun ${q(at.map((a: any) => a.req.alongRun)).padEnd(15)} speed ${q(at.map((a: any) => a.req.speed)).padEnd(13)} | did: toCatch ${q(at.map((a: any) => a.ach.toCatch)).padEnd(15)} alongRun ${q(at.map((a: any) => a.ach.alongRun)).padEnd(15)} speed ${q(at.map((a: any) => a.ach.speed))}`);
       }
       const by = new Map<string, any[]>(); for (const r of V) { const k = `${r.kind}:${r.label ?? '-'}`; if (!by.has(k)) by.set(k, []); by.get(k)!.push(r); }
@@ -39,6 +40,9 @@ mkdirSync(dirname(out), { recursive: true }); writeFileSync(out, '');
 const { PlaySim } = await import(`${W}/src/sim/playsim.ts`);
 const { nativeTraceSetup } = await import(`${W}/scripts/diag/command-trace.ts`);
 const { facingTechnique } = await import(`${W}/src/sim/coverage/orientation.ts`);
+const { effectiveVmax } = await import(`${W}/src/physics/kinematics.ts`);
+const { releaseBelief } = await import(`${W}/src/sim/release-belief.ts`);
+const angd = (x: number) => { let v = x; while (v > Math.PI) v -= 2 * Math.PI; while (v < -Math.PI) v += 2 * Math.PI; return Math.abs(v) * 180 / Math.PI; };
 const split = (v: { x: number; y: number }, from: { x: number; y: number }, to: { x: number; y: number }, run: { x: number; y: number }) => {
   const dx = to.x - from.x, dy = to.y - from.y, l = Math.hypot(dx, dy) || 1, rl = Math.hypot(run.x, run.y);
   return { toCatch: +((v.x * dx + v.y * dy) / l).toFixed(2), alongRun: rl > 0.5 ? +((v.x * run.x + v.y * run.y) / rl).toFixed(2) : null, speed: +Math.hypot(v.x, v.y).toFixed(2) };
@@ -56,7 +60,8 @@ for (const concept of CONCEPTS) for (const coverage of COVS) for (let seed = 1; 
     }
     decide(i, t);
   };
-  let arrived: any = null, wasAir = false, caught = false, lastBall: any = null;
+  let arrived: any = null, wasAir = false, caught = false, lastBall: any = null, relT: number | undefined;
+  const tagFirst = new Map<number, Record<string, number>>(), atRel = new Map<number, any>();
   const ev0 = sim.event.bind(sim);
   sim.event = (type: string, a?: any, b?: any, note?: string) => { if (type === 'catch' && a?.team === 'O') caught = true; return ev0(type, a, b, note); };
   const tick = sim.tick.bind(sim);
@@ -64,31 +69,38 @@ for (const concept of CONCEPTS) for (const coverage of COVS) for (let seed = 1; 
     tick();
     const air = sim.ball.kind === 'air';
     if (air) lastBall = { ...sim.ball.flight.pos };
+    if (air && relT === undefined) { relT = sim.t; for (const d of sim.defense) atRel.set(d.idx, { pos: { ...d.pos }, vel: { ...d.vel }, zone: d.behavior?.zone, kind: d.behavior?.kind, tags: [...(d.tags ?? [])].join(',') }); }
+    if (relT !== undefined && !arrived) for (const d of sim.defense) { const m = tagFirst.get(d.idx) ?? {}; for (const tg of d.tags ?? []) if (m[tg] === undefined) m[tg] = +(sim.t - relT).toFixed(2); tagFirst.set(d.idx, m); }
     if (air) for (const d of sim.defense) {
-      const h = hist.get(d.idx) ?? []; const c = d.__cmd;
-      h.push({ t: sim.t, pos: { ...d.pos }, vel: { ...d.vel }, req: c?.vel ? { ...c.vel } : null, kind: d.behavior?.kind ?? '?', label: c ? facingTechnique(c)?.label : undefined, tags: [...(d.tags ?? [])].filter((x: string) => x !== 'looking').join(',') });
+      const h: any[] = hist.get(d.idx) ?? []; const c = d.__cmd;
+      const rh = c?.vel && Math.hypot(c.vel.x, c.vel.y) > 0.3 ? Math.atan2(c.vel.y, c.vel.x) : undefined;
+      h.push({ t: sim.t, pos: { ...d.pos }, vel: { ...d.vel }, req: c?.vel ? { ...c.vel } : null, effort: c?.effort ?? 1, hipOff: rh === undefined ? null : +angd(rh - (d.body?.facing ?? d.facing)).toFixed(0), cap: rh === undefined ? null : +effectiveVmax(d.body, rh, c?.effort ?? 1).toFixed(2), reqFacing: c?.facing === undefined || rh === undefined ? null : +angd(c.facing - rh).toFixed(0), kind: d.behavior?.kind ?? '?', label: c ? facingTechnique(c)?.label : undefined, tags: [...(d.tags ?? [])].filter((x: string) => x !== 'looking').join(',') });
       while (h.length && sim.t - h[0].t > 0.65) h.shift(); hist.set(d.idx, h);
     }
     if (wasAir && !air && !arrived) {
       const b = lastBall;
       const target = [...sim.offense].sort((x: any, y: any) => Math.hypot(x.pos.x - b.x, x.pos.y - b.y) - Math.hypot(y.pos.x - b.x, y.pos.y - b.y))[0];
       const cov = [...sim.defense].sort((x: any, y: any) => Math.hypot(x.pos.x - target.pos.x, x.pos.y - target.pos.y) - Math.hypot(y.pos.x - target.pos.x, y.pos.y - target.pos.y))[0];
-      arrived = { t: sim.t, target, cov, catchPt: { ...target.pos }, run: { ...target.vel } };
+      const ddx = target.pos.x - cov.pos.x, ddy = target.pos.y - cov.pos.y, dl = Math.hypot(ddx, ddy) || 1;
+      const rb = releaseBelief(sim, cov);
+      arrived = { t: sim.t, rb: { src: rb.source ?? null, rel: rb.releasedAt === undefined ? null : +(rb.releasedAt - (relT ?? 0)).toFixed(2), ball: rb.ballAt === undefined ? null : +(rb.ballAt - (relT ?? 0)).toFixed(2) }, target, cov, catchPt: { ...target.pos }, run: { ...target.vel }, closing: (cov.vel.x * ddx + cov.vel.y * ddy) / dl, sep: dl };
     }
     wasAir = air;
   };
   sim.run();
   if (!arrived) continue;
-  const { cov, target, catchPt, run } = arrived, sep = Math.hypot(cov.pos.x - catchPt.x, cov.pos.y - catchPt.y);
+  const { cov, catchPt, run } = arrived, sep = arrived.sep;
   if (sep > 2.5) continue;
   const h = hist.get(cov.idx) ?? [], at: any = {};
   for (const k of [0.5, 0.3, 0.1, 0]) {
     const s = h.reduce((best: any, x) => (!best || Math.abs(arrived.t - k - x.t) < Math.abs(arrived.t - k - best.t) ? x : best), null);
     if (!s || Math.abs(arrived.t - k - s.t) > 0.06) continue;
-    at[k === 0 ? '0' : `-${k}`] = { req: s.req ? split(s.req, s.pos, catchPt, run) : null, ach: split(s.vel, s.pos, catchPt, run), label: s.label, tags: s.tags };
+    at[k === 0 ? '0' : `-${k}`] = { req: s.req ? split(s.req, s.pos, catchPt, run) : null, ach: split(s.vel, s.pos, catchPt, run), effort: s.effort, hipOff: s.hipOff, cap: s.cap, reqFacing: s.reqFacing, label: s.label, tags: s.tags };
   }
-  const last = h[h.length - 1], dx = target.pos.x - cov.pos.x, dy = target.pos.y - cov.pos.y, l = Math.hypot(dx, dy) || 1;
-  appendFileSync(out, JSON.stringify({ concept, coverage, seed, flip, caught, sep: +sep.toFixed(2), closing: +((cov.vel.x * dx + cov.vel.y * dy) / l).toFixed(2), kind: last?.kind, label: last?.label, tags: last?.tags, at }) + '\n');
+  const last = h[h.length - 1];
+  const r0 = atRel.get(cov.idx);
+  const rel = r0 ? { zone: r0.zone ?? null, kind: r0.kind, distToCatch: +Math.hypot(r0.pos.x - catchPt.x, r0.pos.y - catchPt.y).toFixed(2), speed: +Math.hypot(r0.vel.x, r0.vel.y).toFixed(2), toCatch: split(r0.vel, r0.pos, catchPt, run).toCatch, tags: r0.tags } : null;
+  appendFileSync(out, JSON.stringify({ concept, coverage, seed, flip, caught, flight: +(arrived.t - (relT ?? arrived.t)).toFixed(2), zone: cov.behavior?.zone ?? null, rb: arrived.rb, rel, tagFirst: tagFirst.get(cov.idx) ?? {}, sep: +sep.toFixed(2), closing: +arrived.closing.toFixed(2), kind: last?.kind, label: last?.label, tags: last?.tags, at }) + '\n');
   n++;
 }
 console.log(`wrote ${n} throws to ${out}`);
