@@ -1,0 +1,30 @@
+diff --git a/src/sim/behaviors/qb.ts b/src/sim/behaviors/qb.ts
+index 5f43d19ea..81fa7404c 100644
+--- a/src/sim/behaviors/qb.ts
++++ b/src/sim/behaviors/qb.ts
+@@ -1842,8 +1842,10 @@ export class QBPass implements Behavior {
+         this.phase = 'set';
+         this.setAt = t;
+         this.readStart = t;
+-        // QB_FOOTWORK bit 2: his shoulders set at the plant, to the read he is on.
+-        if (FW_HIPS) this.shoulderOn = this.reads[this.readIdx] ?? this.reads[0] ?? null;
++        // QB_FOOTWORK bit 2: his shoulders set at the plant, to the read he is on. With V2 that is V2's read (on the gun
++        // quick drift V2 reads from the secure, so by the plant it may be past read 0: setting the old controller's read
++        // here turned him back square to the front and his eyes could not reach the backside; QB lane 2026-11-25, sf_c3).
++        if (FW_HIPS) this.shoulderOn = (this.v2 && this.v2h ? this.v2ReadAgent() : null) ?? this.reads[this.readIdx] ?? this.reads[0] ?? null;
+       } else {
+         // Rhythm: on the last step of his drop he can already start his load,
+         // so a timing throw comes out as he hits his set point rather than
+@@ -2267,6 +2269,12 @@ export class QBPass implements Behavior {
+       traceStage: (cmd) => qbStage(sim, 'qb-cycle', a, { vel: cmd.vel, facing: cmd.facing }),
+     };
+   }
++  /** The receiver V2's current read is on (its look, or a key read's first throw), or null. */
++  private v2ReadAgent(): Agent | null {
++    const v2 = this.v2, h = this.v2h; if (!v2 || !h) return null;
++    const rd = v2.plan.reads[v2.cycle.readIdx], ref = rd ? (rd.look.kind === 'receiver' ? rd.look.ref : rd.throws[0]?.ref) : null;
++    return ref ? v2.target(h, ref) : null;
++  }
+   /** QB_QUICK_DRIFT bit 2 applies: V2 on a gun quick drop. */
+   private v2Drift(): boolean { return !!this.v2 && (QB_QUICK_DRIFT & 2) !== 0 && this.v2.cycle.plan.drop === 'quick' && this.formationGun; }
+ 
