@@ -11,7 +11,7 @@ import { DRAG_TUMBLE } from '../physics/ball.js';
 import { closestCatchOpportunity } from '../physics/catch-opportunity.js';
 import type { Agent } from './agent.js';
 import type { PlaySim } from './playsim.js';
-import { BALL_EST_DEF_ONLY, BALL_EST_INCIDENTAL, BALL_EST_NO_TRACKPEN, estimatesFor, HANDS_SEEN } from './ball-estimate.js';
+import { BALL_EST, BALL_EST_DEF_ONLY, BALL_EST_INCIDENTAL, BALL_EST_NO_TRACKPEN, estimatesFor, HANDS_SEEN } from './ball-estimate.js';
 import { shouldersOf, TRUNK_TWIST } from '../physics/kinematics.js';
 
 const INELIGIBLE = new Set(['LT', 'LG', 'C', 'RG', 'RT']);
@@ -144,9 +144,14 @@ interface Opp {
 function facingBall(a: Agent, ballVel: Vec3, sim?: PlaySim): boolean {
   // BALL_EST bit 32: he plays a ball only on his own sight of it (one perception per player).
   if (BALL_EST_INCIDENTAL && sim && estimatesFor(a)) return sim.ballEstimates?.seenReady(a, sim) ?? false;
-  // HANDS_SEEN: a defender's hands play needs his own sight of the ball (his estimate where he has one; otherwise the ball
-  // in his head's peripheral cone for his reaction time), not his shoulders or a 'looking' tag.
-  if (HANDS_SEEN && sim && a.team === 'D') return (estimatesFor(a) ? sim.ballEstimates?.seenReady(a, sim) : sim.ballEstimates?.handsSees(a, sim)) ?? false;
+  // HANDS_SEEN: a defender's hands play needs his own sight of the ball now (the ball in his head's peripheral cone for his
+  // reaction time on this flight), not his shoulders or a 'looking' tag.
+  // It needs BALL_EST's sensing (on in the engine default), where his sight is built tick by tick; with BALL_EST off the
+  // old test stands.
+  // Not seenReady, even with his estimator: it accepts a sample up to 0.5 s old (INCIDENTAL_FLIGHT_MAX_AGE), so a man who
+  // watched the ball leave and turned away still had it at his reach (BALL_EST=2305 lane plays: 11 of 13 with the head
+  // 104-177 deg off the ball). Interim: the cone now (handsSees), until the shared seesBall (SIGHT_BALL) lands.
+  if (HANDS_SEEN && BALL_EST && sim?.ballEstimates && a.team === 'D') return sim.ballEstimates.handsSees(a, sim);
   if (a.tags.has('looking')) return true;
   const sp = Math.hypot(ballVel.x, ballVel.y) || 1;
   const f = shouldersOf(a.body); // a look over the shoulder is the shoulders turned, not the hips

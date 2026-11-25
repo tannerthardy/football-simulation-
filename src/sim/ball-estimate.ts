@@ -62,15 +62,16 @@ export const BALL_EST_DEEP_LOOK = (BALL_EST_BITS & 16) !== 0;
  * perception per player), not on catch-readiness's separate facing cone. */
 export const BALL_EST_INCIDENTAL = (BALL_EST_BITS & 32) !== 0;
 /** HANDS_SEEN (experimental, off; HANDS_SEEN=1 turns it on; Defense, 2026-11-25, an information leak found by the QB lane):
- * a defender plays the ball with his hands (interception, breakup, the contest at the catch) only on his own sight of it:
- * his estimate of this flight, or a passive sighting where his head points, within his peripheral cone (45 deg + 24 deg x
+ * a defender plays the ball with his hands (interception, breakup, the hands play at the ball) only on his own sight of it
+ * now: the ball where his head points, within his peripheral cone (45 deg + 24 deg x
  * vision, the QB lane's PERIPH_ACUITY cone, where motion is still picked up), after his reaction time. Off, catching.ts's
  * facingBall tested his shoulders against the ball's oncoming line (within about 110 deg) or a 'looking' tag, and a
  * defender who passed got the full interception and breakup roll at his reach on the true ball (QB lane, develop
  * 3c11ad4e2: breakups with the head 149-171 deg from the ball and no sighting in his estimate; interceptions with head and
  * shoulders 90 deg to it). A ball he cannot see can still strike his body or arm (the off-his-body branch). Defense only:
  * BALL_EST_INCIDENTAL (bit 32) does the same for everyone and also moves receivers' catch readiness and the release and
- * throw beliefs. */
+ * throw beliefs. Needs BALL_EST's sensing (on in the engine default); with BALL_EST off the old test stands. Not seenReady
+ * (a sample up to 0.5 s old); the shared seesBall (SIGHT_BALL) replaces handsSees when it lands. */
 export const HANDS_SEEN = process.env.HANDS_SEEN === '1';
 /** HANDS_SEEN: his peripheral cone for a ball (half-angle, rad). */
 export const handsCone = (a: Agent): number => (45 + 24 * clamp(a.r('vision'), 0, 1)) * Math.PI / 180;
