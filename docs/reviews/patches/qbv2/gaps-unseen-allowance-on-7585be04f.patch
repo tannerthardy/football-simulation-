@@ -1,0 +1,26 @@
+diff --git a/docs/GAPS.md b/docs/GAPS.md
+index 34a5ca303..62b08d99e 100644
+--- a/docs/GAPS.md
++++ b/docs/GAPS.md
+@@ -150,6 +150,21 @@ tables.
+   to 9–11% without movement), `BLOCK_SEEN`.
+ - **Unknown:** how our rush would have to change to show a beaten blocker at
+   distance (measurement assigned, paused).
++- **Open, QB lane (QB_V2's judge, 2026-11-25):** one allowance for an unseen
++  change of motion is applied to every defender alike, so men already running at
++  the catch point are under-believed and settled zone droppers over-believed. 8
++  staged cells × 30, with Flex's QB_TRACK_LOOK applied locally:
++
++  | Judge | Cmp | INT | Release p75 | P believed / actual |
++  |---|---|---|---|---|
++  | As landed (#947: delay projection, UNSEEN_DRIFT 2.5) | 193 | 4 | 1.86 s | 0.83 / 0.82 |
++  | Projection out | 186 | 6 | 1.81 s | 0.82 / 0.79 |
++  | Projection out, UNSEEN_DRIFT 4 | 189 | 2 | 2.36 s | 0.82 / 0.82 |
++  | … + REACT_ZONE 0.2 | 189 | 4 | 1.91 s | 0.83 / 0.80 |
++
++  #947's projection stays as an interim caution. The next diagnosis splits the
++  allowance by what his picture shows the man doing. Not now
++  (`docs/reviews/2026-11-25-qbv2-picture-age-ruled.md`).
+ 
+ ### P3. The short passing game
+ 
