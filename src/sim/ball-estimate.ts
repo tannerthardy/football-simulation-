@@ -257,6 +257,8 @@ const skill = (a: Agent): number => clamp(a.r(a.team === 'O' ? 'ballTracking' : 
 export const SEEN_EMPTY = process.env.SEEN_EMPTY !== '0';
 
 export class BallEstimates {
+  /** HANDS_SEEN as this engine instance reads it (test staging follows the engine, not the environment). */
+  readonly handsSeen = HANDS_SEEN;
   private readonly tracks = new Map<Agent, Track>();
   private readonly history: { t: number; p: Vec3 }[] = [];
   private flight: unknown = null;
