@@ -58,6 +58,7 @@ async function plays(flag: string, honest?: string) {
   // the lead's own effect is not reached (on and off medians are identical, 2.34 yd). Owner: Coverage. Remove this test with
   // ARRIVE_LEAD when FLIGHT_BREAK=0's paths (flightApproach's fixed catch-point drive) are retired.
   vi.stubEnv('FLIGHT_BREAK', '0');
+  vi.stubEnv('UNDERNEATH_MOVE', '0'); // Flex 2026-11-25: the stick receivers against spot Cover 3 now sit on base (the key stands in the window); the staged scene and its throws are the old run to the flat. Owner: the test's owner, re-stage with the flag on.
   vi.stubEnv('QB_SCOUT', '0'); // engine-96 (QB lane to re-record): the scene's throws were recorded with the passer's belief of rushers' and defenders' true bodies; QB_SCOUT moves which short throws he makes (median lead 5 against 5 on this panel)
   const { Rng } = await import('../src/core/rng.js');
   const { generateTeam, pickDefense, pickOffense } = await import('../src/league/team.js');
@@ -103,7 +104,7 @@ describe('ARRIVE_LEAD: an underneath zone defender leads the catcher on a short 
     const median = (v: number[]) => [...v].sort((p, q) => p - q)[Math.floor(v.length / 2)];
     expect(off.length).toBeGreaterThan(5);
     expect(on.length).toBeGreaterThan(5);
-    if (process.env.HONEST_FLIGHT === '1') {
+    if (process.env.HONEST_FLIGHT !== '0') {
       // HONEST_FLIGHT: his drive re-reads the catch on his own estimate every tick, so the lead comes without ARRIVE_LEAD
       // (develop 5a62a70e, this panel: medians off/on 1.96 / 2.45 with it off, 2.49 / 2.45 with it on). ARRIVE_LEAD must
       // not take it away, and without it he leads at least as far as ARRIVE_LEAD did with HONEST_FLIGHT off.

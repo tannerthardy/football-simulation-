@@ -122,7 +122,7 @@ export const HONEST_READS = process.env.HONEST_READS !== '0';
  * the flight to the catch (catch-carry, flight continuation, ball rally) comes when his own estimate says the ball has
  * arrived or he sees it in the air near him, not on the true end of the air state; a flight he has acquired is his to
  * play until his estimate resolves it. */
-export const HONEST_FLIGHT = process.env.HONEST_FLIGHT === '1';
+export const HONEST_FLIGHT = process.env.HONEST_FLIGHT !== '0';
 /** HONEST_FLIGHT's drive on a catch: from this long before his estimate's arrival to this long after (a catch's securing beat). */
 const DRIVE_LEAD = 0.05, DRIVE_SECURE = SECURE_BEAT;
 /** INFO_HONEST (off; INFO_HONEST=63 turns every item on; single items by their
@@ -3181,7 +3181,12 @@ function flightApproach(a: Agent, sim: PlaySim, path: PlaySim['ballPath'], acqui
   // the picture at acquisition went unrevised for the rest of the flight: mesh, cover1 doubles s10, the other crosser).
   // The same receiver keeps the arrival he first judged (a re-read finds the first reachable sample still ahead, which
   // moves with the clock and would stretch the securing beat without end); only a different receiver replaces it.
-  const keep = HONEST_FLIGHT && held && (window ? window.receiver === held.receiver : sim.t <= held.t + DRIVE_SECURE);
+  // A different receiver replaces it only when the ball reaches him first (an earlier opportunity), or he is the
+  // defender's own man: past the held arrival his estimate has the ball already in the held receiver's hands, and the
+  // path beyond it (another crosser further along) is no opportunity (mesh vs cover0 doubles s3 on engine-105).
+  const keep = HONEST_FLIGHT && held && (window
+    ? window.receiver === held.receiver || (window.receiver !== own && window.t > held.t)
+    : sim.t <= held.t + DRIVE_SECURE);
   if ((acquired || HONEST_FLIGHT) && !keep) rememberCatchOpportunity(a, window);
   // Near the ball's path, a defender with ball skills turns his head and finds
   // it (looking over the shoulder doesn't turn the body).

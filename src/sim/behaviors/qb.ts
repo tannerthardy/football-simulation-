@@ -1637,6 +1637,8 @@ export class QBPass implements Behavior {
       if (this.v2) {
         // His feet run the plan's drop (Rules: stick is one step from the gun though the installed concept's drop says gun3).
         if (plan!.drop !== this.concept.drop) this.drop = dropSpec(plan!.drop, a.pos.x, sim.los, sim.offCall.formation.qb !== 'under');
+        // His forecasts carry the installed shape through his picture and leave the route only on evidence (shapeCarry).
+        for (const f of this.receiverForecasts.values()) f.shapeCarry = true;
         // At the snap: the pre-snap decision (Flex's module B) on his own picture: the side by the plan's pick, the alert,
         // the hot. Protectors are the call's pass protection by side of the ball; the box half-width a stated 5 yd a side
         // until the alignment's core edge is read.

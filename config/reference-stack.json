@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "engine-104",
+  "id": "engine-105",
   "runSet": {
     "commit": "1b5415de99b5b7194eff045f3c37a07a4c54c1a9",
     "seeds": [
@@ -164,6 +164,7 @@
     "PURSUIT_SPOT": "on",
     "RELEASE_BELIEF": "on",
     "TRACK_FEEL": "on",
+    "QB_TRACK_LOOK": "on",
     "SIGHT_CARRIER": "on",
     "SIGHT_COVER": "on",
     "SIGHT_RECOG": "on",
@@ -309,7 +310,7 @@
     "PULL_CUE": "off",
     "PULL_PLAN": "off",
     "HONEST_READS": "on",
-    "HONEST_FLIGHT": "off",
+    "HONEST_FLIGHT": "on",
     "HANDS_SEEN": "off",
     "HONEST_TACKLE": "on",
     "QB_FEEL": "off",
@@ -354,6 +355,7 @@
     "SCOUT_SEEN": "on",
     "SCRAMBLE_SEEN": "on",
     "TRACK_SEEN": "on",
+    "UNDERNEATH_MOVE": "on",
     "QB_SEEN_OUT": "on",
     "QB_SEEN_REC": "on",
     "ACC_RADIUS": "off",
