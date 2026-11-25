@@ -1,0 +1,162 @@
+diff --git a/src/sim/qbv2/cycle.ts b/src/sim/qbv2/cycle.ts
+index 8a5924d45..5b065d43f 100644
+--- a/src/sim/qbv2/cycle.ts
++++ b/src/sim/qbv2/cycle.ts
+@@ -40,6 +40,11 @@ export interface CycleSenses {
+   judge(o: ThrowOption): Judged | null;
+   /** For a key read: what the key (by role and side) is doing in his picture (null while he cannot tell). */
+   keyCue(role: string, side: 'S' | 'W'): string | null;
++  /** When a timed throw stops being early by his forecast (its landmark reached, less his anticipation lead), absolute; null
++   * when his forecast has no such time (no landmark, or the receiver will not reach it in the horizon). */
++  dueAt?(o: ThrowOption): number | null;
++  /** His anticipation lead (s), when the timing rule is on. */
++  lead?: number;
+   /** The side he sees an unblocked rusher coming from (his picture), or null. */
+   hotSide: 'S' | 'W' | null;
+ }
+@@ -113,6 +118,8 @@ export class Cycle {
+    * pressure and the pocket are looked at again (audit §1 #1: the latched intent was replayed until he was sacked). */
+   /** Ticks a stale key held the judgment for a look (the diagnostic count). */
+   staleLooks = 0;
++  /** Ticks the key's named throw held the read past its step (rule (d); the diagnostic count). */
++  keyHeld = 0;
+   uncommit(): void { if (this.state === 'throw') { this.state = this.beforeCommit; this.decision = null; } }
+ 
+   /** One tick. */
+@@ -177,6 +184,14 @@ export class Cycle {
+     //     On a key read only: the key named the throw he is timing (on a receiver read the eyes stay free to move on once
+     //     he has answered no; holding them there made the quick out's hitch late, 2.05 -> 2.45 s, staged control).
+     // A key read is not answered before the key has declared (audit §1 #2): no cue yet, no answer; the next step bounds it.
++    // (d) The key's named throw is his throw (Integration's ruling, 2026-11-25; taught: the flat is the second throw of the
++    //     same read, off the same key, with a hitch; he does not go backside while the throw the key chose is about to come
++    //     open): on a key read whose named throw is timed and not yet due, the hold runs to that throw's own landmark by his
++    //     forecast plus his anticipation lead, not only to the next read's step. Rule (b) bounds every other hold, and the
++    //     pressure response above still overrides this one.
++    const namedOpt = r.look.kind === 'key' && named ? r.throws.find((o) => o.ref === named) ?? null : null;
++    const namedDue = namedOpt && notDue ? s.dueAt?.(namedOpt) ?? null : null;
++    const keyHold = namedDue !== null && s.now < namedDue + (s.lead ?? 0);
+     const answeredNo = s.readFrom !== undefined && res >= s.need && !notDue && (r.look.kind !== 'key' || (cue !== null && timed.every((o) => s.judge(o)?.seenBreak !== false)));
+     if (s.now >= next || answeredNo) {
+       this.looks.markDue(t, s.now);
+@@ -185,7 +200,8 @@ export class Cycle {
+       const holding = res < s.need && s.canReach(t) && (this.looks.resolving(t) || s.now - next < 0.1)
+         && s.now < next + s.tau * Math.log(1 / Math.max(1e-3, 1 - s.need));
+       // (b): at or past the next step the timing hold no longer applies; before it, only an answered no moves on.
+-      if (!holding && (s.now >= next || !notDue)) { this.passed.add(this.readIdx); this.readIdx++; }
++      if (keyHold && s.now >= next) this.keyHeld++;
++      if (!holding && !keyHold && (s.now >= next || !notDue)) { this.passed.add(this.readIdx); this.readIdx++; }
+     }
+     return { kind: 'look', target: t };
+   }
+diff --git a/src/sim/qbv2/drive.ts b/src/sim/qbv2/drive.ts
+index 68434f1f2..32807295a 100644
+--- a/src/sim/qbv2/drive.ts
++++ b/src/sim/qbv2/drive.ts
+@@ -98,6 +98,8 @@ export function catchFrom(spread: number | undefined): number {
+ const CUE_ENTER = 1.5, CUE_EXIT = 0.8;
+ /** A sitting key's read changes only when the other landmark is nearer him by this much (yd; chosen). */
+ const SIT_SWITCH = 0.5;
++/** How far ahead his forecast is searched for a timed throw's landmark (s). */
++const DUE_HORIZON = 2;
+ 
+ export class V2Drive {
+   cycle: Cycle;
+@@ -137,6 +139,23 @@ export class V2Drive {
+    * yard): the release then leads the break by at most the lead. Once due it
+    * stays due for that receiver (he has reached the top of the stem; a later look does not take it back). */
+   private reachedBreak = new Map<string, number>();
++  /** When a timed throw stops being early, by his forecast: the first moment his forecast of the receiver has the stem's
++   * progress within the early gate's allowance of the landmark (notAtBreak's own test, run forward on his forecast);
++   * absolute. Null without the timing rule, a landmark or a forecast, or with no reach inside DUE_HORIZON. */
++  private dueAt(h: V2Host, o: ThrowOption): number | null {
++    if (h.lead === undefined || o.timing !== 'onBreak') return null;
++    const r = this.receiver(h, o.ref); if (!r) return null;
++    if (this.reachedBreak.has(o.ref)) return h.sim.t;
++    const bp = h.breakPoint?.(r), st = h.routeStart?.(r); if (!bp || !st) return null;
++    const ux = bp.x - st.x, uy = bp.y - st.y, L = Math.hypot(ux, uy) || 1, w = h.windup() + h.lead;
++    for (let k = 0; k <= DUE_HORIZON + 1e-9; k += 0.05) {
++      const p = h.predict(r, k), p2 = h.predict(r, k + 0.1); if (!p || !p2) return null;
++      const sp = Math.hypot(p2.x - p.x, p2.y - p.y) / 0.1, left = L - ((p.x - st.x) * ux + (p.y - st.y) * uy) / L;
++      if (left <= w * Math.max(sp, 1) + 0.5) return h.sim.t + k;
++    }
++    return null;
++  }
++
+   private notAtBreak(h: V2Host, r: Agent, ref: string, lead: number): boolean {
+     if (this.reachedBreak.has(ref)) return false;
+     const bp = h.breakPoint?.(r); if (!bp) return false;
+@@ -304,6 +323,7 @@ export class V2Drive {
+       tau: h.tau, need: h.need, bar: h.bar,
+       judge: (o) => this.judgeOption(h, o),
+       keyCue: (role, side) => this.keyCue(h, role, side),
++      dueAt: (o) => this.dueAt(h, o), lead: h.lead,
+       hotSide: h.hotSide ?? null, contact: h.contact,
+     };
+     return this.cycle.tick(senses);
+diff --git a/src/sim/receiver-forecast.ts b/src/sim/receiver-forecast.ts
+index 12d6f55aa..c1822d441 100644
+--- a/src/sim/receiver-forecast.ts
++++ b/src/sim/receiver-forecast.ts
+@@ -1,6 +1,7 @@
+ /** QB-local receiver estimate. Installed expectation is not measured progress. */
+ import { clamp, type Vec2 } from '../core/vec.js';
+ import { BREAK_DECL } from '../playbook/route-breaks.js';
++import { ROUTES } from '../playbook/routes.js';
+ import { FIELD_WIDTH } from '../core/field.js';
+ import { arriveVelocity, stepBody, type Body, type MoveCommand } from '../physics/kinematics.js';
+ import type { PhysicalProfile } from '../players/physical.js';
+@@ -133,8 +134,9 @@ function priorBreak(prior: InstalledReceiverRoute): number | null {
+   return prior.breakIdx !== undefined ? prior.breakIdx : pathBreak(prior.path, prior.end);
+ }
+ 
+-/** Routes timed to a point this far outward of the alignment (yd), mirroring Rules' route timing data (#925). */
+-const NO_PLANT_OUTWARD: Record<string, number> = { flat: 6.4, back_flat: 7, swing: 7 };
++/** A route timed to a point outward of the alignment (yd) rather than a cut or stop: Rules' route timing data (#925,
++ * RouteDef.timing: the flat, the back's flat and the swing, the NFL release spot). Undefined for every other route. */
++const timedOutward = (id: string | undefined): number | undefined => (id && ROUTES[id]?.timing ? ROUTES[id].timing!.l : undefined);
+ 
+ export function pathBreak(path: readonly PathPoint[], end: RouteEnd): number | null {
+   let b: number | null = null;
+@@ -213,9 +215,9 @@ export class ReceiverForecast {
+    * install (or the answer he expects on an option route). Null for a route without a break. */
+   breakPoint(): Readonly<Vec2> | null {
+     const c = this.build(), path = c?.route?.path ?? this.prior.path;
+-    // The flat's timing point (Rules, #925 e95e5dac6: RouteDef.timing, the NFL release spot: flat {d 1.54, l 6.4}, back_flat and swing l 7): where the path is that far outward of
+-    // his alignment. Interim mirror of that data until #925 lands and timingPoint(route) is read here instead.
+-    const outward = this.prior.routeId ? NO_PLANT_OUTWARD[this.prior.routeId] : undefined;
++    // A timed route's point (Rules, #925: RouteDef.timing, the NFL release spot, e.g. the flat {d 1.54, l 6.4}): where the
++    // path is that far outward of his alignment (it replaced the QB lane's interim table).
++    const outward = timedOutward(this.prior.routeId);
+     if (outward !== undefined) {
+       const s0 = this.prior.start, side = Math.sign((path[path.length - 1]?.p.y ?? s0.y) - s0.y) || 1;
+       let prev: Vec2 = s0;
+diff --git a/test/qbv2-cycle.test.ts b/test/qbv2-cycle.test.ts
+index 050c2d3c0..6d88fbe3e 100644
+--- a/test/qbv2-cycle.test.ts
++++ b/test/qbv2-cycle.test.ts
+@@ -39,6 +39,25 @@ describe('QB_V2 cycle (module E) on the stub slant-flat plan', () => {
+     expect(blind!.t).toBeCloseTo(1.6, 2);
+   });
+ 
++  it("a key read holds on the key's named timed throw until its landmark, not only to the next step; pressure overrides", () => {
++    // The stub's read 0: key 'flat'; the cue 'sinks' names S2. S2 is early until 2.2 s (his forecast reaches its landmark
++    // then); the next step (read 1) is at 1.4 s. Rule (d): the read holds to 2.2 + lead, then S2 is thrown.
++    const plan: typeof STUB_SLANT_FLAT = { ...STUB_SLANT_FLAT, reads: STUB_SLANT_FLAT.reads.map((r, i) => (i === 0 ? { ...r, keyRules: [{ cue: 'sinks', throwTo: 'S2' as const }] } : r)) };
++    const f = (over: Partial<CycleSenses> = {}) => (t: number) => senses({ now: t, readFrom: 0.5, lead: 0.15, dueAt: (o) => (o.ref === 'S2' ? 2.2 : null),
++      judge: (o: ThrowOption): Judged | null => (o.ref === 'S2' ? { option: o, P: 0.9, risk: 0.01, reachesSticks: false, early: t < 2.2 } : null), ...over }, {}, 'sinks');
++    const held = run(new Cycle(plan), 0, 2.6, f());
++    expect(held.find((x) => x.t > 1.45 && x.t < 2.15 && x.read !== 0)).toBeUndefined(); // still on read 0 past the 1.4 s step
++    const th = held.find((x) => x.i.kind === 'throw');
++    expect(th && th.i.kind === 'throw' && th.i.judged.option.ref).toBe('S2');
++    expect(th!.t).toBeGreaterThanOrEqual(2.2 - 1e-9);
++    // No due time from his forecast: rule (b), the eyes go at the next step.
++    const plain = run(new Cycle(plan), 0, 2.6, f({ dueAt: () => null }));
++    expect(plain.find((x) => x.read === 1)!.t).toBeLessThanOrEqual(1.45);
++    // A rush on him overrides the hold (the pressure response comes first).
++    const hot = run(new Cycle(plan), 0, 2.6, (t) => f({ felt: t > 1.5 ? 0.95 : 0 })(t));
++    expect(hot.find((x) => x.t > 1.5 && x.t < 2.15 && x.i.kind !== 'look')).toBeTruthy();
++  });
++
+   it('a look that cannot resolve (outside his cone, head cannot get there) does not hold: the eyes move on the next step', () => {
+     const c = new Cycle(STUB_SLANT_FLAT);
+     const tr = run(c, 0, 1.6, (t) => senses({ now: t, inClear: () => false, canReach: () => false }, {}));
