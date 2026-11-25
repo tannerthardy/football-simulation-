@@ -312,6 +312,7 @@
   "test/half-own.test.ts",
   "test/hand-moment.test.ts",
   "test/hand-site.test.ts",
+  "test/hand-travel.test.ts",
   "test/hands-cue.test.ts",
   "test/hang-airborne.test.ts",
   "test/head-follow.test.ts",
