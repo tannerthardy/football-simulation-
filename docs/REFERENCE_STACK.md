@@ -2809,3 +2809,28 @@ by any amount, so that leak removal (on since engine-99) costs nothing.
 ## HAND_TRAVEL (Tools/Physics, 2026-11-25; on, experimental)
 
 On in the stack (a flag that will land on is red-diffed on). The unloaded hand's travel speed has its own constant, 5 yd/s, read by the engagement sites only (the press and its fit, `handSite`'s length, the hand offset, `refitTime`); the RUSH_HANDS club and counter durations stay on ARM_SPEED (a faster hand would shorten the contact and cut the impulse of a club whose force is armForce); `ARM_SPEED` (3 yd/s, the solver's former correction ceiling, unvalidated) stays the contact solver's loaded ceiling and is untouched. 5 yd/s is a stated choice inside the sourced punch bracket (docs/reviews/2026-11-25-arm-speed.md); no raise time is sourced. `=0` restores ARM_SPEED, bit for bit. Own card arm; engine id set at landing.
+
+## engine-105: the route read by what the key does, the tracked look, honest flight (2026-11-25)
+
+On: `UNDERNEATH_MOVE`, `QB_TRACK_LOOK` (Flex), `HONEST_FLIGHT` (Defense); each `=0` restores. Card e141: 4 seeds x 32
+games against engine-104, each its own arm.
+
+- `UNDERNEATH_MOVE`: a receiver's sit-or-work-away read (stick, hook) turns on what the key does in his own picture
+  (eyes on him, or moving with him, for 0.3 s), not where a defender stands; the exit cap looks 0.4 s ahead; the answer
+  is held; the passer's forecast of the route reads the same rule. Staged, stick: runs to the flat against Cover 2 and
+  Cover 3 12 of 12 -> 0; against Cover 1 he still works away. By seed: completion +2.0, -1.5, +2.8, +0.5.
+- `QB_TRACK_LOOK`: the passer's clear-cone picture of a defender, and of a receiver he is watching, reads through the
+  tracking channel (a 0.12 s correcting loop, no acceleration term; the model pursuit already uses) instead of the
+  choice-reaction picture. Staged: velocity lag on a man accelerating at 5 yd/s^2 1.25 -> 0.50 yd/s; peripheral
+  unchanged. By seed: completion -1.9, +1.4, +1.4, 0.0.
+- `HONEST_FLIGHT`: a defender playing the flight uses his own window and his own picture of the receiver, not the
+  catcher's private securing state or true facing. It is not yet honest about the ball's path (defenders still copy
+  the true flight until the estimator stack lands). By seed: completion -2.0, +0.3, +2.9, -0.7.
+
+No arm moves any row consistently across the four seeds; each is landed on its staged mechanism.
+
+Held from the same card: `LANE_LEVERAGE` and `FLAT_SINK_ONE` (Coverage, the Cover 2 corner on #1). The card shows
+nothing adverse, but a full red-diff of the landing tree with them on turned four recorded-scene tests red
+(curl-flat-back and stalk-close: scenes moved, diagnosed by Coverage; loose-own and rush-arm-balance: not yet
+diagnosed). They land when those are explained. The full red-diff of that tree (a superset of this landing) showed
+no other new red; with both corner flags off the two undiagnosed tests pass.

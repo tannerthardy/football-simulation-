@@ -33,7 +33,7 @@
 import { isDbSlot } from './qbv2/roles.js'; // QB_CANON_SEEN: one defensive-back rule with QB_V2 (the visible package's CB / S slots)
 import { angleDiff, clamp, logistic, type Vec2 } from '../core/vec.js';
 import type { ReceiverPicture } from './receiver-forecast.js';
-import type { RouteKeyPicture } from './route-read.js';
+import { UNDERNEATH_MOVE, type RouteKeyPicture } from './route-read.js';
 import { alignDefense, zoneLandmark, type DefenseAlignment } from '../playbook/alignment.js';
 import { PASS_BY_ID, RUN_BY_ID } from '../playbook/concepts.js';
 import { PRESSURE_BY_ID } from '../playbook/defense.js';
@@ -191,6 +191,8 @@ interface Memory {
   pos: Vec2;
   vel: Vec2;
   facing: number;
+  /** UNDERNEATH_MOVE: his seen head (rad), null where not shown. */
+  head?: number | null;
   t: number;
   latency?: number;
   /** PERIPH_ACUITY: the look's position and velocity uncertainty (yd, yd/s), from its eccentricity. */
@@ -215,6 +217,13 @@ interface Memory {
  * His own confidence in a picture carries the look's error and its growth with age (the window, qb.ts). Nothing forbids
  * a throw off a peripheral picture: he prices it with its error. */
 export const PERIPH_ACUITY = process.env.PERIPH_ACUITY !== '0';
+/** QB_TRACK_LOOK (on; `=0` restores; Flex, 2026-11-25, Integration's ruling on the QB lane's proj-err): the perception
+ * channels' QB step (playsim.ts PERCEIVE_TRACK: an attended, continuous read is a correcting loop at TRACK_LATENCY with no
+ * acceleration term; Brenner and Smeets 1997, Brouwer et al. 2002). A defender or receiver in his clear cone is a man he is
+ * watching: his picture comes through the tracking channel, not the choice-reaction picture. Peripheral and unseen men stay
+ * on `see()` (the delay, and 1.7 times it off his gaze). Before, his watched defenders' velocity was the truth one
+ * choice-reaction delay ago (lag = delay x acceleration, about 1.25 yd/s at 5 yd/s2); now about 0.12 s x acceleration. */
+export const QB_TRACK_LOOK = process.env.QB_TRACK_LOOK !== '0';
 const PERIPH_POS_K = 0.06;
 const PERIPH_VEL_K = 0.14;
 
@@ -518,12 +527,14 @@ export class QBMind {
       const ang = Math.abs(angleDiff(Math.atan2(dy, dx), dir));
       // Bodies right around him are felt, not seen; pocket presence handles them.
       if (ang < this.clearHalf * (0.65 + 0.35 * mind.focus) || dist < 3) {
-        const e = PERIPH_ACUITY && dist >= 3 ? this.periphSeen(mind, d.player.id, clear, ang, dist) : null;
-        this.memory.set(d, { pos: e ? e.pos : clear.pos, vel: e ? e.vel : clear.vel, facing: clear.facing, t: sim.t, latency: clear.age ?? 0, sigP: e?.sigP, sigV: e?.sigV });
+        // QB_TRACK_LOOK: membership by the choice-reaction picture (as before); the picture he keeps is the tracked one.
+        const watched = QB_TRACK_LOOK ? sim.track(qb, d, 1, true) : clear;
+        const e = PERIPH_ACUITY && dist >= 3 ? this.periphSeen(mind, d.player.id, watched, ang, dist) : null;
+        this.memory.set(d, { pos: e ? e.pos : watched.pos, vel: e ? e.vel : watched.vel, facing: watched.facing, ...(UNDERNEATH_MOVE ? { head: watched.head ?? clear.head ?? null } : {}), t: sim.t, latency: watched.age ?? 0, sigP: e?.sigP, sigV: e?.sigV });
       } else if (ang < this.periphHalf * (0.85 + 0.15 * mind.focus)) {
         const s = sim.see(qb, d, 1.7);
         const e = PERIPH_ACUITY ? this.periphSeen(mind, d.player.id, s, ang, dist) : null;
-        this.memory.set(d, { pos: e ? e.pos : s.pos, vel: e ? e.vel : s.vel, facing: s.facing, t: sim.t - 0.1, latency: s.age ?? 0, sigP: e?.sigP, sigV: e?.sigV });
+        this.memory.set(d, { pos: e ? e.pos : s.pos, vel: e ? e.vel : s.vel, facing: s.facing, ...(UNDERNEATH_MOVE ? { head: s.head ?? null } : {}), t: sim.t - 0.1, latency: s.age ?? 0, sigP: e?.sigP, sigV: e?.sigV });
       }
     }
     // Existing recognition milestones summarize this acquired look and its
@@ -547,7 +558,7 @@ export class QBMind {
     const dir = Math.atan2(gaze.y - qb.pos.y, gaze.x - qb.pos.x);
     const rx = clear.pos.x - qb.pos.x, ry = clear.pos.y - qb.pos.y;
     const ang = Math.abs(angleDiff(Math.atan2(ry, rx), dir));
-    const seen = ang < this.clearHalf * (0.65 + 0.35 * qb.mind.focus) ? clear
+    const seen = ang < this.clearHalf * (0.65 + 0.35 * qb.mind.focus) ? (QB_TRACK_LOOK ? sim.trackedPicture(target) : clear)
       : ang < this.periphHalf * (0.85 + 0.15 * qb.mind.focus) ? sim.perception.perceive(target.idx, delay(1.7)) : null;
     if (!seen) return null;
     sim.trace.observe(qb, target, seen, sim.t);
@@ -567,7 +578,7 @@ export class QBMind {
     return [...this.memory].map(([d, m]) => {
       const age = Math.max(0, this.sim.t - m.t), dt = Math.min(.5, age);
       return { id: d.player.id, pos: { x: m.pos.x + m.vel.x * dt, y: m.pos.y + m.vel.y * dt },
-        vel: { ...m.vel }, age: age + (m.latency ?? 0) };
+        vel: { ...m.vel }, age: age + (m.latency ?? 0), ...(UNDERNEATH_MOVE ? { look: m.head ?? m.facing } : {}) };
     });
   }
 

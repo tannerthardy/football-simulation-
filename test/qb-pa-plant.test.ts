@@ -1,6 +1,7 @@
 /** QB_FOOTWORK bit 16 (behaviors/qb.ts; with Rules' plantAt / decided 'plant', #819): the play-action read decided on
  * the plant out of the fake. A keyed play action's key is read at the plan's plant, not before; read 1 is thrown on its
- * own ready, not skipped for being unready at the plant: staged, read 1 is thrown more often than with bits 1+2. */
+ * own ready, not skipped for being unready at the plant. (A read-1 rate comparison with bits 1+2 is not asserted: it
+ * flips by seed; see the comment in the test.) */
 import { readFileSync } from 'node:fs';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
@@ -28,11 +29,13 @@ async function run(fw: string) {
 }
 
 describe('QB_FOOTWORK bit 16: the play-action read on the plant', () => {
-  it('reads a keyed play action at the plant and throws read 1 more often than bits 1+2', async () => {
-    const off = await run('3'), on = await run('19');
+  it('reads a keyed play action at the plant', async () => {
+    const on = await run('19');
     const keyed = on.filter((r) => r.keyAt !== null && r.plantAt !== null);
     expect(keyed.length).toBeGreaterThanOrEqual(4);
     for (const r of keyed) expect(r.keyAt!).toBeGreaterThanOrEqual(r.plantAt! - 1e-9);
-    expect(on.filter((r) => r.read1).length).toBeGreaterThan(off.filter((r) => r.read1).length);
+    // The read-1 comparison (bit 16 throws read 1 more often than bits 1+2) is not asserted: it measured seed noise. Read-1
+    // throws over this panel at seeds 1-3 (54 plays; QB lane, 2026-11-25): QB_TRACK_LOOK off, bits 1+2 16 (5, 7, 4) against
+    // bit 16 17 (6, 6, 5), bit 16 behind on seed 2; QB_TRACK_LOOK on, 14 against 14. The plant claim holds on every case.
   }, 600_000);
 });
