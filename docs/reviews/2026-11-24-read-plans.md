@@ -158,14 +158,24 @@ fade against press. Neither is authored: neither is a route ours runs from this 
 
 ## Quick outs (`quick_outs`)
 
-**Read: a pick of side by the corners' cushion, then a key on that side's flat defender at the plant.**
-Revised 2026-11-24, on the QB lane's and Integration's request: his eyes go to the flat defender in the drop, so the
-picture judged at the plant is fresh.
-- Sinks, carries or bails: #1's out on its break.
-- Squats, jumps or widens: #2's hitch.
+**Read: a pick of side by the corners' cushion, then the corner over #1, then the apex, at the plant.**
+Revised 2026-11-25 (Integration and the QB lane's corrected scorecard): keyed on the apex, V2 threw the out into a
+squatting Cover 2 corner on 21 of 30, because the apex had dropped inside and "no flat defender" read as "throw the
+out". The corner over #1 is the first check in every coverage:
+- Corner off, sinking, carrying or bailing: #1's out on its break. Nobody over or outside #1 when he looks (`none`):
+  the out is uncovered.
+- Corner tight, squatting or jumping: not the out. "If the corner is off, we take the speed out. If the corner is hard
+  and has safety help ... that side of the field is closed" (Shaw); "Pre-snap, the QB will read the corners. If a soft
+  corner to the quick side, go to quick out" (Kratzer); "Corner tight or squatting, or a trap corner: do not throw it"
+  (the outside reviewer's notes, docs/reviews/2026-11-24-qbv2-outside-audit.md §4).
+- Then the apex, with only #2's hitch thrown from that read: "Apex widening into the window: move inside or backside"
+  (same notes). An apex widening into the out's window when the corner has bailed is the out's lane defender, judged on
+  that throw; the out not judged open moves his eyes to the apex read. Nothing the apex does, `none` included, throws
+  the out.
 - First hitch: the backside #1.
-- Sources for the key: "the apex (flat) defender: he widens to the out: #1 hitch inside him; he sits on the hitch: #2
-  out" (hitch_out's read line); the flat defender "sinks under the curl… hit the speed out" (Gridiron Strategies).
+- Earlier revision (2026-11-24): the apex as the only key ("the apex (flat) defender: he widens to the out: #1 hitch
+  inside him; he sits on the hitch: #2 out", hitch_out's read line; "sinks under the curl ... hit the speed out",
+  Gridiron Strategies).
 - Before the revision, the plan was a structure read: #1, then #2.
 - "Pre-snap, the QB will read the corners. If a soft corner to the quick side, go to quick out to X with progression
   continuing on the weak side ... If both corners are pressing, you have a mismatch and can go to a fade adjustment"
@@ -187,10 +197,10 @@ concept owner: a back release would restore the taught outlet.
 (Kratzer); the speed out at 4-6 yd (Shaw).
 
 **Expected by coverage family:**
-- Cover 3 and Cover 4: the key (index 0) gives #1's quick out. "It works best when you have soft corners in cover 3
-  or cover 4" (Kratzer).
-- Cover 2: the key (index 0) gives #2's hitch. The squatting corner takes the out (Win With The Pass, Cover 2
-  beaters).
+- Cover 3 and Cover 4: the corner read (index 0) gives #1's quick out. "It works best when you have soft corners in
+  cover 3 or cover 4" (Kratzer).
+- Cover 2 and Tampa 2: the corner squats, so the apex read (index 1) gives #2's hitch. The squatting corner takes the
+  out (Win With The Pass, Cover 2 beaters).
 
 **Pick (the flip):** `cushion`, the softer corner.
 
@@ -253,6 +263,38 @@ one" (Texans).
 **Release:** "win with an outside release in press-man, to stack on top of the defensive back" (Bowen). Keep "3 to 5
 yards between him and the sideline" (Marinelli). AFQ says reduce splits for room, while Bowen notes a plus split
 leaves only the fade or the comeback from an outside release.
+
+## Composed plans (`planFor`; CALL_COMPOSE step 3 for the quick game, 2026-11-25)
+
+A call is composed from a frontside half, a backside half and the back's job, each drawn by NFL share. The plans above
+were each authored on one whole-field version, so with CALL_COMPOSE on they fit only their own draw: quick_outs 17%,
+slant_flat 16%, stick 4% of their calls (4,000 draws). `planFor(call)` composes the plan the way the call is composed:
+- **The frontside is the authored plan's:** its reads, key rules, frontside hot and alert, unchanged. The call must run
+  the routes they use, or it takes no plan.
+- **The backside:** the authored backside when the call's backside is the authored one (then, with the authored back,
+  the authored plan itself). Otherwise the backside half's own read on the authored reset's step:
+  - a slant-flat half keeps its taught key on the flat defender (Klatt: reset "to the backside's slant-flat");
+  - any other half: his eyes on its first quick route (#1, then #2), its quick routes thrown in that order. A quick
+    route is one that has broken by the first hitch, the family rule above ("the ball must come out on the final step
+    or first hitch"; routes breaking at 3-6 yd): the quick and flat families;
+  - no quick route (a go or seam pair, comeback-seam, dig-shallow): no backside read. Its receivers are clear-outs or
+    break after the ball is due, so the play goes to the checkdown.
+  - The W hot is that half's first quick route: "the receiver will replace the area the blitz is coming from"
+    (Hewitt). With no quick route there is none on that side.
+- **The back:** a checkdown only when the call releases him, on the route the call gave him, seen open.
+- **The side pick** (cushion) holds only on the authored backside: otherwise there is no mirror half, and the concept
+  is run to its called side.
+
+Fit with `planFor`, same 4,000 draws (#903 head; the frontside matched on every draw):
+
+| plan | whole-field fit | planFor | identical to the authored plan | no backside read | back in, no checkdown |
+|---|---|---|---|---|---|
+| quick_outs | 17.1% | 100% | 38.9% | 6.8% | 32.2% |
+| slant_flat | 15.9% | 100% | 19.8% | 6.7% | 14.7% |
+| stick | 3.6% | 100% | 3.8% | 15.4% | 0% |
+| hitches | 44.3% | 100% | 49.1% | 0% | 21.0% |
+| fade_flat | 7.0% | 100% | 0% | 36.0% | 5.5% |
+| curl_flat | 83.7% | 100% | 23.4% | 0% | 6.5% |
 
 ## The schema additions (agreed with the QB lane)
 
