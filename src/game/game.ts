@@ -12,7 +12,7 @@ import { clamp } from '../core/vec.js';
 import { r01, type Player } from '../players/types.js';
 import { alignStyle, decayWorkload, pickDefense, pickOffense, specialist, SUBSTITUTION_COST, type Availability, type Team } from '../league/team.js';
 import { PlaySim, type PlaySetup } from '../sim/playsim.js';
-import { CoverageScouting } from '../sim/qbmind.js';
+import { CoverageScouting, SCOUT_SEEN } from '../sim/qbmind.js';
 import { ScoutingReport } from '../sim/recognition.js';
 import type { Frame, PenaltyCall, PlayResult } from '../sim/types.js';
 import { BoxScore } from './stats.js';
@@ -25,6 +25,7 @@ import { deriveOfficialPossessionStats } from './possession-stats.js';
 import { deriveOfficialPlayStats, type OfficialPlayCredit, type OfficialStatsTreatment } from './official-play-stats.js';
 import type { OffSlot, OffensivePlayCall, DefensivePlayCall } from '../playbook/types.js';
 import { routeOfAgent } from '../sim/behaviors/receiver.js';
+import { BELIEVED_BODY, BeliefStore } from '../sim/believed-body.js';
 
 export type Side = 'home' | 'away';
 const other = (s: Side): Side => (s === 'home' ? 'away' : 'home');
@@ -240,6 +241,8 @@ export class Game {
   private readonly log: PlayLog[] = [];
   /** Fast energy pool at the next snap, by player id. */
   private readonly energy = new Map<string, number>();
+  /** BELIEVED_BODY: every player's beliefs about the opponents' capacities over this game (null with the flag off). */
+  private readonly beliefs: BeliefStore | null;
   /** Slow game reserve by player id: the ceiling the fast pool refills to. */
   private readonly reserve = new Map<string, number>();
   /** Who was on the field for the last snap and how long it lasted: the
@@ -282,6 +285,7 @@ export class Game {
     private readonly opts: GameOptions,
   ) {
     this.rng = new Rng(opts.seed ?? 1);
+    this.beliefs = BELIEVED_BODY ? new BeliefStore(`game|${opts.seed ?? 1}`) : null;
     this.rules = { edition: 'NFL-2026', postseason: false, ...opts.rules };
     this.coin = this.rng.fork('coin');
     this.snaps = this.rng.fork('snaps');
@@ -686,6 +690,7 @@ export class Game {
       record: this.opts.record,
       recordLevel: this.opts.recordLevel,
       energy: this.energy,
+      beliefs: this.beliefs ?? undefined,
       manPrefs: prefs,
       hurry: sit.hurry,
       down: s.down,
@@ -710,12 +715,19 @@ export class Game {
     const r = this.opts.hooks?.playResult?.(sim, 'scrimmage') ?? sim.run();
     // Fatigue: write back both pools of players who were on the field.
     this.writeBackEnergy(sim, r.duration);
+    // BELIEVED_BODY: the huddle before the next snap; each unit on the field tells its own men what it saw.
+    if (this.beliefs) this.beliefs.huddle((['O', 'D'] as const).map((side) => sim.agents.filter((a) => a.team === side)
+      .map((a) => ({ id: a.player.id, awareness01: a.r('awareness') }))));
     this.lastUnits = { offense: offTeam.abbr, off: new Set(sim.agents.filter((a) => a.team === 'O').map((a) => a.player.id)),
       def: new Set(sim.agents.filter((a) => a.team === 'D').map((a) => a.player.id)) };
     for (const a of sim.agents) this.box.line(a.player, a.team === 'O' ? offTeam.abbr : defTeam.abbr).snaps++;
     // Both sides learn from the snap they just saw.
     this.scouting[defSide].observe(sim.snapContext, ranCall.kind === 'pass');
-    if (ranCall.kind === 'pass') this.coverageScouting[offSide].observe(defCall);
+    // SCOUT_SEEN: the offense learns the coverage its passer came to believe, weighted by how settled it was (off: the call).
+    if (ranCall.kind === 'pass') {
+      if (SCOUT_SEEN) this.coverageScouting[offSide].observeSeen(sim.qbMind.belief, sim.qbMind.report.pre);
+      else this.coverageScouting[offSide].observe(defCall);
+    }
 
     const startDown = s.down;
     const startDist = s.distance;

@@ -30,6 +30,7 @@ async function throws(flag: string) {
   // (ACC_RADIUS) he throws the vertical on 7 of 10 (median 2.3 s, 2 check-downs) and on 10 of 10 (all by 3.2 s), so the
   // off arm's check-down premise is gone. Pinned off here to keep ACC_RADIUS's own contrast; ACC_RADIUS is held.
   vi.stubEnv('QB_ROLE_PATH', '0');
+  vi.stubEnv('QB_SCOUT', '0'); // engine-96 (QB lane to re-record): the four_verts two-high scenes were recorded with the passer's belief of defenders' true bodies; on the scouting report the on-time vertical's median moves 2.9 -> 3.3 s on this panel
   vi.stubEnv('ACC_RADIUS', flag);
   const { PlaySim } = await import('../src/sim/playsim.js');
   const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');

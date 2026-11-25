@@ -57,6 +57,7 @@ async function plays(flag: string) {
   // the lead's own effect is not reached (on and off medians are identical, 2.34 yd). Owner: Coverage. Remove this test with
   // ARRIVE_LEAD when FLIGHT_BREAK=0's paths (flightApproach's fixed catch-point drive) are retired.
   vi.stubEnv('FLIGHT_BREAK', '0');
+  vi.stubEnv('QB_SCOUT', '0'); // engine-96 (QB lane to re-record): the scene's throws were recorded with the passer's belief of rushers' and defenders' true bodies; QB_SCOUT moves which short throws he makes (median lead 5 against 5 on this panel)
   const { Rng } = await import('../src/core/rng.js');
   const { generateTeam, pickDefense, pickOffense } = await import('../src/league/team.js');
   const { PASS_BY_ID } = await import('../src/playbook/concepts.js');

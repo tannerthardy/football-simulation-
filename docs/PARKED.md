@@ -10,6 +10,13 @@ Rules:
 
 Built 2026-10-22 from every flag found in `src` on the repository's branches, plus 4 kept outside any branch; updated after #190, #194 and #196 merged, so it lists the 89 branch flags not on develop `5a52dae3`. "What it does" is the first sentence of the flag's own doc comment. "Where" is the most recently updated branch carrying it.
 
+## Mechanism debt (ideas, not built)
+
+| Flag | What it does | Where | Status |
+|---|---|---|---|
+| `GETOFF_AUTHORITY` | (Idea, not built.) Replace LINE_START's fitted drive share at the snap (0.4 + 0.03 x first-break depth) with the receiver's controller valuing the lateral authority he keeps while he reads the defender: a full forward push spends the whole friction ellipse. | not built; LINE_START's FLAGS row names the debt | Mechanism debt, not a gap (Integration, 2026-11-24): the get-off it stands in for matches the NFL (speed at 0.5 s 1.3–1.7 against 1.1–1.6; depth at 1–3 s within a few tenths, Flex `getoff.py`). Revisit when the receiver's release controller is rebuilt. |
+| `DEEP_LOOK_HEAD` | (Idea, not built.) BALL_EST_DEEP_LOOK turns a vertical receiver's trunk to the QB at 13–14 yd, and the facing speed cap costs about 0.9 yd/s; a receiver turns his head, which HEAD_FOLLOW now models. | not built | Mechanism debt, not a gap (Integration, 2026-11-24): verticals at 2–3 s run as fast as the NFL's or faster (wide 7.2–7.8 against 6.9–7.1 yd/s, Flex `getoff.py`). Revisit with the receiver's ball-tracking look. |
+
 ## G1 Defenders don't finish plays
 
 | Flag | What it does | Where | Status |
