@@ -214,6 +214,7 @@
     "PICTURE_AGE": "off",
     "PERIPH_ACUITY": "on",
     "PLAN_BREAK_BODY": "on",
+    "RELEASE_ZONE": "off",
     "QB_V2": "off",
     "CALL_COMPOSE": "off",
     "FLIGHT_BREAK": "on",

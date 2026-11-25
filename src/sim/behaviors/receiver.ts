@@ -294,6 +294,7 @@ const PRESS_MIRROR = process.env.PRESS_MIRROR !== '0';
  * gos release outside 84% of the time, 3.5 yd wide by 5 yd; posts, slants and
  * ins release inside (BDB 2025). */
 const PRESS_RELEASE = process.env.PRESS_RELEASE !== '0';
+<<<<<<< HEAD
 /** PLAN_BREAK_BODY (on since engine-103; PLAN_BREAK_BODY=0 restores; Rules + Coaching, 2026-11-24): a route's
  * planned break (`breakTime`, what the quarterback's forecast and throw timing read) is his own body's run to it from the
  * stance: route-motion's bodyRunTime, the same stepBody and get-off drive that run him.
@@ -304,6 +305,17 @@ const PRESS_RELEASE = process.env.PRESS_RELEASE !== '0';
  * - The receiver's own look for the ball (preLook) keeps today's number (`lookBreakTime`), so no receiver behaviour
  *   changes. */
 const PLAN_BREAK_BODY = process.env.PLAN_BREAK_BODY !== '0';
+=======
+/** RELEASE_ZONE (experimental, off; RELEASE_ZONE=1 turns it on; Rules + Coaching, 2026-11-24, the call-theory matrix's
+ * mesh cell): the release is how he gets to his stem, so it ends where his route's first point is.
+ * - Once he is as deep as that point (or past it in his route), he runs his route.
+ * - Off, the release around a man he saw tight at the snap held while that man stayed 0-5 yd ahead and in his lane.
+ *   A press man who trails him a little deeper, as a man defender does, kept him releasing upfield. Mesh's high crosser
+ *   against Cover 1 press climbed to 6.3 yd against his route's 4.5-5 yd, so the crossers passed about 3 yd apart.
+ *   scripts/diag/calls/mesh_hdepth.mts on rules/matrix: 4.3-4.5 yd with the release off.
+ * - A go's first point is at 4 yd, so its release is unchanged; a crosser's or a slant's ends at its turn. */
+const RELEASE_ZONE = process.env.RELEASE_ZONE === '1';
+>>>>>>> pr919
 /** RELEASE_SEEN (off; RELEASE_SEEN=1 turns it on): a receiver releases around any defender he saw tight over him at
  * the snap (within RELEASE_TIGHT_DEPTH ahead and RELEASE_TIGHT_WIDTH either side, as he saw them), not only the one
  * the defence's call made his press-man corner, an assignment he cannot know. The release side and how cleanly he
@@ -863,6 +875,8 @@ export class RouteRunner implements Behavior {
         });
       }
       const candidates = RELEASE_SEEN ? this.tightAtSnap ?? [] : sim.defense;
+      // RELEASE_ZONE: past his route's first point, the release is done: his route takes over.
+      if (RELEASE_ZONE && (this.idx > 0 || (this.path[0] && a.pos.x - sim.los >= this.path[0].p.x - sim.los - 0.25))) return null;
       for (const d of candidates) {
         if (!RELEASE_SEEN) {
           const spot = sim.defAlign.spots[d.slot as keyof typeof sim.defAlign.spots];
