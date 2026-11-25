@@ -81,6 +81,36 @@ describe('QB receiver acquired picture and immutable installation', () => {
     expect(a.estimate).toMatchObject({ progress: null, motion: 'observed-motion', sampledAt: .7 });
   });
 
+  it('with shapeCarry (QB_V2): a look with him on his line but moving across it does not leave the route; 0.3 s of them does; a look placing him off every leg does at once; parallel to his line, the shape is carried', () => {
+    const f = fixture(), start = { x: 40, y: 18 };
+    const prior = installReceiverRoute(start, 40, 1, getRoute('go'), 0, f.r.profile, f.r.r('routeRunning'));
+    const mk = () => { const fc = new ReceiverForecast({}, prior, .05); fc.shapeCarry = true;
+      fc.acquire({ pos: { x: 44, y: 18 }, vel: { x: 5, y: 0 }, facing: 0, sampledAt: .6, acquiredAt: .8 }); return fc; };
+    const fc = mk();
+    expect(fc.estimate?.motion).toBe('installed-route');
+    // On his line, velocity across it (the unreliable part of a peripheral picture): still on his route.
+    fc.acquire({ pos: { x: 44.5, y: 19.1 }, vel: { x: 0, y: 4 }, facing: Math.PI / 2, sampledAt: .7, acquiredAt: .8 });
+    expect(fc.estimate?.motion).toBe('installed-route');
+    expect(fc.predict(.8, .5)!.x).toBeGreaterThan(45); // still forecast upfield
+    // Such pictures across 0.35 s: he has left it, and the forecast follows the line he is seen on.
+    fc.acquire({ pos: { x: 44.6, y: 19.3 }, vel: { x: 0, y: 4 }, facing: Math.PI / 2, sampledAt: 1.05, acquiredAt: 1.1 });
+    expect(fc.estimate?.motion).toBe('observed-motion');
+    // One picture placing him 3 yd off the line, crossing: believed at once.
+    const g = mk();
+    g.acquire({ pos: { x: 44, y: 21 }, vel: { x: 0, y: 4 }, facing: Math.PI / 2, sampledAt: .7, acquiredAt: .8 });
+    expect(g.estimate?.motion).toBe('observed-motion');
+    // 2.5 yd off his line but running parallel to it: the installed shape carried through the picture, not pulled back.
+    const h = mk();
+    h.acquire({ pos: { x: 46, y: 20.5 }, vel: { x: 6, y: 0 }, facing: 0, sampledAt: .8, acquiredAt: .9 });
+    expect(h.estimate?.motion).toBe('installed-route');
+    const ahead = h.predict(.9, .5)!;
+    expect(ahead.x).toBeGreaterThan(48); expect(Math.abs(ahead.y - 20.5)).toBeLessThan(0.8);
+    // 45 deg off his line (a release to block, a re-route): not carried.
+    const k = mk();
+    k.acquire({ pos: { x: 46, y: 20.5 }, vel: { x: 4, y: 4 }, facing: Math.PI / 4, sampledAt: .8, acquiredAt: .9 });
+    expect(k.estimate?.motion).toBe('observed-motion');
+  });
+
   it('keeps geometrically ambiguous progress unknown rather than guessing a private waypoint', () => {
     const f = fixture();
     const route: RouteDef = { id: 'overlap-control', family: 'cross', depth: 10, end: 'settle',

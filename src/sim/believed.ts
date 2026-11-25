@@ -10,6 +10,7 @@ import { derivePhysical, type PhysicalProfile } from '../players/physical.js';
 import { r01, RATING_KEYS, type Player, type Position, type RatingKey } from '../players/types.js';
 
 const TEAMS = 12;
+const LEAGUE = '*league*';
 let cache: Map<Position, { profile: PhysicalProfile; ratings: Record<RatingKey, number> }> | null = null;
 
 function build(): NonNullable<typeof cache> {
@@ -25,6 +26,8 @@ function build(): NonNullable<typeof cache> {
     }
   }
   const out = new Map<Position, { profile: PhysicalProfile; ratings: Record<RatingKey, number> }>();
+  // The league-typical defensive starter (every position pooled), for a man at a position with no starters in the sample.
+  by.set(LEAGUE as Position, [...by.values()].flat());
   for (const [position, players] of by) {
     const sum: Record<string, number> = {}, count: Record<string, number> = {};
     const ratings = Object.fromEntries(RATING_KEYS.map((k) => [k, 0])) as Record<RatingKey, number>;
@@ -42,6 +45,14 @@ function build(): NonNullable<typeof cache> {
 export function typicalAt(position: Position): { profile: PhysicalProfile; ratings: Record<RatingKey, number> } | null {
   cache ??= build();
   return cache.get(position) ?? null;
+}
+
+/** The typical defensive starter at a position, or, for a position with no starters in the sample, the league-typical
+ * defensive starter: never the man's own values (the outside reviewer's second read, 2026-11-25: the fallback read the
+ * true profile and ratings exactly). */
+export function typicalOrLeague(position: Position): { profile: PhysicalProfile; ratings: Record<RatingKey, number> } {
+  cache ??= build();
+  return cache.get(position) ?? cache.get(LEAGUE as Position)!;
 }
 
 /** `truth` as believed by someone who knows the man to degree k (0 = only his position, 1 = exactly). */

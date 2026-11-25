@@ -85,6 +85,9 @@ scorecard uses the standard our plan encodes: a key read on the flat defender, a
 **Invariants on every cell.**
 1. No throw lock: every committed throw starts its windup on that tick, or the commit fails back.
 2. No stale-picture flip: with no new observation of a defender, a throw's estimate never rises.
+   **Restated 2026-11-25:** holding a defender's believed position and motion fixed, a throw's estimate never rises
+   with the time since he was last seen. His belief about an unwatched man moving to his job is anticipation and may
+   open or close a throw; uncertainty that only grows with time may not.
 3. No hidden-state read: the scan passes with `host.ts` included.
 4. The in-pocket throwaway is reachable, and leaving the pocket uses the margins and can be undone.
 
@@ -94,3 +97,25 @@ scorecard uses the standard our plan encodes: a key read on the flat defender, a
   scorecard beating the old controller on decisions and timing; the invariants passing.
 - **Gate 2, before intermediate, deep and play action:** cone-gated head and pose everywhere, the checkdown's
   `fromStep`, and post-snap confirmation of the middle of the field.
+
+## Amendment (2026-11-25): picture age as built
+
+Section 1's formula was written before two facts were known; the rule as built replaces it.
+
+- The estimate does not carry a picture over its own perception delay (about 0.30 s even on a watched man). The
+  passer projects each defender's picture over its delay at the seen velocity: belief about now, not caution.
+- The one-way advance runs on the time the man's motion could have changed without his seeing it: the delay plus the
+  time since the last sighting. It grows only to the estimate's dead-reckoning horizon (0.5 s), then holds, and never
+  exceeds the straight-line bound. The delay's share is a stated allowance for unseen acceleration, sized by
+  `UNSEEN_DRIFT` (2.5); without it coverers are under-believed (0.05 against 0.10 arriving).
+- Past the horizon a man is priced from the estimate's expected spot (his job) with a fixed, labelled spread
+  (`JOB_SPREAD`, 2.0 yd). Nobody is dropped: the 1.5 s cut-off is gone. Nobody is priced from the last sighting.
+- A running maximum on a defender's arrival chance was considered and rejected: it would keep a zone man priced on a
+  crosser who has run past him.
+- A key he has not had in his clear view for longer than his look time is looked at before he judges on it (his own
+  eye history, not the picture's age).
+
+Eight staged cells x 30 against the landed judge: completions 185 -> 190, interceptions 5 -> 3, believed against
+actual completion 0.81 / 0.79 -> 0.84 / 0.81. Known cost, open with the QB lane: late releases on quick outs against
+Cover 3 (p75 1.41 -> 2.31 s), where an occupied curl-flat dropper is priced as driving on the out (0.96 against 1 of 9
+arriving).
