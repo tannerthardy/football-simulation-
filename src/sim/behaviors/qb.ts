@@ -62,6 +62,9 @@ const QB_V2 = process.env.QB_V2 === '1';
 /** QB_V2 runs V2 on the concepts it was staged and calibrated on (the quick game, 2026-11-24); widening it to the other
  * plans is a later change, after they are staged. */
 const QB_V2_STAGED = new Set(['quick_outs', 'slant_flat', 'stick']);
+/** Whether QB_V2 would take this call's read: a staged concept whose read plan fits the call (planFor). A property of the
+ * call alone, so a scorecard can label the same calls in an arm with V2 off. */
+export function qbV2Call(call: PassConcept): boolean { return QB_V2_STAGED.has(call.id) && planFor(call) !== null; }
 const CATCH_Z = 1.3;
 
 /** What the no-throw behaviour is told when the throw decision has nothing acceptable this tick (the seam between
@@ -1634,6 +1637,8 @@ export class QBPass implements Behavior {
       if (this.v2) {
         // His feet run the plan's drop (Rules: stick is one step from the gun though the installed concept's drop says gun3).
         if (plan!.drop !== this.concept.drop) this.drop = dropSpec(plan!.drop, a.pos.x, sim.los, sim.offCall.formation.qb !== 'under');
+        // His forecasts carry the installed shape through his picture and leave the route only on evidence (shapeCarry).
+        for (const f of this.receiverForecasts.values()) f.shapeCarry = true;
         // At the snap: the pre-snap decision (Flex's module B) on his own picture: the side by the plan's pick, the alert,
         // the hot. Protectors are the call's pass protection by side of the ball; the box half-width a stated 5 yd a side
         // until the alignment's core edge is read.
