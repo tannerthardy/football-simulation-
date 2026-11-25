@@ -2805,3 +2805,7 @@ arm on card e140 (4 seeds x 32 games, against engine-102; the fifth seed was not
 Not landed from the same card: `TRAIL_LEVERAGE` (Defense, #892): completion +3.7, +0.1, -1.7, +0.7, nothing
 consistent, and no gain on the staged cases it was built for; it stays on its branch. `QB_SCREEN_SEEN=0` moved no row
 by any amount, so that leak removal (on since engine-99) costs nothing.
+
+## HAND_TRAVEL (Tools/Physics, 2026-11-25; on, experimental)
+
+On in the stack (a flag that will land on is red-diffed on). The unloaded hand's travel speed has its own constant, 5 yd/s, read by the engagement sites only (the press and its fit, `handSite`'s length, the hand offset, `refitTime`); the RUSH_HANDS club and counter durations stay on ARM_SPEED (a faster hand would shorten the contact and cut the impulse of a club whose force is armForce); `ARM_SPEED` (3 yd/s, the solver's former correction ceiling, unvalidated) stays the contact solver's loaded ceiling and is untouched. 5 yd/s is a stated choice inside the sourced punch bracket (docs/reviews/2026-11-25-arm-speed.md); no raise time is sourced. `=0` restores ARM_SPEED, bit for bit. Own card arm; engine id set at landing.
