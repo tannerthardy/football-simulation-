@@ -330,6 +330,12 @@ function rusherPhi(sim: PlaySim, d: Agent, bPos: Vec2): number {
   return measurePhi(norm(sub(sim.see(d, sim.qb).pos, d.pos)), d, { pos: bPos });
 }
 
+/** RUSH_RELEASE: the rusher's leverage on his blocker as he has it (the rep's phi on his own picture under REP_SEEN, the
+ * rep's otherwise), toward his working side: past 0.5 he has turned him (the rep's own `turned`). */
+export function rusherLeverage(sim: PlaySim, e: Engagement): number {
+  return (REP_SEEN ? rusherPhi(sim, e.defender, sim.see(e.defender, e.blocker).pos) : e.phi) * e.side;
+}
+
 /** REP_SEEN: where a pass blocker protects: the launch point he knows from the call, on the ball's line. */
 export function protectPoint(sim: PlaySim): Vec2 {
   return { x: calledLaunchX(sim) ?? (SET_SPOT ? sim.snapX[sim.qb.idx] ?? sim.qb.pos.x : sim.qb.pos.x), y: sim.ballY };

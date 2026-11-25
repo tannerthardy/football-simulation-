@@ -25,7 +25,7 @@ import { TRACKING_REACH_BONUS } from '../catching.js';
 import { asCarrierPursuit } from '../coverage-space.js';
 import { angleTo, chase, goTo, leverage, PURSUIT_COMMIT, pursuitPoint, runThrough, stand, track, watch } from './common.js';
 import { creepPace } from '../backer-creep.js';
-import { ARC_PAST, EDGE_ARC, arcLandmark, seenOverset, traits } from '../engagement.js';
+import { ARC_PAST, EDGE_ARC, arcLandmark, rusherLeverage, seenOverset, traits } from '../engagement.js';
 import { catchSpot } from './receiver.js';
 import { observedBlocking, showsBlock } from '../coverage-cues.js';
 import { executeRunFit, guardStep, lineRead, pullers, type RunFitRead } from '../run-fits.js';
@@ -777,7 +777,9 @@ export class PassRusher implements Behavior {
 }
 
 /** RUSH_RELEASE: his held pull-up, and the passer's set as he sees it (seen moving fast since his last set; the set's time). */
-type RushHeld = { pullUp: boolean; fast?: boolean; setAt?: number };
+type RushHeld = { pullUp: boolean; fast?: boolean; setAt?: number; winning?: boolean };
+/** RUSH_RELEASE: winning his rep, held (the rep's `turned` is leverage over 0.5; he gives it up below 0.4). */
+const WIN_ENTER = 0.5, WIN_EXIT = 0.4;
 
 /** RUSH_RELEASE (release-belief.ts): believing the ball thrown, he asks to come off his block toward it (the flight he
  * plays, else downfield the way the passer threw); seeing the passer load, he pulls up facing him with his hands up when
@@ -809,7 +811,12 @@ function rushRelease(a: Agent, sim: PlaySim, held: RushHeld): MoveCommand | null
   const from = rb.loadingAt ?? (held.setAt !== undefined && sim.t - held.setAt <= 2 * LOAD_BEAT ? held.setAt : undefined);
   if (from === undefined) { held.pullUp = false; return null; }
   const left = LOAD_BEAT - (sim.t - from);
-  const tArr = a.engagement ? Infinity : timeToReach({ pos: a.pos, vel: a.vel, profile: a.profile, speedScale: a.speedScale }, q.pos, a.profile.reach);
+  // Engaged, his own "can I get there": a man who has turned his blocker (his leverage past the blocker's shoulder, on his
+  // own picture: the rep's `turned`, entered at 0.5, left below 0.4) is winning and judges his own time to the passer; a
+  // stalemated man cannot get there and gets his hands up.
+  if (a.engagement) { const lev = rusherLeverage(sim, a.engagement); held.winning = held.winning ? lev > WIN_EXIT : lev > WIN_ENTER; }
+  else held.winning = false;
+  const tArr = a.engagement && !held.winning ? Infinity : timeToReach({ pos: a.pos, vel: a.vel, profile: a.profile, speedScale: a.speedScale }, q.pos, a.profile.reach);
   held.pullUp = held.pullUp ? tArr > left - PULL_MARGIN : tArr > left + PULL_MARGIN;
   if (!held.pullUp) return null;
   handsWanted.set(a, true);
