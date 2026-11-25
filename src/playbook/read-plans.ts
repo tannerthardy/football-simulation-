@@ -4,7 +4,9 @@
  * pre-snap state flips them, by `pick`. Steps: 0 = the plant (the third step under center, one from the gun), 1 = the
  * first hitch. Defenders by the role a coach teaches the passer to find, never a slot or an assignment.
  */
-import type { QbReadPlan } from '../sim/qbv2/plan.js';
+import type { PlanRead, QbReadPlan } from '../sim/qbv2/plan.js';
+import { getRoute } from './routes.js';
+import { HALF_CONCEPTS } from './calls/halves.js';
 import { PASS_BY_ID, SCREEN_BY_ID } from './concepts.js';
 import { asBackThree } from '../game/concept-fit.js';
 import type { PassConcept, ReceiverRef } from './types.js';
@@ -75,14 +77,22 @@ export const HITCHES: QbReadPlan = {
 export const QUICK_OUTS: QbReadPlan = {
   conceptId: 'quick_outs', drop: 'quick', readType: 'key', pick: 'cushion',
   reads: [
-    // The flat defender over the picked side, in the drop (QB lane and Integration, 2026-11-24: his eyes on the field
-    // nickel, a fresh picture at the plant). "the apex (flat) defender: he widens to the out: #1 hitch inside him; he
-    // sits on the hitch: #2 out" (hitch_out's read); "sinks under the curl ... hit the speed out" (Gridiron Strategies).
-    { step: 0, look: { kind: 'key', role: 'flat' },
+    // The corner over #1 first, in every coverage (Integration and the QB lane, 2026-11-25: keyed on the apex, the
+    // out went into a squatting Cover 2 corner on 21 of 30, the apex having dropped inside). "If the corner is off, we
+    // take the speed out. If the corner is hard ... that side of the field is closed" (Shaw); "If a soft corner to the
+    // quick side, go to quick out" (Kratzer). Off and bailing: the out, before the break. Tight or squatting: not the
+    // out; the next read. 'none' (he looked, and nobody is over or outside #1) leaves the out uncovered.
+    { step: 0, look: { kind: 'key', role: 'corner' },
       throws: [{ ref: 'S1', timing: 'onBreak' }, { ref: 'S2', timing: 'onBreak' }],
-      keyRules: [{ cue: 'sinks', throwTo: 'S1' }, { cue: 'carries', throwTo: 'S1' }, { cue: 'bails', throwTo: 'S1' },
-        { cue: 'squats', throwTo: 'S2' }, { cue: 'jumps', throwTo: 'S2' }, { cue: 'widens', throwTo: 'S2' },
-        { cue: 'none', throwTo: 'S1' }] },
+      keyRules: [{ cue: 'bails', throwTo: 'S1' }, { cue: 'sinks', throwTo: 'S1' }, { cue: 'carries', throwTo: 'S1' },
+        { cue: 'squats', throwTo: 'S2' }, { cue: 'jumps', throwTo: 'S2' }, { cue: 'none', throwTo: 'S1' }] },
+    // The apex second: the out is gone (or not judged open: the apex widening into its window is that throw's lane
+    // defender), so #2's hitch inside him: "Apex widening into the window: move inside or backside" (the outside
+    // reviewer's notes, docs/reviews/2026-11-24-qbv2-outside-audit.md §4). Only the hitch is thrown from this read, so
+    // nothing the apex does, 'none' included, sends the ball to the out.
+    { step: 0, look: { kind: 'key', role: 'flat' },
+      throws: [{ ref: 'S2', timing: 'onBreak' }],
+      keyRules: [{ cue: 'widens', throwTo: 'S2' }, { cue: 'jumps', throwTo: 'S2' }, { cue: 'none', throwTo: 'S2' }] },
     // "progression continuing on the weak side" (Kratzer): the backside quick out on the first hitch.
     { step: 1, look: { kind: 'receiver', ref: 'W1' }, throws: [{ ref: 'W1', timing: 'onBreak' }] },
   ],
@@ -90,8 +100,35 @@ export const QUICK_OUTS: QbReadPlan = {
   // Taught: the back's shoot (a CALL_COMPOSE step-2 setting, #903). While it is not called ours blocks.
   checkdown: { ref: 'B', fromStep: 1, timing: 'seenOpen' },
   confirm: null,
-  expected: { cover2: 0, tampa2: 0, cover3: 0, cover4: 0 },
+  expected: { cover2: 1, tampa2: 1, cover3: 0, cover4: 0 },
   source: 'docs/reviews/2026-11-24-read-plans.md#quick-outs-quick_outs (Kratzer; Shaw; The QB Stable; Win With The Pass Cover 2 beaters; Brown, Grantland; Gridiron Strategies curl/speed out). Outlet: the back\'s shoot.',
+};
+
+/** Double slants: key the flat defender (the Sam) on the bounce step; inside slant, then outside: he follows #2's slant,
+ * #1's behind him; he buzzes to the flat, #2's. (Win With The Pass, "RED - All Slant"; the Mike-key version, Stanford
+ * Daily, is a later scheme option.) */
+export const DOUBLE_SLANTS: QbReadPlan = {
+  // Taught as two slants, the slot's skinny slant inside the outside receiver's (Stanford Daily); no third route is part
+  // of the read. Ours adds #3 to the flat (the install's needs S3): the plan does not read him.
+  conceptId: 'double_slants', drop: 'quick', readType: 'key',
+  reads: [
+    // "Basically, he is reading the outside linebacker or the flat defender." "When the Y breaks his slant and the Sam
+    // follows him, the QB knows that the Z is open." "If the Sam would have buzzed to the flat like a traditional cover
+    // 3 or cover 4, the QB would have thrown the inside slant." Progression: "Inside Slant, Outside Slant." A cue the
+    // source does not name (he sinks, or nobody is there) answers with that order.
+    { step: 0, look: { kind: 'key', role: 'flat' },
+      throws: [{ ref: 'S2', timing: 'onBreak' }, { ref: 'S1', timing: 'onBreak' }],
+      keyRules: [{ cue: 'carries', throwTo: 'S1' }, { cue: 'widens', throwTo: 'S2' }, { cue: 'jumps', throwTo: 'S2' }] },
+  ],
+  // GENERIC hot: the slants are the quick game's built-in hots (Brown, Grantland); the backside's short route on its side.
+  hot: [{ side: 'S', over: 1, answer: { ref: 'S2', timing: 'onBreak' } }, { side: 'W', over: 1, answer: { ref: 'W2', timing: 'onBreak' } }],
+  // No checkdown is taught; ours blocks the back. A composed call that releases him gets one (planFor).
+  checkdown: null,
+  confirm: null,
+  // "tries to expose Cover 2 zone and man coverages" (Stanford Daily); the read names Cover 3 and Cover 4's flat
+  // defender (Win With The Pass).
+  expected: { cover1: 0, cover2: 0, cover2man: 0, cover3: 0, cover4: 0 },
+  source: 'docs/reviews/2026-11-24-read-plans.md#double-slants-double_slants (Win With The Pass, RED - All Slant; Stanford Daily film study). GENERIC hot. Key choice: the flat defender (the Mike key is a later scheme option).',
 };
 
 // ------------------------------------------------------------------ dropback (docs/reviews/2026-11-24-read-plans.md)
@@ -415,7 +452,7 @@ export function backThreePlan(p: QbReadPlan): QbReadPlan {
   };
 }
 
-const BASE_PLANS = [SLANT_FLAT, STICK, FADE_FLAT, HITCHES, QUICK_OUTS, CURL_FLAT, SMASH, DAGGER, MESH, Y_CROSS, FLOOD, LEVELS, FOUR_VERTS, VERTS_HITCH,
+const BASE_PLANS = [SLANT_FLAT, STICK, FADE_FLAT, HITCHES, QUICK_OUTS, DOUBLE_SLANTS, CURL_FLAT, SMASH, DAGGER, MESH, Y_CROSS, FLOOD, LEVELS, FOUR_VERTS, VERTS_HITCH,
   PA_POST_DIG, PA_SHOT, PA_FLOOD, RB_SLIP_SCREEN, TE_SCREEN, BUBBLE_SCREEN, BUNCH_NOW_SCREEN, WIDE_NOW_SCREEN, TUNNEL_SCREEN];
 
 /** The authored plans by concept id, with the back-as-#3 version of each concept that has one (`<id>+b3`). */
@@ -459,14 +496,20 @@ export function planRefs(plan: QbReadPlan): ReceiverRef[] {
  * the concept's strong and weak are). For the QB lane's plan lookup: a call takes the plan only when every one of these
  * matches (`planFits`). Null for a plan with no installed concept. */
 export function routesOf(plan: QbReadPlan): Map<ReceiverRef, string | null> | null {
+  const on = authoredCall(plan);
+  return on && new Map(planRefs(plan).map((ref) => [ref, routeAt(on, ref)]));
+}
+
+/** The call a plan was authored on: its installed concept with the taught setting (TAUGHT_ON), as the back-as-#3 call
+ * for a '+b3' plan. Null for a plan with no installed concept. */
+function authoredCall(plan: QbReadPlan): { strong: PassConcept['strong']; weak: PassConcept['weak']; back: string } | null {
   const b3 = plan.conceptId.endsWith('+b3');
   const id = b3 ? plan.conceptId.slice(0, -3) : plan.conceptId;
   const installed = PASS_BY_ID[id] ?? SCREEN_BY_ID[id];
   if (!installed) return null;
   const base = b3 ? asBackThree(installed) : installed;
   const t = TAUGHT_ON[id] ?? {};
-  const on = { strong: { ...base.strong, ...t.strong }, weak: { ...base.weak, ...t.weak }, back: t.back ?? base.back };
-  return new Map(planRefs(plan).map((ref) => [ref, routeAt(on, ref)]));
+  return { strong: { ...base.strong, ...t.strong }, weak: { ...base.weak, ...t.weak }, back: t.back ?? base.back };
 }
 
 /** The call runs the routes the plan was authored on, at every receiver the plan uses (QB lane, 2026-11-24: otherwise
@@ -477,4 +520,123 @@ export function planFits(plan: QbReadPlan, call: Pick<PassConcept, 'strong' | 'w
   if (!authored) return false;
   for (const [ref, route] of authored) if (routeAt(call, ref) !== route) return false;
   return true;
+}
+
+// ------------------------------------------------------------------ composed plans (CALL_COMPOSE step 3, quick game)
+
+/** A read is the frontside's when his eyes are on the plan's own side: a key on side S (the default) or a receiver who
+ * is not on the backside (an S receiver, or the back as #3 on a '+b3' plan). */
+const isFront = (r: PlanRead): boolean => (r.look.kind === 'key' ? r.look.side !== 'W' : r.look.ref[0] !== 'W');
+
+/** A route that has broken by the quick drop's first hitch (the quick game's family rule: the ball comes out on the last
+ * step or the first hitch, routes inside about 6 yd): the quick and flat families. A vertical, an intermediate route
+ * (hook, out, curl, dig) or a crosser has not, so it is not read on the reset. */
+const isQuickRoute = (id: string | undefined): boolean => !!id && ['quick', 'flat'].includes(getRoute(id).family);
+
+/** What a backside half gives on the one reset (the first hitch), as taught: reads are tied to the feet, and a late arrival on a
+ * timing route is a throw into a closing window (the outside reviewer's second read, docs/reviews/2026-11-25-qbv2-second-read.md
+ * §2, checked against ours). "One reset, not three": after it, the checkdown.
+ * - reset: a read that still fits the later clock. Curl-flat: key the flat defender, the curl if he widens, the flat if he
+ *   sits. An interior settle (the slot's hitch, a hook): "An interior settle (spacing) can be a reset".
+ * - flat: slant-flat late is the flat or the checkdown ("The slant window closes with each hitch").
+ * - none: every other half (an outside quick hitch, a quick out, a stick, a late slant, fade-flat, a go or seam pair):
+ *   no taught reset was found for it as a backside, so the play goes to the checkdown. (An authored plan's own reset,
+ *   taught by a primary source, is kept even where the second read warns against it: the passer's judgment decides
+ *   whether the late throw is there.)
+ * Keyed by the half's routes (the quick hitch counts as the hitch). */
+const BACKSIDE_RESET: Record<string, { reset: PlanRead['look']; throws: ReceiverRef[]; keyRules?: PlanRead['keyRules'] } | { flat: ReceiverRef }> = {
+  curl_flat: { reset: { kind: 'key', role: 'flat', side: 'W' }, throws: ['W1', 'W2'],
+    keyRules: [{ cue: 'widens', throwTo: 'W1' }, { cue: 'jumps', throwTo: 'W1' }, { cue: 'sinks', throwTo: 'W2' }, { cue: 'squats', throwTo: 'W2' }, { cue: 'none', throwTo: 'W2' }] },
+  hitches: { reset: { kind: 'receiver', ref: 'W2' }, throws: ['W2'] },
+  quick_out_hitch: { reset: { kind: 'receiver', ref: 'W2' }, throws: ['W2'] },
+  slant_hitch: { reset: { kind: 'receiver', ref: 'W2' }, throws: ['W2'] },
+  go_hitch: { reset: { kind: 'receiver', ref: 'W2' }, throws: ['W2'] },
+  go_hook: { reset: { kind: 'receiver', ref: 'W2' }, throws: ['W2'] },
+  slant_flat: { flat: 'W2' },
+};
+
+const asHitch = (r: string | undefined) => (r === 'quick_hitch' ? 'hitch' : r ?? null);
+/** The half a side runs, by its routes (null when no half matches). */
+function halfOf(side: PassConcept['weak']): string | null {
+  for (const h of HALF_CONCEPTS) if (([1, 2, 3, 4] as const).every((n) => asHitch(side[n]) === (h.routes[n] ?? null))) return h.id;
+  return null;
+}
+
+/** The backside read a composed call takes on the reset (step `step`), from BACKSIDE_RESET by the backside half; null
+ * when the half gives none (the play goes to the checkdown). */
+export function backsideRead(weak: PassConcept['weak'], step: number): PlanRead | null {
+  const half = halfOf(weak), e = half ? BACKSIDE_RESET[half] : undefined;
+  if (!e) return null;
+  if ('flat' in e) return { step, look: { kind: 'receiver', ref: e.flat }, throws: [{ ref: e.flat, timing: 'seenOpen' }] };
+  return { step, look: e.reset, throws: e.throws.map((ref) => ({ ref, timing: 'seenOpen' as const })), ...(e.keyRules ? { keyRules: e.keyRules } : {}) };
+}
+
+const sameSide = (a: PassConcept['weak'], b: PassConcept['weak']): boolean =>
+  ([1, 2, 3, 4] as const).every((n) => (a[n] ?? null) === (b[n] ?? null));
+
+/** The read plan for a call as it is run (CALL_COMPOSE step 3; the QB lane's one lookup): composed the way the call is
+ * composed. The call is the concept as run, in its concept frame before the formation's flip.
+ * - Null when no plan exists for the concept, or the call's frontside does not run the routes the plan's frontside
+ *   reads, throws and S-side hot use (the plan's S refs, and the back when a '+b3' plan reads him as #3).
+ * - The frontside (its reads, key rules, S and either-side hot, an alert on a front read) is the authored plan's,
+ *   unchanged.
+ * - The backside: the authored backside when the call's backside is the authored one (then, with the authored back's
+ *   job, the plan returned is the authored plan itself); otherwise `backsideRead` of the call's backside half on the
+ *   authored reset's step, and its first quick route as the W hot (the replacement rule; none without one).
+ * - The checkdown: only when the call releases the back (he is in: none), on whatever route the call gave him, seen
+ *   open, from the authored checkdown step (default the first hitch). Not on a '+b3' plan whose back is #3.
+ * - The side pick (cushion, shell, leverage) only when the backside is the authored one: otherwise there is no mirror
+ *   half to flip to, and the concept is run to its called side.
+ * - `expected` and `alert` indices follow the reads; an entry on a dropped backside read is removed. */
+export function planFor(call: Pick<PassConcept, 'id' | 'strong' | 'weak' | 'back'>): QbReadPlan | null {
+  for (const id of [call.id, `${call.id}+b3`]) {
+    const plan = READ_PLANS[id];
+    if (!plan) continue;
+    const on = authoredCall(plan);
+    if (!on) continue;
+    const front = plan.reads.filter(isFront);
+    const frontRefs = new Set<ReceiverRef>();
+    for (const r of front) {
+      if (r.look.kind === 'receiver') frontRefs.add(r.look.ref);
+      for (const t of r.throws) frontRefs.add(t.ref);
+      for (const k of r.keyRules ?? []) frontRefs.add(k.throwTo);
+    }
+    for (const h of plan.hot) if (h.side !== 'W') frontRefs.add(h.answer.ref);
+    if (![...frontRefs].every((ref) => routeAt(call, ref) === routeAt(on, ref))) continue;
+    return compose(plan, on, call);
+  }
+  return null;
+}
+
+function compose(plan: QbReadPlan, on: NonNullable<ReturnType<typeof authoredCall>>, call: Pick<PassConcept, 'strong' | 'weak' | 'back'>): QbReadPlan {
+  const weakSame = sameSide(call.weak, on.weak);
+  const b3 = plan.conceptId.endsWith('+b3');
+  const checkdown = b3 || call.back === 'block' ? (b3 ? plan.checkdown : null)
+    : plan.checkdown ?? { ref: 'B', fromStep: 1, timing: 'seenOpen' };
+  if (weakSame) {
+    if (call.back === on.back || JSON.stringify(checkdown) === JSON.stringify(plan.checkdown)) return plan;
+    return { ...plan, checkdown };
+  }
+  // The new read order: front reads in place; the backside read where the authored backside began (else last).
+  const at = plan.reads.findIndex((r) => !isFront(r));
+  const resetStep = at >= 0 ? plan.reads[at].step : Math.max(...plan.reads.map((r) => r.step)) + 1;
+  const back = backsideRead(call.weak, resetStep);
+  const reads: PlanRead[] = [], index = new Map<number, number>();
+  plan.reads.forEach((r, i) => {
+    if (i === at && back) reads.push(back);
+    if (isFront(r)) { index.set(i, reads.length); reads.push(r); }
+  });
+  if (at < 0 && back) reads.push(back);
+  const hotN = ([1, 2, 3, 4] as const).find((n) => isQuickRoute(call.weak[n]));
+  const wHot = hotN ? { side: 'W' as const, over: 1, answer: { ref: `W${hotN}` as ReceiverRef, timing: 'onBreak' as const } } : null;
+  const hadW = plan.hot.some((h) => h.side === 'W');
+  const hot = [...plan.hot.filter((h) => h.side !== 'W'), ...(hadW && wHot ? [wHot] : [])];
+  const expected = plan.expected && Object.fromEntries(Object.entries(plan.expected)
+    .filter(([, i]) => i !== undefined && index.has(i)).map(([k, i]) => [k, index.get(i!)!]));
+  const alert = plan.alert && index.has(plan.alert.read) ? { ...plan.alert, read: index.get(plan.alert.read)! } : undefined;
+  const out: QbReadPlan = { ...plan, reads, hot, checkdown, expected,
+    source: `${plan.source} Composed (planFor): backside ${halfOf(call.weak) ?? JSON.stringify(call.weak)}, ${back ? 'its reset' : 'no reset (the checkdown)'}.` };
+  delete out.pick; delete out.pickShell; delete out.alert;
+  if (alert) out.alert = alert;
+  return out;
 }

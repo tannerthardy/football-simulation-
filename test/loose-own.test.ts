@@ -36,6 +36,11 @@ async function heads(on: boolean): Promise<{ toCaller: number; toFumbler: number
           const cp = sim.see(a, c).pos, fp = sim.see(a, lost).pos;
           const hc = Math.atan2(cp.y - a.pos.y, cp.x - a.pos.x), hf = Math.atan2(fp.y - a.pos.y, fp.x - a.pos.x);
           if (Math.abs(Math.atan2(Math.sin(hc - hf), Math.cos(hc - hf))) < Math.PI / 4) continue;
+          // Not once he has reached his caller (within contact: the two bodies plus his reach). He runs through the called
+          // spot (runThrough), so there his request keeps his travel and points at neither man. Engine-101 (BLOCK_FRAME on):
+          // iz_strong 3's Y, 0.85 yd from his caller (RT) at 3.65 s, asked 9.1 yd/s at 99 deg against the caller's -173 and
+          // the fumbler's 41, and was counted toward the fumbler.
+          if (Math.hypot(cp.x - a.pos.x, cp.y - a.pos.y) <= a.profile.radius + c.profile.radius + a.profile.reach) continue;
           const cmd = a.behavior.update(a, sim); const v = cmd?.vel; if (!v || Math.hypot(v.x, v.y) < 0.5) continue;
           const h = Math.atan2(v.y, v.x);
           if (Math.cos(h - hc) > Math.cos(h - hf)) toCaller++; else toFumbler++;

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "engine-100",
+  "id": "engine-103",
   "runSet": {
     "commit": "1b5415de99b5b7194eff045f3c37a07a4c54c1a9",
     "seeds": [
@@ -41,6 +41,7 @@
     "note": "Captured 2026-11-13 on the engine-55 default engine (develop 2478e998) with new seeds; not a benchmark any flag was promoted on. Use for run-set deltas (ref:report --set fresh); runSet stays for continuity."
   },
   "numeric": {
+    "QB_QUICK_DRIFT": { "default": 0, "legacy": 0 },
     "INFO_HONEST": { "default": 63, "legacy": 0 },
     "SIGHT_STALE": { "default": 7, "legacy": 0 },
     "BALL_EST": { "default": 6145, "legacy": 0 },
@@ -212,10 +213,13 @@
     "LEGS_HELD": "on",
     "PICTURE_AGE": "off",
     "PERIPH_ACUITY": "on",
+    "PLAN_BREAK_BODY": "on",
+    "QB_V2": "off",
     "CALL_COMPOSE": "off",
     "FLIGHT_BREAK": "on",
     "FLIGHT_LEAD": "off",
     "HEAD_FOLLOW": "on",
+    "HANDOFF_FREEZE": "on",
     "POCKET_CLIMB": "off",
     "BLOCK_SEEN": "on",
     "FREE_BOUND": "off",
@@ -242,6 +246,7 @@
     "PAST_ALONG_PATH": "on",
     "PUNCH": "on",
     "HOLD_CALL": "off",
+    "BLOCK_FRAME": "on",
     "TACKLE_BRAKE": "off",
     "TACKLE_RESET": "off",
     "RUSH_HANDS": "off",

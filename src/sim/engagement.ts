@@ -34,7 +34,7 @@
  * past — never a jump in leverage or a prescribed speed.
  */
 import { KEY_REACT, keyScale } from './key-read.js';
-import { clamp, logistic, norm, sub, type Vec2 } from '../core/vec.js';
+import { angleDiff, clamp, logistic, norm, sub, type Vec2 } from '../core/vec.js';
 import { G } from '../core/units.js';
 import { directionalSpeedFactor, gaitLag, fatigueFactor, movingArrivalVelocity, shouldersOf, TRUNK_TWIST } from '../physics/kinematics.js';
 import { availability, baseRadiusAt, criticalDeviation, omega0, recoverySpeed, supportParams } from '../physics/support.js';
@@ -343,6 +343,39 @@ function baseOf(a: Agent): number {
 
 // ------------------------------------------------------------ creation
 
+/** BLOCK_FRAME (on since engine-101; BLOCK_FRAME=0 restores). A blocker gets back on a defender who has already been
+ * released from a block this play only from where a block is legal: inside his frame (the blocker within 90 deg of his
+ * body facing: his chest and shoulders, not his back). The 90 deg half-plane is a labeled choice.
+ * From anywhere else, getting a hand on him is a grab, not a block: the blocker may still choose it, by the same
+ * discipline-and-situation chance a beaten blocker grabs with (holdChance, as tryHold), decided once per pair per play;
+ * a grab forms the engagement with the hold on (cloth), and contact-holding judges the restraint it achieves (with
+ * HOLD_CALL, whether it is seen). Otherwise he does not re-block that man (he goes on to the next one).
+ * Why (post-shed-joint-tap.mts, develop 7689bc4e, 4 games): no hand joint survives a shed, but 6% of run DL releases
+ * had hands back on them within 0.5 s, 36 of 37 by a new blocker, 31 of 37 from beside or behind him; createEngagement
+ * clamped phi to +-0.95, so a blocker from behind got the block of one at the hip, never a hold and never a call.
+ * Initial fits (a defender not yet released this play) are unchanged. */
+export const BLOCK_FRAME = process.env.BLOCK_FRAME !== '0';
+const engagedBefore = new WeakMap<Agent, PlaySim>();
+/** BLOCK_FRAME diagnostics (read-only; behaviour does not depend on it): called at each re-block outside the frame with
+ * the blocker's choice (true = a grab, false = no block). */
+let blockFrameSink: ((sim: PlaySim, b: Agent, d: Agent, type: 'pass' | 'run', grab: boolean) => void) | null = null;
+export function setBlockFrameSink(f: typeof blockFrameSink): void { blockFrameSink = f; }
+const frameChoice = new WeakMap<Agent, { sim: PlaySim; by: Map<Agent, boolean> }>();
+function inFrameToBlock(_axis: Vec2, d: Agent, b: Agent): boolean {
+  // Inside his frame: the blocker within 90 deg of the defender's body facing (his chest and shoulders, not his back).
+  // That is what makes a block legal; his direction of travel is not (a backer scraping sideways while facing the line is
+  // blocked legally by a man in front of his chest). Not the engagement's phi either: on a run that is measured on the
+  // blocker's own drive axis, and an ordinary reach forms at |phi| >= 1 there (test/inline-zone-keeper.test.ts).
+  // (A travel half was tried first: 315 of 758 refused run re-blocks were inside his facing but behind his travel, 131
+  // of them square to the blocker, and the runs lost 0.8 yd, from blocks the rule should not have dropped.)
+  const toB = Math.atan2(b.pos.y - d.pos.y, b.pos.x - d.pos.x);
+  return Math.abs(angleDiff(toB, d.body.facing)) <= Math.PI / 2;
+}
+/** The chance a blocker chooses a grab (tryHold's: less disciplined men grab more; in pass protection more than on runs). */
+function holdChance(b: Agent, type: 'pass' | 'run'): number {
+  return (0.04 + 0.13 * (1 - b.r('discipline'))) * (type === 'pass' ? 1 : 0.6);
+}
+
 export function createEngagement(sim: PlaySim, blocker: Agent, defender: Agent, type: 'pass' | 'run', drive: Vec2 | null, surface?: RunContactSurface): Engagement | null {
   const t = sim.t;
   if (sim.bond && [sim.bond.carrier, ...sim.bond.tacklers].some((a) => a === blocker || a === defender)) return null;
@@ -399,6 +432,19 @@ export function createEngagement(sim: PlaySim, blocker: Agent, defender: Agent, 
   }
   const axis = axisOf(sim, e);
   const lat = latOf(axis);
+  // BLOCK_FRAME: a defender already released from a block this play is blocked again only from in front of his path
+  // and inside his frame; from anywhere else it is a grab the blocker may choose (decided once per pair), or no block.
+  if (BLOCK_FRAME && engagedBefore.get(defender) === sim && !inFrameToBlock(axis, defender, blocker)) {
+    let pair = frameChoice.get(blocker);
+    if (!pair || pair.sim !== sim) { pair = { sim, by: new Map() }; frameChoice.set(blocker, pair); }
+    let grab = pair.by.get(defender);
+    if (grab === undefined) { grab = sim.dice('frame-hold', blocker, defender).chance(holdChance(blocker, type)); pair.by.set(defender, grab); }
+    blockFrameSink?.(sim, blocker, defender, type, grab);
+    if (!grab) return null;
+    e.holding = true;
+    blocker.tags.add('held'); blocker.tags.add('frame-grab');
+  }
+  engagedBefore.set(defender, sim);
   e.phi = clamp(measurePhi(axis, defender, blocker), -0.95, 0.95);
 
   // Working side: edge rushers work outside; interior/run defenders toward
@@ -3155,11 +3201,16 @@ const legacyHoldVisible = new WeakSet<PlaySim>();
 /** A beaten blocker may attempt a cloth grab. This changes the bounded hand
  * technique, not the official ruling. Only achieved illegal restraint is a foul. */
 function tryHold(sim: PlaySim, e: Engagement): boolean {
-  if (e.holding) return false;
+  // BLOCK_FRAME: a chosen hold persists while the blocker still has him: his hands joint on the man (not slipped off)
+  // and the man within his arm's reach. The joint's tension is capped at the arm's hold force, so a man stronger than
+  // the hold opens the gap and gets free in the World; officiating (contact-holding) judges the restraint achieved.
+  // Before, a chosen hold lived one tick: on the next beat this returned false and the caller ended the block, so no
+  // restraint accumulated (audit of engagement.ts, 2026-11-24).
+  if (e.holding) return BLOCK_FRAME && !!e.hands && !e.hands.off && inBlockReach(e.blocker, e.defender, e.type);
   const b = e.blocker;
   // Only possible with hands on him.
   if (e.control < -0.4) return false;
-  const pHold = (0.04 + 0.13 * (1 - b.r('discipline'))) * (e.type === 'pass' ? 1 : 0.6);
+  const pHold = holdChance(b, e.type);
   if (!sim.dice('hold', b).chance(pHold)) return false;
   e.holding = true;
   b.tags.add('held');

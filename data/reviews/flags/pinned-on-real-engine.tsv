@@ -1,0 +1,142 @@
+file	tests	failed_real_engine	failed_B_pinned	failed_B_and_numeric_pinned	class
+test/acquired-qb-continuation.test.ts	13	8	0		needs only class B / numeric pinned
+test/arrival.test.ts	4	2	0		needs only class B / numeric pinned
+test/back-man-run-fit.test.ts	38	7	0		needs only class B / numeric pinned
+test/back-release.test.ts	4	2	0		needs only class B / numeric pinned
+test/backer-read-step.test.ts	5	1	1	1	needs class A (stack) pinned
+test/backer-takeon.test.ts	1	1	1	1	needs class A (stack) pinned
+test/block-seen.test.ts	3	2	0		needs only class B / numeric pinned
+test/blocked-reach.test.ts	5	1	0		needs only class B / numeric pinned
+test/bounded-attachment-world.test.ts	11	1	0		needs only class B / numeric pinned
+test/call-mix.test.ts	6	1	0		needs only class B / numeric pinned
+test/carrier-decision-cadence.test.ts	6	2	2	2	needs class A (stack) pinned
+test/catch-caller-interval.test.ts	13	2	0		needs only class B / numeric pinned
+test/catch-hands.test.ts	8	4	0		needs only class B / numeric pinned
+test/chase-arrival.test.ts	12	2	0		needs only class B / numeric pinned
+test/climb-access.test.ts	3	3	3	3	needs class A (stack) pinned
+test/combination-ownership.test.ts	11	1	1	1	needs class A (stack) pinned
+test/combo-attention.test.ts	20	18	7	7	needs class A (stack) pinned
+test/combo-strike-access.test.ts	5	5	2	3	needs class A (stack) pinned
+test/combo-transfer.test.ts	34	15	15	15	needs class A (stack) pinned
+test/command-trace.test.ts	9	1	1	1	needs class A (stack) pinned
+test/concept-menu.test.ts	5	3	1	2	needs class A (stack) pinned
+test/contact-holding-rules.test.ts	24	7	0		needs only class B / numeric pinned
+test/contact-motion.test.ts	14	1	1	1	needs class A (stack) pinned
+test/cov7-abandonment.test.ts					not run (worker killed, memory)
+test/cover6-half-side.test.ts	4	1	0		needs only class B / numeric pinned
+test/coverage-flat-responsibility.test.ts	13	6	0		needs only class B / numeric pinned
+test/coverage-mechanics.test.ts					not run (worker killed, memory)
+test/cushion-break.test.ts	6	1	2	1	needs class A (stack) pinned
+test/deep-coverage-leverage.test.ts	13	1	0		needs only class B / numeric pinned
+test/defensive-call-integrity.test.ts	9	2	2	2	needs class A (stack) pinned
+test/directional-brace.test.ts	7	1	1	1	needs class A (stack) pinned
+test/dl-attack-landmark.test.ts	4	0			passes on the real engine (can leave the pin)
+test/dl-games.test.ts	9	7	1	1	needs class A (stack) pinned
+test/downfield-contact-rejection.test.ts	2	1	0		needs only class B / numeric pinned
+test/draw-presentation.test.ts	31	6	4	4	needs class A (stack) pinned
+test/draw-read.test.ts	5	1	1	1	needs class A (stack) pinned
+test/finish-check.test.ts	5	2	0		needs only class B / numeric pinned
+test/fit-te-gap-slide.test.ts	9	5	5	5	needs class A (stack) pinned
+test/flat-press.test.ts	1	1	1	1	needs class A (stack) pinned
+test/front-menu.test.ts	6	1	1	1	needs class A (stack) pinned
+test/gap-match.test.ts	1	1	1	1	needs class A (stack) pinned
+test/grasp-angular-transfer.test.ts	51	1	0		needs only class B / numeric pinned
+test/grasp-jeopardy.test.ts	2	2	0		needs only class B / numeric pinned
+test/gun-split-backs.test.ts	21	6	0		needs only class B / numeric pinned
+test/hand-angular-transfer.test.ts	8	4	0		needs only class B / numeric pinned
+test/hand-comoving.test.ts	11	5	0		needs only class B / numeric pinned
+test/hand-force-integration.test.ts	4	1	0		needs only class B / numeric pinned
+test/hand-force-point.test.ts	35	8	0		needs only class B / numeric pinned
+test/held-recovery.test.ts	17	1	0		needs only class B / numeric pinned
+test/held-stride.test.ts	4	2	0		needs only class B / numeric pinned
+test/helper-fit.test.ts	12	4	0		needs only class B / numeric pinned
+test/hold-sink.test.ts	3	1	0		needs only class B / numeric pinned
+test/hook-stem-continuity.test.ts	8	7	0		needs only class B / numeric pinned
+test/incidental-catch-readiness.test.ts	13	4	0		needs only class B / numeric pinned
+test/kick-braking.test.ts	3	1	1	1	needs class A (stack) pinned
+test/lb-flow-intercept.test.ts	6	2	2	2	needs class A (stack) pinned
+test/lb-guard-step.test.ts	2	2	0		needs only class B / numeric pinned
+test/lb-start.test.ts	4	1			needs only class B / numeric pinned
+test/line-read.test.ts	3	1	1	1	needs class A (stack) pinned
+test/lineup-order.test.ts	8	1	0		needs only class B / numeric pinned
+test/long-yardage-run.test.ts	5	4	4	4	needs class A (stack) pinned
+test/man-cushion-compression.test.ts	10	7	6	0	needs only class B / numeric pinned
+test/man-run-continuity.test.ts	26	9	8	8	needs class A (stack) pinned
+test/motion-contact.test.ts	9	1	1	1	needs class A (stack) pinned
+test/native-pass-foul-game.test.ts	2	1	0		needs only class B / numeric pinned
+test/ol-align.test.ts	13	1	0		needs only class B / numeric pinned
+test/open-hands.test.ts	5	1	0		needs only class B / numeric pinned
+test/overtake-climb.test.ts	2	2	2	2	needs class A (stack) pinned
+test/pad-leverage.test.ts	4	1	0		needs only class B / numeric pinned
+test/pass-anchor.test.ts	2	1	0		needs only class B / numeric pinned
+test/pass-contact-rules.test.ts	25	4	0		needs only class B / numeric pinned
+test/pass-contact.test.ts	6	1	0		needs only class B / numeric pinned
+test/pass-cutoff-approach.test.ts	4	4	1	1	needs class A (stack) pinned
+test/pass-feel.test.ts	2	1	0		needs only class B / numeric pinned
+test/pass-hip-ride.test.ts	8	6	0		needs only class B / numeric pinned
+test/pass-installation.test.ts	6	2	0		needs only class B / numeric pinned
+test/pass-rush-finish.test.ts	12	1	0		needs only class B / numeric pinned
+test/perimeter-run-play.test.ts	8	2	2	2	needs class A (stack) pinned
+test/planned-climb-fit.test.ts	3	3	3	3	needs class A (stack) pinned
+test/possession-awareness.test.ts	28	8	1	1	needs class A (stack) pinned
+test/presnap-alignment-contract.test.ts	5	1	1	1	needs class A (stack) pinned
+test/presnap-coverage-checks.test.ts	7	2	0		needs only class B / numeric pinned
+test/press-contact.test.ts	15	15	0		needs only class B / numeric pinned
+test/press-front-stance.test.ts	12	2	1	1	needs class A (stack) pinned
+test/pro-call.test.ts	3	1	0		needs only class B / numeric pinned
+test/protection.test.ts	2	1	0		needs only class B / numeric pinned
+test/pursuit-contact.test.ts	21	11	0		needs only class B / numeric pinned
+test/pursuit-effort.test.ts	11	3	0		needs only class B / numeric pinned
+test/pursuit-objective.test.ts	7	3	0		needs only class B / numeric pinned
+test/pursuit-prediction.test.ts	6	1	0		needs only class B / numeric pinned
+test/qb-feel.test.ts	1	1	0		needs only class B / numeric pinned
+test/qb-interception-estimate.test.ts	1	1	0		needs only class B / numeric pinned
+test/qb-rusher-recording.test.ts	6	2	0		needs only class B / numeric pinned
+test/qb-scramble-lane.test.ts	2	1	0		needs only class B / numeric pinned
+test/read-compiler.test.ts	10	1	1	0	needs only class B / numeric pinned
+test/read-lean.test.ts	2	1	0		needs only class B / numeric pinned
+test/receiver-native-motion.test.ts	6	3	2	2	needs class A (stack) pinned
+test/receiver-option-information.test.ts	11	5	0		needs only class B / numeric pinned
+test/receiver-route-effort.test.ts	4	3	1	0	needs only class B / numeric pinned
+test/receiver-run-eligibility.test.ts	36	0			passes on the real engine (can leave the pin)
+test/redirect-phase-contract.test.ts	4	2	0		needs only class B / numeric pinned
+test/redirect-protection.test.ts	2	2	0		needs only class B / numeric pinned
+test/responsibility-ledger.test.ts	42	19	17	16	needs class A (stack) pinned
+test/route-craft.test.ts	3	0			passes on the real engine (can leave the pin)
+test/run-base.test.ts	15	7	0		needs only class B / numeric pinned
+test/run-combo-retarget.test.ts	17	2	2	2	needs class A (stack) pinned
+test/run-contact-flow.test.ts	25	4	3	3	needs class A (stack) pinned
+test/run-contact-track.test.ts	6	2	2	2	needs class A (stack) pinned
+test/run-contact-workoff-interaction.test.ts	4	4	4	4	needs class A (stack) pinned
+test/run-execution.test.ts	16	5	3	3	needs class A (stack) pinned
+test/run-hand-control.test.ts	14	2	2	2	needs class A (stack) pinned
+test/run-pace-gather.test.ts	8	2	2	2	needs class A (stack) pinned
+test/run-read-attention.test.ts	7	4	0		needs only class B / numeric pinned
+test/runner-side-recovery.test.ts	11	7	7	7	needs class A (stack) pinned
+test/scenario-pack.test.ts	4	1	0		needs only class B / numeric pinned
+test/schematic-stress.test.ts	9	3	1	1	needs class A (stack) pinned
+test/second-level-handover.test.ts	9	2	0		needs only class B / numeric pinned
+test/seen-eyes.test.ts	3	1	0		needs only class B / numeric pinned
+test/shed-pursue.test.ts	2	1	1	1	needs class A (stack) pinned
+test/short-package.test.ts	5	2	2	2	needs class A (stack) pinned
+test/shotgun-exchange.test.ts	5	5	3	3	needs class A (stack) pinned
+test/shotgun-rb-alignment.test.ts	9	1	1	1	needs class A (stack) pinned
+test/shoulders-set.test.ts	3	1	1	1	needs class A (stack) pinned
+test/situation-depth.test.ts	2	1	1	1	needs class A (stack) pinned
+test/snap-count.test.ts	1	1	0		needs only class B / numeric pinned
+test/support-contact-frame.test.ts	9	5	5	5	needs class A (stack) pinned
+test/support-escape-objective.test.ts	13	9	9	9	needs class A (stack) pinned
+test/support-receiver-holder.test.ts	12	4	4	4	needs class A (stack) pinned
+test/support-work-off.test.ts	26	9	9	9	needs class A (stack) pinned
+test/tackle-support-choice.test.ts	25	8	0		needs only class B / numeric pinned
+test/tackle-window.test.ts	33	1	0		needs only class B / numeric pinned
+test/team-contact-rules.test.ts	19	2	0		needs only class B / numeric pinned
+test/throw-body.test.ts	4	2	1	3	needs class A (stack) pinned
+test/tip-away.test.ts	2	2	0		needs only class B / numeric pinned
+test/traffic-turning.test.ts	13	1	0		needs only class B / numeric pinned
+test/world-physics.test.ts	27	2	0		needs only class B / numeric pinned
+test/wrap-binding.test.ts	30	2	0		needs only class B / numeric pinned
+test/zone-backer-count.test.ts	2	2	2	2	needs class A (stack) pinned
+test/zone-helper-check.test.ts	24	5	4	4	needs class A (stack) pinned
+test/zone-runoff-work.test.ts	7	3	3	3	needs class A (stack) pinned
+test/zone-throw-key.test.ts	4	1	0		needs only class B / numeric pinned
