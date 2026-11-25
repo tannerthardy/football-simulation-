@@ -17,7 +17,7 @@
 import { FIELD_WIDTH } from '../../core/field.js';
 import { Rng, hashString } from '../../core/rng.js';
 import { clamp, logistic, wrapAngle, type Vec2, type Vec3 } from '../../core/vec.js';
-import { READ_PLANS, planFits } from '../../playbook/read-plans.js';
+import { planFor } from '../../playbook/read-plans.js';
 import { V2Drive, type V2Host } from '../qbv2/drive.js';
 import { makeHost, V2Wiring, type PasserView } from '../qbv2/host.js';
 import { qbRead, qbStage } from '../qb-trace.js';
@@ -37,7 +37,7 @@ import { HEAD_RATE as SHARED_HEAD_RATE, turnHead } from '../head.js';
 import { angleTo, goTo, stand } from './common.js';
 import { RouteRunner } from './receiver.js';
 import type { QBMind } from '../qbmind.js';
-import { believedProfile, typicalAt } from '../believed.js';
+import { believedProfile, typicalOrLeague } from '../believed.js';
 import type { PhysicalProfile } from '../../players/physical.js';
 import type { ReplayTelemetryFrame } from '../types.js';
 import { ReceiverForecast, type InstalledReceiverRoute } from '../receiver-forecast.js';
@@ -55,7 +55,7 @@ import { DECLARED_BREAK } from '../../playbook/read-compiler/features.js';
 const TRACK_FEEL = process.env.TRACK_FEEL !== '0' || process.env.PERCEIVE_TRACK === '1';
 const RELEASE_Z = 2.2;
 /** QB_V2 (off; QB_V2=1; QB lane, 2026-11-24, docs/reviews/2026-11-24-qb-decision-plan.md): on a concept with an authored
- * read plan that fits the call (READ_PLANS, planFits), the read and throw decision is the rebuilt cycle (src/sim/qbv2/):
+ * read plan for the call (planFor), the read and throw decision is the rebuilt cycle (src/sim/qbv2/):
  * the look, the judgment, the cycle on his feet. The drop, pocket movement and the throw's mechanics are kept. Other
  * concepts run this controller unchanged. */
 const QB_V2 = process.env.QB_V2 === '1';
@@ -979,13 +979,12 @@ const QB_HEAD = process.env.QB_HEAD !== '0';
  * play's dice. */
 export function scoutReport(a: Agent, d: Agent): { profile: PhysicalProfile; ballSkills: number; manCoverage: number } {
   const key = `${a.player.id}|${d.player.id}`;
-  const typ = typicalAt(d.player.position);
+  const typ = typicalOrLeague(d.player.position); // never his own values (second read, 2026-11-25)
   const k = clamp(SCOUT0 + SCOUT_AWARE * a.r('playRecognition') + SCOUT_EXP * Math.min(1, a.player.experience / 8), 0, 1);
   const film = new Rng(hashString(key));
   const err = FILM_ERR * Math.sqrt(FILM_FLOOR * FILM_FLOOR + (1 - FILM_FLOOR * FILM_FLOOR) / (1 + d.player.experience / FILM_YEARS));
   let out: { profile: PhysicalProfile; ballSkills: number; manCoverage: number };
-  if (!typ) out = { profile: d.profile, ballSkills: d.r('ballSkills'), manCoverage: d.r('manCoverage') };
-  else {
+  {
     const prof: Record<string, unknown> = { ...d.profile };
     for (const [f, t] of Object.entries(typ.profile)) {
       const v = (d.profile as unknown as Record<string, unknown>)[f];
@@ -1627,8 +1626,10 @@ export class QBPass implements Behavior {
   update(a: Agent, sim: PlaySim): MoveCommand {
     const t = sim.t;
     if (this.v2 === undefined && t >= this.snapAt) {
-      const plan = QB_V2 && QB_V2_STAGED.has(this.concept.id) ? READ_PLANS[this.concept.id] : undefined;
-      this.v2 = plan && planFits(plan, this.concept) ? new V2Drive(plan) : null;
+      // Rules' planFor (#939): the frontside half's read as authored, the backside from its own half's quick read, the back
+      // as a checkdown only when the call releases him; the authored call returns the authored plan itself.
+      const plan = QB_V2 && QB_V2_STAGED.has(this.concept.id) ? planFor(this.concept) : null;
+      this.v2 = plan ? new V2Drive(plan) : null;
       if (this.v2) {
         // His feet run the plan's drop (Rules: stick is one step from the gun though the installed concept's drop says gun3).
         if (plan!.drop !== this.concept.drop) this.drop = dropSpec(plan!.drop, a.pos.x, sim.los, sim.offCall.formation.qb !== 'under');
@@ -2237,6 +2238,7 @@ export class QBPass implements Behavior {
       a, sim, snapAt: this.snapAt, releaseZ: RELEASE_Z,
       ratings: { playRecognition: a.r('playRecognition'), decisionMaking: a.r('decisionMaking'), composure: a.r('composure'), discipline: a.r('discipline'), experience: a.player.experience, anticipation: a.r('anticipation') },
       estimate: (d) => this.mind.estimate(d), pictureAge: (d) => this.mind.pictureAge(d), pictureSpread: (d) => this.mind.pictureSpread?.(d) ?? 0.5,
+      unseenFor: (d) => this.mind.unseenFor(d), seenSpread: (d) => this.mind.seenSpread(d), jobWeight: (d) => this.mind.jobWeight(d),
       seenHead: (d) => sim.see(a, d).head ?? null,
       forecast: (r) => this.receiverForecasts.get(r),
       clearHalf: () => this.mind.clearHalf,
@@ -3290,10 +3292,9 @@ export class QBPass implements Behavior {
     if (!b && QB_SCOUT) { b = scoutReport(a, d); this.believed.set(d, b); }
     if (!b) {
       const k = clamp(SCOUT0 + SCOUT_AWARE * a.r('awareness') + SCOUT_EXP * Math.min(1, a.player.experience / 8), 0, 1);
-      const typ = typicalAt(d.player.position);
-      b = typ ? { profile: believedProfile(d.profile, typ.profile, k), ballSkills: typ.ratings.ballSkills + (d.r('ballSkills') - typ.ratings.ballSkills) * k,
-          manCoverage: typ.ratings.manCoverage + (d.r('manCoverage') - typ.ratings.manCoverage) * k }
-        : { profile: d.profile, ballSkills: d.r('ballSkills'), manCoverage: d.r('manCoverage') };
+      const typ = typicalOrLeague(d.player.position); // never his own values (second read, 2026-11-25)
+      b = { profile: believedProfile(d.profile, typ.profile, k), ballSkills: typ.ratings.ballSkills + (d.r('ballSkills') - typ.ratings.ballSkills) * k,
+        manCoverage: typ.ratings.manCoverage + (d.r('manCoverage') - typ.ratings.manCoverage) * k };
       this.believed.set(d, b);
     }
     return b;

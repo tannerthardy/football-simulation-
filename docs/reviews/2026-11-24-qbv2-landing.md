@@ -23,8 +23,8 @@ QB lane, 2026-11-24.
 | 1 | **fixed** | `Cycle.uncommit()`. The wiring calls it when `startIfFinish` returns no command, so he goes back to the read and pressure and the pocket are looked at again. Test: qbv2-cycle "a commit the wiring cannot start fails back". |
 | 2 | **fixed** | A key read isn't "answered no" until the key has declared a cue. The next step still bounds it (hold rule (b)). |
 | 3 | **fixed** | The seen-depth gate uses his seen progress along the stem (the projection on start → break), not the radius round the installed break point. A receiver ridden 2 yd wide still reaches the top of his stem. |
-| 4 | **fixed** | `contact` comes from his own felt contact (heldBy > 0). With nothing clearing he throws it away in the pocket. `hotSide` is the side of his most urgent felt rusher (within 1.5 s), by the alignment's strong side. Test: "with a body on him ... throws it away". |
-| 5 | **fixed** (with §3 #4) | Escape both ways. He enters past 4.5 yd from the ball's lane and resumes the read inside 3.75 yd (enter and exit margins). Test: "escape is left when he is back inside". |
+| 4 | **fixed for a light hold; corrected 2026-11-25** | `contact` comes from his own felt contact (heldBy > 0), and with nothing clearing he throws it away in the pocket. That holds only while he is lightly held (0 < held < 0.6). At 0.6 or more, `qb.ts` returns `stand()` before the V2 step, the old controller's rule: wrapped up, he cannot start any throw, and a throwaway uses the same windup. Kept as a body limit and stated (`2026-11-25-qbv2-escape-hold.md`). The unit test drives the cycle directly, not through that line. `hotSide` is the side of his most urgent felt rusher (within 1.5 s), by the alignment's strong side. |
+| 5 | **both ways fixed; outside corrected 2026-11-25** (with §3 #4) | Escape both ways. He enters past 4.5 yd from the ball's lane and resumes the read inside 3.75 yd (enter and exit margins). As landed, while outside he never looked at the checkdown, never moved his looks, and threw it away on a felt rush. Fixed in `escape-on-890558713.patch`: eyes across the reads a stride each, the checkdown, away only when imminent or in contact. |
 | 6 | **fixed / deferred** | The checkdown now respects `fromStep` in the pressure response. **Deferred:** the `handoff` intent (RPO). No staged concept uses it, so it lands when an RPO plan does. |
 
 ### §2 Hidden state
@@ -32,7 +32,7 @@ QB lane, 2026-11-24.
 | # | Status | What |
 |---|---|---|
 | 1 | **kept, debated** | `isDbSlot(personnel, slot)`, Flex's one DB rule: the visible package's CB/S slots. QBMind now imports the same function. The reviewer would read DBs from alignment and grouping alone. That stays open with Flex; it's one rule now, so it changes in one place. |
-| 2 | **default-safe** | `bodyOf` / `believe` read the raw profile only with QB_BELIEVED_DEF off. That flag is on by default, so V2 reads the scouting report. |
+| 2 | **corrected 2026-11-25: a prior by design, one fallback leak** | With QB_BELIEVED_DEF on (the default), V2 reads QB_SCOUT's scouting report. It's the roster position's typical body plus film of his true traits, with an error that falls with his snaps on film, drawn once per passer and defender pair. That is a pre-game prior from public roster data and film study, not live truth. **The leak:** with no typical for his position, the report returns the true profile and ratings exactly. Paid by giving every position a typical. Open. |
 | 3 | **fixed** | The kill throws at his estimate of the receiver. |
 | 4 | **deferred: old controller's** | `shouldScramble`'s true isDown is the old controller's code, shared by V2's escape branch. Changing it moves flags-off behaviour, so it's a separate item. |
 | 5 | **default-safe** | `evaluate`'s seen-receiver flag (QB_SEEN_REC) is on by default. |
@@ -45,7 +45,7 @@ QB lane, 2026-11-24.
 | # | Status | What |
 |---|---|---|
 | 1 | **fixed** | The sit cue (squats / widens) is held. It changes only when the other landmark is nearer him by 0.5 yd. |
-| 2 | **fixed** | An aged picture never raises the throw. For a man arriving early (margin > 0) age isn't counted in his spread. Test: qbv2-judge "an aged picture of a man arriving early never raises the throw". **Not changed:** the hard −0.3 s edge in the lane test (minor; noted). |
+| 2 | **not fixed; corrected 2026-11-25** | The landed rule left age out of only its own term. QBMind's picture spread still grows with age and fed the same sigma. A man whose picture was 1.5 s old was dropped from the judgment. The lane's near-catch sigma was gated on the mid-flight margin. QBMind's estimate also moves with no new sighting. Card spec §1 is in progress (`2026-11-25-qbv2-picture-age.md`; the attempt-2 WIP is not for landing). |
 | 3 | **deferred** | No exit margin on the coverer radii, plus the reaction step at a 4 yd cushion. The held coverer (COVER_SWAP) already damps a swap. A smooth reaction blend is a follow-up. |
 | 4 | **fixed** | See §1 #5. |
 | 5 | **deferred: Flex (roles.ts)** | The role areas change at the snap. |
