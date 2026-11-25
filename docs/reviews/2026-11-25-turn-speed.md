@@ -194,3 +194,38 @@ In-game pursuers in these turns have support availability 0.84-0.85 and planned 
 - Pursuer eligibility is inferred (within 12 yd of the carrier; no pursuer closer than 1 yd). Blockers and teammates can be near in the all-turns tables.
 - The bench uses nine average fixture bodies; the NFL is a mixed population of positions and ratings. Position groups are not separated.
 - 95 sim turns that end with the body off his feet (support availability 0, 10% of the 982) are left out of every table. They include dives and falls with a body near; the contact-free subset is 19 of 258 (7%). Whether the unintended falls are too many or too few is not measurable here (NFL tracking has no fall flag). A pursuer who stops dead within 1 s of a contact-free turn (speed under a quarter of entry, and under 0.15 at its lowest) is 6.0% of NFL turns (32 of 532) and 6.6% of the sim's (12 of 181): 5.5% | 8.0% at 30 degrees, 3.2% | 5.4% at 60, 5.3% | 0 of 14 at 90, 19% | 0 of 5 at 120.
+
+## Addendum: Coverage's man turn-back (Integration's case)
+
+Integration's case, relayed by Coverage: in the engine-72 honest-defender set every late defender's request turned onto the carrier 0.2-0.4 s after the catch, man defenders more than 8 yd away were running about 7.4 yd/s away with their own men, and the turn back cost about 1.3 s; is 1.3 s at 7 yd/s the body law or our turn? `scripts/diag/pursuit/man_turnback.py`, one operator on both sides, on the same exports as above (NFL: completions in man calls, PFF manZone; sim: 24 games on engine-102, the call's man flag, with the request tap).
+
+Selection, the same on both sides: a defender at least 8 yd from the catcher at the catch, running 4 yd/s or more with his velocity at least 100 degrees off the direction to the catcher, and a non-catcher eligible receiver within 3 yd of him (his own man, inferred). Measured for 3 s from the catch (plays with less track after the catch are left out).
+
+| sample | band | n | speed at the catch | catch to heading change of 20 degrees (s, p50) | catch to velocity within 45 deg of the catcher (s, p25 / p50 / p75) | not turned in 3 s | speed when turned / at the catch | lowest speed on the way / at the catch | turn time from the start (s) | distance to the catcher then (yd) |
+|---|---|---|---|---|---|---|---|---|---|---|
+| NFL | 8-15 yd | 36 | 6.7 | 0.90 | 1.70 / 1.90 / 2.50 | 0.53 | 0.64 | 0.41 | 1.07 | 13.1 |
+| NFL | 15+ yd | 129 | 6.3 | 1.00 | 1.60 / 2.00 / 2.30 | 0.50 | 0.59 | 0.40 | 1.06 | 27.5 |
+| NFL | 8+ yd | 165 | 6.4 | 1.00 | 1.60 / 2.00 / 2.40 | 0.50 | 0.60 | 0.40 | 1.06 | 24.5 |
+| SIM | 8-15 yd | 7 | | | | | | | | |
+| SIM | 15+ yd | 32 | 6.6 | 0.80 | 1.40 / 1.70 / 2.00 | 0.09 | 0.70 | 0.42 | 1.09 | 22.5 |
+| SIM | 8+ yd | 39 | 6.7 | 0.80 | 1.45 / 1.70 / 2.10 | 0.10 | 0.69 | 0.40 | 1.08 | 20.6 |
+
+Share of those defenders whose velocity is within 45 degrees of the catcher by (all rows, 8+ yd):
+
+| sample | n | 1.0 s | 1.5 s | 2.0 s | 2.5 s | 3.0 s |
+|---|---|---|---|---|---|---|
+| NFL | 165 | 0.01 | 0.12 | 0.25 | 0.42 | 0.50 |
+| SIM | 39 | 0.03 | 0.26 | 0.62 | 0.77 | 0.90 |
+
+SIM: the request points within 45 degrees of the catcher at p25 / p50 / p75 0.30 / 0.30 / 0.60 s after the catch (n 39); the velocity does at 1.45 / 1.70 / 2.10 s: the body adds 1.30 s at the median.
+
+
+What it says:
+
+- **The turn itself is the same.** From the first 20 degree change of heading to the velocity pointing within 45 degrees of the catcher: NFL 1.06 s, sim 1.08 s (1.07 | 1.09 in the far band); the lowest speed on the way is 0.40 of the speed at the catch on both sides (the NFL's turned speed is 0.60 of it, ours 0.69). So 1.3 s of body at 6.7 yd/s is the body the NFL has too.
+- **What differs is the start.** The sim's request points at the catcher 0.30 s after the catch (p25 / p50 / p75 0.30 / 0.30 / 0.60 s) and the velocity has moved 20 degrees at 0.80 s (the first 0.5 s of body lag); the NFL's velocity has moved 20 degrees at 1.00 s. By 2.0 s from the catch 25% of NFL defenders have the velocity within 45 degrees of the catcher against 62% of ours, and by 3.0 s 50% against 90%; half the NFL's defenders are still not turned back to the catcher 3 s after the catch. The NFL takes longer than ours from the catch to the turned state (median 2.0 s against 1.7 s), mostly because it starts later.
+- **Not in the NFL data:** whether a request exists earlier (a defender in the NFL who turns his head to the ball does so before the catch and may be running with it) and why half do not turn back at all (the play is dead for him, or he is covering a man still live). The sim's 10% not turned is the other end.
+
+So 1.3 s at 6.7 yd/s is not the body law's excess: the NFL's own turn takes the same time from its first motion, and starts later than ours. Nothing here asks for a change to the turn; the question that remains is the decision's timing, what the NFL defender knows at the catch (the data cannot say).
+
+Limits: NFL 165 and sim 39 defenders at 8+ yd (the sim's 8-15 yd band has 7: no row); the own-man test is by position, so a zone defender who happens to be near a receiver is in; 'man' for the NFL is PFF's play label, for the sim the call's flag; the engine-72 numbers Coverage quotes are a different engine (here the sim defenders are at 6.7 yd/s, not 7.4).
