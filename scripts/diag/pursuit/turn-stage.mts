@@ -49,6 +49,47 @@ for (const seed of [45, 46, 47]) {
       if (last && Math.hypot(last.pos.x - C.x, last.pos.y - C.y) <= arm) spot = { ...C, T: r2(T) };
     }
   }
+  // RECON=1: reconcile with Tools' plant bench. For the body-aware spot (FREEZE's solve, as a fixed point), each strategy
+  // in the movement preview: arc (top speed toward the point every tick), plant<v> (request 0 until under v, then top
+  // speed toward it), slow<f>; scored two ways: the real first time within 1 yd (up to 5 s), and the earlier TURN_SPEED
+  // metric (a 1.0 s preview plus a straight sprint from where it leaves him).
+  if (process.env.RECON === '1' && seed === 45) {
+    const seenC = sim.see(s, c), arm = c.profile.radius + s.profile.reach; let P: any = null;
+    for (let T = 0.2; T <= 4.0 + 1e-9 && !P; T += 0.05) { const C = { x: seenC.pos.x + seenC.vel.x * T, y: seenC.pos.y + seenC.vel.y * T };
+      const rq = (body: any) => { const dx = C.x - body.pos.x, dy = C.y - body.pos.y, dl = Math.hypot(dx, dy) || 1; return { vel: { x: dx / dl * s.profile.vmax, y: dy / dl * s.profile.vmax }, facing: Math.atan2(dy, dx) }; };
+      const sm = previewFreeMovement(s.body, rq as any, sim.world.time, Math.ceil(T / sim.dt - 1e-9)); const l = sm[sm.length - 1]; if (l && Math.hypot(l.pos.x - C.x, l.pos.y - C.y) <= arm) P = C; }
+    P ??= { x: seenC.pos.x + seenC.vel.x * 1.5, y: seenC.pos.y + seenC.vel.y * 1.5 };
+    const { sprintTime } = await import(`${W}/src/physics/reach.ts`);
+    const strat = (kind: string, v: number) => { let planted = false; return (body: any) => { const bv = body.vel, bs = Math.hypot(bv.x, bv.y), dx = P.x - body.pos.x, dy = P.y - body.pos.y, dl = Math.hypot(dx, dy) || 1, vm = s.profile.vmax;
+      if (kind === 'plant') { if (!planted && bs <= v) planted = true; return planted ? { vel: { x: dx / dl * vm, y: dy / dl * vm }, facing: Math.atan2(dy, dx) } : { vel: { x: 0, y: 0 } }; }
+      const f = kind === 'slow' ? v : 1; return { vel: { x: dx / dl * vm * f, y: dy / dl * vm * f }, facing: Math.atan2(dy, dx) }; }; };
+    const out: string[] = [];
+    for (const [k, v] of [['arc', 1], ['plant', 3.5], ['plant', 2.5], ['plant', 1.5], ['slow', 0.75], ['slow', 0.55], ['slow', 0.4]] as [string, number][]) {
+      const sm = previewFreeMovement(s.body, strat(k, v) as any, sim.world.time, 100);
+      const hit = sm.find((q: any) => Math.hypot(q.pos.x - P.x, q.pos.y - P.y) <= 1);
+      const s20 = previewFreeMovement(s.body, strat(k, v) as any, sim.world.time, 20), l = s20[s20.length - 1];
+      const rx = P.x - l.pos.x, ry = P.y - l.pos.y, rd = Math.hypot(rx, ry), u0 = rd > 1e-6 ? (l.vel.x * rx + l.vel.y * ry) / rd : 0;
+      out.push(`${k}${k === 'arc' ? '' : v}: real ${hit ? r2(hit.t) : '>5'} s, old metric ${r2(l.t + sprintTime(rd, u0, s.profile.vmax, s.profile.tau))} s`);
+    }
+    console.log(`RECON point ${r2(Math.hypot(P.x - s.pos.x, P.y - s.pos.y))} yd at ${deg(ang(s.vel, { x: P.x - s.pos.x, y: P.y - s.pos.y }))} deg: ` + out.join(' | '));
+  }
+  // RECON2=1: the meeting chosen with the way: for each way (arc, 0.75, 0.55, plant under 3.5), the earliest T on his
+  // picture's forecast path at which the preview of that way toward C(T) is within his arm by T.
+  if (process.env.RECON2 === '1' && seed === 45) {
+    const seenC = sim.see(s, c), arm = c.profile.radius + s.profile.reach, out: string[] = [];
+    for (const [k, v] of [['arc', 1], ['share', 0.75], ['share', 0.55], ['plant', 3.5]] as [string, number][]) {
+      let found: number | null = null;
+      for (let T = 0.2; T <= 3.0 + 1e-9 && found === null; T += 0.05) {
+        const C = { x: seenC.pos.x + seenC.vel.x * T, y: seenC.pos.y + seenC.vel.y * T }; let planted = false;
+        const rq = (body: any) => { const dx = C.x - body.pos.x, dy = C.y - body.pos.y, dl = Math.hypot(dx, dy) || 1, bs = Math.hypot(body.vel.x, body.vel.y);
+          const f = k === 'arc' ? 1 : k === 'share' ? v : (planted ||= bs <= v) ? 1 : 0; return { vel: { x: dx / dl * s.profile.vmax * f, y: dy / dl * s.profile.vmax * f }, facing: Math.atan2(dy, dx) }; };
+        const sm = previewFreeMovement(s.body, rq as any, sim.world.time, Math.ceil(T / sim.dt - 1e-9));
+        if (sm.some((q: any) => Math.hypot(q.pos.x - C.x, q.pos.y - C.y) <= arm)) found = T;
+      }
+      out.push(`${k}${k === 'arc' ? '' : v}: ${found === null ? '>3' : r2(found)} s`);
+    }
+    console.log('RECON2 meeting by way: ' + out.join(' | '));
+  }
   const step = sim.world.step.bind(sim.world);
   sim.world.step = (intents: any, dt: number) => { intents[c.idx] = { ...intents[c.idx], vel: { ...cv }, facing: h };
     if (spot && Math.hypot(c.pos.x - s.pos.x, c.pos.y - s.pos.y) > 3) { const dx = spot.x - s.pos.x, dy = spot.y - s.pos.y, dl = Math.hypot(dx, dy) || 1; intents[s.idx] = { ...intents[s.idx], vel: { x: dx / dl * s.profile.vmax, y: dy / dl * s.profile.vmax }, facing: Math.atan2(dy, dx) }; }
@@ -73,3 +114,4 @@ for (const seed of [45, 46, 47]) {
   if (seed === 45) console.log(lines.join('\n'));
 }
 console.log(res.join('\n'));
+
