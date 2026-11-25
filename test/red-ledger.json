@@ -16,6 +16,13 @@
    "class": "fixture"
   },
   {
+   "file": "test/arrival-lead.test.ts",
+   "test": "ARRIVE_LEAD: an underneath zone defender leads the catcher on a short throw at the catch his line of travel crosses the catcher further upfield",
+   "owner": "Defense",
+   "flag": "HAND_TRAVEL",
+   "class": "landing"
+  },
+  {
    "file": "test/baseline-runner.test.ts",
    "test": "shared baseline runs are explicit and cannot inherit experiments records only explicitly requested experimental settings",
    "owner": "n/a",

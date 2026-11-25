@@ -49,7 +49,7 @@ import { observedHolder } from './possession-read.js';
 import { runContactObservers } from './run-contact-observer.js';
 import { DOUBLE_TRACK, ENGAGED_DEFENDER, ENGAGED_TECHNIQUE, REACH_RACE, TRACK_TEMPO, REACH_RACE_OPEN, REACH_TECHNIQUE, drivePace, reachFeet, runWithFeet, wallFeet, type EngagedGoal } from './engaged-technique.js';
 import { OPEN_HANDS, PUSH_GROWTH, RUSH_HANDS, type HandJoint, type Intent } from '../physics/world.js';
-import { ARM_SPEED } from '../physics/actuation.js';
+import { ARM_SPEED, HAND_TRAVEL } from '../physics/actuation.js';
 import { inHeadCone } from './head.js';
 import { RUSH_RELEASE, releaseBelief } from './release-belief.js';
 import type { Agent, Engagement, RunContactSurface, RushMove } from './agent.js';
@@ -585,7 +585,7 @@ function setContactHands(joint: HandJoint, b: Agent, d: Agent, type: 'pass' | 'r
  * engaged ticks and none as an edge rusher crossed his face (hands-band.mts,
  * inside-probe.mts). With PUNCH he works his hands to where he feels the man
  * (PASS_FEEL's touch latency), out to lockout (0.9 of his arm), no faster
- * than arms move (ARM_SPEED): late, the man is into his chest before the arms
+ * than arms move (HAND_TRAVEL): late, the man is into his chest before the arms
  * are out; at air (the man beyond his lockout) he is overextended for his
  * reaction time, his push down to a third, while the man goes by. The arm's
  * force is the joint's (push from his press, the World's limits); only where
@@ -644,7 +644,7 @@ function punch(sim: PlaySim, joint: HandJoint, b: Agent, d: Agent): void {
   const holding = PUNCH_STRIKE && !st.striking;
   // Holding the fit: his hands stay at the man (the touch), giving and following at arm speed; they press only as the man
   // closes on them faster than his arms give (his press, not a drive of his own).
-  const want = holding ? clamp(gap, base, lock) : clamp(gap + PRESS_INTO, base, lock), step = ARM_SPEED * sim.dt;
+  const want = holding ? clamp(gap, base, lock) : clamp(gap + PRESS_INTO, base, lock), step = HAND_TRAVEL * sim.dt;
   st.ext = clamp(want, st.ext - step, st.ext + step);
   joint.extension = bodies + Math.max(base, st.ext);
 }
@@ -658,7 +658,7 @@ function punch(sim: PlaySim, joint: HandJoint, b: Agent, d: Agent): void {
  * Continuous in the man's bearing off the holder's chest, beta (0 = square in front):
  *   - |beta| <= SITE_FRONT (45 deg): nothing changes (every joint force identical to off);
  *   - to SITE_ABREAST (100 deg): the length goes smoothly (smoothstep) from the arm's to bodies + FOREARM;
- *   - the length moves at ARM_SPEED (the arm bends and straightens no faster than arms move).
+ *   - the length moves at HAND_TRAVEL (the arm bends and straightens no faster than arms move).
  * What the hand can do there, also continuous, with w the same smoothstep (1 in front, 0 abreast):
  *   - push (press along the joint, holder to man): the arm's press scaled by the man's own bearing, gamma (0 = the
  *     holder at his chest, 90 = at his side, 180 = at his back): full to gamma 90 deg (a hand on his side presses
@@ -689,7 +689,7 @@ export function handSite(sim: Pick<PlaySim, "dt">, joint: HandJoint, b: Agent, d
   let st = siteState.get(joint);
   if (w >= 1 && !st) return;
   const full = joint.extension, bent = Math.min(full, holder.profile.radius + man.profile.radius + FOREARM);
-  const target = bent + (full - bent) * w, step = ARM_SPEED * sim.dt;
+  const target = bent + (full - bent) * w, step = HAND_TRAVEL * sim.dt;
   if (!st) { st = { len: full }; siteState.set(joint, st); }
   st.len = clamp(target, st.len - step, st.len + step);
   if (w >= 1 && Math.abs(st.len - full) < 1e-9) { siteState.delete(joint); return; }
@@ -838,7 +838,7 @@ function setHands(sim: PlaySim, e: Engagement): void {
   // RUSH_HANDS: a hand slid but still on him is walked back to where he wants it (the middle of the man) by his own
   // arm, at arm speed, once it is no longer being driven (at rest on the chest).
   if (RUSH_HANDS && !hands.off && hands.handOffset && Math.abs(hands.handVel ?? 0) < 0.05) {
-    const o = hands.handOffset, step = ARM_SPEED * sim.dt;
+    const o = hands.handOffset, step = HAND_TRAVEL * sim.dt;
     hands.handOffset = Math.abs(o) <= step ? 0 : o - Math.sign(o) * step; hands.handVel = 0;
   }
   if (RUSH_HANDS && (hands.off || (hands.handsOn ?? 2) < 2)) {
@@ -871,10 +871,10 @@ function setHands(sim: PlaySim, e: Engagement): void {
 
 const refitState = new WeakMap<HandJoint, { lostAt: number }>();
 /** RUSH_HANDS: the time a lost hand takes back to the man (s): reaction to the loss plus the hand's travel from his
- * chest (the bodies' gap) at ARM_SPEED. */
+ * chest (the bodies' gap) at HAND_TRAVEL. */
 export function refitTime(b: Agent, d: Agent): number {
   const gap = Math.max(0, Math.hypot(d.pos.x - b.pos.x, d.pos.y - b.pos.y) - b.profile.radius - d.profile.radius);
-  return Math.max(0.1, b.profile.reactionTime) + gap / ARM_SPEED;
+  return Math.max(0.1, b.profile.reactionTime) + gap / HAND_TRAVEL;
 }
 function refit(sim: PlaySim, hands: HandJoint, b: Agent, d: Agent): void {
   let st = refitState.get(hands);
@@ -1029,7 +1029,7 @@ function chooseMove(sim: PlaySim, e: Engagement): RushMove {
 /** RUSH_HANDS: the club. His near arm sweeps across the blocker's hand: a force of his arm (armForce) on the hand,
  * across the joint toward his working side's inside, for as long as his hand is on the blocker's arm: the time it
  * takes to cross the forearm's thickness (FOREARM, about 0.1 yd: a forearm circumference of about 30 cm) at his hand
- * speed (ARM_SPEED by his finesse: 0.75-1.25), about 0.03 s. Whether the hand comes off is the
+ * speed (ARM_SPEED by his finesse: 0.75-1.25), about 0.03 s. These durations stay on ARM_SPEED, not HAND_TRAVEL: the club's force is armForce for as long as the hand is on the arm, so a faster hand would shorten the contact and cut the impulse. Whether the hand comes off is the
  * World's: the blocker's hold (extension, press, grip) against it. Nothing else is applied: a club that does not
  * clear the hand has spent his hands for its length. */
 /** RUSH_HANDS: a forearm's thickness, yd (circumference about 30 cm, so about 9.5 cm across). */

@@ -11,6 +11,7 @@
     "CF_FLOW": null,
     "CLIMB_INTERCEPT": "1",
     "CLIMB_PLAN": "1",
+    "HAND_TRAVEL": "0",
     "LB_LINE_FLOW": "0",
     "LOOSE_SEEN": "0",
     "LOOSE_OWN": "0",
