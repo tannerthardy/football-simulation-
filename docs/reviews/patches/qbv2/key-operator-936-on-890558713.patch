@@ -1,0 +1,113 @@
+diff --git a/scripts/diag/qbv2/decision-card.ts b/scripts/diag/qbv2/decision-card.ts
+index 1e14b4a58..24f05aa6a 100644
+--- a/scripts/diag/qbv2/decision-card.ts
++++ b/scripts/diag/qbv2/decision-card.ts
+@@ -96,7 +96,107 @@ for (let seed = s0; seed <= s1; seed++) {
+     const cs = cush('S'), cw = cush('W');
+     if (cs !== null && cw !== null) sideOk = Math.abs(cs - cw) < 1 ? true : (cs > cw ? keySide === 'S' : keySide === 'W') || (qbb?.v2 == null && thrownRef ? (cs > cw ? thrownRef.startsWith('S') : thrownRef.startsWith('W')) : false);
+   }
++  // ---- #936's operator (docs/reviews/2026-11-24-qbv2-key-classifier.md): keys fixed at the snap, labels over [t0, t_eval].
++  const k936 = classify936(sim, snaps, posOf, keySide, sideSign, thrown?.t ?? null, tr);
++  // Check 1 input: the old classifier's key, his alignment out at the snap (inside 3.5 yd is a linebacker, never the key).
++  const oldKeyOut = keySlot ? (() => { const d = sim.defense.find((x: any) => x.slot === keySlot); const s = d ? at(d.idx, 0.05) : null; return s ? r2((s.y - sim.ballY) * sideSign) : null; })() : null;
++  const ok936 = k936.answer ? (k936.answer.includes(thrownCanon ?? 'AWAY') || (k936.answer.includes('NEXT') && (thrown?.away || !thrownCanon || !thrownCanon.startsWith('S')))) : null;
+   const stall = !sack && (!thrown || thrown.t > 3.0);
+   console.log(JSON.stringify({ concept, coverage, seed, v2: !!qbb?.v2, flip, key: keySlot, cue, taught, thrown: thrownCanon, away: thrown?.away ?? null,
+-    rel: thrown ? r2(thrown.t) : null, relBrk, sideOk, stall, sack, complete: !!sim.stats.completed }));
++    rel: thrown ? r2(thrown.t) : null, relBrk, sideOk, stall, sack, complete: !!sim.stats.completed, oldKeyOut, k936, ok936 }));
++}
++
++// #936's operator. depth = yards past the line, out = yards from the ball's lane toward the read side. t_eval = the
++// release clamped to [0.45, 0.85] s. Every threshold is the reviewer's stated choice.
++function classify936(sim: any, snaps: Record<number, any[]>, posOf: (ref: string, t: number) => { x: number; y: number } | null,
++  side: 'S' | 'W', sgn: number, rel: number | null, trk: Record<number, S[]>, late = false): any {
++  // late: the sensitivity pass, labels taken at the release itself (uncapped; 2.0 s when no throw).
++  const tEval = late ? (rel ?? 2.0) : Math.min(0.85, Math.max(0.45, rel ?? 0.85));
++  const at = (idx: number, tt: number) => { const a = snaps[idx] ?? []; return a.reduce((b: any, s: any) => (Math.abs(s.t - tt) < Math.abs(b.t - tt) ? s : b), a[0]); };
++  const dep = (s: { x: number }) => s.x - sim.los, out = (s: { y: number }) => (s.y - sim.ballY) * sgn;
++  const P = (n: number, tt: number) => posOf(side + n, tt);
++  const one = P(1, 0.05), two = P(2, 0.05), three = P(3, 0.05);
++  // Operator note: the defensive line is excluded (hand check: a DE at 0.9 yd depth, out 6.3 qualified as the apex).
++  const D = sim.defense.filter((d: any) => !/^(DE|DT|NT|DL)/.test(String(d.slot))).map((d: any) => ({ d, s0: at(d.idx, 0.05) })).filter((x: any) => x.s0);
++  // Corner: the widest on the read side at depth -0.5..12, out >= max(4, #1's out - 3.5).
++  const cMin = Math.max(4, one ? out(one) - 3.5 : 4);
++  const corner = D.filter(({ s0 }: any) => dep(s0) >= -0.5 && dep(s0) <= 12 && out(s0) >= cMin).sort((a: any, b: any) => out(b.s0) - out(a.s0))[0] ?? null;
++  // Apex: not the corner, depth 0..8.5, out >= 3.5, no more than 3.5 inside #2; the widest such inside the corner.
++  const apex = D.filter(({ d, s0 }: any) => d !== corner?.d && dep(s0) >= 0 && dep(s0) <= 8.5 && out(s0) >= 3.5 && (!two || out(s0) >= out(two) - 3.5) && (!corner || out(s0) < out(corner.s0)))
++    .sort((a: any, b: any) => out(b.s0) - out(a.s0))[0] ?? null;
++  // Hook: depth 2.5..7.5, out -1..3.5 (walled-slant detection only).
++  const hooks = D.filter(({ d, s0 }: any) => d !== apex?.d && d !== corner?.d && dep(s0) >= 2.5 && dep(s0) <= 7.5 && out(s0) >= -1 && out(s0) <= 3.5);
++  // The two front-side routes the key splits: [outer, inner] refs.
++  const pair: [string, string] = concept === 'stick' ? ['3', '2'] : concept === 'slant_flat' ? ['2', '1'] : ['1', '2'];
++  const ref = (n: string) => 'S' + n; // answers in the plan's frame (thrown refs are mirrored to it)
++  // A route's landmark: where its receiver is at his break (the observer's track), else at 1.8 s.
++  const brk = (n: string) => { const slot = sim.offAlign.numbering[side + n]; const a = slot ? sim.offense.find((x: any) => x.slot === slot) : null; const T = a ? trk[a.idx] ?? [] : []; return breakAt(T.filter((q) => q[0] <= 2.6), /hitch|stick|curl|hook|comeback/.test(String(a?.behavior?.route?.id))) ?? 1.8; };
++  const land = (n: string) => P(+n, brk(n));
++  const mid = () => { const a = land(pair[0]), b = land(pair[1]); return a && b ? (out(a) + out(b)) / 2 : null; };
++  function label(k: any, isCorner: boolean): string {
++    if (!k) return 'vacated';
++    const tr = (snaps[k.d.idx] ?? []).filter((s: any) => s.t <= tEval + 1e-6), s0 = k.s0, s1 = at(k.d.idx, tEval);
++    const dOut = out(s1) - out(s0), dDep = dep(s1) - dep(s0);
++    const qb = sim.offense.find((o: any) => o.slot === 'QB');
++    if (dep(s1) <= 0.5 && -dDep >= 1.5 && (!qb || Math.hypot(s1.x - qb.pos.x, s1.y - qb.pos.y) < Math.hypot(s0.x - qb.pos.x, s0.y - qb.pos.y))) return 'blitzing';
++    let run = 0, fastOut = false; for (let i = 1; i < tr.length; i++) { const vo = tr[i].vy * sgn; run = vo >= 2.5 ? run + (tr[i].t - tr[i - 1].t) : 0; if (run >= 0.3 - 1e-6) fastOut = true; }
++    const outer = P(+pair[0], tEval), vOut = s1.vy * sgn;
++    if (dOut >= 2 || fastOut || (outer && out(s1) > out(outer) - 1.5 && out(s1) <= out(outer) && vOut >= 1)) return 'widening';
++    let deepRun = 0, fastDeep = false; for (const s of tr) { deepRun = s.vx >= 3.5 ? deepRun + 0.1 : 0; if (deepRun >= 0.3 - 1e-6) fastDeep = true; }
++    if (dDep >= 3 || fastDeep) return isCorner ? 'bailing' : 'sinking';
++    const m = mid(); if (m === null) return 'sitting mid';
++    if (out(s1) <= m - 0.5) return 'sitting inside';
++    if (out(s1) >= m + 0.5) return isCorner ? (dep(s1) <= 7 && dDep < 2.5 ? 'squatting' : 'sitting outside') : 'sitting outside';
++    return 'sitting mid';
++  }
++  // Man rubric: each route's man, by leverage at t_eval.
++  // The man rubric is "on the break": each route's man is judged at that route's break (observer track), not the 0.85 s
++  // zone cap and not the passer's release, so both controllers are scored against the same label.
++  function manOf(n: string) {
++    const tEval = brk(n);
++    const r35 = P(+n, 0.35), rE = P(+n, tEval); if (!r35 || !rE) return { man: null, state: 'vacated' };
++    const near = D.map((x: any) => ({ ...x, s35: at(x.d.idx, 0.35), sE: at(x.d.idx, tEval) })).filter((x: any) => x.s35 && Math.hypot(x.s35.x - r35.x, x.s35.y - r35.y) <= 3.5)
++      .filter((x: any) => { const dE = Math.hypot(x.sE.x - rE.x, x.sE.y - rE.y); if (dE <= 2.5) return true; const ra = P(+n, tEval - 0.2); if (!ra) return false; const rv = { x: rE.x - ra.x, y: rE.y - ra.y }, dv = { x: x.sE.vx, y: x.sE.vy }; const c = (rv.x * dv.x + rv.y * dv.y) / ((Math.hypot(rv.x, rv.y) * Math.hypot(dv.x, dv.y)) || 1); return c > 0.6 && dE <= 4.5; })
++      .sort((a: any, b: any) => Math.hypot(a.sE.x - rE.x, a.sE.y - rE.y) - Math.hypot(b.sE.x - rE.x, b.sE.y - rE.y));
++    // Operator note (hand check, slant-flat vs cover1): an off linebacker on the TE starts 4-5 yd away, outside the
++    // 3.5 yd window, and the route scored 'vacated'. Fallback: within 6 yd at 0.35 s and moving with him by the break.
++    const far = near.length ? [] : D.map((x: any) => ({ ...x, s35: at(x.d.idx, 0.35), sE: at(x.d.idx, tEval) })).filter((x: any) => x.s35 && Math.hypot(x.s35.x - r35.x, x.s35.y - r35.y) <= 6)
++      .filter((x: any) => { const ra = P(+n, tEval - 0.2); if (!ra) return false; const rv = { x: rE.x - ra.x, y: rE.y - ra.y }, dv = { x: x.sE.vx, y: x.sE.vy }; const c = (rv.x * dv.x + rv.y * dv.y) / ((Math.hypot(rv.x, rv.y) * Math.hypot(dv.x, dv.y)) || 1); return c > 0.6 && Math.hypot(x.sE.x - rE.x, x.sE.y - rE.y) <= 6; })
++      .sort((a: any, b: any) => Math.hypot(a.sE.x - rE.x, a.sE.y - rE.y) - Math.hypot(b.sE.x - rE.x, b.sE.y - rE.y));
++    const m = near[0] ?? far[0]; if (!m) return { man: null, state: 'vacated' };
++    const ra = P(+n, tEval - 0.2)!, ux = rE.x - ra.x, uy = rE.y - ra.y, ul = Math.hypot(ux, uy) || 1;
++    const behind = -((m.sE.x - rE.x) * ux + (m.sE.y - rE.y) * uy) / ul, dist = Math.hypot(m.sE.x - rE.x, m.sE.y - rE.y);
++    const state = behind > 3 ? 'rubbed' : dist >= 5 || behind > 2.2 ? 'open' : dist < 2 ? 'contested' : 'between';
++    return { man: m.d.slot, state, dist: Math.round(dist * 10) / 10, behind: Math.round(behind * 10) / 10 };
++  }
++  const cov = coverage;
++  const man = /cover1|cover2man|cover0/.test(cov);
++  const walled = (() => { const sl = P(1, tEval); if (concept !== 'slant_flat' || !sl) return false; return hooks.some(({ d }: any) => { const s = at(d.idx, tEval); return Math.hypot(s.x - sl.x, s.y - sl.y) < 2.5 && out(s) <= out(sl) + 0.5; }); })();
++  let key: any = null, cue = '', answer: string[] | null = null;
++  const [o, i] = [ref(pair[0]), ref(pair[1])];
++  if (man) {
++    const mo = manOf(pair[0]), mi = manOf(pair[1]); key = { outer: mo, inner: mi };
++    const openSt = (x: any) => x.state === 'open' || x.state === 'rubbed' || x.state === 'vacated';
++    cue = `${mo.state}/${mi.state}`;
++    if (concept === 'quick_outs') answer = openSt(mo) ? [o] : mo.state === 'contested' ? [i, 'NEXT'] : [o, i, 'NEXT'];
++    else { const a: string[] = []; if (openSt(mo)) a.push(o); if (openSt(mi)) a.push(i); answer = a.length ? a : (mo.state === 'contested' && mi.state === 'contested') ? ['NEXT'] : [o, i, 'NEXT']; }
++  } else if (/cover2|tampa2/.test(cov)) {
++    const l = label(corner, true); key = { corner: corner?.d.slot ?? null }; cue = 'corner ' + l;
++    const sq = l === 'squatting' || l === 'sitting outside' || l === 'widening';
++    if (concept === 'quick_outs') answer = sq ? [i, 'NEXT'] : [o];
++    else if (concept === 'slant_flat') answer = sq ? (walled ? ['NEXT'] : [i]) : l === 'bailing' ? [o] : [o, i];
++    else answer = sq ? [i, 'NEXT'] : l === 'bailing' ? [o] : [o, i];
++  } else {
++    const lc = label(corner, true), la = label(apex, false); key = { corner: corner?.d.slot ?? null, apex: apex?.d.slot ?? null }; cue = (concept === 'quick_outs' ? `corner ${lc}, ` : '') + 'apex ' + la;
++    if (concept === 'quick_outs') answer = (lc === 'squatting' || la === 'widening') ? [i, 'NEXT'] : [o];
++    else if (la === 'vacated' || la === 'blitzing' || la === 'sitting mid') answer = [o, i];
++    else if (la === 'widening') answer = walled ? ['NEXT'] : [i];
++    else if (la === 'sitting outside') answer = [i];
++    else answer = [o]; // sits inside or sinks: the outer route (the flat)
++  }
++  const pos = (s: any) => s ? [Math.round(dep(s) * 10) / 10, Math.round(out(s) * 10) / 10] : null;
++  return { tEval: Math.round(tEval * 100) / 100, key, cue, answer, walled,
++    late: late ? undefined : (() => { const L = classify936(sim, snaps, posOf, side, sgn, rel, trk, true); return { cue: L.cue, answer: L.answer, tEval: L.tEval }; })(),
++    keyAt: { corner: corner ? [pos(corner.s0), pos(at(corner.d.idx, tEval))] : null, apex: apex ? [pos(apex.s0), pos(at(apex.d.idx, tEval))] : null },
++    rec: { one: pos(one), two: pos(two), three: pos(three) } };
+ }
