@@ -42,7 +42,7 @@ for r in R:
     if kf is None:
         stopped = k0f is not None and any(math.hypot(F[k][5][i][2], F[k][5][i][3]) < 1.5 for k in range(0, kSee + 1))
         cls[('row6 stopped at the landing area (late, stood)' if stopped else 'late (feasible at the catch, not when he saw it)') if k0f is not None else 'not feasible'] += 1
-        det.append(('late' if k0f is not None else 'nf', r['def'][i]['pos'], round(dist0, 1), F[kSee][0])); continue
+        det.append(('late' if k0f is not None else 'nf', r['def'][i]['pos'], round(dist0, 1), F[kSee][0], r.get('seed'), r.get('play'), r.get('catchT'), r['def'][i].get('slot'), r['yac'])); continue
     d = r['def'][i]; mx, my = F[kf][1], F[kf][2]
     # Per tick from tSee to his closest approach: the audit's rows (docs/reviews/2026-11-25-pursuit-squat-corner-outside-audit.md 1).
     kc = min(range(kSee, len(F)), key=lambda k: math.hypot(F[k][1] - F[k][5][i][0], F[k][2] - F[k][5][i][1]))
@@ -73,7 +73,7 @@ for r in R:
     elif f['aims at him'] >= 4: c = 'angle: aimed at the carrier, not ahead'
     elif f['12 yd effort'] >= 4: c = 'row3 12 yd effort step'
     else: c = 'feasible: other'
-    cls[c] += 1; det.append((c.split(' ')[0], d['pos'], round(dist0, 1), F[kSee][0], round(closest, 2), dict(f)))
+    cls[c] += 1; det.append((c.split(' ')[0], d['pos'], round(dist0, 1), F[kSee][0], round(closest, 2), dict(f), r.get('seed'), r.get('play'), r.get('catchT'), d.get('slot'), r.get('offLabel'), r.get('defLabel'), r['yac']))
 n = len(R)
 print(f"{sys.argv[1]}: uncontacted {n} of {J['catches']}")
 for k, v in cls.most_common(): print(f"  {k:55} {v}")
