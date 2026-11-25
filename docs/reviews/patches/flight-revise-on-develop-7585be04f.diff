@@ -167,12 +167,6 @@ index 000000000..715f86d22
 +for (const [k, r] of Object.entries(rows).sort()) console.log(`| ${k} | ${r.n} | ${r.never} | ${med(r.tRec)} | ${med(r.tSeen)} (${r.tSeen.length}) | ${med(r.err)} |`);
 +console.log('\n| time since his own first sample | ticks | his recorded flight at the true arrival, off the ball (yd, median) |\n|---|---|---|');
 +for (const k of ['0.0-0.2 s', '0.2-0.4 s', '0.4-0.6 s', '0.6+ s']) if (byWatch[k]) console.log(`| ${k} | ${byWatch[k].length} | ${med(byWatch[k])} |`);
-diff --git a/scripts/diag/perception/proj-err.mts b/scripts/diag/perception/proj-err.mts
-new file mode 100644
-index 000000000..e69de29bb
-diff --git a/scripts/diag/perception/velocity-lag-stage.mts b/scripts/diag/perception/velocity-lag-stage.mts
-new file mode 100644
-index 000000000..e69de29bb
 diff --git a/src/sim/ball-estimate.ts b/src/sim/ball-estimate.ts
 index 3a6533d94..d3b4a258e 100644
 --- a/src/sim/ball-estimate.ts
@@ -205,7 +199,7 @@ index 3a6533d94..d3b4a258e 100644
  
    /** Design 4: before the throw he is looking for the QB this tick (his head turns to him in sense()). */
 diff --git a/src/sim/behaviors/defense.ts b/src/sim/behaviors/defense.ts
-index 130d80047..076495ae6 100644
+index 130d80047..9dbfe091f 100644
 --- a/src/sim/behaviors/defense.ts
 +++ b/src/sim/behaviors/defense.ts
 @@ -38,7 +38,7 @@ import { OPEN_FIELD, playsBall } from '../open-field.js';
@@ -223,7 +217,7 @@ index 130d80047..076495ae6 100644
    a.tags.add('onBall');
 +  // FLIGHT_REVISE: with his own estimator he re-reads it each tick (each new sample revises it, and its catch opportunity is
 +  // re-recorded); the record stands in only while his estimate is empty.
-+  const fresh = FLIGHT_REVISE && estimatesFor(a) && sim.ball.kind === 'air' ? acquireFlight(a, sim) : [];
++  const fresh = FLIGHT_REVISE && estimatesFor(a) ? acquireFlight(a, sim) : [];
 +  if (fresh.length) return playObservedFlight(a, sim, fresh, true);
    const path = hasObservedFlight(a) ? rememberedFlight(a, sim.t) : null;
    return playObservedFlight(a, sim, path ?? (sim.ball.kind === 'air' ? acquireFlight(a, sim) : []), !path);
@@ -308,6 +302,3 @@ index 14040d68b..ccfd989fa 100644
        'GLANCE_DWELL_TARGET', 'GLANCE_HOLD_REF', 'LOOK_NECK', 'PHASE_BEHIND', 'PRE_LOOK_EARLY', 'PRE_LOOK_LATE',
        'PathSample', 'SEEN_EMPTY', 'bodyTurnLead', 'estimatesFor', 'fitFlight', 'glanceSd', 'lookAnyway',
        'lookJoints', 'neckOf', 'ownRoutes', 'phaseJudgeSd', 'sideOf'].sort());
-diff --git a/test/qb-track-look.test.ts b/test/qb-track-look.test.ts
-new file mode 100644
-index 000000000..e69de29bb
