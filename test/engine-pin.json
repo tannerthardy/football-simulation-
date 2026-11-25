@@ -530,6 +530,7 @@
   "test/rush-hands.test.ts",
   "test/rush-lean-bound.test.ts",
   "test/rush-promise.test.ts",
+  "test/rush-release.test.ts",
   "test/rush-rip.test.ts",
   "test/safety-depth.test.ts",
   "test/safety-tempo.test.ts",
