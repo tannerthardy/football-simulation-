@@ -16,10 +16,6 @@ async function panel(rw: string, ff: string) {
   for (const [k, v] of Object.entries(stack.flags as Record<string, string>)) if (v === 'on') vi.stubEnv(k, '1');
   for (const [k, v] of Object.entries(stack.numeric ?? {}) as [string, { default: number }][]) vi.stubEnv(k, String(v.default));
   vi.stubEnv('READ_WINDOW', rw); vi.stubEnv('FORECAST_FINISH', ff);
-  // LANE_LEVERAGE (pinned test-only, Coverage C14, 2026-11-25): with it on, cover3 roster 11 seed 1 (unflipped) throws
-  // the slant to Z at 3.05 s with his read index back at 0 after he had moved off Z, which READ_WINDOW does not hold.
-  // The QB lane (READ_WINDOW's owner) to decide whether a progression that wraps to its first read reopens it.
-  vi.stubEnv('LANE_LEVERAGE', '0');
   const { PlaySim } = await import('../src/sim/playsim.js');
   const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');
   let reopened = 0, lateFlat = 0, throws = 0;
@@ -40,7 +36,8 @@ async function panel(rw: string, ff: string) {
     sim.tick = () => {
       tick0();
       const b: any = sim.qb.behavior;
-      if (done || b?.kind !== 'qb-pass' || !b.reads) return;
+      // After his set, as READ_WINDOW counts: before it the index is his drop's first look, not a read he has made.
+      if (done || b?.kind !== 'qb-pass' || !b.reads || !(b.setAt >= 0)) return;
       const cur = b.reads[b.readIdx] ?? null;
       if (prev && cur !== prev) movedOff.add(prev);
       prev = cur;
