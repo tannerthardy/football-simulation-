@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "engine-104",
+  "id": "engine-105",
   "runSet": {
     "commit": "1b5415de99b5b7194eff045f3c37a07a4c54c1a9",
     "seeds": [
@@ -310,7 +310,7 @@
     "PULL_CUE": "off",
     "PULL_PLAN": "off",
     "HONEST_READS": "on",
-    "HONEST_FLIGHT": "off",
+    "HONEST_FLIGHT": "on",
     "HONEST_TACKLE": "on",
     "QB_FEEL": "off",
     "QB_GATHER": "off",
