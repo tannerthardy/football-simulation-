@@ -142,10 +142,16 @@ const stuck: Detector = {
   score: (p, dur) => dur + p.sev * 0.001,
 };
 
-/** 4. An unengaged lineman moving backward while facing his own backfield. */
+/**
+ * 4. An unengaged lineman moving backward while facing his own backfield. A candidate: on 19 run-only film events
+ * (docs/reviews/2026-10-27-backpedal-detector-review.md) he faced within 45° of his travel in 18, so the facing clause
+ * only restates the velocity clause and this is a lineman running toward his own backfield, not a backpedal; and
+ * 1 yd/s for 0.25 s is ordinary (NFL linemen sustain it for a second on 46% of runs). Rule and id unchanged.
+ */
 const backpedal: Detector = {
   id: 'backpedal',
-  label: 'Lineman backpedaling while facing his own backfield',
+  label: 'Unengaged lineman running toward his own backfield',
+  candidate: true,
   minHold: HOLD,
   hit(f) {
     if (f.phase !== 'live' || !f.offense) return NONE;
@@ -391,4 +397,32 @@ const phantomlane: Detector = {
   describe: (p, _dur, slots) => `${slots[p.players[0]]} travel ${p.data.heading}° vs installed-aim bearing ${p.data.designed}°; ${slots[p.players[1]]} ${p.data.along} yd ahead, ${p.data.lateral} yd off heading (engaged ${p.data.engaged}; geometry only)`,
 };
 
-export const DETECTORS: Detector[] = [presnap, turned, stuck, backpedal, slide, frozen, downalone, blindball, phantomlane];
+/**
+ * 10. A kick-out or lead puller whose first engagement of the play is a man deeper in the backfield than the
+ * ball holder (the QB before the handoff). Geometry of who he found first, not proof the man was the wrong one
+ * (a back-side end who has crashed can be the right kick-out target). NFL tracking (BDB2025 weeks 1-2, 3 yd lateral
+ * pullers' first touch, scripts/mechanics/run_film_reference.py): the man touched is deeper than the runner on 2% of
+ * 167 power and 3% of 146 counter pullers (one rule for both sources); run-only sim film 17% and 10% (develop 516d8729).
+ */
+const pulldeep: Detector = {
+  id: 'pulldeep', label: 'Puller first engages a man deeper than the ball holder', minHold: 0,
+  hit(f) {
+    if (f.phase !== 'live' || f.isPass || !f.offense || f.holder === undefined || f.holder < 0) return NONE;
+    const h = f.agents[f.holder];
+    if (!h || h.team !== 'O') return NONE;
+    let out: Hit[] | undefined;
+    for (const a of f.agents) {
+      if (a.team !== 'O' || !a.firstEngaged || (a.pullRole !== 'kick' && a.pullRole !== 'lead') || a.blocks < 0) continue;
+      const d = f.agents[a.blocks];
+      if (!d || d.team !== 'D' || d.x >= h.x) continue;
+      (out ??= []).push({ key: String(a.idx), players: [a.idx, d.idx, h.idx], sev: h.x - d.x,
+        data: { role: a.pullRole, deeper: r2(h.x - d.x), defenderX: r2(d.x), holderX: r2(h.x) },
+        achieved: { defenderDepthBehindHolder: r2(h.x - d.x) } });
+    }
+    return out ?? NONE;
+  },
+  describe: (p, _dur, slots) => `${slots[p.players[0]]} (${p.data.role}) first engaged ${slots[p.players[1]]}, ${p.data.deeper} yd deeper than ${slots[p.players[2]]} who holds the ball (geometry only)`,
+  score: (p) => p.sev,
+};
+
+export const DETECTORS: Detector[] = [presnap, turned, stuck, backpedal, slide, frozen, downalone, blindball, phantomlane, pulldeep];

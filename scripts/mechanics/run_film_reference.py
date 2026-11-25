@@ -134,10 +134,11 @@ def measure(play, out):
                     continue
                 hit = [j for j in dfn if dist(i, j, f) < 1.2]
                 if hit:
-                    touch = (f * 0.1, xy[f][hit[0]][0])
+                    touch = (f * 0.1, xy[f][hit[0]][0], xy[f][hit[0]][0] < xy[f][c][0])
                     break
             row = (play["concept"], *moved, depth, lat3, touch[0] if touch else None,
-                   touch[1] if touch else None, touch is not None and cross is not None and touch[0] <= cross)
+                   touch[1] if touch else None, touch is not None and cross is not None and touch[0] <= cross,
+                   touch[2] if touch else None)
             if ruled:
                 out["pull"].append((src, *row))
             if planned:
@@ -173,8 +174,9 @@ def measure(play, out):
 
 def main():
     out = {"timeline": [], "start": [], "pull": [], "backer": [], "edge": []}
-    for play in nfl(sys.argv[1]):
-        measure(play, out)
+    if sys.argv[1] != "-":  # "-" = no NFL reference, sim tables only
+        for play in nfl(sys.argv[1]):
+            measure(play, out)
     for play in sim(sys.argv[2:]):
         measure(play, out)
     print("Timeline: n, handoff, carrier past LOS, never past LOS, first contact, carrier x at contact, contact behind LOS")
@@ -189,16 +191,16 @@ def main():
     for src in ("nfl", "sim"):
         r = [t for t in out["start"] if t[0] == src]
         print(f"  {src}: {med([t[1] for t in r])} {med([t[2] for t in r])} {med([t[3] for t in r])} (n={len(r)})")
-    print("Pullers: n, moved 0.5/1.0/1.5 s, deepest, 3 yd lateral at, touch at, no touch, touched man's depth, touch before carrier crosses")
+    print("Pullers: n, moved 0.5/1.0/1.5 s, deepest, 3 yd lateral at, touch at, no touch, touched man's depth, touch before carrier crosses, touched man deeper than the runner")
     print("  (rows nfl and sim use the same rule; 'sim plan' is every installed puller, last column = share the rule catches)")
     for concept in ("POWER", "COUNTER", "TRAP"):
         for src in ("nfl", "sim", "sim plan"):
             r = [t for t in out["pull"] if t[0] == src and t[1] == concept]
             if r:
-                caught = f" {mean([t[10] for t in r])}" if src == "sim plan" else ""
+                caught = f" {mean([t[11] for t in r])}" if src == "sim plan" else ""
                 print(f"  {concept:8s} {src:8s}: {len(r):4d} {med([t[2] for t in r])} {med([t[3] for t in r])} {med([t[4] for t in r])} "
                       f"{med([t[5] for t in r])} {med([t[6] for t in r])} {med([t[7] for t in r])} {mean([t[7] is None for t in r])} "
-                      f"{med([t[8] for t in r])} {mean([t[9] for t in r])}{caught}")
+                      f"{med([t[8] for t in r])} {mean([t[9] for t in r])} {mean([t[10] for t in r if t[10] is not None])}{caught}")
     print("Box backers touched by a blocker before the carrier reaches them")
     for concept in CONCEPTS + [None]:
         for src in ("nfl", "sim"):

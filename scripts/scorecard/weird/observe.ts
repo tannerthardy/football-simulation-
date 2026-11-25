@@ -93,6 +93,10 @@ export function fill(sim: PlaySim, w: WAgent[]): void {
     o.blocks = -1;
     o.job = a.behavior.kind;
     o.manTarget = null;
+    // Sticky across the play: the record is rebuilt per play (blank), this only remembers earlier ticks.
+    o.firstEngaged = o.engaged && !o.everEngaged;
+    if (o.engaged) o.everEngaged = true;
+    o.pullRole = a.team === 'O' ? (a.behavior as unknown as { plan?: { pullRole?: 'kick' | 'lead' | 'trap' } }).plan?.pullRole ?? null : null;
     if (a.team === 'D' && a.behavior.kind === 'man') {
       const man = a.behavior as unknown as { target?: Agent };
       o.manTarget = man.target?.idx ?? null;
@@ -148,6 +152,7 @@ export function watchPlay(sim: PlaySim, clock: (ms: number) => void = () => {}):
     frame.offense = sim.possession === 'O';
     frame.runner = c && c.team === 'O' && (c !== sim.qb || sim.scrambled) ? c.idx : -1;
     frame.qb = sim.qb.idx;
+    frame.holder = c ? c.idx : -1;
     frame.scrambled = sim.scrambled;
     frame.ended = sim.phase === 'dead';
     const b = sim.ball;

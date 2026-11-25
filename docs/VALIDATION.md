@@ -149,12 +149,13 @@ to a target count.
 | Pre-snap teammate contact (`presnap`) | Two offensive bodies touch before the snap, from the physics world's contact log. Reports the motion kind and who the motion man is. Control: with no motion called it should give zero (`weird.presnap.control`). | None. | Closing speed, impulse. Nothing is requested before the snap. |
 | Defender turned away (`turned`) | After a handoff, catch or scramble (not a QB in the pocket): a defender within 5 yd of the carrier, facing more than 120° from the bearing to him, for 0.25 s, not engaged, down or in the tackle. | 5 yd, 120°, 0.25 s are chosen; 120° is "an analysis category, not a coaching truth" in `docs/football-handbook/orientation-pilot.md`. | Requested facing (or travel direction) against achieved facing. |
 | Blocker on a man out of the play (`stuck`) | A run play with a carrier: a blocker engaged with, or planning against, a defender more than 5 yd from the carrier and moving away at over 0.5 yd/s, while a free defender (not engaged, not down, no offensive teammate within 1 yd) is within 3.5 yd of the carrier. | 5 yd and 3.5 yd are RUN-12's; the 0.5 yd/s and the 0.25 s are chosen. RUN-12 is rebuilt from its text, since no script exists. | The blocker's requested and achieved velocity, and his job. |
-| Lineman backpedaling facing his backfield (`backpedal`) | An unengaged offensive lineman, while the offense still has the ball, faces more than 120° from downfield and moves back faster than 1 yd/s, for 0.25 s. Run and pass plays both; the play kind is logged. | 120°, 1 yd/s, 0.25 s are chosen. | Requested against achieved velocity and facing. The rate is a share of OL frames. |
+| Lineman running toward his own backfield (`backpedal`, **candidate**) | An unengaged offensive lineman, while the offense still has the ball, faces more than 120° from downfield and moves back faster than 1 yd/s, for 0.25 s. Run and pass plays both; the play kind is logged. | 120°, 1 yd/s, 0.25 s are chosen. **Demoted 2026-10-27:** he faces within 45° of his travel in 18 of 19 run-only film events, so the facing clause restates the velocity clause and he is running, not backpedaling; and 1 yd/s for 0.25 s is ordinary (NFL linemen hold 1 yd/s toward their goal for a second on 46% of runs, the sim 38%). The NFL-comparable form (every 0.1 s step above 2 yd/s for 1 s, any lineman, snap to end) is 10.8% of NFL runs against 1.9% of sim runs, so the sim retreats less, not more. Review: [backpedal detector review](reviews/2026-10-27-backpedal-detector-review.md). | Requested against achieved velocity and facing. The rate is a share of OL frames. |
 | Sliding through a cut (`slide`, **candidate**) | A sharp turn (60° or more over 0.5 s, entered at 3 yd/s or faster) in which no window of the turn shows him slowing: speed retention at or above the NFL 90th percentile for his role. | The turn operator and the retention percentiles are sourced from BDB2027 tracking (`scripts/data/bdb2027_movement.py`; the table in `detectors.ts` is checked against `bdb2027-movement.json` by a test). The 3 yd/s entry floor is chosen. **No plant-deceleration threshold exists anywhere**, hence "candidate". | Requested turn angle and speed ratio against achieved. The rate is a share of sharp turns. |
 | Free second-level OL requests stop (`frozen`, **candidate**) | Live designed run, OL job climb/lead, unengaged/up/out of tackle bond; request under 0.3 yd/s for at least 0.4 s of consecutive 20 Hz samples, including before handoff. | 0.3 yd/s and 0.4 s are chosen review thresholds, not NFL calibration. | Requested and achieved speeds and job. A stop may be lawful braking/traffic; not a failed-block verdict. |
 | QB down without nearby defender (`downalone`, **candidate**) | New QB down onset on a pass/scramble, with complete preceding 0.5 s of samples, no engagement/bond, and all defender centers over 2 yd away throughout the lookback and onset. | 2 yd and 0.5 s are chosen. Missing history/defenders mean unknown. | Smallest sampled defender distance and onset; positions do not establish valid/invalid reach or cause of fall. |
 | Trailing man body stays turned from ball (`blindball`, **candidate**) | At flight end, man marker stayed within 2 yd of the target and behind along flight direction, body over 120° from ball throughout recorded undeflected/non-throwaway flight, accumulating no more than 30° facing travel. Missing/partial flight is skipped. | 2 yd, 120°, 30° and the 20 Hz window are chosen. | Target, sampled offsets, facing travel and signed arrival angle/left-rear or right-rear shoulder side. Body facing is not gaze or proof of missed recognition. |
 | Runner departs static installed aim toward defender (`phantomlane`, **candidate**) | Before passing the installed aim on a designed run, achieved travel at least 0.3 yd/s departs its bearing by 30°+, with an upright defender 0–3 yd forward along that ray and within 1.5 yd perpendicular. | 30°, 0.3 yd/s, 3 yd and 1.5 yd are chosen geometry heuristics. | Achieved/requested travel headings, installed-aim bearing and defender offsets/engagement. Static aim is not a newly evaluated live-gap route, and a nearby defender does not establish a wrong cut. |
+| Puller first engages a man deeper than the ball holder (`pulldeep`) | A run play: an offensive blocker with a kick-out or lead pull role, on the tick he is first engaged in the play, with a defender whose x is behind the ball holder's (the QB before the handoff, the runner after). One tick, no hold time. Ranked by how many yards deeper. | Zero margin; no thresholds. Sourced in kind from BDB2025 weeks 1-2 (pullers chosen by `run_film_reference.py`'s one rule, first touch within 1.2 yd): the man touched is deeper than the runner on 2% of 167 power and 3% of 146 counter pullers, against 17% and 10% of the run-only sim pullers (`run_film_reference.py`, last column of the Pullers table; touch is proximity, the detector uses the engagement). On 4 run-only seeds (7, 9, 11, 13; two games each) it finds 22 of 165 counter/power plays (power 15/93, counter 7/72; develop 516d8729, `weird-film.ts --run-only`); Tanner's count on the earlier engine was 24 of 146. | Geometry only: a crashed back-side end can be the right kick-out target, and it says nothing about why he went there. The puller's job, the defender and the holder's x. |
 
 The four additional candidate definitions landed in
 [#318](https://github.com/tannerthardy/football-simulation-/pull/318) at
@@ -345,6 +346,32 @@ error, not an override. Preserve and report any timeout or worker failure;
 lower concurrency does not authorize changing a deadline or assertion.
 The native game tests yield between synchronous games so worker reports can
 be delivered. Their simulation inputs, assertions and test timeout are unchanged.
+
+### Matched restage for run work (`scripts/diag/matched-restage.ts`)
+
+The same saved snaps replayed per arm, one process per arm (settings are read
+once at load). For run work:
+
+```sh
+T="node --import tsx scripts/diag/matched-restage.ts"
+$T capture 11 --run-only --games 2                       # every offensive call a designed run -> seed11-run.json
+FLAG=0 $T replay 11 arm --run-only --shifts 2 --trace    # saved stream + 2 shifted streams, run traces
+$T compare base arm 11 --run-only                        # per-snap change counts across the 3 matched pairs
+$T tables arm 11 --run-only                              # run_film_reference.py tables, NFL beside the arm
+```
+
+- `--shifts K` replays each snap on K more random streams (a deterministic fork
+  of the saved stream), so one snap gives K+1 matched base/arm pairs. A snap that
+  changes in every pair is the mechanism; one that changes in a single pair is a
+  different roll. `compare` also prints the noise floor: how far dice alone move
+  the base arm's yards (mean/median) next to how far the arm moves them.
+- `tables` prints the puller, box-backer, wide-edge, timeline and OL-start tables
+  (position-only, NFL and sim through the same code). It needs the NFL plays file:
+  `python3 -I scripts/data/fetch_nfl_data.py bdb2025-2022` then
+  `python3 -I scripts/mechanics/nfl_bdb2025.py --weeks 1 2 --plays-out out/mechanics/nfl-plays-w12.jsonl.gz --out out/mechanics/nfl-w12.json`;
+  without the file it prints the sim columns only. With shifts, each arm's tables pool all K+1 streams.
+- A tool change must change 0 plays: replay the same snaps with the old and the new
+  tool (and with `--trace` on and off) and `compare` must report `changed: 0`.
 
 Useful collectors; run only the layer affected, with unchanged source while
 collecting. These execute the current engine, unlike reading saved reports:
