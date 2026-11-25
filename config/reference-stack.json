@@ -220,6 +220,7 @@
     "CALL_COMPOSE": "on",
     "FLIGHT_BREAK": "on",
     "FLIGHT_LEAD": "off",
+    "LANE_LEVERAGE": "off",
     "HEAD_FOLLOW": "on",
     "HANDOFF_FREEZE": "on",
     "POCKET_CLIMB": "off",

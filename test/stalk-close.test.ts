@@ -9,6 +9,11 @@ afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 async function stalks(flag: string) {
   vi.resetModules();
   vi.stubEnv('STALK_CLOSE', flag); vi.stubEnv('SCREEN_QB', '1');
+  // LANE_LEVERAGE (pinned test-only, Coverage C14, 2026-11-25): with the curl-flat seat on outside leverage the nickel
+  // starts 0.8 yd outside the slot instead of 3 yd inside him, and his break to the screen runs through the slot's stalk:
+  // the legacy stalk (waiting at his alignment) then meets him on 11 of 12 plays (4 of 12 before), so the file's scene (a
+  // stalk closing a cushion on a man not coming to him) is gone. The file's owner to re-find it with LANE_LEVERAGE on.
+  vi.stubEnv('LANE_LEVERAGE', '0');
   vi.stubEnv('MATCH_DECLARE', '0'); // engine-80 (pinned test-only, Rules + Coaching's coverage landing): the now screen's stalk scenes were recorded against the latched seam/flat man; the file's owner to re-record with MATCH_DECLARE on
   const { CENTER_Y } = await import('../src/core/field.js');
   const { Rng } = await import('../src/core/rng.js');
