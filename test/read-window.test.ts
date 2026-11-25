@@ -36,7 +36,8 @@ async function panel(rw: string, ff: string) {
     sim.tick = () => {
       tick0();
       const b: any = sim.qb.behavior;
-      if (done || b?.kind !== 'qb-pass' || !b.reads) return;
+      // After his set, as READ_WINDOW counts: before it the index is his drop's first look, not a read he has made.
+      if (done || b?.kind !== 'qb-pass' || !b.reads || !(b.setAt >= 0)) return;
       const cur = b.reads[b.readIdx] ?? null;
       if (prev && cur !== prev) movedOff.add(prev);
       prev = cur;

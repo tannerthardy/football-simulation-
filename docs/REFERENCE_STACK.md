@@ -2831,3 +2831,19 @@ nothing adverse, but a full red-diff of the landing tree with them on turned fou
 (curl-flat-back and stalk-close: scenes moved, diagnosed by Coverage; loose-own and rush-arm-balance: not yet
 diagnosed). They land when those are explained. The full red-diff of that tree (a superset of this landing) showed
 no other new red; with both corner flags off the two undiagnosed tests pass.
+
+
+## engine-106: the Cover 2 corner plays #1 (2026-11-25)
+
+On: `LANE_LEVERAGE`, `FLAT_SINK_ONE` (Coverage); each `=0` restores. `FLAT_SIT_JUMP` (the trap variant: jumping #1's
+break before the throw) is registered off. The Cover 2 corner keys the side's #1 from outside leverage; #1's
+out-break under him ends his sink, he holds his leverage at #1's depth and breaks on the throw he sees (the patient
+standard). Before: on the strong side he keyed the first climber in his area (the slot's hitch) and ended 4 yd
+inside #1; on the weak side the lane spot pulled him inside and nothing in the sink read #1's out.
+Staged, quick outs against Cover 2 (30 seeds), throws to #1: 24 caught for 223 yd -> 3 for 25, the passer going to the
+slot hitches (17 caught, about 100 yd), which is what Cover 2 concedes; neither flag alone repairs both sides. The
+fade guard holds (0 sits on #1 in 60 four-verts sides); against a staged out-and-up the sit costs about 1 yd.
+Card e141 (4 seeds x 32 games against engine-104), together, by seed: completion -1.8, +1.8, +2.6, +0.3; yards an
+attempt -0.52, -0.37, +0.05, +0.14; nothing consistent. Landed on the staged repair. Not carded on top of
+engine-105's three flags.
+Open: the corner does not sink under a corner route by #2 (smash) in either arm; that is the half safety's ball today.
