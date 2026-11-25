@@ -333,7 +333,11 @@ export function pursueIfLive(sim: PlaySim, a: Agent): MoveCommand | null {
   // Continue the acquired flight estimate while possession is unresolved.
   // Disappearance of the authoritative air state does not announce a catch,
   // or reopen coverage. A receiver can still miss this predicted opportunity.
-  const path = rememberedFlight(a, sim.t);
+  // FLIGHT_REVISE: on his own estimator he re-reads it here too (each new sample revises it), the record standing in only
+  // while his estimate is empty; HONEST_FLIGHT's continuation otherwise played the flight he acquired first (Coverage,
+  // 2026-11-25: after 0.4 s of watching, 13.8 yd off the ball, p50, on the flight-revise panel).
+  const revised = FLIGHT_REVISE && estimatesFor(a) && !landed ? acquireFlight(a, sim) : [];
+  const path = revised.length ? revised : rememberedFlight(a, sim.t);
   const anticipated = landed && path ? anticipatedCatcher(a, sim) : null;
   if (anticipated) {
     if (sim.trace.data) sim.trace.decide({ t: sim.t, a: a.idx, kind: 'catch-anticipation', chose: anticipated.target.slot,
@@ -3184,9 +3188,9 @@ function playBelievedBall(a: Agent, sim: PlaySim, man: Agent | null, continueCov
   // FLIGHT_REVISE: with his own estimator he re-reads it each tick (each new sample revises it, and its catch opportunity is
   // re-recorded); the record stands in only while his estimate is empty.
   const fresh = FLIGHT_REVISE && estimatesFor(a) ? acquireFlight(a, sim) : [];
-  if (fresh.length) return playObservedFlight(a, sim, fresh, true);
-  const path = hasObservedFlight(a) ? rememberedFlight(a, sim.t) : null;
-  const flight = path ?? (sim.ball.kind === 'air' ? acquireFlight(a, sim) : []);
+  // (A revised flight goes through the FLIGHT_SETTLE gate below like any other; it used to return before it.)
+  const path = fresh.length ? null : hasObservedFlight(a) ? rememberedFlight(a, sim.t) : null;
+  const flight = fresh.length ? fresh : path ?? (sim.ball.kind === 'air' ? acquireFlight(a, sim) : []);
   // Bit 16384: on his own estimate, a catch point only once it has settled; until then the ball's direction.
   if (BALL_EST_FLIGHT_SETTLE && estimatesFor(a) && flight.length && !settledFlight(a, sim, flight)) {
     a.tags.add('flight-unsettled');
@@ -3195,7 +3199,7 @@ function playBelievedBall(a: Agent, sim: PlaySim, man: Agent | null, continueCov
     const line = ballLinePoint(a, sim, flight);
     return line ? runThrough(a, line, { speed: 1 }) : fallback();
   }
-  return playObservedFlight(a, sim, flight, !path);
+  return playObservedFlight(a, sim, flight, fresh.length ? true : !path);
 }
 
 /** ARM_RUN: how far down the throw line, past where he meets it, he aims (yd; a stated choice). */

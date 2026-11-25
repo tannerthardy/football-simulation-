@@ -25,10 +25,22 @@ const ACQ_SEEN = process.env.ACQ_SEEN === '1';
  * still being secured is not yet `carrying` and stays unread either way. Skill enters through the loop's latency. */
 const TRACKED_CATCH = process.env.TRACKED_CATCH === '1';
 const TRACKED_CATCH_SPAN = Number(process.env.TRACKED_CATCH_SPAN ?? 30) / 100;
+/** TRACKED_CATCH: per observer and target, how many ticks running (to `t`) he has had the target in view; one sight test
+ * per pair per tick, rebuilt from his recorded view after a gap. Offensive linemen are never catchers and are skipped. */
+const trackedRun = new WeakMap<Agent, Map<Agent, { t: number; run: number }>>();
+const LINEMEN = new Set(['LT', 'LG', 'C', 'RG', 'RT']);
 function trackedOver(a: Agent, sim: PlaySim, target: Agent): boolean {
+  if (!target.profile || LINEMEN.has(target.slot)) return false; // a body with no profile (a test stand-in), or a lineman
   const n = Math.round(TRACKED_CATCH_SPAN / sim.dt), h = target.profile.heightYd * 0.7;
-  for (let back = 0; back <= n; back++) if (!sawAt(sim, a, back, target, h)) return false;
-  return true;
+  let m = trackedRun.get(a);
+  if (!m) { m = new Map(); trackedRun.set(a, m); }
+  const r = m.get(target);
+  if (r && Math.abs(r.t - sim.t) < 1e-9) return r.run > n;
+  let run: number;
+  if (r && Math.abs(sim.t - r.t - sim.dt) < 1e-9) run = sawAt(sim, a, 0, target, h) ? r.run + 1 : 0;
+  else { run = 0; while (run <= n && sawAt(sim, a, run, target, h)) run++; }
+  m.set(target, { t: sim.t, run });
+  return run > n;
 }
 
 export interface PossessionRead { target: Agent; cue: Perceived }
