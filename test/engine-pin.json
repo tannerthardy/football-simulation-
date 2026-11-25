@@ -315,6 +315,7 @@
   "test/head.test.ts",
   "test/hold-facing.test.ts",
   "test/hold-finish.test.ts",
+  "test/honest-flight.test.ts",
   "test/honest-tackle.test.ts",
   "test/hot-look.test.ts",
   "test/hypot2.test.ts",

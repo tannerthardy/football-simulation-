@@ -49,9 +49,10 @@ const STAGED: Record<string, StagedThrow> = {
   'stick 12': { at: 1.8, slot: 'X', aim: { x: 48.66911850064066, y: 31.356812328493987, z: 1.3018716630875975 }, T: 0.7937124125677456 },
 };
 
-async function plays(flag: string) {
+async function plays(flag: string, honest?: string) {
   vi.resetModules();
   vi.stubEnv('ARRIVE_LEAD', flag);
+  if (honest !== undefined) vi.stubEnv('HONEST_FLIGHT', honest);
   // Pinned to FLIGHT_BREAK=0 (engine-94, Coverage C14): ARRIVE_LEAD steers the can't-beat-the-ball drive to the catch
   // point, a path FLIGHT_BREAK replaces (its moving break takes that defender before this branch); with the break on
   // the lead's own effect is not reached (on and off medians are identical, 2.34 yd). Owner: Coverage. Remove this test with
@@ -102,6 +103,12 @@ describe('ARRIVE_LEAD: an underneath zone defender leads the catcher on a short 
     const median = (v: number[]) => [...v].sort((p, q) => p - q)[Math.floor(v.length / 2)];
     expect(off.length).toBeGreaterThan(5);
     expect(on.length).toBeGreaterThan(5);
-    expect(median(on)).toBeGreaterThan(median(off) + 0.3);
+    if (process.env.HONEST_FLIGHT === '1') {
+      // HONEST_FLIGHT: his drive re-reads the catch on his own estimate every tick, so the lead comes without ARRIVE_LEAD
+      // (develop 5a62a70e, this panel: medians off/on 1.96 / 2.45 with it off, 2.49 / 2.45 with it on). ARRIVE_LEAD must
+      // not take it away, and without it he leads at least as far as ARRIVE_LEAD did with HONEST_FLIGHT off.
+      expect(median(on)).toBeGreaterThan(median(off) - 0.3);
+      expect(median(off)).toBeGreaterThan(median(await plays('1', '0')) - 0.3);
+    } else expect(median(on)).toBeGreaterThan(median(off) + 0.3);
   }, 120_000);
 });
