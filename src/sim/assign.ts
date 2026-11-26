@@ -269,7 +269,7 @@ export function assignBehaviors(sim: PlaySim): void {
     }
     if (concept.screen) installScreen(sim, concept, coord, mkScreenRoute);
     // Play action: the back sells the run through the mesh first.
-    const back = sim.slot('RB');
+    const back = sim.role('back');
     if ((concept.fake || lineRun) && back && back.behavior.kind !== 'idle') {
       const side = Math.sign(back.pos.y - qb.pos.y) || 1;
       // PA_DROP: a back aligned behind the QB runs his fake on a track beside him (a zone track to the B gap, strong),
@@ -303,7 +303,7 @@ export function assignBehaviors(sim: PlaySim): void {
     const dir = Math.abs(first) > 0.3 ? Math.sign(first) : 0;
     if (dir && sim.rng.fork(`stance:${a.slot}`).next() < stanceLeak(a)) a.stanceLean = dir;
   }
-  const rb = sim.slot('RB') ?? null;
+  const rb = sim.role('carrier') ?? null;
   const mesh = meshFor(sim, concept);
   if (concept.scheme === 'qbDraw') {
     qb.behavior = new QBHandoff(mesh.qb, 1.0, null, 0, true);
@@ -390,7 +390,7 @@ function meshFor(sim: PlaySim, concept: RunConcept): Mesh {
   const qbType = sim.offCall.formation.qb;
   const teOnPlayside = ps === sim.offAlign.strongSign ? sim.offAlign.hasTE.S : sim.offAlign.hasTE.W;
   let aimY: number;
-  const rbSeen = sim.slot('RB');
+  const rbSeen = sim.role('carrier');
   const gunBackside = IZ_GUN_A && concept.scheme === 'insideZone' && qbType === 'gun' && concept.aim === 'B'
     && !!rbSeen && (rbSeen.pos.y - by) * ps < -1;
   // COUNTER_C: GT counter aims at the play-side tackle's outside hip (C).
@@ -427,7 +427,7 @@ function meshFor(sim: PlaySim, concept: RunConcept): Mesh {
     pitch = 5;
     time = 0.45;
   } else if (concept.scheme === 'draw' && DRAW_NFL) {
-    const dir = sim.attackDir('O'), back = sim.slot('RB');
+    const dir = sim.attackDir('O'), back = sim.role('carrier');
     const side = back ? Math.sign(back.pos.y - by) || ps : ps;
     qb = { x: qbType === 'under' ? los - 4.8 * dir : los - (GUN_QB_DEPTH + .55) * dir, y: by };
     rb = { x: qb.x + 0.6 * dir, y: by + side * 1.07 };
@@ -455,7 +455,7 @@ function meshFor(sim: PlaySim, concept: RunConcept): Mesh {
     // clearance, not on the far hip a yard beyond (that landmark put his line
     // through the QB and three and a half yards away; he left on the snap and
     // braked into the QB, meeting the ball at 2.4-2.5 yd/s, tracked 3.8-4.6).
-    const back = sim.slot('RB');
+    const back = sim.role('carrier');
     if (back && (back.pos.y - by) * ps < -1) {
       const clear = sim.qb.profile.radius + back.profile.radius + .15;
       rb = { x: qb.x + sim.attackDir('O') * clear, y: by };

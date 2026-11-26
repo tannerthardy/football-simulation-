@@ -818,7 +818,7 @@ export class QBMind {
     if (call.kind === 'pass' && call.pass && call.pass.family !== 'playaction') {
       // Light box against two-high on a running down: run it.
       const runDown = opts.down <= 2 && opts.distance <= 7;
-      if (runDown && box <= blockers - 1 && this.pSingleHigh() < 0.35 && sim.slot('RB') && sim.dice('qb-mind').chance(0.5)) {
+      if (runDown && box <= blockers - 1 && this.pSingleHigh() < 0.35 && sim.role('back') && sim.dice('qb-mind').chance(0.5)) {
         const run = RUN_BY_ID[boxL <= boxR ? (sim.offAlign.strongSign > 0 ? 'iz_strong' : 'iz_weak') : sim.offAlign.strongSign > 0 ? 'iz_weak' : 'iz_strong'];
         this.report.audible = `check to ${run.name}`;
         return { ...call, kind: 'run', run, pass: undefined, label: `${call.formation.name} — ${run.name} (audible)` };

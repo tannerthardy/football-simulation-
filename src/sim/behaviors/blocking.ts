@@ -1043,7 +1043,7 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
     const onBall = (d: Agent) => !ZONE_ONBALL || (d.pos.x - sim.los) * sim.attackDir('O') <= 1.1;
     // ZONE_WINGS: wings at the ends of the line count for ownership.
     const depthO = (o: Agent) => (o.pos.x - sim.los) * sim.attackDir('O');
-    const wings = !ZONE_WINGS ? [] : sim.offense.filter((o) => !line.includes(o) && !isOL(o) && o !== sim.qb && o.slot !== 'RB'
+    const wings = !ZONE_WINGS ? [] : sim.offense.filter((o) => !line.includes(o) && !isOL(o) && o !== sim.qb && o !== sim.role('carrier')
       && !(sim.offAlign.spots[o.slot]?.backfield) && depthO(o) > depthO(line[0]) - 1
       && [line[0], line[line.length - 1]].some((e) => Math.sign(o.pos.y - by) === Math.sign(e.pos.y - by)
         && Math.abs(o.pos.y - by) > Math.abs(e.pos.y - by) && Math.abs(o.pos.y - e.pos.y) <= 2.0));
@@ -1087,7 +1087,7 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
     // LEVEL2_TIME: wings set beside either end of the line take part.
     const lineEnds = [line[0], line[line.length - 1]];
     const wingWorkers = LEVEL2_TIME && WING_CALL && scheme !== 'draw' && scheme !== 'qbDraw' ? sim.offense.filter((o) => !plans.has(o) && !zl.includes(o)
-      && !isOL(o) && o !== sim.qb && o.slot !== 'RB' && !(sim.offAlign.spots[o.slot]?.backfield)
+      && !isOL(o) && o !== sim.qb && o !== sim.role('carrier') && !(sim.offAlign.spots[o.slot]?.backfield)
       && lineEnds.some((e) => { const out = Math.sign(e.pos.y - by) || 1;
         return depthO(o) > depthO(e) - 1.5 && (o.pos.y - e.pos.y) * out > 0 && Math.abs(o.pos.y - e.pos.y) <= 2.2; })) : [];
     const workers = [...doubles.map((d) => ({ b: d.b, double: d, lead: 1.5, inside: insideFirst })),
@@ -1176,7 +1176,7 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
         const ep = plans.get(end);
         if (!end || !ep) continue;
         const out = Math.sign(end.pos.y - by) || 1, playSide = rel(end) > 0;
-        const wingOf = (man: Agent) => sim.offense.find((o) => o !== end && !plans.has(o) && !isOL(o) && o !== sim.qb && o.slot !== 'RB'
+        const wingOf = (man: Agent) => sim.offense.find((o) => o !== end && !plans.has(o) && !isOL(o) && o !== sim.qb && o !== sim.role('carrier')
           && !(sim.offAlign.spots[o.slot]?.backfield) && depthOf(o) > depthOf(end) - 1.5 && (o.pos.y - end.pos.y) * out > 0
           && Math.abs(o.pos.y - end.pos.y) <= 2.2 && Math.abs(o.pos.y - man.pos.y) < Math.abs(end.pos.y - man.pos.y) - .3);
         const owned = new Set([...plans.values()].flatMap((p) => [p.target, p.climbTo, p.combination?.backer]));
@@ -1442,7 +1442,7 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
     } else
     plans.set(fb, { kind: 'lead', target: (backer && inside(backer) ? backer : null) ?? free[0] ?? null, drive: up(0) });
   }
-  const stalkers = sim.offense.filter((a) => !plans.has(a) && a !== sim.qb && a.slot !== 'RB' && a !== fb);
+  const stalkers = sim.offense.filter((a) => !plans.has(a) && a !== sim.qb && a !== sim.role('carrier') && a !== fb);
   const near = (a: Agent, d: Agent) => Math.hypot(d.pos.x - a.pos.x, d.pos.y - a.pos.y);
   // Alignment class is not ownership: shallow press/apex bodies can be in dl
   // without an inline job. Keep actual current/future assignments reserved,
@@ -3172,7 +3172,7 @@ export class RunBlocker implements Behavior {
       || !['drive', 'reach', 'down', 'cutoff'].includes(this.plan.kind)
       || (this.plan.combination && !this.plan.combination.released)) return null;
     const ref = this.workReference(a, sim);
-    if (this.workPicture?.source !== 'acquired' || this.workPicture.carrier !== sim.slot('RB')?.idx) return null;
+    if (this.workPicture?.source !== 'acquired' || this.workPicture.carrier !== sim.role('carrier')?.idx) return null;
     // Existing run-contact continuation ends once the runner has passed the
     // defender by this depth. This recovery does not renew an obsolete job.
     if ((ref.x - seen.pos.x) * sim.attackDir(a.team) > 2.5) return null;
@@ -3509,7 +3509,7 @@ function releaseTiming(observer: Agent, sim: PlaySim, backer: Perceived, d: Agen
   }
   const fill = timeToReach({ pos: backer.pos, vel: backer.vel, profile: d.profile },
     { x: sim.los + .6 * dir, y: backer.pos.y + backer.vel.y * .4 }, 0);
-  const runner = sim.slot('RB');
+  const runner = sim.role('carrier');
   const r = runner ? sim.see(observer, runner) : null;
   const runnerAt = r && runner ? timeToReach({ pos: r.pos, vel: r.vel, profile: runner.profile }, { x: sim.los, y: r.pos.y }, 0) : Infinity;
   const due = Math.min(fill, runnerAt + .3);
@@ -3572,7 +3572,7 @@ function readJoinedCombination(observer: Agent, sim: PlaySim, combo: Combination
   const backer = sim.see(observer, combo.backer!);
   const filling = Math.hypot(backer.pos.x - observer.pos.x, backer.pos.y - observer.pos.y) < 4.2
     || (FLOW_RELEASE && backerShows(observer, sim, backer));
-  const runner = sim.slot('RB');
+  const runner = sim.role('carrier');
   const arriving = runner && sim.see(observer, runner).pos.x > sim.los - 2.8;
   const prepareRoute=climbRoute(observer,combo.defender,surface.down,candidate.keeper,surface.covered,backer);
   const relative=sub(observer.pos,surface.down.pos);
@@ -3790,7 +3790,7 @@ function readUnjoinedCombination(observer: Agent, sim: PlaySim, combo: Combinati
   if (sim.t - combo.checkSince! < .15) return;
   const backer = sim.see(observer, combo.backer);
   const filling = Math.hypot(backer.pos.x - observer.pos.x, backer.pos.y - observer.pos.y) < 4.2;
-  const runner = sim.slot('RB');
+  const runner = sim.role('carrier');
   const arriving = runner && sim.see(observer, runner).pos.x > sim.los - 2.8;
   if (RELEASE_INTERCEPT ? !releaseTiming(observer, sim, backer, combo.backer, combo.defender).go : (!filling && !arriving)) return;
   if (!checkBackerCorridor(observer, combo.defender, surface, backer)) return;
@@ -3822,7 +3822,7 @@ function readOvertaken(observer: Agent, sim: PlaySim, combo: Combination, e: Eng
   const backer = sim.see(observer, combo.backer!);
   const filling = Math.hypot(backer.pos.x - observer.pos.x, backer.pos.y - observer.pos.y) < 4.2
     || (FLOW_RELEASE && backerShows(observer, sim, backer));
-  const runner = sim.slot('RB');
+  const runner = sim.role('carrier');
   const arriving = runner && sim.see(observer, runner).pos.x > sim.los - 2.8;
   if (RELEASE_INTERCEPT ? !releaseTiming(observer, sim, backer, combo.backer!, combo.defender).go : (!filling && !arriving)) return;
   if (!climbRoute(observer, combo.defender, surface.down, candidate.keeper, surface.covered, backer)) return;
