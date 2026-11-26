@@ -331,6 +331,7 @@
   "test/installed-plan-unregistered.test.ts",
   "test/int-belief.test.ts",
   "test/ir-align.test.ts",
+  "test/ir-check.test.ts",
   "test/ir-offense.test.ts",
   "test/ir-roundtrip.test.ts",
   "test/joint-spacing-projection.test.ts",

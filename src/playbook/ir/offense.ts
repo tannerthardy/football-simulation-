@@ -23,7 +23,7 @@ import {
   spotHash, tackleOf, wingOf, type AlignContext, type LineSplits, type OffSpot, type OffenseAlignment,
 } from '../alignment.js';
 import { GUN_QB_DEPTH, PISTOL_QB_DEPTH, UNDER_TAILBACK_EXTRA } from '../formations.js';
-import { sideSign, type Formation, type OffSlot, type ReceiverRef, type Side, type SkillSlot } from '../types.js';
+import { OFF_PERSONNEL, sideSign, type Formation, type OffSlot, type ReceiverRef, type Side, type SkillSlot } from '../types.js';
 import { ref, type Ref } from './types.js';
 
 type LineSlot = 'LT' | 'LG' | 'C' | 'RG' | 'RT';
@@ -34,9 +34,11 @@ export type SkillAnchor =
   | { kind: 'sideline'; room: Room }
   | { kind: 'share'; share: number; min: number; room: Room };
 
-export interface LinePlayer { who: { slot: LineSlot }; where: { y: number; depth: number } }
+export interface LinePlayer { who: { slot: LineSlot; eligible?: boolean }; where: { y: number; depth: number } }
 export interface SkillPlayer {
-  who: { slot: SkillSlot };
+  /** His body (the personnel's position for his slot) and whether he is an eligible receiver by number (data for the
+   * legality check, step 2a; absent: eligible). */
+  who: { slot: SkillSlot; position?: string; eligible?: boolean };
   where: {
     /** The side as authored; the snap's flip mirrors it. */
     side: Side | 'C';
@@ -64,6 +66,11 @@ export interface OffenseSnapDescription {
   players: SkillPlayer[];
   /** A gun run that moves the backs to the play side, and to which side. */
   backsToPlay?: 'strong' | 'weak';
+  /** Players the call cannot be run without (step 2a), written by the describer from the play: a split zone's slicer
+   * (a core off-ball TE or FB, or a second back), a screen's receiver by number. */
+  requires?: Array<{ kind: 'slicer' } | { kind: 'receiver'; ref: ReceiverRef }>;
+  /** Players in motion at the snap and their direction (step 2a; the catalog calls none). */
+  motion?: Array<{ slot: SkillSlot; toward: 'line' | 'parallel' | 'away' }>;
 }
 
 /** Presets + play context → the offense's description for that call (the preset step: names are read here, once). */
@@ -74,7 +81,7 @@ export function describeOffenseSnap(formation: Formation, ctx: AlignContext = {}
   const T = tackleOf(line), olOff: Record<LineSlot, number> = OL_SPLITS
     ? { LT: T, LG: line.cg, C: 0, RG: -line.cg, RT: -T } : { LT: 2.6, LG: 1.3, C: 0, RG: -1.3, RT: -2.6 };
   const depthOf = olDepth(ctx);
-  const linemen = (Object.entries(olOff) as [LineSlot, number][]).map(([slot, y]) => ({ who: { slot }, where: { y, depth: depthOf[slot] } }));
+  const linemen = (Object.entries(olOff) as [LineSlot, number][]).map(([slot, y]) => ({ who: { slot, eligible: false }, where: { y, depth: depthOf[slot] } }));
   const qb = { depth: formation.qb === 'under' ? 1.6 : formation.qb === 'pistol' ? PISTOL_QB_DEPTH : GUN_QB_DEPTH };
   const entries = Object.entries(formation.slots) as Array<[SkillSlot, NonNullable<Formation['slots'][SkillSlot]>]>;
   const detachedOn = (side: Side | 'C') => entries.filter(([, e]) => e.side === side && (e.split === 'wide' || e.split === 'slot' || e.split === 'slot2')).length;
@@ -91,6 +98,7 @@ export function describeOffenseSnap(formation: Formation, ctx: AlignContext = {}
   };
   const olMean = (Object.values(depthOf) as number[]).reduce((t, v) => t + v, 0) / 5;
   const zoneRun = TE_OFF && !!ctx.run && ['insideZone', 'outsideZone', 'wideZone'].includes(ctx.run.scheme);
+  const bodies = OFF_PERSONNEL[formation.personnel] ?? {};
   const players: SkillPlayer[] = entries.map(([slot, a]) => {
     let anchor: SkillAnchor;
     if (typeof a.split === 'number') anchor = { kind: 'offset', y: a.side === 'C' ? 0 : a.split };
@@ -109,7 +117,7 @@ export function describeOffenseSnap(formation: Formation, ctx: AlignContext = {}
     const depth = RECEIVER_DEPTH && onLine ? (a.split === 'inline' ? TE_LINE_DEPTH : WR_LINE_DEPTH)
       : OL_STAGGER && a.split === 'inline' ? INLINE_DEPTH
       : a.depth + (!backfield ? 0 : formation.qb === 'gun' ? GUN_QB_DEPTH - 5.0 : formation.qb === 'under' && a.depth >= 6 ? UNDER_TAILBACK_EXTRA : 0);
-    const p: SkillPlayer = { who: { slot }, where: { side: a.side, anchor, depth, backfield, onLine, inline: a.split === 'inline',
+    const p: SkillPlayer = { who: { slot, position: bodies[slot], eligible: true }, where: { side: a.side, anchor, depth, backfield, onLine, inline: a.split === 'inline',
       counts: !(typeof a.split === 'number' && a.depth >= 3 && Math.abs(a.split) < 3.5), attached: a.split === 'inline' } };
     if (zoneRun && a.split === 'inline' && !entries.some(([s2, e]) => s2 !== slot && e.split === 'inline' && e.side === a.side)) {
       const wide = entries.find(([, e]) => e.split === 'wide' && e.side === a.side);
@@ -124,7 +132,10 @@ export function describeOffenseSnap(formation: Formation, ctx: AlignContext = {}
   const backsToPlay = formation.qb === 'gun' && ctx.run && ((STRETCH_OFFSET && (ctx.run.scheme === 'outsideZone' || ctx.run.scheme === 'wideZone'))
     || (IZ_OFFSET && (ctx.run.scheme === 'insideZone' || ctx.run.scheme === 'splitZone'))
     || (COUNTER_OFFSET && ctx.run.scheme === 'counter')) ? ctx.run.direction : undefined;
-  return { preset: ref('formation', formation.id), line, linemen, qb, players, ...(backsToPlay ? { backsToPlay } : {}) };
+  const requires: NonNullable<OffenseSnapDescription['requires']> = [];
+  if (ctx.run?.scheme === 'splitZone') requires.push({ kind: 'slicer' });
+  if (ctx.pass?.screen?.receiver) requires.push({ kind: 'receiver', ref: ctx.pass.screen.receiver });
+  return { preset: ref('formation', formation.id), line, linemen, qb, players, ...(backsToPlay ? { backsToPlay } : {}), ...(requires.length ? { requires } : {}) };
 }
 
 /** The offense placed from its description (no formation, personnel, scheme or concept name read). */
