@@ -126,10 +126,25 @@ export interface FrontCall {
   offField: { slots: import('../types.js').Front['slots']; fits: NonNullable<import('../types.js').Front['fits']> };
 }
 
+/** Conditional placements a front carries, each a typed condition on the observed offense (step 1b):
+ * - `samOnTE`: on a "Sam on" call, the Sam walks onto the line on the outside shoulder of an attached end on the front's
+ *   strength (not against a wing, and not when a detached #2 makes him the apex);
+ * - `samOverEnd`: against an attached end on the front's strength, the Sam is head-up on a wing at the end's depth, else
+ *   on the end's outside shoulder at his own depth (unless he is already the apex);
+ * - `samBearEnd`: against an attached end on the front's strength, the Sam is on the line in a 9 technique. */
+export type FrontRule = 'samOnTE' | 'samOverEnd' | 'samBearEnd';
+
+/** Off-ball backers' spots by how many there are: `[u, depth]` weak to strong, `u` in gap units from the ball (1 = the
+ * centre-guard split, 2 = the tackle, 3 = the end man), depth past the line. */
+export type SecondLevel = Partial<Record<1 | 2 | 3, ReadonlyArray<readonly [number, number]>>>;
+
 /** A defensive call as players, plus the call-level fields the sim reads (inventory finding 1). */
 export interface DefenseDescription {
   personnel: DefPersonnelId;
   players: DefPlayer[];
+  /** Alignment data today's code keyed by name (step 1b): the sub package, the second level's spots, the front's
+   * conditional placements. */
+  alignment: { subPackage: boolean; secondLevel?: SecondLevel; frontRules: FrontRule[] };
   front: FrontCall;
   coverage: CoverageCall;
   pressure: PressureCall | null;

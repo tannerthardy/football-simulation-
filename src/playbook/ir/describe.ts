@@ -5,6 +5,7 @@ import type {
   SkillSlot,
 } from '../types.js';
 import { DEF_PERSONNEL } from '../types.js';
+import { BACKERS, FAMILY, FRONT_MENU } from '../alignment.js';
 import { ref, type CoverageCall, type DefenseDescription, type DefPlayer, type OffenseDescription, type PassDescription,
   type PressureCall, type RunDescription } from './types.js';
 
@@ -71,12 +72,21 @@ export function describeDefense(call: DefensivePlayCall): DefenseDescription {
   });
   const offSlots = Object.fromEntries(Object.entries(front.slots).filter(([s]) => !present.has(s as DefSlot))) as Front['slots'];
   const offFits = Object.fromEntries(Object.entries(front.fits ?? {}).filter(([s]) => !present.has(s as DefSlot))) as NonNullable<Front['fits']>;
+  // The preset step: what today's alignment code keys by name, written as data.
+  const frontRules = [
+    ...(front.id === 'over' || front.id === 'even' ? ['samOnTE' as const] : []),
+    ...(front.id === 'over' ? ['samOverEnd' as const] : []),
+    ...(front.id === 'bear' ? ['samBearEnd' as const] : []),
+  ];
+  const secondLevel = FRONT_MENU ? BACKERS[FAMILY[front.id] ?? ''] : undefined;
+  const alignment = { subPackage: personnel === 'nickel' || personnel === 'dime', frontRules,
+    ...(secondLevel ? { secondLevel: structuredClone(secondLevel) as DefenseDescription['alignment']['secondLevel'] } : {}) };
   return {
-    personnel, players,
+    personnel, players, alignment,
     front: { preset: ref('front', front.id), name: front.name, personnel: [...front.personnel], offField: { slots: structuredClone(offSlots), fits: structuredClone(offFits) } },
     coverage: coverageCall(coverage, present),
     pressure: pressure ? pressureCall(pressure, present) : null,
-    shown: shown ? { coverage: coverageCall(shown, present), roles: Object.fromEntries(slots.filter((s) => shown.roles[s]).map((s) => [s, structuredClone(shown.roles[s])])) } : undefined,
+    shown: shown && shown.id !== coverage.id ? { coverage: coverageCall(shown, present), roles: Object.fromEntries(slots.filter((s) => shown.roles[s]).map((s) => [s, structuredClone(shown.roles[s])])) } : undefined,
     call: structuredClone(rest),
   };
 }

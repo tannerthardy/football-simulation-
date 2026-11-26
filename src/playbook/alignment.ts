@@ -22,7 +22,7 @@ import { GUN_QB_DEPTH, PISTOL_QB_DEPTH, UNDER_TAILBACK_EXTRA } from './formation
  * tackle splits). The sim line stood at 1.3 yd splits (5.2 yd). Defensive
  * techniques, gap landmarks and the run-aiming points installed against the
  * 1.3 yd table are placed from the actual splits (`lineOffset`). */
-const OL_SPLITS = process.env.OL_SPLITS !== '0';
+export const OL_SPLITS = process.env.OL_SPLITS !== '0';
 /** Default on (OL_STAGGER=0 turns it off): the line stands off the ball as tracked.
  * Guards 0.83 yd behind the ball, tackles 0.98 and an inline end 1.19 (body
  * centres; their helmets break the center's waist, the legal limit for a
@@ -40,8 +40,8 @@ const BASE_LINE: LineSplits = OL_SPLITS ? { cg: 1.54, gt: 1.56, tte: 1.52 } : { 
  * and second down and a yard it does not). Splits do not otherwise change with
  * the call: tracked zone, gap and dropback splits agree within 0.05 yd. */
 const SHORT_LINE: LineSplits = { cg: 1.45, gt: 1.47, tte: 1.43 };
-const tackleOf = (l: LineSplits) => OL_SPLITS ? l.cg + l.gt : 2.6;
-const inlineOf = (l: LineSplits) => OL_SPLITS ? tackleOf(l) + l.tte : 3.9;
+export const tackleOf = (l: LineSplits) => OL_SPLITS ? l.cg + l.gt : 2.6;
+export const inlineOf = (l: LineSplits) => OL_SPLITS ? tackleOf(l) + l.tte : 3.9;
 // A wing stands 1.32 yd outside the attached end: the median lateral offset
 // of the 682 off-line players within 2.5 yd outside a single attached TE with a
 // defender on the line beside them (2022 tracking, weeks 1-6, SNAP frames;
@@ -101,7 +101,7 @@ export function scatterSide(off: Pick<OffenseAlignment, 'ballY' | 'strongSign'>,
  * the ball (0.36 and 0.45 of its offset); a deep-middle (thirds) safety stays
  * in the middle 14.5 deep, a man-free safety shades 0.34 toward the ball.
  * Off: the installed spots. */
-const DEF_ALIGN = process.env.DEF_ALIGN !== '0';
+export const DEF_ALIGN = process.env.DEF_ALIGN !== '0';
 /** Default on (WR_ALIGN=0 turns it off): receivers align as tracked
  * (scripts/diag/align/nfl_scheme.py, 2022 tracking at the snap). The #1's room
  * to his sideline follows his route (ROUTE_ROOM: wide to run vertical or
@@ -134,9 +134,9 @@ const WR_ALIGN = process.env.WR_ALIGN !== '0';
  * Over Sam is a "90" (outside shade at linebacker depth), on the line
  * head-up on a wing. An explicit edge call (tight, base, wide) overrides.
  * The call's gap is unchanged. */
-const FRONT_ALIGN = process.env.FRONT_ALIGN !== '0';
+export const FRONT_ALIGN = process.env.FRONT_ALIGN !== '0';
 /** SHORT_PACKAGE (on; =0 turns it off): see game/playcaller.ts. */
-const SHORT_PACKAGE = process.env.SHORT_PACKAGE !== '0';
+export const SHORT_PACKAGE = process.env.SHORT_PACKAGE !== '0';
 /** Default on (FRONT_STRENGTH=0 turns it off): the front sets its own strength,
  * apart from the coverage's receiver strength. With one attached end it sets
  * to him, whatever the receivers do: in 2022 tracking a 4-down front's 3
@@ -159,7 +159,7 @@ const FRONT_STRENGTH = process.env.FRONT_STRENGTH !== '0';
  * nickel Over stack the B gaps, Will at -1.4 and Mike at +1.7, both 4.6 deep;
  * three in a base Over put the Mike in the strong A gap at +0.5 between a
  * weak Will at -1.9 and a Sam at +2.7. Off: the front's installed techniques. */
-const FRONT_MENU = process.env.FRONT_MENU !== '0';
+export const FRONT_MENU = process.env.FRONT_MENU !== '0';
 /** Default on (BOX_ALIGN=0 turns it off): in a zone call every detached inside
  * receiver (#2, #3) is answered before the snap. When no defender stands over
  * him (within 1.5 yd laterally, under 8 deep) or at his apex (between him
@@ -183,20 +183,20 @@ const FRONT_MENU = process.env.FRONT_MENU !== '0';
  * under center, 3.9 and 5.8 in the gun (medians, 1,678 and 1,131 snaps). The
  * installed spot, 3 yd outside and 7.5 deep, left him out of the box against
  * an attached end on every snap (tracked: within 2 yd of the end on 70%). */
-const BOX_ALIGN = process.env.BOX_ALIGN !== '0';
+export const BOX_ALIGN = process.env.BOX_ALIGN !== '0';
 /** BLITZ_CREEP (experimental, off): see alignDefense; tracked depth of a rushing backer at the snap (yd). */
-const BLITZ_CREEP = process.env.BLITZ_CREEP !== '0', CREEP_DEPTH = 2.4;
+export const BLITZ_CREEP = process.env.BLITZ_CREEP !== '0', CREEP_DEPTH = 2.4;
 /** SAM_ON_TE (experimental, off): see alignDefense; a Sam on the line stands as the Under's 9 does (yd). */
-const SAM_ON_TE = process.env.SAM_ON_TE === '1', SAM_ON_DEPTH = 1.0;
+export const SAM_ON_TE = process.env.SAM_ON_TE === '1', SAM_ON_DEPTH = 1.0;
 /** TIGHT_OFF (experimental, off): see alignDefense; a tight #2 is within this of his tackle (yd); off depth (yd). */
 /** NICKEL_FRONTS (experimental, off): see the end-man rule in alignDefense. */
-const NICKEL_FRONTS_ALIGN = process.env.NICKEL_FRONTS !== '0';
+export const NICKEL_FRONTS_ALIGN = process.env.NICKEL_FRONTS !== '0';
 /** SLOT_LEV (experimental, off): see alignDefense. */
-const SLOT_LEV = process.env.SLOT_LEV !== '0';
-const TIGHT_OFF = process.env.TIGHT_OFF !== '0', TIGHT_SPLIT = 3.5, TIGHT_OFF_DEPTH = 4.5;
+export const SLOT_LEV = process.env.SLOT_LEV !== '0';
+export const TIGHT_OFF = process.env.TIGHT_OFF !== '0', TIGHT_SPLIT = 3.5, TIGHT_OFF_DEPTH = 4.5;
 /** SHELL_SHOW (on; the call's disguise rates are in
  * game/playcaller.ts): a disguised man safety shows the deep look. */
-const SHELL_SHOW = process.env.SHELL_SHOW !== '0';
+export const SHELL_SHOW = process.env.SHELL_SHOW !== '0';
 /** Default on (AGAP_ALIGN=0 turns it off; acts with FRONT_ALIGN): a lineman's 1
  * technique stands at his team's habit along the centre-guard split, not on
  * the centre's shoulder. In 2022 tracking the A-gap man of a 4-down
@@ -207,12 +207,12 @@ const SHELL_SHOW = process.env.SHELL_SHOW !== '0';
  * his build barely moves it (-0.017 per 10 lb) and down, personnel and run
  * or pass move the median under 0.06 (scripts/diag/align/deflook.py). The
  * gap is unchanged. Off: the shoulder. */
-const AGAP_ALIGN = process.env.AGAP_ALIGN !== '0';
+export const AGAP_ALIGN = process.env.AGAP_ALIGN !== '0';
 /** AGAP_ALIGN: the league's 1 technique, as a share of the centre-guard
  * split (mean of the 2022 team medians), for a defense without a habit. */
-const AGAP_LEAGUE = .63;
+export const AGAP_LEAGUE = .63;
 type BackerSpot = [units: number, depth: number];
-const BACKERS: Record<string, Partial<Record<1 | 2 | 3, BackerSpot[]>>> = {
+export const BACKERS: Record<string, Partial<Record<1 | 2 | 3, BackerSpot[]>>> = {
   over: { 1: [[.35, 4.7]], 2: [[-1.4, 4.6], [1.7, 4.6]], 3: [[-1.9, 4.5], [.5, 4.8], [2.7, 4.5]] },
   under: { 1: [[.3, 4.6]], 2: [[-1.2, 4.5], [1.7, 4.6]], 3: [[-1.7, 4.5], [.7, 4.6], [3, 4.5]] },
   even: { 1: [[.05, 4.7]], 2: [[-1.5, 4.8], [1.9, 4.8]], 3: [[-1.9, 4.5], [.5, 4.8], [2.7, 4.5]] },
@@ -221,17 +221,17 @@ const BACKERS: Record<string, Partial<Record<1 | 2 | 3, BackerSpot[]>>> = {
   // NICKEL_FRONTS: the Mint's Will sits over the weak C-gap bubble the front leaves open.
   mint: { 2: [[-2.5, 4.3], [.6, 4.6]] },
 };
-const FAMILY: Record<string, string> = { over: 'over', wide9: 'over', under: 'under', under34: 'under', even: 'even', bear34: 'bear', tite: 'tite', penny: 'over', penny_bear: 'over', mint: 'mint', okie: 'even' };
-const FRONT_PLAYERS = new Set<DefSlot>(['DE_S', 'DE_W', 'DT_S', 'DT_W', 'NT', 'LB_S', 'LB_M', 'LB_W']);
+export const FAMILY: Record<string, string> = { over: 'over', wide9: 'over', under: 'under', under34: 'under', even: 'even', bear34: 'bear', tite: 'tite', penny: 'over', penny_bear: 'over', mint: 'mint', okie: 'even' };
+export const FRONT_PLAYERS = new Set<DefSlot>(['DE_S', 'DE_W', 'DT_S', 'DT_W', 'NT', 'LB_S', 'LB_M', 'LB_W']);
 /** The front's strong side (+1 = +y). */
 export function frontSign(call: DefensivePlayCall, off: OffenseAlignment): number {
   if (!FRONT_STRENGTH) return off.strongSign;
   if (off.hasTE.S !== off.hasTE.W) return off.hasTE.S ? off.strongSign : -off.strongSign;
   return call.strength === 'opposite' ? -off.strongSign : off.strongSign;
 }
-const otherSide = (side: 'S' | 'W'): 'S' | 'W' => side === 'S' ? 'W' : 'S';
-const flipZone = (z: ZoneId): ZoneId => z.replace(/_(s|w)(?=_|$)/, (_, c: string) => c === 's' ? '_w' : '_s') as ZoneId;
-const flipRef = (r: ReceiverRef): ReceiverRef => (r[0] === 'S' ? `W${r.slice(1)}` : r[0] === 'W' ? `S${r.slice(1)}` : r) as ReceiverRef;
+export const otherSide = (side: 'S' | 'W'): 'S' | 'W' => side === 'S' ? 'W' : 'S';
+export const flipZone = (z: ZoneId): ZoneId => z.replace(/_(s|w)(?=_|$)/, (_, c: string) => c === 's' ? '_w' : '_s') as ZoneId;
+export const flipRef = (r: ReceiverRef): ReceiverRef => (r[0] === 'S' ? `W${r.slice(1)}` : r[0] === 'W' ? `S${r.slice(1)}` : r) as ReceiverRef;
 
 export interface OffSpot {
   slot: OffSlot;
@@ -298,7 +298,7 @@ export interface DefSituation { down: number; distance: number; toGoal: number;
  * little more on 3rd & long. The two effects are added (checked against the
  * joint cells within their noise). docs/reviews/2026-11-09-coverage-spacing.md. */
 const SITU_DEPTH = process.env.SITU_DEPTH !== '0';
-type DepthJob = 'post' | 'half' | 'quarter' | 'thirdCB' | 'quarterCB' | 'flatCB';
+export type DepthJob = 'post' | 'half' | 'quarter' | 'thirdCB' | 'quarterCB' | 'flatCB';
 // Columns: 2nd & 7+, 2nd & 3-6, 2nd-4th & <=2, 3rd/4th & 3-6, 3rd/4th & 7+ | 12/21, 13/22+.
 const SITUATION_DEPTH: Record<DepthJob, [number[], number[]]> = {
   post: [[-0.2, -0.8, -1.2, -0.5, 0], [0, -0.3]],
@@ -578,13 +578,13 @@ export function lineDepth(depth: number, stance?: number): number {
  * at 3.9 yd from the ball) placed on the actual line: interpolated between
  * the center, guard, tackle and (with one) inline end, and carried with the
  * outermost of them beyond it. The identity unless OL_SPLITS is on. */
-const OL_SLOTS = new Set(['LT', 'LG', 'C', 'RG', 'RT']);
+export const OL_SLOTS = new Set(['LT', 'LG', 'C', 'RG', 'RT']);
 /** FRONT_ALIGN: a shade's offset from its blocker's centre (tracked). */
-const SHOULDER = .57;
+export const SHOULDER = .57;
 /** FRONT_ALIGN: techniques an end man can hold outside the tackle. */
-const EDGE_TECH: Technique[] = ['7', '6', '9', 'w9'];
+export const EDGE_TECH: Technique[] = ['7', '6', '9', 'w9'];
 /** FRONT_ALIGN: the called edge over an end (with none: a 9 or a wide nine). */
-const EDGE_CALL_TE: Record<'tight' | 'base' | 'wide', Technique> = { tight: '6', base: '9', wide: 'w9' };
+export const EDGE_CALL_TE: Record<'tight' | 'base' | 'wide', Technique> = { tight: '6', base: '9', wide: 'w9' };
 
 export function lineOffset(offset: number, hasTE: boolean, line: LineSplits = BASE_LINE): number {
   if (!OL_SPLITS) return offset;
@@ -596,7 +596,7 @@ export function lineOffset(offset: number, hasTE: boolean, line: LineSplits = BA
 }
 
 /** y offset (absolute, ≥ 0) of a technique from the ball on a side. */
-function techniqueOffset(tech: Technique, hasTE: boolean, line: LineSplits = BASE_LINE): number {
+export function techniqueOffset(tech: Technique, hasTE: boolean, line: LineSplits = BASE_LINE): number {
   if (FRONT_ALIGN) {
     // On the blocker: head-up on his centre or on a shoulder 0.57 yd off it.
     const G = OL_SPLITS ? line.cg : 1.3, T = tackleOf(line), E = inlineOf(line), sh = SHOULDER;
@@ -874,7 +874,7 @@ export interface ManPreference {
 /** DEF_ALIGN: a zone defensive back's depth and outward shade (negative =
  * inside) by his zone, as tracked by PFF assignment. A slot defender without
  * a named zone sits in a hook seat. */
-function zoneSpot(zone: ZoneId | undefined, slot: boolean): { depth: number; shade: number } {
+export function zoneSpot(zone: ZoneId | undefined, slot: boolean): { depth: number; shade: number } {
   if (!zone) return slot ? { depth: 4.5, shade: -0.5 } : { depth: 7, shade: 0.7 };
   if (zone.startsWith('flat')) return { depth: 4, shade: 0.5 };
   if (zone.startsWith('deep_half')) return { depth: 8.2, shade: 0.1 };
