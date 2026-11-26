@@ -2929,3 +2929,21 @@ Card e111 (one seed, 32 games, all three vs none): rush yards per carry 4.22 to 
 the part beyond 20 yd 0.69 to 0.26; runs of 20+ that reach 40: 10/13 to 3/8; stuff rate 16.1 to 14.3%. The second
 seed did not run (time limit). Open: backside overlap on counter and true two-gap are not built; the hold-facing scene
 pinned to the old fits needs a new scene.
+
+## engine-112: the back a defender sees; the first level a blocker sees (2026-11-26)
+
+`BACK_SEEN` and `SURFACE_ON_LINE` on (Rules + Coaching; each `=0` restores). From the labels-out work
+(docs/reviews/2026-11-26-labels-out-step5.md, loose-ends-step6.md).
+
+- `BACK_SEEN`: a defender keys the backfield player he sees at the snap (behind the line, inside the core, not the
+  passer): the deeper of two backs at different depths, the nearer of two level split backs, none in an empty set.
+  Before, he keyed the slot labeled RB, which told him which split back was the tailback and gave him a back key in
+  empty sets. Ordinary single-back calls are play-identical.
+- `SURFACE_ON_LINE`: a climbing blocker's first level is the defenders within 2 yd of the line and within 2 yd outside
+  the core, by where they stand. A stand-up rover 2.6 yd off is second level. A creeping blitzer at 2.4 yd is also
+  second level; our own tracking definition of a mug is within 2 yd, so the mug call's depth is the open item, not
+  this test.
+
+Staged (16 seeds, off to on): gun split-back inside zone 14.50 to 7.27 yd (the Mike no longer over-flows to the
+labeled carrier); empty stick 9.98 to 9.34; okie inside zone 1.24 to 1.21. Open: the lead back is still chosen by label
+(the fullback carrying leaves the halfback with no lead job).
