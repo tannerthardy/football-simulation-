@@ -16,7 +16,7 @@ import type { Perceived } from '../src/sim/perception.js';
 import { PlaySim } from '../src/sim/playsim.js';
 import { describeDefense } from '../src/playbook/ir/describe.js';
 import { runFitJobs } from '../src/playbook/ir/fits.js';
-import { buildRunFits, FIT_RULES, executeRunFit, type RunFitJob } from '../src/sim/run-fits.js';
+import { buildRunFits, FIT_RULES, FOLD_HOLD, executeRunFit, type RunFitJob } from '../src/sim/run-fits.js';
 
 const offense = generateTeam(new Rng(51), 'Force offense', 'FO', { strength: .55 });
 const defense = generateTeam(new Rng(52), 'Force defense', 'FD', { strength: .55 });
@@ -170,7 +170,13 @@ describe('force ownership belongs to installed coverage jobs', () => {
     }
     present(sim, sim.slot('CB_S')!, sim.ballY + sim.offAlign.strongSign * 5.5);
     present(sim, sim.slot('CB_W')!, sim.ballY - sim.offAlign.strongSign * 5.5);
-    expect(forces(buildRunFits(sim))).toEqual([
+    // FIT_RULES (Integration's step-3c ruling 3): a man defender on a detached receiver follows his receiver and is
+    // never the force; with no zone seat to supply one, there is no force and the edges box.
+    if (FIT_RULES) {
+      const jobs = buildRunFits(sim);
+      expect(forces(jobs)).toEqual([]);
+      for (const slot of ['DE_S', 'DE_W'] as const) if (jobs.get(sim.slot(slot)!)!.kind === 'edge') expect(jobs.get(sim.slot(slot)!)).toMatchObject({ edge: 'box' });
+    } else expect(forces(buildRunFits(sim))).toEqual([
       { slot: 'CB_S', side: sim.offAlign.strongSign, gap: 'D' },
       { slot: 'CB_W', side: -sim.offAlign.strongSign, gap: 'D' },
     ]);
@@ -201,7 +207,10 @@ describe('force ownership belongs to installed coverage jobs', () => {
         // job, at the second level; the edge he vacated is owned by someone by rule, or reported unowned.
         const jobs = buildRunFits(sim), j = jobs.get(end)!, side = sim.offAlign.strongSign;
         expect(spot.pos.x - sim.los).toBeGreaterThan(2);
-        expect(['insert', 'force']).toContain(j.kind);
+        // On an attached end or a back he fits off his man (insert, or the force by seat); on a detached receiver he
+        // follows him (alley; ruling 3).
+        const detachedMan = !sim.offAlign.spots[target!]!.inline && !sim.offAlign.spots[target!]!.backfield;
+        expect(detachedMan ? ['alley'] : ['insert', 'force']).toContain(j.kind);
         const full = describeDefense(sim.defCall);
         const r = runFitJobs({ ...full, players: full.players.filter((p) => sim.slot(p.who.slot)) }, sim.defAlign, sim.offAlign,
           { labelFree: true, pos: Object.fromEntries(sim.defense.map((a) => [a.slot, a.pos])) });
@@ -275,10 +284,13 @@ function dualStage(flip = false, location: 'inside' | 'outside' = 'inside', carr
 describe('inside force backers retain their bubble until an observed outside threat', () => {
   it.each([false, true])('keeps the unique B bubble and fits inside before the mesh declares, flip=%s', flip => {
     const one = dualStage(flip), reference = dualStage(flip);
-    reference.a.runFit = { ...reference.a.runFit!, gap: 'B', side: reference.side, kind: 'insert' };
+    // FOLD_HOLD (Integration's step-3c ruling 2): before the mesh declares the ball inside, the force holds his outside
+    // leverage (his force request), not the fold; off, he fitted the bubble inside.
+    reference.a.runFit = FOLD_HOLD ? { ...reference.a.runFit!, inside: undefined }
+      : { ...reference.a.runFit!, gap: 'B', side: reference.side, kind: 'insert' };
     const job = structuredClone(one.a.runFit), command = one.update();
     expect(command).toEqual(reference.update());
-    expect(command.vel.y * one.side).toBeLessThan(0);
+    if (!FOLD_HOLD) expect(command.vel.y * one.side).toBeLessThan(0);
     expect(one.a.runFit).toEqual(job);
     const inserts = one.sim.defense.flatMap(a => a.runFit?.inside ? [a.runFit.inside]
       : a.runFit?.kind === 'insert' ? [{ gap: a.runFit.gap, side: a.runFit.side }] : []);
@@ -289,19 +301,33 @@ describe('inside force backers retain their bubble until an observed outside thr
     const one = dualStage(flip, 'outside'), inside = dualStage(flip);
     const job = structuredClone(one.a.runFit), command = one.update();
     expect(command.vel.y * one.side).toBeGreaterThan(0);
-    expect(command.vel.y * one.side).toBeGreaterThan(inside.update().vel.y * inside.side);
+    // FOLD_HOLD: before the ball declares inside, the inside picture also keeps outside leverage (no fold yet).
+    if (FOLD_HOLD) expect(inside.update().vel.y * inside.side).toBeGreaterThan(0);
+    else expect(command.vel.y * one.side).toBeGreaterThan(inside.update().vel.y * inside.side);
     expect(one.a.runFit).toEqual(job);
   });
 
   it.each([false, null, undefined])('does not invent an outside possession cue with carrying=%s', carrying => {
     const one = dualStage(false, 'outside', null), reference = dualStage(false, 'outside', null);
     one.picture.carrying = carrying; reference.picture.carrying = carrying;
-    reference.a.runFit = { ...reference.a.runFit!, gap: 'B', side: reference.side, kind: 'insert' };
+    // FOLD_HOLD: with no possession cue the ball has not declared inside, so he holds the force.
+    reference.a.runFit = FOLD_HOLD ? { ...reference.a.runFit!, inside: undefined }
+      : { ...reference.a.runFit!, gap: 'B', side: reference.side, kind: 'insert' };
     expect(one.update()).toEqual(reference.update());
   });
 
   it('keeps its inside responsibility at a deep mesh even with positive outside possession', () => {
     const one = dualStage(false, 'outside', true, true), reference = dualStage(false, 'outside', true, true);
+    // FOLD_HOLD: at a deep mesh the ball has not declared inside; he holds the force.
+    reference.a.runFit = FOLD_HOLD ? { ...reference.a.runFit!, inside: undefined }
+      : { ...reference.a.runFit!, gap: 'B', side: reference.side, kind: 'insert' };
+    expect(one.update()).toEqual(reference.update());
+  });
+
+  it.each([false, true])('FOLD_HOLD: folds to his bubble when the flow goes away from him, flip=%s', flip => {
+    if (!FOLD_HOLD) return;
+    const one = dualStage(flip), reference = dualStage(flip);
+    one.picture.vel = { x: 1, y: -one.side * 3 }; reference.picture.vel = { x: 1, y: -reference.side * 3 };
     reference.a.runFit = { ...reference.a.runFit!, gap: 'B', side: reference.side, kind: 'insert' };
     expect(one.update()).toEqual(reference.update());
   });

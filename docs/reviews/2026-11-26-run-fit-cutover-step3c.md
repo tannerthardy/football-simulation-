@@ -104,3 +104,96 @@ In label-free mode a man the front placed within 3 yd counted as a front gap pla
 - **In cover 1 with the Will in man on the slot,** the Will remains the geometric force weak (the fallback picks the
   nearest available man). R1 takes him out of the interior fit only. Whether he should also be out of the force is
   open.
+
+## Second round (Integration's rulings on the four doubtful items)
+**Applied in the function (FIT_RULES, label-free):**
+- **A fold owns an interior gap** only for a defender aligned inside the nearest detached receiver on his side, or
+  with none on his side. A man on or outside #2 is force and alley only. The gap he would have had goes on by the
+  existing order, or it is reported unowned.
+- **A man defender on a detached receiver is never the force.** With no zone seat to supply one, there is no force on
+  that side and the edge boxes.
+- **Game-flow (6,000 calls):**
+  - jobs change on 72.7%;
+  - calls with an unowned gap: faithful 41.3%, label-free 24.4%. It rises from 9.7% because slot defenders' folds no
+    longer count: the honest light boxes.
+- **Catalog:** calls with an unowned gap: faithful 21,138, label-free 12,281. Faithful still equals today, 0 unequal.
+
+**Post-snap repair 1: `FOLD_HOLD`** (its own flag, default on, `=0` restores; it changes the faithful path too).
+- A force with a fold duty holds outside leverage until the ball declares inside or the flow goes away.
+  - Declared inside: the carrier, with the ball, at least 0.5 yd inside the surface, and across the line or running
+    upfield more than across.
+  - Flow away: the runner moving away from his side faster than 1 yd/s.
+- It is one decision on his picture of the runner. Its exit, back to force, is the carrier 0.5 yd outside the surface,
+  on the far side of the entry.
+- A dropping end's inside duty is his own C edge and is unchanged.
+- **Attempts.** Two: the first used only "crossed the line". The second added "running upfield inside" and the
+  dropping-end exception, after the red-diff showed both were needed.
+
+**Staged, with FOLD_HOLD on vs off.** The edge measure is: force outside the carrier and within 3 yd of the line when
+the carrier crosses it.
+
+| case | mean yd, on / off | force sets the edge, on / off |
+|---|---|---|
+| (d) OZ weak to the apex | 0.61 / 0.76 | 8/9 / 2/11 |
+| (b) IZ weak toward the apex | 1.71 / 1.99 | 11/13 / 7/14 |
+
+**Dither** (`test/dither-budget.test.ts`, DITHER_PRINT, FOLD_HOLD on vs off). It passes:
+- coverage controller reversed re-aims per second: 0.3368 vs 0.3502;
+- coverage facing: 0.1117 vs 0.1357;
+- coverage spacing: 0.1059 vs 0.1003;
+- tackle bond: 0.0086 vs 0.0079.
+
+All four are within budget, and no reversed re-aims are added by the fold margin.
+
+**Post-snap repair 2: `GUARD_KEY`** (its own flag, default on, `=0` restores; it changes the faithful path too).
+- A second-level run fitter keys the guard he is aligned over, or nearest inside.
+- When that guard pulls, he flows with it through his own perception, whatever the distance from his landmark to the
+  puller's arrival.
+- `PULL_REACH` stays for pullers he is not keyed on (a guard or tackle across the formation), which he reads only when
+  they cross near his landmark.
+
+**Staged counter, GUARD_KEY on vs off (16 seeds):**
+
+| case | read the pull, on / off | mean yd, on / off |
+|---|---|---|
+| (h1) weak | the backside Sam 16/16 / 11/16 | 7.75 / 3.33 |
+| (h2) strong | unchanged | 2.59 / 3.21 |
+
+- In (h1), one play in 16 is a 75-yd run with no defensive contact (seed 9). Without it the mean is like today's
+  (3.49 against 3.62).
+- **Doubtful:** the backside Sam now flows with the pull every time, and with no backside overlap or cutback
+  (deliberately not built) the cutback lane is open on that play.
+- **zone-track `flip=true` now passes for the right reason.** The keyed Mike reads his guard's pull, and the test
+  asserts the flow toward the pull and the `fit-pull-read` tag.
+- **`flip=false` stays red,** on the ledger (Coverage, SIGHT_COVER fixture). There the backer does not see the puller
+  at all, a perception fixture.
+
+**All flags on vs all off (FIT_RULES, FOLD_HOLD and GUARD_KEY), mean yd:**
+
+| case | on | off |
+|---|---|---|
+| (a) | 1.46 | 1.46 |
+| (b) | 1.72 | 2.96 |
+| (c) | 3.34 | 3.77 |
+| (d) | 0.61 | 1.61 |
+| (e) | 0.56 | 0.38 |
+| (f1) | 1.87 | 1.84 |
+| (f2) | 0.90 | 1.08 |
+| (g) | 1.59 | 2.51 |
+| (h1) | 7.75 | 2.03 |
+| (h2) | 2.59 | 3.28 |
+
+**Tests repaired for honest reasons** (each assertion is kept for the flag off):
+- **`run-force-ownership`:**
+  - the geometric man fallback in cover 0: no force, boxed edges (ruling 3);
+  - the man-converted end on a detached receiver: alley (ruling 3);
+  - the force with a fold before the mesh declares, with no possession cue, or at a deep mesh: holds the force
+    (ruling 2);
+  - plus a new FOLD_HOLD case: flow away folds him.
+- **`hold-facing`, "OPEN_HANDS … search with a floor":** a scene search (seeds 1900-1990, and none in 1900-2190 either)
+  for a free defensive tackle's side hold. With FIT_RULES and FOLD_HOLD both on, the new fits change who meets the
+  runner and no such hold occurs.
+  - The test's contract is the tackler's (HOLD_FACING), not the fit's.
+  - Pinned FIT_RULES=0 and FOLD_HOLD=0 for that scene, with a note to re-search it. This is the repo's pattern for
+    recorded scenes: the same file pins MIRROR_SCATTER and the engine-73 group.
+  - It passes on clean develop (seed 1903).
