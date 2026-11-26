@@ -41,6 +41,32 @@ const startOf = (a: Agent): number => OL_ON_COUNT ? a.snapReadyAt : a.mind.snapD
 /** How far behind the line this player's installed stance stands. */
 const stanceDepth = (sim: PlaySim, a: Agent) => sim.los - (sim.offAlign.spots[a.slot]?.pos.x ?? sim.los - .55);
 const OL = new Set(['LT', 'LG', 'C', 'RG', 'RT']);
+/** A lineman's place on the snap's line (step 5), not his label: the snapper (nearest the ball); then, on each side,
+ * his order out from the snapper and whether he is that side's end man. Tackle technique belongs to the end man of a
+ * side with at least two (an unbalanced line's lone guard is a guard); the guards are the first men out. In today's
+ * catalog these are exactly LT/RT, LG/RG and C. */
+interface LinePlace { snapper: boolean; side: number; order: number; end: boolean }
+const linePlaces = new WeakMap<PlaySim, Map<Agent, LinePlace>>();
+export function linePlace(sim: PlaySim, a: Agent): LinePlace | undefined {
+  let m = linePlaces.get(sim);
+  if (!m) {
+    m = new Map();
+    const ol = sim.offense.filter((o) => OL.has(o.slot)), at = (o: Agent) => sim.offAlign.spots[o.slot]!.pos.y - sim.offAlign.ballY;
+    if (ol.length) {
+      const snapper = ol.reduce((p, q) => (Math.abs(at(q)) < Math.abs(at(p)) ? q : p));
+      m.set(snapper, { snapper: true, side: 0, order: 0, end: false });
+      for (const side of [-1, 1]) {
+        const mine = ol.filter((o) => o !== snapper && Math.sign(at(o)) === side).sort((p, q) => Math.abs(at(p)) - Math.abs(at(q)));
+        mine.forEach((o, i) => m!.set(o, { snapper: false, side, order: i + 1, end: i === mine.length - 1 }));
+      }
+    }
+    linePlaces.set(sim, m);
+  }
+  return m.get(a);
+}
+const isTackle = (sim: PlaySim, a: Agent) => { const p = linePlace(sim, a); return !!p && p.end && p.order >= 2; };
+const isGuard = (sim: PlaySim, a: Agent) => linePlace(sim, a)?.order === 1;
+const isInterior = (sim: PlaySim, a: Agent) => !!linePlace(sim, a) && !isTackle(sim, a);
 export const isOL = (a: Agent): boolean => OL.has(a.slot);
 /** A first-level run blocker on the line: the five linemen and an inline end
  * doing the same job, who keeps the same base and strike fit into contact.
@@ -152,7 +178,7 @@ export class ProtectionCoordinator {
           const b = ol[i - 1];
           const r = rs[j - 1];
           const dy = Math.abs(r.pos.y - this.homeY.get(b)!);
-          const zone = b.slot === 'LT' || b.slot === 'RT' ? 5.5 : 2.8;
+          const zone = isTackle(sim, b) ? 5.5 : 2.8;
           const c = dp[i - 1][j - 1] + dy + (dy > zone ? 6 : 0);
           if (c < dp[i][j]) {
             dp[i][j] = c;
@@ -206,7 +232,7 @@ export class ProtectionCoordinator {
     const unblocked = rushers.filter((r) => !r.engagement && !taken.has(r));
     const usedB = new Set<Agent>();
     const usedR = new Set<Agent>();
-    const zoneOf = (b: Agent) => (isOL(b) ? (b.slot === 'LT' || b.slot === 'RT' ? 5.5 : 2.6) : 8);
+    const zoneOf = (b: Agent) => (isOL(b) ? (isTackle(sim, b) ? 5.5 : 2.6) : 8);
     // Assignments hold once made: a blocker keeps his man unless someone else
     // has picked him up, he's down, or he has left this blocker's area (a game
     // or twist — then he's passed off).
@@ -228,7 +254,7 @@ export class ProtectionCoordinator {
     for (const b of free) {
       if (usedB.has(b)) continue;
       const home = this.homeY.get(b)!;
-      const isT = b.slot === 'LT' || b.slot === 'RT';
+      const isT = isTackle(sim, b);
       const zone = zoneOf(b);
       for (const r of unblocked) {
         if (usedR.has(r)) continue;
@@ -312,7 +338,7 @@ export class PassProtector implements Behavior {
     a.stance = isOL(a) && (PUNCH ? paRunLook(a, sim, a.engagement?.defender ?? this.coord.assigned.get(a) ?? null)
       : sim.t < 0.35 && sim.offCall.kind === 'pass' && !!sim.offCall.pass?.fake) ? 'low' : 'high';
     const home = this.coord.homeY.get(a) ?? a.pos.y;
-    const outside = a.slot === 'LT' || a.slot === 'RT' ? Math.sign(home - sim.ballY) : 0;
+    const outside = isTackle(sim, a) ? Math.sign(home - sim.ballY) : 0;
     a.passSet = { depth: passSetDepth(sim, a), laneY: home + outside * 0.8, outside };
     if (sim.t < startOf(a)) return stand(0);
     // A called release: a lineman or attached end leaves his man on the count;
@@ -362,7 +388,7 @@ export class PassProtector implements Behavior {
       }
     }
     // SET_SPOT: the QB he protects is the launch point he knows from the call, not the live QB behind him.
-    const tackleSlot = a.slot === 'LT' || a.slot === 'RT';
+    const tackleSlot = isTackle(sim, a);
     // SET_SPOT's information rule is a lineman's: the QB is behind him, unseen, so his reference is the call's launch point.
     // A back in protection sees the QB (beside him after the mesh, in front of him on a set): his reference is the QB as he
     // sees him. With the launch point, a back released from a play-action fake under center set beside the final launch
@@ -372,7 +398,7 @@ export class PassProtector implements Behavior {
       : SET_SPOT && !isOL(a) ? { ...sim.qb, pos: sim.see(a, sim.qb).pos } as typeof sim.qb : sim.qb;
     if (!rA) {
       // Set: tackles kick, interior sets short; backs hold near the QB.
-      const isT = a.slot === 'LT' || a.slot === 'RT';
+      const isT = isTackle(sim, a);
       const out = Math.sign(home - sim.ballY);
       const depth = isOL(a) ? this.setDepth(sim, a) : 0;
       // A back steps up beside the QB's launch point, not toward the line:
@@ -397,7 +423,7 @@ export class PassProtector implements Behavior {
     const overset = (1 - traits(a).feet) * 0.9 * fear * this.oversetBias;
     // Kick-slide: gain depth (tackles more than interior), staying on the
     // rusher's line to the QB at punching distance. Make the rusher come to you.
-    const isT = a.slot === 'LT' || a.slot === 'RT';
+    const isT = isTackle(sim, a);
     const setDepth = this.setDepth(sim, a);
     // Anticipate the rusher's path a beat ahead (better feet read it sooner).
     const lead = 0.15 + 0.2 * traits(a).feet;
@@ -628,7 +654,7 @@ function cutOffPoint(b: Agent, r: Agent, qb: Vec2, contact: number): Vec2 | null
  * still kick to protect the edges.
  */
 function runLook(a: Agent, sim: PlaySim): boolean {
-  const interior = a.slot === 'LG' || a.slot === 'C' || a.slot === 'RG';
+  const interior = isInterior(sim, a);
   // PUNCH: the look ends on contact, depth, his man's declared rush or his patience (pa-look.ts), not a clock.
   if (PUNCH) return interior && a.stance === 'low';
   return interior && sim.t < 0.35 && sim.offCall.kind === 'pass' && !!sim.offCall.pass?.fake;
@@ -1255,8 +1281,8 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
     }
   } else {
     // Gap schemes.
-    const guards = line.filter((a) => a.slot === 'LG' || a.slot === 'RG');
-    const tackles = line.filter((a) => a.slot === 'LT' || a.slot === 'RT');
+    const guards = line.filter((a) => isGuard(sim, a));
+    const tackles = line.filter((a) => isTackle(sim, a));
     const bsg = guards.find((g) => rel(g) < 0) ?? null;
     const bst = tackles.find((t) => rel(t) < 0) ?? null;
     const pullers = new Set<Agent>();
@@ -1313,7 +1339,7 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
       if (pullers.has(b)) continue;
       const r = rel(b);
       if (r >= -0.2) {
-        const coverPull = b.slot === 'C' && bsg && pullers.has(bsg)
+        const coverPull = !!linePlace(sim, b)?.snapper && bsg && pullers.has(bsg)
           ? dl.filter((d) => !claimedDL.has(d) && d !== trapReserved && d !== kickReserved && rel(d)<.2 && Math.abs(d.pos.y - bsg.pos.y) < 2.3)
             .sort((p, q) => Math.abs(p.pos.y - bsg.pos.y) - Math.abs(q.pos.y - bsg.pos.y))[0]
           : undefined;
