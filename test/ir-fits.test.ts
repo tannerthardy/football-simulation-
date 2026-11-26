@@ -13,7 +13,7 @@ import { alignDefenseFromDescription } from '../src/playbook/ir/align.js';
 import { describeDefense } from '../src/playbook/ir/describe.js';
 import { runFitJobs } from '../src/playbook/ir/fits.js';
 import { DEF_PERSONNEL, type Coverage, type DefSlot, type DefensivePlayCall, type Pressure } from '../src/playbook/types.js';
-import { buildRunFits, type RunFitJob } from '../src/sim/run-fits.js';
+import { buildRunFits, faithfulRunFits, FIT_RULES, type RunFitJob } from '../src/sim/run-fits.js';
 import { PlaySim } from '../src/sim/playsim.js';
 
 const LOS = 40;
@@ -22,7 +22,7 @@ const fits = (p: Pressure, c: Coverage) => p.coverages.includes(c.id) || (!!c.fa
 function today(call: DefensivePlayCall, a: DefenseAlignment, off: OffenseAlignment, order: DefSlot[]): Partial<Record<DefSlot, RunFitJob>> {
   const defense = order.filter((s) => a.spots[s]).map((slot, idx) => ({ slot, pos: a.spots[slot]!.pos, idx }));
   const sim = { defense, defAlign: a, defCall: call, offAlign: off, los: off.los, ballY: off.ballY, trace: {}, slot: (n: string) => defense.find((d) => d.slot === n) };
-  const m = buildRunFits(sim as never);
+  const m = faithfulRunFits(sim as never);
   return Object.fromEntries([...m].map(([d, j]) => [(d as unknown as { slot: DefSlot }).slot, j]));
 }
 const short = (j: RunFitJob | undefined) => (j ? `${j.kind}:${j.gap}${j.side > 0 ? '+' : '-'}${j.inside ? `(${j.inside.gap}${j.inside.side > 0 ? '+' : '-'})` : ''}` : '-');
@@ -85,7 +85,7 @@ describe('run-fit assignment from the description', () => {
         const { call: defCall, prefs } = dc.call(s, offCall.formation.personnel, o, offense, offCall.formation);
         const los = 10 + s.yardline;
         const sim = new PlaySim({ offense, defense: pickDefense(d, defCall.personnel), offCall, defCall, los, ballY: s.ballY, firstDownX: los + s.distance, seed: rng.nextU32(), manPrefs: prefs, down: s.down });
-        const t0 = Object.fromEntries([...buildRunFits(sim)].map(([a, j]) => [a.slot, j]));
+        const t0 = Object.fromEntries([...faithfulRunFits(sim)].map(([a, j]) => [a.slot, j]));
         const desc = { ...describeDefense(sim.defCall), players: [] as ReturnType<typeof describeDefense>['players'] };
         const full = describeDefense(sim.defCall);
         desc.players = sim.defense.map((a) => full.players.find((p) => p.who.slot === a.slot)!).filter(Boolean);
@@ -93,6 +93,9 @@ describe('run-fit assignment from the description', () => {
         const f = runFitJobs(desc, sim.defAlign, sim.offAlign, { pos });
         n++;
         try { expect(f.jobs).toEqual(t0); } catch { bad.push(`${offCall.label} vs ${defCall.label}`); }
+        // FIT_RULES (step 3c): the sim's jobs are the shared function's label-free jobs on the same bodies.
+        const live = Object.fromEntries([...buildRunFits(sim)].map(([x, j]) => [x.slot, j]));
+        try { expect(live).toEqual(FIT_RULES ? runFitJobs(desc, sim.defAlign, sim.offAlign, { pos, labelFree: true }).jobs : t0); } catch { bad.push(`wiring: ${offCall.label} vs ${defCall.label}`); }
       }
     }
     console.log(`ir fits: real plays ${n}, faithful unequal ${bad.length}${bad.length ? ': ' + bad.slice(0, 5).join('; ') : ''}`);

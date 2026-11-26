@@ -185,8 +185,15 @@ export function runFitJobs(desc: DefenseDescription, a: DefenseAlignment, off: O
       if (force) j.partner = force;
     }
   }
+  // Step 3c ruling 2: a force aligned on or outside #1 (a cloud corner) is force and contain only; fold belongs to
+  // second-level players aligned from the apex inward. With no #1 on his side, wider than an apex is outside.
+  const outsideNo1 = (s: DefSlot, side: number) => {
+    const n1 = off.numbering[side === off.strongSign ? 'S1' : 'W1'], w = Math.abs(pos(s).y - ballY);
+    return n1 ? w >= Math.abs(off.spots[n1].pos.y - ballY) - 1 : w > 8;
+  };
   const backers = slots.filter((s) => isBacker(s) && !first.has(s)
     && (jobs.get(s)!.kind !== 'force' || outsideSide(s) !== null)
+    && !(lf && jobs.get(s)!.kind === 'force' && outsideNo1(s, jobs.get(s)!.side))
     && (lf || Math.abs(spot(s).pos.y - ballY) < BOX_WIDTH))
     .sort((p, q) => Number(jobs.get(p)!.kind === 'force') - Number(jobs.get(q)!.kind === 'force') || pos(p).y - pos(q).y);
   const bubbles = [-1, 1].flatMap((side) => (['A', 'B', 'C'] as Gap[]).filter((gap) => !claimed.has(`${side}:${gap}`)).map((gap) => ({ side, gap })));
@@ -277,6 +284,7 @@ export function runFitJobs(desc: DefenseDescription, a: DefenseAlignment, off: O
     flow[s] = j.technique === 'lag' ? 'A gap away from flow (lag)'
       : j.kind === 'force' && j.inside ? `force if the run is outside him; else fold to ${nm(j.inside.gap, j.inside.side)}`
       : j.kind === 'force' ? `force ${j.side === off.strongSign ? 'strong' : 'weak'}`
+      : j.kind === 'insert' && spot(s).role.kind === 'man' ? `${nm(j.gap, j.side)} off his man's block: if his man blocks he fits the gap the block opens to him; if he releases he covers`
       : j.kind === 'insert' ? `${nm(j.gap, j.side)}, then flows inside-out with the ball`
       : j.kind === 'cutback' ? `${nm(j.gap, j.side)} cutback (holds backside)`
       : j.kind === 'alley' ? 'alley: fits outside-in, last level'

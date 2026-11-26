@@ -16,6 +16,8 @@ import { forceTrack, retainedForceTrack } from './force-track.js';
 import { hasObservedFlight, observedHolder, qbRunning, type PossessionRead } from './possession-read.js';
 import { seenEngaged } from './seen-contact.js';
 import { KEY_STEP_SEEN } from './key-read.js';
+import { describeDefense } from '../playbook/ir/describe.js';
+import { runFitJobs } from '../playbook/ir/fits.js';
 
 export interface RunFitJob {
   gap: Gap;
@@ -73,7 +75,32 @@ const FIT_BLITZ_SLIDE = process.env.FIT_BLITZ_SLIDE !== '0';
 /** HONEST_READS (behaviors/defense.ts): a teammate counts on the line when seen in contact, not by his engagement state. */
 const HONEST_READS = process.env.HONEST_READS !== '0';
 
+/** FIT_RULES (default on; FIT_RULES=0 restores; Rules + Coaching, step 3c): the pre-snap run-fit jobs come from the
+ * shared structural rules (`runFitJobs`, src/playbook/ir/fits.ts, label-free), read from the call's description, the
+ * resolved alignment and the bodies where they stand, not from slot labels:
+ * - the insert pool by job (an underneath zone wherever it aligns him; man on an attached end or a back fits off his
+ *   man's block; man on a detached receiver plays the alley);
+ * - a low safety takes what the second level leaves;
+ * - gaps are taken inside-out;
+ * - a force aligned on or outside #1 contains and never folds inside.
+ * Off, the body below runs (the faithful path; test/ir-fits.test.ts proves the shared function's faithful mode equal
+ * to it). Post-snap behaviour is unchanged. docs/reviews/2026-11-26-run-fit-cutover-step3c.md. */
+export const FIT_RULES = process.env.FIT_RULES !== '0';
+
 export function buildRunFits(sim: PlaySim): Map<Agent, RunFitJob> {
+  if (FIT_RULES) {
+    const full = describeDefense(sim.defCall);
+    const players = sim.defense.map((a) => full.players.find((p) => p.who.slot === a.slot)).filter((p): p is NonNullable<typeof p> => !!p);
+    const pos = Object.fromEntries(sim.defense.map((a) => [a.slot, a.pos])) as Partial<Record<DefSlot, Vec2>>;
+    const r = runFitJobs({ ...full, players }, sim.defAlign, sim.offAlign, { pos, labelFree: true });
+    return new Map(sim.defense.map((a) => [a, r.jobs[a.slot as DefSlot]!]));
+  }
+  return faithfulRunFits(sim);
+}
+
+/** Today's assignment (FIT_RULES=0), kept as the restore and as the equality proof for the shared function's
+ * faithful mode. */
+export function faithfulRunFits(sim: PlaySim): Map<Agent, RunFitJob> {
   const jobs = new Map<Agent, RunFitJob>();
   const policy = sim.defCall.runPolicy ?? { edge: 'box', linebacker: 'stack' };
   const first = new Set<Agent>();
