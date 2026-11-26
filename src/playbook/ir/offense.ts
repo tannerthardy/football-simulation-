@@ -19,7 +19,7 @@ import { CENTER_Y, FIELD_WIDTH } from '../../core/field.js';
 import { clamp } from '../../core/vec.js';
 import {
   ANY_ROOM, BASE_LINE, COUNTER_OFFSET, INLINE_DEPTH, IZ_OFFSET, OL_SPLITS, OL_STAGGER, RECEIVER_DEPTH, ROUTE_ROOM,
-  RUN_ROOM, SHORT_LINE, STRETCH_OFFSET, TE_LINE_DEPTH, TE_OFF, TE_OFF_SHARE, WR_ALIGN, WR_LINE_DEPTH, inlineOf, olDepth,
+  RUN_ROOM, SHORT_LINE, SPLIT_BACK_SIDES, STRETCH_OFFSET, backsAway, TE_LINE_DEPTH, TE_OFF, TE_OFF_SHARE, WR_ALIGN, WR_LINE_DEPTH, inlineOf, olDepth,
   spotHash, tackleOf, wingOf, type AlignContext, type LineSplits, type OffSpot, type OffenseAlignment,
 } from '../alignment.js';
 import { GUN_QB_DEPTH, PISTOL_QB_DEPTH, UNDER_TAILBACK_EXTRA } from '../formations.js';
@@ -66,6 +66,9 @@ export interface OffenseSnapDescription {
   players: SkillPlayer[];
   /** A gun run that moves the backs to the play side, and to which side. */
   backsToPlay?: 'strong' | 'weak';
+  /** With `backsToPlay` (step 2b): the carrier aligns away and a second back takes the play side, where his job is (a
+   * zone lead or slice); absent, every back on the play side moves away. */
+  secondBackToPlay?: boolean;
   /** Players the call cannot be run without (step 2a), written by the describer from the play: a split zone's slicer
    * (a core off-ball TE or FB, or a second back), a screen's receiver by number. */
   requires?: Array<{ kind: 'slicer' } | { kind: 'receiver'; ref: ReceiverRef }>;
@@ -135,7 +138,9 @@ export function describeOffenseSnap(formation: Formation, ctx: AlignContext = {}
   const requires: NonNullable<OffenseSnapDescription['requires']> = [];
   if (ctx.run?.scheme === 'splitZone') requires.push({ kind: 'slicer' });
   if (ctx.pass?.screen?.receiver) requires.push({ kind: 'receiver', ref: ctx.pass.screen.receiver });
-  return { preset: ref('formation', formation.id), line, linemen, qb, players, ...(backsToPlay ? { backsToPlay } : {}), ...(requires.length ? { requires } : {}) };
+  const secondBackToPlay = !!backsToPlay && SPLIT_BACK_SIDES && ctx.run!.scheme !== 'counter';
+  return { preset: ref('formation', formation.id), line, linemen, qb, players, ...(backsToPlay ? { backsToPlay } : {}),
+    ...(secondBackToPlay ? { secondBackToPlay } : {}), ...(requires.length ? { requires } : {}) };
 }
 
 /** The offense placed from its description (no formation, personnel, scheme or concept name read). */
@@ -203,9 +208,7 @@ export function alignOffenseFromSnap(d: OffenseSnapDescription, flip: boolean, l
   if (backs[1]) { numbering.B2 = backs[1]; refOf[backs[1]] = 'B2'; }
   const strongSign = sideSign(strong);
   if (d.backsToPlay) {
-    const play = d.backsToPlay === 'strong' ? strongSign : -strongSign;
-    for (const sp of Object.values(spots)) if (sp.backfield && sp.slot !== 'QB' && (sp.pos.y - ballY) * play > 1)
-      sp.pos = { x: sp.pos.x, y: clamp(2 * ballY - sp.pos.y, 1, FIELD_WIDTH - 1) };
+    backsAway(spots, numbering, ballY, d.backsToPlay === 'strong' ? strongSign : -strongSign, !!d.secondBackToPlay);
   }
   const coreEdge = { S: ballY + strongSign * (teSide(strong) ? inlineOf(line) : T), W: ballY - strongSign * (teSide(weak) ? inlineOf(line) : T) };
   return { los, ballY, spots, numbering, refOf, strong, strongSign, coreEdge, line,

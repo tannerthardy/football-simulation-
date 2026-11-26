@@ -356,6 +356,8 @@
     "QB_SCAN": "on",
     "QB_CANON_SEEN": "on",
     "QB_LOOK_SEEN": "on",
+    "SPLIT_BACK_SIDES": "on",
+    "MAN_TE_OFF": "on",
     "BELIEVED_BODY": "off",
     "SCOUT_SEEN": "on",
     "SCRAMBLE_SEEN": "on",

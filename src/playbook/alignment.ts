@@ -332,6 +332,11 @@ export interface AlignContext {
   run?: { scheme: string; direction: 'strong' | 'weak' };
 }
 
+/** MAN_TE_OFF (default on; MAN_TE_OFF=0 restores; Rules + Coaching, step 2b): a defensive back in man on an attached
+ * tight end aligns off the ball by the man rule for an inside receiver (4 yd, inside shade), not pressed head-up at 1.3
+ * yd: there the end man of the front (a 6 or 9 technique on that end) stands, and the two bodies overlapped (DE_S and DB
+ * 0.43 yd apart against Gun Split Twins in dime man; DE_W and CB_W against I Jumbo on bear heavy). */
+export const MAN_TE_OFF = process.env.MAN_TE_OFF !== '0';
 /** STRETCH_OFFSET (default off): on a stretch call (outside/wide zone) from
  * the gun, the offset back aligns away from the play side, so the mesh path
  * across the QB's face carries him toward it. Tracked 2022 gun outside zone:
@@ -351,6 +356,26 @@ export const IZ_OFFSET = process.env.IZ_OFFSET !== '0';
  * play side on 64 of 76, met the ball running away from the hole (-2.85 yd/s)
  * and crossed the LOS on the pull side 70% of the time (NFL 92%). */
 export const COUNTER_OFFSET = process.env.COUNTER_OFFSET !== '0';
+/** SPLIT_BACK_SIDES (default on; SPLIT_BACK_SIDES=0 restores; Rules + Coaching, step 2b): with two backs on a gun zone
+ * run (inside, split, outside, wide), the ball carrier aligns away from the play side and the second back takes the play
+ * side, where his job is (the zone lead through the play-side hole or to the stretch landmark, or the slice back across
+ * to the backside end: blocking.ts). Off, every back on the play side mirrored to the backside, so from split backs the
+ * play-side back landed on the other one (0.00 yd apart) or beside him: the step-2a checker's 64 offensive overlaps.
+ * Counter is left as it was: how the second back aligns on gun counter from split backs is not settled here. */
+export const SPLIT_BACK_SIDES = process.env.SPLIT_BACK_SIDES !== '0';
+
+/** The gun run's backs, given the play side (`play`, a sign). `lead`: the carrier (B) aligns away and the second back
+ * (B2) takes the play side, each keeping his depth; otherwise every back on the play side mirrors away. */
+export function backsAway(spots: Record<string, OffSpot>, numbering: Partial<Record<ReceiverRef, SkillSlot>>, ballY: number, play: number, lead: boolean): void {
+  const mirror = (sp: OffSpot) => { sp.pos = { x: sp.pos.x, y: clamp(2 * ballY - sp.pos.y, 1, FIELD_WIDTH - 1) }; };
+  const b = numbering.B && spots[numbering.B], b2 = numbering.B2 && spots[numbering.B2];
+  if (lead && b && b2 && b.backfield && b2.backfield) {
+    if ((b.pos.y - ballY) * play > 1) mirror(b);
+    if ((b2.pos.y - ballY) * play < -1) mirror(b2);
+    return;
+  }
+  for (const sp of Object.values(spots)) if (sp.backfield && sp.slot !== 'QB' && (sp.pos.y - ballY) * play > 1) mirror(sp);
+}
 /** TE_OFF (default off): on a zone run call an attached end sometimes sets
  * off the ball beside the tackle (a wing), with the wide receiver on his side
  * moving up onto the line so seven stay on it. Tracked 2022 zone runs: 0.43
@@ -538,8 +563,7 @@ export function alignOffense(formation: Formation, flip: boolean, los: number, b
     || (IZ_OFFSET && (ctx.run.scheme === 'insideZone' || ctx.run.scheme === 'splitZone'))
     || (COUNTER_OFFSET && ctx.run.scheme === 'counter'))) {
     const play = ctx.run.direction === 'strong' ? strongSign : -strongSign;
-    for (const sp of Object.values(spots)) if (sp.backfield && sp.slot !== 'QB' && (sp.pos.y - ballY) * play > 1)
-      sp.pos = { x: sp.pos.x, y: clamp(2 * ballY - sp.pos.y, 1, FIELD_WIDTH - 1) };
+    backsAway(spots, numbering, ballY, play, SPLIT_BACK_SIDES && ctx.run.scheme !== 'counter');
   }
   const coreEdge = {
     S: ballY + strongSign * (teSide(strong) ? inlineOf(line) : T),
@@ -1326,7 +1350,9 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
     const t = spots[d]!.manTarget;
     if (!t) continue;
     const tp = off.spots[t].pos;
-    const isCorner = d === 'CB_S' || d === 'CB_W' || d === 'NB' || d === 'DB';
+    // MAN_TE_OFF: against an attached end the corner's press and off-man rules do not apply: he aligns off the ball like
+    // any man defender on an inside receiver.
+    const isCorner = (d === 'CB_S' || d === 'CB_W' || d === 'NB' || d === 'DB') && !(MAN_TE_OFF && off.spots[t].inline);
     // A back on the ball has no inside: the defender shades from his own
     // side of it, not from a fixed side of the field (which flipped the
     // backers' sides with the offense's orientation).

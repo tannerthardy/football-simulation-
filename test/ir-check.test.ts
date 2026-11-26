@@ -96,18 +96,22 @@ const defense = (d: DefenseDescription, off = gunDoubles, present = nickel) => c
 
 describe('legality and accounting check', () => {
   it('the catalog: every formation x play context; every formation x front x personnel x coverage, and the pressures', () => {
-    const o = tally(); let no = 0;
+    const o = tally(); let no = 0; const overlapCalls: string[] = [];
     for (const f of FORMATIONS) for (const [name, ctx] of CTXS) {
-      const d = describeOffenseSnap(f, ctx), routes = ctx.pass ? describePass(ctx.pass).routes : [];
-      o.add(`${f.id} ${name}`, offense(d, routes)); no++;
+      const d = describeOffenseSnap(f, ctx), routes = ctx.pass ? describePass(ctx.pass).routes : [], xs = offense(d, routes);
+      o.add(`${f.id} ${name}`, xs); no++;
+      if (xs.some((x) => x.kind === 'overlap')) overlapCalls.push(`${f.id} ${name}`);
     }
+    // Step 2b (SPLIT_BACK_SIDES): the gun zone runs from split backs no longer stack the backs; gun counter is left as it was.
+    expect(overlapCalls.every((c) => c.includes(' run counter')), overlapCalls.join('; ')).toBe(true);
     o.print('offense', no);
-    const t = tally(), ignored = new Set<string>(); let n = 0;
+    const t = tally(), ignored = new Set<string>(), dbOnEnd: string[] = []; let n = 0;
     const one = (label: string, call: Parameters<typeof describeDefense>[0], off: typeof gunDoubles) => {
       const d = describeDefense(call), present = Object.keys(DEF_PERSONNEL[call.personnel]) as DefSlot[];
       let xs: Issue[];
       try { xs = checkDefense(d, alignDefenseFromDescription(d, off, present), off); } catch (e) { xs = [{ level: 'error', kind: 'throws', detail: String((e as Error).message) }]; }
       if (xs.some((x) => x.kind === 'front-spot-ignored')) ignored.add(`${call.front.id}×${call.personnel}`);
+      for (const x of xs) if (x.kind === 'overlap' && /^(DE|DT|NT)_?\w* and (CB|NB|DB)/.test(x.detail)) dbOnEnd.push(`${label}: ${x.detail}`);
       t.add(label, xs); n++;
     };
     for (const f of FORMATIONS) {
@@ -121,6 +125,8 @@ describe('legality and accounting check', () => {
         one(`${fid} ${pressure.id} ${coverage.id} ${front.id} ${personnel}`, { personnel, front, coverage, pressure, label: '' }, off);
     }
     t.print('defense', n);
+    // Step 2b (MAN_TE_OFF): no defensive back in man on an attached end presses into the end man of the front.
+    expect(dbOnEnd, dbOnEnd.slice(0, 5).join('; ')).toEqual([]);
     console.log(`ir check: front x personnel pairs whose spots are ignored: ${ignored.size}: ${[...ignored].sort().join(', ')}`);
     expect(ignored.size).toBe(8);
   });
