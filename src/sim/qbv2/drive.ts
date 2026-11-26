@@ -16,7 +16,7 @@ import { COVER_RADIUS, judge, type SeenDefender, type ThrowQuestion } from './ju
 import type { LookTarget } from './look.js';
 import type { PreSnapState, QbReadPlan, ThrowOption } from './plan.js';
 import { decidePreSnap, mirrorPlan } from './presnap.js';
-import { isDbSlot, RoleResolver, type RolePicture } from './roles.js';
+import { isDbBody, isDbSlot, QB_LOOK_SEEN, RoleResolver, type RolePicture } from './roles.js';
 
 type V = { x: number; y: number };
 type V3 = { x: number; y: number; z: number };
@@ -164,7 +164,7 @@ export class V2Drive {
     const sim = h.sim, s1 = this.receiver(h, 'S1'), strong: 1 | -1 = s1 && this.seenAt(h, s1).y < sim.ballY ? -1 : 1;
     const defenders = sim.defense.filter((d) => this.seenUp(h, d)).map((d) => {
       const e = h.estimate(d);
-      return { id: d.idx, x: e.pos.x, y: e.pos.y, vx: e.vel.x, vy: e.vel.y, db: isDbSlot(sim.defCall.personnel, d.slot) };
+      return { id: d.idx, x: e.pos.x, y: e.pos.y, vx: e.vel.x, vy: e.vel.y, db: QB_LOOK_SEEN ? isDbBody(d) : isDbSlot(sim.defCall.personnel, d.slot) };
     });
     const receivers: RolePicture['receivers'] = {};
     for (const ref of ['S1', 'S2', 'S3', 'W1', 'W2', 'W3', 'B'] as ReceiverRef[]) {

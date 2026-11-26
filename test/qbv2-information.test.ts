@@ -27,7 +27,12 @@ const DEBT: Record<string, { reads: number; why: string }> = {
   // drive.ts picture(): db = isDbSlot(sim.defCall.personnel, d.slot). Deferred, Flex's rule (second read §1 boundary):
   // which men are defensive backs is visible (bodies, numbers, the grouping that ran on), but it is read through the
   // call and the slot label, not through his perception. It moves when perception carries a seen grouping.
-  'drive.ts:defense identity': { reads: 2, why: 'isDbSlot via the call personnel and d.slot: Flex, to perception' },
+  // QB_LOOK_SEEN (2026-11-25): on, who is a DB is the man's own position (isDbBody, roles.ts: his number, which the
+  // passer sees); the two reads below are the off path only (QB_LOOK_SEEN=0 restores the call's personnel by slot).
+  'drive.ts:defense identity': { reads: 2, why: 'off path of QB_LOOK_SEEN: isDbSlot via the call personnel and d.slot' },
+  // roles.ts: a defender's own position, read as his number shows it: isDbBody (corner or safety, 1) and personnelSeen
+  // (the grouping on the field, counted by those numbers, 2). Counted so a new identity read there cannot pass unseen.
+  'roles.ts:player.position': { reads: 3, why: 'QB_LOOK_SEEN: DBs and the grouping by their own positions (their numbers)' },
   // drive.ts seenUp(): sim.see(...).pose. Deferred to gate 2 (cone-gated head and pose everywhere), Tools' sim.see.
   'drive.ts:sim.see': { reads: 1, why: 'pose from sim.see, no cone gate: gate 2 (Tools)' },
 };
@@ -50,6 +55,7 @@ describe('QB_V2 information guard', () => {
   it('keeps the listed debt at or below its count', () => {
     const n = (code('drive.ts').match(/\.player\.position\b/g) ?? []).length;
     expect(n).toBeLessThanOrEqual(DEBT['drive.ts:player.position'].reads);
+    expect((code('roles.ts').match(/\.player\.position\b/g) ?? []).length).toBeLessThanOrEqual(DEBT['roles.ts:player.position'].reads);
   });
 
   it("reads no defender's identity (the call, slot label, roster position, profile, ratings) beyond the listed debt", () => {
