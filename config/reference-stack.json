@@ -361,6 +361,7 @@
     "FIT_RULES": "on",
     "FOLD_HOLD": "on",
     "BACK_SEEN": "on",
+    "SURFACE_ON_LINE": "on",
     "GUARD_KEY": "on",
     "BELIEVED_BODY": "off",
     "SCOUT_SEEN": "on",
