@@ -164,7 +164,9 @@ export function runFitJobs(desc: DefenseDescription, a: DefenseAlignment, off: O
   }
   const exchange = call.gapExchange;
   const exchangeBacker = exchange && slots.includes(exchange.edge) && slots.includes(exchange.backer) ? exchange.backer : undefined;
-  const available = (s: DefSlot) => !first.has(s) && s !== exchangeBacker && jobs.get(s)!.kind !== 'force';
+  // Ruling 3 (label-free): a man defender on a detached receiver follows his receiver; he is never the force.
+  const manDetached = (s: DefSlot) => spot(s).role.kind === 'man' && !manInside(s);
+  const available = (s: DefSlot) => !first.has(s) && s !== exchangeBacker && jobs.get(s)!.kind !== 'force' && !(lf && manDetached(s));
   const deepZone = (s: DefSlot) => { const role = spot(s).role; return role.kind === 'zone' && isDeepZone(role.zone); };
   const outsideSide = (s: DefSlot): number | null => {
     const role = spot(s).role;
@@ -192,15 +194,17 @@ export function runFitJobs(desc: DefenseDescription, a: DefenseAlignment, off: O
       if (force) j.partner = force;
     }
   }
-  // Step 3c ruling 2: a force aligned on or outside #1 (a cloud corner) is force and contain only; fold belongs to
-  // second-level players aligned from the apex inward. With no #1 on his side, wider than an apex is outside.
-  const outsideNo1 = (s: DefSlot, side: number) => {
-    const n1 = off.numbering[side === off.strongSign ? 'S1' : 'W1'], w = Math.abs(pos(s).y - ballY);
-    return n1 ? w >= Math.abs(off.spots[n1].pos.y - ballY) - 1 : w > 8;
+  // Folds (step 3c rulings): an apex aligns between the end man on the line and #2 so that he can fold; a man on or
+  // outside the nearest detached receiver on his side (a slot defender, a cloud corner) is force and alley only.
+  const noFold = (s: DefSlot, side: number) => {
+    const w = Math.abs(pos(s).y - ballY);
+    const detached = Object.values(off.spots).filter((o) => !o.inline && !o.backfield && o.slot !== 'QB'
+      && !['LT', 'LG', 'C', 'RG', 'RT'].includes(o.slot) && (o.pos.y - ballY) * side > 0).map((o) => Math.abs(o.pos.y - ballY));
+    return detached.length > 0 && w >= Math.min(...detached) - 0.5;
   };
   const backers = slots.filter((s) => isBacker(s) && !first.has(s)
     && (jobs.get(s)!.kind !== 'force' || outsideSide(s) !== null)
-    && !(lf && jobs.get(s)!.kind === 'force' && outsideNo1(s, jobs.get(s)!.side))
+    && !(lf && jobs.get(s)!.kind === 'force' && noFold(s, jobs.get(s)!.side))
     && (lf || Math.abs(spot(s).pos.y - ballY) < BOX_WIDTH))
     .sort((p, q) => Number(jobs.get(p)!.kind === 'force') - Number(jobs.get(q)!.kind === 'force') || pos(p).y - pos(q).y);
   const bubbles = [-1, 1].flatMap((side) => (['A', 'B', 'C'] as Gap[]).filter((gap) => !claimed.has(`${side}:${gap}`)).map((gap) => ({ side, gap })));
