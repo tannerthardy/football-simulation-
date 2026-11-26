@@ -39,7 +39,8 @@ import { openToBall } from './open-to-ball.js';
 import { derivePhysical } from '../players/physical.js';
 import type { Player } from '../players/types.js';
 import { alignDefenseFromDescription } from '../playbook/ir/align.js';
-import { alignOffenseFromSnap, type OffenseSnapDescription } from '../playbook/ir/offense.js';
+import { describeOver } from '../playbook/ir/entry.js';
+import { alignOffenseFromSnap, describeOffenseSnap, type OffenseSnapDescription } from '../playbook/ir/offense.js';
 import type { DefenseDescription } from '../playbook/ir/types.js';
 import { alignDefense, alignOffense, fitPressStances, formationKey, gapY, MIRROR_SCATTER, PRESS_BACKOFF, RECEIVER_DEPTH, scatterSide, type AlignStyle, type DefenseAlignment, type ManPreference, type OffenseAlignment } from '../playbook/alignment.js';
 import { installCoverage } from '../playbook/coverages.js';
@@ -226,6 +227,14 @@ export class PlaySim {
   readonly firstDownX: number;
   offCall: OffensivePlayCall;
   readonly defCall: DefensivePlayCall;
+  /** The offense's description at the snap (the call described, or PlaySetup.offDesc). */
+  readonly offDesc: OffenseSnapDescription;
+  /** The player in a ball-handling role (step 5; the description's `roles`), not a slot label: the run's carrier, the
+   * back, or the passer's outlet. Undefined when the call has none. */
+  role(name: 'carrier' | 'back' | 'outlet'): Agent | undefined {
+    const slot = this.offDesc.roles?.[name];
+    return slot ? this.slot(slot) : undefined;
+  }
   /** The defense's description when the call was given only as one (PlaySetup.defDesc). */
   readonly defDesc?: DefenseDescription;
   readonly offAlign: OffenseAlignment;
@@ -392,9 +401,9 @@ export class PlaySim {
     this.recordEvery = setup.recordEvery ?? 2;
     this.trace = new ReplayTrace(setup.recordLevel ?? 'light', this.recordEvery, this.record);
 
-    this.offAlign = setup.offDesc ? alignOffenseFromSnap(setup.offDesc, setup.offCall.flip, this.los, this.ballY)
-      : alignOffense(setup.offCall.formation, setup.offCall.flip, this.los, this.ballY,
-        { kind: setup.offCall.kind, pass: setup.offCall.pass, run: setup.offCall.run, down: setup.down, distance: Math.abs(setup.firstDownX - setup.los), style: setup.offStyle });
+    this.offDesc = setup.offDesc ?? describeOffenseSnap(setup.offCall.formation,
+      { kind: setup.offCall.kind, pass: setup.offCall.pass, run: setup.offCall.run, down: setup.down, distance: Math.abs(setup.firstDownX - setup.los), style: setup.offStyle });
+    this.offAlign = alignOffenseFromSnap(this.offDesc, setup.offCall.flip, this.los, this.ballY);
     // The secondary checks its call to the receiver distribution it sees (not for a call given only as a description).
     this.defDesc = setup.defDesc;
     this.defCall = setup.defDesc ? setup.defCall : installCoverage(setup.defCall, this.offAlign);
@@ -544,7 +553,7 @@ export class PlaySim {
     if (stem && !stem.from.personnel.includes(this.defCall.personnel)) throw new Error('Stem front requires compatible defensive personnel');
     const targets = new Map<Agent,Vec2>();
     if (stem) {
-      const shown = alignDefense({...this.defCall,front:stem.from},this.offAlign,this.defense.map((a)=>a.slot as DefSlot),prefs,this.defStyle);
+      const shown = alignDefenseFromDescription(describeOver(this.defDesc,{...this.defCall,front:stem.from}),this.offAlign,this.defense.map((a)=>a.slot as DefSlot),prefs,this.defStyle);
       for (const d of this.defense) {
         targets.set(d,{...d.pos});
         d.body.pos = {...shown.spots[d.slot as DefSlot]!.pos};

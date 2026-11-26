@@ -1122,7 +1122,7 @@ export class QBPass implements Behavior {
     let lineMen = 0, believed = 0;
     // BLITZ_SECOND: his picture of the back now (a teammate's picture, the same moment as the defenders' felt ones), and
     // whether the back is out on a release (moving away from him).
-    const rb = BLITZ_SECOND ? sim.slot('RB') : null;
+    const rb = BLITZ_SECOND ? sim.role('back') : null;
     const back = rb ? sim.see(a, rb) : null;
     const backOut = !!back && ((back.pos.x - a.pos.x) * back.vel.x + (back.pos.y - a.pos.y) * back.vel.y) > 0 && Math.hypot(back.vel.x, back.vel.y) > 1.5;
     // Where the released back is going: his forecast half a second on (his installed release), else his picture carried on.
@@ -1804,7 +1804,7 @@ export class QBPass implements Behavior {
       const fakeEnd = BLITZ_SKILL ? this.fakeUntil * (1 - clamp(0.6 * this.freeU + 0.3 * this.narrow(a), 0, 0.8)) : this.fakeUntil;
       if (this.fakeUntil > 0 && t >= fakeEnd && this.fakeEndAt === null) this.fakeEndAt = t;
       if (t < fakeEnd) {
-        const rb = sim.slot('RB');
+        const rb = sim.role('back');
         if (rb) sim.presentHandoffFake(a, rb);
         // PA_DROP: under center the fake is carried on the drop (NFL QBs keep moving back through it: 1.9 -> 3.3 yd
         // behind the snap from 0.5 to 1.0 s); off, he slowed to the mesh point and re-started his drop from it.
@@ -1968,8 +1968,9 @@ export class QBPass implements Behavior {
       }
       const side = top ? Math.sign(this.felt(a, sim, top).pos.y - sim.ballY) || 1 : 1;
       const bt = (r: Agent) => this.breakClock(r);
-      const quick = this.reads.filter((r) => r.slot !== 'RB' && Math.sign(this.has(sim, r).y - sim.ballY) === side && bt(r) <= 1.6).sort((x, y) => bt(x) - bt(y));
-      const target = quick[0] ?? this.reads.find((r) => r.slot === 'RB' && (QB_SEEN_OUT && this.checkRelease(r) ? this.seenOut(r) : this.onRoute(r))) ?? null;
+      const outlet = sim.role('outlet');
+      const quick = this.reads.filter((r) => r !== outlet && Math.sign(this.has(sim, r).y - sim.ballY) === side && bt(r) <= 1.6).sort((x, y) => bt(x) - bt(y));
+      const target = quick[0] ?? this.reads.find((r) => r === outlet && (QB_SEEN_OUT && this.checkRelease(r) ? this.seenOut(r) : this.onRoute(r))) ?? null;
       this.hot = { target, at: t };
       this.hotDef = top; // diagnostic (no effect): the man the hot was called on
       const k = target ? this.reads.indexOf(target) : -1;

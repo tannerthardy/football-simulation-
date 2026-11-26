@@ -75,6 +75,11 @@ export interface OffenseSnapDescription {
   /** Players the call cannot be run without (step 2a), written by the describer from the play: a split zone's slicer
    * (a core off-ball TE or FB, or a second back), a screen's receiver by number. */
   requires?: Array<{ kind: 'slicer' } | { kind: 'receiver'; ref: ReceiverRef }>;
+  /** Who does what with the ball (step 5), as data, not a slot label: the run's ball carrier, the back (pass
+   * protection, the play-action fake, blitz pick-up), and the passer's outlet (his checkdown when nothing else is
+   * open). Absent: there is none (an empty set has no back). The catalog's describer writes today's football: the RB
+   * slot holds all three whenever the formation has one, wherever he aligns (an empty set's detached RB included). */
+  roles?: { carrier?: SkillSlot; back?: SkillSlot; outlet?: SkillSlot };
   /** Players in motion at the snap and their direction (step 2a; the catalog calls none). */
   motion?: Array<{ slot: SkillSlot; toward: 'line' | 'parallel' | 'away' }>;
 }
@@ -144,7 +149,8 @@ export function describeOffenseSnap(formation: Formation, ctx: AlignContext = {}
   if (ctx.pass?.screen?.receiver) requires.push({ kind: 'receiver', ref: ctx.pass.screen.receiver });
   const secondBackToPlay = !!backsToPlay && SPLIT_BACK_SIDES && ctx.run!.scheme !== 'counter';
   return { preset: ref('formation', formation.id), line, linemen, qb, players, ...(backsToPlay ? { backsToPlay } : {}),
-    ...(secondBackToPlay ? { secondBackToPlay } : {}), ...(requires.length ? { requires } : {}) };
+    ...(secondBackToPlay ? { secondBackToPlay } : {}),
+    ...(formation.slots.RB ? { roles: { carrier: 'RB' as SkillSlot, back: 'RB' as SkillSlot, outlet: 'RB' as SkillSlot } } : {}), ...(requires.length ? { requires } : {}) };
 }
 
 /** The offense placed from its description (no formation, personnel, scheme or concept name read). */

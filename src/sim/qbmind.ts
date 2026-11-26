@@ -34,7 +34,9 @@ import { isDbBody, isDbSlot, personnelSeen, QB_LOOK_SEEN } from './qbv2/roles.js
 import { angleDiff, clamp, logistic, type Vec2 } from '../core/vec.js';
 import type { ReceiverPicture } from './receiver-forecast.js';
 import { UNDERNEATH_MOVE, type RouteKeyPicture } from './route-read.js';
-import { alignDefense, zoneLandmark, type DefenseAlignment } from '../playbook/alignment.js';
+import { zoneLandmark, type DefenseAlignment } from '../playbook/alignment.js';
+import { alignDefenseFromDescription } from '../playbook/ir/align.js';
+import { describeOver } from '../playbook/ir/entry.js';
 import { PASS_BY_ID, RUN_BY_ID } from '../playbook/concepts.js';
 import { FRONTS, PRESSURE_BY_ID } from '../playbook/defense.js';
 import { COVERAGE_BY_ID, FAMILY_REPRESENTATIVE, familyOf } from '../playbook/coverages.js';
@@ -297,7 +299,7 @@ export class QBMind {
     for (const c of COVERAGES) {
       const pressure = c.id === 'cover0' ? PRESSURE_BY_ID.zero_6 : null;
       const ok = !pressure || Object.keys(pressure.blitzers).every((s) => slots.includes(s as DefSlot));
-      this.canon.set(c.id, alignDefense({ ...visible, coverage: c, pressure: ok ? pressure : null, shown: undefined }, sim.offAlign, slots));
+      this.canon.set(c.id, alignDefenseFromDescription(describeOver(sim.defDesc, { ...visible, coverage: c, pressure: ok ? pressure : null, shown: undefined }), sim.offAlign, slots));
     }
     }
     // Everyone is visible before the snap. QB_SCAN: where his scan put each of them; off, exactly where they stood.
@@ -386,12 +388,12 @@ export class QBMind {
     const fits = FRONTS.filter((f) => f.personnel.includes(pers));
     let front = fits[0] ?? FRONTS[0], best = Infinity;
     for (const f of fits) for (const c of COVERAGES) {
-      const { cost } = pair(alignDefense(call(f, c, pressureFor(c)), sim.offAlign, slots));
+      const { cost } = pair(alignDefenseFromDescription(describeOver(sim.defDesc, call(f, c, pressureFor(c))), sim.offAlign, slots));
       if (cost < best) { best = cost; front = f; }
     }
     this.lookSeen = { personnel: pers, front: front.id };
     for (const c of COVERAGES) {
-      const al = alignDefense(call(front, c, pressureFor(c)), sim.offAlign, slots);
+      const al = alignDefenseFromDescription(describeOver(sim.defDesc, call(front, c, pressureFor(c))), sim.offAlign, slots);
       for (const [sl, p] of pair(al).out) al.spots[sl] = { ...al.spots[sl]!, pos: { ...p } };
       this.canon.set(c.id, al);
     }
@@ -818,7 +820,7 @@ export class QBMind {
     if (call.kind === 'pass' && call.pass && call.pass.family !== 'playaction') {
       // Light box against two-high on a running down: run it.
       const runDown = opts.down <= 2 && opts.distance <= 7;
-      if (runDown && box <= blockers - 1 && this.pSingleHigh() < 0.35 && sim.slot('RB') && sim.dice('qb-mind').chance(0.5)) {
+      if (runDown && box <= blockers - 1 && this.pSingleHigh() < 0.35 && sim.role('back') && sim.dice('qb-mind').chance(0.5)) {
         const run = RUN_BY_ID[boxL <= boxR ? (sim.offAlign.strongSign > 0 ? 'iz_strong' : 'iz_weak') : sim.offAlign.strongSign > 0 ? 'iz_weak' : 'iz_strong'];
         this.report.audible = `check to ${run.name}`;
         return { ...call, kind: 'run', run, pass: undefined, label: `${call.formation.name} — ${run.name} (audible)` };
