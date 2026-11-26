@@ -13,9 +13,19 @@
  *     blitzer (a blitzer owns his blitz gap either way), or he rushes from the line. Today: a DE, DT or NT slot.
  *   - **Interior or end, for a line game:** the line players inside the tackles' outside shoulders are interior, and
  *     those outside them are ends. Today: DT and NT, or DE.
- *   - **Insert pool:** an off-ball second-level defender inside the box. That means within BOX_WIDTH of the ball, at
- *     most INSERT_DEPTH past the line, whoever he is, whatever his zone. Today: an LB slot.
+ *   - **Insert pool, by job (step 3b, Integration's ruling R1):** a second-level defender (at most INSERT_DEPTH past
+ *     the line) whose coverage job is an underneath zone, wherever that zone aligns him (an apex walked out to
+ *     #2 still folds), or who is in man on an attached end or a back. Today: an LB slot within 5.5 yd of the ball.
+ *     A man defender on a detached receiver is out of the interior fit: he plays the alley.
+ *   - **Low safety:** an underneath-zone defender deeper than INSERT_DEPTH (a robber). He takes an interior gap only
+ *     when the second level leaves one open.
+ *   - **Inside-out:** in label-free mode, the second level takes the leftover gaps in order (no two fits cross), so
+ *     widening a man does not trade his gap with another's.
  *   - **Alley:** every other off-ball, non-force defender. Today: any slot that is not LB.
+ *
+ * Flow (ruling R2): each job also carries its flow-relative form (`flow`). A gap that no one owns statically but a
+ * flow rule closes is reported in `byFlow`, not in `unowned`. That covers C on an attached end's side squeezed by the
+ * man on or outside the end, and an A gap shared by a lag nose (backside) and the playside insert backer.
  *
  * The rules describe; they never forbid. A gap no one owns is reported (`unowned`), unless the call declares it
  * (`concede`); then it is reported as `conceded`.
@@ -33,7 +43,7 @@ const GAP_MATCH = process.env.GAP_MATCH !== '0';
 /** Label-free thresholds:
  * - FRONT_DEPTH: a front player within this many yards of the line is a gap player of the front. It covers a
  *   stand-up rover at 2.6.
- * - BOX_WIDTH: the insert pool's lateral limit from the ball. It is today's backer limit.
+ * - BOX_WIDTH: today's backer limit from the ball (faithful mode only; label-free pools by job).
  * - INSERT_DEPTH: second-level depth. */
 export const FRONT_DEPTH = 3, BOX_WIDTH = 5.5, INSERT_DEPTH = 7;
 
@@ -44,6 +54,10 @@ export interface FitResult {
   unowned: GapRef[];
   /** The unowned gaps the call declared as intended concessions. */
   conceded: GapRef[];
+  /** Gaps no one owns before the snap that a flow rule closes after it, and the rule (R2). */
+  byFlow: Array<GapRef & { rule: string }>;
+  /** Each job in flow-relative form, as the sim (or the taught rule) plays it after the snap. */
+  flow: Partial<Record<DefSlot, string>>;
 }
 export interface FitOptions {
   /** Where each man stands, if not on his resolved spot (the sim passes the bodies). */
@@ -73,7 +87,19 @@ export function runFitJobs(desc: DefenseDescription, a: DefenseAlignment, off: O
   const isEnd = (s: DefSlot) => (lf ? !isInterior(s) : s === 'DE_S' || s === 'DE_W');
   // A Tampa Mike reads run before he runs the pipe: his zone does not take him out of the box; his depth would.
   const inBox = (s: DefSlot) => Math.abs(spot(s).pos.y - ballY) < BOX_WIDTH && spot(s).pos.x - los <= INSERT_DEPTH;
-  const isBacker = (s: DefSlot) => (lf ? inBox(s) : s.startsWith('LB'));
+  // R1: the insert pool by job. A man defender on a detached receiver goes where the receiver goes.
+  const underneath = (s: DefSlot) => { const r = spot(s).role; return r.kind === 'zone' && !isDeepZone(r.zone); };
+  const secondLevel = (s: DefSlot) => spot(s).pos.x - los <= INSERT_DEPTH;
+  const manInside = (s: DefSlot) => { const sp = spot(s); return sp.role.kind === 'man' && !!sp.manTarget
+    && (off.spots[sp.manTarget]?.inline || off.spots[sp.manTarget]?.backfield); };
+  // A deep-zone defender at second-level depth inside the core is a Tampa Mike: he reads run before the pipe.
+  const surface = Math.max(Math.abs(off.coreEdge.S - ballY), Math.abs(off.coreEdge.W - ballY));
+  const middleDeep = (s: DefSlot) => spot(s).role.kind === 'zone' && !underneath(s) && Math.abs(spot(s).pos.y - ballY) <= surface + 2;
+  const byJob = (s: DefSlot) => secondLevel(s) && (underneath(s) || middleDeep(s) || manInside(s) || spot(s).role.kind === 'spy');
+  const lowSafety = (s: DefSlot) => !secondLevel(s) && underneath(s);
+  // A second-level blitzer attacks his own gap (he is a first-level player either way): an inserter, as today.
+  const isBacker = (s: DefSlot) => (lf ? byJob(s) || (secondLevel(s) && spot(s).role.kind === 'blitz') : s.startsWith('LB'));
+  void inBox;
 
   const gameGap = (s: DefSlot, gap: Gap, side: number): GapRef | null => {
     const game = call.dlGame;
@@ -161,7 +187,7 @@ export function runFitJobs(desc: DefenseDescription, a: DefenseAlignment, off: O
   }
   const backers = slots.filter((s) => isBacker(s) && !first.has(s)
     && (jobs.get(s)!.kind !== 'force' || outsideSide(s) !== null)
-    && Math.abs(spot(s).pos.y - ballY) < BOX_WIDTH)
+    && (lf || Math.abs(spot(s).pos.y - ballY) < BOX_WIDTH))
     .sort((p, q) => Number(jobs.get(p)!.kind === 'force') - Number(jobs.get(q)!.kind === 'force') || pos(p).y - pos(q).y);
   const bubbles = [-1, 1].flatMap((side) => (['A', 'B', 'C'] as Gap[]).filter((gap) => !claimed.has(`${side}:${gap}`)).map((gap) => ({ side, gap })));
   const reach = (s: DefSlot, b: GapRef) => Math.abs(gapY(off, b.gap, b.side) - pos(s).y);
@@ -173,6 +199,11 @@ export function runFitJobs(desc: DefenseDescription, a: DefenseAlignment, off: O
     const search = (i: number, used: Set<number>) => {
       if (i === backers.length) {
         if (backers.some((s, k) => jobs.get(s)!.kind !== 'force' && !pick[k] && used.size < bubbles.length)) return;
+        // Label-free: inside-out, no two fits cross (a man outside another takes the gap outside his).
+        if (lf) for (let k = 0; k < backers.length; k++) for (let l = k + 1; l < backers.length; l++) {
+          const pk = pick[k], pl = pick[l];
+          if (pk && pl && (pos(backers[k]).y - pos(backers[l]).y) * (gapY(off, pk.gap, pk.side) - gapY(off, pl.gap, pl.side)) < 0) return;
+        }
         const c = bubbles.reduce((t, b, k) => (used.has(k) ? t : t + open(b)), 0);
         const dist = backers.reduce((t, s, k) => t + (pick[k] ? reach(s, pick[k]!) : 0), 0);
         if (!best || c < best.cost - 1e-9 || (Math.abs(c - best.cost) < 1e-9 && dist < best.dist)) best = { cost: c, dist, pick: [...pick] };
@@ -206,6 +237,14 @@ export function runFitJobs(desc: DefenseDescription, a: DefenseAlignment, off: O
       else Object.assign(job, bubble);
     }
   }
+  // R1: a gap the second level leaves goes to a low safety (nearest first).
+  if (lf) for (const s of slots.filter((x) => lowSafety(x) && !first.has(x) && jobs.get(x)!.kind === 'alley')
+    .sort((p, q) => Math.min(...bubbles.map((b) => reach(p, b))) - Math.min(...bubbles.map((b) => reach(q, b))))) {
+    if (!bubbles.length) break;
+    const b = [...bubbles].sort((p, q) => reach(s, p) - reach(s, q))[0];
+    bubbles.splice(bubbles.indexOf(b), 1);
+    Object.assign(jobs.get(s)!, { gap: b.gap, side: b.side, kind: 'insert' as const });
+  }
   if (exchange && slots.includes(exchange.edge) && slots.includes(exchange.backer)) {
     const end = exchange.edge, backer = exchange.backer;
     if (!first.has(backer) && jobs.get(backer)?.kind !== 'force') {
@@ -220,5 +259,28 @@ export function runFitJobs(desc: DefenseDescription, a: DefenseAlignment, off: O
   const unowned: GapRef[] = [...bubbles.filter((b) => !(b.gap === 'C' && !te(b.side) && claimed.has(`${b.side}:D`))).map((b) => ({ gap: b.gap, side: b.side })),
     ...[-1, 1].filter((side) => !forced.has(side)).map((side) => ({ gap: 'D' as Gap, side }))];
   const declared = (g: GapRef) => (desc.concede ?? []).some((c) => c.gap === g.gap && (c.side === 'S' ? off.strongSign : -off.strongSign) === g.side);
-  return { jobs: Object.fromEntries(jobs), unowned: unowned.filter((g) => !declared(g)), conceded: unowned.filter(declared) };
+  // R2, the flow rules that close a gap no one owns before the snap:
+  // - squeeze: C on an attached end's side, with the man on or outside the end (a line player claiming D) squeezing it;
+  // - lag: an A gap whose partner A is owned by a lag nose, while an insert backer is left to take the playside A.
+  const all = [...jobs.values()];
+  const lagNose = all.some((j) => j.technique === 'lag' && j.gap === 'A' && j.kind === 'interior');
+  const inserts = all.some((j) => j.kind === 'insert');
+  const flowRule = (g: GapRef): string | null => {
+    if (g.gap === 'C' && te(g.side) && claimed.has(`${g.side}:D`)) return 'squeeze: the man on or outside the end squeezes C';
+    if (g.gap === 'A' && lagNose && inserts) return 'lag: the nose takes the backside A, the playside backer the other';
+    return null;
+  };
+  const byFlow = unowned.filter((g) => !declared(g) && flowRule(g)).map((g) => ({ ...g, rule: flowRule(g)! }));
+  const flow: Partial<Record<DefSlot, string>> = {};
+  const nm = (gap: Gap, side: number) => `${gap}${side === off.strongSign ? ' strong' : ' weak'}`;
+  for (const [s, j] of jobs) {
+    flow[s] = j.technique === 'lag' ? 'A gap away from flow (lag)'
+      : j.kind === 'force' && j.inside ? `force if the run is outside him; else fold to ${nm(j.inside.gap, j.inside.side)}`
+      : j.kind === 'force' ? `force ${j.side === off.strongSign ? 'strong' : 'weak'}`
+      : j.kind === 'insert' ? `${nm(j.gap, j.side)}, then flows inside-out with the ball`
+      : j.kind === 'cutback' ? `${nm(j.gap, j.side)} cutback (holds backside)`
+      : j.kind === 'alley' ? 'alley: fits outside-in, last level'
+      : `${nm(j.gap, j.side)}${j.technique === 'control' ? ' (control, two-way)' : ''}`;
+  }
+  return { jobs: Object.fromEntries(jobs), unowned: unowned.filter((g) => !declared(g) && !flowRule(g)), conceded: unowned.filter(declared), byFlow, flow };
 }
