@@ -21,10 +21,10 @@ const side = (o: OffenseAlignment, s: number) => (s === o.strongSign ? 'S' : 'W'
 function show(title: string, d: DefenseDescription, a: DefenseAlignment, o: OffenseAlignment, r: FitResult): string {
   const rows = (Object.keys(r.jobs) as DefSlot[]).map((s) => {
     const j = r.jobs[s]!, sp = a.spots[s]!;
-    return `${s.padEnd(5)} ${(sp.pos.x - LOS).toFixed(1).padStart(4)}/${(sp.pos.y - o.ballY).toFixed(1).padStart(5)} ${j.kind.padEnd(8)} ${j.gap}${side(o, j.side)}${j.inside ? ` (inside ${j.inside.gap}${side(o, j.inside.side)})` : ''}`;
+    return `${s.padEnd(5)} ${(sp.pos.x - LOS).toFixed(1).padStart(4)}/${(sp.pos.y - o.ballY).toFixed(1).padStart(5)} ${sp.role.kind.padEnd(5)} ${j.kind.padEnd(8)} ${j.gap}${side(o, j.side)}${j.inside ? ` (inside ${j.inside.gap}${side(o, j.inside.side)})` : ''}${j.technique !== 'attack' ? ' ' + j.technique : ''} | ${r.flow[s] ?? ''}`;
   });
   const g = (xs: FitResult['unowned']) => xs.map((x) => `${x.gap}${side(o, x.side)}`).join(' ') || 'none';
-  return `ir fits case: ${title}\n  ${rows.join('\n  ')}\n  unowned: ${g(r.unowned)}; conceded: ${g(r.conceded)}`;
+  return `ir fits case: ${title}\n  ${rows.join('\n  ')}\n  unowned: ${g(r.unowned)}; by flow rule: ${r.byFlow.map((x) => `${x.gap}${side(o, x.side)} (${x.rule})`).join(', ') || 'none'}; conceded: ${g(r.conceded)}`;
 }
 const lf = (d: DefenseDescription, a: DefenseAlignment, o: OffenseAlignment) => runFitJobs(d, a, o, { labelFree: true });
 /** The same alignment and call with two slot labels exchanged (each man keeps his spot, role and job data). */
@@ -51,10 +51,12 @@ describe('run-fit perturbations (label-free)', () => {
     for (const s of Object.keys(rA.jobs) as DefSlot[]) expect(rB.jobs[sw(s)], s).toEqual({ ...rA.jobs[s], ...(rA.jobs[s]!.partner ? { partner: sw(rA.jobs[s]!.partner as DefSlot) } : {}) });
     // (c) the Sam widened 1, 2 and 3 yd toward the field (a 4-2-5 apex), the same call, against 2x2 and ace.
     for (const [fid, o] of [['ace_11', ace], ['gun_doubles_11', off('gun_doubles_11')]] as const) {
-      const d = call('over', 'base43', 'cover3'), a0 = place(d, o);
+      const d = call('over', 'base43', 'cover3'), a0 = place(d, o); let c0: string | undefined;
       for (const w of [0, 1, 2, 3]) {
         const a = { ...a0, spots: { ...a0.spots, LB_S: { ...a0.spots.LB_S!, pos: { x: a0.spots.LB_S!.pos.x, y: a0.spots.LB_S!.pos.y + o.strongSign * w } } } };
         const r = lf(d, a, o), j = r.jobs.LB_S!;
+        if (w) expect(`${j.kind}:${j.gap}${j.side}:${j.inside?.gap ?? ''}`, `(c) ${fid} +${w}`).toBe(c0!);
+        else c0 = `${j.kind}:${j.gap}${j.side}:${j.inside?.gap ?? ''}`;
         out.push(`ir fits case: (c) ${fid} Sam widened ${w} yd: at ${(a.spots.LB_S!.pos.y - o.ballY).toFixed(1)}: ${j.kind} ${j.gap}${side(o, j.side)}${j.inside ? ` (inside ${j.inside.gap}${side(o, j.inside.side)})` : ''}; unowned ${r.unowned.map((x) => `${x.gap}${side(o, x.side)}`).join(' ') || 'none'}`);
       }
     }
@@ -91,6 +93,11 @@ describe('run-fit perturbations (label-free)', () => {
       const d = call('over', 'dime', 'cover3'), a0 = place(d, o), m = a0.spots.LB_M!;
       const a = { ...a0, spots: { ...a0.spots, DB: { ...a0.spots.DB!, pos: { x: m.pos.x, y: m.pos.y + o.strongSign * 2.5 } } } };
       out.push(show(`(d) Over dime cover3 vs ${fid}, the DB beside the Mike on the strong side`, d, a, o, lf(d, a, o)));
+    }
+    // Step 3b: Tite, Penny and Mint against 11 and 12 personnel, cover 3 and quarters.
+    for (const fid of ['ace_11', 'gun_doubles_11', 'ace_12']) for (const [front, p] of [['tite', 'base34'], ['penny', 'nickel'], ['mint', 'nickel']] as const) for (const cov of ['cover3', 'cover4']) {
+      const o = off(fid), d = call(front, p, cov), a = place(d, o);
+      out.push(show(`(3b) ${front} ${p} ${cov} vs ${fid}`, d, a, o, lf(d, a, o)));
     }
     // The reference matrix's fronts against a pro set (two backs, one tight end) and a singleback set, cover 3.
     for (const fid of ['i_pro_21', 'ace_11']) for (const [front, p] of [['over', 'base43'], ['even', 'base43'], ['tite', 'base34'], ['bear34', 'base34'], ['odd', 'base34']] as const) {
