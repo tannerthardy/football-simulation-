@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "engine-109",
+  "id": "engine-110",
   "runSet": {
     "commit": "1b5415de99b5b7194eff045f3c37a07a4c54c1a9",
     "seeds": [
@@ -356,6 +356,8 @@
     "QB_SCAN": "on",
     "QB_CANON_SEEN": "on",
     "QB_LOOK_SEEN": "on",
+    "SPLIT_BACK_SIDES": "on",
+    "MAN_TE_OFF": "on",
     "BELIEVED_BODY": "off",
     "SCOUT_SEEN": "on",
     "SCRAMBLE_SEEN": "on",

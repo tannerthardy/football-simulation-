@@ -20,7 +20,7 @@ import { clamp, type Vec2 } from '../../core/vec.js';
 import type { CoverageRole, DefSlot, DefensivePlayCall, Gap, ReceiverRef, SkillSlot, Technique, UnderSeat } from '../types.js';
 import {
   AGAP_ALIGN, AGAP_LEAGUE, BLITZ_CREEP, BOX_ALIGN, CREEP_DEPTH, DEF_ALIGN, EDGE_CALL_TE, EDGE_TECH, FIT_TE_GAP,
-  FRONT_ALIGN, FRONT_PLAYERS, MIRROR_SCATTER, NICKEL_FRONTS_ALIGN, OL_SLOTS, OL_SPLITS, SAM_ON_DEPTH, SAM_ON_TE,
+  FRONT_ALIGN, FRONT_PLAYERS, MAN_TE_OFF, MIRROR_SCATTER, NICKEL_FRONTS_ALIGN, OL_SLOTS, OL_SPLITS, SAM_ON_DEPTH, SAM_ON_TE,
   SHELL_SHOW, SHORT_PACKAGE, SHOULDER, SLOT_LEV, TIGHT_OFF, TIGHT_OFF_DEPTH, TIGHT_SPLIT, alignOffense, coverageDepth,
   flipRef, flipZone, frontSign, gapY, inlineOf, isDeepZone, otherSide, scatterSide, seatRole, seatZone, situationDepth,
   tackleOf, techniqueGap, techniqueOffset, zoneLandmark, zoneSpot,
@@ -490,7 +490,9 @@ export function alignDefenseFromDescription(desc: DefenseDescription, off: Offen
     const t = spots[d]!.manTarget;
     if (!t) continue;
     const tp = off.spots[t].pos;
-    const isCorner = d === 'CB_S' || d === 'CB_W' || d === 'NB' || d === 'DB';
+    // MAN_TE_OFF: against an attached end the corner's press and off-man rules do not apply: he aligns off the ball like
+    // any man defender on an inside receiver.
+    const isCorner = (d === 'CB_S' || d === 'CB_W' || d === 'NB' || d === 'DB') && !(MAN_TE_OFF && off.spots[t].inline);
     // A back on the ball has no inside: the defender shades from his own
     // side of it, not from a fixed side of the field (which flipped the
     // backers' sides with the offense's orientation).
