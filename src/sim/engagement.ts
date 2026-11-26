@@ -33,6 +33,7 @@
  * off balance, hands cleared for a moment so the rusher's own feet carry him
  * past — never a jump in leverage or a prescribed speed.
  */
+import { seenBack } from './seen-back.js';
 import { KEY_REACT, keyScale } from './key-read.js';
 import { angleDiff, clamp, logistic, norm, sub, type Vec2 } from '../core/vec.js';
 import { G } from '../core/units.js';
@@ -2229,14 +2230,14 @@ const CUTBACK_RANGE = 3.5; // yd: a cutback this close is his to play
 /** The body a lineman keys for the play's direction: the back through the
  * mesh (a QB or back he sees holding it), else whoever he sees holding it. */
 function ballKey(sim: PlaySim, d: Agent): Agent | null {
-  const held = observedHolder(d, sim), back = sim.slot('RB');
+  const held = observedHolder(d, sim), back = seenBack(sim, d);
   if (!held) return null;
   return back && (held.target === sim.qb || held.target === back) ? back : held.target;
 }
 
 function runContactRead(sim: PlaySim, e: Engagement) {
   const d = e.defender, b = e.blocker, job = d.runFit;
-  const back = sim.slot('RB');
+  const back = seenBack(sim, d);
   // Support must recognize an acquired receiver carrying the ball too.
   // Use the same delayed, ambiguity-checked pictures as the release check;
   // the live holder identity never selects whom this defender observes.

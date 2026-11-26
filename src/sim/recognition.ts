@@ -11,6 +11,7 @@
  * and draws work by giving the wrong cues, and an expectation can make a
  * defender quicker (anticipation) or wrong.
  */
+import { seenBack } from './seen-back.js';
 import { clamp } from '../core/vec.js';
 import { OL_SLOTS, type PersonnelId, type QBAlignment } from '../playbook/types.js';
 import { r01, type Player } from '../players/types.js';
@@ -381,7 +382,7 @@ export class Recognition {
     const qb = sim.see(a, sim.qb, bf, 'recog');
     const meshDepth = sim.offCall.formation.qb === 'under' ? 3.6 : sim.offCall.formation.qb === 'pistol' ? 4.6 : 5.2;
     const depth = sim.los - qb.pos.x;
-    const rbAgent = sim.slot('RB');
+    const rbAgent = seenBack(sim, a);
     const rb = rbAgent ? sim.see(a, rbAgent, bf, 'recog') : null;
     let qbCue = depth > meshDepth + 0.4 ? clamp((depth - meshDepth - 0.4) / 1.0, 0, 1.2) : 0;
     // Bailing straight back from under center is a dropback.

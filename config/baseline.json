@@ -396,6 +396,8 @@
     "MAN_TE_OFF": "0",
     "FIT_RULES": "0",
     "FOLD_HOLD": "0",
+    "BACK_SEEN": "0",
+    "SURFACE_ON_LINE": "0",
     "GUARD_KEY": "0",
     "BELIEVED_BODY": "0",
     "SCOUT_SEEN": "0",

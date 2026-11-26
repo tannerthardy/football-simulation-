@@ -6,6 +6,7 @@
  * reads the play, he executes his pre-snap job; play action can fool him into
  * believing run for longer.
  */
+import { seenBack } from '../seen-back.js';
 import { believedCaps, lookAt } from '../believed-body.js';
 import { HANDS_CUE, handsUpAt } from '../hands-cue.js';
 import { isOL } from './blocking.js';
@@ -883,7 +884,7 @@ export function runFit(a: Agent, sim: PlaySim, gap: Gap, gapSign: number, read?:
     // Removing the catch broadcast must not uncover a second private-holder
     // selection inside the fit fallback. Reuse the installed mesh picture,
     // including unknown/negative carrying, rather than inventing a handoff.
-    const holder = observedHolder(a, sim), back = sim.slot('RB');
+    const holder = observedHolder(a, sim), back = seenBack(sim, a);
     if (!/^(DE|DT|NT)/.test(a.slot)) watch(sim, a, holder?.target ?? back);
     // A QB seen running is the runner himself, not a mesh still to resolve.
     if (holder && (holder.target !== sim.qb || hasObservedFlight(a) || qbRunning(a, sim))) read = { possession: holder };
@@ -1478,7 +1479,7 @@ export class ManCoverage implements Behavior {
     // The shared transition above handles an acquired committed QB. Support
     // below still interprets his picture with the installed backfield.
     const qbCue = sim.see(a, sim.qb);
-    const back = sim.slot('RB');
+    const back = seenBack(sim, a);
     const installedBackfield = !!back && !!sim.offAlign.spots[back.slot]?.backfield;
     // Do not extend this duty where its explicit information input is absent.
     // Empty/split-back formations keep their pre-existing shallow policy.
@@ -1532,7 +1533,7 @@ export class ManCoverage implements Behavior {
   }
 
   private blockingSupport(a: Agent, sim: PlaySim, qbCue: Perceived): MoveCommand {
-    const back = sim.slot('RB');
+    const back = seenBack(sim, a);
     // A block read admits installed support, not private holder knowledge.
     // Use the same acquired/expected backfield in held and unrecognized
     // flight. The fit retains its existing failed-exchange retirement.

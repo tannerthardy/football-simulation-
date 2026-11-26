@@ -547,6 +547,22 @@ const VERTICAL_SET = process.env.VERTICAL_SET !== '0';
  * defender's private behavior (rush/blitz), so the line never set on a
  * dropping end and knew every blitzer by his call. */
 const PRO_READ = process.env.PRO_READ !== '0';
+/** SURFACE_ON_LINE (on; `=0` restores the label set DE/DT/NT): the climber's first-level surfaces are the
+ * defenders who stand on the line at the snap, by where they stand: within the front's LINE_DEPTH (2 yd, the
+ * FIT_RULES on-line test). A backer walked onto the line within that depth (the Sam on an end, a 5-1's Will) is part
+ * of the surface; a stand-up rover at 2.6 yd is second level. The A-gap mug stands at CREEP_DEPTH (2.4 yd) and so is
+ * not (an open ruling: docs/reviews/2026-11-26-loose-ends-step6.md). FIT_RULES's 2-3 yd rusher clause reads the defense's own call, which a
+ * blocker cannot see, so it is not used here. A pressed corner is on the line but not in the front: the surface
+ * stops 2 yd outside the core (the end man). */
+export const SURFACE_ON_LINE = process.env.SURFACE_ON_LINE !== '0';
+const SURFACE_DEPTH = 2, SURFACE_WIDE = 2;
+function onLineSurface(sim: PlaySim, b: Agent): boolean {
+  if (!SURFACE_ON_LINE) return ['DE_W','DE_S','DT_W','DT_S','NT'].includes(b.slot);
+  if (!sim.defense.includes(b)) return false;
+  const sp = sim.defAlign.spots[b.slot as keyof typeof sim.defAlign.spots];
+  const off = sim.offAlign, core = Math.max(Math.abs(off.coreEdge.S - off.ballY), Math.abs(off.coreEdge.W - off.ballY));
+  return !!sp && (sp.pos.x - sim.los) * sim.attackDir('O') < SURFACE_DEPTH && Math.abs(sp.pos.y - off.ballY) <= core + SURFACE_WIDE;
+}
 /** PASS_SET_SEEN (experimental, off; intended on): a pass protector's set and his protection's assignment costs read
  * his picture of the rusher (`sim.see`, his delayed, recognised sample; Rules+Coaching's track() replaces it when it
  * lands), not the rusher's true position and velocity. The set point, the kick, the mirror, the cut-off, his overset
@@ -2253,7 +2269,7 @@ export class RunBlocker implements Behavior {
         const released = this.plan.departure?.defender;
         const surfaces = sim.agents.filter(b=>b!==a&&b!==target&&b!==released&&(isOL(b)
           || b===this.plan.departure?.keeper
-          ||sim.offAlign.spots[b.slot]?.inline||['DE_W','DE_S','DT_W','DT_S','NT'].includes(b.slot)))
+          ||sim.offAlign.spots[b.slot]?.inline||onLineSurface(sim,b)))
           .map(b=>({key:b.idx,radius:b.profile.radius,seen:sim.see(a,b)}))
           .filter(p=>Math.hypot(p.seen.pos.x-a.pos.x,p.seen.pos.y-a.pos.y)<6);
         const original = { vel:best!.vel, facing:Math.atan2(best!.meet.y-a.pos.y,best!.meet.x-a.pos.x) };
