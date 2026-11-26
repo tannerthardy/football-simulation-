@@ -2883,3 +2883,14 @@ call runs (`calledDrop`), and screens keep the two-yard quick step.
 Card e142 (4 seeds x 32 games, on its calls, 608 dropbacks, 11.0% of dropbacks): completion 72.9 -> 73.3%, yards per
 attempt 7.18 -> 7.39, sacks 5.5 -> 3.5%, interceptions 2.1 -> 1.0%, scrambles 2.7 -> 0%, time to throw 2.60 -> 2.16 s.
 The card predates the line-depth and screen repairs. Open: he never scrambles on his calls; the GAPS quick-game items.
+
+## engine-109: the passer's look from the bodies (2026-11-26)
+
+`QB_LOOK_SEEN` on (QB lane; `=0` restores engine-108). An information-leak removal found by the name-branch inventory.
+A defensive back is a man whose own position is corner or safety, not the slot the call put him in; the personnel and
+front the passer believes he sees come from his scan of the bodies at the snap, and no `defCall` field is read.
+
+Staged (slant-flat vs Cover 1/2/3/4, 3 seeds each): top pre-snap coverage belief unchanged on 12/12; against a late
+stem from under to over he now names the front the bodies show on 8/12 (before: the called front on 12/12); a
+linebacker filling a safety slot no longer counts as a defensive back. Not carded: pre-snap belief does not move in
+ordinary play. Open: `expectedPos` still maps a defender to a canonical spot by his slot label.
