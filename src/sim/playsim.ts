@@ -39,6 +39,7 @@ import { openToBall } from './open-to-ball.js';
 import { derivePhysical } from '../players/physical.js';
 import type { Player } from '../players/types.js';
 import { alignDefenseFromDescription } from '../playbook/ir/align.js';
+import { describeOver } from '../playbook/ir/entry.js';
 import { alignOffenseFromSnap, describeOffenseSnap, type OffenseSnapDescription } from '../playbook/ir/offense.js';
 import type { DefenseDescription } from '../playbook/ir/types.js';
 import { alignDefense, alignOffense, fitPressStances, formationKey, gapY, MIRROR_SCATTER, PRESS_BACKOFF, RECEIVER_DEPTH, scatterSide, type AlignStyle, type DefenseAlignment, type ManPreference, type OffenseAlignment } from '../playbook/alignment.js';
@@ -552,7 +553,7 @@ export class PlaySim {
     if (stem && !stem.from.personnel.includes(this.defCall.personnel)) throw new Error('Stem front requires compatible defensive personnel');
     const targets = new Map<Agent,Vec2>();
     if (stem) {
-      const shown = alignDefense({...this.defCall,front:stem.from},this.offAlign,this.defense.map((a)=>a.slot as DefSlot),prefs,this.defStyle);
+      const shown = alignDefenseFromDescription(describeOver(this.defDesc,{...this.defCall,front:stem.from}),this.offAlign,this.defense.map((a)=>a.slot as DefSlot),prefs,this.defStyle);
       for (const d of this.defense) {
         targets.set(d,{...d.pos});
         d.body.pos = {...shown.spots[d.slot as DefSlot]!.pos};

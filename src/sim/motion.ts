@@ -28,7 +28,10 @@
 import { CENTER_Y } from '../core/field.js';
 import type { Rng } from '../core/rng.js';
 import type { Vec2 } from '../core/vec.js';
-import { alignDefense, frontSign, isDeepZone, type AlignStyle, type DefenseAlignment, type ManPreference, type OffenseAlignment } from '../playbook/alignment.js';
+import { alignDefenseFromDescription } from '../playbook/ir/align.js';
+import { describeOver } from '../playbook/ir/entry.js';
+import type { DefenseDescription } from '../playbook/ir/types.js';
+import { frontSign, isDeepZone, type AlignStyle, type DefenseAlignment, type ManPreference, type OffenseAlignment } from '../playbook/alignment.js';
 import { installCoverage } from '../playbook/coverages.js';
 import type { DefensivePlayCall, DefSlot, MotionCall, MotionKind, ReceiverRef, Side, SkillSlot } from '../playbook/types.js';
 import { sideSign } from '../playbook/types.js';
@@ -414,6 +417,8 @@ export interface MotionHost {
   readonly defense: Agent[];
   readonly t: number;
   readonly los: number;
+  /** The defense's description when the call was given only as one (step 5): the re-check aligns over it. */
+  readonly defDesc?: DefenseDescription;
   slot(slot: string): Agent | undefined;
 }
 
@@ -522,8 +527,8 @@ export class MotionRuntime {
   /** The call and alignment for the formation `off`: the front held, a lock kept and the bump handed out by kind. */
   private answer(sim: MotionHost, off: OffenseAlignment): { call: DefensivePlayCall; align: DefenseAlignment } {
     const slots = sim.defense.map(d => d.slot as DefSlot);
-    const installed = installCoverage(this.called, off);
-    if (!motionCheckEnabled()) return { call: installed, align: alignDefense(installed, off, slots, this.prefs, this.style) };
+    const installed = sim.defDesc ? this.called : installCoverage(this.called, off);
+    if (!motionCheckEnabled()) return { call: installed, align: alignDefenseFromDescription(describeOver(sim.defDesc, installed), off, slots, this.prefs, this.style) };
     const held = frontSign(this.called, sim.offAlign);
     const call: DefensivePlayCall = { ...installed, strength: frontSign({ ...installed, strength: 'passing' }, off) === held ? 'passing' : 'opposite' };
     if (this.lock === undefined) {
@@ -531,7 +536,7 @@ export class MotionRuntime {
       this.lock = had && this.called.coverage.man && (this.rng?.chance(LOCK[this.plan.kind]) ?? false) ? had : null;
     }
     const prefs = this.lock ? { ...this.prefs, overrides: { ...this.prefs?.overrides, [this.lock]: this.plan.slot } } : this.prefs;
-    const align = alignDefense(call, off, slots, prefs, this.style);
+    const align = alignDefenseFromDescription(describeOver(sim.defDesc, call), off, slots, prefs, this.style);
     return { call, align: exchange(align, slot => sim.slot(slot)?.pos, this.lock, target => sim.slot(target)?.player.position === 'WR') };
   }
 

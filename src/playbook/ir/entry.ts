@@ -10,6 +10,7 @@
  */
 import { GUN_QB_DEPTH, PISTOL_QB_DEPTH } from '../formations.js';
 import type { DefensivePlayCall, Formation, PersonnelId, SlotAlignment } from '../types.js';
+import { describeDefense } from './describe.js';
 import { lowerDefense } from './lower.js';
 import type { OffenseSnapDescription } from './offense.js';
 import type { DefenseDescription } from './types.js';
@@ -28,4 +29,21 @@ export function formationOfSnap(d: OffenseSnapDescription, personnel: PersonnelI
 
 export function callOfDescription(d: DefenseDescription): DefensivePlayCall {
   return lowerDefense(d);
+}
+
+/** A call's description over a base description (step 5). Code that changes a call's coverage, strength or pressure
+ * (the motion re-check, the passer's look model) or its front (a stem) aligns from this rather than re-describing a
+ * lowered call, so a described front keeps its own data. With no base (every catalog call) it is `describeDefense(call)`.
+ * With a base and the same front, the base keeps its front, alignment data and each player's spot and fit; coverage,
+ * pressure and the call's other fields come from the call. A different front (a stem from a catalog front) is that
+ * front's own description. */
+export function describeOver(base: DefenseDescription | undefined, call: DefensivePlayCall): DefenseDescription {
+  const d = describeDefense(call);
+  if (!base || call.front.id !== base.front.preset.id) return d;
+  return { ...d, front: base.front, alignment: base.alignment, ...(base.concede ? { concede: base.concede } : {}),
+    players: d.players.map((p) => {
+      const o = base.players.find((q) => q.who.slot === p.who.slot);
+      const { where: _w, fit: _f, ...rest } = p;
+      return { ...rest, ...(o?.where ? { where: o.where } : {}), ...(o?.fit ? { fit: o.fit } : {}) };
+    }) };
 }
