@@ -56,7 +56,7 @@ describe('offense from the description alone', () => {
         skill('RB', 'C', { kind: 'offset', y: 0 }, 6.5, { backfield: true, counts: false }),
       ],
     };
-    // Tight bunch to the right off an attached Y, and a stack on the left: the H directly behind the X (a share of 1 of the widest on his side).
+    // Tight bunch to the right off an attached Y, and a stack on the left: the H directly behind the X (a share of 1 of the widest on his side). Empty: the first draft also had a back, 12 men (the step-2a checker caught it).
     const bunch: OffenseSnapDescription = {
       preset: { ns: 'formation', id: 'bunch_and_stack' }, line, qb: { depth: 4.5 },
       linemen: describeOffenseSnap(FORMATIONS[0], {}).linemen,
@@ -66,7 +66,6 @@ describe('offense from the description alone', () => {
         skill('F', 'R', { kind: 'offset', y: inlineOf(line) + 1 }, 2.0),
         skill('X', 'L', { kind: 'sideline', room: { early: 11, late: 13.5 } }, 0.74, { onLine: true }),
         skill('H', 'L', { kind: 'share', share: 1, min: 5.5, room: { early: 11, late: 13.5 } }, 2.2),
-        skill('RB', 'L', { kind: 'offset', y: 1 }, 4.5, { backfield: true, counts: false }),
       ],
     };
     for (const [name, d] of [['unbalanced', unbalanced], ['bunch+stack', bunch]] as const) {
