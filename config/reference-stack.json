@@ -360,6 +360,7 @@
     "MAN_TE_OFF": "on",
     "FIT_RULES": "on",
     "FOLD_HOLD": "on",
+    "BACK_SEEN": "on",
     "GUARD_KEY": "on",
     "BELIEVED_BODY": "off",
     "SCOUT_SEEN": "on",

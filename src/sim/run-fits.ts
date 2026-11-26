@@ -1,4 +1,5 @@
 /** A support contract derived from the called front AND coverage, not the run call. */
+import { seenBack } from './seen-back.js';
 import { gaitLag } from '../physics/kinematics.js';
 import { clamp, type Vec2 } from '../core/vec.js';
 import { gapY, isDeepZone, lineDepth } from '../playbook/alignment.js';
@@ -514,7 +515,7 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
   // edge-backside-trail and edge-fit-approach tests do, and pass explicit reads
   // when the flag's old path is deleted.
   if (HONEST_READS && input === undefined) {
-    const holder = observedHolder(a, sim), rb = sim.slot('RB');
+    const holder = observedHolder(a, sim), rb = seenBack(sim, a);
     input = holder && (holder.target !== sim.qb || hasObservedFlight(a) || qbRunning(a, sim)) ? { possession: holder }
       : rb && sim.offAlign.spots[rb.slot]?.backfield ? { backfield: { back: rb, backCue: sim.see(a, rb), qbCue: sim.see(a, sim.qb) } }
       : holder ? { possession: holder } : null;
@@ -522,7 +523,7 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
   const keyed = input && 'target' in input ? input : undefined;
   const picture = input && 'backfield' in input ? input.backfield : undefined;
   const acquired = input && 'possession' in input ? input.possession : undefined;
-  const back = picture?.back ?? sim.slot('RB');
+  const back = picture?.back ?? seenBack(sim, a);
   const acquiredBack = picture?.backCue.carrying === true && picture.qbCue.carrying !== true;
   const c = input === null ? null : acquired?.target ?? (picture ? acquiredBack ? back! : sim.qb : keyed?.target ?? (HONEST_READS ? null : sim.carrier));
   // A keyed fit has already consumed its runner picture. Deep mesh geometry
