@@ -197,3 +197,6 @@ All four are within budget, and no reversed re-aims are added by the fold margin
   - Pinned FIT_RULES=0 and FOLD_HOLD=0 for that scene, with a note to re-search it. This is the repo's pattern for
     recorded scenes: the same file pins MIRROR_SCATTER and the engine-73 group.
   - It passes on clean develop (seed 1903).
+
+**Clean full red-diff on the head** (FIT_RULES, FOLD_HOLD and GUARD_KEY on; one run): 4,625 tests, 36 failing, all 36
+on the ledger. **New red 0.** Fixed 4: concept-menu "first two reads" and three baseline-runner tests.
