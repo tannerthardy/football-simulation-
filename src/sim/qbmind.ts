@@ -377,17 +377,21 @@ export class QBMind {
     };
     const call = (front: (typeof FRONTS)[number], c: Coverage, pressure: DefensivePlayCall['pressure']): DefensivePlayCall =>
       ({ label: '', personnel: pers, front, coverage: c, pressure });
+    const pressureFor = (c: Coverage) => {
+      const pressure = c.id === 'cover0' ? PRESSURE_BY_ID.zero_6 : null;
+      return !pressure || Object.keys(pressure.blitzers).every((sl) => slots.includes(sl as DefSlot)) ? pressure : null;
+    };
+    // The front he names: the catalog front whose template, under the coverage it fits best, sits closest to the seen
+    // front seven (the coverage moves the backers, and he does not know it yet).
     const fits = FRONTS.filter((f) => f.personnel.includes(pers));
     let front = fits[0] ?? FRONTS[0], best = Infinity;
-    for (const f of fits) {
-      const { cost } = pair(alignDefense(call(f, COVERAGE_BY_ID.cover3 ?? COVERAGES[0], null), sim.offAlign, slots));
+    for (const f of fits) for (const c of COVERAGES) {
+      const { cost } = pair(alignDefense(call(f, c, pressureFor(c)), sim.offAlign, slots));
       if (cost < best) { best = cost; front = f; }
     }
     this.lookSeen = { personnel: pers, front: front.id };
     for (const c of COVERAGES) {
-      const pressure = c.id === 'cover0' ? PRESSURE_BY_ID.zero_6 : null;
-      const ok = !pressure || Object.keys(pressure.blitzers).every((sl) => slots.includes(sl as DefSlot));
-      const al = alignDefense(call(front, c, ok ? pressure : null), sim.offAlign, slots);
+      const al = alignDefense(call(front, c, pressureFor(c)), sim.offAlign, slots);
       for (const [sl, p] of pair(al).out) al.spots[sl] = { ...al.spots[sl]!, pos: { ...p } };
       this.canon.set(c.id, al);
     }
