@@ -91,8 +91,8 @@ In label-free mode a man the front placed within 3 yd counted as a front gap pla
   red 2, fixed 4.
   - The two new reds are the zone-track finding above and the engine-pin manifest, which listed my stray probe file.
     The file is removed; the manifest passes on the pushed head.
-  - Fixed: `concept-menu` "first two reads", and three baseline-runner tests. These pass on develop too; their ledger
-    entries are stale.
+  - Fixed: `concept-menu` "first two reads", and three baseline-runner tests. They also showed as fixed in
+    step 2b's runs, after the flag-inventory registration; I did not re-check them on develop.
   - **Net on the pushed head: new red 1, the zone-track finding.**
 
 ## Doubtful, for Integration
