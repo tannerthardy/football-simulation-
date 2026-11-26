@@ -359,6 +359,7 @@
     "SPLIT_BACK_SIDES": "on",
     "MAN_TE_OFF": "on",
     "FIT_RULES": "on",
+    "FOLD_HOLD": "on",
     "BELIEVED_BODY": "off",
     "SCOUT_SEEN": "on",
     "SCRAMBLE_SEEN": "on",

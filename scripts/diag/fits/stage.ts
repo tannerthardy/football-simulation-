@@ -16,6 +16,7 @@ const N = Number(process.env.N ?? 16), LOS = 35;
 const rng = new Rng(77);
 const home = generateTeam(rng, 'Home', 'HOM', { strength: 0.6 }), away = generateTeam(rng, 'Away', 'AWY', { strength: 0.6 });
 type Case = { id: string; fid: string; run: string; front: string; per: DefPersonnelId; cov: string; focus: string[] };
+const ONLY = process.env.CASE;
 const CASES: Case[] = [
   { id: '(a) IZ strong vs Over nickel cover3', fid: 'gun_doubles_11', run: 'iz_strong', front: 'over', per: 'nickel', cov: 'cover3', focus: ['LB_M'] },
   { id: '(b) IZ weak vs Over base cover3 (Will apex on the slot)', fid: 'gun_doubles_11', run: 'iz_weak', front: 'over', per: 'base43', cov: 'cover3', focus: ['LB_W'] },
@@ -29,11 +30,11 @@ const CASES: Case[] = [
 const job = (j: any) => (j ? `${j.kind}:${j.gap}${j.side > 0 ? '+' : '-'}${j.inside ? `(${j.inside.gap}${j.inside.side > 0 ? '+' : '-'})` : ''}` : '-');
 const tally = (m: Map<string, number>) => [...m].sort((p, q) => q[1] - p[1]).map(([k, v]) => `${k} ${v}`).join(', ');
 console.log(`FIT_RULES=${process.env.FIT_RULES ?? '1(default)'} N=${N}`);
-for (const c of CASES) {
+for (const c of CASES.filter((x) => !ONLY || x.id.startsWith(ONLY))) {
   const formation = FORMATION_BY_ID[c.fid], run = RUN_BY_ID[c.run];
   if (!run) { console.log(`${c.id}: no run ${c.run}`); continue; }
   const offense = pickOffense(home, formation.personnel), defense = pickDefense(away, c.per);
-  const first = new Map<string, number>(), tack = new Map<string, number>(), jobs = new Map<string, Map<string, number>>(), arrive = new Map<string, number[]>();
+  const edges = new Map<string, [number, number]>(), first = new Map<string, number>(), tack = new Map<string, number>(), jobs = new Map<string, Map<string, number>>(), arrive = new Map<string, number[]>();
   let yards = 0;
   const seeds = new Rng(1234);
   for (let i = 0; i < N; i++) {
@@ -41,10 +42,17 @@ for (const c of CASES) {
       defCall: { personnel: c.per, front: FRONT_BY_ID[c.front], coverage: COVERAGE_BY_ID[c.cov], pressure: null, label: c.cov }, los: LOS, ballY: CENTER_Y, firstDownX: LOS + 10, seed: seeds.nextU32() });
     if (i === 0) console.log(`  jobs (seed 1): ${sim.defense.map((a) => `${a.slot} ${job(a.runFit)}`).join(', ')}`);
     for (const s of c.focus) { const a = sim.slot(s); if (!a) continue; const m = jobs.get(s) ?? new Map(); const k = job(a.runFit); m.set(k, (m.get(k) ?? 0) + 1); jobs.set(s, m); }
-    const reached = new Map<string, number>();
+    const reached = new Map<string, number>(); let crossedAt: number | null = null;
     sim.event('snap', sim.slot('C') ?? sim.qb);
     while (sim.phase === 'live' && sim.t < 12) {
       sim.tick();
+      const car0 = sim.carrier;
+      if (crossedAt === null && car0 && car0 !== sim.qb && (car0.pos.x - sim.los) * sim.attackDir(car0.team) > 0) {
+        crossedAt = sim.t;
+        for (const s of c.focus) { const a = sim.slot(s); if (a?.runFit?.kind !== 'force') continue;
+          const ok = (a.pos.y - car0.pos.y) * a.runFit.side > 0 && Math.abs(a.pos.x - sim.los) < 3;
+          const e = edges.get(s) ?? [0, 0]; e[0]++; if (ok) e[1]++; edges.set(s, e); }
+      }
       for (const s of c.focus) {
         const a = sim.slot(s); if (!a?.runFit || reached.has(s)) continue;
         const car = sim.carrier;
@@ -63,6 +71,7 @@ for (const c of CASES) {
     const l = arrive.get(s) ?? [];
     console.log(`  ${s}: job ${tally(jobs.get(s) ?? new Map())}; within 1.5 yd of the carrier on ${l.length}/${N}${l.length ? `, median ${l.sort((p, q) => p - q)[Math.floor(l.length / 2)].toFixed(2)} s` : ''}`);
   }
+  for (const [s, [n, k]] of edges) console.log(`  ${s} (force): outside the carrier, within 3 yd of the line, when he crossed it: ${k}/${n}`);
   console.log(`  first contact: ${tally(first)}`);
   console.log(`  tacklers: ${tally(tack)}`);
 }

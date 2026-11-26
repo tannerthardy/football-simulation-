@@ -263,6 +263,28 @@ export function faithfulRunFits(sim: PlaySim): Map<Agent, RunFitJob> {
   return jobs;
 }
 
+/** FOLD_HOLD (default on; FOLD_HOLD=0 restores; Rules + Coaching, step 3c, Integration's ruling 2): a force player with
+ * an inside (fold) duty holds his outside leverage on a run toward him until the ball has declared inside (the
+ * carrier, with the ball, has crossed the line at least FOLD_IN inside the blocking surface) or the flow is away (the
+ * runner moving away from his side faster than FOLD_FLOW). Only then does he fold. It is one decision on his own
+ * picture of the runner (never his own speed): once folded he returns to force only if the carrier gets FOLD_OUT
+ * outside the surface, the far side of the entry. Off, he folded unless the carrier was already outside the surface,
+ * so on a stretch toward him he folded at the mesh and was late to the edge (step-3c staged case d). */
+const FOLD_HOLD = process.env.FOLD_HOLD !== '0', FOLD_FLOW = 1.0, FOLD_IN = .5, FOLD_OUT = .5;
+const folded = new WeakMap<Agent, boolean>();
+function holdsFold(a: Agent, sim: PlaySim, c: Agent, side: number, seen: Perceived, premesh: boolean, surface: number): boolean {
+  const outside = side * seen.pos.y + c.profile.radius - side * surface;
+  const declared = !premesh && seen.carrying === true;
+  const crossed = declared && (seen.pos.x - sim.los) * sim.attackDir(c.team) > 0;
+  let fold = folded.get(a) ?? false;
+  if (!fold && (seen.vel.y * side < -FOLD_FLOW || (crossed && outside < -FOLD_IN))) fold = true;
+  else if (fold && declared && outside > FOLD_OUT) fold = false;
+  if (fold !== (folded.get(a) ?? false) && sim.trace.data) sim.trace.decide({ t: sim.t, a: a.idx, kind: 'fold',
+    chose: fold ? 'fold inside' : 'force', cue: fold ? 'runner declared inside or flowing away' : 'runner outside the surface' });
+  folded.set(a, fold);
+  return fold;
+}
+
 /** Free fits scrape with the gap's motion, the earliest zone key (SCRAPE=0) and read the back's
  * threatened crossing rather than his position (THREAT_READ=0). */
 const SCRAPE = process.env.SCRAPE !== '0', THREAT_READ = process.env.THREAT_READ !== '0';
@@ -531,8 +553,8 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
   const core = sim.offense.filter((o) => ['LT','LG','C','RG','RT'].includes(o.slot) || sim.offAlign.spots[o.slot]?.inline)
     .map((o) => ({ ...sim.see(a,o), radius:o.profile.radius }));
   const surface = job.side > 0 ? Math.max(...core.map((o) => o.pos.y + o.radius)) : Math.min(...core.map((o) => o.pos.y - o.radius));
-  if (job.kind === 'force' && job.inside && !(!premesh && seen.carrying === true
-    && job.side * seen.pos.y + c.profile.radius >= job.side * surface)) {
+  if (job.kind === 'force' && job.inside && (FOLD_HOLD ? holdsFold(a, sim, c, job.side, seen, premesh, surface)
+    : !(!premesh && seen.carrying === true && job.side * seen.pos.y + c.profile.radius >= job.side * surface))) {
     // Use this same consumed picture, not the live runner or offensive call.
     // The installed outside shoulder remains available during later pursuit
     // and contact; only the free fit landmark is conditional here.
