@@ -28,11 +28,14 @@ import { ref, type Ref } from './types.js';
 
 type LineSlot = 'LT' | 'LG' | 'C' | 'RG' | 'RT';
 /** A width from the ball, by whether his side is the formation's strong side (`early`) or not. */
-export interface Room { early: number; late: number }
+/** `habit`: the team's own room habit (yd), applied after the room, as today's wideOffset does. */
+export interface Room { early: number; late: number; habit?: number }
 export type SkillAnchor =
   | { kind: 'offset'; y: number }
   | { kind: 'sideline'; room: Room }
-  | { kind: 'share'; share: number; min: number; room: Room };
+  /** max(min, widest × share + plus); with `then`, that again as max(then.min, value × then.share) (WR_ALIGN off:
+   * a slot at 0.45 of the widest plus 0.5, a #3 at 0.62 of the slot's). */
+  | { kind: 'share'; share: number; min: number; room: Room; plus?: number; then?: { share: number; min: number } };
 
 export interface LinePlayer { who: { slot: LineSlot; eligible?: boolean }; where: { y: number; depth: number } }
 export interface SkillPlayer {
@@ -90,14 +93,15 @@ export function describeOffenseSnap(formation: Formation, ctx: AlignContext = {}
   const detachedOn = (side: Side | 'C') => entries.filter(([, e]) => e.side === side && (e.split === 'wide' || e.split === 'slot' || e.split === 'slot2')).length;
   // #1's room on each side: [alone, with others] by the side's route, chosen by detached count; plus the team's habit.
   const roomFor = (side: Side | 'C'): Room => {
-    const pick = (r: [number, number]) => (detachedOn(side) >= 2 ? r[1] : r[0]) + (ctx.style?.wrRoom ?? 0);
+    const pick = (r: [number, number]) => (detachedOn(side) >= 2 ? r[1] : r[0]);
     const by = (strongSide: boolean): [number, number] => {
       if (side === 'C' || !ctx.kind) return ANY_ROOM;
       if (ctx.kind === 'run') return RUN_ROOM;
       const route = (strongSide ? ctx.pass?.strong : ctx.pass?.weak)?.[1];
       return (route && ROUTE_ROOM[route]) || ANY_ROOM;
     };
-    return { early: pick(by(true)), late: pick(by(false)) };
+    const habit = ctx.style?.wrRoom;
+    return { early: pick(by(true)), late: pick(by(false)), ...(habit !== undefined ? { habit } : {}) };
   };
   const olMean = (Object.values(depthOf) as number[]).reduce((t, v) => t + v, 0) / 5;
   const zoneRun = TE_OFF && !!ctx.run && ['insideZone', 'outsideZone', 'wideZone'].includes(ctx.run.scheme);
@@ -110,8 +114,8 @@ export function describeOffenseSnap(formation: Formation, ctx: AlignContext = {}
     else if (a.split === 'wing') anchor = { kind: 'offset', y: wingOf(line) };
     else if (a.split === 'core') anchor = { kind: 'offset', y: 0 };
     else {
-      if (!WR_ALIGN) throw new Error('describeOffenseSnap: WR_ALIGN off is not described');
-      anchor = a.split === 'slot2' ? { kind: 'share', share: 0.40, min: 4.6, room: roomFor(a.side) }
+      if (!WR_ALIGN) anchor = { kind: 'share', share: 0.45, plus: 0.5, min: 5.5, room: roomFor(a.side), ...(a.split === 'slot2' ? { then: { share: 0.62, min: 4.6 } } : {}) };
+      else anchor = a.split === 'slot2' ? { kind: 'share', share: 0.40, min: 4.6, room: roomFor(a.side) }
         : { kind: 'share', share: detachedOn(a.side) >= 3 ? 0.62 : 0.58, min: 5.5, room: roomFor(a.side) };
     }
     const lateral = anchor.kind === 'offset' ? Math.abs(anchor.y) : Infinity;
@@ -157,23 +161,24 @@ export function alignOffenseFromSnap(d: OffenseSnapDescription, flip: boolean, l
   const teL = on('L').some((p) => p.where.attached), teR = on('R').some((p) => p.where.attached);
   const early: Side = nL !== nR ? (nL > nR ? 'L' : 'R') : teL !== teR ? (teL ? 'L' : 'R') : ballY < CENTER_Y ? 'L' : 'R';
   const roomOf = (side: Side | 'C', r: Room) => (side === early ? r.early : r.late);
-  const fromSideline = (sign: number, room: number) => {
+  const fromSideline = (sign: number, room: number, habit = 0) => {
     const toSideline = sign > 0 ? FIELD_WIDTH - ballY : ballY;
-    return WR_ALIGN ? Math.max(8, toSideline - room) : Math.max(9, Math.min(18, toSideline - 6));
+    return WR_ALIGN ? Math.max(8, toSideline - room - habit) : Math.max(9, Math.min(18, toSideline - 6));
   };
   const offsets: Partial<Record<SkillSlot, number>> = {};
   for (const p of d.players) {
     const side = fside(p.where.side), sign = side === 'C' ? 0 : sideSign(side), a = p.where.anchor;
     if (a.kind === 'offset') offsets[p.who.slot] = a.y * (sign || 1) * (side === 'C' ? 0 : 1);
-    else if (a.kind === 'sideline') offsets[p.who.slot] = fromSideline(sign, roomOf(side, a.room)) * sign;
+    else if (a.kind === 'sideline') offsets[p.who.slot] = fromSideline(sign, roomOf(side, a.room), a.room.habit) * sign;
   }
   for (const p of d.players) {
     const a = p.where.anchor;
     if (a.kind !== 'share') continue;
     const side = fside(p.where.side), sign = side === 'C' ? 1 : sideSign(side);
-    let widest = fromSideline(sign, roomOf(side, a.room));
+    let widest = fromSideline(sign, roomOf(side, a.room), a.room.habit);
     for (const o2 of Object.values(offsets)) if (o2 !== undefined && Math.sign(o2) === sign && Math.abs(o2) > 6) widest = Math.max(widest, Math.abs(o2));
-    offsets[p.who.slot] = Math.max(a.min, widest * a.share) * sign;
+    const v = Math.max(a.min, a.plus === undefined ? widest * a.share : widest * a.share + a.plus);
+    offsets[p.who.slot] = (a.then ? Math.max(a.then.min, v * a.then.share) : v) * sign;
   }
   // A zone run's attached end set off the ball (a hash of his spot), and the wide receiver brought up outside him.
   const offEnd = new Set<SkillSlot>(), up = new Map<SkillSlot, number>();

@@ -38,6 +38,9 @@ import { containCoverage } from './coverage-space.js';
 import { openToBall } from './open-to-ball.js';
 import { derivePhysical } from '../players/physical.js';
 import type { Player } from '../players/types.js';
+import { alignDefenseFromDescription } from '../playbook/ir/align.js';
+import { alignOffenseFromSnap, type OffenseSnapDescription } from '../playbook/ir/offense.js';
+import type { DefenseDescription } from '../playbook/ir/types.js';
 import { alignDefense, alignOffense, fitPressStances, formationKey, gapY, MIRROR_SCATTER, PRESS_BACKOFF, RECEIVER_DEPTH, scatterSide, type AlignStyle, type DefenseAlignment, type ManPreference, type OffenseAlignment } from '../playbook/alignment.js';
 import { installCoverage } from '../playbook/coverages.js';
 import type { DefSlot, DefensivePlayCall, OffensivePlayCall, OffSlot } from '../playbook/types.js';
@@ -116,6 +119,11 @@ export interface PlaySetup {
   /** Each team's alignment habits (league/team.ts `alignStyle`); none = the scheme alone. */
   offStyle?: AlignStyle;
   defStyle?: AlignStyle;
+  /** A call given only as descriptions (step 4; src/playbook/ir/entry.ts). The snap aligns from these instead of
+   * describing `offCall` / `defCall`, which then carry the call's other fields (the lowered defense, a formation
+   * synthesized from the offense description). A described defense skips the secondary's coverage check. */
+  offDesc?: OffenseSnapDescription;
+  defDesc?: DefenseDescription;
   /** Rule 8 fumble context at the snap; the warning must already have occurred. */
   afterTwoMinuteWarning?: boolean;
   isTry?: boolean;
@@ -218,6 +226,8 @@ export class PlaySim {
   readonly firstDownX: number;
   offCall: OffensivePlayCall;
   readonly defCall: DefensivePlayCall;
+  /** The defense's description when the call was given only as one (PlaySetup.defDesc). */
+  readonly defDesc?: DefenseDescription;
   readonly offAlign: OffenseAlignment;
   readonly defAlign: DefenseAlignment;
   /** Pre-snap offensive motion being played (MOTION=1), if any. */
@@ -382,10 +392,12 @@ export class PlaySim {
     this.recordEvery = setup.recordEvery ?? 2;
     this.trace = new ReplayTrace(setup.recordLevel ?? 'light', this.recordEvery, this.record);
 
-    this.offAlign = alignOffense(setup.offCall.formation, setup.offCall.flip, this.los, this.ballY,
-      { kind: setup.offCall.kind, pass: setup.offCall.pass, run: setup.offCall.run, down: setup.down, distance: Math.abs(setup.firstDownX - setup.los), style: setup.offStyle });
-    // The secondary checks its call to the receiver distribution it sees.
-    this.defCall = installCoverage(setup.defCall, this.offAlign);
+    this.offAlign = setup.offDesc ? alignOffenseFromSnap(setup.offDesc, setup.offCall.flip, this.los, this.ballY)
+      : alignOffense(setup.offCall.formation, setup.offCall.flip, this.los, this.ballY,
+        { kind: setup.offCall.kind, pass: setup.offCall.pass, run: setup.offCall.run, down: setup.down, distance: Math.abs(setup.firstDownX - setup.los), style: setup.offStyle });
+    // The secondary checks its call to the receiver distribution it sees (not for a call given only as a description).
+    this.defDesc = setup.defDesc;
+    this.defCall = setup.defDesc ? setup.defCall : installCoverage(setup.defCall, this.offAlign);
     const defSlots = defense.map(([slot]) => slot);
     // The front's end men align by build (FRONT_ALIGN); the installed spots ignore it.
     const mass = Object.fromEntries(defense.map(([slot, player]) => [slot, derivePhysical(player).massKg]));
@@ -397,7 +409,8 @@ export class PlaySim {
       return [slot, { x: habit + snap.normalClamped(0, .6, -1.2, 1.2), y: snap.normalClamped(0, .4, -.8, .8) }];
     })) : undefined;
     this.defStyle = { ...setup.defStyle, mass, scatter, situation: { down: this.down, distance: this.firstDownX - this.los, toGoal: OPP_GOAL_X - this.los, personnel: setup.offCall.formation.personnel } };
-    this.defAlign = alignDefense(this.defCall, this.offAlign, defSlots, setup.manPrefs, this.defStyle);
+    this.defAlign = setup.defDesc ? alignDefenseFromDescription(setup.defDesc, this.offAlign, defSlots, setup.manPrefs, this.defStyle)
+      : alignDefense(this.defCall, this.offAlign, defSlots, setup.manPrefs, this.defStyle);
 
     const idle: Behavior = { kind: 'idle', update: () => ({ vel: { x: 0, y: 0 } }) };
     const mk = (team: TeamSide, slot: string, player: Player, pos: Vec2, facing: number) => {
