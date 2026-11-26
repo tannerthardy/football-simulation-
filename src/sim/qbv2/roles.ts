@@ -104,6 +104,34 @@ export class RoleResolver {
 /** One-shot form (Flex's pre-snap scan). */
 export const resolveRole = (p: RolePicture, role: KeyRole, side: 'S' | 'W' = 'S'): PicturedMan | null => pick(role, p, side);
 
+/** QB_LOOK_SEEN (on, a leak removal; QB_LOOK_SEEN=0 restores; Rules' name-branch inventory, 2026-11-25): who is a
+ * defensive back, and the looks he compares against, come from the bodies he sees, not from the defense's call.
+ * - A defensive back is a man whose own position is corner or safety (what his number tells the quarterback), wherever
+ *   the call put him: a linebacker filling a safety slot is not a DB, a safety in the nickel's slot is.
+ * - The canonical looks (QBMind) take the personnel from the bodies on the field and the front seven from where his scan
+ *   has them at the snap, so a stem or a walked-up man shows him what it shows a real quarterback. The front call's
+ *   fields (front, edge, strength, mug, Sam on) are not read; the front used for the template's roles is the catalog
+ *   front that best fits the seen front seven.
+ * Off: the DB rule read the call's personnel by slot, and the looks were built from the call's personnel and front. */
+export const QB_LOOK_SEEN = process.env.QB_LOOK_SEEN !== '0';
+/** A defensive back by his own position (corner or safety), not the slot the call put him in. */
+export function isDbBody(a: { player: { position: string } }): boolean { const p = a.player.position; return p === 'CB' || p === 'S'; }
+/** The personnel group he sees: the package whose positions match the bodies on the field (the closest by count when none
+ * matches exactly; ties go to the catalog's order). */
+export function personnelSeen(bodies: ReadonlyArray<{ player: { position: string } }>): DefPersonnelId {
+  const have: Record<string, number> = {};
+  for (const b of bodies) have[b.player.position] = (have[b.player.position] ?? 0) + 1;
+  let best: DefPersonnelId | null = null, bestD = Infinity;
+  for (const [id, slots] of Object.entries(DEF_PERSONNEL) as Array<[DefPersonnelId, Record<string, string>]>) {
+    const want: Record<string, number> = {};
+    for (const pos of Object.values(slots)) want[pos] = (want[pos] ?? 0) + 1;
+    let d = 0;
+    for (const k of new Set([...Object.keys(have), ...Object.keys(want)])) d += Math.abs((have[k] ?? 0) - (want[k] ?? 0));
+    if (d < bestD) { bestD = d; best = id; }
+  }
+  return best!;
+}
+
 /** A defensive back by the personnel he sees: the CB / S slots of the visible package (corners and safeties, not which is which).
  * The same rule as QBMind's corner finder (QB_CANON_SEEN's isDbSeen on develop), so B, C and QBMind share one definition; a
  * roster label is not read. */
