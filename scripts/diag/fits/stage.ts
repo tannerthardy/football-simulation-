@@ -25,17 +25,19 @@ const CASES: Case[] = [
   { id: '(e) IZ strong vs Over dime cover3', fid: 'gun_doubles_11', run: 'iz_strong', front: 'over', per: 'dime', cov: 'cover3', focus: ['LB_M', 'DB', 'SS'] },
   { id: '(f1) IZ strong vs Tite base34 cover3', fid: 'ace_11', run: 'iz_strong', front: 'tite', per: 'base34', cov: 'cover3', focus: ['NT', 'LB_M', 'LB_W'] },
   { id: '(f2) IZ weak vs Tite base34 cover3', fid: 'ace_11', run: 'iz_weak', front: 'tite', per: 'base34', cov: 'cover3', focus: ['NT', 'LB_M', 'LB_W'] },
+  { id: '(h1) Counter weak vs Over base cover3', fid: 'ace_11', run: 'counter', front: 'over', per: 'base43', cov: 'cover3', focus: ['LB_M', 'LB_W', 'LB_S'] },
+  { id: '(h2) Counter strong vs Over base cover3', fid: 'ace_11', run: 'counter_strong', front: 'over', per: 'base43', cov: 'cover3', focus: ['LB_M', 'LB_W', 'LB_S'] },
   { id: '(g, expected worse) Power strong vs Over dime cover3', fid: 'gun_doubles_11', run: process.env.POWER ?? 'power', front: 'over', per: 'dime', cov: 'cover3', focus: ['LB_M', 'DB', 'SS'] },
 ];
 const job = (j: any) => (j ? `${j.kind}:${j.gap}${j.side > 0 ? '+' : '-'}${j.inside ? `(${j.inside.gap}${j.inside.side > 0 ? '+' : '-'})` : ''}` : '-');
 const tally = (m: Map<string, number>) => [...m].sort((p, q) => q[1] - p[1]).map(([k, v]) => `${k} ${v}`).join(', ');
 console.log(`FIT_RULES=${process.env.FIT_RULES ?? '1(default)'} N=${N}`);
 for (const c of CASES.filter((x) => !ONLY || x.id.startsWith(ONLY))) {
-  const formation = FORMATION_BY_ID[c.fid], run = RUN_BY_ID[c.run];
+  const formation = FORMATION_BY_ID[c.fid], run = c.run === 'counter_strong' ? { ...RUN_BY_ID.counter, id: 'counter_strong', direction: 'strong' as const } : RUN_BY_ID[c.run];
   if (!run) { console.log(`${c.id}: no run ${c.run}`); continue; }
   const offense = pickOffense(home, formation.personnel), defense = pickDefense(away, c.per);
-  const edges = new Map<string, [number, number]>(), first = new Map<string, number>(), tack = new Map<string, number>(), jobs = new Map<string, Map<string, number>>(), arrive = new Map<string, number[]>();
-  let yards = 0;
+  const pullRead = new Map<string, number>(), edges = new Map<string, [number, number]>(), first = new Map<string, number>(), tack = new Map<string, number>(), jobs = new Map<string, Map<string, number>>(), arrive = new Map<string, number[]>();
+  let yards = 0; const perPlay: string[] = [];
   const seeds = new Rng(1234);
   for (let i = 0; i < N; i++) {
     const sim = new PlaySim({ offense, defense, offCall: { formation, flip: false, kind: 'run', run, label: c.run },
@@ -60,17 +62,19 @@ for (const c of CASES.filter((x) => !ONLY || x.id.startsWith(ONLY))) {
       }
     }
     const r = sim.run();
-    yards += r.yards;
+    for (const s of c.focus) if (sim.slot(s)?.tags.has('fit-pull-read')) pullRead.set(s, (pullRead.get(s) ?? 0) + 1);
+    yards += r.yards; if (process.env.PER) perPlay.push(`${r.yards.toFixed(1)}${r.events.some((e) => e.type === 'carrier_contact') ? '' : '*'}`);
     const fc = r.events.find((e) => e.type === 'carrier_contact' && e.b !== undefined && sim.agents[e.b]?.team === 'D');
     const fs = fc ? sim.agents[fc.b!].slot : 'none'; first.set(fs, (first.get(fs) ?? 0) + 1);
     for (const id of r.stats.tacklers ?? []) { const a = sim.agents.find((x) => x.player.id === id); const k = a?.slot ?? '?'; tack.set(k, (tack.get(k) ?? 0) + 1); }
     for (const [s, t] of reached) { const l = arrive.get(s) ?? []; l.push(t); arrive.set(s, l); }
   }
-  console.log(`${c.id}: mean ${(yards / N).toFixed(2)} yd`);
+  console.log(`${c.id}: mean ${(yards / N).toFixed(2)} yd${perPlay.length ? ' [' + perPlay.join(' ') + ']' : ''}`);
   for (const s of c.focus) {
     const l = arrive.get(s) ?? [];
     console.log(`  ${s}: job ${tally(jobs.get(s) ?? new Map())}; within 1.5 yd of the carrier on ${l.length}/${N}${l.length ? `, median ${l.sort((p, q) => p - q)[Math.floor(l.length / 2)].toFixed(2)} s` : ''}`);
   }
+  if (pullRead.size) console.log(`  read the pull: ${tally(pullRead)}`);
   for (const [s, [n, k]] of edges) console.log(`  ${s} (force): outside the carrier, within 3 yd of the line, when he crossed it: ${k}/${n}`);
   console.log(`  first contact: ${tally(first)}`);
   console.log(`  tacklers: ${tally(tack)}`);

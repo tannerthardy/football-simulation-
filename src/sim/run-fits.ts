@@ -382,6 +382,10 @@ const END_CHASE = process.env.END_CHASE !== '0', END_CHASE_DEPTH = 1.0;
 /** Linemen this player sees pulling: off the surface, behind the line, moving
  * across. Every one counts; nothing reads the offensive call. */
 export function pullers(sim: PlaySim, a: Agent): Perceived[] {
+  return pullerPairs(sim, a).map((p) => p.seen);
+}
+/** The pullers this player sees, with who each is (his own perception, as `pullers`). */
+function pullerPairs(sim: PlaySim, a: Agent): Array<{ agent: Agent; seen: Perceived }> {
   const picture = linePicture(sim, a);
   const candidates = PULL_CUE || PULL_EARLY ? [...picture.surface, ...picture.departed].filter(b => {
     const home = sim.offAlign.spots[b.agent.slot]!.pos, dir = sim.attackDir(b.agent.team);
@@ -389,8 +393,27 @@ export function pullers(sim: PlaySim, a: Agent): Perceived[] {
     if (PULL_EARLY && depth < -.15 && b.seen.vel.x * dir <= .5 && Math.abs(b.seen.vel.y) > 1.5) return true;
     return PULL_CUE && (depth < -1.5 || depth < -.5 && Math.abs(b.seen.pos.y - home.y) > 1);
   }) : picture.departed;
-  return candidates.map((b) => b.seen)
-    .filter((s) => (sim.los - s.pos.x) * sim.attackDir(sim.offense[0].team) > .3 && Math.abs(s.vel.y) > 1.5);
+  return candidates.map((b) => ({ agent: b.agent, seen: b.seen }))
+    .filter(({ seen: s }) => (sim.los - s.pos.x) * sim.attackDir(sim.offense[0].team) > .3 && Math.abs(s.vel.y) > 1.5);
+}
+
+/** GUARD_KEY (default on; GUARD_KEY=0 restores; Rules + Coaching, step 3c, Integration's ruling 4): a second-level
+ * run fitter keys the guard he is aligned over or nearest inside, and when that guard pulls he flows with the pull
+ * (through his own perception and reaction), whatever the distance from his landmark to the puller's arrival. Off,
+ * every pull was read only when his landmark lay within PULL_REACH of where the puller would arrive. PULL_REACH stays
+ * for the pullers he is not keyed on (a guard or tackle across the formation), which he reads only when they cross
+ * near his own landmark. */
+export const GUARD_KEY = process.env.GUARD_KEY !== '0';
+const keyGuards = new WeakMap<Agent, Agent | null>();
+function keyGuard(sim: PlaySim, a: Agent): Agent | null {
+  if (keyGuards.has(a)) return keyGuards.get(a)!;
+  const home = sim.defAlign.spots[a.slot as DefSlot]?.pos ?? a.pos, by = sim.offAlign.ballY;
+  const guards = sim.offense.filter((o) => o.slot === 'LG' || o.slot === 'RG');
+  const at = (o: Agent) => sim.offAlign.spots[o.slot]!.pos.y;
+  const inside = guards.filter((g) => Math.abs(at(g) - by) <= Math.abs(home.y - by) + .5 && (at(g) - by) * (home.y - by) >= 0);
+  const pick = (inside.length ? inside : guards).sort((p, q) => Math.abs(at(p) - home.y) - Math.abs(at(q) - home.y))[0] ?? null;
+  keyGuards.set(a, pick);
+  return pick;
 }
 
 /** A zone step: the line moving across faster than this (yd/s), four of the five together. */
@@ -743,9 +766,10 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
     // never flow against the pull. When linemen move behind the line both
     // ways (a puller and a hinging tackle), the fastest lateral mover is the
     // pull; reading whichever came first flipped the fit from tick to tick.
-    const moving = job.kind === 'interior' ? [] : pullers(sim, a);
+    const pairs = job.kind === 'interior' ? [] : pullerPairs(sim, a), moving = pairs.map((q) => q.seen);
     const lead = moving.reduce<Perceived | null>((m, p) => !m || Math.abs(p.vel.y) > Math.abs(m.vel.y) ? p : m, null);
-    for (const p of moving) {
+    const key = GUARD_KEY && (job.kind === 'insert' || job.kind === 'cutback') ? keyGuard(sim, a) : null;
+    for (const { agent: puller, seen: p } of pairs) {
       const dir = Math.sign(p.vel.y), arrive = p.pos.y + p.vel.y * PULL_LOOK;
       if (dir !== Math.sign(lead!.vel.y)) continue;
       const target = arrive + dir * (job.edge === 'spill' ? -PULL_SHOULDER : PULL_SHOULDER);
@@ -753,7 +777,7 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
       // landmark past the puller's arrival does not hide the pull. Within
       // reach of the landmark before that projection the cue still reads
       // (and the backer fills); he never moves back against his own flow.
-      if (pullCueReads(target, dir, gy, gapY)) {
+      if (puller === key ? (target - gy) * dir > 0 || (target - gapY) * dir > 0 : pullCueReads(target, dir, gy, gapY)) {
         if ((target - gy) * dir > 0) gy = target;
         pullSide = dir; a.tags.add('fit-pull-read');
       }
