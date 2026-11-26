@@ -41,11 +41,12 @@ const FIT_BLITZ_SLIDE = process.env.FIT_BLITZ_SLIDE !== '0';
 const GAP_MATCH = process.env.GAP_MATCH !== '0';
 
 /** Label-free thresholds:
- * - FRONT_DEPTH: a front player within this many yards of the line is a gap player of the front. It covers a
- *   stand-up rover at 2.6.
+ * - LINE_DEPTH: a man the front places within this many yards of the line is on it (a front gap player whatever
+ *   his job). FRONT_DEPTH: out to this depth, a rusher the front places is still a front gap player (the stand-up rover
+ *   at 2.6); a shallow zone or man defender there is second level.
  * - BOX_WIDTH: today's backer limit from the ball (faithful mode only; label-free pools by job).
  * - INSERT_DEPTH: second-level depth. */
-export const FRONT_DEPTH = 3, BOX_WIDTH = 5.5, INSERT_DEPTH = 7;
+export const LINE_DEPTH = 2, FRONT_DEPTH = 3, BOX_WIDTH = 5.5, INSERT_DEPTH = 7;
 
 export interface GapRef { gap: Gap; side: number }
 export interface FitResult {
@@ -82,7 +83,13 @@ export function runFitJobs(desc: DefenseDescription, a: DefenseAlignment, off: O
   const T = tackleOf(off.line);
 
   // Label reads and their taught replacements.
-  const isFrontPlayer = (s: DefSlot) => (lf ? placed.has(s) && spot(s).role.kind !== 'blitz' && spot(s).pos.x - los < FRONT_DEPTH : FRONT_SLOTS.includes(s));
+  // On the line (within LINE_DEPTH) he is a front player whatever his coverage job (a backer walked onto an end); off
+  // it, out to FRONT_DEPTH, only a rusher is (the stand-up rover), not a shallow zone or man defender.
+  const isFrontPlayer = (s: DefSlot) => {
+    if (!lf) return FRONT_SLOTS.includes(s);
+    const sp = spot(s), depth = sp.pos.x - los;
+    return placed.has(s) && sp.role.kind !== 'blitz' && (depth < LINE_DEPTH || (depth < FRONT_DEPTH && sp.role.kind === 'rush'));
+  };
   const isInterior = (s: DefSlot) => (lf ? Math.abs(pos(s).y - ballY) <= T + SHOULDER : ['DT_S', 'DT_W', 'NT'].includes(s));
   const isEnd = (s: DefSlot) => (lf ? !isInterior(s) : s === 'DE_S' || s === 'DE_W');
   // A Tampa Mike reads run before he runs the pipe: his zone does not take him out of the box; his depth would.

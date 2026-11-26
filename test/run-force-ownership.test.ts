@@ -14,7 +14,9 @@ import type { DefensivePlayCall, DefSlot, ZoneId } from '../src/playbook/types.j
 import type { Agent } from '../src/sim/agent.js';
 import type { Perceived } from '../src/sim/perception.js';
 import { PlaySim } from '../src/sim/playsim.js';
-import { buildRunFits, executeRunFit, type RunFitJob } from '../src/sim/run-fits.js';
+import { describeDefense } from '../src/playbook/ir/describe.js';
+import { runFitJobs } from '../src/playbook/ir/fits.js';
+import { buildRunFits, FIT_RULES, executeRunFit, type RunFitJob } from '../src/sim/run-fits.js';
 
 const offense = generateTeam(new Rng(51), 'Force offense', 'FO', { strength: .55 });
 const defense = generateTeam(new Rng(52), 'Force defense', 'FD', { strength: .55 });
@@ -190,9 +192,22 @@ describe('force ownership belongs to installed coverage jobs', () => {
       const end = sim.slot('DE_S')!, spot = sim.defAlign.spots.DE_S!;
       expect(spot.role.kind).toBe('man'); expect(spot.manTarget).toBeTruthy();
       const role = structuredClone(spot.role), target = spot.manTarget;
-      // Compatibility, not a new man controller: only an explicit pressure
-      // dropper leaves this existing first-level run-front contract.
-      expect(buildRunFits(sim).get(end)).toMatchObject({ kind: 'edge', gap: 'D', side: sim.offAlign.strongSign });
+      if (!FIT_RULES) {
+        // Compatibility, not a new man controller: only an explicit pressure
+        // dropper leaves this existing first-level run-front contract.
+        expect(buildRunFits(sim).get(end)).toMatchObject({ kind: 'edge', gap: 'D', side: sim.offAlign.strongSign });
+      } else {
+        // FIT_RULES (Integration's step-3c ruling 3): an end converted to man and aligned off the line is assigned by
+        // job, at the second level; the edge he vacated is owned by someone by rule, or reported unowned.
+        const jobs = buildRunFits(sim), j = jobs.get(end)!, side = sim.offAlign.strongSign;
+        expect(spot.pos.x - sim.los).toBeGreaterThan(2);
+        expect(['insert', 'force']).toContain(j.kind);
+        const full = describeDefense(sim.defCall);
+        const r = runFitJobs({ ...full, players: full.players.filter((p) => sim.slot(p.who.slot)) }, sim.defAlign, sim.offAlign,
+          { labelFree: true, pos: Object.fromEntries(sim.defense.map((a) => [a.slot, a.pos])) });
+        const owned = [...jobs.values()].some((x) => x.side === side && (x.kind === 'force' || (x.kind === 'edge' && (x.gap === 'C' || x.gap === 'D'))));
+        expect(owned || r.unowned.some((g) => g.side === side && (g.gap === 'C' || g.gap === 'D'))).toBe(true);
+      }
       expect(spot.role).toEqual(role); expect(spot.manTarget).toBe(target);
     }
   });
