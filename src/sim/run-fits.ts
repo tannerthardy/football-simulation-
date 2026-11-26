@@ -16,6 +16,8 @@ import { forceTrack, retainedForceTrack } from './force-track.js';
 import { hasObservedFlight, observedHolder, qbRunning, type PossessionRead } from './possession-read.js';
 import { seenEngaged } from './seen-contact.js';
 import { KEY_STEP_SEEN } from './key-read.js';
+import { describeDefense } from '../playbook/ir/describe.js';
+import { runFitJobs } from '../playbook/ir/fits.js';
 
 export interface RunFitJob {
   gap: Gap;
@@ -73,7 +75,32 @@ const FIT_BLITZ_SLIDE = process.env.FIT_BLITZ_SLIDE !== '0';
 /** HONEST_READS (behaviors/defense.ts): a teammate counts on the line when seen in contact, not by his engagement state. */
 const HONEST_READS = process.env.HONEST_READS !== '0';
 
+/** FIT_RULES (default on; FIT_RULES=0 restores; Rules + Coaching, step 3c): the pre-snap run-fit jobs come from the
+ * shared structural rules (`runFitJobs`, src/playbook/ir/fits.ts, label-free), read from the call's description, the
+ * resolved alignment and the bodies where they stand, not from slot labels:
+ * - the insert pool by job (an underneath zone wherever it aligns him; man on an attached end or a back fits off his
+ *   man's block; man on a detached receiver plays the alley);
+ * - a low safety takes what the second level leaves;
+ * - gaps are taken inside-out;
+ * - a force aligned on or outside #1 contains and never folds inside.
+ * Off, the body below runs (the faithful path; test/ir-fits.test.ts proves the shared function's faithful mode equal
+ * to it). Post-snap behaviour is unchanged. docs/reviews/2026-11-26-run-fit-cutover-step3c.md. */
+export const FIT_RULES = process.env.FIT_RULES !== '0';
+
 export function buildRunFits(sim: PlaySim): Map<Agent, RunFitJob> {
+  if (FIT_RULES) {
+    const full = describeDefense(sim.defCall);
+    const players = sim.defense.map((a) => full.players.find((p) => p.who.slot === a.slot)).filter((p): p is NonNullable<typeof p> => !!p);
+    const pos = Object.fromEntries(sim.defense.map((a) => [a.slot, a.pos])) as Partial<Record<DefSlot, Vec2>>;
+    const r = runFitJobs({ ...full, players }, sim.defAlign, sim.offAlign, { pos, labelFree: true });
+    return new Map(sim.defense.map((a) => [a, r.jobs[a.slot as DefSlot]!]));
+  }
+  return faithfulRunFits(sim);
+}
+
+/** Today's assignment (FIT_RULES=0), kept as the restore and as the equality proof for the shared function's
+ * faithful mode. */
+export function faithfulRunFits(sim: PlaySim): Map<Agent, RunFitJob> {
   const jobs = new Map<Agent, RunFitJob>();
   const policy = sim.defCall.runPolicy ?? { edge: 'box', linebacker: 'stack' };
   const first = new Set<Agent>();
@@ -236,6 +263,32 @@ export function buildRunFits(sim: PlaySim): Map<Agent, RunFitJob> {
   return jobs;
 }
 
+/** FOLD_HOLD (default on; FOLD_HOLD=0 restores; Rules + Coaching, step 3c, Integration's ruling 2): a force player with
+ * an inside (fold) duty holds his outside leverage on a run toward him until the ball has declared inside (the
+ * carrier, with the ball, at least FOLD_IN inside the blocking surface and across the line or running upfield more
+ * than across) or the flow is away (the runner moving away from his side faster than FOLD_FLOW). Only then does he
+ * fold. A dropping end's inside duty is his own C edge, not a fold: it is unchanged. It is one decision on his own
+ * picture of the runner (never his own speed): once folded he returns to force only if the carrier gets FOLD_OUT
+ * outside the surface, the far side of the entry. Off, he folded unless the carrier was already outside the surface,
+ * so on a stretch toward him he folded at the mesh and was late to the edge (step-3c staged case d). */
+export const FOLD_HOLD = process.env.FOLD_HOLD !== '0';
+const FOLD_FLOW = 1.0, FOLD_IN = .5, FOLD_OUT = .5;
+const folded = new WeakMap<Agent, boolean>();
+function holdsFold(a: Agent, sim: PlaySim, c: Agent, side: number, seen: Perceived, premesh: boolean, surface: number): boolean {
+  const outside = side * seen.pos.y + c.profile.radius - side * surface;
+  const declared = !premesh && seen.carrying === true;
+  // Declared inside: with the ball, inside the surface, and across the line or running upfield more than across.
+  const dir = sim.attackDir(c.team);
+  const committed = declared && ((seen.pos.x - sim.los) * dir > 0 || seen.vel.x * dir > Math.abs(seen.vel.y));
+  let fold = folded.get(a) ?? false;
+  if (!fold && (seen.vel.y * side < -FOLD_FLOW || (committed && outside < -FOLD_IN))) fold = true;
+  else if (fold && declared && outside > FOLD_OUT) fold = false;
+  if (fold !== (folded.get(a) ?? false) && sim.trace.data) sim.trace.decide({ t: sim.t, a: a.idx, kind: 'fold',
+    chose: fold ? 'fold inside' : 'force', cue: fold ? 'runner declared inside or flowing away' : 'runner outside the surface' });
+  folded.set(a, fold);
+  return fold;
+}
+
 /** Free fits scrape with the gap's motion, the earliest zone key (SCRAPE=0) and read the back's
  * threatened crossing rather than his position (THREAT_READ=0). */
 const SCRAPE = process.env.SCRAPE !== '0', THREAT_READ = process.env.THREAT_READ !== '0';
@@ -333,6 +386,10 @@ const END_CHASE = process.env.END_CHASE !== '0', END_CHASE_DEPTH = 1.0;
 /** Linemen this player sees pulling: off the surface, behind the line, moving
  * across. Every one counts; nothing reads the offensive call. */
 export function pullers(sim: PlaySim, a: Agent): Perceived[] {
+  return pullerPairs(sim, a).map((p) => p.seen);
+}
+/** The pullers this player sees, with who each is (his own perception, as `pullers`). */
+function pullerPairs(sim: PlaySim, a: Agent): Array<{ agent: Agent; seen: Perceived }> {
   const picture = linePicture(sim, a);
   const candidates = PULL_CUE || PULL_EARLY ? [...picture.surface, ...picture.departed].filter(b => {
     const home = sim.offAlign.spots[b.agent.slot]!.pos, dir = sim.attackDir(b.agent.team);
@@ -340,8 +397,27 @@ export function pullers(sim: PlaySim, a: Agent): Perceived[] {
     if (PULL_EARLY && depth < -.15 && b.seen.vel.x * dir <= .5 && Math.abs(b.seen.vel.y) > 1.5) return true;
     return PULL_CUE && (depth < -1.5 || depth < -.5 && Math.abs(b.seen.pos.y - home.y) > 1);
   }) : picture.departed;
-  return candidates.map((b) => b.seen)
-    .filter((s) => (sim.los - s.pos.x) * sim.attackDir(sim.offense[0].team) > .3 && Math.abs(s.vel.y) > 1.5);
+  return candidates.map((b) => ({ agent: b.agent, seen: b.seen }))
+    .filter(({ seen: s }) => (sim.los - s.pos.x) * sim.attackDir(sim.offense[0].team) > .3 && Math.abs(s.vel.y) > 1.5);
+}
+
+/** GUARD_KEY (default on; GUARD_KEY=0 restores; Rules + Coaching, step 3c, Integration's ruling 4): a second-level
+ * run fitter keys the guard he is aligned over or nearest inside, and when that guard pulls he flows with the pull
+ * (through his own perception and reaction), whatever the distance from his landmark to the puller's arrival. Off,
+ * every pull was read only when his landmark lay within PULL_REACH of where the puller would arrive. PULL_REACH stays
+ * for the pullers he is not keyed on (a guard or tackle across the formation), which he reads only when they cross
+ * near his own landmark. */
+export const GUARD_KEY = process.env.GUARD_KEY !== '0';
+const keyGuards = new WeakMap<Agent, Agent | null>();
+function keyGuard(sim: PlaySim, a: Agent): Agent | null {
+  if (keyGuards.has(a)) return keyGuards.get(a)!;
+  const home = sim.defAlign.spots[a.slot as DefSlot]?.pos ?? a.pos, by = sim.offAlign.ballY;
+  const guards = sim.offense.filter((o) => o.slot === 'LG' || o.slot === 'RG');
+  const at = (o: Agent) => sim.offAlign.spots[o.slot]!.pos.y;
+  const inside = guards.filter((g) => Math.abs(at(g) - by) <= Math.abs(home.y - by) + .5 && (at(g) - by) * (home.y - by) >= 0);
+  const pick = (inside.length ? inside : guards).sort((p, q) => Math.abs(at(p) - home.y) - Math.abs(at(q) - home.y))[0] ?? null;
+  keyGuards.set(a, pick);
+  return pick;
 }
 
 /** A zone step: the line moving across faster than this (yd/s), four of the five together. */
@@ -504,8 +580,8 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
   const core = sim.offense.filter((o) => ['LT','LG','C','RG','RT'].includes(o.slot) || sim.offAlign.spots[o.slot]?.inline)
     .map((o) => ({ ...sim.see(a,o), radius:o.profile.radius }));
   const surface = job.side > 0 ? Math.max(...core.map((o) => o.pos.y + o.radius)) : Math.min(...core.map((o) => o.pos.y - o.radius));
-  if (job.kind === 'force' && job.inside && !(!premesh && seen.carrying === true
-    && job.side * seen.pos.y + c.profile.radius >= job.side * surface)) {
+  if (job.kind === 'force' && job.inside && (FOLD_HOLD && job.inside.kind !== 'edge' ? holdsFold(a, sim, c, job.side, seen, premesh, surface)
+    : !(!premesh && seen.carrying === true && job.side * seen.pos.y + c.profile.radius >= job.side * surface))) {
     // Use this same consumed picture, not the live runner or offensive call.
     // The installed outside shoulder remains available during later pursuit
     // and contact; only the free fit landmark is conditional here.
@@ -694,9 +770,10 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
     // never flow against the pull. When linemen move behind the line both
     // ways (a puller and a hinging tackle), the fastest lateral mover is the
     // pull; reading whichever came first flipped the fit from tick to tick.
-    const moving = job.kind === 'interior' ? [] : pullers(sim, a);
+    const pairs = job.kind === 'interior' ? [] : pullerPairs(sim, a), moving = pairs.map((q) => q.seen);
     const lead = moving.reduce<Perceived | null>((m, p) => !m || Math.abs(p.vel.y) > Math.abs(m.vel.y) ? p : m, null);
-    for (const p of moving) {
+    const key = GUARD_KEY && (job.kind === 'insert' || job.kind === 'cutback') ? keyGuard(sim, a) : null;
+    for (const { agent: puller, seen: p } of pairs) {
       const dir = Math.sign(p.vel.y), arrive = p.pos.y + p.vel.y * PULL_LOOK;
       if (dir !== Math.sign(lead!.vel.y)) continue;
       const target = arrive + dir * (job.edge === 'spill' ? -PULL_SHOULDER : PULL_SHOULDER);
@@ -704,7 +781,7 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
       // landmark past the puller's arrival does not hide the pull. Within
       // reach of the landmark before that projection the cue still reads
       // (and the backer fills); he never moves back against his own flow.
-      if (pullCueReads(target, dir, gy, gapY)) {
+      if (puller === key ? (target - gy) * dir > 0 || (target - gapY) * dir > 0 : pullCueReads(target, dir, gy, gapY)) {
         if ((target - gy) * dir > 0) gy = target;
         pullSide = dir; a.tags.add('fit-pull-read');
       }

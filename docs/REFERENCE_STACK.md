@@ -2908,3 +2908,24 @@ description's legality check (docs/reviews/2026-11-26-call-description-step2a.md
 Not carded. Open (left for a coaching answer): gun counter from split backs; a B-gap blitzer behind the okie rover;
 the nickel edge blitzer in dime with the dime back on the slot; and 3.9% of game-flow plays that still spawn two
 bodies closer than their radii, mostly defenders.
+
+## engine-111: run fits from shared rules (2026-11-26)
+
+`FIT_RULES`, `FOLD_HOLD` and `GUARD_KEY` on (Rules + Coaching; each `=0` restores). The first sim reader cut over to
+the call description (docs/reviews/2026-11-26-run-fit-rules-step3a.md, step3b.md, run-fit-cutover-step3c.md).
+
+- `FIT_RULES`: pre-snap run-fit jobs come from one shared function (`src/playbook/ir/fits.ts`) that reads where a man
+  stands and his job, never his slot label. A second-level defender with an underneath zone, or in man on an attached
+  end or a back, is in the fit; an apex defender is force with a fold to his interior gap; a man on or outside a
+  detached receiver has no fold and is never the force. Unowned gaps are reported, not hidden.
+- `FOLD_HOLD`: the force holds outside leverage until the ball declares inside or the flow goes away.
+- `GUARD_KEY`: a second-level fitter keys the guard he is aligned over and flows when that guard pulls.
+
+Staged (16 seeds each, mean yards, on vs off): inside zone at an apex who folds 1.72 vs 2.96; outside zone at the apex
+0.61 vs 1.61 (force sets the edge 8/9 vs 2/11); power vs dime 1.59 vs 2.51; dime vs inside zone 0.56 vs 0.38; counter
+weak 7.75 vs 2.03 (one 75 yd run; about 3.5 without it). Game-flow calls with an unowned gap: 41.3% to 24.4%.
+
+Card e111 (one seed, 32 games, all three vs none): rush yards per carry 4.22 to 3.66, capped at 20 yd 3.53 to 3.40,
+the part beyond 20 yd 0.69 to 0.26; runs of 20+ that reach 40: 10/13 to 3/8; stuff rate 16.1 to 14.3%. The second
+seed did not run (time limit). Open: backside overlap on counter and true two-gap are not built; the hold-facing scene
+pinned to the old fits needs a new scene.

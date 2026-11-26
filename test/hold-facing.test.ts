@@ -29,6 +29,10 @@ async function turn(flag: string, openHands = '0', seed = 1957, slot = 'DT_S') {
   for (const [k, v] of Object.entries(stack)) if (v === 'on') vi.stubEnv(k, '1');
   for (const k of ['PA_HINGE', 'EDGE_SET', 'POCKET_DROP', 'POWER_AIM', 'END_KEY']) vi.stubEnv(k, '0'); // engine-73: scenes recorded before this group of the engine-73 landing; Flex to re-record with it on
   vi.stubEnv('MIRROR_SCATTER', '0'); // engine-72: fixture recorded on the old alignment scatter; Flex to re-record with MIRROR_SCATTER on
+  // step 3c (Rules): the free-DT side-hold scene was searched before FIT_RULES + FOLD_HOLD; with both on, the force and
+  // inside-out fits change who meets the runner and no free DT side hold occurs in seeds 1900-2190. The contract here
+  // (HOLD_FACING on a free holder) is the tackler's, not the fit's; Rules to re-search the scene with them on.
+  vi.stubEnv('FIT_RULES', '0'); vi.stubEnv('FOLD_HOLD', '0');
   vi.stubEnv('HOLD_FACING', flag);
   // The reproducer's play: the DT makes the hold still engaged with the C, whose hands are on him. OPEN_HANDS
   // changes the play, not the hold: his open-handed C lets him slip off at 1.75 s and he makes the hold free at

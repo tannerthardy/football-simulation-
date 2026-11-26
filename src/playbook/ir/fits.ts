@@ -41,11 +41,12 @@ const FIT_BLITZ_SLIDE = process.env.FIT_BLITZ_SLIDE !== '0';
 const GAP_MATCH = process.env.GAP_MATCH !== '0';
 
 /** Label-free thresholds:
- * - FRONT_DEPTH: a front player within this many yards of the line is a gap player of the front. It covers a
- *   stand-up rover at 2.6.
+ * - LINE_DEPTH: a man the front places within this many yards of the line is on it (a front gap player whatever
+ *   his job). FRONT_DEPTH: out to this depth, a rusher the front places is still a front gap player (the stand-up rover
+ *   at 2.6); a shallow zone or man defender there is second level.
  * - BOX_WIDTH: today's backer limit from the ball (faithful mode only; label-free pools by job).
  * - INSERT_DEPTH: second-level depth. */
-export const FRONT_DEPTH = 3, BOX_WIDTH = 5.5, INSERT_DEPTH = 7;
+export const LINE_DEPTH = 2, FRONT_DEPTH = 3, BOX_WIDTH = 5.5, INSERT_DEPTH = 7;
 
 export interface GapRef { gap: Gap; side: number }
 export interface FitResult {
@@ -82,7 +83,13 @@ export function runFitJobs(desc: DefenseDescription, a: DefenseAlignment, off: O
   const T = tackleOf(off.line);
 
   // Label reads and their taught replacements.
-  const isFrontPlayer = (s: DefSlot) => (lf ? placed.has(s) && spot(s).role.kind !== 'blitz' && spot(s).pos.x - los < FRONT_DEPTH : FRONT_SLOTS.includes(s));
+  // On the line (within LINE_DEPTH) he is a front player whatever his coverage job (a backer walked onto an end); off
+  // it, out to FRONT_DEPTH, only a rusher is (the stand-up rover), not a shallow zone or man defender.
+  const isFrontPlayer = (s: DefSlot) => {
+    if (!lf) return FRONT_SLOTS.includes(s);
+    const sp = spot(s), depth = sp.pos.x - los;
+    return placed.has(s) && sp.role.kind !== 'blitz' && (depth < LINE_DEPTH || (depth < FRONT_DEPTH && sp.role.kind === 'rush'));
+  };
   const isInterior = (s: DefSlot) => (lf ? Math.abs(pos(s).y - ballY) <= T + SHOULDER : ['DT_S', 'DT_W', 'NT'].includes(s));
   const isEnd = (s: DefSlot) => (lf ? !isInterior(s) : s === 'DE_S' || s === 'DE_W');
   // A Tampa Mike reads run before he runs the pipe: his zone does not take him out of the box; his depth would.
@@ -157,7 +164,9 @@ export function runFitJobs(desc: DefenseDescription, a: DefenseAlignment, off: O
   }
   const exchange = call.gapExchange;
   const exchangeBacker = exchange && slots.includes(exchange.edge) && slots.includes(exchange.backer) ? exchange.backer : undefined;
-  const available = (s: DefSlot) => !first.has(s) && s !== exchangeBacker && jobs.get(s)!.kind !== 'force';
+  // Ruling 3 (label-free): a man defender on a detached receiver follows his receiver; he is never the force.
+  const manDetached = (s: DefSlot) => spot(s).role.kind === 'man' && !manInside(s);
+  const available = (s: DefSlot) => !first.has(s) && s !== exchangeBacker && jobs.get(s)!.kind !== 'force' && !(lf && manDetached(s));
   const deepZone = (s: DefSlot) => { const role = spot(s).role; return role.kind === 'zone' && isDeepZone(role.zone); };
   const outsideSide = (s: DefSlot): number | null => {
     const role = spot(s).role;
@@ -185,8 +194,17 @@ export function runFitJobs(desc: DefenseDescription, a: DefenseAlignment, off: O
       if (force) j.partner = force;
     }
   }
+  // Folds (step 3c rulings): an apex aligns between the end man on the line and #2 so that he can fold; a man on or
+  // outside the nearest detached receiver on his side (a slot defender, a cloud corner) is force and alley only.
+  const noFold = (s: DefSlot, side: number) => {
+    const w = Math.abs(pos(s).y - ballY);
+    const detached = Object.values(off.spots).filter((o) => !o.inline && !o.backfield && o.slot !== 'QB'
+      && !['LT', 'LG', 'C', 'RG', 'RT'].includes(o.slot) && (o.pos.y - ballY) * side > 0).map((o) => Math.abs(o.pos.y - ballY));
+    return detached.length > 0 && w >= Math.min(...detached) - 0.5;
+  };
   const backers = slots.filter((s) => isBacker(s) && !first.has(s)
     && (jobs.get(s)!.kind !== 'force' || outsideSide(s) !== null)
+    && !(lf && jobs.get(s)!.kind === 'force' && noFold(s, jobs.get(s)!.side))
     && (lf || Math.abs(spot(s).pos.y - ballY) < BOX_WIDTH))
     .sort((p, q) => Number(jobs.get(p)!.kind === 'force') - Number(jobs.get(q)!.kind === 'force') || pos(p).y - pos(q).y);
   const bubbles = [-1, 1].flatMap((side) => (['A', 'B', 'C'] as Gap[]).filter((gap) => !claimed.has(`${side}:${gap}`)).map((gap) => ({ side, gap })));
@@ -277,6 +295,7 @@ export function runFitJobs(desc: DefenseDescription, a: DefenseAlignment, off: O
     flow[s] = j.technique === 'lag' ? 'A gap away from flow (lag)'
       : j.kind === 'force' && j.inside ? `force if the run is outside him; else fold to ${nm(j.inside.gap, j.inside.side)}`
       : j.kind === 'force' ? `force ${j.side === off.strongSign ? 'strong' : 'weak'}`
+      : j.kind === 'insert' && spot(s).role.kind === 'man' ? `${nm(j.gap, j.side)} off his man's block: if his man blocks he fits the gap the block opens to him; if he releases he covers`
       : j.kind === 'insert' ? `${nm(j.gap, j.side)}, then flows inside-out with the ball`
       : j.kind === 'cutback' ? `${nm(j.gap, j.side)} cutback (holds backside)`
       : j.kind === 'alley' ? 'alley: fits outside-in, last level'
