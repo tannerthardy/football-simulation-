@@ -2894,3 +2894,17 @@ Staged (slant-flat vs Cover 1/2/3/4, 3 seeds each): top pre-snap coverage belief
 stem from under to over he now names the front the bodies show on 8/12 (before: the called front on 12/12); a
 linebacker filling a safety slot no longer counts as a defensive back. Not carded: pre-snap belief does not move in
 ordinary play. Open: `expectedPos` still maps a defender to a canonical spot by his slot label.
+
+## engine-110: two alignment overlaps the legality check found (2026-11-26)
+
+`SPLIT_BACK_SIDES` and `MAN_TE_OFF` on (Rules + Coaching; `=0` restores engine-109 for each). Found by the call
+description's legality check (docs/reviews/2026-11-26-call-description-step2a.md, step2b.md).
+
+- `SPLIT_BACK_SIDES`: on a gun zone run with two backs, the carrier aligns away from the play side and the second back
+  takes the play side, where his job starts; before, both backs were placed on one spot (0.34% of calls).
+- `MAN_TE_OFF`: a defensive back in man on an attached end aligns off (4 yd, inside shade) by the existing
+  inside-receiver man rule; before, he pressed at 1.3 yd head-up into the end man on the line (3.7% of calls).
+
+Not carded. Open (left for a coaching answer): gun counter from split backs; a B-gap blitzer behind the okie rover;
+the nickel edge blitzer in dime with the dime back on the slot; and 3.9% of game-flow plays that still spawn two
+bodies closer than their radii, mostly defenders.
