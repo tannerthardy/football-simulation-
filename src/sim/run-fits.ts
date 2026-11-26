@@ -89,7 +89,7 @@ export const FIT_RULES = process.env.FIT_RULES !== '0';
 
 export function buildRunFits(sim: PlaySim): Map<Agent, RunFitJob> {
   if (FIT_RULES) {
-    const full = describeDefense(sim.defCall);
+    const full = sim.defDesc ?? describeDefense(sim.defCall);
     const players = sim.defense.map((a) => full.players.find((p) => p.who.slot === a.slot)).filter((p): p is NonNullable<typeof p> => !!p);
     const pos = Object.fromEntries(sim.defense.map((a) => [a.slot, a.pos])) as Partial<Record<DefSlot, Vec2>>;
     const r = runFitJobs({ ...full, players }, sim.defAlign, sim.offAlign, { pos, labelFree: true });
