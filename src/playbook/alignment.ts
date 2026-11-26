@@ -30,36 +30,36 @@ export const OL_SPLITS = process.env.OL_SPLITS !== '0';
  * the line of scrimmage has no ball length and a body is a disc, so he
  * stands at 0.43, just clear of it for the widest body (radius 0.42). The
  * sim line stood flat at 0.55. */
-const OL_STAGGER = process.env.OL_STAGGER !== '0';
+export const OL_STAGGER = process.env.OL_STAGGER !== '0';
 /** Center-guard, guard-tackle and tackle-to-inline-end splits (yd between
  * body centres) of one snap's line. */
 export interface LineSplits { cg: number; gt: number; tte: number }
-const BASE_LINE: LineSplits = OL_SPLITS ? { cg: 1.54, gt: 1.56, tte: 1.52 } : { cg: 1.3, gt: 1.3, tte: 1.3 };
+export const BASE_LINE: LineSplits = OL_SPLITS ? { cg: 1.54, gt: 1.56, tte: 1.52 } : { cg: 1.3, gt: 1.3, tte: 1.3 };
 /** OL_SPLITS: on third or fourth down and a yard or less the line tightens
  * against penetration (tracked tackle to tackle 5.85 yd against 6.2; on first
  * and second down and a yard it does not). Splits do not otherwise change with
  * the call: tracked zone, gap and dropback splits agree within 0.05 yd. */
-const SHORT_LINE: LineSplits = { cg: 1.45, gt: 1.47, tte: 1.43 };
+export const SHORT_LINE: LineSplits = { cg: 1.45, gt: 1.47, tte: 1.43 };
 export const tackleOf = (l: LineSplits) => OL_SPLITS ? l.cg + l.gt : 2.6;
 export const inlineOf = (l: LineSplits) => OL_SPLITS ? tackleOf(l) + l.tte : 3.9;
 // A wing stands 1.32 yd outside the attached end: the median lateral offset
 // of the 682 off-line players within 2.5 yd outside a single attached TE with a
 // defender on the line beside them (2022 tracking, weeks 1-6, SNAP frames;
 // scripts/diag/align/nfl_wing.py, its "true wings" cohort).
-const wingOf = (l: LineSplits) => OL_SPLITS ? inlineOf(l) + 1.32 : 4.8;
-const FLAT_DEPTH = .55;
+export const wingOf = (l: LineSplits) => OL_SPLITS ? inlineOf(l) + 1.32 : 4.8;
+export const FLAT_DEPTH = .55;
 type LineSlot = 'LT' | 'LG' | 'C' | 'RG' | 'RT';
 /** OL_STAGGER: guards and tackles stand deeper on a dropback (tracked tackles
  * 1.10, 1.17 on third or fourth and long; guards 0.90) than on a run (0.97,
  * 0.82). Without a call, the all-snap depths. */
-function olDepth(ctx: AlignContext): Record<LineSlot, number> {
+export function olDepth(ctx: AlignContext): Record<LineSlot, number> {
   if (!OL_STAGGER) return { LT: FLAT_DEPTH, LG: FLAT_DEPTH, C: FLAT_DEPTH, RG: FLAT_DEPTH, RT: FLAT_DEPTH };
   const long = (ctx.down ?? 1) >= 3 && (ctx.distance ?? 10) >= 7;
   const [g, t] = ctx.kind === 'pass' ? [.9, long ? 1.17 : 1.1] : ctx.kind === 'run' ? [.82, .97] : [.83, .98];
   return { LT: t, LG: g, C: .43, RG: g, RT: t };
 }
 /** OL_STAGGER: an inline end's tracked depth (formations install 0.6). */
-const INLINE_DEPTH = 1.19;
+export const INLINE_DEPTH = 1.19;
 /** RECEIVER_DEPTH (experimental, off): receivers on the line stand where
  * tracked receivers do, measured from the ball (BDB 2025 weeks 1-3, non-PA
  * dropbacks, body centre behind the tracked football at the snap, with no
@@ -67,8 +67,8 @@ const INLINE_DEPTH = 1.19;
  * (n 3,537), a tight end 0.83 (n 1,500). Off-line receivers keep their
  * installed depth. See PRESS_BACKOFF for a receiver facing a press look. */
 export const RECEIVER_DEPTH = process.env.RECEIVER_DEPTH !== '0';
-const WR_LINE_DEPTH = 0.74;
-const TE_LINE_DEPTH = 0.83;
+export const WR_LINE_DEPTH = 0.74;
+export const TE_LINE_DEPTH = 0.83;
 /** RECEIVER_DEPTH: a receiver on the line who sees a defender set within 2 yd
  * in front of him (within 1.5 yd laterally) before the snap stands deeper to
  * get room to release. Tracked: outside receivers 0.94 vs 0.74 yd (+0.20,
@@ -110,7 +110,7 @@ export const DEF_ALIGN = process.env.DEF_ALIGN !== '0';
  * the #1's split (0.62 in trips) and a #3 at 0.40. The installed split put
  * every #1 at 18 yd, 6 yd from the boundary sideline, and slots at a fixed
  * 8.4-8.6. Off: the installed spots. */
-const WR_ALIGN = process.env.WR_ALIGN !== '0';
+export const WR_ALIGN = process.env.WR_ALIGN !== '0';
 /** Default on (FRONT_ALIGN=0 turns it off): the front aligns on bodies, not gaps,
  * and its end men by who they are. A shaded technique sits on its blocker's
  * shoulder, 0.57 yd off his centre in 2022 tracking for centres and guards
@@ -359,8 +359,8 @@ export const COUNTER_OFFSET = process.env.COUNTER_OFFSET !== '0';
  * attached; installed formations set none. The pick is a hash of the slot and
  * the ball spot, not a draw from the play's stream. */
 export const TE_OFF = process.env.TE_OFF !== '0';
-const TE_OFF_SHARE = .58, TE_OFF_DEPTH = 1.1;
-function spotHash(...parts: (string | number)[]): number {
+export const TE_OFF_SHARE = .58, TE_OFF_DEPTH = 1.1;
+export function spotHash(...parts: (string | number)[]): number {
   let h = 2166136261;
   for (const c of parts.join('|')) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); }
   return ((h >>> 0) % 100000) / 100000;
@@ -372,7 +372,7 @@ function spotHash(...parts: (string | number)[]): number {
  * others share his side (go, slant and comeback alone too); routes that break
  * outside or across take a reduced one, leaving room to break. Runs: alone
  * reduced, with others wide (crack and stalk angles). */
-const ROUTE_ROOM: Record<string, [number, number]> = {
+export const ROUTE_ROOM: Record<string, [number, number]> = {
   go: [10.9, 10], fade: [10.9, 10], comeback: [10.9, 10], slant: [10.2, 9.9],
   hitch: [14, 10.6], quick_hitch: [14, 10.6], curl: [14, 10.6], stick: [14, 10.6], hook: [14, 10.6],
   short_in: [14.6, 10.4], dig: [14.6, 10.4], post: [14.6, 11.2], seam: [14.6, 11.2],
@@ -382,13 +382,13 @@ const ROUTE_ROOM: Record<string, [number, number]> = {
 // SCREEN_QB: the tunnel screen's #1 keeps the room of a vertical stem, to come back under it: 10.9 yd to his sideline
 // (BDB 2025 WR-in screens, n 23, all with another receiver on his side; screen_tunnel_path.py). Off: the default room.
 if (process.env.SCREEN_QB === '1') ROUTE_ROOM.tunnel = [10.9, 10.9];
-const RUN_ROOM: [number, number] = [15, 10.8];
-const ANY_ROOM: [number, number] = [13.5, 11];
+export const RUN_ROOM: [number, number] = [15, 10.8];
+export const ANY_ROOM: [number, number] = [13.5, 11];
 
 /** Split of the widest receiver on a side from the ball. `detached` counts
  * that side's detached receivers and `room` is the #1's room to his sideline
  * [alone, with others] (used by WR_ALIGN only). */
-function wideOffset(ballY: number, sign: number, detached = 1, room: [number, number] = ANY_ROOM, habit = 0): number {
+export function wideOffset(ballY: number, sign: number, detached = 1, room: [number, number] = ANY_ROOM, habit = 0): number {
   const toSideline = sign > 0 ? FIELD_WIDTH - ballY : ballY;
   if (WR_ALIGN) return Math.max(8, toSideline - (detached >= 2 ? room[1] : room[0]) - habit);
   return Math.max(9, Math.min(18, toSideline - 6));
