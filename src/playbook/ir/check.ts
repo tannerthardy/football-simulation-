@@ -10,11 +10,12 @@
  */
 import { isDeepZone, type DefenseAlignment, type OffenseAlignment } from '../alignment.js';
 import type { DefSlot, ReceiverRef } from '../types.js';
+import { runFitJobs, type GapRef } from './fits.js';
 import type { OffenseSnapDescription } from './offense.js';
 import type { DefenseDescription, RouteJob } from './types.js';
 
 export const MIN_BODY_RADIUS = 0.22;
-export interface Issue { level: 'error' | 'warning'; kind: string; detail: string }
+export interface Issue { level: 'error' | 'warning' | 'note'; kind: string; detail: string }
 const err = (kind: string, detail: string): Issue => ({ level: 'error', kind, detail });
 const warn = (kind: string, detail: string): Issue => ({ level: 'warning', kind, detail });
 
@@ -65,7 +66,7 @@ export function checkOffense(d: OffenseSnapDescription, a: OffenseAlignment, rou
 }
 
 /** The defense: count, alignment, the neutral zone, bodies, the call's structure; then the chalkboard warnings. */
-export function checkDefense(d: DefenseDescription, a: DefenseAlignment, off: OffenseAlignment): Issue[] {
+export function checkDefense(d: DefenseDescription, a: DefenseAlignment, off: OffenseAlignment, opt: { labelFree?: boolean } = {}): Issue[] {
   const out: Issue[] = [];
   if (d.players.length !== 11) out.push(err('defense-count', `${d.players.length} men`));
   const los = off.los, spots = Object.values(a.spots).filter((s): s is NonNullable<typeof s> => !!s);
@@ -81,17 +82,12 @@ export function checkDefense(d: DefenseDescription, a: DefenseAlignment, off: Of
   if (creep && !present.has(creep.slot)) out.push(err('structural:creep', `creep ${creep.slot} not on the field (playsim.ts:543)`));
   else if (creep && a.spots[creep.slot]?.role.kind !== 'blitz') out.push(err('structural:creep', `creep ${creep.slot} is not a blitzer (playsim.ts:545)`));
 
-  // A live gap from the observed offense (A, B, C each side; D outside an attached end) with no fitter in the box
-  // (a defender within 7 yd whose spot carries that gap and side).
-  for (const sign of [off.strongSign, -off.strongSign]) {
-    const te = sign === off.strongSign ? off.hasTE.S : off.hasTE.W;
-    for (const g of ['A', 'B', 'C', ...(te ? ['D'] : [])]) {
-      // With no attached end, the last gap is C, and a spot labelled D (a wide technique outside the tackle) fits it.
-      const fitsIt = (s: (typeof spots)[number]) => s.gap === g || (!te && g === 'C' && s.gap === 'D');
-      if (!spots.some((s) => fitsIt(s) && s.gapSign === sign && s.pos.x - los <= 7))
-        out.push(warn('gap-unfit', `${g} gap ${sign === off.strongSign ? 'strong' : 'weak'} side`));
-    }
-  }
+  // Gaps from run-fit assignment (step 3a, ir/fits.ts): a gap no one owns after the front, the blitzers and the second
+  // level are spent, or a side with no force player. A gap the call declares as a concession is a note, not a warning.
+  const fit = runFitJobs(d, a, off, { labelFree: opt.labelFree });
+  const name = (g: GapRef) => `${g.gap} gap ${g.side === off.strongSign ? 'strong' : 'weak'} side`;
+  for (const g of fit.unowned) out.push(warn('gap-unowned', name(g)));
+  for (const g of fit.conceded) out.push({ level: 'note', kind: 'gap-conceded', detail: name(g) });
   // Receivers accounted for: in man, each eligible receiver is someone's man or a spare underneath player is left;
   // in zone, enough coverage players for the eligible receivers.
   const refs = (['S1', 'S2', 'S3', 'S4', 'W1', 'W2', 'W3', 'W4', 'B', 'B2'] as ReceiverRef[]).filter((r) => off.numbering[r]);

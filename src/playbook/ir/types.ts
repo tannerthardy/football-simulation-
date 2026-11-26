@@ -148,6 +148,9 @@ export interface DefenseDescription {
   front: FrontCall;
   coverage: CoverageCall;
   pressure: PressureCall | null;
+  /** Gaps the call intends to leave unowned (step 3a): "we'll rally". Run-fit assignment reports them as concessions,
+   * not as unowned gaps. */
+  concede?: Array<{ gap: Gap; side: 'S' | 'W' }>;
   /** The disguise's look, described the same way (its roles per slot). */
   shown?: { coverage: CoverageCall; roles: Partial<Record<DefSlot, CoverageRole>> };
   /** The remaining call-level fields, carried unchanged (zone style, flat threat, drop start, run policy, edge, strength,
