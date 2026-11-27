@@ -339,6 +339,16 @@ coverage is triggered by a specific unresolved risk, not by another policy categ
 | Integration | Exact combined engine candidate ready | One owner runs typecheck/build and the preserved full code suite once, with relevant shared football contracts. Other agents supply focused evidence. | Combined candidate's required contracts preserved. |
 | Game evaluation | A named interaction cannot be resolved without games | Explicitly budgeted pairs/games, declared schemes/seeds and relevant fatigue/packages/calling/interaction measurements. Some untouched inputs for checkpoint transfer. No automatic checkpoint game count. | The specific game-wide risk resolved or bounded. |
 
+**Paired snap replay instead of a card.** Use `scripts/diag/paired/replay.ts` when a flag touches only a minority of
+snaps, and before reading any single-seed card. An unpaired card also measures the games taking a different path:
+one changed snap changes every later situation and snap seed. In step 6 an unpaired 8-game YAC drop of 1.5 yd
+was within 0.1 yd paired, on both paths' snaps.
+- The tool captures each scrimmage snap's setup from N games and replays it under flag sets A and B, on the same
+  bodies and seed.
+- It reports per bucket: plays, how many differ, and means with paired standard errors.
+- **Caveats:** the setup round trip is close but not exact (replayed means are within a few tenths of the game's), and
+  motion is already applied in PlaySim's constructor.
+
 Escalate when affected scope grows, evidence conflicts, or the cheaper stage
 cannot answer the remaining question. An adverse result first gets a targeted
 diagnostic, not an automatic larger batch. Better averages do not trigger automatic
