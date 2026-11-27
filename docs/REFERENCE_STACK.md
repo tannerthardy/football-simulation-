@@ -2956,3 +2956,21 @@ hold-facing scene pinned to the old fits needs a new scene.
 Staged (16 seeds, off to on): gun split-back inside zone 14.50 to 7.27 yd (the Mike no longer over-flows to the
 labeled carrier); empty stick 9.98 to 9.34; okie inside zone 1.24 to 1.21. The lead back, chosen by label here, is chosen from the roles since
 docs/reviews/2026-11-27-lead-back-and-iz-film.md.
+
+## engine-113: a fit a man can reach (2026-11-27)
+
+`FIT_REACH` on (Rules + Coaching; `=0` restores engine-112's FIT_RULES output). A repair to the shared run-fit rules
+found on film (docs/reviews/2026-11-27-lead-back-and-iz-film.md, 2026-11-27-fit-reach.md).
+
+- A front player fits the gap he stands in (a front `fits` entry or a called blitz gap still wins).
+- Every candidate for an interior gap must be aligned inside the nearest detached receiver on his side; a man on or
+  outside it is force or alley only.
+- He takes the nearest leftover gap on his own side; the A gap across the ball only when his side has nothing left and
+  nobody is nearer; no crossing fits. What nobody eligible is near is reported unowned.
+- A pass rusher's lane keeps its earlier gap, so the pass rush does not move.
+
+Census (4,321 snaps): jobs whose gap is more than 3 yd from the man 2,160 to 981 (faithful 1,173); snaps with an unowned
+gap 33.8% to 41.0%, reported truthfully. Paired replay (16 games per path, called runs, on vs off): yards per carry
+capped at 20, -0.07 +/- 0.12 and -0.18 +/- 0.11; 10+ yd runs -1.0 and -1.3 pts; nothing clearly worse. Not carded.
+Open: the nickel edge pressure sends its blitzer 11 yd across (the pressure's seat, not a fit rule); a deeper Mike
+taking an interior gap ahead of a rolled-down safety cost one long run on film.
