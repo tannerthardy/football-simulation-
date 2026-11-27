@@ -2954,5 +2954,5 @@ hold-facing scene pinned to the old fits needs a new scene.
   this test.
 
 Staged (16 seeds, off to on): gun split-back inside zone 14.50 to 7.27 yd (the Mike no longer over-flows to the
-labeled carrier); empty stick 9.98 to 9.34; okie inside zone 1.24 to 1.21. Open: the lead back is still chosen by label
-(the fullback carrying leaves the halfback with no lead job).
+labeled carrier); empty stick 9.98 to 9.34; okie inside zone 1.24 to 1.21. The lead back, chosen by label here, is chosen from the roles since
+docs/reviews/2026-11-27-lead-back-and-iz-film.md.
