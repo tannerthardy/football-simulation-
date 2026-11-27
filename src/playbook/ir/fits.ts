@@ -39,6 +39,17 @@ import type { DefenseDescription } from './types.js';
 /** FIT_BLITZ_SLIDE and GAP_MATCH as the sim reads them (src/sim/run-fits.ts). */
 const FIT_BLITZ_SLIDE = process.env.FIT_BLITZ_SLIDE !== '0';
 const GAP_MATCH = process.env.GAP_MATCH !== '0';
+/** FIT_REACH (label-free mode only; on, `=0` restores FIT_RULES's output exactly; Integration's ruling, 2026-11-27):
+ * - a front player fits the gap he stands in, from his position against the blockers at the snap, not his installed
+ *   spot's gap. Data wins over position: an explicit front `fits` entry and a called blitz gap. A head-up technique
+ *   stands in no gap and keeps the spot's gap and side;
+ * - a man on or outside the nearest detached receiver on his side (the fold test) is not in the interior pool, zone or
+ *   man: he is force or alley;
+ * - a fitter takes the nearest leftover gap on his own side; the A gap across the ball only when nothing on his side is
+ *   left and no other fitter stands nearer to it; no two fits cross. A gap no eligible fitter is near stays unowned. */
+export const FIT_REACH = process.env.FIT_REACH !== '0';
+/** A man within this of a blocker's line spot is head-up on him (in no gap). */
+const HEAD_UP = 0.3;
 
 /** Label-free thresholds:
  * - LINE_DEPTH: a man the front places within this many yards of the line is on it (a front gap player whatever
@@ -64,6 +75,8 @@ export interface FitOptions {
   /** Where each man stands, if not on his resolved spot (the sim passes the bodies). */
   pos?: Partial<Record<DefSlot, Vec2>>;
   labelFree?: boolean;
+  /** FIT_REACH for this call (default: the flag). */
+  reach?: boolean;
 }
 
 const GAP_RANK: Record<Gap, number> = { A: 1, B: 2, C: 3, D: 4 };
@@ -124,6 +137,26 @@ export function runFitJobs(desc: DefenseDescription, a: DefenseAlignment, off: O
     return { gap: RANK_GAP[Math.abs(v)], side: Math.sign(v) };
   };
 
+  // FIT_REACH: the gap a man stands in, from where he is against the blockers (the five linemen and attached ends): a
+  // gap is the space between two blockers, counted out from the ball (A inside the guard, B inside the tackle, C
+  // outside the tackle, D outside an attached end; on a side with no attached end, outside the tackle is C). Head-up on
+  // a blocker he stands in no gap: he keeps the spot's gap when it is one of the two beside that blocker (a 6 on the end
+  // keeps C, a 2i or a 4 keeps his), and otherwise takes the gap beside the blocker toward the spot's gap (a backer
+  // walked up over the guard, installed at a far gap, plays the near shoulder's gap).
+  const blockers = Object.values(off.spots).filter((o) => o.inline || ['LT', 'LG', 'C', 'RG', 'RT'].includes(o.slot)).map((o) => o.pos.y);
+  const gapAt = (y: number, lean: number): GapRef => {
+    const side = Math.sign(y - ballY) || lean || 1, out = Math.abs(y - ballY);
+    const inside = blockers.filter((b) => (b - ballY) * side > HEAD_UP && Math.abs(b - ballY) < out).length;
+    return { gap: inside === 0 ? 'A' : inside === 1 ? 'B' : inside === 2 ? 'C' : 'D', side };
+  };
+  const standsIn = (s: DefSlot, data: GapRef): GapRef => {
+    const y = pos(s).y, head = blockers.find((b) => Math.abs(b - y) < HEAD_UP);
+    if (head === undefined) return gapAt(y, data.side);
+    const beside = [gapAt(head - HEAD_UP * 1.5, -1), gapAt(head + HEAD_UP * 1.5, 1)];
+    if (beside.some((g) => g.gap === data.gap && g.side === data.side)) return data;
+    const toward = Math.sign(gapY(off, data.gap, data.side) - head) || data.side || 1;
+    return toward < 0 ? beside[0] : beside[1];
+  };
   const jobs = new Map<DefSlot, RunFitJob>();
   const policy = call.runPolicy ?? { edge: 'box', linebacker: 'stack' };
   const first = new Set<DefSlot>();
@@ -133,8 +166,9 @@ export function runFitJobs(desc: DefenseDescription, a: DefenseAlignment, off: O
     const frontSlot = isFrontPlayer(s);
     const dropper = frontSlot && sp.role.kind === 'zone' && dropperSet.has(s);
     const line = (frontSlot && !dropper) || (sp.pos.x < los + 2 && sp.role.kind === 'rush');
-    const gap = sp.role.kind === 'blitz' ? sp.role.gap : sp.gap;
-    const side = sp.role.kind === 'blitz' ? (sp.role.side === 'S' ? off.strongSign : -off.strongSign) : sp.gapSign;
+    const stood = lf && (opt.reach ?? FIT_REACH) && line && !dropper && sp.role.kind !== 'blitz' && !override ? standsIn(s, { gap: sp.gap, side: sp.gapSign }) : null;
+    const gap = sp.role.kind === 'blitz' ? sp.role.gap : stood?.gap ?? sp.gap;
+    const side = sp.role.kind === 'blitz' ? (sp.role.side === 'S' ? off.strongSign : -off.strongSign) : stood?.side ?? sp.gapSign;
     let kind: RunFitJob['kind'] = line || dropper ? (gap === 'C' || gap === 'D' ? 'edge' : 'interior') : isBacker(s) ? 'insert' : 'alley';
     const moved = line && !dropper && sp.role.kind !== 'blitz' ? gameGap(s, gap, side) : null;
     const g = moved?.gap ?? gap, sd = moved?.side ?? side;
@@ -198,17 +232,44 @@ export function runFitJobs(desc: DefenseDescription, a: DefenseAlignment, off: O
   // outside the nearest detached receiver on his side (a slot defender, a cloud corner) is force and alley only.
   const noFold = (s: DefSlot, side: number) => {
     const w = Math.abs(pos(s).y - ballY);
+    // A detached receiver: off the core, not a back. FIT_REACH reads it by fact (a man on the line inside the core is
+    // a lineman or an end, whatever his label: a tackle over or an unbalanced line); off, by the linemen's labels.
+    const core = (o: typeof off.spots[keyof typeof off.spots] & {}) => !!o.onLine
+      && Math.abs(o.pos.y - ballY) <= Math.max(Math.abs(off.coreEdge.S - ballY), Math.abs(off.coreEdge.W - ballY)) + 0.1;
     const detached = Object.values(off.spots).filter((o) => !o.inline && !o.backfield && o.slot !== 'QB'
-      && !['LT', 'LG', 'C', 'RG', 'RT'].includes(o.slot) && (o.pos.y - ballY) * side > 0).map((o) => Math.abs(o.pos.y - ballY));
+      && ((lf && (opt.reach ?? FIT_REACH)) ? !core(o) : !['LT', 'LG', 'C', 'RG', 'RT'].includes(o.slot))
+      && (o.pos.y - ballY) * side > 0).map((o) => Math.abs(o.pos.y - ballY));
     return detached.length > 0 && w >= Math.min(...detached) - 0.5;
   };
-  const backers = slots.filter((s) => isBacker(s) && !first.has(s)
+  // FIT_REACH: the fold test also decides the interior pool: a man on or outside the nearest detached receiver on his
+  // side is force or alley, never an interior fitter.
+  const reachOn = lf && (opt.reach ?? FIT_REACH);
+  const sideOf = (s: DefSlot) => { const d = pos(s).y - ballY; return Math.abs(d) < 0.5 ? 0 : Math.sign(d); };
+  const outside = (s: DefSlot) => reachOn && sideOf(s) !== 0 && noFold(s, sideOf(s));
+  if (reachOn) for (const s of slots) {
+    const j = jobs.get(s)!;
+    if (!first.has(s) && j.kind === 'insert' && outside(s)) j.kind = 'alley';
+  }
+  const backers = slots.filter((s) => isBacker(s) && !first.has(s) && !(outside(s) && jobs.get(s)!.kind !== 'force')
     && (jobs.get(s)!.kind !== 'force' || outsideSide(s) !== null)
     && !(lf && jobs.get(s)!.kind === 'force' && noFold(s, jobs.get(s)!.side))
     && (lf || Math.abs(spot(s).pos.y - ballY) < BOX_WIDTH))
     .sort((p, q) => Number(jobs.get(p)!.kind === 'force') - Number(jobs.get(q)!.kind === 'force') || pos(p).y - pos(q).y);
   const bubbles = [-1, 1].flatMap((side) => (['A', 'B', 'C'] as Gap[]).filter((gap) => !claimed.has(`${side}:${gap}`)).map((gap) => ({ side, gap })));
   const reach = (s: DefSlot, b: GapRef) => Math.abs(gapY(off, b.gap, b.side) - pos(s).y);
+  // FIT_REACH: own side first; the A gap across the ball only when his side has nothing left and no other fitter
+  // stands nearer to it.
+  const fitters = () => [...backers, ...slots.filter((x) => lowSafety(x) && !first.has(x) && !outside(x))];
+  const allowed = (s: DefSlot, b: GapRef) => {
+    if (!reachOn) return true;
+    const own = sideOf(s);
+    if (own === 0 || b.side === own) return true;
+    if (b.gap !== 'A') return false;
+    return !fitters().some((x) => x !== s && reach(x, b) < reach(s, b));
+  };
+  // ...and only once nothing on his own side is left over (checked on a whole assignment).
+  const acrossOk = (s: DefSlot, b: GapRef | undefined, left: GapRef[]) => !reachOn || !b || sideOf(s) === 0 || b.side === sideOf(s)
+    || !left.some((x) => x.side === sideOf(s));
   if (GAP_MATCH) {
     const support = (side: number) => slots.some((s) => jobs.get(s)!.kind === 'alley' && !deepZone(s) && (pos(s).y - ballY) * side > 0);
     const open = (b: GapRef) => (support(b.side) ? 1 : 2) + (b.gap === 'A' ? .5 : 0);
@@ -216,12 +277,14 @@ export function runFitJobs(desc: DefenseDescription, a: DefenseAlignment, off: O
     const pick: (GapRef | undefined)[] = [];
     const search = (i: number, used: Set<number>) => {
       if (i === backers.length) {
-        if (backers.some((s, k) => jobs.get(s)!.kind !== 'force' && !pick[k] && used.size < bubbles.length)) return;
+        if (backers.some((s, k) => jobs.get(s)!.kind !== 'force' && !pick[k]
+          && (reachOn ? bubbles.some((b, m) => !used.has(m) && allowed(s, b)) : used.size < bubbles.length))) return;
         // Label-free: inside-out, no two fits cross (a man outside another takes the gap outside his).
         if (lf) for (let k = 0; k < backers.length; k++) for (let l = k + 1; l < backers.length; l++) {
           const pk = pick[k], pl = pick[l];
           if (pk && pl && (pos(backers[k]).y - pos(backers[l]).y) * (gapY(off, pk.gap, pk.side) - gapY(off, pl.gap, pl.side)) < 0) return;
         }
+        if (reachOn) { const left = bubbles.filter((_, m) => !used.has(m)); if (backers.some((s, k) => !acrossOk(s, pick[k], left))) return; }
         const c = bubbles.reduce((t, b, k) => (used.has(k) ? t : t + open(b)), 0);
         const dist = backers.reduce((t, s, k) => t + (pick[k] ? reach(s, pick[k]!) : 0), 0);
         if (!best || c < best.cost - 1e-9 || (Math.abs(c - best.cost) < 1e-9 && dist < best.dist)) best = { cost: c, dist, pick: [...pick] };
@@ -230,7 +293,7 @@ export function runFitJobs(desc: DefenseDescription, a: DefenseAlignment, off: O
       const job = jobs.get(backers[i])!;
       pick[i] = undefined; search(i + 1, used);
       bubbles.forEach((b, k) => {
-        if (used.has(k) || (job.kind === 'force' && b.side !== job.side)) return;
+        if (used.has(k) || (job.kind === 'force' && b.side !== job.side) || !allowed(backers[i], b)) return;
         pick[i] = b; used.add(k); search(i + 1, used); used.delete(k);
       });
       pick[i] = undefined;
@@ -246,7 +309,7 @@ export function runFitJobs(desc: DefenseDescription, a: DefenseAlignment, off: O
     });
   } else for (const s of backers) {
     const job = jobs.get(s)!;
-    const eligible = job.kind === 'force' ? bubbles.filter((b) => b.side === job.side) : bubbles;
+    const eligible = (job.kind === 'force' ? bubbles.filter((b) => b.side === job.side) : bubbles).filter((b) => allowed(s, b) && acrossOk(s, b, bubbles));
     eligible.sort((p, q) => reach(s, p) - reach(s, q));
     const bubble = eligible[0];
     if (bubble) {
@@ -256,10 +319,11 @@ export function runFitJobs(desc: DefenseDescription, a: DefenseAlignment, off: O
     }
   }
   // R1: a gap the second level leaves goes to a low safety (nearest first).
-  if (lf) for (const s of slots.filter((x) => lowSafety(x) && !first.has(x) && jobs.get(x)!.kind === 'alley')
+  if (lf) for (const s of slots.filter((x) => lowSafety(x) && !first.has(x) && jobs.get(x)!.kind === 'alley' && !outside(x))
     .sort((p, q) => Math.min(...bubbles.map((b) => reach(p, b))) - Math.min(...bubbles.map((b) => reach(q, b))))) {
     if (!bubbles.length) break;
-    const b = [...bubbles].sort((p, q) => reach(s, p) - reach(s, q))[0];
+    const b = [...bubbles].filter((x) => allowed(s, x) && acrossOk(s, x, bubbles)).sort((p, q) => reach(s, p) - reach(s, q))[0];
+    if (!b) continue;
     bubbles.splice(bubbles.indexOf(b), 1);
     Object.assign(jobs.get(s)!, { gap: b.gap, side: b.side, kind: 'insert' as const });
   }

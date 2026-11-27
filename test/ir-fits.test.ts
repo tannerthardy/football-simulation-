@@ -94,7 +94,7 @@ describe('run-fit assignment from the description', () => {
         n++;
         try { expect(f.jobs).toEqual(t0); } catch { bad.push(`${offCall.label} vs ${defCall.label}`); }
         // FIT_RULES (step 3c): the sim's jobs are the shared function's label-free jobs on the same bodies.
-        const live = Object.fromEntries([...buildRunFits(sim)].map(([x, j]) => [x.slot, j]));
+        const live = Object.fromEntries([...buildRunFits(sim)].map(([x, { rush: _rush, ...j }]) => [x.slot, j])); // FIT_REACH's rush lane is the sim's, not the shared jobs'
         try { expect(live).toEqual(FIT_RULES ? runFitJobs(desc, sim.defAlign, sim.offAlign, { pos, labelFree: true }).jobs : t0); } catch { bad.push(`wiring: ${offCall.label} vs ${defCall.label}`); }
       }
     }
