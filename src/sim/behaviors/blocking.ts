@@ -1019,11 +1019,23 @@ export const CUTOFF_RACE = process.env.CUTOFF_RACE !== '0';
  * from him across the formation. */
 const ZONE_BACKER_REACH = 4.5;
 
-/** The second back: the back lined up in the backfield beside the RB (a
- * fullback, or in split-back sets a tight end, receiver or second RB). */
-function secondBack(sim: PlaySim): Agent | undefined {
-  const slot = sim.offAlign.numbering.B2;
-  return slot ? sim.slot(slot) : undefined;
+/** The lead back: a backfield player who is not the carrier (the description's `roles.carrier`) or the passer, and
+ * is level with or ahead of the carrier (no deeper than LEAD_LEVEL behind him). A back aligned behind the carrier
+ * cannot lead him through the hole: on the fullback dive from the I the tailback carries out his fake, he does not
+ * lead. In the I or an offset set with the tailback carrying, that is the fullback; split backs are level. With two
+ * such backs (a three-back set; none in the catalog), the taught rule is the playside back leads: the one nearer the
+ * point of attack (most playside, by `ps`), then the one ahead (shallower). With no named carrier, the second back by
+ * numbering (B2). */
+const LEAD_LEVEL = 0.25;
+function secondBack(sim: PlaySim, ps = 1): Agent | undefined {
+  const carrier = sim.role('carrier');
+  if (!carrier) { const slot = sim.offAlign.numbering.B2; return slot ? sim.slot(slot) : undefined; }
+  const by = sim.ballY, dir = sim.attackDir('O');
+  const depth = (o: Agent) => (sim.los - (sim.offAlign.spots[o.slot]?.pos.x ?? o.pos.x)) * dir;
+  const backs = sim.offense.filter((o) => o !== carrier && o !== sim.qb && sim.offAlign.spots[o.slot]?.backfield
+    && depth(o) <= depth(carrier) + LEAD_LEVEL);
+  const side = (o: Agent) => (sim.offAlign.spots[o.slot]!.pos.y - by) * ps;
+  return backs.sort((p, q) => side(q) - side(p) || depth(p) - depth(q))[0];
 }
 
 export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, RunBlockPlan> {
@@ -1038,7 +1050,7 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
   // missed a wing set outside an inline end at the wider line splits (5.9 yd,
   // 6.2 after an across motion), which the play caller installs.
   const surface = Math.max(Math.abs(sim.offAlign.coreEdge.S - by), Math.abs(sim.offAlign.coreEdge.W - by));
-  const slicer = concept.scheme === 'splitZone' ? sim.offense.find((a) => (a.player.position === 'TE' || a.player.position === 'FB' || a === secondBack(sim))
+  const slicer = concept.scheme === 'splitZone' ? sim.offense.find((a) => (a.player.position === 'TE' || a.player.position === 'FB' || a === secondBack(sim, ps))
     && !sim.offAlign.spots[a.slot]?.inline && Math.abs(a.pos.y-by) < Math.max(6, surface + 2) && a.pos.x < sim.los-.9) : null;
   if (concept.scheme === 'splitZone' && !slicer) throw new Error('Split zone requires a core off-ball TE or FB, or a second back');
   const sliceEnd = slicer ? dl.filter((d) => rel(d)<0).sort((a,b) => rel(a)-rel(b))[0] : null;
@@ -1318,7 +1330,7 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
     const hBacker = concept.pullers.includes('H') ? lbNear(hole) : null;
     if (concept.pullers.includes('H') && !hBacker)
       throw new Error('Counter GH requires an installed second-level backer; all-walked-up accounting is not installed');
-    const fb = secondBack(sim);
+    const fb = secondBack(sim, ps);
     const fbIsBack = !!fb;
     // Power's lead puller wraps for the first linebacker to show playside,
     // read inside-out; the PST/PSG combo works to the backside backer
@@ -1457,7 +1469,7 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
   }
 
   // The second back's lead (zone/iso) and receivers stalking.
-  const fb = secondBack(sim);
+  const fb = secondBack(sim, ps);
   if (fb && !plans.has(fb)) {
     // With every backer owned, the lead takes the most dangerous free box
     // defender, nearest the mesh; on counter and trap, the backside one the
