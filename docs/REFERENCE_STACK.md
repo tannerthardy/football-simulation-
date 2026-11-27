@@ -2925,10 +2925,19 @@ Staged (16 seeds each, mean yards, on vs off): inside zone at an apex who folds 
 0.61 vs 1.61 (force sets the edge 8/9 vs 2/11); power vs dime 1.59 vs 2.51; dime vs inside zone 0.56 vs 0.38; counter
 weak 7.75 vs 2.03 (one 75 yd run; about 3.5 without it). Game-flow calls with an unowned gap: 41.3% to 24.4%.
 
-Card e111 (one seed, 32 games, all three vs none): rush yards per carry 4.22 to 3.66, capped at 20 yd 3.53 to 3.40,
-the part beyond 20 yd 0.69 to 0.26; runs of 20+ that reach 40: 10/13 to 3/8; stuff rate 16.1 to 14.3%. The second
-seed did not run (time limit). Open: backside overlap on counter and true two-gap are not built; the hold-facing scene
-pinned to the old fits needs a new scene.
+Card e111 (one seed, 32 games, all three vs none): rush yards per carry 4.22 to 3.66, capped at 20 yd 3.53 to 3.40;
+runs of 20+ that reach 40: 10/13 to 3/8; stuff rate 16.1 to 14.3%. That reading (long runs down) did not survive the
+paired snap replay, which removes the games taking a different path (docs/reviews/2026-11-27-paired-e111.md).
+- **The replay:** 16 games per path, about 620 called runs each, every snap replayed with all three off and all three
+  on. Changes are on the flags-off path / the flags-on path, ± the paired standard error.
+- **Ordinary runs are flat:** capped at 20 yd +0.17 ± 0.15 / +0.12 ± 0.14.
+- **Long runs are not changed:** 20+ +0.6 ± 0.7 / −0.3 ± 0.6 pts; 10+ +1.4 ± 1.2 / +1.1 ± 1.0 pts.
+- **The one consistent signal is inside-zone stuffs with FIT_RULES:** +2.8 ± 2.0 / +3.9 ± 1.7 pts.
+- **FIT_RULES carries the change.** FOLD_HOLD changes about 140 of 620 runs (capped +0.05 / +0.19); GUARD_KEY changes
+  41-54 runs (counter unchanged).
+
+The second seed did not run (time limit). Open: backside overlap on counter and true two-gap are not built; the
+hold-facing scene pinned to the old fits needs a new scene.
 
 ## engine-112: the back a defender sees; the first level a blocker sees (2026-11-26)
 
