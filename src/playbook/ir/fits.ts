@@ -75,6 +75,8 @@ export interface FitOptions {
   /** Where each man stands, if not on his resolved spot (the sim passes the bodies). */
   pos?: Partial<Record<DefSlot, Vec2>>;
   labelFree?: boolean;
+  /** FIT_REACH for this call (default: the flag). */
+  reach?: boolean;
 }
 
 const GAP_RANK: Record<Gap, number> = { A: 1, B: 2, C: 3, D: 4 };
@@ -164,7 +166,7 @@ export function runFitJobs(desc: DefenseDescription, a: DefenseAlignment, off: O
     const frontSlot = isFrontPlayer(s);
     const dropper = frontSlot && sp.role.kind === 'zone' && dropperSet.has(s);
     const line = (frontSlot && !dropper) || (sp.pos.x < los + 2 && sp.role.kind === 'rush');
-    const stood = lf && FIT_REACH && line && !dropper && sp.role.kind !== 'blitz' && !override ? standsIn(s, { gap: sp.gap, side: sp.gapSign }) : null;
+    const stood = lf && (opt.reach ?? FIT_REACH) && line && !dropper && sp.role.kind !== 'blitz' && !override ? standsIn(s, { gap: sp.gap, side: sp.gapSign }) : null;
     const gap = sp.role.kind === 'blitz' ? sp.role.gap : stood?.gap ?? sp.gap;
     const side = sp.role.kind === 'blitz' ? (sp.role.side === 'S' ? off.strongSign : -off.strongSign) : stood?.side ?? sp.gapSign;
     let kind: RunFitJob['kind'] = line || dropper ? (gap === 'C' || gap === 'D' ? 'edge' : 'interior') : isBacker(s) ? 'insert' : 'alley';
@@ -236,7 +238,7 @@ export function runFitJobs(desc: DefenseDescription, a: DefenseAlignment, off: O
   };
   // FIT_REACH: the fold test also decides the interior pool: a man on or outside the nearest detached receiver on his
   // side is force or alley, never an interior fitter.
-  const reachOn = lf && FIT_REACH;
+  const reachOn = lf && (opt.reach ?? FIT_REACH);
   const sideOf = (s: DefSlot) => { const d = pos(s).y - ballY; return Math.abs(d) < 0.5 ? 0 : Math.sign(d); };
   const outside = (s: DefSlot) => reachOn && sideOf(s) !== 0 && noFold(s, sideOf(s));
   if (reachOn) for (const s of slots) {

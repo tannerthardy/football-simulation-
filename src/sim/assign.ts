@@ -126,7 +126,7 @@ export function assignBehaviors(sim: PlaySim): void {
     if (DEF_STANCE) setFrontStance(sim, d, role.kind);
     switch (role.kind) {
       case 'rush':
-        d.behavior = new PassRusher(d, sim, d.runFit!.gap, d.runFit!.side, spot.rushGap);
+        d.behavior = new PassRusher(d, sim, (d.runFit!.rush ?? d.runFit!).gap, (d.runFit!.rush ?? d.runFit!).side, spot.rushGap);
         break;
       case 'blitz':
         d.behavior = new Blitzer(d, sim, role.gap, spot.gapSign);
