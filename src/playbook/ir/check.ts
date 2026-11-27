@@ -35,7 +35,10 @@ export function checkOffense(d: OffenseSnapDescription, a: OffenseAlignment, rou
   const n = d.linemen.length + 1 + d.players.length;
   if (n !== 11) out.push(err('offense-count', `${n} men`));
   const eligible = new Map<string, boolean>([...d.linemen.map((l) => [l.who.slot, l.who.eligible ?? false] as const),
-    ...d.players.map((p) => [p.who.slot, p.who.eligible ?? true] as const), ['QB', false]]);
+    ...d.players.map((p) => [p.who.slot, p.who.eligible ?? true] as const),
+    // A quarterback under center (taking the snap within 2 yd of the ball) is ineligible; one in the gun or pistol is
+    // a back like any other (Rule 7-5).
+    ['QB', d.qb.depth >= 2]]);
   const on = Object.values(a.spots).filter((s) => s.onLine).sort((p, q) => p.pos.y - q.pos.y);
   if (on.length < 7) out.push(err('line-count', `${on.length} on the line`));
   if (n - on.length > 4) out.push(err('backs-count', `${n - on.length} off the line`));

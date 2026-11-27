@@ -232,8 +232,13 @@ export function runFitJobs(desc: DefenseDescription, a: DefenseAlignment, off: O
   // outside the nearest detached receiver on his side (a slot defender, a cloud corner) is force and alley only.
   const noFold = (s: DefSlot, side: number) => {
     const w = Math.abs(pos(s).y - ballY);
+    // A detached receiver: off the core, not a back. FIT_REACH reads it by fact (a man on the line inside the core is
+    // a lineman or an end, whatever his label: a tackle over or an unbalanced line); off, by the linemen's labels.
+    const core = (o: typeof off.spots[keyof typeof off.spots] & {}) => !!o.onLine
+      && Math.abs(o.pos.y - ballY) <= Math.max(Math.abs(off.coreEdge.S - ballY), Math.abs(off.coreEdge.W - ballY)) + 0.1;
     const detached = Object.values(off.spots).filter((o) => !o.inline && !o.backfield && o.slot !== 'QB'
-      && !['LT', 'LG', 'C', 'RG', 'RT'].includes(o.slot) && (o.pos.y - ballY) * side > 0).map((o) => Math.abs(o.pos.y - ballY));
+      && ((lf && (opt.reach ?? FIT_REACH)) ? !core(o) : !['LT', 'LG', 'C', 'RG', 'RT'].includes(o.slot))
+      && (o.pos.y - ballY) * side > 0).map((o) => Math.abs(o.pos.y - ballY));
     return detached.length > 0 && w >= Math.min(...detached) - 0.5;
   };
   // FIT_REACH: the fold test also decides the interior pool: a man on or outside the nearest detached receiver on his
