@@ -126,7 +126,10 @@ export function assignBehaviors(sim: PlaySim): void {
     if (DEF_STANCE) setFrontStance(sim, d, role.kind);
     switch (role.kind) {
       case 'rush':
-        d.behavior = new PassRusher(d, sim, d.runFit!.gap, d.runFit!.side, spot.rushGap);
+      { // FIT_REACH: his rush lane is the job's `rush` when the run fit moved.
+        const lane = d.runFit!.rush ?? d.runFit!;
+        d.behavior = new PassRusher(d, sim, lane.gap, lane.side, spot.rushGap);
+      }
         break;
       case 'blitz':
         d.behavior = new Blitzer(d, sim, role.gap, spot.gapSign);

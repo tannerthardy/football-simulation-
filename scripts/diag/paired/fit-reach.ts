@@ -1,24 +1,38 @@
-/** Census: label-free run-fit jobs whose gap lies more than 3 yd from the man, on a paired-replay capture.
- *   npx tsx scripts/diag/paired/fit-reach.ts out/paired-e111/path-<id>   (FIT_RULES=0 for the faithful path) */
+/** Census of label-free run-fit jobs on a paired-replay capture (every scrimmage snap's setup).
+ *   npx tsx scripts/diag/paired/fit-reach.ts out/paired-e111/path-<id> [more dirs] > out/fr-on.json
+ *   FIT_REACH=0 npx tsx ... > out/fr-off.json      (FIT_RULES=0 for the faithful path)
+ * Prints JSON: per snap, whether it is a called run, the unowned gaps, a job signature, and each job whose gap lies
+ * more than 3 yd from the man (with where it comes from: on the line or off it, and his coverage role). */
 import { deserialize } from 'node:v8';
-import { readFileSync } from 'node:fs';
+import { readdirSync, readFileSync } from 'node:fs';
 import { PlaySim } from '../../../src/sim/playsim.js';
 import { ScoutingReport } from '../../../src/sim/recognition.js';
 import { CoverageScouting } from '../../../src/sim/qbmind.js';
-import { buildRunFits, FIT_RULES } from '../../../src/sim/run-fits.js';
+import { buildRunFits } from '../../../src/sim/run-fits.js';
+import { runFitJobs } from '../../../src/playbook/ir/fits.js';
+import { describeDefense } from '../../../src/playbook/ir/describe.js';
 import { gapY } from '../../../src/playbook/alignment.js';
-const dir = process.argv[2]; let snaps = 0; const far: Record<string, number> = {}; const ex: string[] = []; let jobsN = 0;
-for (let g = 1; g <= 16; g++) for (const b of deserialize(readFileSync(`${dir}/setups-${g}.bin`)) as Buffer[]) {
-  const s = deserialize(b); if (s.offCall.kind !== 'run') continue;
-  if (s.scouting) Object.setPrototypeOf(s.scouting, ScoutingReport.prototype);
-  if (s.coverageScouting) Object.setPrototypeOf(s.coverageScouting, CoverageScouting.prototype);
-  const sim = new PlaySim(s); snaps++;
-  for (const [d, j] of buildRunFits(sim)) {
-    if (j.kind === 'alley' || j.kind === 'force') continue; jobsN++;
-    const gy = gapY(sim.offAlign as any, j.gap, j.side); const dy = Math.abs(gy - d.pos.y);
-    if (dy > 3) { const sp = sim.defAlign.spots[d.slot as keyof typeof sim.defAlign.spots]!; const depth = (sp.pos.x - sim.los) * sim.attackDir('O');
-      const k = `${j.kind} ${depth < 2 ? 'on-line' : 'off'} ${sp.role.kind}`; far[k] = (far[k] ?? 0) + 1;
-      if (ex.length < 12) ex.push(`g${g} ${s.offCall.formation.id} vs ${s.defCall.personnel}/${s.defCall.front?.id}/${s.defCall.coverage?.id}: ${d.slot} ${j.kind} ${j.gap}${j.side > 0 ? '+' : '-'} at y ${(d.pos.y - sim.ballY).toFixed(1)}, depth ${depth.toFixed(1)}, role ${sp.role.kind}${(sp as any).manTarget ? ' on ' + (sp as any).manTarget : ''}; gap ${dy.toFixed(1)} yd away`); }
-  }
+const rows: unknown[] = [];
+for (const dir of process.argv.slice(2)) for (const f of readdirSync(dir).filter((x) => x.startsWith('setups-')).sort()) {
+  (deserialize(readFileSync(`${dir}/${f}`)) as Buffer[]).forEach((b, i) => {
+    const s = deserialize(b);
+    if (s.scouting) Object.setPrototypeOf(s.scouting, ScoutingReport.prototype);
+    if (s.coverageScouting) Object.setPrototypeOf(s.coverageScouting, CoverageScouting.prototype);
+    const sim = new PlaySim(s), jobs = buildRunFits(sim);
+    const full = sim.defDesc ?? describeDefense(sim.defCall);
+    const players = sim.defense.map((a) => full.players.find((p) => p.who.slot === a.slot)).filter((p): p is NonNullable<typeof p> => !!p);
+    const pos = Object.fromEntries(sim.defense.map((a) => [a.slot, a.pos]));
+    const res = runFitJobs({ ...full, players }, sim.defAlign, sim.offAlign, { pos, labelFree: true });
+    const far: string[] = [];
+    for (const [d, j] of jobs) {
+      if (j.kind === 'alley' || j.kind === 'force') continue;
+      const dy = Math.abs(gapY(sim.offAlign, j.gap, j.side) - d.pos.y);
+      if (dy <= 3) continue;
+      const sp = sim.defAlign.spots[d.slot as keyof typeof sim.defAlign.spots]!, depth = (sp.pos.x - sim.los) * sim.attackDir('O');
+      far.push(`${j.kind} ${depth < 2 ? 'on-line' : 'off'} ${sp.role.kind}`);
+    }
+    rows.push({ key: `${dir}/${f}#${i}`, run: s.offCall.kind === 'run', unowned: res.unowned.length,
+      sig: [...jobs].map(([d, j]) => `${d.slot}:${j.kind}${j.gap}${j.side}${j.inside ? j.inside.gap + j.inside.side : ''}`).sort().join(' '), far });
+  });
 }
-console.log(FIT_RULES ? 'FIT_RULES on' : 'off', 'run snaps', snaps, 'gap jobs', jobsN, 'more than 3 yd from the man:', JSON.stringify(far)); console.log(ex.join('\n'));
+process.stdout.write(JSON.stringify(rows));

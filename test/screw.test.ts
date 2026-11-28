@@ -22,7 +22,7 @@ async function modes(on: boolean, seed: number) {
   const safeties = sim.defense.filter((d) => (d.behavior as Rec | undefined)?.rule === 'q_safety');
   const seen = new Set<string>();
   const tick = sim.tick.bind(sim);
-  sim.tick = () => { tick(); for (const d of safeties) seen.add(String((d.behavior as Rec).recordedRule!(-1).mode)); };
+  sim.tick = () => { tick(); for (const d of safeties) { const r = (d.behavior as Rec).recordedRule; if (r) seen.add(String(r.call(d.behavior, -1).mode)); } }; // a safety playing the ball has no rule
   sim.run();
   return seen;
 }

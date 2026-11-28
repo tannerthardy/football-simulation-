@@ -18,7 +18,7 @@ import { hasObservedFlight, observedHolder, qbRunning, type PossessionRead } fro
 import { seenEngaged } from './seen-contact.js';
 import { KEY_STEP_SEEN } from './key-read.js';
 import { describeDefense } from '../playbook/ir/describe.js';
-import { runFitJobs } from '../playbook/ir/fits.js';
+import { FIT_REACH, runFitJobs } from '../playbook/ir/fits.js';
 
 export interface RunFitJob {
   gap: Gap;
@@ -28,6 +28,9 @@ export interface RunFitJob {
   edge: 'box' | 'spill';
   pace: 'plug' | 'stack';
   partner?: string;
+  /** FIT_REACH: the pass-rush lane, from the job FIT_RULES gave before FIT_REACH (the run fit moved; the rush did
+   * not). Absent: the rush lane is the job's gap. */
+  rush?: { gap: Gap; side: number };
   /** The same body's inside duty before an observed outside runner activates force. */
   inside?: { gap: Gap; side: number; kind?: 'edge' };
 }
@@ -94,6 +97,12 @@ export function buildRunFits(sim: PlaySim): Map<Agent, RunFitJob> {
     const players = sim.defense.map((a) => full.players.find((p) => p.who.slot === a.slot)).filter((p): p is NonNullable<typeof p> => !!p);
     const pos = Object.fromEntries(sim.defense.map((a) => [a.slot, a.pos])) as Partial<Record<DefSlot, Vec2>>;
     const r = runFitJobs({ ...full, players }, sim.defAlign, sim.offAlign, { pos, labelFree: true });
+    if (FIT_REACH) {
+      // FIT_REACH is a run-fit rule: a rusher's lane stays what FIT_RULES gave him.
+      const r0 = runFitJobs({ ...full, players }, sim.defAlign, sim.offAlign, { pos, labelFree: true, reach: false });
+      for (const a of sim.defense) { const j = r.jobs[a.slot as DefSlot], j0 = r0.jobs[a.slot as DefSlot];
+        if (j && j0 && (j.gap !== j0.gap || j.side !== j0.side)) j.rush = { gap: j0.gap, side: j0.side }; }
+    }
     return new Map(sim.defense.map((a) => [a, r.jobs[a.slot as DefSlot]!]));
   }
   return faithfulRunFits(sim);
